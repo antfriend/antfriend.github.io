@@ -47,6 +47,7 @@
         var showInterval = false;
         var showPhase = 1;
         var amountOfNodes = 25;
+        var nodeId = 1;
 
         function destroy() {
           if (network !== null) {
@@ -146,10 +147,18 @@
           network.moveTo(options);
         }
 
-        function focusRandom() {
-          updateValues();
+        function moveTheNode()
+        {
+          network.moveNode(nodeId, 2,2)
+        }
 
-          var nodeId = Math.floor(Math.random() * amountOfNodes);
+        function focusRandom() {
+          nodeId = Math.floor(Math.random() * amountOfNodes);
+          
+          updateValues();
+          //moveTheNode();
+          
+          
           var options = {
             // position: {x:positionx,y:positiony}, // this is not relevant when focusing on nodes
             scale: scale,
@@ -162,12 +171,14 @@
           statusUpdateSpan.innerHTML = 'Focusing on node: ' + nodeId;
           finishMessage = 'Node: ' + nodeId + ' in focus.';
           network.focus(nodeId, options);
+          
         }
 
 
 
         function startShow() {
           updateValues();
+          
           if (showInterval !== false) {
             showInterval = false;
             showButton.value = 'begin';
@@ -194,6 +205,7 @@
             }
             setTimeout(doTheShow, duration);
           }
+          moveTheNode();
         }
       </script>
       
