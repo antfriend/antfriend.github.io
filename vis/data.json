@@ -4,9 +4,14 @@
             "id": "antfriend", 
             "label": "antfriend", 
             "group": 0, 
-            "font":{"size":60},"size": 400},
-        {"id": 1, "label": "antfriend", "group": 0},
-        {"id": 2, "label": "antfriend", "group": 0},
+            "font":{
+                "size": 100,
+                "color": "rgb(255,0,0)","face": "Lucida Console"},
+                "shadow": {"color":"rgb(0,255,0)"},
+            "color": "rgba(97,195,238,0.5)"
+            },
+        {"id": 1, "label": "videos", "group": 0},
+        {"id": 2, "label": "blog", "group": 0},
         {"id": 3, "label": "3", "group": 1},
         {"id": 4, "label": "4", "group": 1},
         {"id": 5, "label": "5", "group": 1},
