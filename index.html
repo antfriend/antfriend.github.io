@@ -46,7 +46,7 @@
         var finishMessage = '';
         var showInterval = false;
         var showPhase = 1;
-        var amountOfNodes = 25;
+        //var amountOfNodes = 10;
         var nodeId = 1;
 
         function destroy() {
@@ -71,6 +71,52 @@
           startShow();
         }
 
+        function Get(yourUrl){
+          var Httpreq = new XMLHttpRequest(); // a new request
+          Httpreq.open("GET",yourUrl,false);
+          Httpreq.send(null);
+          return Httpreq.responseText;
+    }
+
+        function getData(){
+          var data = {};
+          var json_obj = JSON.parse(Get('./vis/data.json'));
+          data = json_obj.data;
+          return data;
+        }
+
+        function getDataByCallback(callback){
+          getJSON('./vis/data.json').then(function(result) {
+            var data = result.data;
+            nodes = data.nodes;
+            edges = data.edges;
+              //alert('Your Json result is:  ' + data); //you can comment this, i used it to debug
+              callback(data); //display the result in an HTML element
+          }, function(status) { //error detection....
+            alert('Something went wrong.');
+          });
+          
+        }
+
+
+
+        function getJSON(url) {
+          return new Promise(function(resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('get', url, true);
+            xhr.responseType = 'json';
+            xhr.onload = function() {
+              var status = xhr.status;
+              if (status == 200) {
+                resolve(xhr.response);
+              } else {
+                reject(status);
+              }
+            };
+            xhr.send();
+          });
+        };
+
         function draw() {
           destroy();
           statusUpdateSpan = document.getElementById('statusUpdate');
@@ -79,7 +125,8 @@
           showButton = document.getElementById('btnShow');
 
           // randomly create some nodes and edges
-          var data = getScaleFreeNetwork(amountOfNodes);
+          //var data = getData();
+          
 
           // create a network
           var container = document.getElementById('mynetwork');
@@ -90,18 +137,22 @@
               }
             }
           };
-          network = new vis.Network(container, data, options);
 
-          // add event listeners
-          network.on('select', function(params) {
-            document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
-          });
-          network.on('stabilized', function (params) {
-            document.getElementById('stabilization').innerHTML = 'Stabilization took ' + params.iterations + ' iterations.';
-          });
-          network.on('animationFinished', function() {
-            statusUpdateSpan.innerHTML = finishMessage;
+          getDataByCallback(function(data){
+            network = new vis.Network(container, data, options);
+            // add event listeners
+            network.on('select', function(params) {
+              document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
+            });
+            network.on('stabilized', function (params) {
+              document.getElementById('stabilization').innerHTML = 'Stabilization took ' + params.iterations + ' iterations.';
+            });
+            network.on('animationFinished', function() {
+              statusUpdateSpan.innerHTML = finishMessage;
+            })
           })
+          
+
         }
 
         function fitAnimated() {
@@ -149,11 +200,19 @@
 
         function moveTheNode()
         {
-          network.moveNode(nodeId, 2,2)
+          if(nodeId)
+          {
+            network.moveNode(nodeId, 2,2) 
+          }     
         }
 
         function focusRandom() {
-          nodeId = Math.floor(Math.random() * amountOfNodes);
+          if(nodes){
+            nodeId = nodes[Math.floor(Math.random() * nodes.length)].id;
+          }else{
+            nodeId = null;
+          }
+          
           
           updateValues();
           //moveTheNode();
@@ -168,10 +227,15 @@
               easingFunction: easingFunction
             }
           };
-          statusUpdateSpan.innerHTML = 'Focusing on node: ' + nodeId;
-          finishMessage = 'Node: ' + nodeId + ' in focus.';
-          network.focus(nodeId, options);
-          
+          if(nodeId)
+          {
+            statusUpdateSpan.innerHTML = 'Focusing on node: ' + nodeId;
+            finishMessage = 'Node: ' + nodeId + ' in focus.';
+            network.focus(nodeId, options);
+          }else{
+            statusUpdateSpan.innerHTML = 'Focusing on NO node: ';
+            finishMessage = 'Node NOT in focus.';
+          }
         }
 
 
