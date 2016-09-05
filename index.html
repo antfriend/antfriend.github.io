@@ -136,6 +136,11 @@
           // create a network
           var container = document.getElementById('mynetwork');
           var options = {
+              "edges": {
+              "smooth": {
+                "forceDirection": "none"
+              }
+            },
             physics: {
               stabilization: {
                 iterations: 1200
@@ -154,6 +159,10 @@
             });
             network.on('animationFinished', function() {
               statusUpdateSpan.innerHTML = finishMessage;
+            })
+            network.on('click', function() {
+              statusUpdateSpan.innerHTML = 'clicked!';
+              showInterval = false;
             })
           })
           
@@ -274,8 +283,9 @@
               showPhase = 0;
             }
             setTimeout(doTheShow, duration);
+            moveTheNode();
           }
-          moveTheNode();
+          //do nothing
         }
       </script>
       
@@ -306,7 +316,7 @@
             </tr><tr>
               <td>offset y</td><td><input type="text" value="0" id="offsety" style="width:170px;"> px</td>
             </tr><tr>
-              <td>duration</td><td><input type="text" value="3000" id="duration" style="width:170px;"> ms</td>
+              <td>duration</td><td><input type="text" value="5000" id="duration" style="width:170px;"> ms</td>
             </tr>
             <tr>
               <td>easingFunction</td><td>
