@@ -9,7 +9,7 @@
         }
         #mynetwork {
         width: 100%;
-        height: 800px;
+        height: 700px;
         border: 1px solid lightgray;
         background-color: #000000;
         }
@@ -59,9 +59,9 @@
                   term.echo('');
                 }
             }, {
-                greetings: 'Antfriend is your friend \n "start()" to start "stop()" to stop',
+                greetings: '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nAntfriend is your friend \n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"help()" to see a list of commands',
                 name: 'antfriend_console',
-                height: 400,
+                height: 100,
                 prompt: 'ant> '
             });
         });
@@ -86,17 +86,13 @@
         }
 
         function updateValues() {
-          //
-          // set these to defaults || lookupFunction()
-          //
-          //
-          offsetx = parseInt(document.getElementById('offsetx').value);
-          offsety = parseInt(document.getElementById('offsety').value);
-          duration = parseInt(document.getElementById('duration').value);
-          scale = parseFloat(document.getElementById('scale').value);
-          positionx = parseInt(document.getElementById('positionx').value);
-          positiony = parseInt(document.getElementById('positiony').value);
-          easingFunction = document.getElementById('easingFunction').value;
+          offsetx = 0;// parseInt(document.getElementById('offsetx').value);
+          offsety = 0;// parseInt(document.getElementById('offsety').value);
+          duration = 5000;// parseInt(document.getElementById('duration').value);
+          scale = 1.0; //parseFloat(document.getElementById('scale').value);
+          positionx = 300; //parseInt(document.getElementById('positionx').value);
+          positiony = 300; //parseInt(document.getElementById('positiony').value);
+          easingFunction = "easeInOutQuart";// document.getElementById('easingFunction').value;
         }
 
         function pageLoadGlory(){
@@ -324,6 +320,11 @@
           }
           //do nothing
         }
+
+        function help()
+        {
+          return 'start()\nstop()\n'
+        }
       </script>
       
   </head>
@@ -331,50 +332,14 @@
        
       <div class="">
         <div id="mynetwork"></div>
-        <br/>
-        <span class="terminal" id="stabilization"></span>
-        <span class="terminal" id="statusUpdate"></span>
-        <span class="terminal" id="selection"></span>
-        
-        <br/>
-        <!--<input type="button" onclick="startShow();" value="begin" style="width:300px;" id="btnShow">-->
+        <div>
+          <br/>
+          <span class="terminal" id="stabilization"></span>
+          <span class="terminal" id="statusUpdate"></span>
+          <span class="terminal" id="selection"></span>
+          <br/>
+        </div>
         <div id="antfriend_console"></div>
       </div>
-              <div style="float: right; visibility: hidden;">
-          <table >
-            <tr>
-              <td>position x</td><td><input type="text" value="300" id="positionx" style="width:170px;"></td>
-            </tr><tr>
-              <td>position y</td><td><input type="text" value="300" id="positiony" style="width:170px;"></td>
-            </tr><tr>
-              <td>scale</td><td><input type="text" value="1.0" id="scale" style="width:170px;"></td>
-            </tr><tr>
-              <td>offset x</td><td><input type="text" value="0" id="offsetx" style="width:170px;"> px</td>
-            </tr><tr>
-              <td>offset y</td><td><input type="text" value="0" id="offsety" style="width:170px;"> px</td>
-            </tr><tr>
-              <td>duration</td><td><input type="text" value="5000" id="duration" style="width:170px;"> ms</td>
-            </tr>
-            <tr>
-              <td>easingFunction</td><td>
-              <select id="easingFunction" style="width:174px;">
-                <option value="linear">linear</option>
-                <option value="easeInQuad">easeInQuad</option>
-                <option value="easeOutQuad">easeOutQuad</option>
-                <option value="easeInOutQuad">easeInOutQuad</option>
-                <option value="easeInCubic">easeInCubic</option>
-                <option value="easeOutCubic">easeOutCubic</option>
-                <option value="easeInOutCubic">easeInOutCubic</option>
-                <option value="easeInQuart">easeInQuart</option>
-                <option value="easeOutQuart" >easeOutQuart</option>
-                <option value="easeInOutQuart" selected="selected">easeInOutQuart</option>
-                <option value="easeInQuint">easeInQuint</option>
-                <option value="easeOutQuint">easeOutQuint</option>
-                <option value="easeInOutQuint">easeInOutQuint</option>
-              </select>
-            </td>
-            </tr>
-          </table>
-        </div>
   </body>
 </html>
