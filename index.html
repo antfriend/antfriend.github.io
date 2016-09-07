@@ -5,6 +5,7 @@
       <style type="text/css">
         body {
         font: 10pt sans;
+        background-color: #000000;
         }
         #mynetwork {
         width: 100%;
@@ -36,8 +37,35 @@
       <!--<script type="text/javascript" src="./vis/exampleUtil.js"></script>-->
       <script type="text/javascript" src="./vis/vis.js"></script>
       <link href="./vis/vis.css" rel="stylesheet" type="text/css" />
-
-        
+      <script src="bower_components/jquery/dist/jquery.js"></script>
+      <script src="bower_components/jquery.terminal/js/jquery.terminal-0.11.3.min.js"></script>
+      <script src="bower_components/jquery.terminal/js/jquery.mousewheel-min.js"></script>
+      <!--<link href="css/jquery.terminal-0.11.2.min.css" rel="stylesheet"/>-->
+      <!--http://terminal.jcubic.pl/-->
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/0.11.2/css/jquery.terminal.min.css" rel="stylesheet"/>
+      <script type="text/javascript">
+          jQuery(function($, undefined) {
+            $('#antfriend_console').terminal(function(command, term) {
+                if (command !== '') {
+                    try {
+                        var result = window.eval(command);
+                        if (result !== undefined) {
+                            term.echo(new String(result));
+                        }
+                    } catch(e) {
+                        term.error(new String(e));
+                    }
+                } else {
+                  term.echo('');
+                }
+            }, {
+                greetings: 'Antfriend is your friend \n "start()" to start "stop()" to stop',
+                name: 'antfriend_console',
+                height: 400,
+                prompt: 'ant> '
+            });
+        });
+      </script>
       <script type="text/javascript">
         var nodes = null;
         var edges = null;
@@ -252,6 +280,15 @@
           }
         }
 
+        function start()
+        {
+          startShow();
+        }
+
+        function stop()
+        {
+          showInterval = false;
+        }
 
 
         function startShow() {
@@ -259,11 +296,11 @@
           
           if (showInterval !== false) {
             showInterval = false;
-            showButton.value = 'begin';
+            //showButton.value = 'begin';
             network.fit();
           }
           else {
-            showButton.value = 'cease';
+            //showButton.value = 'cease';
             focusRandom();
             setTimeout(doTheShow, duration);
             showInterval = true;
@@ -295,13 +332,13 @@
       <div class="">
         <div id="mynetwork"></div>
         <br/>
-        <span id="stabilization"></span>
-        <span id="statusUpdate"></span>
-        <span id="selection"></span>
+        <span class="terminal" id="stabilization"></span>
+        <span class="terminal" id="statusUpdate"></span>
+        <span class="terminal" id="selection"></span>
         
         <br/>
-        <input type="button" onclick="startShow();" value="begin" style="width:300px;" id="btnShow">
-
+        <!--<input type="button" onclick="startShow();" value="begin" style="width:300px;" id="btnShow">-->
+        <div id="antfriend_console"></div>
       </div>
               <div style="float: right; visibility: hidden;">
           <table >
