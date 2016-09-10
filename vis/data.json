@@ -9,9 +9,9 @@
                 "color": "rgb(0,0,0)",
                 "face": "Lucida Console",
                 "strokeWidth": 9,
-                "strokeColor": "white"},
+                "strokeColor": "green"},
                 "shadow": {"color":"rgb(255,255,255)", "value": 40},
-            "color": "rgba(255,0,0,0.7)"
+            "color": "rgba(0,255,0,0.7)"
             },
         {"id": "note", "label": "the antfriendliest place", "group": 0},
         {"id": 2, "label": "blog", "group": 0},

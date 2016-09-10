@@ -40,6 +40,7 @@
       <script src="bower_components/jquery/dist/jquery.js"></script>
       <script src="bower_components/jquery.terminal/js/jquery.terminal-0.11.3.min.js"></script>
       <script src="bower_components/jquery.terminal/js/jquery.mousewheel-min.js"></script>
+      <!--https://github.com/jcubic/jquery.terminal-->
       <!--<link href="css/jquery.terminal-0.11.2.min.css" rel="stylesheet"/>-->
       <!--http://terminal.jcubic.pl/-->
       <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/0.11.2/css/jquery.terminal.min.css" rel="stylesheet"/>
@@ -90,8 +91,8 @@
           offsety = 0;// parseInt(document.getElementById('offsety').value);
           duration = 5000;// parseInt(document.getElementById('duration').value);
           scale = 1.0; //parseFloat(document.getElementById('scale').value);
-          positionx = 300; //parseInt(document.getElementById('positionx').value);
-          positiony = 300; //parseInt(document.getElementById('positiony').value);
+          //positionx = 300; //parseInt(document.getElementById('positionx').value);
+          //positiony = 300; //parseInt(document.getElementById('positiony').value);
           easingFunction = "easeInOutQuart";// document.getElementById('easingFunction').value;
         }
 
@@ -153,10 +154,6 @@
           focusButton = document.getElementById('btnFocus');
           showButton = document.getElementById('btnShow');
 
-          // randomly create some nodes and edges
-          //var data = getData();
-          
-
           // create a network
           var container = document.getElementById('mynetwork');
           var options = {
@@ -168,7 +165,16 @@
             physics: {
               stabilization: {
                 iterations: 1200
-              }
+              },
+              stabilization: {
+                enabled: true,
+                iterations: 1000,
+                updateInterval: 100,
+                onlyDynamicEdges: false,
+                fit: true
+              },
+              timestep: 0.5,
+              adaptiveTimestep: true
             }
           };
 
@@ -219,6 +225,13 @@
           network.moveTo(options);
         }
 
+        function bop()
+        {
+          positionx = 50;
+          positiony = 50;
+          doAnimation();
+        }
+
         function doAnimation() {
           updateValues();
 
@@ -236,11 +249,24 @@
           network.moveTo(options);
         }
 
+        function dance()
+        {
+          muvNod(nodeId,2,2);
+          //doAnimation();
+        }
+
         function moveTheNode()
         {
-          if(nodeId)
+            muvNod(nodeId,2,2);
+        }
+
+        function muvNod(id,x,y)
+        {
+          if(id)
           {
-            network.moveNode(nodeId, 2,2) 
+            network.moveNode(id,x,y); 
+            //network.nodes[id].x=x;
+            //network.nodes[id].y=y;
           }     
         }
 
@@ -323,7 +349,7 @@
 
         function help()
         {
-          return 'start()\nstop()\n'
+          return 'bop()\ndraw()\nmuvNod(id,x,y)\nstart()\nstop()\n';
         }
       </script>
       
