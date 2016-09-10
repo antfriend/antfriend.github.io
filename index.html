@@ -34,7 +34,6 @@
         bottom:5px;
         }
       </style>
-      <!--<script type="text/javascript" src="./vis/exampleUtil.js"></script>-->
       <script type="text/javascript" src="./vis/vis.js"></script>
       <link href="./vis/vis.css" rel="stylesheet" type="text/css" />
       <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -125,7 +124,7 @@
           }, function(status) { //error detection....
             alert('Something went wrong.');
           });
-          
+
         }
 
 
@@ -195,7 +194,7 @@
               showInterval = false;
             })
           })
-          
+
 
         }
 
@@ -264,10 +263,10 @@
         {
           if(id)
           {
-            network.moveNode(id,x,y); 
+            network.moveNode(id,x,y);
             //network.nodes[id].x=x;
             //network.nodes[id].y=y;
-          }     
+          }
         }
 
         function focusRandom() {
@@ -276,12 +275,12 @@
           }else{
             nodeId = null;
           }
-          
-          
+
+
           updateValues();
           //moveTheNode();
-          
-          
+
+
           var options = {
             // position: {x:positionx,y:positiony}, // this is not relevant when focusing on nodes
             scale: scale,
@@ -315,7 +314,7 @@
 
         function startShow() {
           updateValues();
-          
+
           if (showInterval !== false) {
             showInterval = false;
             //showButton.value = 'begin';
@@ -352,10 +351,10 @@
           return 'bop()\ndraw()\nmuvNod(id,x,y)\nstart()\nstop()\n';
         }
       </script>
-      
+
   </head>
     <body onload="pageLoadGlory();">
-       
+
       <div class="">
         <div id="mynetwork"></div>
         <div>
