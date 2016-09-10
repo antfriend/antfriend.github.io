@@ -38,12 +38,15 @@
       <link href="./vis/vis.css" rel="stylesheet" type="text/css" />
       <script src="bower_components/jquery/dist/jquery.js"></script>
       <script src="bower_components/jquery.terminal/js/jquery.terminal-0.11.3.min.js"></script>
-      <script src="bower_components/jquery.terminal/js/jquery.mousewheel-min.js"></script>
+      <script src="bower_components/jquery.terminal/js/jquery.mousewheel-min.js">
+      </script>
+      <script src="./graphy.js"></script>
       <!--https://github.com/jcubic/jquery.terminal-->
       <!--<link href="css/jquery.terminal-0.11.2.min.css" rel="stylesheet"/>-->
       <!--http://terminal.jcubic.pl/-->
       <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/0.11.2/css/jquery.terminal.min.css" rel="stylesheet"/>
       <script type="text/javascript">
+
           jQuery(function($, undefined) {
             $('#antfriend_console').terminal(function(command, term) {
                 if (command !== '') {
@@ -67,34 +70,6 @@
         });
       </script>
       <script type="text/javascript">
-        var nodes = null;
-        var edges = null;
-        var network = null;
-        var offsetx, offsety, scale, positionx, positiony, duration, easingFunction, doButton, focusButton, showButton;
-        var statusUpdateSpan;
-        var finishMessage = '';
-        var showInterval = false;
-        var showPhase = 1;
-        //var amountOfNodes = 10;
-        var nodeId = 1;
-
-        function destroy() {
-          if (network !== null) {
-            network.destroy();
-            network = null;
-          }
-        }
-
-        function updateValues() {
-          offsetx = 0;// parseInt(document.getElementById('offsetx').value);
-          offsety = 0;// parseInt(document.getElementById('offsety').value);
-          duration = 5000;// parseInt(document.getElementById('duration').value);
-          scale = 1.0; //parseFloat(document.getElementById('scale').value);
-          //positionx = 300; //parseInt(document.getElementById('positionx').value);
-          //positiony = 300; //parseInt(document.getElementById('positiony').value);
-          easingFunction = "easeInOutQuart";// document.getElementById('easingFunction').value;
-        }
-
         function pageLoadGlory(){
           draw();
           startShow();
@@ -247,10 +222,41 @@
           finishMessage = 'Animation finished.';
           network.moveTo(options);
         }
+//dancy pantsy
+        var interValObject = null;
+        var timerAlternator = true;
+
+        function startTimer(functionToCall)
+        {
+              interValObject = setInterval(functionToCall, 500);
+        }
+
+        function stopTimer()
+        {
+          clearInterval(interValObject);
+        }
+
+        function danceMoves()
+        {
+          if(timerAlternator)
+          {
+            timerAlternator = false;
+            muvNod('head',-600,-600);
+            muvNod('hips',-600,-400);
+          }else{
+            timerAlternator = true;
+            muvNod('head',-550,-600);
+            muvNod('hips',-550,-400);
+          }
+        }
 
         function dance()
         {
-          muvNod(nodeId,2,2);
+          startTimer(danceMoves);
+          stop();
+          positionx = -500;
+          positiony = -500;
+          doAnimation();
           //doAnimation();
         }
 
