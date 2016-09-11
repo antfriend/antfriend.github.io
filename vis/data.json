@@ -17,20 +17,20 @@
         },
         "color": "rgba(0,255,0,0.7)"
       }, {
-        "id": "note",
-        "label": "the antfriendliest place",
+        "id": "videos",
+        "label": "videos",
         "group": 0
       }, {
-        "id": 2,
+        "id": "blog",
         "label": "blog",
         "group": 0
       }, {
-        "id": 3,
-        "label": "3",
+        "id": "git.this",
+        "label": "this",
         "group": 1
       }, {
-        "id": "git projects",
-        "label": "git projects",
+        "id": "git",
+        "label": "git",
         "group": 1
       }, {
         "id": 5,
@@ -148,20 +148,24 @@
       }
     ],
     "edges": [{
-        "from": "note",
-        "to": "antfriend"
+        "from": "antfriend",
+        "to": "videos",
+        "length": 100
       }, {
-        "from": 2,
-        "to": "antfriend"
+        "from": "antfriend",
+        "to": "blog",
+        "length": 100
       }, {
-        "from": "git projects",
-        "to": 3
+        "from": "antfriend",
+        "to": "git",
+        "length": 100
+      }, {
+        "from": "git",
+        "to": "git.this"
       }, {
         "from": 5,
-        "to": "git projects"
-      }, {
-        "from": "git projects",
-        "to": "antfriend"
+        "to": "git"
+
       }, {
         "from": 7,
         "to": 6
