@@ -99,6 +99,9 @@ function myAction(id) {
     },
     "git.this": function() {
       openUrl('https://github.com/antfriend/antfriend.github.io');
+    },
+    "X": function() {
+      dance();
     }
   };
   if (allActions[id]) {
