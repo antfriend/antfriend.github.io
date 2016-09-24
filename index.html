@@ -33,12 +33,7 @@
         position:absolute;
         bottom:5px;
         }
-        div.console { font-size: 24px }
-        #antfriend_console {
 
-
-
-        }
       </style>
       <script type="text/javascript" src="./vis/vis.js"></script>
       <link href="./vis/vis.css" rel="stylesheet" type="text/css" />
@@ -47,6 +42,8 @@
       <script src="bower_components/jquery.terminal/js/jquery.mousewheel-min.js">
       </script>
       <script src="./graphy.js"></script>
+      <script src="./webby.js"></script>
+      <script src="./commands.js"></script>
       <!--https://github.com/jcubic/jquery.terminal-->
       <!--<link href="css/jquery.terminal-0.11.2.min.css" rel="stylesheet"/>-->
       <!--http://terminal.jcubic.pl/-->
@@ -57,7 +54,10 @@
             $('#antfriend_console').terminal(function(command, term) {
                 if (command !== '') {
                     try {
-                        var result = window.eval(command);
+                        var result = interpret(command);
+                        if (result === undefined) {
+                            result = window.eval(command);
+                        }
                         if (result !== undefined) {
                             term.echo(new String(result));
                         }
@@ -68,7 +68,7 @@
                   term.echo('');
                 }
             }, {
-                greetings: '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nAntfriend is your friend \n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"help()" to see a list of commands',
+                greetings: '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n = Antfriend is your friend =  \n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"help()" to see a list of commands',
                 name: 'antfriend_console',
 
                 prompt: 'ant> '
@@ -81,58 +81,6 @@
           startShow();
         }
 
-        function Get(yourUrl){
-          var Httpreq = new XMLHttpRequest(); // a new request
-          Httpreq.open("GET",yourUrl,false);
-          Httpreq.send(null);
-          return Httpreq.responseText;
-    }
-
-        function getData(){
-          var data = {};
-          var json_obj = JSON.parse(Get('./vis/data.json'));
-          data = json_obj.data;
-          return data;
-        }
-
-        function getDataByCallback(callback){
-          getJSON('./vis/data.json').then(function(result) {
-            var data = result.data;
-            nodes = data.nodes;
-            edges = data.edges;
-              //alert('Your Json result is:  ' + data); //you can comment this, i used it to debug
-              callback(data); //display the result in an HTML element
-          }, function(status) { //error detection....
-            alert('Something went wrong.');
-          });
-
-        }
-
-
-
-        function getJSON(url) {
-          return new Promise(function(resolve, reject) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('get', url, true);
-            xhr.responseType = 'json';
-            xhr.onload = function() {
-              var status = xhr.status;
-              if (status == 200) {
-                resolve(xhr.response);
-              } else {
-                reject(status);
-              }
-            };
-            xhr.send();
-          });
-        };
-
-
-
-        function help()
-        {
-          return 'bop()\ndraw()\nmuvNod(id,x,y)\nstart()\nstop()\n';
-        }
       </script>
 
   </head>
