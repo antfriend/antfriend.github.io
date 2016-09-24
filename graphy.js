@@ -98,7 +98,12 @@ function myAction(id) {
       openUrl('https://github.com/antfriend');
     },
     "git.this": function() {
-      openUrl('https://github.com/antfriend/antfriend.github.io');
+      openUrl(
+        'https://github.com/antfriend/antfriend.github.io/commit/8e7f1e70fcf77d4c6b97e7a817dd3434686bbfac#diff-8a11d10fb3c3887836da60096ad16d9d'
+      );
+    },
+    "git.webbot": function() {
+      openUrl('https://github.com/antfriend/webbot');
     },
     "X": function() {
       dance();
@@ -148,8 +153,8 @@ function doDefaultAnimation() {
 }
 
 function bop() {
-  positionx = 50;
-  positiony = 50;
+  positionx = 1;
+  positiony = 1;
   doAnimation();
 }
 
@@ -188,8 +193,8 @@ function dancingYeah() {
 }
 
 var hulkDancer = {
-  "baseX": -1,
-  "baseY": -400,
+  "baseX": 1,
+  "baseY": 1,
   "interValObject": null,
   "timerAlternator": true,
   "start": function() {
@@ -202,7 +207,9 @@ var hulkDancer = {
       doAnimation();
       this.interValObject = setInterval(dancingYeah, 500);
     } else {
-      alert('cant start again');
+      //
+      this.stop();
+      //alert('cant start again');
     }
   },
   "stop": function() {
