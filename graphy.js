@@ -99,7 +99,7 @@ function myAction(id) {
     },
     "git.this": function() {
       openUrl(
-        'https://github.com/antfriend/antfriend.github.io/commit/48aba4803dc56d301b482271afd1dd2c72c0c2af#diff-eacf331f0ffc35d4b482f1d15a887d3b'
+        'https://github.com/antfriend/antfriend.github.io/commit/c080924cc1a304041d4d3b1f06a29d151eea3088#diff-8a11d10fb3c3887836da60096ad16d9d'
       );
     },
     "git.webbot": function() {
