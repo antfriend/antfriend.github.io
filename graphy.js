@@ -1,4 +1,6 @@
 //
+//
+//
 var nodes = null;
 var edges = null;
 var network = null;
@@ -27,16 +29,8 @@ function updateValues() {
   easingFunction = "easeInOutQuart"; // document.getElementById('easingFunction').value;
 }
 
-function draw() {
-  destroy();
-  statusUpdateSpan = document.getElementById('statusUpdate');
-  doButton = document.getElementById('btnDo');
-  focusButton = document.getElementById('btnFocus');
-  showButton = document.getElementById('btnShow');
-
-  // create a network
-  var container = document.getElementById('mynetwork');
-  var options = {
+function getBaseOptions() {
+  return {
     "edges": {
       "smooth": {
         "forceDirection": "none"
@@ -54,36 +48,70 @@ function draw() {
       adaptiveTimestep: true
     }
   };
+}
+
+function draw() {
+  destroy();
+  statusUpdateSpan = document.getElementById('statusUpdate');
+  doButton = document.getElementById('btnDo');
+  focusButton = document.getElementById('btnFocus');
+  showButton = document.getElementById('btnShow');
+
+  // create a network
+  var container = document.getElementById('mynetwork');
+  var options = getBaseOptions();
 
   getDataByCallback(function(data) {
-    network = new vis.Network(container, data, options);
-    // add event listeners
-    network.on('select', function(params) {
-      document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
-    });
-    network.on('stabilized', function(params) {
-      document.getElementById('stabilization').innerHTML = 'Stabilization took ' + params.iterations +
-        ' iterations.';
-    });
-    network.on('animationFinished', function() {
-      statusUpdateSpan.innerHTML = finishMessage;
-    });
-    network.on('click', function(params) {
-      statusUpdateSpan.innerHTML = 'clicked!';
-      showInterval = false;
-      var nodeMinion = params.nodes[0];
-      if (nodeMinion) {
-        myAction(nodeMinion);
-      }
-    });
+    //set the network object
+    setGlobalNetwork(container, data, options);
   });
 }
 
-function myAction(id) {
-  function openUrl(url) {
-    var win = window.open(url, '_blank');
-    win.focus();
+function setGlobalNetwork(container, data, options) {
+  network = new vis.Network(container, data, options);
+  // add event listeners
+  network.on('select', function(params) {
+    document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
+  });
+  network.on('stabilized', function(params) {
+    document.getElementById('stabilization').innerHTML = 'Stabilization took ' + params.iterations +
+      ' iterations.';
+  });
+  network.on('animationFinished', function() {
+    statusUpdateSpan.innerHTML = finishMessage;
+  });
+  network.on('click', function(params) {
+    statusUpdateSpan.innerHTML = 'clicked!';
+    showInterval = false;
+    var nodeMinion = params.nodes[0];
+    if (nodeMinion) {
+      myAction(nodeMinion);
+    }
+  });
+  network.on('doubleClick', function(params) {
+    statusUpdateSpan.innerHTML = 'double clicked!';
+    showInterval = false;
+    var nodeMinion = params.nodes[0];
+    if (nodeMinion) {
+      myAction2nd(nodeMinion);
+    }
+  });
+}
+
+function myAction2nd(nodeMinion) {
+  var allActions = {
+    "git.webbot": function() {
+      openUrl('https://github.com/antfriend/webbot');
+    }
+  };
+  if (allActions[nodeMinion]) {
+    allActions[nodeMinion]();
   }
+}
+
+
+
+function myAction(id) {
   var allActions = {
     "antfriend": function() {
       draw();
@@ -103,7 +131,8 @@ function myAction(id) {
       );
     },
     "git.webbot": function() {
-      openUrl('https://github.com/antfriend/webbot');
+      //alert('boing!');
+      addWebbotChildren();
     },
     "X": function() {
       dance();
@@ -112,6 +141,99 @@ function myAction(id) {
   if (allActions[id]) {
     allActions[id]();
   }
+}
+
+function getWebbotChildJson() {
+  var data = {
+    "nodes": [{
+      "id": "webbot",
+      "label": "webbot",
+      "group": 0
+    }, {
+      "id": "2",
+      "label": "2",
+      "group": 0
+    }],
+    "edges": [{
+      "from": "webbot",
+      "to": "2",
+      "length": 100
+    }]
+  };
+  return data;
+}
+
+function addWebbotChildren() {
+  statusUpdateSpan.innerHTML = 'Adding git.webbot children...';
+  destroy();
+  nodes = [];
+  edges = [];
+  var data = getWebbotChildJson();
+  // create a network
+  var container = document.getElementById('mynetwork');
+  var options = getBaseOptions();
+  // options.layout = {
+  //   randomSeed: seed
+  // };
+  options.manipulation = {
+    addNode: function(data, callback) {
+      // filling in the popup DOM elements
+      document.getElementById('operation').innerHTML = "Add Node";
+      document.getElementById('node-id').value = data.id;
+      document.getElementById('node-label').value = data.label;
+      document.getElementById('saveButton').onclick = saveData.bind(this, data, callback);
+      document.getElementById('cancelButton').onclick = clearPopUp.bind();
+      document.getElementById('network-popUp').style.display = 'block';
+    },
+    editNode: function(data, callback) {
+      // filling in the popup DOM elements
+      document.getElementById('operation').innerHTML = "Edit Node";
+      document.getElementById('node-id').value = data.id;
+      document.getElementById('node-label').value = data.label;
+      document.getElementById('saveButton').onclick = saveData.bind(this, data, callback);
+      document.getElementById('cancelButton').onclick = cancelEdit.bind(this, callback);
+      document.getElementById('network-popUp').style.display = 'block';
+    },
+    addEdge: function(data, callback) {
+      if (data.from == data.to) {
+        var r = confirm("Do you want to connect the node to itself?");
+        if (r === true) {
+          callback(data);
+        }
+      } else {
+        callback(data);
+      }
+    }
+  };
+  setGlobalNetwork(container, data, options);
+}
+
+function clearPopUp() {
+  document.getElementById('saveButton').onclick = null;
+  document.getElementById('cancelButton').onclick = null;
+  document.getElementById('network-popUp').style.display = 'none';
+}
+
+function cancelEdit(callback) {
+  clearPopUp();
+  callback(null);
+}
+
+function saveData(data, callback) {
+  data.id = document.getElementById('node-id').value;
+  data.label = document.getElementById('node-label').value;
+  clearPopUp();
+  callback(data);
+}
+
+function drawFolksonomy() {
+  //stop(); //just in case
+  network.nodes = [];
+  //network.edges.length = 0;
+  network.destroy();
+  //network.redraw();
+  //alert('uo');
+  //updateValues();
 }
 
 function fitAnimated() {

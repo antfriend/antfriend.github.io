@@ -25,6 +25,11 @@ function getDataByCallback(callback) {
 
 }
 
+function openUrl(url) {
+  var win = window.open(url, '_blank');
+  win.focus();
+}
+
 function getJSON(url) {
   return new Promise(function(resolve, reject) {
     var xhr = new XMLHttpRequest();
