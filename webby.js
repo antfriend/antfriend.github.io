@@ -1,3 +1,7 @@
+//
+//
+//
+
 function Get(yourUrl) {
   var Httpreq = new XMLHttpRequest(); // a new request
   Httpreq.open("GET", yourUrl, false);
@@ -10,19 +14,6 @@ function getData() {
   var json_obj = JSON.parse(Get('./vis/data.json'));
   data = json_obj.data;
   return data;
-}
-
-function getDataByCallback(callback) {
-  getJSON('./vis/data.json').then(function(result) {
-    var data = result.data;
-    nodes = data.nodes;
-    edges = data.edges;
-    //alert('Your Json result is:  ' + data); //you can comment this, i used it to debug
-    callback(data); //display the result in an HTML element
-  }, function(status) { //error detection....
-    alert('Something went wrong.');
-  });
-
 }
 
 function openUrl(url) {

@@ -67,7 +67,20 @@ function draw() {
   });
 }
 
+function getDataByCallback(callback) {
+  getJSON('./vis/data.json').then(function(result) {
+    var data = result.data;
+    nodes = data.nodes;
+    edges = data.edges;
+    //alert('Your Json result is:  ' + data); //you can comment this, i used it to debug
+    callback(data); //display the result in an HTML element
+  }, function(status) { //error detection....
+    alert('Something went wrong.');
+  });
+}
+
 function setGlobalNetwork(container, data, options) {
+
   network = new vis.Network(container, data, options);
   // add event listeners
   network.on('select', function(params) {
@@ -163,18 +176,7 @@ function getWebbotChildJson() {
   return data;
 }
 
-function addWebbotChildren() {
-  statusUpdateSpan.innerHTML = 'Adding git.webbot children...';
-  destroy();
-  nodes = [];
-  edges = [];
-  var data = getWebbotChildJson();
-  // create a network
-  var container = document.getElementById('mynetwork');
-  var options = getBaseOptions();
-  // options.layout = {
-  //   randomSeed: seed
-  // };
+function addOptionsManipulation(options) {
   options.manipulation = {
     addNode: function(data, callback) {
       // filling in the popup DOM elements
@@ -205,7 +207,29 @@ function addWebbotChildren() {
       }
     }
   };
-  setGlobalNetwork(container, data, options);
+  return options;
+}
+
+function addWebbotChildren() {
+  statusUpdateSpan.innerHTML = 'Adding git.webbot children...';
+  nodes.push({
+    "id": "new",
+    "label": "new"
+  });
+  edges.push({
+    "from": "git.webbot",
+    "to": "new",
+    "value": 40
+  });
+  //network.setData(nodes, edges);
+  network.redraw();
+
+}
+
+function addWebbotNodes(data, callback) {
+  data.id = 'new';
+  data.label = 'new';
+  callback(data);
 }
 
 function clearPopUp() {
@@ -227,13 +251,19 @@ function saveData(data, callback) {
 }
 
 function drawFolksonomy() {
-  //stop(); //just in case
-  network.nodes = [];
-  //network.edges.length = 0;
-  network.destroy();
-  //network.redraw();
-  //alert('uo');
-  //updateValues();
+  stop(); //just in case
+  statusUpdateSpan.innerHTML = 'Adding git.webbot children...';
+  destroy();
+  nodes = [];
+  edges = [];
+  var data2 = getWebbotChildJson();
+  var container = document.getElementById('mynetwork');
+  var options = getBaseOptions();
+  // options.layout = {
+  //   randomSeed: seed
+  // };
+  options = addOptionsManipulation(options);
+  setGlobalNetwork(container, data2, options);
 }
 
 function fitAnimated() {

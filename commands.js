@@ -29,7 +29,7 @@ var commands = {
   "inspiration": function() {
     var url = 'https://youtu.be/VWU9sJ2879c';
     openUrl(url);
-    return 'are you inspired now?'
+    return 'are you inspired now?';
   }
 };
 
@@ -71,10 +71,12 @@ function help() {
     'help = here we are!\n' +
     'dance = make the robot dance (:P)\n' +
     'stop = make it stop\n' +
+    'click [nodeid] = activate the click action\n' +
+    'folksonomy = start the folksonomy tool\n' +
+    'inspiration = find it within\n' +
+    'draw = redraw the nodes\n' +
     'bop()\n' +
-    'draw()\n' +
     'muvNod(id,x,y)\n' +
     'start()\n' +
-
     '==========================\n';
 }
