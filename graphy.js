@@ -1,8 +1,8 @@
 //
 //
 //
-var nodes = null;
-var edges = null;
+var nodes = new vis.DataSet();
+var edges = new vis.DataSet();
 var network = null;
 var offsetx, offsety, scale, positionx, positiony, duration, easingFunction, doButton, focusButton, showButton;
 var statusUpdateSpan;
@@ -69,9 +69,15 @@ function draw() {
 
 function getDataByCallback(callback) {
   getJSON('./vis/data.json').then(function(result) {
-    var data = result.data;
-    nodes = data.nodes;
-    edges = data.edges;
+    var rdata = result.data;
+    nodes.clear(); //necessary on a redraw
+    nodes.add(rdata.nodes);
+    edges.clear(); //necessary on a redraw
+    edges.add(rdata.edges);
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
     //alert('Your Json result is:  ' + data); //you can comment this, i used it to debug
     callback(data); //display the result in an HTML element
   }, function(status) { //error detection....
@@ -144,8 +150,17 @@ function myAction(id) {
       );
     },
     "git.webbot": function() {
-      //alert('boing!');
       addWebbotChildren();
+    },
+    "webbot.start": function() {
+      var url = 'https://antfriend.herokuapp.com/';
+      openUrl(url);
+      //alert('start');
+    },
+    "webbot.stop": function() {
+      var url = 'https://antfriend.herokuapp.com/';
+      openUrl(url);
+      //alert('start');
     },
     "X": function() {
       dance();
@@ -211,19 +226,34 @@ function addOptionsManipulation(options) {
 }
 
 function addWebbotChildren() {
+  //check if the children have been added
+  //if so just call the double click action
+  if (nodes.get('webbot.start')) {
+    myAction2nd('git.webbot');
+    return;
+  }
+
   statusUpdateSpan.innerHTML = 'Adding git.webbot children...';
-  nodes.push({
-    "id": "new",
-    "label": "new"
-  });
-  edges.push({
+  nodes.add([{
+    "id": "webbot.start",
+    "label": "start",
+    "group": "9"
+  }, {
+    "id": "webbot.stop",
+    "label": "stop",
+    "group": "9"
+  }]);
+
+  edges.add([{
     "from": "git.webbot",
-    "to": "new",
-    "value": 40
-  });
+    "to": "webbot.start"
+  }, {
+    "from": "git.webbot",
+    "to": "webbot.stop"
+  }]);
   //network.setData(nodes, edges);
   network.redraw();
-
+  statusUpdateSpan.innerHTML = 'did it';
 }
 
 function addWebbotNodes(data, callback) {
