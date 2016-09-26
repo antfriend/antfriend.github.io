@@ -71,8 +71,11 @@ function getDataByCallback(callback) {
   getJSON('./vis/data.json').then(function(result) {
     var rdata = result.data;
     nodes.clear(); //necessary on a redraw
+    nodes = new vis.DataSet();
     nodes.add(rdata.nodes);
+
     edges.clear(); //necessary on a redraw
+    edges = new vis.DataSet();
     edges.add(rdata.edges);
     var data = {
       nodes: nodes,
@@ -284,9 +287,10 @@ function drawFolksonomy() {
   stop(); //just in case
   statusUpdateSpan.innerHTML = 'Adding git.webbot children...';
   destroy();
-  nodes = [];
-  edges = [];
+  // nodes = new vis.DataSet();
+  // edges = new vis.DataSet();
   var data2 = getWebbotChildJson();
+
   var container = document.getElementById('mynetwork');
   var options = getBaseOptions();
   // options.layout = {
@@ -435,7 +439,11 @@ function muvNod(id, x, y) {
 
 function focusRandom() {
   if (nodes) {
-    nodeId = nodes[Math.floor(Math.random() * nodes.length)].id;
+    if (nodes.length > 1) {
+      var randoNumbo = Math.floor(Math.random() * nodes.length);
+      var theNode = nodes._data[randoNumbo];
+      nodeId = theNode.id;
+    }
   } else {
     nodeId = null;
   }
@@ -458,7 +466,9 @@ function focusRandom() {
   if (nodeId) {
     statusUpdateSpan.innerHTML = 'Focusing on node: ' + nodeId;
     finishMessage = 'Node: ' + nodeId + ' in focus.';
-    network.focus(nodeId, options);
+    if (network) {
+      network.focus(nodeId, options);
+    }
   } else {
     statusUpdateSpan.innerHTML = 'Focusing on NO node: ';
     finishMessage = 'Node NOT in focus.';
