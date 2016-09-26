@@ -22,7 +22,7 @@ function destroy() {
 function updateValues() {
   offsetx = 0; // parseInt(document.getElementById('offsetx').value);
   offsety = 0; // parseInt(document.getElementById('offsety').value);
-  duration = 5000; // parseInt(document.getElementById('duration').value);
+  duration = 3000; // parseInt(document.getElementById('duration').value);
   scale = 1.0; //parseFloat(document.getElementById('scale').value);
   //positionx = 300; //parseInt(document.getElementById('positionx').value);
   //positiony = 300; //parseInt(document.getElementById('positiony').value);
@@ -60,22 +60,44 @@ function draw() {
   // create a network
   var container = document.getElementById('mynetwork');
   var options = getBaseOptions();
-
+  nodes.clear(); //necessary on a redraw
+  nodes = new vis.DataSet();
+  edges.clear(); //necessary on a redraw
+  edges = new vis.DataSet();
   getDataByCallback(function(data) {
     //set the network object
     setGlobalNetwork(container, data, options);
-  });
+  }, './vis/data.json');
 }
 
-function getDataByCallback(callback) {
-  getJSON('./vis/data.json').then(function(result) {
-    var rdata = result.data;
-    nodes.clear(); //necessary on a redraw
-    nodes = new vis.DataSet();
-    nodes.add(rdata.nodes);
+function getTaxonoman() {
 
-    edges.clear(); //necessary on a redraw
-    edges = new vis.DataSet();
+  if (nodes.get('taxonoman.leftfoot')) {
+    //######################
+    //# destroy taxonoman! #
+    //######################
+    statusUpdateSpan.innerHTML = 'must! ... destroy! ... taxonoman! ...';
+    commands.draw();
+    return;
+  }
+  statusUpdateSpan.innerHTML = 'Adding taxonoman ...';
+  // var options = getBaseOptions();
+  // options = addOptionsManipulation(options);
+  // var container = document.getElementById('mynetwork');
+
+  getDataByCallback(function(data) {
+    //######################
+    //# create  taxonoman! #
+    //######################
+    statusUpdateSpan.innerHTML = 'taxonoman loaded';
+
+  }, './vis/taxonoman.json');
+}
+
+function getDataByCallback(callback, path) {
+  getJSON(path).then(function(result) {
+    var rdata = result.data;
+    nodes.add(rdata.nodes);
     edges.add(rdata.edges);
     var data = {
       nodes: nodes,
@@ -131,8 +153,6 @@ function myAction2nd(nodeMinion) {
   }
 }
 
-
-
 function myAction(id) {
   var allActions = {
     "antfriend": function() {
@@ -169,7 +189,7 @@ function myAction(id) {
       dance();
     },
     "folksonomy": function() {
-      commands.folksonomy()
+      commands.folksonomy();
     }
   };
   if (allActions[id]) {
@@ -182,25 +202,11 @@ function myAction(id) {
   }
 }
 
-function getWebbotChildJson() {
-  var data = {
-    "nodes": [{
-      "id": "webbot",
-      "label": "webbot",
-      "group": 0
-    }, {
-      "id": "2",
-      "label": "2",
-      "group": 0
-    }],
-    "edges": [{
-      "from": "webbot",
-      "to": "2",
-      "length": 100
-    }]
-  };
-  return data;
-}
+// function getWebbotChildJson() {
+//   var data = {};
+//
+//   return data;
+// }
 
 function addOptionsManipulation(options) {
   options.manipulation = {
@@ -243,7 +249,6 @@ function addWebbotChildren() {
     myAction2nd('git.webbot');
     return;
   }
-
   statusUpdateSpan.innerHTML = 'Adding git.webbot children...';
   nodes.add([{
     "id": "webbot.start",
@@ -263,15 +268,15 @@ function addWebbotChildren() {
     "to": "webbot.stop"
   }]);
   //network.setData(nodes, edges);
-  network.redraw();
+  //network.redraw();
   statusUpdateSpan.innerHTML = 'did it';
 }
 
-function addWebbotNodes(data, callback) {
-  data.id = 'new';
-  data.label = 'new';
-  callback(data);
-}
+// function addWebbotNodes(data, callback) {
+//   data.id = 'new';
+//   data.label = 'new';
+//   callback(data);
+// }
 
 function clearPopUp() {
   document.getElementById('saveButton').onclick = null;
@@ -293,11 +298,11 @@ function saveData(data, callback) {
 
 function drawFolksonomy() {
   stop(); //just in case
-  statusUpdateSpan.innerHTML = 'Adding git.webbot children...';
+  statusUpdateSpan.innerHTML = 'folksonomizing...';
   destroy();
   // nodes = new vis.DataSet();
   // edges = new vis.DataSet();
-  var data2 = getWebbotChildJson();
+  //var data2 = getWebbotChildJson();
 
   var container = document.getElementById('mynetwork');
   var options = getBaseOptions();
@@ -305,7 +310,15 @@ function drawFolksonomy() {
   //   randomSeed: seed
   // };
   options = addOptionsManipulation(options);
-  setGlobalNetwork(container, data2, options);
+  nodes.clear(); //necessary on a redraw
+  nodes = new vis.DataSet();
+  edges.clear(); //necessary on a redraw
+  edges = new vis.DataSet();
+  getDataByCallback(function(data) {
+    //set the network object
+    setGlobalNetwork(container, data, options);
+  }, './vis/folksonomy.json');
+  //setGlobalNetwork(container, data2, options);
 }
 
 function fitAnimated() {

@@ -38,8 +38,20 @@ var commands = {
     var url = 'https://youtu.be/VWU9sJ2879c';
     openUrl(url);
     return 'are you inspired now?';
+  },
+  "head": function() {
+    return '#########\n' +
+      '# Ouch! #\n' +
+      '#########\n';
+  },
+  "taxonoman": function() {
+    getTaxonoman();
+    return '#########\n' +
+      '#  :P   #\n' +
+      '#########\n';
   }
 };
+
 
 function firstWord(n, term_or_terms) {
   if (n > 0) {

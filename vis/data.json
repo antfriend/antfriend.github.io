@@ -26,6 +26,10 @@
       "label": "folksonomy",
       "group": 2
     }, {
+      "id": "taxonoman",
+      "label": "taxonoman",
+      "group": 2
+    }, {
       "id": "blog",
       "label": "blog",
       "group": 0
@@ -41,61 +45,6 @@
       "id": "git.webbot",
       "label": "webbot",
       "group": 1
-    }, {
-      "id": 9,
-      "label": "v",
-      "group": 3
-    }, {
-      "id": "lefthand",
-      "label": "=3",
-      "group": 3
-    }, {
-      "id": "X",
-      "label": "X",
-      "group": 3
-    }, {
-      "id": "head",
-      "label": " : P ",
-      "group": 3,
-      "x": 1,
-      "y": 1,
-      "fixed": true,
-      "shape": "circle",
-      "font": {
-        "size": 20,
-        "color": "rgb(0,0,0)",
-        "face": "Lucida Console",
-        "strokeWidth": 4,
-        "strokeColor": "grey"
-      }
-    }, {
-      "id": 11,
-      "label": "v",
-      "group": 3
-    }, {
-      "id": "righthand",
-      "label": "=3",
-      "group": 3
-    }, {
-      "id": "hips",
-      "label": "+",
-      "group": 7
-    }, {
-      "id": "leftknee",
-      "label": "L",
-      "group": 7
-    }, {
-      "id": "leftfoot",
-      "label": "foot",
-      "group": 3
-    }, {
-      "id": "rightfoot",
-      "label": "foot",
-      "group": 3
-    }, {
-      "id": "rightknee",
-      "label": "L",
-      "group": 7
     }],
     "edges": [{
       "from": "antfriend",
@@ -110,6 +59,9 @@
       "to": "folksonomy"
     }, {
       "from": "antfriend",
+      "to": "taxonoman"
+    }, {
+      "from": "antfriend",
       "to": "git",
       "length": 100
     }, {
@@ -119,47 +71,6 @@
       "from": "git",
       "to": "git.webbot"
 
-    }, {
-      "from": "X",
-      "to": 9,
-      "value": 40
-    }, {
-      "from": 9,
-      "to": "lefthand",
-      "value": 40
-    }, {
-      "from": "X",
-      "to": "head",
-      "value": 40,
-      "length": 0.01
-    }, {
-      "from": "X",
-      "to": 11,
-      "value": 40
-    }, {
-      "from": 11,
-      "to": "righthand",
-      "value": 40
-    }, {
-      "from": "leftknee",
-      "to": "hips",
-      "value": 40
-    }, {
-      "from": "leftfoot",
-      "to": "leftknee",
-      "value": 40
-    }, {
-      "from": "rightknee",
-      "to": "hips",
-      "value": 40
-    }, {
-      "from": "rightfoot",
-      "to": "rightknee",
-      "value": 40
-    }, {
-      "from": "X",
-      "to": "hips",
-      "value": 40
     }]
   }
 }
