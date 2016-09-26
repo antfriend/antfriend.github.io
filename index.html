@@ -73,6 +73,7 @@ div.table_description {
 }
 
       </style>
+      <!-- <script data-main="scripts/main" src="scripts/require.js"></script> -->
       <script type="text/javascript" src="./vis/vis.js"></script>
       <link href="./vis/vis.css" rel="stylesheet" type="text/css" />
       <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -82,39 +83,12 @@ div.table_description {
       <script src="./graphy.js"></script>
       <script src="./webby.js"></script>
       <script src="./commands.js"></script>
+      <script src="./terminal.js"></script>
       <!--https://github.com/jcubic/jquery.terminal-->
       <!--<link href="css/jquery.terminal-0.11.2.min.css" rel="stylesheet"/>-->
       <!--http://terminal.jcubic.pl/-->
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/0.11.2/css/jquery.terminal.min.css" rel="stylesheet"/>
-      <script type="text/javascript">
+      <link href="./css/jquery.terminal.min.css" rel="stylesheet"/>
 
-          jQuery(function($, undefined) {
-            $('#antfriend_console').terminal(function(command, term) {
-                if (command !== '') {
-                    try {
-                        var result = interpret(command);
-                        if (result === undefined) {
-                            result = window.eval(command);
-                        }
-                        if (result !== undefined) {
-                            term.echo(new String(result));
-                        }
-                    } catch(e) {
-                        term.error(new String(e));
-                    }
-                } else {
-                  term.echo('');
-                }
-            }, {
-                greetings:
-                '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n' +
-                ' = Antfriend is your friend = \n' + '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n' +
-                '"help" to see a list of commands',
-                name: 'antfriend_console',
-                prompt: 'ant> '
-            });
-        });
-      </script>
       <script type="text/javascript">
         function pageLoadGlory(){
           draw();

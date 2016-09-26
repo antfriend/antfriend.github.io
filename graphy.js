@@ -167,10 +167,18 @@ function myAction(id) {
     },
     "X": function() {
       dance();
+    },
+    "folksonomy": function() {
+      commands.folksonomy()
     }
   };
   if (allActions[id]) {
     allActions[id]();
+  } else {
+    if (commands[id]) {
+      tryCommand(id);
+      commands[id]();
+    }
   }
 }
 
@@ -438,16 +446,14 @@ function muvNod(id, x, y) {
 }
 
 function focusRandom() {
+  nodeId = null;
   if (nodes) {
     if (nodes.length > 1) {
       var randoNumbo = Math.floor(Math.random() * nodes.length);
-      var theNode = nodes._data[randoNumbo];
-      nodeId = theNode.id;
+      var innerNodes = nodes.distinct('id');
+      nodeId = innerNodes[randoNumbo];
     }
-  } else {
-    nodeId = null;
   }
-
 
   updateValues();
   //moveTheNode();

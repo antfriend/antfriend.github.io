@@ -8,7 +8,11 @@ var commands = {
   },
   "dance": function() {
     dance();
-    return 'i am SOOO crushing it!';
+    return 'Taxonoman can DANCE!\n' +
+      ' i am SOOO crushing it!\n' +
+      '  ♫♪.ılılıll|̲̅̅●̲̅̅|̲̅̅=̲̅̅|̲̅̅●̲̅̅|llılılı.♫♪\n' +
+      '   The neck bone predicates the head bone!\n' +
+      '    The L bone predicates the foot bone!\n';
   },
   "folksonomy": function() {
     drawFolksonomy();
@@ -21,6 +25,10 @@ var commands = {
   "stop": function() {
     stop();
     return 'ok, i am done now';
+  },
+  "start": function() {
+    start();
+    return 'yeah, start me up';
   },
   "click": function(theMessage) {
     myAction(theMessage);
@@ -69,14 +77,14 @@ function interpret(the_term_or_terms) {
 function help() {
   return '==========================\n' +
     'help = here we are!\n' +
-    'dance = make the robot dance (:P)\n' +
+    'dance = make the taxonoman dance (:P)\n' +
     'stop = make it stop\n' +
+    'start = start randomly refocusing\n' +
     'click [nodeid] = activate the click action\n' +
     'folksonomy = start the folksonomy tool\n' +
     'inspiration = find it within\n' +
     'draw = redraw the nodes\n' +
     'bop()\n' +
     'muvNod(id,x,y)\n' +
-    'start()\n' +
     '==========================\n';
 }

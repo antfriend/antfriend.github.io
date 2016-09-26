@@ -22,6 +22,10 @@
       "label": "videos",
       "group": 0
     }, {
+      "id": "folksonomy",
+      "label": "folksonomy",
+      "group": 2
+    }, {
       "id": "blog",
       "label": "blog",
       "group": 0
@@ -82,11 +86,11 @@
       "group": 7
     }, {
       "id": "leftfoot",
-      "label": "-+",
+      "label": "foot",
       "group": 3
     }, {
       "id": "rightfoot",
-      "label": "-+",
+      "label": "foot",
       "group": 3
     }, {
       "id": "rightknee",
@@ -101,6 +105,9 @@
       "from": "antfriend",
       "to": "blog",
       "length": 100
+    }, {
+      "from": "antfriend",
+      "to": "folksonomy"
     }, {
       "from": "antfriend",
       "to": "git",
