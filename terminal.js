@@ -35,7 +35,7 @@ jQuery(function($, undefined) {
       '"help" to see a list of commands',
     name: 'antfriend_console',
     prompt: 'ant> ',
-    outputLimit: 19
+    outputLimit: 28
   }).click(function(params) {
     //this.echo('true');
     //alert(params);

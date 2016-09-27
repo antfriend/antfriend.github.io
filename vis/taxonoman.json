@@ -14,7 +14,7 @@
       "group": 3
     }, {
       "id": "head",
-      "label": " : P ",
+      "label": " o_0 ",
       "group": 3,
       "x": 1,
       "y": 1,
@@ -26,6 +26,10 @@
         "face": "Lucida Console",
         "strokeWidth": 4,
         "strokeColor": "grey"
+      },
+      "shadow": {
+        "color": "rgb(0,255,0)",
+        "value": 40
       }
     }, {
       "id": 11,
@@ -55,8 +59,16 @@
       "id": "rightknee",
       "label": "L",
       "group": 7
+    }, {
+      "id": "dance",
+      "label": "dance",
+      "group": 11,
+      "shape": "square"
     }],
     "edges": [{
+      "from": "taxonoman",
+      "to": "dance"
+    }, {
       "from": "X",
       "to": 9,
       "value": 40
