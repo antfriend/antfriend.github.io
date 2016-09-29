@@ -21,6 +21,12 @@
       "label": "folksonomy",
       "group": 33,
       "shape": "circle"
+    }, {
+      "id": "about",
+      "label": "click 'edit' then add a node with an id of 'help'\nand a label of 'help'\n then click it ",
+      "shape": "box",
+      "x": -200,
+      "y": -200
     }],
     "edges": [{
       "from": "folksonomy",
