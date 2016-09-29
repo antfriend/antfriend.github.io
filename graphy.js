@@ -61,9 +61,9 @@ function draw() {
   var container = document.getElementById('mynetwork');
   var options = getBaseOptions();
   nodes.clear(); //necessary on a redraw
-  nodes = new vis.DataSet();
+  //nodes = new vis.DataSet();
   edges.clear(); //necessary on a redraw
-  edges = new vis.DataSet();
+  //edges = new vis.DataSet();
   getDataByCallback(function(data) {
     //set the network object
     setGlobalNetwork(container, data, options);
@@ -300,9 +300,6 @@ function drawFolksonomy() {
   stop(); //just in case
   statusUpdateSpan.innerHTML = 'folksonomizing...';
   destroy();
-  // nodes = new vis.DataSet();
-  // edges = new vis.DataSet();
-  //var data2 = getWebbotChildJson();
 
   var container = document.getElementById('mynetwork');
   var options = getBaseOptions();
@@ -311,14 +308,13 @@ function drawFolksonomy() {
   // };
   options = addOptionsManipulation(options);
   nodes.clear(); //necessary on a redraw
-  nodes = new vis.DataSet();
+  //nodes = new vis.DataSet();
   edges.clear(); //necessary on a redraw
-  edges = new vis.DataSet();
+  //edges = new vis.DataSet();
   getDataByCallback(function(data) {
     //set the network object
     setGlobalNetwork(container, data, options);
   }, './vis/folksonomy.json');
-  //setGlobalNetwork(container, data2, options);
 }
 
 function fitAnimated() {
