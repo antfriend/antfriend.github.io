@@ -19,12 +19,7 @@
     }, {
       "id": "folksonomy",
       "label": "folksonomy",
-      "group": "red",
-      "shape": "circle"
-    }, {
-      "id": "dance",
-      "label": "dance",
-      "group": "red",
+      "group": 33,
       "shape": "circle"
     }],
     "edges": [{
