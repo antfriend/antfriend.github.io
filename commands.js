@@ -45,7 +45,10 @@ var commands = {
       '#########\n';
   },
   "taxonoman": function() {
+    //use a sequencer
+    //stop();
     getTaxonoman();
+    //focusTaxonoman();
     return '#########\n' +
       '#  :P   #\n' +
       '#########\n';

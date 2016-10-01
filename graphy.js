@@ -23,7 +23,7 @@ function updateValues() {
   offsetx = 0; // parseInt(document.getElementById('offsetx').value);
   offsety = 0; // parseInt(document.getElementById('offsety').value);
   duration = 3000; // parseInt(document.getElementById('duration').value);
-  scale = 1.0; //parseFloat(document.getElementById('scale').value);
+  scale = 2.5; //parseFloat(document.getElementById('scale').value);
   //positionx = 300; //parseInt(document.getElementById('positionx').value);
   //positiony = 300; //parseInt(document.getElementById('positiony').value);
   easingFunction = "easeInOutQuart"; // document.getElementById('easingFunction').value;
@@ -42,7 +42,7 @@ function getBaseOptions() {
         iterations: 1000,
         updateInterval: 100,
         onlyDynamicEdges: false,
-        fit: true
+        fit: false
       },
       timestep: 0.5,
       adaptiveTimestep: true
@@ -71,7 +71,6 @@ function draw() {
 }
 
 function getTaxonoman() {
-
   if (nodes.get('taxonoman.leftfoot')) {
     //######################
     //# destroy taxonoman! #
@@ -90,6 +89,8 @@ function getTaxonoman() {
     //# create  taxonoman! #
     //######################
     statusUpdateSpan.innerHTML = 'taxonoman loaded';
+    dance();
+
 
   }, './vis/taxonoman.json');
 }
@@ -190,6 +191,15 @@ function myAction(id) {
     },
     "folksonomy": function() {
       commands.folksonomy();
+    },
+    "about1": function() {
+      var aime1 = nodes.get('about1');
+      var aime2 = nodes.get('about2');
+      aime1.label = aime2.label;
+      // if (aime2) {
+      //   aime.hidden = false;
+      //   statusUpdateSpan.innerHTML = ' property: hidden = ' + aime.hidden;
+      // }
     }
   };
   if (allActions[id]) {
@@ -201,12 +211,6 @@ function myAction(id) {
     }
   }
 }
-
-// function getWebbotChildJson() {
-//   var data = {};
-//
-//   return data;
-// }
 
 function addOptionsManipulation(options) {
   options.manipulation = {
@@ -272,12 +276,6 @@ function addWebbotChildren() {
   statusUpdateSpan.innerHTML = 'did it';
 }
 
-// function addWebbotNodes(data, callback) {
-//   data.id = 'new';
-//   data.label = 'new';
-//   callback(data);
-// }
-
 function clearPopUp() {
   document.getElementById('saveButton').onclick = null;
   document.getElementById('cancelButton').onclick = null;
@@ -333,6 +331,23 @@ function fitAnimated() {
   network.fit({
     animation: options
   });
+}
+
+function zoomAntfriend() {
+  var options = {
+    offset: {
+      x: 1,
+      y: 1
+    },
+    // x: 1,
+    // y: 1,
+    scale: 2,
+    duration: 1000,
+    easingFunction: "easeInOutQuart"
+  };
+  statusUpdateSpan.innerHTML = 'zooming ';
+  finishMessage = 'Animating zoom.';
+  network.moveTo(options);
 }
 
 function doDefaultAnimation() {
@@ -396,7 +411,7 @@ function dancingYeah() {
 }
 
 var hulkDancer = {
-  "baseX": 1,
+  "baseX": -200,
   "baseY": 1,
   "interValObject": null,
   "timerAlternator": true,
@@ -407,7 +422,8 @@ var hulkDancer = {
       this.danceMoves();
       positionx = this.baseX;
       positiony = this.baseY;
-      doAnimation();
+      //doAnimation();
+      focusTaxonoman();
       this.interValObject = setInterval(dancingYeah, 500);
     } else {
       //
@@ -433,7 +449,7 @@ var hulkDancer = {
       muvNod('head', this.baseX - 150, this.baseY - 200);
       muvNod('X', this.baseX - 150, this.baseY - 150);
       muvNod('righthand', this.baseX, this.baseY - 200);
-      finishMessage = 'Hulk crushing it!';
+      finishMessage = 'Taxonoman is crushing it!';
     }
   }
 };
@@ -490,6 +506,21 @@ function focusRandom() {
   }
 }
 
+function focusTaxonoman() {
+  var options = {
+    scale: 2,
+    offset: {
+      x: 3,
+      y: 3
+    },
+    animation: {
+      duration: 3000,
+      easingFunction: easingFunction
+    }
+  };
+  network.focus('X', options);
+}
+
 function start() {
   startShow();
 }
@@ -506,7 +537,7 @@ function startShow() {
   if (showInterval !== false) {
     showInterval = false;
     //showButton.value = 'begin';
-    network.fit();
+    //network.fit();
   } else {
     //showButton.value = 'cease';
     focusRandom();

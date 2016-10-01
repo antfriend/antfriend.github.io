@@ -22,11 +22,18 @@
       "group": 33,
       "shape": "circle"
     }, {
-      "id": "about",
-      "label": "click 'edit' then add a node with an id of 'help'\nand a label of 'help'\n then click it ",
+      "id": "about1",
+      "label": "* click the top left 'edit' button\n * click the 'Add Edge' button and follow the directions there\n* click this box for next\n* follow instructions\n* sit up straight ",
       "shape": "box",
       "x": -200,
       "y": -200
+    }, {
+      "id": "about2",
+      "label": "click the top left 'edit' button to add a node. Make the id be 'help'\nand the label 'help'\n and then click it ",
+      "shape": "box",
+      "x": -200,
+      "y": -100,
+      "hidden": true
     }],
     "edges": [{
       "from": "folksonomy",
