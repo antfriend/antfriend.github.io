@@ -28,7 +28,11 @@
     }, {
       "id": "taxonoman",
       "label": "taxonoman",
-      "group": 2
+      "group": 3
+    }, {
+      "id": "jartron",
+      "label": "jartron",
+      "group": 0
     }, {
       "id": "blog",
       "label": "blog",
@@ -36,15 +40,15 @@
     }, {
       "id": "git.this",
       "label": "this",
-      "group": 1
+      "group": 0
     }, {
       "id": "git",
       "label": "git",
-      "group": 1
+      "group": 0
     }, {
-      "id": "git.webbot",
-      "label": "webbot",
-      "group": 1
+      "id": "help",
+      "label": "help",
+      "group": 4
     }],
     "edges": [{
       "from": "antfriend",
@@ -54,6 +58,9 @@
       "from": "antfriend",
       "to": "blog",
       "length": 100
+    }, {
+      "from": "antfriend",
+      "to": "jartron"
     }, {
       "from": "antfriend",
       "to": "folksonomy"

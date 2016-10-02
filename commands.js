@@ -39,6 +39,11 @@ var commands = {
     openUrl(url);
     return 'are you inspired now?';
   },
+  "jartron": function() {
+    var url = 'http://makezine.com/2010/05/10/jartron-the-robot-dances-shoots-las/';
+    openUrl(url);
+    return 'Jartron the explorer!';
+  },
   "head": function() {
     return '#########\n' +
       '# Ouch! #\n' +
@@ -55,6 +60,23 @@ var commands = {
   }
 };
 
+function moveFront(pos) {
+  var url = 'https://antfriend.herokuapp.com/front/' + pos;
+  getJSON(url).then(function(result) {
+    var rdata = result.data;
+
+  }, function(status) { //error detection....
+    alert('Something went wrong. ' + status);
+  });
+}
+
+function moveRear(pos) {
+  //https://antfriend.herokuapp.com/rear/90
+}
+
+function webBotOff() {
+  //https://antfriend.herokuapp.com/toggle/off
+}
 
 function firstWord(n, term_or_terms) {
   if (n > 0) {

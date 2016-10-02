@@ -50,6 +50,7 @@ function getBaseOptions() {
   };
 }
 
+
 function draw() {
   destroy();
   statusUpdateSpan = document.getElementById('statusUpdate');

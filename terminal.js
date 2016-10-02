@@ -1,5 +1,5 @@
 //
-//
+// http://terminal.jcubic.pl/examples.php
 //
 var iAmTheTerminal = {};
 
