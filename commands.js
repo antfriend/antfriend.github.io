@@ -39,6 +39,11 @@ var commands = {
     openUrl(url);
     return 'are you inspired now?';
   },
+  "clansOfPagoda": function() {
+    var url = './clansOfPagoda';
+    openUrl(url);
+    return 'Play Clans Of Pagoda!';
+  },
   "jartron": function() {
     var url = 'http://makezine.com/2010/05/10/jartron-the-robot-dances-shoots-las/';
     openUrl(url);

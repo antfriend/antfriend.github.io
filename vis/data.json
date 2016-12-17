@@ -49,8 +49,16 @@
       "id": "help",
       "label": "help",
       "group": 4
+    }, {
+      "id": "clansOfPagoda",
+      "label": "Clans Of Pagoda",
+      "group": 1
     }],
     "edges": [{
+      "from": "antfriend",
+      "to": "clansOfPagoda",
+      "length": 100
+    }, {
       "from": "antfriend",
       "to": "videos",
       "length": 100
