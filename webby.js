@@ -17,8 +17,18 @@ function getData() {
 }
 
 function openUrl(url) {
-  var win = window.open(url, '_blank');
-  win.focus();
+  //var win = window;
+  var speed = 1000;
+  var easing = 'swing';
+
+  function gonow() {
+    //$("<a href='" + url + "'></a>").click();
+    //window.location.href(url);
+    var win = window.open(url, '_blank');
+    win.focus();
+  }
+  //$('body').fadeOut(speed, easing, gonow);
+  gonow();
 }
 
 function getJSON(url) {
