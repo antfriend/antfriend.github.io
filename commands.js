@@ -44,6 +44,16 @@ var commands = {
     openUrl(url);
     return 'Play Clans Of Pagoda!';
   },
+  "banjo": function() {
+    var url = 'https://github.com/antfriend/banjo';
+    openUrl(url);
+    return 'banjo!';
+  },
+  "card": function() {
+    var url = 'https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_01.png';
+    openUrl(url);
+    return 'banjo card';
+  },
   "jartron": function() {
     var url = 'http://makezine.com/2010/05/10/jartron-the-robot-dances-shoots-las/';
     openUrl(url);

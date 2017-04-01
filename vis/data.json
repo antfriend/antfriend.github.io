@@ -53,11 +53,27 @@
       "id": "clansOfPagoda",
       "label": "Clans Of Pagoda",
       "group": 1
+    }, {
+      "id": "banjo",
+      "label": "banjo",
+      "group": 1
+    }, {
+      "id": "card",
+      "label": "card",
+      "group": 1
     }],
     "edges": [{
       "from": "antfriend",
       "to": "clansOfPagoda",
       "length": 100
+    }, {
+      "from": "antfriend",
+      "to": "banjo",
+      "length": 50
+    }, {
+      "from": "banjo",
+      "to": "card",
+      "length": 50
     }, {
       "from": "antfriend",
       "to": "videos",
