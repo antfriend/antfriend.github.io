@@ -4,7 +4,7 @@
 var CardGame = function(targetId) {
   // private variables
   var cards = [];
-  var card_value = ["1C", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "1H", "2H", "3H", "4H", "5H", "6H", "7H", "8H"];
+  var card_value = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
 
   var started = false;
   var matches_found = 0;
@@ -14,46 +14,44 @@ var CardGame = function(targetId) {
   var hideCard = function(id) // turn card face down
     {
       cards[id].firstChild.src = "https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_25.png";
-      with(cards[id].style) {
-        WebkitTransform = MozTransform = OTransform = msTransform = "scale(1.0) rotate(0deg)";
-      }
+      cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform =
+        cards[id].style.msTransform = "scale(1.0) rotate(0deg)";
     };
 
   var moveToPack = function(id) // move card to pack
     {
       hideCard(id);
       cards[id].matched = true;
-      with(cards[id].style) {
-        zIndex = "1000";
-        top = "100px";
-        left = "-140px";
-        WebkitTransform = MozTransform = OTransform = msTransform = "rotate(0deg)";
-        zIndex = "0";
-      }
+      cards[id].style.zIndex = "1000";
+      cards[id].style.top = "100px";
+      cards[id].style.left = "-140px";
+      cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform = cards[id].style.msTransform =
+        "rotate(0deg)";
+      cards[id].style.zIndex = "0";
+
     };
 
   var moveToPlace = function(id) // deal card
     {
       cards[id].matched = false;
-      with(cards[id].style) {
-        zIndex = "1000";
-        top = cards[id].fromtop + "px";
-        left = cards[id].fromleft + "px";
-        WebkitTransform = MozTransform = OTransform = msTransform = "rotate(0deg)";
-        zIndex = "0";
-      }
+      cards[id].style.zIndex = "1000";
+      cards[id].style.top = cards[id].fromtop + "px";
+      cards[id].style.left = cards[id].fromleft + "px";
+      cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform = cards[id].style.msTransform =
+        "rotate(0deg)";
+      cards[id].style.zIndex = "0";
     };
 
   var showCard = function(id) // turn card face up, check for match
     {
       if (id === card1) return;
       if (cards[id].matched) return;
-
       //cards[id].firstChild.src = "//cdn.the-art-of-web.com/images/cards/" + card_value[id] + ".png";
-      cards[id].firstChild.src = "https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_01.png";
-      with(cards[id].style) {
-        WebkitTransform = MozTransform = OTransform = msTransform = "scale(1.2) rotate(15deg)";
-      }
+      cards[id].firstChild.src = "https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_" + card_value[
+        id] + ".png";
+      cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform = cards[id].style.msTransform =
+        "scale(1.0) rotate(15deg)";
+
 
       if (card1 !== false) {
         card2 = id;
@@ -90,16 +88,24 @@ var CardGame = function(targetId) {
       card_value.sort(function() {
         return Math.round(Math.random()) - 0.5;
       });
-      for (i = 0; i < 16; i++) {
-        (function(idx) {
-          setTimeout(function() {
-            moveToPlace(idx);
-          }, idx * 100);
-        })(i);
+      for (i = 0; i < 12; i++) {
+        asyc_moveToPlace(i);
       }
       started = true;
     }
   };
+
+  function asyc_moveToPlace(idx) {
+    setTimeout(function() {
+      moveToPlace(idx);
+    }, idx * 100);
+  }
+
+  function addlistener_cardClick(idx, newCard) {
+    newCard.addEventListener("click", function() {
+      cardClick(idx);
+    }, false);
+  }
 
   // initialise
 
@@ -113,17 +119,12 @@ var CardGame = function(targetId) {
   card.innerHTML =
     "<img width='25%' src='https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_25.png'>";
 
-  for (var i = 0; i < 16; i++) {
+  for (var i = 0; i < 12; i++) {
     var newCard = card.cloneNode(true);
 
     newCard.fromtop = 15 + 120 * Math.floor(i / 4);
     newCard.fromleft = 70 + 100 * (i % 4);
-    (function(idx) {
-      newCard.addEventListener("click", function() {
-        cardClick(idx);
-      }, false);
-    })(i);
-
+    addlistener_cardClick(i, newCard);
     felt.appendChild(newCard);
     cards.push(newCard);
   }

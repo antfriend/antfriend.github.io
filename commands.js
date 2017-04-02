@@ -45,7 +45,7 @@ var commands = {
     return 'Play Clans Of Pagoda!';
   },
   "banjo": function() {
-    var url = 'https://github.com/antfriend/banjo';
+    var url = '/banjo';
     openUrl(url);
     return 'banjo!';
   },
