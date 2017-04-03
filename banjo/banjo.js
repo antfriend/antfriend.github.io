@@ -117,12 +117,12 @@ var CardGame = function(targetId) {
   // template for card
   var card = document.createElement("div");
   card.innerHTML =
-    "<img width='25%' src='https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_25.png'>";
+    "<img width='100px' src='https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_25.png'>";
 
   for (var i = 0; i < 12; i++) {
     var newCard = card.cloneNode(true);
 
-    newCard.fromtop = 15 + 120 * Math.floor(i / 4);
+    newCard.fromtop = 11 + 120 * Math.floor(i / 4);
     newCard.fromleft = 70 + 100 * (i % 4);
     addlistener_cardClick(i, newCard);
     felt.appendChild(newCard);
