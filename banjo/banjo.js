@@ -3,8 +3,11 @@
 
 var CardGame = function(targetId) {
   // private variables
+  var cards_in_deck = 24;
   var cards = [];
-  var card_value = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+  var card_value = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "01", "02", "03", "04",
+    "05", "06", "07", "08", "09", "10", "11", "12"
+  ];
 
   var started = false;
   var matches_found = 0;
@@ -88,7 +91,7 @@ var CardGame = function(targetId) {
       card_value.sort(function() {
         return Math.round(Math.random()) - 0.5;
       });
-      for (i = 0; i < 12; i++) {
+      for (i = 0; i < cards_in_deck; i++) {
         asyc_moveToPlace(i);
       }
       started = true;
@@ -108,25 +111,47 @@ var CardGame = function(targetId) {
   }
 
   // initialise
-
-  var stage = document.getElementById(targetId);
-  var felt = document.createElement("div");
-  felt.id = "felt";
-  stage.appendChild(felt);
-
-  // template for card
-  var card = document.createElement("div");
-  card.innerHTML =
-    "<img width='100px' src='https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_25.png'>";
-
-  for (var i = 0; i < 12; i++) {
-    var newCard = card.cloneNode(true);
-
-    newCard.fromtop = 11 + 120 * Math.floor(i / 4);
-    newCard.fromleft = 70 + 100 * (i % 4);
-    addlistener_cardClick(i, newCard);
-    felt.appendChild(newCard);
-    cards.push(newCard);
+  function getFelt() {
+    var stage = document.getElementById(targetId);
+    var felt = document.createElement("div");
+    felt.id = "felt";
+    stage.appendChild(felt);
+    return felt;
   }
+  var felt = getFelt();
+
+  function getCard() {
+    var card = document.createElement("div");
+    card.innerHTML =
+      "<img width='170px' src='https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_25.png'>";
+    return card;
+  }
+  var card = getCard();
+
+  function deal() {
+    var newCard = {};
+    for (var i = 0; i < 4; i++) {
+      newCard = card.cloneNode(true);
+
+      newCard.fromleft = 230 * (i % 2);
+      newCard.fromtop = 264 * Math.floor(i / 2);
+
+      addlistener_cardClick(i, newCard);
+      felt.appendChild(newCard);
+      cards.push(newCard);
+    }
+    for (var j = 4; j < cards_in_deck; j++) {
+      newCard = card.cloneNode(true);
+
+      newCard.fromleft = 2 * (j % 20) + 500;
+      newCard.fromtop = 2 * Math.floor(j / 2) + 200;
+
+      addlistener_cardClick(j, newCard);
+      felt.appendChild(newCard);
+      cards.push(newCard);
+    }
+  }
+
+  deal();
 
 };
