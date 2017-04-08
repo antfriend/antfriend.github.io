@@ -41,10 +41,30 @@
       return Math.floor(Math.random()*(max-min+1)+min);
     }
     var myVar = setInterval(myTimer, 1000);
+    var incrementalCounter = 0;
+    var phraseCounter = 0;
+    var phrases = ["banjo","hello","you play?"]
     function myTimer() {
         var y = rando(-9,9);
         var x = rando(-9,9);
-        moveEye('eye1',x,y);
+        incrementalCounter++;
+        var currentPhrase = "banjo";
+        if(incrementalCounter > 5)
+        {
+          moveEye('eye1',0,0);
+          if(phraseCounter < phrases.length-1){
+            phraseCounter++;
+          }else{
+            phraseCounter = 0;
+          }
+
+          var domElemnt = document.getElementById('dialog');
+          domElemnt.textContent=phrases[phraseCounter];
+          incrementalCounter = 0;
+        }else{
+          moveEye('eye1',x,y);
+        }
+
     }
   </script>
 </svg>
