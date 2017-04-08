@@ -2,14 +2,58 @@
 <!-- based on http://www.the-art-of-web.com/javascript/css-animation/ -->
 <head>
   <title>banjo</title>
-  <link rel="stylesheet" type="text/css" href="/banjo/banjo.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Press+Start+2P" />
+  <link rel="stylesheet" type="text/css" href="/banjo/banjo.css" />
+  <script type="text/javascript" src="/banjo/banjo.js"></script>
+  <script src="/bower_components/jquery/dist/jquery.js"></script>
 </head>
 
 <body>
-<br/><br/><br/><br/><br/>
+<br/><br/>
+<!-- ###### EYE ############# -->
+<svg id="eye1" height="100" width="100">
+  <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="white" />
+  <ellipse id="eye1.iris" cx="50" cy="50" rx="20" ry="20" stroke="black" stroke-width="1" fill="red" />
+  <ellipse id="eye1.pupil" cx="50" cy="50"  rx="10" ry="10" stroke="black" stroke-width="1" fill="black" />
+  <circle cx="42" cy="42" r="9" stroke="white" stroke-width="0" fill="white" fill-opacity="0.8"/>
+  <script id="eyeScripts" type="text/javascript">
+    function moveEye(idStr, xOffset, yOffset) {
+       var domElemnt = document.getElementById(idStr + '.iris');
+      //  var xscale = xOffset;
+      //  if(xOffset > 1)
+      //  {
+      //    xscale = xOffset / 2;
+      //  }
+       if (domElemnt) {
+           var transformAttr = ' translate(' + xOffset + ',' + yOffset + ')';
+           domElemnt.setAttribute('transform', transformAttr);
+           transformAttr = ' scale(' + 5 + ',' + yOffset + ')';
+          //  domElemnt.setAttribute('scale', transformAttr);
+
+       }
+       domElemnt = document.getElementById(idStr + '.pupil');
+       if (domElemnt) {
+           transformAttr = ' translate(' + xOffset + ',' + yOffset + ')';
+           domElemnt.setAttribute('transform', transformAttr);
+       }
+    }
+    function rando(min,max){
+      return Math.floor(Math.random()*(max-min+1)+min);
+    }
+    var myVar = setInterval(myTimer, 1000);
+    function myTimer() {
+        var y = rando(-9,9);
+        var x = rando(-9,9);
+        moveEye('eye1',x,y);
+    }
+  </script>
+</svg>
+<!-- ###### END EYE ############# -->
+<!-- div class="eye"></div-->
+&nbsp;<span id="dialog" >banjo</span>
+<br/><br/><br/>
 <div id="stage"><!-- --></div>
 
-<script type="text/javascript" src="/banjo/banjo.js"></script>
 <script type="text/javascript">
   var game = new CardGame("stage");
 </script>

@@ -7,7 +7,7 @@
   margin: 0 0 0 200px;
   height: 500px;
 
-  background: green;
+  background: purple;
   background-image: -webkit-repeating-linear-gradient(bottom right, rgba(255,255,255,0), rgba(255,255,255,0) 80px, rgba(255,255,255,0.2) 80px, rgba(255,255,255,0.2) 150px);
   background-image: -moz-repeating-linear-gradient(bottom right, rgba(255,255,255,0), rgba(255,255,255,0) 80px, rgba(255,255,255,0.2) 80px, rgba(255,255,255,0.2) 150px);
   background-image: -o-repeating-linear-gradient(bottom right, rgba(255,255,255,0), rgba(255,255,255,0) 80px, rgba(255,255,255,0.2) 80px, rgba(255,255,255,0.2) 150px);
@@ -30,4 +30,16 @@
   -webkit-transition-property: left, top, -webkit-transform;
   -webkit-transition-duration: 0.5s;
   -webkit-transition-timing-function: ease-out, ease-out, ease-in-out;
+}
+
+#dialog {
+  font-size: 6em;
+  font-family:"Press Start 2P";
+  color:#1c1;
+
+}
+
+
+body {
+  background: purple;
 }
