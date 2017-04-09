@@ -14,25 +14,25 @@ var CardGame = function(targetId) {
   var card1 = false,
     card2 = false;
 
-  var hideCard = function(id) // turn card face down
-    {
-      cards[id].firstChild.src = "https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_25.png";
-      cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform =
-        cards[id].style.msTransform = "scale(1.0) rotate(0deg)";
-    };
+  function hideCard(id) // turn card face down
+  {
+    cards[id].firstChild.src = "https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_25.png";
+    cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform =
+      cards[id].style.msTransform = "scale(1.0) rotate(0deg)";
+  }
 
-  var moveToPack = function(id) // move card to pack
-    {
-      hideCard(id);
-      cards[id].matched = true;
-      cards[id].style.zIndex = "1000";
-      cards[id].style.top = "100px";
-      cards[id].style.left = "-140px";
-      cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform = cards[id].style.msTransform =
-        "rotate(0deg)";
-      cards[id].style.zIndex = "0";
+  function moveToPack(id) // move card to pack
+  {
+    hideCard(id);
+    cards[id].matched = true;
+    cards[id].style.zIndex = "1000";
+    cards[id].style.top = "120px";
+    cards[id].style.left = "350px";
+    cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform = cards[id].style.msTransform =
+      "rotate(0deg)";
+    cards[id].style.zIndex = "0";
 
-    };
+  }
 
   function moveToPlace(id) // deal card
   {
@@ -48,15 +48,14 @@ var CardGame = function(targetId) {
   function flipCard(id) {
     cards[id].firstChild.src = "https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_" + card_value[
       id] + ".png";
-    //cards[id].style.zIndex = "1";
-    cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform = cards[id].style.msTransform =
-      "scale(1.0) rotate(15deg)";
-    //cards[id].style.zIndex = "1";
+    cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform =
+      cards[id].style.msTransform = "scale(1.0) rotate(0deg)";
   }
+
 
   function showCard(id) // turn card face up, check for match
   {
-    if (id === card1) return;
+    if (id === card1) return; //stop clicking yourself
     if (cards[id].matched) return;
     //cards[id].firstChild.src = "//cdn.the-art-of-web.com/images/cards/" + card_value[id] + ".png";
     cards[id].firstChild.src = "https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_" + card_value[
@@ -82,8 +81,10 @@ var CardGame = function(targetId) {
       } else { // no match
         (function(card1, card2) {
           setTimeout(function() {
-            hideCard(card1);
-            hideCard(card2);
+            //hideCard(card1);
+            flipCard(card1);
+            //hideCard(card2);
+            flipCard(card2);
           }, 800);
         })(card1, card2);
       }
@@ -93,20 +94,35 @@ var CardGame = function(targetId) {
     }
   }
 
+  function placeBanjo(card) {
+    //add a jump to the right
+    cards[card].fromleft = 430;
+    //moveToPlace
+    asyc_moveToPlace(card);
+    flipCard(card);
+  }
+
   function cardClick(id) {
     if (started) {
       showCard(id);
     } else {
-      // shuffle and deal cards
-      card_value.sort(function() {
-        return Math.round(Math.random()) - 0.5;
-      });
-      for (i = 0; i < cards_in_deck; i++) {
-        asyc_moveToPlace(i);
-      }
-      started = true;
-      flipFirstFour();
+      startTheGame();
     }
+  }
+
+  function startTheGame() {
+    //card_value
+    //the game is a foot
+    stopLooking(); //eyeball function
+    // shuffle and deal cards
+    card_value.sort(function() {
+      return Math.round(Math.random()) - 0.5;
+    });
+    for (i = 0; i < cards_in_deck; i++) {
+      asyc_moveToPlace(i);
+    }
+    started = true;
+    flipFirstFour();
   }
 
   function asyc_moveToPlace(idx) {
@@ -140,23 +156,26 @@ var CardGame = function(targetId) {
   var card = getCard();
 
   function deal(callback) {
+    var drawStackX = 650;
+    var drawStackY = 100;
+    var initialCards = 4;
     var newCard = {};
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < initialCards; i++) {
       newCard = card.cloneNode(true);
 
       newCard.fromleft = 230 * (i % 2);
       newCard.fromtop = 264 * Math.floor(i / 2);
 
       addlistener_cardClick(i, newCard);
+
       felt.appendChild(newCard);
       cards.push(newCard);
     }
-    for (var j = 4; j < cards_in_deck; j++) {
+    for (var j = initialCards; j < cards_in_deck; j++) {
       newCard = card.cloneNode(true);
-
-      newCard.fromleft = 2 * (j % 20) + 500;
-      newCard.fromtop = 2 * Math.floor(j / 2) + 200;
-
+      var adjJ = j - initialCards;
+      newCard.fromleft = 2 * (adjJ % 20) + drawStackX;
+      newCard.fromtop = 2 * Math.floor(adjJ / 2) + drawStackY;
       addlistener_cardClick(j, newCard);
       felt.appendChild(newCard);
       cards.push(newCard);
@@ -166,12 +185,15 @@ var CardGame = function(targetId) {
 
   function flipFirstFour() {
     for (var i = 0; i < 4; i++) {
-      flipCard(i);
+      if (card_value[i] === '01') {
+        placeBanjo(i);
+      } else {
+        flipCard(i);
+      }
     }
   }
 
   deal(function() {
-    //flipFirstFour();
+    console.log('dealt');
   });
-  //flipFirstFour();
 };

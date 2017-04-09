@@ -1,5 +1,5 @@
 #stage {
-  border: 1px outset #ccc;
+  border: 1px outset #111;
 }
 
 #felt {
@@ -19,8 +19,8 @@
 
 #felt div {
   position: absolute;
-  left: -140px;
-  top: 100px;
+  left: 110px;
+  top: 110px;
   z-index: 0;
 
   -moz-transition: 0.5s ease-in-out;

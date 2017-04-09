@@ -17,6 +17,11 @@
   <ellipse id="eye1.pupil" cx="50" cy="50"  rx="10" ry="10" stroke="black" stroke-width="1" fill="black" />
   <circle cx="42" cy="42" r="9" stroke="white" stroke-width="0" fill="white" fill-opacity="0.8"/>
   <script id="eyeScripts" type="text/javascript">
+    var timerVar = setInterval(myTimer, 1000);
+    var incrementalCounter = 0;
+    var phraseCounter = 0;
+    var phrases = ["banjo","hello","u play?","banjo","click cards","banjo is a game your whole family can enjoy"]
+
     function moveEye(idStr, xOffset, yOffset) {
        var domElemnt = document.getElementById(idStr + '.iris');
       //  var xscale = xOffset;
@@ -37,35 +42,61 @@
            domElemnt.setAttribute('transform', transformAttr);
        }
     }
+
     function rando(min,max){
       return Math.floor(Math.random()*(max-min+1)+min);
     }
-    var myVar = setInterval(myTimer, 1000);
-    var incrementalCounter = 0;
-    var phraseCounter = 0;
-    var phrases = ["banjo","hello","you play?"]
+
     function myTimer() {
         var y = rando(-9,9);
         var x = rando(-9,9);
         incrementalCounter++;
         var currentPhrase = "banjo";
-        if(incrementalCounter > 5)
+        if(incrementalCounter > 3)
         {
           moveEye('eye1',0,0);
-          if(phraseCounter < phrases.length-1){
-            phraseCounter++;
-          }else{
-            phraseCounter = 0;
-          }
-
-          var domElemnt = document.getElementById('dialog');
-          domElemnt.textContent=phrases[phraseCounter];
-          incrementalCounter = 0;
+          phrazeFaze();
         }else{
           moveEye('eye1',x,y);
         }
-
     }
+
+    function phrazeFaze()
+    {
+      if(phraseCounter < phrases.length -1){
+        phraseCounter++;
+      }else{
+        phraseCounter = 0;
+      }
+      sayThis(phrases[phraseCounter]);
+
+      incrementalCounter = 0;
+    }
+
+    function sayThis(aPhrase){
+      var domElemnt = document.getElementById('dialog');
+      domElemnt.textContent=aPhrase;
+      if(aPhrase.length > 7)
+      {
+        var diffy = aPhrase.length - 7;
+        diffy = diffy / 2;
+        diffy = 6 - diffy;
+        if(diffy < 1)
+        {
+          diffy = 1;
+        }
+        domElemnt.style.fontSize= diffy.toString() + 'em';
+      }else{
+        domElemnt.style.fontSize='6em';
+      }
+    }
+
+    function stopLooking(){
+      clearInterval(timerVar);
+      sayThis('get a pair and a banjo to win');
+      moveEye('eye1',15,7);
+    }
+
   </script>
 </svg>
 <!-- ###### END EYE ############# -->
@@ -73,7 +104,7 @@
 &nbsp;<span id="dialog" >banjo</span>
 <br/><br/><br/>
 <div id="stage"><!-- --></div>
-
+<br/><br/><br/>
 <script type="text/javascript">
   var game = new CardGame("stage");
 </script>
