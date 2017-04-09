@@ -23,29 +23,28 @@ var CardGame = function(targetId) {
 
   function moveToPack(id) // move card to pack
   {
-    hideCard(id);
+    //hideCard(id);
+    //move to discard pile
     cards[id].matched = true;
-    cards[id].style.zIndex = "1000";
     cards[id].style.top = "120px";
-    cards[id].style.left = "350px";
+    cards[id].style.left = "-190px";
+    cards[id].style.zIndex = "0";
     cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform = cards[id].style.msTransform =
       "rotate(0deg)";
-    cards[id].style.zIndex = "0";
-
   }
 
   function moveToPlace(id) // deal card
   {
     cards[id].matched = false;
-    cards[id].style.zIndex = "1000";
+    cards[id].style.zIndex = "10";
     cards[id].style.top = cards[id].fromtop + "px";
     cards[id].style.left = cards[id].fromleft + "px";
     cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform = cards[id].style.msTransform =
       "rotate(0deg)";
-    cards[id].style.zIndex = "0";
   }
 
   function flipCard(id) {
+    cards[id].style.zIndex = "10";
     cards[id].firstChild.src = "https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_" + card_value[
       id] + ".png";
     cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform =
@@ -60,13 +59,14 @@ var CardGame = function(targetId) {
     //cards[id].firstChild.src = "//cdn.the-art-of-web.com/images/cards/" + card_value[id] + ".png";
     cards[id].firstChild.src = "https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_" + card_value[
       id] + ".png";
-    cards[id].style.zIndex = "1000000";
+    cards[id].style.zIndex = "99";
     cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform = cards[id].style.msTransform =
       "scale(1.5) rotate(5deg)";
 
 
     if (card1 !== false) {
       card2 = id;
+      cards[id].style.zIndex = "999";
       if (parseInt(card_value[card1]) == parseInt(card_value[card2])) { // match found
         (function(card1, card2) {
           setTimeout(function() {
