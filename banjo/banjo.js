@@ -56,10 +56,13 @@ function CardGame(targetId) {
       cards[id].style.msTransform = "scale(1.0) rotate(0deg)";
   }
 
-  //the main event
+  //#####################################################################
+  //###  the main event  ################################################
+  //#####################################################################
   function showCard(id) // turn card face up, check for match
   {
     if (id === card1) return; //stop clicking yourself
+    playMySound(card_value[id]);
     if (cards[id].matched) return;
     //cards[id].firstChild.src = "//cdn.the-art-of-web.com/images/cards/" + card_value[id] + ".png";
     cards[id].firstChild.src = "https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_" + card_value[
@@ -207,6 +210,7 @@ function CardGame(targetId) {
   }
 
   function player1turn() {
+    //playBanjo();
     rem();
     sayThis('player 1, your turn');
     var player1 = document.getElementById('player1');
@@ -218,6 +222,7 @@ function CardGame(targetId) {
 
 
   function player2turn() {
+    //playBell();
     rem();
     sayThis('player 2, your turn');
     var player1 = document.getElementById('player1');
@@ -232,9 +237,38 @@ function CardGame(targetId) {
 }; // end of CardGame function
 
 function player2clicked() {
-  alert('you really clicked 2');
+  sayThis('you sure clicked 2');
+  playBell();
 }
 
 function player1clicked() {
-  alert('you really clicked 1');
+  sayThis('you sure clicked 1');
+  playBell();
+}
+
+
+function playBell() {
+  var audio = new Audio('bell.mp3');
+  audio.play();
+}
+
+function playBanjo() {
+  var audio = new Audio('banjo.wav');
+  audio.play();
+}
+
+function playMySound(idx) {
+  var filename = 'banjo.wav';
+  switch (idx) {
+    case '01':
+      filename = 'banjo.wav';
+      break;
+    case '07':
+      filename = 'bell.mp3';
+      break;
+    default:
+      sayThis('idx:' + idx);
+  }
+  var audio = new Audio(filename);
+  audio.play();
 }
