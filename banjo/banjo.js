@@ -1,7 +1,12 @@
 // Original JavaScript code by Chirp Internet: www.chirp.com.au
 // Please acknowledge use of this code by including this header.
+var BanjoGame = {
+  "CardGame": CardGame,
+  "player1clicked": player1clicked,
+  "player2clicked": player2clicked
+};
 
-var CardGame = function(targetId) {
+function CardGame(targetId) {
   // private variables
   var cards_in_deck = 24;
   var cards = [];
@@ -51,7 +56,7 @@ var CardGame = function(targetId) {
       cards[id].style.msTransform = "scale(1.0) rotate(0deg)";
   }
 
-
+  //the main event
   function showCard(id) // turn card face up, check for match
   {
     if (id === card1) return; //stop clicking yourself
@@ -85,6 +90,7 @@ var CardGame = function(targetId) {
             flipCard(card1);
             //hideCard(card2);
             flipCard(card2);
+            player2turn();
           }, 800);
         })(card1, card2);
       }
@@ -123,6 +129,13 @@ var CardGame = function(targetId) {
     }
     started = true;
     flipFirstFour();
+    waitAndThen(3000, player1turn)
+  }
+
+  function waitAndThen(duration, todo) {
+    setTimeout(function() {
+      todo();
+    }, duration);
   }
 
   function asyc_moveToPlace(idx) {
@@ -193,7 +206,35 @@ var CardGame = function(targetId) {
     }
   }
 
+  function player1turn() {
+    rem();
+    sayThis('player 1, your turn');
+    var player1 = document.getElementById('player1');
+    var player2 = document.getElementById('player2');
+    player1.style.visibility = "visible";
+    player2.style.visibility = "hidden";
+  }
+
+
+
+  function player2turn() {
+    rem();
+    sayThis('player 2, your turn');
+    var player1 = document.getElementById('player1');
+    var player2 = document.getElementById('player2');
+    player1.style.visibility = "hidden";
+    player2.style.visibility = "visible";
+  }
+
   deal(function() {
     console.log('dealt');
   });
-};
+}; // end of CardGame function
+
+function player2clicked() {
+  alert('you really clicked 2');
+}
+
+function player1clicked() {
+  alert('you really clicked 1');
+}

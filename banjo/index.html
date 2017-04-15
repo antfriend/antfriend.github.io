@@ -48,8 +48,6 @@
     }
 
     function myTimer() {
-        var y = rando(-9,9);
-        var x = rando(-9,9);
         incrementalCounter++;
         var currentPhrase = "banjo";
         if(incrementalCounter > 3)
@@ -57,8 +55,14 @@
           moveEye('eye1',0,0);
           phrazeFaze();
         }else{
-          moveEye('eye1',x,y);
+          rem();
         }
+    }
+
+    function rem(){
+      var y = rando(-9,9);
+      var x = rando(-9,9);
+      moveEye('eye1',x,y);
     }
 
     function phrazeFaze()
@@ -103,11 +107,31 @@
 <!-- div class="eye"></div-->
 &nbsp;<span id="dialog" >banjo</span>
 <br/><br/><br/>
-<div id="stage"><!-- --></div>
+<div id="player1" >one</div><div id="player2" >two</div>
+<div id="stage"><!-- this will be witten by banjo.js --></div>
 <br/><br/><br/>
 <script type="text/javascript">
-  var game = new CardGame("stage");
+  //var game = new CardGame("stage");
+  BanjoGame.CardGame("stage");
+
+  window.onload = function() {
+  //alert('loading');
+  var player1 = document.getElementById('player1');
+  var player2 = document.getElementById('player2');
+  //alert(JSON.stringify(player1));
+  player1.addEventListener('click', function(event) {
+    BanjoGame.player1clicked();
+  });
+  player2.addEventListener('click', function(event) {
+    BanjoGame.player2clicked();
+  });
+  player1.style.visibility = "hidden";
+  player2.style.visibility = "hidden";
+};
 </script>
 
 </body>
+<script type="text/javascript">
+
+</script>
 </html>

@@ -32,6 +32,34 @@
   -webkit-transition-timing-function: ease-out, ease-out, ease-in-out;
 }
 
+#player1 {
+  font-size: 5em;
+  font-family:"Press Start 2P";
+  color:#555;
+  position: absolute;
+  left: 350px;
+  top: -56px;
+  z-index: 1;
+  transform: rotate(270deg);
+  border: 5px solid #555;
+  height: 700px;
+  visibility: visible;
+}
+
+#player2 {
+  font-size: 5em;
+  font-family:"Press Start 2P";
+  color:#555;
+  position: absolute;
+  left: 350px;
+  top: 206px;
+  z-index: 1;
+  transform: rotate(270deg);
+  border: 5px solid #555;
+  height: 700px;
+  visibility: visible;
+}
+
 #dialog {
   font-size: 6em;
   font-family:"Press Start 2P";
