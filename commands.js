@@ -54,6 +54,12 @@ var commands = {
     openUrl(url);
     return 'banjo card';
   },
+  "interview code": function() {
+    alert('i!');
+    var url = 'interview_code.html';
+    openUrl(url);
+    return 'interview code';
+  },
   "jartron": function() {
     var url = 'http://makezine.com/2010/05/10/jartron-the-robot-dances-shoots-las/';
     openUrl(url);

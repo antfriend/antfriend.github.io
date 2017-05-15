@@ -68,7 +68,7 @@ function draw() {
   getDataByCallback(function(data) {
     //set the network object
     setGlobalNetwork(container, data, options);
-  }, './vis/data.json');
+  }, './vis/index.json');
 }
 
 function getTaxonoman() {
