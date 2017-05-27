@@ -219,8 +219,6 @@ function CardGame(targetId) {
     player2.style.visibility = "hidden";
   }
 
-
-
   function player2turn() {
     //playBell();
     rem();

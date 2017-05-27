@@ -11,98 +11,13 @@
 <body>
 <br/><br/>
 <!-- ###### EYE ############# -->
-<svg id="eye1" height="100" width="100">
+<svg id="eyeball" height="100" width="100">
   <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="white" />
-  <ellipse id="eye1.iris" cx="50" cy="50" rx="20" ry="20" stroke="black" stroke-width="1" fill="red" />
-  <ellipse id="eye1.pupil" cx="50" cy="50"  rx="10" ry="10" stroke="black" stroke-width="1" fill="black" />
+  <ellipse id="eyeball.iris" cx="50" cy="50" rx="20" ry="20" stroke="black" stroke-width="1" fill="red" />
+  <ellipse id="eyeball.pupil" cx="50" cy="50"  rx="10" ry="10" stroke="black" stroke-width="1" fill="black" />
   <circle cx="42" cy="42" r="9" stroke="white" stroke-width="0" fill="white" fill-opacity="0.8"/>
-  <script id="eyeScripts" type="text/javascript">
-    var timerVar = setInterval(myTimer, 1000);
-    var incrementalCounter = 0;
-    var phraseCounter = 0;
-    var phrases = ["banjo","hello","u play?","banjo","click cards","banjo is a game someone elses whole family can enjoy"]
-
-    function moveEye(idStr, xOffset, yOffset) {
-       var domElemnt = document.getElementById(idStr + '.iris');
-      //  var xscale = xOffset;
-      //  if(xOffset > 1)
-      //  {
-      //    xscale = xOffset / 2;
-      //  }
-       if (domElemnt) {
-           var transformAttr = ' translate(' + xOffset + ',' + yOffset + ')';
-           domElemnt.setAttribute('transform', transformAttr);
-           transformAttr = ' scale(' + 5 + ',' + yOffset + ')';
-          //  domElemnt.setAttribute('scale', transformAttr);
-
-       }
-       domElemnt = document.getElementById(idStr + '.pupil');
-       if (domElemnt) {
-           transformAttr = ' translate(' + xOffset + ',' + yOffset + ')';
-           domElemnt.setAttribute('transform', transformAttr);
-       }
-    }
-
-    function rando(min,max){
-      return Math.floor(Math.random()*(max-min+1)+min);
-    }
-
-    function myTimer() {
-        incrementalCounter++;
-        var currentPhrase = "banjo";
-        if(incrementalCounter > 3)
-        {
-          moveEye('eye1',0,0);
-          phrazeFaze();
-        }else{
-          rem();
-        }
-    }
-
-    function rem(){
-      var y = rando(-9,9);
-      var x = rando(-9,9);
-      moveEye('eye1',x,y);
-    }
-
-    function phrazeFaze()
-    {
-      if(phraseCounter < phrases.length -1){
-        phraseCounter++;
-      }else{
-        phraseCounter = 0;
-      }
-      sayThis(phrases[phraseCounter]);
-
-      incrementalCounter = 0;
-    }
-
-    function sayThis(aPhrase){
-      var domElemnt = document.getElementById('dialog');
-      domElemnt.textContent=aPhrase;
-      if(aPhrase.length > 7)
-      {
-        var diffy = aPhrase.length - 7;
-        diffy = diffy / 2;
-        diffy = 6 - diffy;
-        if(diffy < 1)
-        {
-          diffy = 1;
-        }
-        domElemnt.style.fontSize= diffy.toString() + 'em';
-      }else{
-        domElemnt.style.fontSize='6em';
-      }
-    }
-
-    function stopLooking(){
-      clearInterval(timerVar);
-      sayThis('get a pair and a banjo to win');
-      moveEye('eye1',15,7);
-    }
-
-  </script>
 </svg>
+<script type="text/javascript" src="/banjo/eyeball.js"></script>
 <!-- ###### END EYE ############# -->
 <!-- div class="eye"></div-->
 &nbsp;<span id="dialog" >banjo</span>
