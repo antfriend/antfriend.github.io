@@ -60,6 +60,15 @@
   visibility: visible;
 }
 
+h3 {
+  font-size: 2em;
+  font-family:"Press Start 2P";
+  color:#1c1;
+}
+a:visited {
+    color: #1c1;
+}
+
 #dialog {
   font-size: 6em;
   font-family:"Press Start 2P";
