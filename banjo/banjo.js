@@ -44,9 +44,7 @@ var CardGame = function(targetId) {
 
   var showCard = function(id) // turn card face up, check for match
     {
-      //if (id === card1) return;
-      //if (cards[id].matched) return;
-      //cards[id].firstChild.src = "//cdn.the-art-of-web.com/images/cards/" + card_value[id] + ".png";
+      playMySound(card_value[id]);
       cards[id].firstChild.src = "https://raw.githubusercontent.com/antfriend/banjo/master/cards/banjo_" + card_value[
         id] + ".png";
       cards[id].style.WebkitTransform = cards[id].style.MozTransform = cards[id].style.OTransform = cards[id].style.msTransform =
@@ -147,6 +145,36 @@ var CardGame = function(targetId) {
     //   cards.push(newCard);
     // }
     //baseCard.style.top = "10px";
+  }
+
+  function playBell() {
+    var audio = new Audio('bell.mp3');
+    audio.play();
+  }
+
+  function playBanjo() {
+    var audio = new Audio('banjo.wav');
+    audio.play();
+  }
+
+  function playMySound(idx) {
+    var thingToSay = "";
+    var filename = 'banjo.wav';
+    switch (idx) {
+      case '01':
+        thingToSay = "i am the banjo";
+        filename = 'banjo.wav';
+        break;
+      case '07':
+        thingToSay = "i am the bell";
+        filename = 'bell.mp3';
+        break;
+      default:
+        thingToSay = 'idx:' + idx;
+    }
+    sayThis(thingToSay);
+    var audio = new Audio(filename);
+    audio.play();
   }
 
   deal();

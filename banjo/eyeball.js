@@ -1,4 +1,4 @@
-var timerVar = setInterval(myTimer, 1000);
+var timerVar = setInterval(myTimer, 1500);
 var incrementalCounter = 0;
 var phraseCounter = 0;
 var phrases = [
@@ -32,7 +32,7 @@ function rando(min, max) {
 function myTimer() {
   incrementalCounter++;
   var currentPhrase = "banjo";
-  if (incrementalCounter > 3) {
+  if (incrementalCounter > 6) {
     moveEye('eyeball', 0, 0);
     phrazeFaze();
   } else {
