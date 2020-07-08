@@ -65,6 +65,10 @@
       "id": "card",
       "label": "card",
       "group": 1
+    },{
+      "id": "git.webbot",
+      "label": "webbot",
+      "group": 1
     }],
     "edges": [{
       "from": "antfriend",
