@@ -1,0 +1,36 @@
+{
+  "name": "reactron",
+  "version": "1.0.0",
+  "description": "a reactive robot",
+  "main": "index.js",
+  "scripts": {
+    "test": "robotest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antfriend/antfriend.github.io.git"
+  },
+  "keywords": [
+    "react",
+    "iot",
+    "robot"
+  ],
+  "author": "antfriend",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/antfriend/antfriend.github.io/issues"
+  },
+  "homepage": "https://github.com/antfriend/antfriend.github.io#readme",
+  "dependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^8.1.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "webpack": "^4.43.0",
+    "webpack-dev-server": "^3.11.0"
+  }
+}
