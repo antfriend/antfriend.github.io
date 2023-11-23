@@ -39,10 +39,10 @@ var commands = {
     openUrl(url);
     return 'are you inspired now?';
   },
-  "clansOfPagoda": function() {
-    var url = './clansOfPagoda';
+  "journals": function() {
+    var url = './journals';
     openUrl(url);
-    return 'Play Clans Of Pagoda!';
+    return 'Journals!';
   },
   "banjo": function() {
     var url = '/banjo';

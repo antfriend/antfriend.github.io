@@ -72,7 +72,7 @@
     }],
     "edges": [{
       "from": "antfriend",
-      "to": "clansOfPagoda",
+      "to": "journals",
       "length": 100
     }, {
       "from": "antfriend",
