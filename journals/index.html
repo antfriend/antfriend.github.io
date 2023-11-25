@@ -2738,7 +2738,7 @@ button.jp-ToolbarButtonComponent .jp-ToolbarButtonComponent-label {
 
 body {
   color: var(--jp-ui-font-color1);
-  font-size: var(--jp-ui-font-size1);
+  font-size: var(--jp-ui-font-size2);
 }
 
 /* Disable native link decoration styles everywhere outside of dialog boxes */
@@ -3333,7 +3333,7 @@ select {
 
   /* This is needed so that all font sizing of children done in ems is
    * relative to this base size */
-  font-size: var(--jp-ui-font-size1);
+  font-size: var(--jp-ui-font-size2);
   color: var(--jp-ui-font-color1);
   resize: both;
 }
@@ -3485,7 +3485,7 @@ button.jp-Dialog-close-button {
   border: var(--jp-border-width) solid var(--jp-error-color1);
   border-radius: var(--jp-border-radius);
   color: var(--jp-ui-font-color1);
-  font-size: var(--jp-ui-font-size1);
+  font-size: var(--jp-ui-font-size2);
   white-space: pre-wrap;
   word-wrap: break-word;
 }
@@ -3798,6 +3798,7 @@ button.jp-Dialog-close-button {
 .jp-RenderedText pre a:link {
   text-decoration: none;
   color: var(--jp-content-link-color);
+  font-size: 18px;
 }
 
 .jp-RenderedText pre a:hover {
@@ -7493,6 +7494,8 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3><a href="#content_links">Skip ahead to the content links!</a></h3>
+<h3><a href="https://github.com/antfriend/journals/blob/main/journals.ipynb">get the latest version of this Juyter Notebook on gitHub here </a></h3>
 <p>You might say this is a self-published e-book.
 This automation project produces a web collection of my hand-written and drawn journal pages interpreted by AI.</p>
 <p>Scroll to the end of this page for the list of links to all the pages!!!</p>
@@ -7615,7 +7618,9 @@ The GitHub URLs are printed.</p>
 <span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">()</span>
 <span class="n">github_root</span> <span class="o">=</span> <span class="s2">"https://antfriend.github.io/journals/"</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">'Your Table of Contents for this Collection!'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+<span class="s1">'Your Table of Contents for this Collection!'</span>
+<span class="p">)</span>
 <span class="c1"># Iterating through each journal and its pages</span>
 <span class="k">for</span> <span class="n">journal</span><span class="p">,</span> <span class="n">pages</span> <span class="ow">in</span> <span class="n">journals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">page_number</span> <span class="ow">in</span> <span class="n">pages</span><span class="p">:</span>
@@ -7663,7 +7668,7 @@ The GitHub URLs are printed.</p>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Your Table of Contents for this Collection!
+<pre><a id="content_links">Your Table of Contents for this Collection!</a>
   <ul>
     <li><a href="https://antfriend.github.io/journals/waves_8.html">Brain Folds and Mind Mold: The Origami of Learning</a></li>
     <li><a href="https://antfriend.github.io/journals/waves_88.html">Perspectives in Personal Narratives: A Visual Exploration</a></li>
