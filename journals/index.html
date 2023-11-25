@@ -7483,7 +7483,7 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 id="Robotic-Journaling:-Automating-Self-Publication-with-GPT-and-AI-Technologies">Robotic Journaling: Automating Self-Publication with GPT and AI Technologies<a class="anchor-link" href="#Robotic-Journaling:-Automating-Self-Publication-with-GPT-and-AI-Technologies">¶</a></h2><h3 id="skip-ahead-to-the-content-links!"><a href="#content_links">skip ahead to the content links!</a><a class="anchor-link" href="#skip-ahead-to-the-content-links!">¶</a></h3><h3 id="example:">example:<a class="anchor-link" href="#example:">¶</a></h3><ul>
-<li>waves pg.15 <a href="waves_15.html">Title: "Stargazing Entanglements: Perspectives from a Quantum Thinker"</a></li>
+<li>waves pg.88 <a href="waves_88.html">Title: "Perspectives in Personal Storytelling"</a></li>
 </ul>
 <h3 id="get-the-latest-version-of-this-Jupyter-Notebook-on-gitHub-here"><a href="https://github.com/antfriend/journals/blob/main/journals.ipynb">get the latest version of this Jupyter Notebook on gitHub here</a><a class="anchor-link" href="#get-the-latest-version-of-this-Jupyter-Notebook-on-gitHub-here">¶</a></h3>
 </div>
@@ -7500,8 +7500,9 @@ a.anchor-link {
 This automation project produces a web collection of my hand-written and drawn journal pages interpreted by AI.</p>
 <p>Links to all the pages are produced at the end of the process, at the bottom of the page.</p>
 <p>The following python code utilizes the OpenAI API and GPT to automatically generate a title, a summary, and an elaborate description for each image in the journals.
-Then this generated content is formatting into HTML documents that are ready to be published and shared.</p>
-<p>I handle the uploading of the original images and the final HTML documents to GitHub manually. For my next venture, I plan to further automate the process, focusing on classifying and organizing the collection. I'm considering integrating a chatbot as a virtual tour guide to navigate through this collection!</p>
+Then this generated content is formatted into HTML documents that are ready to be published and shared.
+You can skip over the code sections and still get the basic idea of how it works.</p>
+<p>I handle the uploading of the original images and the final HTML documents to GitHub manually. For my next venture, I plan to further automate classifying and organizing the collection. I'm considering integrating a chatbot as a virtual tour guide to navigate through this collection!</p>
 </div>
 </div>
 </div>
@@ -7585,14 +7586,14 @@ Then this generated content is formatting into HTML documents that are ready to 
 <p>The following code uses the OpenAI API to analyze the journal images. A prompt is sent to the API, asking to generate a catchy title, a brief summary, and a detailed explanation of the journal page's content and meaning.</p>
 <p>Markdown and HTML Conversion:</p>
 <p>The response from the API is formatted into Markdown text.
-This Markdown text is then converted into HTML, using a custom function convert_markdown_to_styled_html.</p>
+This Markdown text is then converted into HTML, using a custom function, convert_markdown_to_styled_html.</p>
 <p>File Output:</p>
 <p>The generated HTML content is written to files named after the journal pages.
 The GitHub URLs are printed.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7661,61 +7662,6 @@ The GitHub URLs are printed.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">'Thank you, dear reader, for your time and attention!'</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Your Table of Contents for this Collection!
- 
-### waves pg.15 [Title: "Stargazing Entanglements: Perspectives from a Quantum Thinker"](waves_15.html)
- 
-### waves pg.88 [Title: "Perspectives in Personal Storytelling"](waves_88.html)
- 
-### waves pg.107 [Title: "Cells, Tears, and Existence: A Life's Abstract Map"](waves_107.html)
- 
-### waves pg.113 [Title: "Waves of Facts: Synchronizing Truth with Prediction"](waves_113.html)
- 
-### waves pg.149 [Title: "Conceptual Symphony: A Dance of Ideas and Time"](waves_149.html)
- 
-### waves pg.152 [Title: "Mind Vessel: The Journey of Intention and Action"](waves_152.html)
- 
-### waves pg.154 [Title: "Harmonious Semantics: The Symphony of Connection"](waves_154.html)
- 
-### waves pg.155 [Title: "Chemistry of Conversation: Navigating the Language Labyrinth"](waves_155.html)
- 
-### waves pg.159 [Title: "Ripples Through Time: A Personal Cosmic Journey"](waves_159.html)
- 
-### vectors pg.1 [Title: "Cosmic Tunes: A Vector Eye’s View"](vectors_1.html)
- 
-### vectors pg.2 [Title: "Surfing the Waves of Consciousness: A Quantum View"](vectors_2.html)
- 
-### vectors pg.6 [Title: "Circling the Logic: Patterns of Symbolic Thinking"](vectors_6.html)
- 
-### vectors pg.9 [Title: "The Ebb and Flow of Awareness: Unraveling Consciousness"](vectors_9.html)
- 
-### vectors pg.10 [Title: "The Strain in the Brain Train"](vectors_10.html)
- 
-### vectors pg.12 [Title: "Riding the Waves: A Journey Through Particle and Wave Duality"](vectors_12.html)
- 
-### vectors pg.16 [Title: "A Cosmic Glimpse: The Epic Journey of Starlight to Thought"](vectors_16.html)
- 
-### vectors pg.18 [Title: "Selective Memory: Choosing Our Recollections"](vectors_18.html)
- 
-### vectors pg.21 [Title: "Navigating Consciousness: Time, Space, and Sensation"](vectors_21.html)
- 
-### vectors pg.31 [Title: "Passion's Path: The Interplay of Motive, Motivation, and Movement"](vectors_31.html)
- 
-### vectors pg.32 [Title: "Vectors: The Invisible Threads of Thought"](vectors_32.html)
- 
-Thank you, dear reader, for your time and attention!
-</pre>
 </div>
 </div>
 </div>
