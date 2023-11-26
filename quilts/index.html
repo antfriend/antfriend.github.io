@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>quilts</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Notebook</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7483,7 +7483,7 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 id="Robotic-Journaling:-Automating-Self-Publication-with-GPT-and-AI-Technologies">Robotic Journaling: Automating Self-Publication with GPT and AI Technologies<a class="anchor-link" href="#Robotic-Journaling:-Automating-Self-Publication-with-GPT-and-AI-Technologies">¶</a></h2><h3 id="skip-ahead-to-the-content-links!"><a href="#content_links">skip ahead to the content links!</a><a class="anchor-link" href="#skip-ahead-to-the-content-links!">¶</a></h3><h3 id="example:">example:<a class="anchor-link" href="#example:">¶</a></h3><ul>
-<li>quilt pg.2 <a href="quilt_2.html">Title: "Starry Quilt Dreams: Charting the Fabric Stars"</a></li>
+<li>quilt pg.2 <a href="quilt_2.html">Title: "Stellar Quilt Composition: A Blueprint in Fabric and Hue"</a></li>
 </ul>
 <h3 id="get-the-latest-version-of-this-Jupyter-Notebook-on-gitHub-here"><a href="https://github.com/antfriend/quilts/blob/main/quilts.ipynb">get the latest version of this Jupyter Notebook on gitHub here</a><a class="anchor-link" href="#get-the-latest-version-of-this-Jupyter-Notebook-on-gitHub-here">¶</a></h3>
 </div>
@@ -7502,7 +7502,7 @@ This automation project produces a web collection of hand-written and drawn jour
 <p>The following python code utilizes the OpenAI API and GPT to automatically generate a title, a summary, and an elaborate description for each image in the collection.
 Then this generated content is formatted into HTML documents that are ready to be published and shared.
 You can skip over the code sections and still get the basic idea of how it works.</p>
-<p>For my next venture, I plan to automate classifying and organizing the collection. I'm considering integrating a chatbot as a virtual tour guide to navigate through a collection!</p>
+<p>For my next venture, I plan to automate classifying and organizing the collection. I'm considering integrating a chatbot as a virtual tour guide!</p>
 </div>
 </div>
 </div>
@@ -7516,6 +7516,7 @@ You can skip over the code sections and still get the basic idea of how it works
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># install if needed</span>
 <span class="o">%</span><span class="k">pip</span> install openai requests markdown
+<span class="o">%</span><span class="k">pip</span> install nbconvert
 </pre></div>
 </div>
 </div>
@@ -7526,7 +7527,7 @@ You can skip over the code sections and still get the basic idea of how it works
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">markdown</span>
@@ -7650,8 +7651,7 @@ The GitHub URLs are printed.</p>
         <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'Catchy Title:'</span><span class="p">,</span> <span class="s1">'##'</span><span class="p">)</span>
         <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'Humorous Title:'</span><span class="p">,</span> <span class="s1">'##'</span><span class="p">)</span>
         <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'Title:'</span><span class="p">,</span> <span class="s1">'##'</span><span class="p">)</span>
-        <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'Catchy Summary:'</span><span class="p">,</span> <span class="s1">'###'</span><span class="p">)</span>
-        <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'Summary:'</span><span class="p">,</span> <span class="s1">'###'</span><span class="p">)</span>
+        <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">' �'</span><span class="p">,</span> <span class="s1">','</span><span class="p">)</span>
         <span class="n">html_filename</span> <span class="o">=</span> <span class="n">journal_image_name</span> <span class="o">+</span> <span class="s2">".html"</span>
         <span class="n">html</span> <span class="o">=</span> <span class="n">convert_markdown_to_styled_html</span><span class="p">(</span><span class="n">markdown_text</span><span class="p">,</span> <span class="n">journal_image_name</span> <span class="o">+</span> <span class="s1">' journal page'</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">html_filename</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
@@ -7673,7 +7673,64 @@ The GitHub URLs are printed.</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><a id="content_links"></a></p>
-<h2 id="Your-Table-of-Contents-for-this-Collection!">Your Table of Contents for this Collection!<a class="anchor-link" href="#Your-Table-of-Contents-for-this-Collection!">¶</a></h2><h3 id="quilt-pg.1-Title:-%22Blueprint-of-Blossoms:-A-Quilter's-Calculations%22">quilt pg.1 <a href="quilt_1.html">Title: "Blueprint of Blossoms: A Quilter's Calculations"</a><a class="anchor-link" href="#quilt-pg.1-Title:-%22Blueprint-of-Blossoms:-A-Quilter's-Calculations%22">¶</a></h3><h3 id="quilt-pg.2-Title:-%22Starry-Quilt-Dreams:-Charting-the-Fabric-Stars%22">quilt pg.2 <a href="quilt_2.html">Title: "Starry Quilt Dreams: Charting the Fabric Stars"</a><a class="anchor-link" href="#quilt-pg.2-Title:-%22Starry-Quilt-Dreams:-Charting-the-Fabric-Stars%22">¶</a></h3><h3 id="quilt-pg.3-Title:-%22Calculating-Comfort:-A-Quilter's-Formula%22">quilt pg.3 <a href="quilt_3.html">Title: "Calculating Comfort: A Quilter's Formula"</a><a class="anchor-link" href="#quilt-pg.3-Title:-%22Calculating-Comfort:-A-Quilter's-Formula%22">¶</a></h3><h3 id="quilt-pg.4-Title:-%22Colorful-Coordinates:-A-Quilter's-Blueprint%22">quilt pg.4 <a href="quilt_4.html">Title: "Colorful Coordinates: A Quilter's Blueprint"</a><a class="anchor-link" href="#quilt-pg.4-Title:-%22Colorful-Coordinates:-A-Quilter's-Blueprint%22">¶</a></h3><p>Thank you, dear reader, for your time and attention!</p>
+<h2 id="Your-Table-of-Contents-for-this-Collection!">Your Table of Contents for this Collection!<a class="anchor-link" href="#Your-Table-of-Contents-for-this-Collection!">¶</a></h2><h3 id="quilt-pg.1-Title:-%22Crafting-the-Cosmos:-A-Quilter's-Plan-for-a-Starry-Quilt%22">quilt pg.1 <a href="quilt_1.html">Title: "Crafting the Cosmos: A Quilter's Plan for a Starry Quilt"</a><a class="anchor-link" href="#quilt-pg.1-Title:-%22Crafting-the-Cosmos:-A-Quilter's-Plan-for-a-Starry-Quilt%22">¶</a></h3><h3 id="quilt-pg.2-Title:-%22Stellar-Quilt-Composition:-A-Blueprint-in-Fabric-and-Hue%22">quilt pg.2 <a href="quilt_2.html">Title: "Stellar Quilt Composition: A Blueprint in Fabric and Hue"</a><a class="anchor-link" href="#quilt-pg.2-Title:-%22Stellar-Quilt-Composition:-A-Blueprint-in-Fabric-and-Hue%22">¶</a></h3><h3 id="quilt-pg.3-Title:-%22Calculating-Comfort:-The-Quilter's-Math-for-Mom's-AllSpice-Quilt%22">quilt pg.3 <a href="quilt_3.html">Title: "Calculating Comfort: The Quilter's Math for Mom's AllSpice Quilt"</a><a class="anchor-link" href="#quilt-pg.3-Title:-%22Calculating-Comfort:-The-Quilter's-Math-for-Mom's-AllSpice-Quilt%22">¶</a></h3><h3 id="quilt-pg.4-Title:-%22The-Quilter's-Color-Roadmap%22">quilt pg.4 <a href="quilt_4.html">Title: "The Quilter's Color Roadmap"</a><a class="anchor-link" href="#quilt-pg.4-Title:-%22The-Quilter's-Color-Roadmap%22">¶</a></h3><p>Thank you, dear reader, for your time and attention!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Optional">Optional<a class="anchor-link" href="#Optional">¶</a></h2><p>Convert this Jupyter Notebook into an HTML index page.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">nbformat</span>
+<span class="kn">from</span> <span class="nn">nbconvert</span> <span class="kn">import</span> <span class="n">HTMLExporter</span>
+
+<span class="c1"># Load the notebook</span>
+<span class="n">notebook_filename</span> <span class="o">=</span> <span class="s1">'quilts.ipynb'</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">notebook_filename</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="n">nbformat</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">as_version</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="c1"># Create an HTML exporter</span>
+<span class="n">html_exporter</span> <span class="o">=</span> <span class="n">HTMLExporter</span><span class="p">()</span>
+<span class="n">html_exporter</span><span class="o">.</span><span class="n">template_name</span> <span class="o">=</span> <span class="s1">'classic'</span>  <span class="c1"># You can specify different templates</span>
+
+<span class="c1"># Convert the notebook to HTML</span>
+<span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">resources</span><span class="p">)</span> <span class="o">=</span> <span class="n">html_exporter</span><span class="o">.</span><span class="n">from_notebook_node</span><span class="p">(</span><span class="n">nb</span><span class="p">)</span>
+
+<span class="c1"># Write the HTML to a file</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'index.html'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Notebook converted to HTML."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Notebook converted to HTML.
+</pre>
+</div>
 </div>
 </div>
 </div>
