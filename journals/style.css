@@ -1,0 +1,54 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.image-box img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media screen and (min-width: 600px) {
+    .container {
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .image-box, .text-box {
+        flex: 1;
+        padding: 10px;
+    }
+
+    .body {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+body {
+    background-color: black;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 20px; /* So it's not too small on mobile */
+    margin: 0;
+    padding: 0;
+    max-width: 1600px; /* Suitable width for mobile */
+    margin-left: auto;
+    margin-right: auto;
+}
+a {
+    color: white;
+    text-decoration: none;
+}
+.header {
+    background-color:  #333;
+    color: #f8f8f8;              
+    text-align: left;       
+    padding: 20px 20px;          /* Padding of 20px on top and bottom, 20 on the sides */
+    font-family: Arial, sans-serif; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+    border-bottom: 1px solid #ddd; /* Light grey bottom border */
+}

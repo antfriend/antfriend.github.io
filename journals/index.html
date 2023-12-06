@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>index</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Notebook</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7516,6 +7516,7 @@ You can skip over the code sections and still get the basic idea of how it works
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># install if needed</span>
 <span class="o">%</span><span class="k">pip</span> install openai requests markdown
+<span class="o">%</span><span class="k">pip</span> install nbconvert
 </pre></div>
 </div>
 </div>
@@ -7526,12 +7527,12 @@ You can skip over the code sections and still get the basic idea of how it works
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">markdown</span>
 <span class="c1"># HTML templating function</span>
-<span class="k">def</span> <span class="nf">convert_markdown_to_styled_html</span><span class="p">(</span><span class="n">markdown_text</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">convert_markdown_to_styled_html</span><span class="p">(</span><span class="n">markdown_text</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">image_url</span><span class="p">):</span>
     <span class="c1"># Convert markdown text to HTML</span>
     <span class="n">html_content</span> <span class="o">=</span> <span class="n">markdown</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">markdown_text</span><span class="p">)</span>
     <span class="c1"># HTML template with custom CSS for styling</span>
@@ -7539,33 +7540,22 @@ You can skip over the code sections and still get the basic idea of how it works
 <span class="s2">    &lt;!DOCTYPE html&gt;</span>
 <span class="s2">    &lt;html&gt;</span>
 <span class="s2">    &lt;head&gt;</span>
-<span class="s2">        &lt;title&gt;"""</span> <span class="o">+</span> <span class="n">title</span> <span class="o">+</span> <span class="s2">"""&lt;/title&gt;</span>
-<span class="s2">        &lt;style&gt;</span>
-<span class="s2">            body {</span>
-<span class="s2">                background-color: black;</span>
-<span class="s2">                color: white;</span>
-<span class="s2">                font-family: Arial, sans-serif;</span>
-<span class="s2">                font-size: 20px; /* So it's not too small on mobile */</span>
-<span class="s2">                margin: 0;</span>
-<span class="s2">                padding: 0;</span>
-<span class="s2">                max-width: 720px; /* Suitable width for mobile */</span>
-<span class="s2">                margin-left: auto;</span>
-<span class="s2">                margin-right: auto;</span>
-<span class="s2">            }</span>
-<span class="s2">            img {</span>
-<span class="s2">                max-width: 100%; /* Make images responsive */</span>
-<span class="s2">                height: auto; /* Maintain aspect ratio */</span>
-<span class="s2">            }</span>
-<span class="s2">            @media only screen and (max-width: 720px) {</span>
-<span class="s2">                body {</span>
-<span class="s2">                    padding-left: 10px;</span>
-<span class="s2">                    padding-right: 10px;</span>
-<span class="s2">                }</span>
-<span class="s2">            }</span>
-<span class="s2">        &lt;/style&gt;</span>
+<span class="s2">        &lt;meta charset="UTF-8"&gt;</span>
+<span class="s2">          &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span>
+<span class="s2">        &lt;title&gt;"""</span> <span class="o">+</span> <span class="n">title</span> <span class="o">+</span> <span class="s1">' journal page'</span> <span class="o">+</span> <span class="s2">"""&lt;/title&gt;</span>
+<span class="s2">        &lt;link rel="stylesheet" href="style.css"&gt;</span>
 <span class="s2">    &lt;/head&gt;</span>
 <span class="s2">    &lt;body&gt;</span>
-<span class="s2">        """</span> <span class="o">+</span> <span class="n">html_content</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">        &lt;div class="header"&gt;&lt;a href="index.html"&gt;Journals Home &lt;/a&gt;&lt;/div&gt;</span>
+<span class="s2">        &lt;div class="container"&gt;</span>
+<span class="s2">        &lt;div class="image-box"&gt;</span>
+<span class="s2">            &lt;img src="""</span> <span class="o">+</span> <span class="n">image_url</span> <span class="o">+</span> <span class="s2">""" alt="Your Image"&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">        &lt;div class="text-box"&gt;</span>
+<span class="s2">            """</span> <span class="o">+</span> <span class="n">html_content</span> <span class="o">+</span> <span class="s2">"""</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">        </span>
 <span class="s2">    &lt;/body&gt;</span>
 <span class="s2">    &lt;/html&gt;</span>
 <span class="s2">    """</span>
@@ -7603,6 +7593,7 @@ The GitHub URLs are printed.</p>
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">openai</span> <span class="kn">import</span> <span class="n">OpenAI</span>
 <span class="kn">import</span> <span class="nn">markdown</span>
+
 <span class="c1"># retired waves: 8, 151</span>
 <span class="n">journals</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">'waves'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'15'</span><span class="p">,</span><span class="s1">'88'</span><span class="p">,</span><span class="s1">'107'</span><span class="p">,</span><span class="s1">'113'</span><span class="p">,</span><span class="s1">'149'</span><span class="p">,</span><span class="s1">'152'</span><span class="p">,</span><span class="s1">'154'</span><span class="p">,</span><span class="s1">'155'</span><span class="p">,</span><span class="s1">'159'</span><span class="p">],</span>
@@ -7642,22 +7633,24 @@ The GitHub URLs are printed.</p>
             <span class="n">max_tokens</span><span class="o">=</span><span class="mi">550</span>
         <span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
-        <span class="n">link_title</span><span class="o">=</span><span class="s1">''</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">''</span>
         <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lines</span><span class="p">:</span>
-            <span class="n">link_title</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">markdown_text</span> <span class="o">=</span> <span class="s1">'!['</span><span class="o">+</span> <span class="n">journal_image_name</span> <span class="o">+</span><span class="s1">']('</span> <span class="o">+</span> <span class="n">image_url</span> <span class="o">+</span> <span class="s2">")</span><span class="se">\n\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">markdown_text</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># markdown_text = '!['+ journal_image_name +'](' + image_url + ")\n\n" + markdown_text</span>
+        <span class="c1"># r�d</span>
         <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'Catchy Title:'</span><span class="p">,</span> <span class="s1">'##'</span><span class="p">)</span>
         <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'Humorous Title:'</span><span class="p">,</span> <span class="s1">'##'</span><span class="p">)</span>
         <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'Title:'</span><span class="p">,</span> <span class="s1">'##'</span><span class="p">)</span>
-        <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'Catchy Summary:'</span><span class="p">,</span> <span class="s1">'###'</span><span class="p">)</span>
-        <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'Summary:'</span><span class="p">,</span> <span class="s1">'###'</span><span class="p">)</span>
+        <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">' �'</span><span class="p">,</span> <span class="s1">','</span><span class="p">)</span>
+        <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'� '</span><span class="p">,</span> <span class="s1">' '</span><span class="p">)</span>
+        <span class="n">markdown_text</span> <span class="o">=</span> <span class="n">markdown_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'�'</span><span class="p">,</span> <span class="s1">'_'</span><span class="p">)</span>
         <span class="n">html_filename</span> <span class="o">=</span> <span class="n">journal_image_name</span> <span class="o">+</span> <span class="s2">".html"</span>
-        <span class="n">html</span> <span class="o">=</span> <span class="n">convert_markdown_to_styled_html</span><span class="p">(</span><span class="n">markdown_text</span><span class="p">,</span> <span class="n">journal_image_name</span> <span class="o">+</span> <span class="s1">' journal page'</span><span class="p">)</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="n">convert_markdown_to_styled_html</span><span class="p">(</span><span class="n">markdown_text</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">image_url</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">html_filename</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
-        <span class="n">title_link_md</span> <span class="o">=</span> <span class="s1">'### '</span> <span class="o">+</span> <span class="n">journal</span> <span class="o">+</span> <span class="s1">' pg.'</span> <span class="o">+</span> <span class="n">page_number</span> <span class="o">+</span> <span class="s1">' ['</span> <span class="o">+</span> <span class="n">link_title</span> <span class="o">+</span> <span class="s1">']('</span> <span class="o">+</span> <span class="n">journal_image_name</span> <span class="o">+</span> <span class="s1">'.html)'</span>
+        <span class="n">title_link_md</span> <span class="o">=</span> <span class="s1">'### '</span> <span class="o">+</span> <span class="n">journal</span> <span class="o">+</span> <span class="s1">' pg.'</span> <span class="o">+</span> <span class="n">page_number</span> <span class="o">+</span> <span class="s1">' ['</span> <span class="o">+</span> <span class="n">title</span> <span class="o">+</span> <span class="s1">']('</span> <span class="o">+</span> <span class="n">journal_image_name</span> <span class="o">+</span> <span class="s1">'.html)'</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">title_link_md</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">'Thank you, dear reader, for your time and attention!'</span><span class="p">)</span>
@@ -7674,8 +7667,51 @@ The GitHub URLs are printed.</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><a id="content_links"></a></p>
-<h2 id="Your-Table-of-Contents-for-this-Collection!">Your Table of Contents for this Collection!<a class="anchor-link" href="#Your-Table-of-Contents-for-this-Collection!">¶</a></h2><h3 id="waves-pg.15-Title:-%22Stargazing-Entanglements:-Perspectives-from-a-Quantum-Thinker%22">waves pg.15 <a href="waves_15.html">Title: "Stargazing Entanglements: Perspectives from a Quantum Thinker"</a><a class="anchor-link" href="#waves-pg.15-Title:-%22Stargazing-Entanglements:-Perspectives-from-a-Quantum-Thinker%22">¶</a></h3><h3 id="waves-pg.88-Title:-%22Perspectives-in-Personal-Storytelling%22">waves pg.88 <a href="waves_88.html">Title: "Perspectives in Personal Storytelling"</a><a class="anchor-link" href="#waves-pg.88-Title:-%22Perspectives-in-Personal-Storytelling%22">¶</a></h3><h3 id="waves-pg.107-Title:-%22Cells,-Tears,-and-Existence:-A-Life's-Abstract-Map%22">waves pg.107 <a href="waves_107.html">Title: "Cells, Tears, and Existence: A Life's Abstract Map"</a><a class="anchor-link" href="#waves-pg.107-Title:-%22Cells,-Tears,-and-Existence:-A-Life's-Abstract-Map%22">¶</a></h3><h3 id="waves-pg.113-Title:-%22Waves-of-Facts:-Synchronizing-Truth-with-Prediction%22">waves pg.113 <a href="waves_113.html">Title: "Waves of Facts: Synchronizing Truth with Prediction"</a><a class="anchor-link" href="#waves-pg.113-Title:-%22Waves-of-Facts:-Synchronizing-Truth-with-Prediction%22">¶</a></h3><h3 id="waves-pg.149-Title:-%22Conceptual-Symphony:-A-Dance-of-Ideas-and-Time%22">waves pg.149 <a href="waves_149.html">Title: "Conceptual Symphony: A Dance of Ideas and Time"</a><a class="anchor-link" href="#waves-pg.149-Title:-%22Conceptual-Symphony:-A-Dance-of-Ideas-and-Time%22">¶</a></h3><h3 id="waves-pg.152-Title:-%22Mind-Vessel:-The-Journey-of-Intention-and-Action%22">waves pg.152 <a href="waves_152.html">Title: "Mind Vessel: The Journey of Intention and Action"</a><a class="anchor-link" href="#waves-pg.152-Title:-%22Mind-Vessel:-The-Journey-of-Intention-and-Action%22">¶</a></h3><h3 id="waves-pg.154-Title:-%22Harmonious-Semantics:-The-Symphony-of-Connection%22">waves pg.154 <a href="waves_154.html">Title: "Harmonious Semantics: The Symphony of Connection"</a><a class="anchor-link" href="#waves-pg.154-Title:-%22Harmonious-Semantics:-The-Symphony-of-Connection%22">¶</a></h3><h3 id="waves-pg.155-Title:-%22Chemistry-of-Conversation:-Navigating-the-Language-Labyrinth%22">waves pg.155 <a href="waves_155.html">Title: "Chemistry of Conversation: Navigating the Language Labyrinth"</a><a class="anchor-link" href="#waves-pg.155-Title:-%22Chemistry-of-Conversation:-Navigating-the-Language-Labyrinth%22">¶</a></h3><h3 id="waves-pg.159-Title:-%22Ripples-Through-Time:-A-Personal-Cosmic-Journey%22">waves pg.159 <a href="waves_159.html">Title: "Ripples Through Time: A Personal Cosmic Journey"</a><a class="anchor-link" href="#waves-pg.159-Title:-%22Ripples-Through-Time:-A-Personal-Cosmic-Journey%22">¶</a></h3><h3 id="vectors-pg.1-Title:-%22Cosmic-Tunes:-A-Vector-Eye%E2%80%99s-View%22">vectors pg.1 <a href="vectors_1.html">Title: "Cosmic Tunes: A Vector Eye’s View"</a><a class="anchor-link" href="#vectors-pg.1-Title:-%22Cosmic-Tunes:-A-Vector-Eye%E2%80%99s-View%22">¶</a></h3><h3 id="vectors-pg.2-Title:-%22Surfing-the-Waves-of-Consciousness:-A-Quantum-View%22">vectors pg.2 <a href="vectors_2.html">Title: "Surfing the Waves of Consciousness: A Quantum View"</a><a class="anchor-link" href="#vectors-pg.2-Title:-%22Surfing-the-Waves-of-Consciousness:-A-Quantum-View%22">¶</a></h3><h3 id="vectors-pg.6-Title:-%22Circling-the-Logic:-Patterns-of-Symbolic-Thinking%22">vectors pg.6 <a href="vectors_6.html">Title: "Circling the Logic: Patterns of Symbolic Thinking"</a><a class="anchor-link" href="#vectors-pg.6-Title:-%22Circling-the-Logic:-Patterns-of-Symbolic-Thinking%22">¶</a></h3><h3 id="vectors-pg.9-Title:-%22The-Ebb-and-Flow-of-Awareness:-Unraveling-Consciousness%22">vectors pg.9 <a href="vectors_9.html">Title: "The Ebb and Flow of Awareness: Unraveling Consciousness"</a><a class="anchor-link" href="#vectors-pg.9-Title:-%22The-Ebb-and-Flow-of-Awareness:-Unraveling-Consciousness%22">¶</a></h3><h3 id="vectors-pg.10-Title:-%22The-Strain-in-the-Brain-Train%22">vectors pg.10 <a href="vectors_10.html">Title: "The Strain in the Brain Train"</a><a class="anchor-link" href="#vectors-pg.10-Title:-%22The-Strain-in-the-Brain-Train%22">¶</a></h3><h3 id="vectors-pg.12-Title:-%22Riding-the-Waves:-A-Journey-Through-Particle-and-Wave-Duality%22">vectors pg.12 <a href="vectors_12.html">Title: "Riding the Waves: A Journey Through Particle and Wave Duality"</a><a class="anchor-link" href="#vectors-pg.12-Title:-%22Riding-the-Waves:-A-Journey-Through-Particle-and-Wave-Duality%22">¶</a></h3><h3 id="vectors-pg.16-Title:-%22A-Cosmic-Glimpse:-The-Epic-Journey-of-Starlight-to-Thought%22">vectors pg.16 <a href="vectors_16.html">Title: "A Cosmic Glimpse: The Epic Journey of Starlight to Thought"</a><a class="anchor-link" href="#vectors-pg.16-Title:-%22A-Cosmic-Glimpse:-The-Epic-Journey-of-Starlight-to-Thought%22">¶</a></h3><h3 id="vectors-pg.18-Title:-%22Selective-Memory:-Choosing-Our-Recollections%22">vectors pg.18 <a href="vectors_18.html">Title: "Selective Memory: Choosing Our Recollections"</a><a class="anchor-link" href="#vectors-pg.18-Title:-%22Selective-Memory:-Choosing-Our-Recollections%22">¶</a></h3><h3 id="vectors-pg.21-Title:-%22Navigating-Consciousness:-Time,-Space,-and-Sensation%22">vectors pg.21 <a href="vectors_21.html">Title: "Navigating Consciousness: Time, Space, and Sensation"</a><a class="anchor-link" href="#vectors-pg.21-Title:-%22Navigating-Consciousness:-Time,-Space,-and-Sensation%22">¶</a></h3><h3 id="vectors-pg.31-Title:-%22Passion's-Path:-The-Interplay-of-Motive,-Motivation,-and-Movement%22">vectors pg.31 <a href="vectors_31.html">Title: "Passion's Path: The Interplay of Motive, Motivation, and Movement"</a><a class="anchor-link" href="#vectors-pg.31-Title:-%22Passion's-Path:-The-Interplay-of-Motive,-Motivation,-and-Movement%22">¶</a></h3><h3 id="vectors-pg.32-Title:-%22Vectors:-The-Invisible-Threads-of-Thought%22">vectors pg.32 <a href="vectors_32.html">Title: "Vectors: The Invisible Threads of Thought"</a><a class="anchor-link" href="#vectors-pg.32-Title:-%22Vectors:-The-Invisible-Threads-of-Thought%22">¶</a></h3><p>Thank you, dear reader, for your time and attention!
-The End</p>
+<h2 id="Your-Table-of-Contents-for-this-Collection!">Your Table of Contents for this Collection!<a class="anchor-link" href="#Your-Table-of-Contents-for-this-Collection!">¶</a></h2><h3 id="waves-pg.15-Title:-%22Entangled-Minds:-Quantum-Observations-in-the-Stardust%22">waves pg.15 <a href="waves_15.html">Title: "Entangled Minds: Quantum Observations in the Stardust"</a><a class="anchor-link" href="#waves-pg.15-Title:-%22Entangled-Minds:-Quantum-Observations-in-the-Stardust%22">¶</a></h3><h3 id="waves-pg.88-Title:-%22Perspectives-in-Personal-Narratives:-A-Quantum-of-Family-Dynamics%22">waves pg.88 <a href="waves_88.html">Title: "Perspectives in Personal Narratives: A Quantum of Family Dynamics"</a><a class="anchor-link" href="#waves-pg.88-Title:-%22Perspectives-in-Personal-Narratives:-A-Quantum-of-Family-Dynamics%22">¶</a></h3><h3 id="waves-pg.107-Title:-%22A-Whimsical-Cartography-of-Existence%22">waves pg.107 <a href="waves_107.html">Title: "A Whimsical Cartography of Existence"</a><a class="anchor-link" href="#waves-pg.107-Title:-%22A-Whimsical-Cartography-of-Existence%22">¶</a></h3><h3 id="waves-pg.113-Title:-%22Semantic-Symphony:-The-Harmony-of-Facts-and-Predictions%22">waves pg.113 <a href="waves_113.html">Title: "Semantic Symphony: The Harmony of Facts and Predictions"</a><a class="anchor-link" href="#waves-pg.113-Title:-%22Semantic-Symphony:-The-Harmony-of-Facts-and-Predictions%22">¶</a></h3><h3 id="waves-pg.149-Title:-%22Schematic-Symphony:-Understanding-Complexity%22">waves pg.149 <a href="waves_149.html">Title: "Schematic Symphony: Understanding Complexity"</a><a class="anchor-link" href="#waves-pg.149-Title:-%22Schematic-Symphony:-Understanding-Complexity%22">¶</a></h3><h3 id="waves-pg.152-Title:-%22The-Mind's-Melody:-Containing-Intentions-and-Actions%22">waves pg.152 <a href="waves_152.html">Title: "The Mind's Melody: Containing Intentions and Actions"</a><a class="anchor-link" href="#waves-pg.152-Title:-%22The-Mind's-Melody:-Containing-Intentions-and-Actions%22">¶</a></h3><h3 id="waves-pg.154-Title:-%22The-Symphony-of-Human-Connection:-Understanding-Through-Action%22">waves pg.154 <a href="waves_154.html">Title: "The Symphony of Human Connection: Understanding Through Action"</a><a class="anchor-link" href="#waves-pg.154-Title:-%22The-Symphony-of-Human-Connection:-Understanding-Through-Action%22">¶</a></h3><h3 id="waves-pg.155-Title:-%22Linguistic-Chemistry:-The-Convergent-Worlds-of-Syntax-and-Meaning%22">waves pg.155 <a href="waves_155.html">Title: "Linguistic Chemistry: The Convergent Worlds of Syntax and Meaning"</a><a class="anchor-link" href="#waves-pg.155-Title:-%22Linguistic-Chemistry:-The-Convergent-Worlds-of-Syntax-and-Meaning%22">¶</a></h3><h3 id="waves-pg.159-Title:-%22The-Ripple-of-Existence:-Navigating-Time,-Space,-and-Self%22">waves pg.159 <a href="waves_159.html">Title: "The Ripple of Existence: Navigating Time, Space, and Self"</a><a class="anchor-link" href="#waves-pg.159-Title:-%22The-Ripple-of-Existence:-Navigating-Time,-Space,-and-Self%22">¶</a></h3><h3 id="vectors-pg.1-Title:-%22Tuning-into-the-Cosmic-Buzz:-Vector-Vibes-in-Space%22">vectors pg.1 <a href="vectors_1.html">Title: "Tuning into the Cosmic Buzz: Vector Vibes in Space"</a><a class="anchor-link" href="#vectors-pg.1-Title:-%22Tuning-into-the-Cosmic-Buzz:-Vector-Vibes-in-Space%22">¶</a></h3><h3 id="vectors-pg.2-Title:-%22Surfing-the-Waves-of-Consciousness:-A-Quantum-Tale%22">vectors pg.2 <a href="vectors_2.html">Title: "Surfing the Waves of Consciousness: A Quantum Tale"</a><a class="anchor-link" href="#vectors-pg.2-Title:-%22Surfing-the-Waves-of-Consciousness:-A-Quantum-Tale%22">¶</a></h3><h3 id="vectors-pg.6-Title:-%22Coding-Concepts-with-Cats:-Deciphering-Symbolic-Logic%22">vectors pg.6 <a href="vectors_6.html">Title: "Coding Concepts with Cats: Deciphering Symbolic Logic"</a><a class="anchor-link" href="#vectors-pg.6-Title:-%22Coding-Concepts-with-Cats:-Deciphering-Symbolic-Logic%22">¶</a></h3><h3 id="vectors-pg.32-Title:-%22The-Invisible-Threads-of-Science:-Vector-Connections%22">vectors pg.32 <a href="vectors_32.html">Title: "The Invisible Threads of Science: Vector Connections"</a><a class="anchor-link" href="#vectors-pg.32-Title:-%22The-Invisible-Threads-of-Science:-Vector-Connections%22">¶</a></h3><p>Thank you, dear reader, for your time and attention!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Optional">Optional<a class="anchor-link" href="#Optional">¶</a></h2><p>Convert this Jupyter Notebook into an HTML index page.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">nbformat</span>
+<span class="kn">from</span> <span class="nn">nbconvert</span> <span class="kn">import</span> <span class="n">HTMLExporter</span>
+
+<span class="c1"># Load the notebook</span>
+<span class="n">notebook_filename</span> <span class="o">=</span> <span class="s1">'journals.ipynb'</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">notebook_filename</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="n">nbformat</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">as_version</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="c1"># Create an HTML exporter</span>
+<span class="n">html_exporter</span> <span class="o">=</span> <span class="n">HTMLExporter</span><span class="p">()</span>
+<span class="n">html_exporter</span><span class="o">.</span><span class="n">template_name</span> <span class="o">=</span> <span class="s1">'classic'</span>  <span class="c1"># You can specify different templates</span>
+
+<span class="c1"># Convert the notebook to HTML</span>
+<span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">resources</span><span class="p">)</span> <span class="o">=</span> <span class="n">html_exporter</span><span class="o">.</span><span class="n">from_notebook_node</span><span class="p">(</span><span class="n">nb</span><span class="p">)</span>
+
+<span class="c1"># Write the HTML to a file</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'index.html'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Notebook converted to HTML."</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
