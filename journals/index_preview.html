@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/algoliasearch/lite/algoliasearch.min.css" />
+    <style>
+        body {
+            background-color: black;
+            color: lightgrey;
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="search-results"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/react/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/algoliasearch/lite/algoliasearch.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-instantsearch-dom/dist/umd/react-instantsearch-dom.production.min.js"></script>
+
+    <script>
+        const searchClient = algoliasearch('3AUHR4IE0C', 'b152fa9673ced6bc795ad370b729bfd2');
+
+        const App = () => {
+            const [query, setQuery] = React.useState('');
+
+            const handleSearch = (event) => {
+                setQuery(event.target.value);
+            };
+
+            return (
+                <div>
+                    <h1>Search</h1>
+                    <input type="text" id="search-box" placeholder="Search..." value={query} onChange={handleSearch} />
+
+                    <h1>Search Results</h1>
+                    <InstantSearch searchClient={searchClient} indexName="Crepuscular_Rays">
+                        <Configure hitsPerPage={10} />
+                        <Grid />
+                    </InstantSearch>
+                </div>
+            );
+        };
+
+        const Grid = () => (
+            <div>
+                <Hits hitComponent={Hit} />
+            </div>
+        );
+
+        const Hit = ({ hit }) => (
+            <div>
+                <h2>{hit.title}</h2>
+                <p>{hit.description}</p>
+                <img src={hit.image} alt={hit.title} />
+            </div>
+        );
+
+        ReactDOM.render(<App />, document.getElementById('search-results'));
+    </script>
+</body>
+</html>
