@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/crepuscular_rays/static/css/main.6862e445.css",
-    "main.js": "/crepuscular_rays/static/js/main.baab0629.js",
+    "main.js": "/crepuscular_rays/static/js/main.f5ddb0af.js",
     "static/js/787.6eb45ffb.chunk.js": "/crepuscular_rays/static/js/787.6eb45ffb.chunk.js",
     "index.html": "/crepuscular_rays/index.html",
     "main.6862e445.css.map": "/crepuscular_rays/static/css/main.6862e445.css.map",
-    "main.baab0629.js.map": "/crepuscular_rays/static/js/main.baab0629.js.map",
+    "main.f5ddb0af.js.map": "/crepuscular_rays/static/js/main.f5ddb0af.js.map",
     "787.6eb45ffb.chunk.js.map": "/crepuscular_rays/static/js/787.6eb45ffb.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.6862e445.css",
-    "static/js/main.baab0629.js"
+    "static/js/main.f5ddb0af.js"
   ]
 }
