@@ -4,6 +4,12 @@
   @license MIT
   */
 
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
 /*! algoliasearch-lite.umd.js | 4.22.1 | © Algolia, inc. | https://github.com/algolia/algoliasearch-client-javascript */
 
 /**
