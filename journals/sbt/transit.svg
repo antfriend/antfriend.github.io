@@ -1,18 +1,22 @@
-<svg width="600" height="600"
+<svg width="1400" height="700"
      viewBox="0 0 200 200"
      xmlns="http://www.w3.org/2000/svg">
 
-  <!-- Insert the image -->
   <image href="https://antfriend.github.io/journals/sbt/sbt_17.png"
          x="0" y="0"
-         width="2000" height="2000"
+         width="1400" height="700"
          preserveAspectRatio="xMinYMin meet" />
 
-  <!-- Animate the viewBox to slowly move towards the bottom-right corner -->
+
   <animate attributeName="viewBox"
-           from="0 0 200 200"
-           to="1800 1800 200 200"
-           dur="30s"
+           dur="60s"
            fill="freeze"
-           begin="0s" />
+           begin="0s"
+           calcMode="linear"
+           keyTimes="0;0.2;0.4;0.6;1"
+           values="0 0 200 200;
+                   350 80 400 400;
+                   500 100 200 200;
+                   500 100 200 200;
+                   400 50 200 200"/>
 </svg>
