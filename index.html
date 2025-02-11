@@ -1,135 +1,94 @@
 <!DOCTYPE html>
-<html>
-  <head>
-      <title>Antfriend</title>
-      <style type="text/css">
-        body {
-        font: 7pt sans;
-        background-color: #000000;
-        }
-        #mynetwork {
-        width: 100%;
-        height: 500px;
-        border: 1px solid lightgray;
-        background-color: #000000;
-        }
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Semantic Bit Theory</title>
+  <style>
+    /* Make the entire page black */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      overflow: hidden; /* Hide any overflow from the sliding container */
+    }
 
-        div.left {
-        position:relative;
-        float:left;
-        width:300px;
-        border: 1px #c7c7c7 solid;
-        height:590px;
-        padding:5px;
-        }
+    .carousel-container {
+      /* The visible area for the slides */
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden; /* Ensures only one slide is visible at a time */
+    }
 
-        div.right {
-        padding-left:10px;
-        float:left;
-        width:600px;
-        }
+    .carousel-wrapper {
+      /* Place slides side-by-side in a row */
+      display: flex;
+      width: 300vw; /* 3 slides, each 100vw wide */
+      height: 100%;
+      /* Smooth transition for sliding */
+      transition: transform 1s ease-in-out;
+    }
 
-        div.bottom {
-        position:absolute;
-        bottom:5px;
-        }
-        table.legend_table {
-  font-size: 11px;
-  border-width:1px;
-  border-color:#d3d3d3;
-  border-style:solid;
-}
-table.legend_table,td {
-  border-width:1px;
-  border-color:#d3d3d3;
-  border-style:solid;
-  padding: 2px;
-}
-div.table_content {
-  width:80px;
-  text-align:center;
-}
-div.table_description {
-  width:100px;
-}
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* Background is black so it blends with body */
+      background-color: black;
+    }
 
-#antfriend_console{
-  overflow: auto;
-  border: 1px solid lightgray;
-  height: 200px;
-}
-
-#operation {
-  font: 24pt;
-  font-size:24px;
-}
-
-#network-popUp {
-  display:none;
-  position:absolute;
-  top:350px;
-  left:170px;
-  z-index:299;
-  width:250px;
-  height:120px;
-  background-color: #f9f9f9;
-  border-style:solid;
-  border-width:3px;
-  border-color: #5394ed;
-  padding:10px;
-  text-align: center;
-}
-
-      </style>
-      <!-- <script data-main="scripts/main" src="scripts/require.js"></script> -->
-      <script type="text/javascript" src="./vis/vis.js"></script>
-      <link href="./vis/vis.css" rel="stylesheet" type="text/css" />
-      <script src="bower_components/jquery/dist/jquery.js"></script>
-      <script src="bower_components/jquery.terminal/js/jquery.terminal-0.11.3.min.js"></script>
-      <script src="bower_components/jquery.terminal/js/jquery.mousewheel-min.js">
-      </script>
-      <script src="./graphy.js"></script>
-      <script src="./webby.js"></script>
-      <script src="./commands.js"></script>
-      <script src="./terminal.js"></script>
-      <!--https://github.com/jcubic/jquery.terminal-->
-      <!--<link href="css/jquery.terminal-0.11.2.min.css" rel="stylesheet"/>-->
-      <!--http://terminal.jcubic.pl/-->
-      <link href="./css/jquery.terminal.min.css" rel="stylesheet"/>
-
-      <script type="text/javascript">
-        function pageLoadGlory(){
-          //https://antfriend.herokuapp.com/face
-          draw();
-          startShow();
-        }
-
-      </script>
-
-  </head>
-    <body onload="pageLoadGlory();">
-
-      <div class="">
-        <div id="network-popUp">
-  <span id="operation">node</span> <br>
-  <table style="margin:auto;"><tr>
-    <td>id</td><td><input id="node-id" value="new value" /></td>
-  </tr>
-    <tr>
-      <td>label</td><td><input id="node-label" value="new value" /></td>
-    </tr></table>
-  <input type="button" value="save" id="saveButton" />
-  <input type="button" value="cancel" id="cancelButton" />
-</div>
-        <div id="mynetwork"></div>
-        <div>
-          <br/>
-          <span class="terminal" id="stabilization"></span>
-          <span class="terminal" id="statusUpdate"></span>
-          <span class="terminal" id="selection"></span>
-          <br/>
-        </div>
-        <div id="antfriend_console" ></div>
+    svg {
+      /* Let the SVG shrink or grow while maintaining aspect ratio */
+      width: 100vw;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="carousel-container">
+    <!-- Wrapper containing all slides -->
+    <div class="carousel-wrapper" id="carouselWrapper">
+      <!-- Slide 1 -->
+      <div class="slide">
+        <image src="journals/sbt/sbt_23.svg" />
       </div>
-  </body>
+
+      <!-- Slide 2 -->
+      <div class="slide">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+          <circle cx="50" cy="50" r="30" fill="red" />
+        </svg>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="slide">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+          <circle cx="50" cy="50" r="30" fill="blue" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const carouselWrapper = document.getElementById("carouselWrapper");
+    const totalSlides = 3;          // Number of slides
+    let currentSlide = 0;           // Starting slide index
+    
+    function showSlide(index) {
+      // Shift the carouselWrapper to the left by index * 100vw
+      carouselWrapper.style.transform = `translateX(-${index * 100}vw)`;
+    }
+
+    // Rotate the slide every 60 seconds
+    setInterval(() => {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      showSlide(currentSlide);
+    }, 6000);
+
+    // Initially show the first slide
+    showSlide(currentSlide);
+  </script>
+</body>
 </html>
