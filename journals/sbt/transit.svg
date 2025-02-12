@@ -1,8 +1,9 @@
 <svg width="1400" height="700"
      viewBox="0 0 200 200"
-     xmlns="http://www.w3.org/2000/svg">
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
 
-  <image href="https://antfriend.github.io/journals/sbt/sbt_17.png"
+  <image xlink:href="https://antfriend.github.io/journals/sbt/sbt_17.png"
          x="0" y="0"
          width="1400" height="700"
          preserveAspectRatio="xMinYMin meet" />
@@ -18,5 +19,5 @@
                    350 80 400 400;
                    500 100 200 200;
                    500 100 200 200;
-                   400 50 200 200"/>
+                   400 50 200 200" />
 </svg>

@@ -48,31 +48,30 @@
 </head>
 <body>
   <div class="carousel-container">
-    <!-- Wrapper containing all slides -->
+    
     <div class="carousel-wrapper" id="carouselWrapper">
 
       <!-- Slide 1 -->
       <div class="slide">
-        <image src="sbt_23.svg" />
-          
-        
+        <object data="journals/sbt/sbt_23.svg" type="image/svg+xml" >
+          <p>Your browser does not support SVG.</p>
+        </object>
       </div>
 
       <!-- Slide 2 -->
       <div class="slide">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-          <circle cx="50" cy="50" r="30" fill="red" />
-        </svg>
+        <object data="journals/sbt/sbt_23.svg" type="image/svg+xml" >
+          <p>Your browser does not support SVG.</p>
+        </object>
       </div>
 
       <!-- Slide 3 -->
       <div class="slide">
-
-        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-          <circle cx="50" cy="50" r="30" fill="blue" />
-        </svg>
-
+        <object data="journals/sbt/sbt_23.svg" type="image/svg+xml" >
+          <p>Your browser does not support SVG.</p>
+        </object>
       </div>
+
     </div>
   </div>
 
@@ -90,7 +89,7 @@
     setInterval(() => {
       currentSlide = (currentSlide + 1) % totalSlides;
       showSlide(currentSlide);
-    }, 6000);
+    }, 10000);
 
     // Initially show the first slide
     showSlide(currentSlide);
