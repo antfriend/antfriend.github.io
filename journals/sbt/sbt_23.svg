@@ -4,7 +4,7 @@
      xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
 
-  <image xlink:href="https://antfriend.github.io/journals/sbt/sbt_23.png"
+  <image xlink:href="sbt_23.png"
          x="0" y="0" 
          width="700"
          preserveAspectRatio="xMinYMin meet" />
