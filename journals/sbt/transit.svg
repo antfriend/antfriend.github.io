@@ -8,13 +8,12 @@
          width="1400" height="700"
          preserveAspectRatio="xMinYMin meet" />
 
-
   <animate attributeName="viewBox"
            dur="60s"
            fill="freeze"
            begin="0s"
            calcMode="linear"
-           keyTimes="0;0.2;0.4;0.6;1"
+           keyTimes="0;0.5;0.5;0.6;1.0"
            values="0 0 200 200;
                    350 80 400 400;
                    500 100 200 200;
