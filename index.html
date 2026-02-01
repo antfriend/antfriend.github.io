@@ -2,102 +2,476 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Semantic Bit Theory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Toot Toot Engineering</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    /* Make the entire page black */
+    :root {
+      --ink: #0b1112;
+      --fog: #f2f0e9;
+      --brass: #c2a15f;
+      --teal: #0f8b8d;
+      --ember: #e55d3a;
+      --smoke: #1f2a2b;
+      --steam: rgba(255, 255, 255, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      padding: 0;
-      background-color: black;
-      overflow: hidden; /* Hide any overflow from the sliding container */
+      color: var(--ink);
+      background: radial-gradient(circle at 20% 20%, #ffffff 0%, #fbf4df 42%, #f4e7c2 72%, #e7d0a5 100%);
+      background-size: 120% 120%;
+      animation: backgroundShift 16s ease-in-out infinite alternate;
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      min-height: 100vh;
     }
 
-    .carousel-container {
-      /* The visible area for the slides */
-      width: 100vw;
-      height: 100vh;
+    .page {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) minmax(280px, 1.2fr);
+      gap: 32px;
+      padding: 48px clamp(20px, 6vw, 80px) 64px;
+      align-items: start;
       position: relative;
-      overflow: hidden; /* Ensures only one slide is visible at a time */
+      overflow: hidden;
     }
 
-    .carousel-wrapper {
-      /* Place slides side-by-side in a row */
-      display: flex;
-      width: 300vw; /* 3 slides, each 100vw wide */
-      height: 100%;
-      /* Smooth transition for sliding */
-      transition: transform 1s ease-in-out;
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: -40% -30% auto auto;
+      width: 480px;
+      height: 480px;
+      background: conic-gradient(from 200deg, var(--brass), var(--ember), var(--teal), var(--brass));
+      opacity: 0.16;
+      filter: blur(10px);
+      border-radius: 50%;
+      transform: translate(25%, -15%);
+      animation: orbit 18s linear infinite;
     }
 
-    .slide {
-      width: 100vw;
-      height: 100vh;
+    header {
+      position: sticky;
+      top: 32px;
+      align-self: start;
+      display: grid;
+      gap: 20px;
+    }
+
+    .brand {
       display: flex;
-      justify-content: center;
       align-items: center;
-      /* Background is black so it blends with body */
-      background-color: black;
+      gap: 16px;
     }
 
-    svg {
-      /* Let the SVG shrink or grow while maintaining aspect ratio */
-      width: 100vw;
-      height: auto;
+    .brand-mark {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--teal), var(--smoke));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-family: "Unbounded", "Space Grotesk", sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 12px 24px rgba(15, 139, 141, 0.2);
+      animation: thrum 3.6s ease-in-out infinite;
+    }
+
+    .brand h1 {
+      font-family: "Unbounded", "Space Grotesk", sans-serif;
+      margin: 0;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.05;
+      animation: sway 6s ease-in-out infinite;
+    }
+
+    .brand p {
+      margin: 6px 0 0;
+      font-size: 15px;
+      max-width: 300px;
+    }
+
+    .hero {
+      display: grid;
+      gap: 18px;
+      padding: 28px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(15, 139, 141, 0.25);
+      box-shadow: 0 20px 45px rgba(12, 18, 18, 0.12);
+      animation: rise 0.9s ease-out, floaty 6.5s ease-in-out infinite;
+    }
+
+    .hero h2 {
+      font-size: clamp(26px, 3vw, 36px);
+      margin: 0;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .cta {
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: var(--ink);
+      color: var(--fog);
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      animation: bob 3.2s ease-in-out infinite;
+    }
+
+    .cta.alt {
+      background: transparent;
+      color: var(--ink);
+      border-color: var(--ink);
+      animation-delay: 0.6s;
+    }
+
+    .cta:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 14px 24px rgba(11, 17, 18, 0.2);
+    }
+
+    main {
+      display: grid;
+      gap: 24px;
+    }
+
+    .modules {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    }
+
+    .module {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 18px 18px 20px;
+      border: 1px solid rgba(11, 17, 18, 0.12);
+      position: relative;
+      overflow: hidden;
+      animation: float 1s ease forwards, drift 7s ease-in-out infinite;
+    }
+
+    .module::after {
+      content: "";
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 90px;
+      height: 90px;
+      background: radial-gradient(circle, rgba(229, 93, 58, 0.4), transparent 70%);
+      animation: pulseGlow 5s ease-in-out infinite;
+    }
+
+    .module:nth-child(2) { animation-delay: 0.2s, 0.6s; }
+    .module:nth-child(3) { animation-delay: 0.4s, 1.2s; }
+    .module:nth-child(4) { animation-delay: 0.6s, 1.8s; }
+
+    .module h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .module p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .signal {
+      display: grid;
+      gap: 14px;
+      padding: 22px 26px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, rgba(11, 17, 18, 0.95), rgba(15, 139, 141, 0.9));
+      color: var(--fog);
+      box-shadow: 0 16px 40px rgba(11, 17, 18, 0.2);
+      position: relative;
+      overflow: hidden;
+      animation: pulseGlow 6s ease-in-out infinite;
+    }
+
+    .signal h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .signal ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .signal li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .signal span {
+      color: var(--brass);
+      font-weight: 700;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid rgba(11, 17, 18, 0.1);
+      min-height: 150px;
+      display: grid;
+      gap: 8px;
+      animation: float 1s ease forwards, drift 8s ease-in-out infinite;
+    }
+
+    .panel:nth-child(2) { animation-delay: 0.2s, 0.7s; }
+    .panel:nth-child(3) { animation-delay: 0.4s, 1.4s; }
+    .panel:nth-child(4) { animation-delay: 0.6s, 2.1s; }
+
+    .panel h4 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .panel p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .whistle {
+      height: 12px;
+      background: repeating-linear-gradient(90deg, var(--ember) 0 12px, transparent 12px 22px);
+      border-radius: 999px;
+      position: relative;
+      overflow: hidden;
+      animation: scan 2.4s linear infinite;
+    }
+
+    .steam-stack {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .steam {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--steam);
+      animation: puff 2.6s ease-in-out infinite;
+    }
+
+    .steam:nth-child(2) { animation-delay: 0.8s; }
+    .steam:nth-child(3) { animation-delay: 1.6s; }
+
+    footer {
+      margin-top: 26px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    @keyframes rise {
+      from { transform: translateY(18px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes float {
+      from { transform: translateY(14px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes puff {
+      0%, 100% { transform: translateY(0) scale(0.9); opacity: 0.45; }
+      50% { transform: translateY(-10px) scale(1.08); opacity: 0.95; }
+    }
+
+    @keyframes backgroundShift {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    @keyframes orbit {
+      0% { transform: translate(25%, -15%) rotate(0deg); }
+      100% { transform: translate(25%, -15%) rotate(360deg); }
+    }
+
+    @keyframes thrum {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(10px); }
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-10px) translateX(8px); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 16px 40px rgba(11, 17, 18, 0.2); }
+      50% { box-shadow: 0 26px 60px rgba(229, 93, 58, 0.28); }
+    }
+
+    @keyframes scan {
+      0% { background-position: 0 0; }
+      100% { background-position: 100px 0; }
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        position: static;
+      }
+
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
-  <link href="./sbt_style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-  <div class="carousel-container">
-    
-    <div class="carousel-wrapper" id="carouselWrapper">
-
-      <!-- Slide 1 -->
-      <div class="slide">
-        <div class="img-container">
-          <img src="https://antfriend.github.io/journals/sbt/sbt_23.png" alt="Demo" />
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="brand-mark">TTE</div>
+        <div>
+          <h1>Toot Toot Engineering</h1>
+          <p>Steamforward systems, sonic design, and bespoke rail theatrics.</p>
         </div>
-        
-        <!-- <object data="journals/sbt/sbt_23.svg" type="image/svg+xml" >
-          <p>Your browser does not support SVG.</p>
-        </object> -->
       </div>
+      <section class="hero">
+        <h2>We build the sound of motion.</h2>
+        <p>
+          Toot Toot Engineering is a studio of mechanical dreamers shaping whistles,
+          chimes, and signal rigs for modern rail, immersive venues, and joyful urban art.
+          We blend acoustics, fabrication, and playful industrial design.
+        </p>
+        <div class="cta-row">
+          <a class="cta" href="#manifesto">Read the manifesto</a>
+          <a class="cta alt" href="#projects">Tour the projects</a>
+        </div>
+      </section>
+      <footer>
+        &copy; 2026 Toot Toot Engineering. All signals cleared.
+      </footer>
+    </header>
 
-      <!-- Slide 2 -->
-      <div class="slide">
-        <object data="journals/sbt/sbt_23.svg" type="image/svg+xml" >
-          <p>Your browser does not support SVG.</p>
-        </object>
-      </div>
+    <main>
+      <section class="modules" id="manifesto">
+        <article class="module">
+          <h3>Resonant Craft</h3>
+          <p>Precision-machined brass and reclaimed steel tuned by ear and oscilloscope.</p>
+        </article>
+        <article class="module">
+          <h3>Signal Ecology</h3>
+          <p>Acoustic zones designed to guide, delight, and keep cities safe without screens.</p>
+        </article>
+        <article class="module">
+          <h3>Steam Intelligence</h3>
+          <p>Pressure mapping, thermal control, and soft-start valves for smooth, expressive toots.</p>
+        </article>
+        <article class="module">
+          <h3>Mobile Foundry</h3>
+          <p>Pop-up workshops that turn stations into performance labs and public play.</p>
+        </article>
+      </section>
 
-      <!-- Slide 3 -->
-      <div class="slide">
-        <object data="journals/sbt/sbt_23.svg" type="image/svg+xml" >
-          <p>Your browser does not support SVG.</p>
-        </object>
-      </div>
+      <section class="signal" id="projects">
+        <div class="steam-stack">
+          <div class="steam"></div>
+          <div class="steam"></div>
+          <div class="steam"></div>
+          <h3>Featured Signals</h3>
+        </div>
+        <ul>
+          <li><span>01</span> Horizon Whistle Array — modular harmonics for long-haul platforms.</li>
+          <li><span>02</span> Harbor Chime Loop — tidal cadence tuned to coastal fog patterns.</li>
+          <li><span>03</span> Nightline Chorus — responsive signal songbooks for late runs.</li>
+          <li><span>04</span> Civic Toot Week — public-facing build sessions for neighborhood depots.</li>
+        </ul>
+      </section>
 
-    </div>
+      <section class="panel-grid">
+        <article class="panel">
+          <h4>Engineering Stack</h4>
+          <div class="whistle"></div>
+          <p>Acoustic modeling, CFD-assisted valves, and modular brass chambers.</p>
+        </article>
+        <article class="panel">
+          <h4>Workflows</h4>
+          <div class="whistle"></div>
+          <p>Sketch → tone map → fabrication → public rehearsal → long-term maintenance.</p>
+        </article>
+        <article class="panel">
+          <h4>Field Teams</h4>
+          <div class="whistle"></div>
+          <p>Small squads with mobile tooling, ready for depot installs and event builds.</p>
+        </article>
+        <article class="panel">
+          <h4>Next Departure</h4>
+          <div class="whistle"></div>
+          <p>Sound-guided night market coming soon. Book a test slot in your city.</p>
+        </article>
+      </section>
+    </main>
   </div>
-
-  <script>
-    const carouselWrapper = document.getElementById("carouselWrapper");
-    const totalSlides = 3;          // Number of slides
-    let currentSlide = 0;           // Starting slide index
-    
-    function showSlide(index) {
-      // Shift the carouselWrapper to the left by index * 100vw
-      carouselWrapper.style.transform = `translateX(-${index * 100}vw)`;
-    }
-
-    // Rotate the slide 
-    setInterval(() => {
-      currentSlide = (currentSlide + 1) % totalSlides;
-      showSlide(currentSlide);
-    }, 10000);
-
-    // Initially show the first slide
-    showSlide(currentSlide);
-  </script>
 </body>
 </html>
