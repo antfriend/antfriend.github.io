@@ -26,11 +26,41 @@
     body {
       margin: 0;
       color: var(--ink);
-      background: radial-gradient(circle at 20% 20%, #ffffff 0%, #fbf4df 42%, #f4e7c2 72%, #e7d0a5 100%);
-      background-size: 120% 120%;
+      background-color: #08140d;
+      background-image:
+        radial-gradient(circle at 20% 20%, #133222 0%, #0f281c 45%, #0a1e16 75%, #07150f 100%),
+        radial-gradient(circle at 80% 10%, rgba(120, 255, 190, 0.12), transparent 60%);
+      background-size: 140% 140%, 160% 160%;
       animation: backgroundShift 16s ease-in-out infinite alternate;
       font-family: "Space Grotesk", "Segoe UI", sans-serif;
       min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(6, 36, 20, 0.22) 0 1px,
+        rgba(6, 36, 20, 0) 1px 3px
+      );
+      mix-blend-mode: multiply;
+      opacity: 0.5;
+      animation: scanlines 6s linear infinite;
+    }
+
+    body::after {
+      background: radial-gradient(circle at 50% 0%, rgba(120, 255, 180, 0.22), transparent 60%);
+      opacity: 0.65;
     }
 
     .page {
@@ -40,6 +70,7 @@
       padding: 48px clamp(20px, 6vw, 80px) 64px;
       align-items: start;
       position: relative;
+      z-index: 1;
       overflow: hidden;
     }
 
@@ -94,6 +125,18 @@
       font-size: clamp(30px, 4vw, 48px);
       line-height: 1.05;
       animation: sway 6s ease-in-out infinite;
+    }
+
+    .brand h1 a {
+      color: #c7ffd9;
+      text-decoration: none;
+      text-shadow: 0 0 14px rgba(120, 255, 190, 0.55);
+      transition: color 0.25s ease, text-shadow 0.25s ease;
+    }
+
+    .brand h1 a:hover {
+      color: #ffd27a;
+      text-shadow: 0 0 16px rgba(255, 210, 122, 0.6);
     }
 
     .brand p {
@@ -363,6 +406,11 @@
     @keyframes scan {
       0% { background-position: 0 0; }
       100% { background-position: 100px 0; }
+    }
+
+    @keyframes scanlines {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(3px); }
     }
 
     @media (max-width: 900px) {
