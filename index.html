@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/eyeball.css" />
   <style>
     :root {
       --ink: #0b1112;
@@ -411,7 +412,7 @@
         </div>
       </section>
       <footer>
-        &copy; 2026 Toot Toot Engineering. All signals cleared.
+        &copy; 2026 Toot Toot Engineering. All signals cleared.<span id="eyeball-foot"></span>
       </footer>
     </header>
 
@@ -419,7 +420,7 @@
       <section class="modules" id="manifesto">
         <article class="module">
           <h3>Resonant Craft</h3>
-          <p><a href="https://github.com/antfriend/toot-toot-engineering/blob/main/README.md">toot toot repo</a></p>
+          <p><span id="eyeball-one"></span></p>
         </article>
         <article class="module">
           <h3>Signal Ecology</h3>
@@ -474,5 +475,11 @@
       </section>
     </main>
   </div>
+      <script src="js/eyeball.js"></script>
+    <script>
+
+      window.mountEyeball("eyeball-one");
+      window.mountEyeball("eyeball-foot");
+    </script>
 </body>
 </html>
