@@ -48,10 +48,10 @@ Toot-Toot Engineering is designed for people working in multi-step, intention-he
 
 It is especially useful for:
 
-- [Engineers](./AUDIENCE.md#engineers) building reviewable, Git-native workflows  
-- [Researchers](./AUDIENCE.md#researchers) designing reproducible AI-assisted methods  
-- [Makers](./AUDIENCE.md#makers) iterating across experiments and build sessions  
-- [Storytellers](./AUDIENCE.md#storytellers) maintaining continuity across creative phases  
+- [Engineers](./AUDIENCE.html#engineers) building reviewable, Git-native workflows  
+- [Researchers](./AUDIENCE.html#researchers) designing reproducible AI-assisted methods  
+- [Makers](./AUDIENCE.html#makers) iterating across experiments and build sessions  
+- [Storytellers](./AUDIENCE.html#storytellers) maintaining continuity across creative phases  
 
 Across all of these groups, TTE helps externalize structure and intent so both humans and AI systems can work more effectively together.
 
@@ -77,7 +77,7 @@ This repo includes a local agent runner for the Toot Toot Engineering workflow.
    - `.\run_tte.ps1` (Windows PowerShell)
 
 ## Notes
-- The workflow instructions live in `README.md` and `AGENTS.md`.
+- The workflow instructions live in `README.html` and `AGENTS.html`.
 - The agent reads and operates inside the repo workspace.
 - `tte_monitor.py` uses only the Python standard library, but it requires `tkinter` (installed via system packages, not pip).
   - macOS: `brew install python-tk`

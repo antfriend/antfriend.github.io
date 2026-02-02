@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Toot Toot Engineering - Human Readme</title>
+  </head>
+  <body>
+    <a href="index.html">Home</a>
+
+    <main>
+      <p>
+        This document is intended for humans and should be ignored by agents
+        unless a human explicitly requests it.
+      </p>
+
+      <h2>Toot Toot Engineering</h2>
+      <p>is AI-native.</p>
+      <p>It does three things AI systems desperately need:</p>
+      <ul>
+        <li>Slows them down</li>
+        <li>Makes them explain themselves</li>
+        <li>Forces them to leave artifacts behind</li>
+      </ul>
+      <p>
+        TTE can make an AI agent system (like yours, human!) work better by
+        externalizing structure, intent, and sequencing that would otherwise
+        live implicitly inside prompts, code, or runtime state.
+      </p>
+
+      <h3>TTE is Semantic Engineering</h3>
+      <p>It's a factory that makes what you mean.</p>
+      <img src="feature-side-by-side.png" alt="feature side by side" />
+
+      <h2>What is different</h2>
+      <p>about toot-toot engineering is that it is</p>
+      <ul>
+        <li>free</li>
+        <li>open-source</li>
+        <li>plain text files in English</li>
+      </ul>
+      <p>No runtime dependencies, no libraries. Just this, you are looking at it.</p>
+      <p>
+        The magic is that there is no magic to this, just read the whole thing
+        as a human or an agent, and you'll understand everything.
+      </p>
+
+      <h2>What's novel is not the components.</h2>
+      <p>It's the placement.</p>
+
+      <p>Most AI tooling tries to improve things:</p>
+      <p>inside the model</p>
+      <p>inside prompts</p>
+      <p>inside agents</p>
+      <p>inside orchestration layers</p>
+
+      <p>Toot Toot Engineering moves improvement outside all of that.</p>
+      <img
+        src="how-toot-toot-engineering-helps.png"
+        alt="how toot toot engineering helps AI agents"
+      />
+
+      <h2>Who This Is For</h2>
+      <p>
+        Toot-Toot Engineering is designed for people working in multi-step,
+        intention-heavy processes who want clarity, reliability, and
+        repeatability when collaborating with AI systems.
+      </p>
+      <p>It is especially useful for:</p>
+      <ul>
+        <li>
+          <a href="./AUDIENCE.html#engineers">Engineers</a> building reviewable,
+          Git-native workflows
+        </li>
+        <li>
+          <a href="./AUDIENCE.html#researchers">Researchers</a> designing
+          reproducible AI-assisted methods
+        </li>
+        <li>
+          <a href="./AUDIENCE.html#makers">Makers</a> iterating across
+          experiments and build sessions
+        </li>
+        <li>
+          <a href="./AUDIENCE.html#storytellers">Storytellers</a> maintaining
+          continuity across creative phases
+        </li>
+      </ul>
+      <p>
+        Across all of these groups, TTE helps externalize structure and intent
+        so both humans and AI systems can work more effectively together.
+      </p>
+      <p>
+        This is a fork-able workshop. It is shared and propagated by forking.
+        To create a variant, branch it or fork it.
+      </p>
+
+      <h1>Toot Toot Engineering (Runner)</h1>
+      <p>This repo includes a local agent runner for the Toot Toot Engineering workflow.</p>
+
+      <h2>Quick start</h2>
+      <ol>
+        <li>
+          Install dependencies.
+          <ul>
+            <li><code>pip install -r requirements.txt</code></li>
+            <li>or <code>pip install openai</code></li>
+          </ul>
+        </li>
+        <li>
+          Set your API key:
+          <ul>
+            <li><code>export OPENAI_API_KEY="..."</code> (macOS/Linux)</li>
+            <li><code>setx OPENAI_API_KEY "..."</code> (Windows PowerShell)</li>
+          </ul>
+        </li>
+        <li>Run the agent: <code>python tte_agent.py</code> (or <code>python3 tte_agent.py</code>)</li>
+        <li>
+          Run monitor + agent together (monitor logs to
+          <code>%TEMP%\tte_monitor.log</code> on Windows or
+          <code>/tmp/tte_monitor.log</code> on macOS/Linux):
+          <ul>
+            <li><code>./run_tte.sh</code> (macOS/Linux)</li>
+            <li><code>run_tte.bat</code> (Windows cmd)</li>
+            <li><code>.\run_tte.ps1</code> (Windows PowerShell)</li>
+          </ul>
+        </li>
+      </ol>
+
+      <h2>Notes</h2>
+      <ul>
+        <li>The workflow instructions live in <code>README.html</code> and <code>AGENTS.html</code>.</li>
+        <li>The agent reads and operates inside the repo workspace.</li>
+        <li>
+          <code>tte_monitor.py</code> uses only the Python standard library, but it
+          requires <code>tkinter</code> (installed via system packages, not pip).
+          <ul>
+            <li>macOS: <code>brew install python-tk</code></li>
+            <li>Ubuntu/Debian: <code>sudo apt-get install python3-tk</code></li>
+            <li>Fedora: <code>sudo dnf install python3-tkinter</code></li>
+            <li>Arch: <code>sudo pacman -S tk</code></li>
+            <li>Windows: use the official python.org installer and ensure "tcl/tk and IDLE" is selected.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2>Troubleshooting</h2>
+      <ul>
+        <li>If you see "Missing OPENAI_API_KEY", confirm the env var is set in the shell you are using.</li>
+        <li>If Python cannot import <code>openai</code>, rerun the install step or ensure you are in the right virtualenv.</li>
+      </ul>
+    </main>
+  </body>
+</html>
