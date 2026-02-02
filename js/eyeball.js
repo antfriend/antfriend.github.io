@@ -97,20 +97,36 @@
       Math.floor(Math.random() * (3000 - 1500 + 1) + 1500)
     );
 
-    const map = (value, x1, y1, x2, y2) =>
-      ((value - x1) * (y2 - x2)) / (y1 - x1) + x2;
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    let centerX = 50;
+    let centerY = 50;
+
+    const updateCenter = () => {
+      const rect = svg.getBoundingClientRect();
+      centerX = rect.left + rect.width / 2;
+      centerY = rect.top + rect.height / 2;
+    };
+
+    updateCenter();
 
     const handleMove = (ev) => {
-      const lookX = 50 + map(ev.clientX, 0 + x, 1000 - x, -12, 12);
-      const lookY = 50 + map(ev.clientY, 0 + y, 1000 - y, -12, 12);
+      const dx = clamp(ev.clientX - centerX, -120, 120);
+      const dy = clamp(ev.clientY - centerY, -120, 120);
+      const lookX = 50 + (dx / 120) * 12;
+      const lookY = 50 + (dy / 120) * 12;
       apply(lookX, lookY);
     };
 
     window.addEventListener("mousemove", handleMove, { capture: true });
+    window.addEventListener("resize", updateCenter);
+    window.addEventListener("scroll", updateCenter, { passive: true });
 
     const cleanup = () => {
       clearInterval(timer);
       window.removeEventListener("mousemove", handleMove, { capture: true });
+      window.removeEventListener("resize", updateCenter);
+      window.removeEventListener("scroll", updateCenter, { passive: true });
     };
 
     window.addEventListener("beforeunload", cleanup);
