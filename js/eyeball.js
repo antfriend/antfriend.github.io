@@ -36,7 +36,7 @@
         ry: "20",
         stroke: "black",
         "stroke-width": "1",
-        fill: "red",
+        fill: "var(--eyeball-red)",
       })
     );
 

@@ -12,9 +12,11 @@
     :root {
       --ink: #0b1112;
       --fog: #f2f0e9;
-      --brass: #c2a15f;
+      --eyeball-red: #ff0000;
+      --eyeball-red-rgb: 255, 0, 0;
+      --brass: var(--eyeball-red);
       --teal: #0f8b8d;
-      --ember: #e55d3a;
+      --ember: var(--eyeball-red);
       --smoke: #1f2a2b;
       --steam: rgba(255, 255, 255, 0.6);
     }
@@ -135,8 +137,8 @@
     }
 
     .brand h1 a:hover {
-      color: #ffd27a;
-      text-shadow: 0 0 16px rgba(255, 210, 122, 0.6);
+      color: var(--eyeball-red);
+      text-shadow: 0 0 16px rgba(var(--eyeball-red-rgb), 0.6);
     }
 
     .brand p {
@@ -227,7 +229,7 @@
       right: -40px;
       width: 90px;
       height: 90px;
-      background: radial-gradient(circle, rgba(229, 93, 58, 0.4), transparent 70%);
+      background: radial-gradient(circle, rgba(var(--eyeball-red-rgb), 0.4), transparent 70%);
       animation: pulseGlow 5s ease-in-out infinite;
     }
 
@@ -400,7 +402,7 @@
 
     @keyframes pulseGlow {
       0%, 100% { box-shadow: 0 16px 40px rgba(11, 17, 18, 0.2); }
-      50% { box-shadow: 0 26px 60px rgba(229, 93, 58, 0.28); }
+      50% { box-shadow: 0 26px 60px rgba(var(--eyeball-red-rgb), 0.28); }
     }
 
     @keyframes scan {
