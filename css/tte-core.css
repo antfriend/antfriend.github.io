@@ -1,13 +1,13 @@
 :root {
   --ink: #0b1112;
-  --fog: #f2f0e9;
+  --fog: #d7ffe0;
   --eyeball-red: #ff0000;
   --eyeball-red-rgb: 255, 0, 0;
   --brass: var(--eyeball-red);
   --teal: #0f8b8d;
   --ember: var(--eyeball-red);
   --smoke: #1f2a2b;
-  --steam: rgba(255, 255, 255, 0.6);
+  --steam: rgba(170, 255, 200, 0.55);
   --page-pad: clamp(20px, 6vw, 80px);
 }
 
@@ -24,15 +24,18 @@ a {
   color: #c7ffd9;
   text-decoration: none;
   text-shadow: 0 0 10px rgba(120, 255, 190, 0.45);
-  transition: color 0.25s ease, text-shadow 0.25s ease;
+  transition: color 0.25s ease, text-shadow 0.25s ease, transform 0.2s ease, filter 0.2s ease;
   font-family: "Unbounded", "Space Grotesk", sans-serif;
   font-weight: 700;
   letter-spacing: 0.2px;
+  display: inline-block;
 }
 
 a:hover {
-  color: var(--eyeball-red);
-  text-shadow: 0 0 14px rgba(var(--eyeball-red-rgb), 0.6);
+  color: #dfffe6;
+  text-shadow: 0 0 16px rgba(130, 255, 190, 0.8), 0 0 30px rgba(80, 255, 140, 0.6);
+  transform: translateY(-2px) scale(1.03);
+  filter: brightness(1.1);
 }
 
 main a,
@@ -134,7 +137,7 @@ header {
   background: linear-gradient(135deg, var(--teal), var(--smoke));
   display: grid;
   place-items: center;
-  color: #fff;
+  color: #d7ffe0;
   font-family: "Unbounded", "Space Grotesk", sans-serif;
   font-weight: 700;
   font-size: 20px;
@@ -176,7 +179,7 @@ header {
   gap: 18px;
   padding: 28px;
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(210, 255, 218, 0.75);
   backdrop-filter: blur(6px);
   border: 1px solid rgba(15, 139, 141, 0.25);
   box-shadow: 0 20px 45px rgba(12, 18, 18, 0.12);
@@ -237,7 +240,7 @@ main {
 }
 
 .module {
-  background: #ffffff;
+  background: #e4ffe8;
   border-radius: 20px;
   padding: 18px 18px 20px;
   border: 1px solid rgba(11, 17, 18, 0.12);
@@ -325,7 +328,7 @@ main {
 }
 
 .panel {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(214, 255, 224, 0.75);
   border-radius: 18px;
   padding: 16px;
   border: 1px solid rgba(11, 17, 18, 0.1);
@@ -372,6 +375,22 @@ main {
   border-radius: 16px;
   border: 1px solid rgba(11, 17, 18, 0.12);
   box-shadow: 0 12px 28px rgba(11, 17, 18, 0.18);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  cursor: zoom-in;
+}
+
+.media:hover {
+  position: fixed;
+  inset: 3vh 3vw;
+  width: 94vw;
+  height: 94vh;
+  object-fit: contain;
+  background: rgba(5, 18, 10, 0.94);
+  box-shadow: 0 30px 90px rgba(90, 255, 160, 0.4);
+  border-color: rgba(140, 255, 190, 0.45);
+  z-index: 999;
+  filter: saturate(1.2) brightness(1.05);
+  cursor: zoom-out;
 }
 
 .steam-stack {
@@ -392,7 +411,7 @@ main {
 .steam:nth-child(3) { animation-delay: 1.6s; }
 
 .note {
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(206, 255, 218, 0.7);
   border-radius: 16px;
   padding: 16px;
   border: 1px solid rgba(11, 17, 18, 0.1);
