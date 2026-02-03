@@ -74,6 +74,15 @@
       font-size: 14px;
     }
 
+    .title a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .title a:hover {
+      text-decoration: underline;
+    }
+
     .controls {
       display: flex;
       flex-wrap: wrap;
@@ -322,8 +331,12 @@
 
     refreshBtn.addEventListener("click", () => loadDb(true));
 
-    function setStatus(message) {
+    function setStatusMessage(message) {
       statusEl.textContent = message;
+    }
+
+    function setStatusLink(recordCount) {
+      statusEl.innerHTML = `DB: <a href="${DB_PATH}">${DB_PATH}</a> · ${recordCount} records`;
     }
 
     function sanitize(text) {
@@ -350,10 +363,10 @@
           renderList();
           renderRecord();
           renderGraph();
-          setStatus(`DB: ${DB_PATH} · ${order.length} records`);
+          setStatusLink(order.length);
         })
         .catch((err) => {
-          setStatus(err.message);
+          setStatusMessage(err.message);
           state.records = {};
           state.order = [];
           state.selectedId = null;
