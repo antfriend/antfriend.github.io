@@ -126,6 +126,34 @@
 
       window.mountEyeball("eyeball-one");
       window.mountEyeball("eyeball-foot");
+      (function enableImageZoom() {
+        const zoomables = document.querySelectorAll(".media");
+        let active = null;
+
+        const closeZoom = () => {
+          if (!active) return;
+          active.classList.remove("media--zoomed");
+          active = null;
+          document.body.classList.remove("has-zoom");
+        };
+
+        zoomables.forEach((img) => {
+          img.addEventListener("click", (event) => {
+            event.stopPropagation();
+            if (active && active !== img) {
+              active.classList.remove("media--zoomed");
+            }
+            const isZoomed = img.classList.toggle("media--zoomed");
+            document.body.classList.toggle("has-zoom", isZoomed);
+            active = isZoomed ? img : null;
+          });
+        });
+
+        document.addEventListener("click", closeZoom);
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") closeZoom();
+        });
+      })();
     </script>
 </body>
 </html>

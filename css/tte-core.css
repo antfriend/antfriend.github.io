@@ -21,10 +21,10 @@ body {
 }
 
 a {
-  color: #c7ffd9;
+  color: #0f4f2d;
   text-decoration: none;
-  text-shadow: 0 0 10px rgba(120, 255, 190, 0.45);
-  transition: color 0.25s ease, text-shadow 0.25s ease, transform 0.2s ease, filter 0.2s ease;
+  text-shadow: 0 0 10px rgba(180, 255, 220, 0.4), 0 0 2px rgba(10, 30, 18, 0.6);
+  transition: color 0.25s ease, text-shadow 0.25s ease, transform 0.2s ease, filter 0.2s ease, background-color 0.25s ease;
   font-family: "Unbounded", "Space Grotesk", sans-serif;
   font-weight: 700;
   letter-spacing: 0.2px;
@@ -32,10 +32,11 @@ a {
 }
 
 a:hover {
-  color: #dfffe6;
+  color: #e6ffee;
   text-shadow: 0 0 16px rgba(130, 255, 190, 0.8), 0 0 30px rgba(80, 255, 140, 0.6);
   transform: translateY(-2px) scale(1.03);
   filter: brightness(1.1);
+  background-color: rgba(10, 40, 24, 0.2);
 }
 
 main a,
@@ -379,18 +380,35 @@ main {
   cursor: zoom-in;
 }
 
-.media:hover {
+.media.media--zoomed {
   position: fixed;
-  inset: 3vh 3vw;
-  width: 94vw;
-  height: 94vh;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  height: auto;
+  max-width: 92vw;
+  max-height: 92vh;
+  transform: translate(-50%, -50%);
   object-fit: contain;
   background: rgba(5, 18, 10, 0.94);
   box-shadow: 0 30px 90px rgba(90, 255, 160, 0.4);
   border-color: rgba(140, 255, 190, 0.45);
-  z-index: 999;
+  z-index: 1000;
   filter: saturate(1.2) brightness(1.05);
   cursor: zoom-out;
+}
+
+body.has-zoom {
+  overflow: hidden;
+}
+
+body.has-zoom .page::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 16, 9, 0.72);
+  backdrop-filter: blur(2px);
+  z-index: 900;
 }
 
 .steam-stack {
