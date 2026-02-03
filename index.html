@@ -128,24 +128,26 @@
       window.mountEyeball("eyeball-foot");
       (function enableImageZoom() {
         const zoomables = document.querySelectorAll(".media");
-        let active = null;
+        let overlay = null;
 
         const closeZoom = () => {
-          if (!active) return;
-          active.classList.remove("media--zoomed");
-          active = null;
+          if (!overlay) return;
+          overlay.remove();
+          overlay = null;
           document.body.classList.remove("has-zoom");
         };
 
         zoomables.forEach((img) => {
           img.addEventListener("click", (event) => {
             event.stopPropagation();
-            if (active && active !== img) {
-              active.classList.remove("media--zoomed");
-            }
-            const isZoomed = img.classList.toggle("media--zoomed");
-            document.body.classList.toggle("has-zoom", isZoomed);
-            active = isZoomed ? img : null;
+            closeZoom();
+            overlay = document.createElement("div");
+            overlay.className = "media-zoom-overlay";
+            const clone = img.cloneNode(true);
+            overlay.appendChild(clone);
+            document.body.appendChild(overlay);
+            document.body.classList.add("has-zoom");
+            overlay.addEventListener("click", closeZoom);
           });
         });
 

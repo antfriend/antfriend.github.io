@@ -1,6 +1,6 @@
 :root {
   --ink: #0b1112;
-  --fog: #d7ffe0;
+  --fog: #b9e9c6;
   --eyeball-red: #ff0000;
   --eyeball-red-rgb: 255, 0, 0;
   --brass: var(--eyeball-red);
@@ -180,7 +180,7 @@ header {
   gap: 18px;
   padding: 28px;
   border-radius: 28px;
-  background: rgba(210, 255, 218, 0.75);
+  background: rgba(142, 205, 168, 0.78);
   backdrop-filter: blur(6px);
   border: 1px solid rgba(15, 139, 141, 0.25);
   box-shadow: 0 20px 45px rgba(12, 18, 18, 0.12);
@@ -241,7 +241,7 @@ main {
 }
 
 .module {
-  background: #e4ffe8;
+  background: #c0e8cf;
   border-radius: 20px;
   padding: 18px 18px 20px;
   border: 1px solid rgba(11, 17, 18, 0.12);
@@ -329,7 +329,7 @@ main {
 }
 
 .panel {
-  background: rgba(214, 255, 224, 0.75);
+  background: rgba(160, 220, 185, 0.78);
   border-radius: 18px;
   padding: 16px;
   border: 1px solid rgba(11, 17, 18, 0.1);
@@ -380,35 +380,30 @@ main {
   cursor: zoom-in;
 }
 
-.media.media--zoomed {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: auto;
-  height: auto;
-  max-width: 92vw;
-  max-height: 92vh;
-  transform: translate(-50%, -50%);
-  object-fit: contain;
-  background: rgba(5, 18, 10, 0.94);
-  box-shadow: 0 30px 90px rgba(90, 255, 160, 0.4);
-  border-color: rgba(140, 255, 190, 0.45);
-  z-index: 1000;
-  filter: saturate(1.2) brightness(1.05);
-  cursor: zoom-out;
-}
-
 body.has-zoom {
   overflow: hidden;
 }
 
-body.has-zoom .page::after {
-  content: "";
+.media-zoom-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(4, 16, 9, 0.72);
+  background: rgba(4, 16, 9, 0.8);
   backdrop-filter: blur(2px);
-  z-index: 900;
+  display: grid;
+  place-items: center;
+  z-index: 2000;
+}
+
+.media-zoom-overlay img {
+  max-width: 92vw;
+  max-height: 92vh;
+  object-fit: contain;
+  border-radius: 18px;
+  border: 1px solid rgba(140, 255, 190, 0.45);
+  background: rgba(5, 18, 10, 0.94);
+  box-shadow: 0 30px 90px rgba(90, 255, 160, 0.4);
+  filter: saturate(1.2) brightness(1.05);
+  cursor: zoom-out;
 }
 
 .steam-stack {
@@ -429,7 +424,7 @@ body.has-zoom .page::after {
 .steam:nth-child(3) { animation-delay: 1.6s; }
 
 .note {
-  background: rgba(206, 255, 218, 0.7);
+  background: rgba(150, 215, 178, 0.76);
   border-radius: 16px;
   padding: 16px;
   border: 1px solid rgba(11, 17, 18, 0.1);
