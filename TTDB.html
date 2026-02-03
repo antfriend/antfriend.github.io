@@ -7,41 +7,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/tte-common.css" />
   <style>
-    :root {
-      color-scheme: dark;
-      --ink: #0b0f12;
-      --panel: #11151a;
-      --panel-2: #0e1216;
-      --accent: #7cc7ff;
-      --accent-2: #ffd166;
-      --muted: #a7a7b3;
-      --line: #2b3440;
-      --glow: rgba(124, 199, 255, 0.3);
-      --title: #e9e9f0;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Space Grotesk", "Segoe UI", sans-serif;
-      color: var(--title);
-      background:
-        radial-gradient(circle at 20% 20%, #1b2530 0%, #0f141b 55%, #0a0e13 100%),
-        radial-gradient(circle at 80% 10%, rgba(124, 199, 255, 0.12), transparent 60%);
-      background-attachment: fixed;
-    }
-
     .page {
       max-width: 1280px;
       margin: 0 auto;
       padding: 32px clamp(18px, 4vw, 48px) 48px;
       display: grid;
       gap: 20px;
+      position: relative;
+      z-index: 1;
     }
 
     header {
@@ -52,9 +27,9 @@
       gap: 16px;
       padding: 18px 22px;
       border-radius: 18px;
-      background: rgba(17, 21, 26, 0.85);
-      border: 1px solid rgba(124, 199, 255, 0.15);
-      box-shadow: 0 20px 40px rgba(4, 8, 12, 0.45);
+      background: rgba(192, 232, 207, 0.88);
+      border: 1px solid rgba(11, 17, 18, 0.12);
+      box-shadow: 0 18px 36px rgba(11, 17, 18, 0.18);
     }
 
     .home-link {
@@ -64,12 +39,12 @@
       z-index: 10;
       padding: 6px 12px;
       border-radius: 999px;
-      border: 1px solid rgba(124, 199, 255, 0.2);
-      background: rgba(12, 16, 20, 0.9);
-      color: var(--accent);
+      border: 1px solid var(--line);
+      background: rgba(192, 232, 207, 0.92);
+      color: var(--ink);
       font-size: 14px;
       text-decoration: none;
-      box-shadow: 0 10px 24px rgba(4, 8, 12, 0.4);
+      box-shadow: 0 10px 24px rgba(11, 17, 18, 0.18);
       transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     }
 
@@ -117,7 +92,7 @@
       border-radius: 999px;
       border: 1px solid var(--line);
       background: var(--panel-2);
-      color: var(--title);
+      color: var(--ink);
       font-size: 14px;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
@@ -138,6 +113,7 @@
       border: 1px solid var(--line);
       background: var(--panel-2);
       font-size: 14px;
+      color: var(--ink);
     }
 
     .toggle input {
@@ -151,11 +127,11 @@
     }
 
     .panel {
-      background: rgba(17, 21, 26, 0.9);
-      border: 1px solid rgba(124, 199, 255, 0.12);
+      background: var(--panel);
+      border: 1px solid var(--line);
       border-radius: 18px;
       padding: 16px;
-      box-shadow: 0 18px 40px rgba(4, 8, 12, 0.35);
+      box-shadow: 0 16px 36px rgba(11, 17, 18, 0.14);
       display: grid;
       gap: 12px;
     }
@@ -177,7 +153,7 @@
       border-radius: 12px;
       border: 1px solid transparent;
       background: var(--panel-2);
-      color: var(--title);
+      color: var(--ink);
       font-family: inherit;
       cursor: pointer;
       transition: border-color 0.2s ease, background 0.2s ease;
@@ -189,8 +165,8 @@
 
     .list button.active {
       border-color: var(--accent);
-      background: rgba(124, 199, 255, 0.1);
-      box-shadow: inset 0 0 0 1px rgba(124, 199, 255, 0.2);
+      background: rgba(15, 139, 141, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(15, 139, 141, 0.2);
     }
 
     .record {
@@ -210,24 +186,24 @@
     }
 
     .record h2 {
-      color: var(--accent-2);
+      color: var(--title);
       font-size: 22px;
     }
 
     .record h3 {
-      color: #f4a261;
+      color: var(--teal);
       font-size: 18px;
     }
 
     .record h4 {
-      color: #e76f51;
+      color: var(--eyeball-red);
       font-size: 16px;
     }
 
     .record p {
       margin: 0;
       line-height: 1.6;
-      color: var(--title);
+      color: var(--ink);
     }
 
     .record ul {
@@ -238,9 +214,9 @@
     .record blockquote {
       margin: 0;
       padding: 8px 12px;
-      border-left: 3px solid rgba(124, 199, 255, 0.4);
+      border-left: 3px solid rgba(15, 139, 141, 0.45);
       color: var(--muted);
-      background: rgba(12, 16, 20, 0.6);
+      background: rgba(11, 17, 18, 0.08);
     }
 
     .record pre {
@@ -269,9 +245,9 @@
     }
 
     .graph-wrap {
-      background: rgba(10, 12, 16, 0.9);
+      background: rgba(11, 17, 18, 0.08);
       border-radius: 14px;
-      border: 1px solid rgba(124, 199, 255, 0.12);
+      border: 1px solid var(--line);
       min-height: 220px;
       position: relative;
     }
@@ -340,6 +316,18 @@
       lastText: "",
       positions: {},
     };
+
+    const palette = (() => {
+      const styles = getComputedStyle(document.documentElement);
+      const read = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+      return {
+        accent: read("--accent", "#0f8b8d"),
+        accentAlt: read("--accent-2", "#e76f51"),
+        ink: read("--ink", "#0b1112"),
+        muted: read("--muted", "rgba(11, 17, 18, 0.6)"),
+        line: read("--line", "rgba(11, 17, 18, 0.2)"),
+      };
+    })();
 
     const statusEl = document.getElementById("status");
     const listEl = document.getElementById("recordList");
@@ -687,7 +675,7 @@
         ctx.beginPath();
         ctx.moveTo(start[0], start[1]);
         ctx.lineTo(end[0], end[1]);
-        ctx.strokeStyle = source === selected || target === selected ? "#7cc7ff" : "#39424e";
+        ctx.strokeStyle = source === selected || target === selected ? palette.accent : palette.line;
         ctx.lineWidth = source === selected || target === selected ? 2 : 1;
         ctx.stroke();
       });
@@ -699,14 +687,14 @@
         const radius = isSelected ? 8 : 6;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = isSelected ? "#ffd166" : "#6c7a89";
+        ctx.fillStyle = isSelected ? palette.accentAlt : palette.muted;
         ctx.fill();
         ctx.lineWidth = isNeighbor ? 2 : 1;
-        ctx.strokeStyle = isNeighbor ? "#7cc7ff" : "#0b0b10";
+        ctx.strokeStyle = isNeighbor ? palette.accent : palette.ink;
         ctx.stroke();
 
         if (isSelected || isNeighbor) {
-          ctx.fillStyle = "#e9e9f0";
+          ctx.fillStyle = palette.ink;
           ctx.font = "bold 11px Space Grotesk";
           ctx.fillText(node, x + 8, y - 8);
         }
