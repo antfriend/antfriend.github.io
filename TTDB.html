@@ -566,7 +566,7 @@
         if (headingMatch) {
           flushList();
           const level = Math.min(4, headingMatch[1].length);
-          const tag = level === 1 ? \"h2\" : level === 2 ? \"h3\" : \"h4\";
+          const tag = level === 1 ? "h2" : level === 2 ? "h3" : "h4";
           const heading = document.createElement(tag);
           heading.textContent = headingMatch[2];
           fragment.appendChild(heading);
