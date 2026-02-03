@@ -25,6 +25,9 @@ a {
   text-decoration: none;
   text-shadow: 0 0 10px rgba(120, 255, 190, 0.45);
   transition: color 0.25s ease, text-shadow 0.25s ease;
+  font-family: "Unbounded", "Space Grotesk", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.2px;
 }
 
 a:hover {
@@ -38,9 +41,6 @@ main a,
 .signal a,
 .note a,
 footer a {
-  font-family: "Unbounded", "Space Grotesk", sans-serif;
-  font-weight: 600;
-  letter-spacing: 0.2px;
   font-size: 0.95em;
 }
 
