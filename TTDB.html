@@ -57,6 +57,28 @@
       box-shadow: 0 20px 40px rgba(4, 8, 12, 0.45);
     }
 
+    .home-link {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 10;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(124, 199, 255, 0.2);
+      background: rgba(12, 16, 20, 0.9);
+      color: var(--accent);
+      font-size: 14px;
+      text-decoration: none;
+      box-shadow: 0 10px 24px rgba(4, 8, 12, 0.4);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .home-link:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 14px var(--glow);
+    }
+
     .title {
       display: grid;
       gap: 6px;
@@ -277,6 +299,7 @@
 </head>
 <body>
   <div class="page">
+    <a class="home-link" href="index.html">TTE Home</a>
     <header>
       <div class="title">
         <h1>TTDB: MyMentalPalace</h1>
