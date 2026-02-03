@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TTDB Viewer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #0b0f12;
+      --panel: #11151a;
+      --panel-2: #0e1216;
+      --accent: #7cc7ff;
+      --accent-2: #ffd166;
+      --muted: #a7a7b3;
+      --line: #2b3440;
+      --glow: rgba(124, 199, 255, 0.3);
+      --title: #e9e9f0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--title);
+      background:
+        radial-gradient(circle at 20% 20%, #1b2530 0%, #0f141b 55%, #0a0e13 100%),
+        radial-gradient(circle at 80% 10%, rgba(124, 199, 255, 0.12), transparent 60%);
+      background-attachment: fixed;
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px clamp(18px, 4vw, 48px) 48px;
+      display: grid;
+      gap: 20px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      border-radius: 18px;
+      background: rgba(17, 21, 26, 0.85);
+      border: 1px solid rgba(124, 199, 255, 0.15);
+      box-shadow: 0 20px 40px rgba(4, 8, 12, 0.45);
+    }
+
+    .title {
+      display: grid;
+      gap: 6px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-family: "Unbounded", "Space Grotesk", sans-serif;
+      font-size: clamp(26px, 4vw, 38px);
+      letter-spacing: 0.5px;
+    }
+
+    .title span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pill {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--title);
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .pill:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--glow);
+    }
+
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      font-size: 14px;
+    }
+
+    .toggle input {
+      accent-color: var(--accent);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(200px, 0.75fr) minmax(280px, 2fr);
+      gap: 20px;
+    }
+
+    .panel {
+      background: rgba(17, 21, 26, 0.9);
+      border: 1px solid rgba(124, 199, 255, 0.12);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 18px 40px rgba(4, 8, 12, 0.35);
+      display: grid;
+      gap: 12px;
+    }
+
+    .list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 6px;
+      max-height: 70vh;
+      overflow: auto;
+    }
+
+    .list button {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: var(--panel-2);
+      color: var(--title);
+      font-family: inherit;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .list button:hover {
+      border-color: rgba(124, 199, 255, 0.4);
+    }
+
+    .list button.active {
+      border-color: var(--accent);
+      background: rgba(124, 199, 255, 0.1);
+      box-shadow: inset 0 0 0 1px rgba(124, 199, 255, 0.2);
+    }
+
+    .record {
+      display: grid;
+      gap: 14px;
+      min-height: 240px;
+      max-height: 55vh;
+      overflow: auto;
+      padding-right: 6px;
+    }
+
+    .record h2,
+    .record h3,
+    .record h4 {
+      margin: 0;
+      font-family: "Unbounded", "Space Grotesk", sans-serif;
+    }
+
+    .record h2 {
+      color: var(--accent-2);
+      font-size: 22px;
+    }
+
+    .record h3 {
+      color: #f4a261;
+      font-size: 18px;
+    }
+
+    .record h4 {
+      color: #e76f51;
+      font-size: 16px;
+    }
+
+    .record p {
+      margin: 0;
+      line-height: 1.6;
+      color: var(--title);
+    }
+
+    .record ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .record blockquote {
+      margin: 0;
+      padding: 8px 12px;
+      border-left: 3px solid rgba(124, 199, 255, 0.4);
+      color: var(--muted);
+      background: rgba(12, 16, 20, 0.6);
+    }
+
+    .record pre {
+      margin: 0;
+      padding: 12px;
+      background: #0b0f14;
+      border-radius: 12px;
+      color: #c4f1ff;
+      font-family: "Courier New", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      overflow: auto;
+    }
+
+    .record .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .record .related a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .record .related a:hover {
+      text-decoration: underline;
+    }
+
+    .graph-wrap {
+      background: rgba(10, 12, 16, 0.9);
+      border-radius: 14px;
+      border: 1px solid rgba(124, 199, 255, 0.12);
+      min-height: 220px;
+      position: relative;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    @media (max-width: 920px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .record {
+        max-height: none;
+      }
+
+      .list {
+        max-height: 40vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="title">
+        <h1>TTDB: MyMentalPalace</h1>
+        <span id="status">Loading MyMentalPalaceDB.md...</span>
+      </div>
+      <div class="controls">
+        <button class="pill" id="refresh">Refresh</button>
+        <label class="toggle">
+          <input type="checkbox" id="autoRefresh" checked />
+          Auto refresh
+        </label>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="panel">
+        <strong>Records</strong>
+        <ul class="list" id="recordList"></ul>
+      </section>
+
+      <section class="panel">
+        <div class="record" id="recordView"></div>
+        <div class="graph-wrap">
+          <canvas id="graph"></canvas>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const DB_PATH = "MyMentalPalaceDB.md";
+    const REFRESH_MS = 1500;
+
+    const state = {
+      records: {},
+      order: [],
+      selectedId: null,
+      lastText: "",
+      positions: {},
+    };
+
+    const statusEl = document.getElementById("status");
+    const listEl = document.getElementById("recordList");
+    const viewEl = document.getElementById("recordView");
+    const graphCanvas = document.getElementById("graph");
+    const refreshBtn = document.getElementById("refresh");
+    const autoRefresh = document.getElementById("autoRefresh");
+
+    const ctx = graphCanvas.getContext("2d");
+    const resizeObserver = new ResizeObserver(() => renderGraph());
+    resizeObserver.observe(graphCanvas.parentElement);
+
+    refreshBtn.addEventListener("click", () => loadDb(true));
+
+    function setStatus(message) {
+      statusEl.textContent = message;
+    }
+
+    function sanitize(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function loadDb(force = false) {
+      fetch(DB_PATH, { cache: "no-store" })
+        .then((res) => {
+          if (!res.ok) throw new Error(`Failed to load ${DB_PATH}`);
+          return res.text();
+        })
+        .then((text) => {
+          if (!force && text === state.lastText) return;
+          state.lastText = text;
+          const { records, order, selected } = parseRecords(text);
+          state.records = records;
+          state.order = order;
+          if (!state.selectedId || !records[state.selectedId]) {
+            state.selectedId = selected || order[0] || null;
+          }
+          renderList();
+          renderRecord();
+          renderGraph();
+          setStatus(`DB: ${DB_PATH} · ${order.length} records`);
+        })
+        .catch((err) => {
+          setStatus(err.message);
+          state.records = {};
+          state.order = [];
+          state.selectedId = null;
+          renderList();
+          renderRecord();
+          renderGraph();
+        });
+    }
+
+    function parseRecords(content) {
+      let selected = null;
+      const cursorMatch = content.match(/```cursor([\s\S]*?)```/);
+      if (cursorMatch) {
+        const lines = cursorMatch[1].split(/\r?\n/);
+        let inSelected = false;
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith("selected:")) {
+            inSelected = true;
+            continue;
+          }
+          if (inSelected) {
+            const itemMatch = trimmed.match(/^-\s*(\S+)/);
+            if (itemMatch) {
+              selected = itemMatch[1];
+              break;
+            }
+            if (trimmed && !trimmed.startsWith("-")) {
+              break;
+            }
+          }
+        }
+      }
+
+      const records = {};
+      const order = [];
+      const blocks = content.split(/^\s*---+\s*$/m);
+      for (const block of blocks) {
+        const lines = block.split(/\r?\n/);
+        let headerIndex = -1;
+        for (let i = 0; i < lines.length; i += 1) {
+          if (lines[i].startsWith("@")) {
+            headerIndex = i;
+            break;
+          }
+        }
+        if (headerIndex < 0) continue;
+        const headerLine = lines[headerIndex].trim();
+        const recordId = headerLine.split(/\s+/)[0];
+        const body = lines.slice(headerIndex + 1).join("\n").trim();
+
+        let title = null;
+        for (const line of body.split(/\r?\n/)) {
+          const match = line.match(/^##\s+(.*)$/);
+          if (match) {
+            title = match[1].trim();
+            break;
+          }
+        }
+
+        const edges = [];
+        const relatesMatch = headerLine.match(/relates:([^|]+)/);
+        if (relatesMatch) {
+          const tokens = relatesMatch[1].split(",");
+          for (const tokenRaw of tokens) {
+            const token = tokenRaw.trim();
+            if (!token) continue;
+            let edgeType = "relates";
+            let target = token;
+            if (token.includes(">")) {
+              const [left, right] = token.split(">", 2);
+              edgeType = left.trim();
+              target = right.trim();
+            }
+            edges.push({ type: edgeType, target });
+          }
+        }
+
+        records[recordId] = { header: headerLine, body, title, edges };
+        order.push(recordId);
+      }
+
+      return { records, order, selected };
+    }
+
+    function renderList() {
+      listEl.innerHTML = "";
+      if (!state.order.length) {
+        const empty = document.createElement("div");
+        empty.className = "muted";
+        empty.textContent = "No records available.";
+        listEl.appendChild(empty);
+        return;
+      }
+
+      state.order.forEach((recordId) => {
+        const title = state.records[recordId]?.title;
+        const label = title ? `${recordId} - ${title}` : recordId;
+        const li = document.createElement("li");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = label;
+        if (recordId === state.selectedId) {
+          button.classList.add("active");
+        }
+        button.addEventListener("click", () => selectRecord(recordId));
+        li.appendChild(button);
+        listEl.appendChild(li);
+      });
+    }
+
+    function selectRecord(recordId) {
+      if (!state.records[recordId]) return;
+      state.selectedId = recordId;
+      renderList();
+      renderRecord();
+      renderGraph();
+    }
+
+    function renderRecord() {
+      viewEl.innerHTML = "";
+      if (!state.selectedId || !state.records[state.selectedId]) {
+        viewEl.textContent = "No record selected.";
+        return;
+      }
+
+      const record = state.records[state.selectedId];
+      const header = document.createElement("h2");
+      header.textContent = state.selectedId;
+      viewEl.appendChild(header);
+
+      const meta = document.createElement("div");
+      meta.className = "muted";
+      meta.textContent = record.header;
+      viewEl.appendChild(meta);
+
+      if (record.edges.length) {
+        const relatedTitle = document.createElement("h3");
+        relatedTitle.textContent = "Related records";
+        viewEl.appendChild(relatedTitle);
+
+        const list = document.createElement("ul");
+        list.className = "related";
+        record.edges.forEach((edge) => {
+          const item = document.createElement("li");
+          const label = document.createElement("span");
+          label.textContent = `${edge.type} -> `;
+          item.appendChild(label);
+          if (state.records[edge.target]) {
+            const link = document.createElement("a");
+            link.href = "#";
+            link.textContent = edge.target;
+            link.addEventListener("click", (event) => {
+              event.preventDefault();
+              selectRecord(edge.target);
+            });
+            item.appendChild(link);
+          } else {
+            const missing = document.createElement("span");
+            missing.className = "muted";
+            missing.textContent = edge.target;
+            item.appendChild(missing);
+          }
+          list.appendChild(item);
+        });
+        viewEl.appendChild(list);
+      }
+
+      if (record.body) {
+        viewEl.appendChild(renderMarkdown(record.body));
+      }
+    }
+
+    function renderMarkdown(text) {
+      const fragment = document.createDocumentFragment();
+      const lines = text.split(/\r?\n/);
+      let inCode = false;
+      let codeBlock = null;
+      let list = null;
+
+      const flushList = () => {
+        if (list) {
+          fragment.appendChild(list);
+          list = null;
+        }
+      };
+
+      for (const rawLine of lines) {
+        const line = rawLine.replace(/\s+$/g, "");
+
+        if (line.startsWith("```")) {
+          if (!inCode) {
+            flushList();
+            inCode = true;
+            codeBlock = document.createElement("pre");
+          } else {
+            fragment.appendChild(codeBlock || document.createElement("pre"));
+            inCode = false;
+            codeBlock = null;
+          }
+          continue;
+        }
+
+        if (inCode) {
+          codeBlock.textContent += `${line}\n`;
+          continue;
+        }
+
+        const headingMatch = line.match(/^(#{1,4})\s+(.*)$/);
+        if (headingMatch) {
+          flushList();
+          const level = Math.min(4, headingMatch[1].length);
+          const tag = level === 1 ? \"h2\" : level === 2 ? \"h3\" : \"h4\";
+          const heading = document.createElement(tag);
+          heading.textContent = headingMatch[2];
+          fragment.appendChild(heading);
+          continue;
+        }
+
+        if (/^\s*(-|\*|\d+\.)\s+/.test(line)) {
+          if (!list) {
+            list = document.createElement("ul");
+          }
+          const item = document.createElement("li");
+          item.textContent = line.replace(/^\s*(-|\*|\d+\.)\s+/, "");
+          list.appendChild(item);
+          continue;
+        }
+
+        if (/^\s*>\s+/.test(line)) {
+          flushList();
+          const quote = document.createElement("blockquote");
+          quote.textContent = line.replace(/^\s*>\s+/, "");
+          fragment.appendChild(quote);
+          continue;
+        }
+
+        if (/^\s*---+\s*$/.test(line)) {
+          flushList();
+          const rule = document.createElement("div");
+          rule.style.borderTop = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue("--line")}`;
+          rule.style.margin = "8px 0";
+          fragment.appendChild(rule);
+          continue;
+        }
+
+        if (!line.trim()) {
+          flushList();
+          continue;
+        }
+
+        flushList();
+        const para = document.createElement("p");
+        para.textContent = line;
+        fragment.appendChild(para);
+      }
+
+      flushList();
+      return fragment;
+    }
+
+    function renderGraph() {
+      const parent = graphCanvas.parentElement;
+      const width = parent.clientWidth;
+      const height = parent.clientHeight;
+      graphCanvas.width = Math.max(1, Math.floor(width * devicePixelRatio));
+      graphCanvas.height = Math.max(1, Math.floor(height * devicePixelRatio));
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+
+      ctx.clearRect(0, 0, width, height);
+      if (!state.order.length) return;
+
+      const nodes = [...state.order];
+      const edges = [];
+      nodes.forEach((source) => {
+        (state.records[source]?.edges || []).forEach((edge) => {
+          if (state.records[edge.target]) {
+            edges.push([source, edge.target]);
+          }
+        });
+      });
+
+      const positions = computeForceLayout(nodes, edges, width, height, 20);
+      state.positions = positions;
+
+      const selected = state.selectedId;
+      const neighbors = new Set();
+      if (selected && state.records[selected]) {
+        state.records[selected].edges.forEach((edge) => neighbors.add(edge.target));
+      }
+
+      edges.forEach(([source, target]) => {
+        const start = positions[source];
+        const end = positions[target];
+        ctx.beginPath();
+        ctx.moveTo(start[0], start[1]);
+        ctx.lineTo(end[0], end[1]);
+        ctx.strokeStyle = source === selected || target === selected ? "#7cc7ff" : "#39424e";
+        ctx.lineWidth = source === selected || target === selected ? 2 : 1;
+        ctx.stroke();
+      });
+
+      nodes.forEach((node) => {
+        const [x, y] = positions[node];
+        const isSelected = node === selected;
+        const isNeighbor = neighbors.has(node);
+        const radius = isSelected ? 8 : 6;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = isSelected ? "#ffd166" : "#6c7a89";
+        ctx.fill();
+        ctx.lineWidth = isNeighbor ? 2 : 1;
+        ctx.strokeStyle = isNeighbor ? "#7cc7ff" : "#0b0b10";
+        ctx.stroke();
+
+        if (isSelected || isNeighbor) {
+          ctx.fillStyle = "#e9e9f0";
+          ctx.font = "bold 11px Space Grotesk";
+          ctx.fillText(node, x + 8, y - 8);
+        }
+      });
+    }
+
+    function computeForceLayout(nodes, edges, width, height, padding) {
+      const positions = {};
+      const rng = mulberry32(42);
+      nodes.forEach((node) => {
+        if (state.positions[node]) {
+          positions[node] = [...state.positions[node]];
+        } else {
+          positions[node] = [
+            padding + rng() * (width - 2 * padding),
+            padding + rng() * (height - 2 * padding),
+          ];
+        }
+      });
+
+      const area = Math.max((width - 2 * padding) * (height - 2 * padding), 1);
+      const k = Math.sqrt(area / Math.max(nodes.length, 1));
+      let temperature = Math.min(width, height) / 4;
+
+      for (let iter = 0; iter < 60; iter += 1) {
+        const disp = {};
+        nodes.forEach((node) => {
+          disp[node] = [0, 0];
+        });
+
+        for (let i = 0; i < nodes.length; i += 1) {
+          for (let j = i + 1; j < nodes.length; j += 1) {
+            const v = nodes[i];
+            const u = nodes[j];
+            const dx = positions[v][0] - positions[u][0];
+            const dy = positions[v][1] - positions[u][1];
+            const dist = Math.hypot(dx, dy) || 0.001;
+            const force = (k * k) / dist;
+            const rx = (dx / dist) * force;
+            const ry = (dy / dist) * force;
+            disp[v][0] += rx;
+            disp[v][1] += ry;
+            disp[u][0] -= rx;
+            disp[u][1] -= ry;
+          }
+        }
+
+        edges.forEach(([v, u]) => {
+          const dx = positions[v][0] - positions[u][0];
+          const dy = positions[v][1] - positions[u][1];
+          const dist = Math.hypot(dx, dy) || 0.001;
+          const force = (dist * dist) / k;
+          const ax = (dx / dist) * force;
+          const ay = (dy / dist) * force;
+          disp[v][0] -= ax;
+          disp[v][1] -= ay;
+          disp[u][0] += ax;
+          disp[u][1] += ay;
+        });
+
+        nodes.forEach((node) => {
+          const dx = disp[node][0];
+          const dy = disp[node][1];
+          const dist = Math.hypot(dx, dy) || 0.001;
+          const limited = Math.min(dist, temperature);
+          positions[node][0] += (dx / dist) * limited;
+          positions[node][1] += (dy / dist) * limited;
+          positions[node][0] = Math.min(width - padding, Math.max(padding, positions[node][0]));
+          positions[node][1] = Math.min(height - padding, Math.max(padding, positions[node][1]));
+        });
+
+        temperature *= 0.92;
+      }
+
+      return positions;
+    }
+
+    function mulberry32(seed) {
+      return function () {
+        let t = seed += 0x6d2b79f5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    graphCanvas.addEventListener("click", (event) => {
+      const rect = graphCanvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      let closest = null;
+      let closestDist = Infinity;
+      Object.entries(state.positions).forEach(([id, pos]) => {
+        const dx = pos[0] - x;
+        const dy = pos[1] - y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = id;
+        }
+      });
+      if (closest && closestDist < 16) {
+        selectRecord(closest);
+      }
+    });
+
+    function startAutoRefresh() {
+      setInterval(() => {
+        if (autoRefresh.checked) {
+          loadDb();
+        }
+      }, REFRESH_MS);
+    }
+
+    loadDb(true);
+    startAutoRefresh();
+  </script>
+</body>
+</html>
