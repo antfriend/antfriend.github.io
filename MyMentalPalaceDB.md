@@ -211,7 +211,7 @@ It limits scope to what can be sensed, stored, related, or acted upon.
 @LAT5LON4 | created:1769808110 | updated:1769808120 | relates:drives>@LAT5LON5,backgrounds>@LAT3LON3
 
 ## Default Network
-The default network is the background circuitry that runs when nothing is demanded.
+The [default network](https://github.com/antfriend/toot-toot-engineering/blob/main/standards/ttai/BEHAVIOR_SPEC.md) is the background circuitry that runs when nothing is demanded.
 It maintains narrative continuity and loose associations between artifacts.
 
 - It **drives** idle-time TTAI behavior.
