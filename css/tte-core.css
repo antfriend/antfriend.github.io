@@ -278,7 +278,7 @@ main {
   border-radius: 999px;
   position: relative;
   overflow: hidden;
-  animation: scan 2.4s linear infinite;
+  animation: scan 14s linear infinite;
 }
 
 .media {
