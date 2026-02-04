@@ -188,13 +188,17 @@
     }
 
     .record h2 {
-      color: var(--eyeball-red);
+      color: var(--title);
       font-size: 22px;
     }
 
     .record h3 {
       color: var(--teal);
       font-size: 18px;
+    }
+
+    .record .record-title {
+      color: var(--eyeball-red);
     }
 
     .record h4 {
@@ -439,16 +443,20 @@
         if (headerIndex < 0) continue;
         const headerLine = lines[headerIndex].trim();
         const recordId = headerLine.split(/\s+/)[0];
-        const body = lines.slice(headerIndex + 1).join("\n").trim();
-
+        const bodyLines = lines.slice(headerIndex + 1);
         let title = null;
-        for (const line of body.split(/\r?\n/)) {
+        let titleRemoved = false;
+        const filteredBodyLines = [];
+        for (const line of bodyLines) {
           const match = line.match(/^##\s+(.*)$/);
-          if (match) {
+          if (match && !titleRemoved) {
             title = match[1].trim();
-            break;
+            titleRemoved = true;
+            continue;
           }
+          filteredBodyLines.push(line);
         }
+        const body = filteredBodyLines.join("\n").trim();
 
         const edges = [];
         const relatesMatch = headerLine.match(/relates:([^|]+)/);
@@ -520,6 +528,13 @@
       const header = document.createElement("h2");
       header.textContent = state.selectedId;
       viewEl.appendChild(header);
+
+      if (record.title) {
+        const title = document.createElement("h3");
+        title.className = "record-title";
+        title.textContent = record.title;
+        viewEl.appendChild(title);
+      }
 
       const meta = document.createElement("div");
       meta.className = "muted";
