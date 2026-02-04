@@ -85,28 +85,42 @@
           </p>
         </article>
         <article class="panel">
-          <h4>Engineers</h4>
+          <h4>How to use TTE</h4>
+          <div class="whistle"></div>
+          <pre>
+            There are two main ways to use TTE:
+
+              1. In an IDE. This is the vibe-coder way. 
+
+                  - Clone, fork, copy or unzip the TTE GitHub repo
+                  - Open it in your agent-assisted IDE (e.g. Claude Code, vscode with Codex, etc.)
+                  - Edit TTE_PROMPT.md and describe what you want
+                  - Tell your agent to read the readme and go. or just say, "you got this"
+
+              2. In python. This uses an API such as the OpenAI API, which is the only adapter implemented presently. 
+
+                  - Go the the quickstart to use this way.
+          </pre>
+          <h2><a href="#quickstart">Go to quickstart</a></h2>
+
+        </article>
+        <article class="panel">
+          <h4>The Toot Toot Database</h4>
           <div class="whistle"></div>
           <p>
-            <a href="AUDIENCE.md#engineers">Reviewable, Git-native workflows</a> and specs that
-            follow intent, not just syntax.
+            The Toot Toot Database can be used with or without the Toot Toot Workflow.
+            <h2><a href="TTDB.html">Open the TTDB viewer!</a></h2>
           </p>
         </article>
         <article class="panel">
-          <h4>Researchers</h4>
+          <h4>Toot Toot Networks</h4>
           <div class="whistle"></div>
           <p>
-            <a href="AUDIENCE.md#researchers">Reproducible methods</a> with citation-friendly logs
-            and explicit steps.
-          </p>
-        </article>
-        <article class="panel">
-          <h4>Makers & storytellers</h4>
-          <div class="whistle"></div>
+            A TTN can use IP/telnet or Meshtastic or a connected hybrid of both.</p>
           <p>
-            <a href="AUDIENCE.md#makers">Experiment-driven iteration</a> and
-            <a href="AUDIENCE.md#storytellers">creative continuity</a> across versions.
+            The <a href="https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTN-RFC-0002-Typed-Edges.md">edge semantics</a> of the network align with the <a href="https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0003-Typed-Edges.md">semantic edges</a> of the TTDB. This means an esp32/Arduino class device can contain a TTDB that lets it know about itself and everyone else it knows about on the network, and, if given the information, one node could also "know" (contain a sub graph) of everyone known to another node. They can all share sensor data, direct message, and broadcast... hypothetically. TTN deployment is work in progress.
           </p>
+          
         </article>
       </section>
 
@@ -124,7 +138,7 @@
           <h3>Quick links</h3>
           <ul>
             <li><a href="index.html">Home</a></li>
-            <li><a href="Humon_ReadMe.md">Markdown version</a></li>
+     
             <li><a href="https://github.com/antfriend/toot-toot-engineering">GitHub repo</a></li>
           </ul>
         </article>
@@ -135,10 +149,11 @@
           <div class="steam"></div>
           <div class="steam"></div>
           <div class="steam"></div>
-          <h3>Toot Toot Engineering (Runner)</h3>
+          <h3>How to Toot Toot Engineering (Bare bones python Runner)</h3>
         </div>
+        
         <p class="note">
-          This repo includes a local agent runner for the Toot Toot Engineering workflow.
+          Pull down the TTE GitHub repo and follow this Quick start.
         </p>
       </section>
 
