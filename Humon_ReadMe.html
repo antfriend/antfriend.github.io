@@ -52,13 +52,13 @@
         </article>
         <article class="module">
           <h3>Semantic engineering</h3>
-          <p>It is a factory that makes what you mean, not just what you typed.</p>
+          <p>It is a factory that makes what you mean, not just what you typed. And semantic types.</p>
           <img class="media" src="images/feature-side-by-side.png" alt="feature side by side" />
         </article>
         <article class="module">
           <h3>What is different</h3>
           <p>Free. Open-source. Plain text in English. No runtime dependencies.</p>
-          <p>The magic is that there is no magic. Read it all and it makes sense, to an agent.</p>
+          <p>The magic is that there is no magic. Read it all and it makes sense... to an agent.</p>
         </article>
       </section>
 
@@ -83,11 +83,13 @@
             People working in multi-step, intention-heavy processes who want clarity,
             reliability, and repeatability when collaborating with AI systems.
           </p>
-        </article>
-        <article class="panel">
-          <h4>How to use TTE</h4>
+           <h4>How to use TTE</h4>
           <div class="whistle"></div>
           <p>There are two main ways to use TTE. Choose the path that fits your workflow.</p>
+          <p>Do 1) OR 2). NOT both at the same time.</p>
+        </article>
+        <article class="panel">
+         
           <div class="flow">
             <h4>1) In an IDE (the vibe-coder way)</h4>
             <p>Use your agent-assisted editor to steer the workflow directly.</p>
@@ -97,7 +99,8 @@
               <li>Edit <code>TTE_PROMPT.md</code> and describe what you want.</li>
               <li>Tell your agent to read the readme and go, or just say, “you got this.”</li>
             </ol>
-          </div>
+          </div></article>
+          <article class="panel">
           <div class="flow">
             <h4>2) In Python (API-driven)</h4>
             <p>
@@ -156,7 +159,7 @@
           <div class="steam"></div>
           <h3>How to Toot Toot Engineering (Bare bones python Runner)</h3>
         </div>
-        
+        <div class="whistle"></div>
         <p class="note">
           Pull down the TTE GitHub repo and follow this Quick start.
         </p>
@@ -165,8 +168,10 @@
       <section class="panel-grid" id="quickstart">
         <article class="panel">
           <h4>Quick start</h4>
-          <div class="whistle"></div>
+          
           <ul>
+            <li>Pull down, clone, fork, copy, or unzip the <a href="https://github.com/antfriend/toot-toot-engineering">GitHub repo</a>.</li>
+            
             <li>Install dependencies: <code>pip install -r requirements.txt</code> or <code>pip install openai</code></li>
             <li>Set API key: <code>export OPENAI_API_KEY="..."</code> (macOS/Linux) or <code>setx OPENAI_API_KEY "..."</code> (Windows PowerShell)</li>
             <li>Edit <code>TTE_PROMPT.md</code> and describe what you want.</li>
@@ -176,16 +181,16 @@
         </article>
         <article class="panel">
           <h4>Notes</h4>
-          <div class="whistle"></div>
+          
           <ul>
-            <li>Workflow instructions live in the <a href="https://github.com/antfriend/toot-toot-engineering">GitHub repo</a>.</li>
+            
             <li>The agent reads and operates inside the repo workspace.</li>
             <li><code>tte_monitor.py</code> uses standard library, but needs <code>tkinter</code>.</li>
           </ul>
         </article>
         <article class="panel">
           <h4>Install tkinter</h4>
-          <div class="whistle"></div>
+          
           <ul>
             <li>macOS: <code>brew install python-tk</code></li>
             <li>Ubuntu/Debian: <code>sudo apt-get install python3-tk</code></li>
@@ -196,7 +201,7 @@
         </article>
         <article class="panel">
           <h4>Troubleshooting</h4>
-          <div class="whistle"></div>
+          
           <ul>
             <li>"Missing OPENAI_API_KEY": confirm the env var in your shell.</li>
             <li>Cannot import <code>openai</code>: reinstall deps or activate the right venv.</li>
