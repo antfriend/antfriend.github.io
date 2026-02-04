@@ -232,6 +232,14 @@
       overflow: auto;
     }
 
+    .record img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+      border-radius: 10px;
+    }
+
     .record .muted {
       color: var(--muted);
       font-size: 13px;
@@ -558,6 +566,31 @@
     function renderMarkdown(text) {
       const fragment = document.createDocumentFragment();
       const lines = text.split(/\r?\n/);
+      const references = {};
+      const contentLines = [];
+      const refPattern = /^\s*\[([^\]]+)\]:\s*(\S+)(?:\s+"([^"]+)")?\s*$/;
+      let inRefCode = false;
+      lines.forEach((rawLine) => {
+        const trimmed = rawLine.trim();
+        if (trimmed.startsWith("```")) {
+          inRefCode = !inRefCode;
+          contentLines.push(rawLine);
+          return;
+        }
+        if (inRefCode) {
+          contentLines.push(rawLine);
+          return;
+        }
+        const match = rawLine.match(refPattern);
+        if (match) {
+          references[match[1].trim().toLowerCase()] = {
+            href: match[2],
+            title: match[3] || "",
+          };
+          return;
+        }
+        contentLines.push(rawLine);
+      });
       let inCode = false;
       let codeBlock = null;
       let list = null;
@@ -569,7 +602,12 @@
         }
       };
 
-      for (const rawLine of lines) {
+      const appendInline = (parent, content) => {
+        const nodes = renderInlineMarkdownLinks(content, references);
+        nodes.forEach((node) => parent.appendChild(node));
+      };
+
+      for (const rawLine of contentLines) {
         const line = rawLine.replace(/\s+$/g, "");
 
         if (line.startsWith("```")) {
@@ -596,7 +634,7 @@
           const level = Math.min(4, headingMatch[1].length);
           const tag = level === 1 ? "h2" : level === 2 ? "h3" : "h4";
           const heading = document.createElement(tag);
-          heading.textContent = headingMatch[2];
+          appendInline(heading, headingMatch[2]);
           fragment.appendChild(heading);
           continue;
         }
@@ -606,7 +644,7 @@
             list = document.createElement("ul");
           }
           const item = document.createElement("li");
-          item.textContent = line.replace(/^\s*(-|\*|\d+\.)\s+/, "");
+          appendInline(item, line.replace(/^\s*(-|\*|\d+\.)\s+/, ""));
           list.appendChild(item);
           continue;
         }
@@ -614,7 +652,7 @@
         if (/^\s*>\s+/.test(line)) {
           flushList();
           const quote = document.createElement("blockquote");
-          quote.textContent = line.replace(/^\s*>\s+/, "");
+          appendInline(quote, line.replace(/^\s*>\s+/, ""));
           fragment.appendChild(quote);
           continue;
         }
@@ -635,12 +673,91 @@
 
         flushList();
         const para = document.createElement("p");
-        para.textContent = line;
+        appendInline(para, line);
         fragment.appendChild(para);
       }
 
       flushList();
       return fragment;
+    }
+
+    function renderInlineMarkdownLinks(text, references) {
+      const nodes = [];
+      const pattern = /!\[([^\]]*)\]\(([^)]+)\)|!\[([^\]]*)\]\[([^\]]+)\]|\[([^\]]+)\]\(([^)]+)\)|\[([^\]]+)\]\[([^\]]+)\]|(https?:\/\/[^\s<]+|www\.[^\s<]+)/g;
+      let lastIndex = 0;
+      let match = pattern.exec(text);
+
+      while (match) {
+        if (match.index > lastIndex) {
+          nodes.push(document.createTextNode(text.slice(lastIndex, match.index)));
+        }
+
+        if (match[1] !== undefined) {
+          const alt = match[1];
+          const src = match[2].trim();
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = alt;
+          nodes.push(img);
+        } else if (match[3] !== undefined) {
+          const alt = match[3];
+          const refKey = match[4].trim().toLowerCase();
+          const ref = references[refKey];
+          if (ref && !/^javascript:/i.test(ref.href)) {
+            const img = document.createElement("img");
+            img.src = ref.href;
+            img.alt = alt;
+            if (ref.title) img.title = ref.title;
+            nodes.push(img);
+          } else {
+            nodes.push(document.createTextNode(match[0]));
+          }
+        } else if (match[5] !== undefined) {
+          const label = match[5];
+          const href = match[6].trim();
+          if (/^javascript:/i.test(href)) {
+            nodes.push(document.createTextNode(match[0]));
+          } else {
+            const link = document.createElement("a");
+            link.href = href;
+            link.textContent = label;
+            nodes.push(link);
+          }
+        } else if (match[7] !== undefined) {
+          const label = match[7];
+          const refKey = match[8].trim().toLowerCase();
+          const ref = references[refKey];
+          if (ref && !/^javascript:/i.test(ref.href)) {
+            const link = document.createElement("a");
+            link.href = ref.href;
+            link.textContent = label;
+            if (ref.title) link.title = ref.title;
+            nodes.push(link);
+          } else {
+            nodes.push(document.createTextNode(match[0]));
+          }
+        } else if (match[9] !== undefined) {
+          const raw = match[9];
+          const href = raw.startsWith("www.") ? `https://${raw}` : raw;
+          const link = document.createElement("a");
+          link.href = href;
+          link.textContent = raw;
+          nodes.push(link);
+        }
+
+        lastIndex = match.index + match[0].length;
+        match = pattern.exec(text);
+      }
+
+      if (lastIndex < text.length) {
+        nodes.push(document.createTextNode(text.slice(lastIndex)));
+      }
+
+      if (!nodes.length) {
+        nodes.push(document.createTextNode(text));
+      }
+
+      return nodes;
     }
 
     function renderGraph() {
