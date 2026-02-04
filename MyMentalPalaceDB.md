@@ -70,7 +70,7 @@ dot: |
 ## The Root Workbench
 You arrive at **@LAT0LON0**, the root node.  
 A workbench sits here, lit well enough to build, dim enough to notice what is unknown.
-
+![the forge](/images/time-foundry.svg)
 - **Rule of this workshop:** all paths are *chosen*, not forced.
 - The bench **inspires** a first workflow to the South-East.
 - It also **anchors** a small alcove to the East.
