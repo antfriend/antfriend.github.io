@@ -15,7 +15,7 @@
   <div class="page">
     <header>
       <div class="brand">
-        <div class="brand-mark">TTE</div>
+        <a href="index.html"><div class="brand-mark">TTE</div></a>
         <div>
           <h1><a href="index.html">Toot Toot Engineering</a></h1>
           <p>Human Readme • Clear intent, reliable steps, and artifacts you can point to.</p>
@@ -58,7 +58,7 @@
         <article class="module">
           <h3>What is different</h3>
           <p>Free. Open-source. Plain text in English. No runtime dependencies.</p>
-          <p>The magic is that there is no magic. Read it and it all makes sense.</p>
+          <p>The magic is that there is no magic. Read it all and it makes sense, to an agent.</p>
         </article>
       </section>
 
@@ -87,20 +87,25 @@
         <article class="panel">
           <h4>How to use TTE</h4>
           <div class="whistle"></div>
-          <pre>
-            There are two main ways to use TTE:
-
-              1. In an IDE. This is the vibe-coder way. 
-
-                  - Clone, fork, copy or unzip the TTE GitHub repo
-                  - Open it in your agent-assisted IDE (e.g. Claude Code, vscode with Codex, etc.)
-                  - Edit TTE_PROMPT.md and describe what you want
-                  - Tell your agent to read the readme and go. or just say, "you got this"
-
-              2. In python. This uses an API such as the OpenAI API, which is the only adapter implemented presently. 
-
-                  - Go the the quickstart to use this way.
-          </pre>
+          <p>There are two main ways to use TTE. Choose the path that fits your workflow.</p>
+          <div class="flow">
+            <h4>1) In an IDE (the vibe-coder way)</h4>
+            <p>Use your agent-assisted editor to steer the workflow directly.</p>
+            <ol>
+              <li>Clone, fork, copy, or unzip the TTE GitHub repo.</li>
+              <li>Open it in your agent-assisted IDE (for example, Claude Code or VS Code with Codex).</li>
+              <li>Edit <code>TTE_PROMPT.md</code> and describe what you want.</li>
+              <li>Tell your agent to read the readme and go, or just say, “you got this.”</li>
+            </ol>
+          </div>
+          <div class="flow">
+            <h4>2) In Python (API-driven)</h4>
+            <p>
+              Use the Python entry point with an API adapter (the OpenAI API adapter is the only one implemented
+              right now).
+            </p>
+            <p>Jump to the <a href="#quickstart">quickstart</a> for the exact steps.</p>
+          </div>
           <h2><a href="#quickstart">Go to quickstart</a></h2>
 
         </article>
@@ -164,6 +169,7 @@
           <ul>
             <li>Install dependencies: <code>pip install -r requirements.txt</code> or <code>pip install openai</code></li>
             <li>Set API key: <code>export OPENAI_API_KEY="..."</code> (macOS/Linux) or <code>setx OPENAI_API_KEY "..."</code> (Windows PowerShell)</li>
+            <li>Edit <code>TTE_PROMPT.md</code> and describe what you want.</li>
             <li>Run agent: <code>python tte_agent.py</code> (or <code>python3 tte_agent.py</code>)</li>
             <li>Run monitor: <code>./run_tte.sh</code>, <code>run_tte.bat</code>, or <code>.\run_tte.ps1</code></li>
           </ul>
