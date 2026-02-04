@@ -58,7 +58,7 @@
             <div>
                 <h2>{hit.title}</h2>
                 <p>{hit.description}</p>
-                <img src={hit.image} alt={hit.title} />
+                <img src={hit.image} alt={hit.title || 'Search result image'} />
             </div>
         );
 
