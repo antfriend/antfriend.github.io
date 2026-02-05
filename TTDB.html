@@ -765,7 +765,24 @@
         } else if (match[5] !== undefined) {
           const label = match[5];
           const href = match[6].trim();
-          if (/^javascript:/i.test(href)) {
+          if (href.startsWith("@")) {
+            const recordId = href;
+            if (state.records[recordId]) {
+              const link = document.createElement("a");
+              link.href = "#";
+              link.textContent = label;
+              link.addEventListener("click", (event) => {
+                event.preventDefault();
+                selectRecord(recordId);
+              });
+              nodes.push(link);
+            } else {
+              const missing = document.createElement("span");
+              missing.className = "muted";
+              missing.textContent = label;
+              nodes.push(missing);
+            }
+          } else if (/^javascript:/i.test(href)) {
             nodes.push(document.createTextNode(match[0]));
           } else {
             const link = document.createElement("a");
@@ -777,7 +794,24 @@
           const label = match[7];
           const refKey = match[8].trim().toLowerCase();
           const ref = references[refKey];
-          if (ref && !/^javascript:/i.test(ref.href)) {
+          if (ref && ref.href && ref.href.trim().startsWith("@")) {
+            const recordId = ref.href.trim();
+            if (state.records[recordId]) {
+              const link = document.createElement("a");
+              link.href = "#";
+              link.textContent = label;
+              link.addEventListener("click", (event) => {
+                event.preventDefault();
+                selectRecord(recordId);
+              });
+              nodes.push(link);
+            } else {
+              const missing = document.createElement("span");
+              missing.className = "muted";
+              missing.textContent = label;
+              nodes.push(missing);
+            }
+          } else if (ref && !/^javascript:/i.test(ref.href)) {
             const link = document.createElement("a");
             link.href = ref.href;
             link.textContent = label;
