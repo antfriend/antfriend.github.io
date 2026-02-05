@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TTDB Dungeon DB — Force Graph</title>
+    <style>
+      :root {
+        --bg-1: #0c0f14;
+        --bg-2: #151b24;
+        --ink: #e8eef7;
+        --muted: #99a7bd;
+        --hub: #ffd166;
+        --tutorial: #7bdff2;
+        --eyeball: #ff8fab;
+        --soup: #9bffb0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+          "Courier New", monospace;
+        background: radial-gradient(circle at 20% 20%, #202b3b 0%, var(--bg-2) 35%, var(--bg-1) 100%);
+        color: var(--ink);
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      header {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        right: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      .title {
+        pointer-events: auto;
+        background: rgba(12, 15, 20, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 12px 16px;
+        border-radius: 12px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      }
+
+      .title h1 {
+        margin: 0 0 6px 0;
+        font-size: 18px;
+        letter-spacing: 0.02em;
+      }
+
+      .title p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .legend {
+        pointer-events: auto;
+        background: rgba(12, 15, 20, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 12px 16px;
+        border-radius: 12px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+        font-size: 12px;
+      }
+
+      .legend h2 {
+        margin: 0 0 8px 0;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      .legend .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+
+      .legend .swatch {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      #graph {
+        width: 100%;
+        height: 100%;
+      }
+
+      .link {
+        stroke: rgba(255, 255, 255, 0.25);
+        stroke-width: 1.5px;
+      }
+
+      .link-label {
+        fill: var(--muted);
+        font-size: 10px;
+        pointer-events: none;
+      }
+
+      .node circle {
+        stroke: rgba(255, 255, 255, 0.3);
+        stroke-width: 1px;
+      }
+
+      .node text {
+        fill: var(--ink);
+        font-size: 11px;
+        pointer-events: none;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      }
+
+      .tooltip {
+        position: absolute;
+        background: rgba(12, 15, 20, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 12px;
+        color: var(--ink);
+        max-width: 260px;
+        white-space: pre-line;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+
+      .tooltip strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="title">
+        <h1>TTDB Dungeon DB — Force Graph</h1>
+        <p>Drag nodes, scroll to zoom. Missing records render in slate.</p>
+      </div>
+      <div class="legend">
+        <h2>Zones</h2>
+        <div class="row"><span class="swatch" style="background: var(--hub)"></span>Campfire hub</div>
+        <div class="row"><span class="swatch" style="background: var(--tutorial)"></span>Tutorial corridor</div>
+        <div class="row"><span class="swatch" style="background: var(--eyeball)"></span>Eyeball cosmos</div>
+        <div class="row"><span class="swatch" style="background: var(--soup)"></span>Soup loop</div>
+      </div>
+    </header>
+    <svg id="graph"></svg>
+    <div class="tooltip" id="tooltip"></div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+      const nodes = [
+        { id: "@0x0y", label: "Campfire Index", group: "hub" },
+        { id: "@1x0y", label: "mmpdb Tutorial Corridor", group: "tutorial" },
+        { id: "@2x0y", label: "Records: ID + Body", group: "tutorial" },
+        { id: "@3x0y", label: "Typed Edges", group: "tutorial" },
+        { id: "@4x0y", label: "Cursor Semantics", group: "tutorial" },
+        { id: "@5x0y", label: "Applications", group: "tutorial" },
+        { id: "@6x0y", label: "Quest Planner", group: "tutorial" },
+        { id: "@7x0y", label: "Research Notes", group: "tutorial" },
+        { id: "@0x1y", label: "Eyeball Node Sea", group: "eyeball" },
+        { id: "@1x1y", label: "@mysterious_orb", group: "eyeball" },
+        { id: "@2x1y", label: "The Gaze-Line", group: "eyeball" },
+        { id: "@0x2y", label: "Smell of Soup", group: "soup" },
+        { id: "@1x2y", label: "Digestion Epilogue", group: "soup" },
+        { id: "@2x2y", label: "Back to Campfire", group: "soup" },
+      ];
+
+      const links = [
+        { source: "@0x0y", target: "@1x0y", type: "hub" },
+        { source: "@0x0y", target: "@0x1y", type: "hub" },
+        { source: "@0x0y", target: "@0x2y", type: "hub" },
+        { source: "@1x0y", target: "@2x0y", type: "explains" },
+        { source: "@1x0y", target: "@3x0y", type: "explains" },
+        { source: "@1x0y", target: "@4x0y", type: "explains" },
+        { source: "@2x0y", target: "@3x0y", type: "explains" },
+        { source: "@3x0y", target: "@4x0y", type: "explains" },
+        { source: "@4x0y", target: "@5x0y", type: "explains" },
+        { source: "@5x0y", target: "@6x0y", type: "applies" },
+        { source: "@5x0y", target: "@7x0y", type: "applies" },
+        { source: "@0x1y", target: "@1x1y", type: "yearns" },
+        { source: "@0x1y", target: "@2x1y", type: "adores" },
+        { source: "@1x1y", target: "@2x1y", type: "misses" },
+        { source: "@2x1y", target: "@0x1y", type: "regrets" },
+        { source: "@0x2y", target: "@1x2y", type: "consumes" },
+        { source: "@1x2y", target: "@2x2y", type: "digests" },
+        { source: "@2x2y", target: "@0x0y", type: "loops" },
+      ];
+
+      const color = (group) => {
+        switch (group) {
+          case "hub":
+            return getComputedStyle(document.documentElement).getPropertyValue("--hub");
+          case "tutorial":
+            return getComputedStyle(document.documentElement).getPropertyValue("--tutorial");
+          case "eyeball":
+            return getComputedStyle(document.documentElement).getPropertyValue("--eyeball");
+          case "soup":
+            return getComputedStyle(document.documentElement).getPropertyValue("--soup");
+          default:
+            return "var(--muted)";
+        }
+      };
+
+      const svg = d3.select("#graph");
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      svg.attr("viewBox", [0, 0, width, height]);
+
+      const container = svg.append("g");
+
+      const zoom = d3
+        .zoom()
+        .scaleExtent([0.5, 2.5])
+        .on("zoom", (event) => {
+          container.attr("transform", event.transform);
+        });
+
+      svg.call(zoom);
+
+      const link = container
+        .append("g")
+        .selectAll("line")
+        .data(links)
+        .join("line")
+        .attr("class", "link");
+
+      const linkLabel = container
+        .append("g")
+        .selectAll("text")
+        .data(links)
+        .join("text")
+        .attr("class", "link-label")
+        .text((d) => d.type);
+
+      const node = container
+        .append("g")
+        .selectAll("g")
+        .data(nodes)
+        .join("g")
+        .attr("class", "node")
+        .call(
+          d3
+            .drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended)
+        );
+
+      node
+        .append("circle")
+        .attr("r", 14)
+        .attr("fill", (d) => color(d.group))
+        .attr("opacity", 0.95);
+
+      node
+        .append("text")
+        .attr("x", 18)
+        .attr("y", 4)
+        .text((d) => `${d.id} · ${d.label}`);
+
+      const tooltip = d3.select("#tooltip");
+
+      node.on("mouseenter", (event, d) => {
+        const bodyText = (d.body ?? "").trim();
+        tooltip.style("opacity", 1).text(bodyText || "No record body.");
+      })
+        .on("mousemove", (event) => {
+          tooltip.style("left", `${event.pageX + 12}px`).style("top", `${event.pageY + 12}px`);
+        })
+        .on("mouseleave", () => {
+          tooltip.style("opacity", 0);
+        });
+
+      const simulation = d3
+        .forceSimulation(nodes)
+        .force(
+          "link",
+          d3.forceLink(links).id((d) => d.id).distance(120).strength(0.9)
+        )
+        .force("charge", d3.forceManyBody().strength(-320))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collision", d3.forceCollide().radius(22));
+
+      simulation.on("tick", () => {
+        link
+          .attr("x1", (d) => d.source.x)
+          .attr("y1", (d) => d.source.y)
+          .attr("x2", (d) => d.target.x)
+          .attr("y2", (d) => d.target.y);
+
+        linkLabel
+          .attr("x", (d) => (d.source.x + d.target.x) / 2)
+          .attr("y", (d) => (d.source.y + d.target.y) / 2);
+
+        node.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
+      });
+
+      /* DB_EMBED_START */
+      const dbText = `
+# TTDB Dungeon DB
+
+\`\`\`mmpdb
+db_id: ttdb:dungeon:crawler:cycle-01
+db_name: "TTDB Dungeon Crawler DB"
+coord_increment:
+  lat: 1
+  lon: 1
+collision_policy: "reject"
+timestamp_kind: "unix_seconds"
+umwelt:
+  umwelt_id: umwelt:tte:agent:default:v1
+  role: ai_shop_assistant
+  perspective: "A playful dungeon-librarian explaining mmpdb through story."
+  scope: "This game’s tutorial knowledge, story lore, and example records."
+  constraints:
+    - "Keep examples small and device-friendly"
+  globe:
+    frame: "k10_local"
+    origin: "campfire"
+    mapping: "Grid coordinates are mnemonic; nearby nodes are conceptually related."
+    note: "This DB is bundled with the dungeon crawler."
+cursor_policy:
+  max_preview_chars: 120
+  max_nodes: 200
+typed_edges:
+  enabled: true
+  syntax: "<type>@<TARGET_ID>"
+  note: "Header relates list uses typed edges like uses>@LATxLONy"
+librarian:
+  enabled: true
+  primitive_queries:
+    - "select"
+    - "find"
+    - "edges"
+    - "last"
+    - "status"
+    - "note"
+  max_reply_chars: 800
+  invocation_prefix: "@AI"
+\`\`\`
+
+\`\`\`cursor
+selected:
+  - "@0x0y"
+preview:
+  "@0x0y": "Campfire Index: you are here; choose a corridor."
+agent_note: "Welcome to the TTDB Dungeon DB."
+\`\`\`
+
+---
+
+@0x0y | created:1730000000 | updated:1730000000 | relates:hub>@1x0y,hub>@0x1y,hub>@0x2y
+## Campfire Index
+You are at the campfire. This record acts as a hub linking to:
+- the tutorial corridor
+- the eyeball cosmos
+- the soup revelation
+
+---
+
+@1x0y | created:1730000001 | updated:1730000001 | relates:explains>@2x0y,explains>@3x0y,explains>@4x0y
+## mmpdb Tutorial Corridor
+A corridor of labeled stones.
+
+This is a diegetic guide to the TTDB file format and how to use mmpdb.
+
+---
+
+@2x0y | created:1730000002 | updated:1730000002 | relates:explains>@3x0y
+## Records: ID + Body
+A record is a section that begins with a header line starting with an ID like:
+
+\`@LATxLONy | created:<int> | updated:<int> | relates:<edge_list>\`
+
+After the header line, write any markdown as the record body.
+
+---
+
+@3x0y | created:1730000003 | updated:1730000003 | relates:explains>@4x0y
+## Typed Edges
+Typed edges live in the header’s \`relates:\` list as a comma-separated set.
+
+Default syntax is declared in \`mmpdb.typed_edges.syntax\` and is:
+
+\`<type>@<TARGET_ID>\`
+
+Example:
+- \`uses>@4x0y\`
+- \`inspires>@0x1y\`
+
+---
+
+@4x0y | created:1730000004 | updated:1730000004 | relates:explains>@5x0y
+## Cursor Semantics
+The \`cursor\` block is YAML and tracks selection state.
+
+Key fields:
+- \`selected\`: ordered list of record IDs
+- \`preview\`: map from ID -> short text preview
+
+The preview must include entries for all selected records.
+
+---
+
+@5x0y | created:1730000005 | updated:1730000005 | relates:applies>@6x0y,applies>@7x0y
+## Applications
+mmpdb can help with:
+- project planning (quests)
+- research notes (librarian golems)
+- creative worldbuilding (this dungeon)
+
+---
+
+@6x0y | created:1730000006 | updated:1730000006 | relates:applies>@5x0y
+## Quest Planner
+Use a record per quest with typed edges like:
+- depends_on>@<quest_id>
+- rewards>@<treasure_id>
+
+---
+
+@7x0y | created:1730000007 | updated:1730000007 | relates:applies>@5x0y
+## Research Notes
+Keep a trail of ideas by linking:
+- cites>@<source_id>
+- extends>@<concept_id>
+
+---
+
+@0x1y | created:1730000010 | updated:1730000010 | relates:yearns>@1x1y,adores>@2x1y
+## Eyeball Node Sea
+A cosmic dimension where eyeball nodes cast longing gazes at one another.
+
+Edges here are *yearning with direction*.
+
+---
+
+@1x1y | created:1730000011 | updated:1730000011 | relates:misses>@2x1y
+## @mysterious_orb
+A mysterious orb that is definitely an eyeball but prefers "orb".
+
+---
+
+@2x1y | created:1730000012 | updated:1730000012 | relates:regrets>@0x1y
+## The Gaze-Line
+You can almost read meaning in the edges. Almost.
+
+---
+
+@0x2y | created:1730000020 | updated:1730000020 | relates:consumes>@1x2y
+## Smell of Soup
+The soup path begins.
+
+Sometimes the dungeon eats back.
+
+---
+
+@1x2y | created:1730000021 | updated:1730000021 | relates:digests>@2x2y
+## Digestion Epilogue
+Inside the belly-dungeon, you find a campfire again.
+
+A loop is a kind of relationship.
+
+---
+
+@2x2y | created:1730000022 | updated:1730000022 | relates:loops>@0x0y
+## Back to Campfire
+A gentle link back to where you started.
+
+
+`;
+/* DB_EMBED_END */
+      function parseRecords(markdown) {
+        const records = new Map();
+        const lines = markdown.split(/\r?\n/);
+        let current = null;
+        let bodyLines = [];
+        let sawTitle = false;
+
+        const flush = () => {
+          if (current) {
+            const body = bodyLines.join("\n").trim();
+            records.set(current, { body });
+          }
+          current = null;
+          bodyLines = [];
+          sawTitle = false;
+        };
+
+        for (const line of lines) {
+          const trimmed = line.replace(/^\s+/, "");
+          if (trimmed.startsWith("@")) {
+            flush();
+            const recordId = trimmed.split("|")[0].trim();
+            if (recordId.startsWith("@")) {
+              current = recordId;
+            }
+            continue;
+          }
+
+          if (current && trimmed.startsWith("---")) {
+            flush();
+            continue;
+          }
+
+          if (current) {
+            if (trimmed.startsWith("## ")) {
+              sawTitle = true;
+              continue;
+            }
+            if (!sawTitle && trimmed.trim() === "") {
+              continue;
+            }
+            bodyLines.push(trimmed);
+          }
+        }
+
+        flush();
+        return records;
+      }
+
+      const records = parseRecords(dbText);
+      nodes.forEach((nodeData) => {
+        const record = records.get(nodeData.id);
+        if (record) {
+          nodeData.body = record.body;
+        }
+      });
+
+
+      function dragstarted(event) {
+        if (!event.active) simulation.alphaTarget(0.2).restart();
+        event.subject.fx = event.subject.x;
+        event.subject.fy = event.subject.y;
+      }
+
+      function dragged(event) {
+        event.subject.fx = event.x;
+        event.subject.fy = event.y;
+      }
+
+      function dragended(event) {
+        if (!event.active) simulation.alphaTarget(0);
+        event.subject.fx = null;
+        event.subject.fy = null;
+      }
+    </script>
+  </body>
+</html>
