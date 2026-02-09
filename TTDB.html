@@ -135,6 +135,7 @@
       grid-template-columns: minmax(200px, 0.75fr) minmax(280px, 2fr);
       gap: 20px;
       min-height: 70vh;
+      align-items: start;
     }
 
     .panel {
@@ -148,6 +149,15 @@
       gap: 12px;
       align-content: start;
       height: 100%;
+    }
+
+    .panel.record-panel {
+      height: auto;
+      align-self: start;
+    }
+
+    .panel.record-panel .record {
+      flex: none;
     }
 
     .list {
@@ -350,7 +360,7 @@
         <ul class="list" id="recordList"></ul>
       </section>
 
-      <section class="panel">
+      <section class="panel record-panel">
         <div class="record" id="recordView"></div>
       </section>
     </div>
