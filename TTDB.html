@@ -592,12 +592,12 @@
       }
 
       const record = state.records[state.selectedId];
-      const header = document.createElement("h2");
+      const header = document.createElement("h3");
       header.textContent = state.selectedId;
       viewEl.appendChild(header);
 
       if (record.title) {
-        const title = document.createElement("h3");
+        const title = document.createElement("h2");
         title.className = "record-title";
         title.textContent = record.title;
         viewEl.appendChild(title);
@@ -623,7 +623,7 @@
           if (state.records[edge.target]) {
             const link = document.createElement("a");
             link.href = "#";
-            link.textContent = edge.target;
+            link.textContent = state.records[edge.target]?.title || edge.target;
             link.addEventListener("click", (event) => {
               event.preventDefault();
               selectRecord(edge.target);
