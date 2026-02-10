@@ -375,7 +375,13 @@
       order: [],
       selectedId: null,
       lastText: "",
-      positions: {},
+      coords: {},
+      screenPoints: {},
+      globeRotLat: 0,
+      globeRotLon: 0,
+      globeTargetLat: 0,
+      globeTargetLon: 0,
+      globeAnimating: false,
     };
 
     const palette = (() => {
@@ -426,14 +432,16 @@
         .then((text) => {
           if (!force && text === state.lastText) return;
           state.lastText = text;
-          const { records, order, selected } = parseRecords(text);
+          const { records, order, selected, coords } = parseRecords(text);
           state.records = records;
           state.order = order;
+          state.coords = coords;
           if (!state.selectedId || !records[state.selectedId]) {
             state.selectedId = selected || order[0] || null;
           }
           renderList();
           renderRecord();
+          centerOnSelected();
           renderGraph();
           setStatusLink(order.length);
         })
@@ -442,6 +450,7 @@
           state.records = {};
           state.order = [];
           state.selectedId = null;
+          state.coords = {};
           renderList();
           renderRecord();
           renderGraph();
@@ -475,6 +484,7 @@
 
       const records = {};
       const order = [];
+      const coords = {};
       const blocks = content.split(/^\s*---+\s*$/m);
       for (const block of blocks) {
         const lines = block.split(/\r?\n/);
@@ -521,11 +531,22 @@
           }
         }
 
+        const recordCoords = parseCoords(recordId);
+        if (recordCoords) {
+          coords[recordId] = recordCoords;
+        }
+
         records[recordId] = { header: headerLine, body, title, edges };
         order.push(recordId);
       }
 
-      return { records, order, selected };
+      return { records, order, selected, coords };
+    }
+
+    function parseCoords(recordId) {
+      const match = recordId.match(/^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$/);
+      if (!match) return null;
+      return [Number(match[1]), Number(match[2])];
     }
 
     function renderList() {
@@ -559,6 +580,7 @@
       state.selectedId = recordId;
       renderList();
       renderRecord();
+      centerOnSelected();
       renderGraph();
     }
 
@@ -863,137 +885,239 @@
       ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
 
       ctx.clearRect(0, 0, width, height);
-      if (!state.order.length) return;
 
-      const nodes = [...state.order];
-      const edges = [];
-      nodes.forEach((source) => {
-        (state.records[source]?.edges || []).forEach((edge) => {
-          if (state.records[edge.target]) {
-            edges.push([source, edge.target]);
-          }
-        });
-      });
+      const padding = 6;
+      const radius = Math.min(width, height) / 2 - padding;
+      if (radius <= 10) return;
 
-      const positions = computeForceLayout(nodes, edges, width, height, 20);
-      state.positions = positions;
+      const cx = width / 2;
+      const cy = height / 2;
+
+      ctx.fillStyle = "#0e1117";
+      ctx.strokeStyle = "#2a2f3a";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.strokeStyle = "#141824";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius * 0.92, 0, Math.PI * 2);
+      ctx.stroke();
+
+      drawGraticule(cx, cy, radius);
+
+      const coordsEntries = Object.entries(state.coords);
+      if (!coordsEntries.length) return;
 
       const selected = state.selectedId;
-      const neighbors = new Set();
-      if (selected && state.records[selected]) {
-        state.records[selected].edges.forEach((edge) => neighbors.add(edge.target));
-      }
-
-      edges.forEach(([source, target]) => {
-        const start = positions[source];
-        const end = positions[target];
-        ctx.beginPath();
-        ctx.moveTo(start[0], start[1]);
-        ctx.lineTo(end[0], end[1]);
-        ctx.strokeStyle = source === selected || target === selected ? palette.accent : palette.line;
-        ctx.lineWidth = source === selected || target === selected ? 2 : 1;
-        ctx.stroke();
-      });
-
-      nodes.forEach((node) => {
-        const [x, y] = positions[node];
-        const isSelected = node === selected;
-        const isNeighbor = neighbors.has(node);
-        const radius = isSelected ? 8 : 6;
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = isSelected ? palette.accentAlt : palette.muted;
-        ctx.fill();
-        ctx.lineWidth = isNeighbor ? 2 : 1;
-        ctx.strokeStyle = isNeighbor ? palette.accent : palette.ink;
-        ctx.stroke();
-
-        if (isSelected || isNeighbor) {
-          ctx.fillStyle = palette.ink;
-          ctx.font = "bold 11px Space Grotesk";
-          ctx.fillText(node, x + 8, y - 8);
+      const nodesFront = [];
+      const nodesBack = [];
+      const projections = {};
+      let selectedPoint = null;
+      coordsEntries.forEach(([recordId, [lat, lon]]) => {
+        const [x, y, z] = projectPoint(lat, lon);
+        projections[recordId] = [x, y, z];
+        if (recordId === selected) {
+          selectedPoint = [recordId, x, y, z];
+        } else if (z > 0) {
+          nodesFront.push([recordId, x, y, z]);
+        } else {
+          nodesBack.push([recordId, x, y, z]);
         }
       });
+
+      ctx.fillStyle = "#2b303b";
+      nodesBack.forEach(([, x, y]) => {
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        ctx.beginPath();
+        ctx.arc(px, py, 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      Object.entries(state.records).forEach(([sourceId, record]) => {
+        const edges = record.edges || [];
+        if (!edges.length) return;
+        const sourceProj = projections[sourceId];
+        if (!sourceProj) return;
+        const [sx, sy, sz] = sourceProj;
+        if (sz <= 0) return;
+        const sxp = cx + sx * radius;
+        const syp = cy - sy * radius;
+        edges.forEach((edge) => {
+          const targetId = edge.target;
+          if (!targetId) return;
+          const targetProj = projections[targetId];
+          if (!targetProj) return;
+          const [tx, ty, tz] = targetProj;
+          if (tz <= 0) return;
+          const txp = cx + tx * radius;
+          const typ = cy - ty * radius;
+          const isSelectedEdge = sourceId === selected || targetId === selected;
+          ctx.strokeStyle = isSelectedEdge ? "#7cc7ff" : "#2a3a4d";
+          ctx.lineWidth = isSelectedEdge ? 2 : 1;
+          ctx.beginPath();
+          ctx.moveTo(sxp, syp);
+          ctx.lineTo(txp, typ);
+          ctx.stroke();
+        });
+      });
+
+      state.screenPoints = {};
+      nodesFront.forEach(([recordId, x, y]) => {
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        ctx.fillStyle = "#7cc7ff";
+        ctx.strokeStyle = "#0b0b10";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(px, py, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        state.screenPoints[recordId] = [px, py];
+      });
+
+      if (selectedPoint) {
+        const [recordId, x, y] = selectedPoint;
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        ctx.fillStyle = "#ffd166";
+        ctx.strokeStyle = "#f4a261";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(px, py, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        state.screenPoints[recordId] = [px, py];
+
+        ctx.fillStyle = "#e9e9f0";
+        ctx.font = "bold 11px Space Grotesk";
+        ctx.fillText(recordId, px + 8, py - 8);
+      }
     }
 
-    function computeForceLayout(nodes, edges, width, height, padding) {
-      const positions = {};
-      const rng = mulberry32(42);
-      nodes.forEach((node) => {
-        if (state.positions[node]) {
-          positions[node] = [...state.positions[node]];
-        } else {
-          positions[node] = [
-            padding + rng() * (width - 2 * padding),
-            padding + rng() * (height - 2 * padding),
-          ];
-        }
-      });
+    function centerOnSelected() {
+      const recordId = state.selectedId;
+      if (!recordId) return;
+      const coords = state.coords[recordId];
+      if (!coords) return;
+      const [lat, lon] = coords;
+      const latR = (lat * Math.PI) / 180;
+      const lonR = (lon * Math.PI) / 180;
+      const x = Math.cos(latR) * Math.sin(lonR);
+      const y = Math.sin(latR);
+      const z = Math.cos(latR) * Math.cos(lonR);
+      const rotLon = -Math.atan2(x, z);
+      const z1 = Math.hypot(x, z);
+      const rotLat = Math.atan2(y, z1);
+      state.globeTargetLat = rotLat;
+      state.globeTargetLon = rotLon;
+      if (!state.globeAnimating) {
+        state.globeAnimating = true;
+        requestAnimationFrame(animateGlobe);
+      }
+    }
 
-      const area = Math.max((width - 2 * padding) * (height - 2 * padding), 1);
-      const k = Math.sqrt(area / Math.max(nodes.length, 1));
-      let temperature = Math.min(width, height) / 4;
+    function animateGlobe() {
+      if (!state.globeAnimating) return;
+      const deltaLat = angleDelta(state.globeTargetLat, state.globeRotLat);
+      const deltaLon = angleDelta(state.globeTargetLon, state.globeRotLon);
 
-      for (let iter = 0; iter < 60; iter += 1) {
-        const disp = {};
-        nodes.forEach((node) => {
-          disp[node] = [0, 0];
-        });
+      if (Math.abs(deltaLat) < 0.002 && Math.abs(deltaLon) < 0.002) {
+        state.globeRotLat = state.globeTargetLat;
+        state.globeRotLon = state.globeTargetLon;
+        state.globeAnimating = false;
+        renderGraph();
+        return;
+      }
 
-        for (let i = 0; i < nodes.length; i += 1) {
-          for (let j = i + 1; j < nodes.length; j += 1) {
-            const v = nodes[i];
-            const u = nodes[j];
-            const dx = positions[v][0] - positions[u][0];
-            const dy = positions[v][1] - positions[u][1];
-            const dist = Math.hypot(dx, dy) || 0.001;
-            const force = (k * k) / dist;
-            const rx = (dx / dist) * force;
-            const ry = (dy / dist) * force;
-            disp[v][0] += rx;
-            disp[v][1] += ry;
-            disp[u][0] -= rx;
-            disp[u][1] -= ry;
+      state.globeRotLat += deltaLat * 0.15;
+      state.globeRotLon += deltaLon * 0.15;
+      renderGraph();
+      requestAnimationFrame(animateGlobe);
+    }
+
+    function angleDelta(target, current) {
+      let delta = target - current;
+      while (delta > Math.PI) delta -= Math.PI * 2;
+      while (delta < -Math.PI) delta += Math.PI * 2;
+      return delta;
+    }
+
+    function projectPoint(lat, lon) {
+      const latR = (lat * Math.PI) / 180;
+      const lonR = (lon * Math.PI) / 180;
+      const x = Math.cos(latR) * Math.sin(lonR);
+      const y = Math.sin(latR);
+      const z = Math.cos(latR) * Math.cos(lonR);
+
+      const cosY = Math.cos(state.globeRotLon);
+      const sinY = Math.sin(state.globeRotLon);
+      const x1 = x * cosY + z * sinY;
+      const z1 = -x * sinY + z * cosY;
+
+      const cosX = Math.cos(state.globeRotLat);
+      const sinX = Math.sin(state.globeRotLat);
+      const y1 = y * cosX - z1 * sinX;
+      const z2 = y * sinX + z1 * cosX;
+
+      return [x1, y1, z2];
+    }
+
+    function drawGraticule(cx, cy, radius) {
+      ctx.strokeStyle = "#1a1f2a";
+      ctx.lineWidth = 1;
+      for (let lon = -150; lon < 180; lon += 30) {
+        const points = [];
+        for (let lat = -90; lat <= 90; lat += 6) {
+          const [x, y, z] = projectPoint(lat, lon);
+          if (z > 0) {
+            points.push([cx + x * radius, cy - y * radius, true]);
+          } else {
+            points.push([0, 0, false]);
           }
         }
-
-        edges.forEach(([v, u]) => {
-          const dx = positions[v][0] - positions[u][0];
-          const dy = positions[v][1] - positions[u][1];
-          const dist = Math.hypot(dx, dy) || 0.001;
-          const force = (dist * dist) / k;
-          const ax = (dx / dist) * force;
-          const ay = (dy / dist) * force;
-          disp[v][0] -= ax;
-          disp[v][1] -= ay;
-          disp[u][0] += ax;
-          disp[u][1] += ay;
-        });
-
-        nodes.forEach((node) => {
-          const dx = disp[node][0];
-          const dy = disp[node][1];
-          const dist = Math.hypot(dx, dy) || 0.001;
-          const limited = Math.min(dist, temperature);
-          positions[node][0] += (dx / dist) * limited;
-          positions[node][1] += (dy / dist) * limited;
-          positions[node][0] = Math.min(width - padding, Math.max(padding, positions[node][0]));
-          positions[node][1] = Math.min(height - padding, Math.max(padding, positions[node][1]));
-        });
-
-        temperature *= 0.92;
+        drawVisibleLine(points);
       }
 
-      return positions;
+      for (let lat = -60; lat < 90; lat += 30) {
+        const points = [];
+        for (let lon = -180; lon <= 180; lon += 6) {
+          const [x, y, z] = projectPoint(lat, lon);
+          if (z > 0) {
+            points.push([cx + x * radius, cy - y * radius, true]);
+          } else {
+            points.push([0, 0, false]);
+          }
+        }
+        drawVisibleLine(points);
+      }
     }
 
-    function mulberry32(seed) {
-      return function () {
-        let t = seed += 0x6d2b79f5;
-        t = Math.imul(t ^ (t >>> 15), t | 1);
-        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-      };
+    function drawVisibleLine(points) {
+      let segment = [];
+      points.forEach(([px, py, visible]) => {
+        if (visible) {
+          segment.push([px, py]);
+          return;
+        }
+        if (segment.length >= 2) {
+          ctx.beginPath();
+          ctx.moveTo(segment[0][0], segment[0][1]);
+          segment.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
+          ctx.stroke();
+        }
+        segment = [];
+      });
+      if (segment.length >= 2) {
+        ctx.beginPath();
+        ctx.moveTo(segment[0][0], segment[0][1]);
+        segment.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
+        ctx.stroke();
+      }
     }
 
     graphCanvas.addEventListener("click", (event) => {
@@ -1002,7 +1126,7 @@
       const y = event.clientY - rect.top;
       let closest = null;
       let closestDist = Infinity;
-      Object.entries(state.positions).forEach(([id, pos]) => {
+      Object.entries(state.screenPoints).forEach(([id, pos]) => {
         const dx = pos[0] - x;
         const dy = pos[1] - y;
         const dist = Math.hypot(dx, dy);
