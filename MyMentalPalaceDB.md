@@ -49,34 +49,34 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT0LON0
+  - @LAT-81.6LON0.0
 preview:
-  @LAT5LON5: "TTAI is a maker-scale shop assistant and mmpdb librarian. It assumes the active umwelt and can be invoked as \"@AI\"."
+  @LAT-45.2LON-7.3: "TTAI is a maker-scale shop assistant and mmpdb librarian. It assumes the active umwelt and can be invoked as \"@AI\"."
 agent_note: "Interpret DB-action language as edits to the current cursor selection, DB properties, or records. If selection is ambiguous, ask or select the most recently updated match and state the assumption. Favor maker-scale, inspectable state."
 dot: |
   digraph Cursor {
     rankdir=LR;
-    "@LAT5LON5" -> "@LAT5LON3" [label="assumes"];
-    "@LAT5LON5" -> "@LAT5LON4" [label="defaults_to"];
-    "@LAT5LON5" -> "@LAT2LON2" [label="operates_in"];
-    "@LAT5LON5" -> "@LAT3LON3" [label="archives_to"];
+    "@LAT-45.2LON-7.3" -> "@LAT-48.8LON76.9" [label="assumes"];
+    "@LAT-45.2LON-7.3" -> "@LAT-47.0LON-145.2" [label="defaults_to"];
+    "@LAT-45.2LON-7.3" -> "@LAT-61.9LON-30.5" [label="operates_in"];
+    "@LAT-45.2LON-7.3" -> "@LAT-54.8LON23.2" [label="archives_to"];
   }
 ```
 
 ---
 
-@LAT0LON0 | created:1700000000 | updated:1700000600 | relates:inspires>@LAT1LON1,anchors>@LAT0LON1
+@LAT-81.6LON0.0 | created:1700000000 | updated:1700000600 | relates:inspires>@LAT-71.1LON-84.2,anchors>@LAT-75.4LON137.9
 
 ## The Root Workbench
-You arrive at **@LAT0LON0**, the root node.  
+You arrive at **@LAT-81.6LON0.0**, the root node.  
 ![the forge](/images/time-foundry.svg)
 A workbench sits here, lit well enough to build, dim enough to notice what is unknown.   
 - **Rule of this workshop:** all paths are *chosen*, not forced.
-- The bench **inspires** a first workflow to [the South-East](@LAT1LON1).
-- It also **anchors** a small alcove to [the East](@LAT0LON1).
+- The bench **inspires** a first workflow to [the South-East](@LAT-71.1LON-84.2).
+- It also **anchors** a small alcove to [the East](@LAT-75.4LON137.9).
 ---
 
-@LAT0LON1 | created:1700000100 | updated:1700000700 | relates:references>@LAT0LON0,tradeoffs>@LAT1LON2
+@LAT-75.4LON137.9 | created:1700000100 | updated:1700000700 | relates:references>@LAT-81.6LON0.0,tradeoffs>@LAT-67.6LON53.7
 
 ## The Alcove of Tradeoffs
 A thin shelf of notes, all written in the same hand, but in different moods.
@@ -88,7 +88,7 @@ This alcove exists to remind you:
 
 ---
 
-@LAT1LON1 | created:1700000200 | updated:1700000900 | relates:leads_to>@LAT2LON2,iterates>@LAT1LON2,blocks>@LAT2LON1
+@LAT-71.1LON-84.2 | created:1700000200 | updated:1700000900 | relates:leads_to>@LAT-61.9LON-30.5,iterates>@LAT-67.6LON53.7,blocks>@LAT-64.6LON-168.4
 
 ## Workflow Corridor
 The corridor slopes South-East one increment at a time.
@@ -101,7 +101,7 @@ This corridor:
 
 ---
 
-@LAT1LON2 | created:1700000250 | updated:1700000950 | relates:refines>@LAT2LON2,tradeoffs>@LAT0LON1
+@LAT-67.6LON53.7 | created:1700000250 | updated:1700000950 | relates:refines>@LAT-61.9LON-30.5,tradeoffs>@LAT-75.4LON137.9
 
 ## Iteration Room
 Here, the same idea repeats until it changes shape.
@@ -113,7 +113,7 @@ This room **refines** the workshop by sending it better questions.
 
 ---
 
-@LAT2LON1 | created:1700000300 | updated:1700001000 | relates:gates>@LAT3LON2
+@LAT-64.6LON-168.4 | created:1700000300 | updated:1700001000 | relates:gates>@LAT-57.0LON-114.7
 
 ## The Locked Gate (With a Friendly Note)
 The gate is locked, but the note is not.
@@ -124,7 +124,7 @@ This node **gates** a deeper chamber (a future you, waiting).
 
 ---
 
-@LAT2LON2 | created:1700000400 | updated:1700001100 | relates:builds>@LAT3LON3,depends_on>@LAT2LON3
+@LAT-61.9LON-30.5 | created:1700000400 | updated:1700001100 | relates:builds>@LAT-54.8LON23.2,depends_on>@LAT-59.3LON107.4
 
 ## Workshop of Artifacts
 A workbench. A pencil. A tiny robot-shaped paperweight.
@@ -140,7 +140,7 @@ and **depends_on** the indexing desk.
 
 ---
 
-@LAT2LON3 | created:1700000450 | updated:1700001150 | relates:supports>@LAT2LON2,organizes>@LAT3LON3
+@LAT-59.3LON107.4 | created:1700000450 | updated:1700001150 | relates:supports>@LAT-61.9LON-30.5,organizes>@LAT-54.8LON23.2
 
 ## Indexing Desk
 A neat desk with an absurdly sharp pencil.
@@ -151,7 +151,7 @@ This desk:
 
 ---
 
-@LAT3LON2 | created:1700000500 | updated:1700001200 | relates:reveals>@LAT4LON4
+@LAT-57.0LON-114.7 | created:1700000500 | updated:1700001200 | relates:reveals>@LAT-50.7LON-61.0
 
 ## The Chamber of Future Footprints
 You made it. The lock was never a lock, it was a filter.
@@ -161,7 +161,7 @@ This node **reveals** a distant observatory.
 
 ---
 
-@LAT3LON3 | created:1700000550 | updated:1700001250 | relates:archives>@LAT2LON2,expands>@LAT4LON3
+@LAT-54.8LON23.2 | created:1700000550 | updated:1700001250 | relates:archives>@LAT-61.9LON-30.5,expands>@LAT-52.7LON161.1
 
 ## Archive Wing
 Cabinets of paper and pixels.
@@ -173,7 +173,7 @@ This wing:
 
 ---
 
-@LAT4LON3 | created:1700000580 | updated:1700001280 | relates:maps_to>@LAT4LON4
+@LAT-52.7LON161.1 | created:1700000580 | updated:1700001280 | relates:maps_to>@LAT-50.7LON-61.0
 
 ## Gallery of Maps
 Maps of the workshop drawn from memory, then corrected by building.
@@ -185,7 +185,7 @@ This node **maps_to** the observatory.
 
 ---
 
-@LAT4LON4 | created:1700000600 | updated:1700001300 | relates:observes>@LAT0LON0,validates>@LAT2LON2
+@LAT-50.7LON-61.0 | created:1700000600 | updated:1700001300 | relates:observes>@LAT-81.6LON0.0,validates>@LAT-61.9LON-30.5
 
 ## Observatory of the Whole
 From here you can see the workbench at the root and the workshop below,
@@ -196,7 +196,7 @@ like constellations connected by deliberate lines.
 
 ---
 
-@LAT5LON3 | created:1769808086 | updated:1769808100 | relates:frames>@LAT0LON0,constrains>@LAT5LON5
+@LAT-48.8LON76.9 | created:1769808086 | updated:1769808100 | relates:frames>@LAT-81.6LON0.0,constrains>@LAT-45.2LON-7.3
 
 ## TTE Agent Umwelt Config
 The umwelt config defines what exists for the assistant to notice and act on.
@@ -207,7 +207,7 @@ It limits scope to what can be sensed, stored, related, or acted upon.
 
 ---
 
-@LAT5LON4 | created:1769808110 | updated:1770649832 | relates:drives>@LAT5LON5,backgrounds>@LAT3LON3,defined_in>@LAT30LON4,references>@LAT10LON10
+@LAT-47.0LON-145.2 | created:1769808110 | updated:1770649832 | relates:drives>@LAT-45.2LON-7.3,backgrounds>@LAT-54.8LON23.2,defined_in>@LAT34.0LON-151.3,references>@LAT-35.5LON100.1
 
 ## Default Network
 The [default network](https://github.com/antfriend/toot-toot-engineering/blob/main/standards/ttai/BEHAVIOR_SPEC.md) is the background circuitry that runs when nothing is demanded.
@@ -218,7 +218,7 @@ It maintains narrative continuity and loose associations between artifacts.
 
 ---
 
-@LAT5LON5 | created:1769808130 | updated:1769808140 | relates:assumes>@LAT5LON3,defaults_to>@LAT5LON4,operates_in>@LAT2LON2,archives_to>@LAT3LON3
+@LAT-45.2LON-7.3 | created:1769808130 | updated:1769808140 | relates:assumes>@LAT-48.8LON76.9,defaults_to>@LAT-47.0LON-145.2,operates_in>@LAT-61.9LON-30.5,archives_to>@LAT-54.8LON23.2
 
 ## TTAI Role Node
 TTAI is a maker-scale shop assistant and mmpdb librarian.
@@ -235,7 +235,7 @@ The workshop will recompose itself around your choices.
 
 ---
 
-@LAT6LON6 | created:1769808200 | updated:1769808200 | relates:safeguards>@LAT2LON2,tests>@LAT0LON0
+@LAT-43.5LON130.6 | created:1769808200 | updated:1769808200 | relates:safeguards>@LAT-61.9LON-30.5,tests>@LAT-81.6LON0.0
 
 ## Polycarbonate Test Box
 A clear, impact-resistant box for safely testing dangerous things.
@@ -250,7 +250,7 @@ Use this node when you need to test uncertain prototypes without turning the wor
 
 ---
 
-@LAT0LON50 | created:1770646802 | updated:1770649832 | relates:
+@LAT-41.8LON-91.5 | created:1770646802 | updated:1770649832 | relates:
 
 ## Toot Toot Engineering (TTE)
 The overall workflow and repository for cycle-based production.
@@ -261,7 +261,7 @@ The overall workflow and repository for cycle-based production.
 
 ---
 
-@LAT2LON50 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT30LON25
+@LAT-40.2LON46.4 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT24.1LON-36.6
 
 ## Toot Toot Network (TTN)
 A transport-agnostic semantic mesh with explicit AI invocation rules.
@@ -272,7 +272,7 @@ A transport-agnostic semantic mesh with explicit AI invocation rules.
 
 ---
 
-@LAT0LON52 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT30LON13
+@LAT-38.6LON-175.7 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT18.8LON131.8
 
 ## Toot Toot Database (TTDB)
 A single-file semantic story database with typed edges and stable IDs.
@@ -283,7 +283,7 @@ A single-file semantic story database with typed edges and stable IDs.
 
 ---
 
-@LAT30LON7 | created:1770646802 | updated:1770649832 | relates:
+@LAT-37.0LON-37.8 | created:1770646802 | updated:1770649832 | relates:
 
 ## MyMentalPalaceDB.md
 The active TTDB instance for this repo.
@@ -294,7 +294,7 @@ The active TTDB instance for this repo.
 
 ---
 
-@LAT10LON10 | created:1770646802 | updated:1770649832 | relates:
+@LAT-35.5LON100.1 | created:1770646802 | updated:1770649832 | relates:
 
 ## TTAI
 A maker-scale shop assistant and TTDB librarian invoked as "@AI".
@@ -305,7 +305,7 @@ A maker-scale shop assistant and TTDB librarian invoked as "@AI".
 
 ---
 
-@LAT20LON24 | created:1770646802 | updated:1770649832 | relates:references>@LAT30LON18
+@LAT-34.0LON-122.0 | created:1770646802 | updated:1770649832 | relates:references>@LAT-32.5LON15.9
 
 ## Umwelt
 The perceived world that bounds what exists for the system.
@@ -316,7 +316,7 @@ The perceived world that bounds what exists for the system.
 
 ---
 
-@LAT30LON18 | created:1770646802 | updated:1770649832 | relates:
+@LAT-32.5LON15.9 | created:1770646802 | updated:1770649832 | relates:
 
 ## TTE Umwelt
 Narrative description of the TTE umwelt and its domains.
@@ -327,7 +327,7 @@ Narrative description of the TTE umwelt and its domains.
 
 ---
 
-@LAT30LON17 | created:1770646802 | updated:1770649832 | relates:
+@LAT-31.1LON153.8 | created:1770646802 | updated:1770649832 | relates:
 
 ## TTE Agent Umwelt v1
 YAML configuration for the agent umwelt.
@@ -338,7 +338,7 @@ YAML configuration for the agent umwelt.
 
 ---
 
-@LAT10LON0 | created:1770646802 | updated:1770649832 | relates:
+@LAT-29.6LON-68.3 | created:1770646802 | updated:1770649832 | relates:
 
 ## Bootstrap
 Interprets the prompt, proposes team composition, objectives, and plan changes, and suggests next-cycle prompts.
@@ -349,7 +349,7 @@ Interprets the prompt, proposes team composition, objectives, and plan changes, 
 
 ---
 
-@LAT10LON4 | created:1770646802 | updated:1770649832 | relates:updates>@LAT30LON8,updates>@LAT30LON0,updates>@LAT30LON6
+@LAT-28.2LON69.6 | created:1770646802 | updated:1770649832 | relates:updates>@LAT-6.2LON-106.1,updates>@LAT-4.9LON31.8,updates>@LAT-3.7LON169.7
 
 ## Orchestrator
 Builds and updates the critical-path plan and logging assets.
@@ -360,7 +360,7 @@ Builds and updates the critical-path plan and logging assets.
 
 ---
 
-@LAT10LON9 | created:1770646802 | updated:1770649832 | relates:
+@LAT-26.8LON-152.5 | created:1770646802 | updated:1770649832 | relates:
 
 ## Storyteller
 Refines the narrative thread and creative framing early in the cycle.
@@ -371,7 +371,7 @@ Refines the narrative thread and creative framing early in the cycle.
 
 ---
 
-@LAT10LON8 | created:1770646802 | updated:1770649832 | relates:
+@LAT-25.5LON-14.6 | created:1770646802 | updated:1770649832 | relates:
 
 ## SVG engineer
 Specializes in SVG production constraints and strategies.
@@ -382,7 +382,7 @@ Specializes in SVG production constraints and strategies.
 
 ---
 
-@LAT10LON1 | created:1770646802 | updated:1770649832 | relates:
+@LAT-24.1LON123.3 | created:1770646802 | updated:1770649832 | relates:
 
 ## Core worker
 Produces the primary solution artifacts for the task.
@@ -393,7 +393,7 @@ Produces the primary solution artifacts for the task.
 
 ---
 
-@LAT10LON3 | created:1770646802 | updated:1770649832 | relates:
+@LAT-22.8LON-98.8 | created:1770646802 | updated:1770649832 | relates:
 
 ## Image producer
 Generates or composes visual assets programmatically.
@@ -404,7 +404,7 @@ Generates or composes visual assets programmatically.
 
 ---
 
-@LAT10LON5 | created:1770646802 | updated:1770649832 | relates:
+@LAT-21.4LON39.1 | created:1770646802 | updated:1770649832 | relates:
 
 ## PDF assembler
 Builds print-ready PDFs from assets and layout specifications.
@@ -415,7 +415,7 @@ Builds print-ready PDFs from assets and layout specifications.
 
 ---
 
-@LAT10LON7 | created:1770646802 | updated:1770649832 | relates:
+@LAT-20.1LON177.0 | created:1770646802 | updated:1770649832 | relates:
 
 ## Reviewer
 Checks for correctness, gaps, and risks before delivery.
@@ -426,7 +426,7 @@ Checks for correctness, gaps, and risks before delivery.
 
 ---
 
-@LAT10LON2 | created:1770646802 | updated:1770649832 | relates:updates>@LAT30LON10
+@LAT-18.8LON-45.1 | created:1770646802 | updated:1770649832 | relates:updates>@LAT-1.2LON85.5
 
 ## Delivery packager
 Assembles final assets and export notes.
@@ -437,7 +437,7 @@ Assembles final assets and export notes.
 
 ---
 
-@LAT10LON6 | created:1770646802 | updated:1770649832 | relates:updates>@LAT10LON0
+@LAT-17.5LON92.8 | created:1770646802 | updated:1770649832 | relates:updates>@LAT-29.6LON-68.3
 
 ## Retrospective
 Recommends changes to prevent issues or improve outcomes.
@@ -448,7 +448,7 @@ Recommends changes to prevent issues or improve outcomes.
 
 ---
 
-@LAT60LON0 | created:1770646802 | updated:1770649832 | relates:
+@LAT-16.2LON-129.3 | created:1770646802 | updated:1770649832 | relates:
 
 ## Human co-producer
 Starts the run and is only needed between steps if blocked.
@@ -459,7 +459,7 @@ Starts the run and is only needed between steps if blocked.
 
 ---
 
-@LAT20LON4 | created:1770646802 | updated:1770649832 | relates:uses>@LAT30LON23,references>@LAT50LON0
+@LAT-15.0LON8.6 | created:1770646802 | updated:1770649832 | relates:uses>@LAT2.5LON139.2,references>@LAT-8.7LON-21.9
 
 ## Cycle
 A bounded production run with role steps and deliverables under `deliverables/cycle-XX/`.
@@ -470,7 +470,7 @@ A bounded production run with role steps and deliverables under `deliverables/cy
 
 ---
 
-@LAT20LON18 | created:1770646802 | updated:1770649832 | relates:
+@LAT-13.7LON146.5 | created:1770646802 | updated:1770649832 | relates:
 
 ## Step
 A single role execution that produces named assets.
@@ -481,7 +481,7 @@ A single role execution that produces named assets.
 
 ---
 
-@LAT20LON15 | created:1770646802 | updated:1770649832 | relates:references>@LAT30LON0
+@LAT-12.4LON-75.6 | created:1770646802 | updated:1770649832 | relates:references>@LAT-4.9LON31.8
 
 ## Role
 A defined responsibility with expected outputs.
@@ -492,7 +492,7 @@ A defined responsibility with expected outputs.
 
 ---
 
-@LAT20LON1 | created:1770646802 | updated:1770649832 | relates:references>@LAT30LON8
+@LAT-11.2LON62.3 | created:1770646802 | updated:1770649832 | relates:references>@LAT-6.2LON-106.1
 
 ## Critical path
 The ordered list of steps required to reach delivery.
@@ -503,7 +503,7 @@ The ordered list of steps required to reach delivery.
 
 ---
 
-@LAT20LON5 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT30LON21
+@LAT-9.9LON-159.8 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT17.5LON-6.1
 
 ## Definition of done
 The completion gate for a cycle.
@@ -514,7 +514,7 @@ The completion gate for a cycle.
 
 ---
 
-@LAT50LON0 | created:1770646802 | updated:1770649832 | relates:
+@LAT-8.7LON-21.9 | created:1770646802 | updated:1770649832 | relates:
 
 ## Deliverables
 Named outputs created during a cycle.
@@ -525,7 +525,7 @@ Named outputs created during a cycle.
 
 ---
 
-@LAT20LON12 | created:1770646802 | updated:1770649832 | relates:
+@LAT-7.4LON116.0 | created:1770646802 | updated:1770649832 | relates:
 
 ## Placeholder
 A temporary marker that must be resolved before step completion.
@@ -536,7 +536,7 @@ A temporary marker that must be resolved before step completion.
 
 ---
 
-@LAT30LON8 | created:1770646802 | updated:1770649832 | relates:
+@LAT-6.2LON-106.1 | created:1770646802 | updated:1770649832 | relates:
 
 ## PLAN.md
 The authoritative critical-path plan and table of contents.
@@ -547,7 +547,7 @@ The authoritative critical-path plan and table of contents.
 
 ---
 
-@LAT30LON0 | created:1770646802 | updated:1770649832 | relates:
+@LAT-4.9LON31.8 | created:1770646802 | updated:1770649832 | relates:
 
 ## AGENTS.md
 Defines roles, rules, and expected assets.
@@ -558,7 +558,7 @@ Defines roles, rules, and expected assets.
 
 ---
 
-@LAT30LON6 | created:1770646802 | updated:1770649832 | relates:
+@LAT-3.7LON169.7 | created:1770646802 | updated:1770649832 | relates:
 
 ## LOG.md
 The append-only log of decisions, changes, and open questions.
@@ -569,7 +569,7 @@ The append-only log of decisions, changes, and open questions.
 
 ---
 
-@LAT30LON3 | created:1770646802 | updated:1770649832 | relates:
+@LAT-2.5LON-52.4 | created:1770646802 | updated:1770649832 | relates:
 
 ## CHECKLIST.md
 Step completion and consistency checks.
@@ -580,7 +580,7 @@ Step completion and consistency checks.
 
 ---
 
-@LAT30LON10 | created:1770646802 | updated:1770649832 | relates:
+@LAT-1.2LON85.5 | created:1770646802 | updated:1770649832 | relates:
 
 ## RELEASES.md
 Cycle summaries and deliverable indexes.
@@ -591,7 +591,7 @@ Cycle summaries and deliverable indexes.
 
 ---
 
-@LAT30LON9 | created:1770646802 | updated:1770649832 | relates:
+@LAT0.0LON-136.6 | created:1770646802 | updated:1770649832 | relates:
 
 ## README.md
 Entry point describing workflow and rules.
@@ -602,7 +602,7 @@ Entry point describing workflow and rules.
 
 ---
 
-@LAT30LON31 | created:1770646802 | updated:1770649832 | relates:references>@LAT30LON9
+@LAT1.2LON1.3 | created:1770646802 | updated:1770649832 | relates:references>@LAT0.0LON-136.6
 
 ## WHAT.md
 Conceptual overview of TTE.
@@ -613,7 +613,7 @@ Conceptual overview of TTE.
 
 ---
 
-@LAT30LON23 | created:1770646802 | updated:1770649832 | relates:
+@LAT2.5LON139.2 | created:1770646802 | updated:1770649832 | relates:
 
 ## TTE_PROMPT.md
 The cycle-01 prompt input.
@@ -624,7 +624,7 @@ The cycle-01 prompt input.
 
 ---
 
-@LAT30LON22 | created:1770646802 | updated:1770649832 | relates:
+@LAT3.7LON-82.9 | created:1770646802 | updated:1770649832 | relates:
 
 ## TTE_ONTOLOGY.md
 The ontology of terms and relationships for this repo.
@@ -635,7 +635,7 @@ The ontology of terms and relationships for this repo.
 
 ---
 
-@LAT30LON5 | created:1770646802 | updated:1770649832 | relates:
+@LAT4.9LON55.0 | created:1770646802 | updated:1770649832 | relates:
 
 ## LICENSE
 The project license.
@@ -646,7 +646,7 @@ The project license.
 
 ---
 
-@LAT30LON32 | created:1770646802 | updated:1770649832 | relates:
+@LAT6.2LON-167.1 | created:1770646802 | updated:1770649832 | relates:
 
 ## requirements.txt
 Python dependencies list.
@@ -657,7 +657,7 @@ Python dependencies list.
 
 ---
 
-@LAT30LON1 | created:1770646802 | updated:1770649832 | relates:
+@LAT7.4LON-29.2 | created:1770646802 | updated:1770649832 | relates:
 
 ## Activate_bat_run_tte.bat
 Windows batch helper for running TTE.
@@ -668,7 +668,7 @@ Windows batch helper for running TTE.
 
 ---
 
-@LAT40LON0 | created:1770646802 | updated:1770649832 | relates:references>@LAT20LON11
+@LAT8.7LON108.7 | created:1770646802 | updated:1770649832 | relates:references>@LAT81.6LON86.7
 
 ## tte_agent.py
 The main TTE agent loop and tool bridge.
@@ -679,18 +679,29 @@ The main TTE agent loop and tool bridge.
 
 ---
 
-@LAT40LON1 | created:1770646802 | updated:1770649832 | relates:
+@LAT9.9LON-113.5 | created:1770646802 | updated:1770649832 | relates:
 
 ## tte_monitor.py
-The Tkinter UI that monitors PLAN, LOG, and TTDB.
+The Tkinter UI that monitors PLAN and LOG.
 
 - kind: file
 - aliases: TTE Monitor
-- notes: Renders a DB graph and markdown views.
+- notes: Renders markdown views for PLAN and LOG.
 
 ---
 
-@LAT30LON11 | created:1770646802 | updated:1770649832 | relates:references>@LAT2LON50,references>@LAT0LON52
+@LAT11.2LON24.4 | created:1770646802 | updated:1770649832 | relates:reads>@LAT-37.0LON-37.8,references>@LAT18.8LON131.8,references>@LAT20.1LON-90.3,references>@LAT21.4LON47.6
+
+## ttdb_navigator.py
+The Tkinter UI that navigates TTDB records.
+
+- kind: file
+- aliases: TTDB Navigator
+- notes: Provides list navigation and a globe view for TTDB coordinates.
+
+---
+
+@LAT12.4LON162.3 | created:1770646802 | updated:1770649832 | relates:references>@LAT-40.2LON46.4,references>@LAT-38.6LON-175.7
 
 ## RFCs index
 The index of RFCs in this repo.
@@ -701,7 +712,7 @@ The index of RFCs in this repo.
 
 ---
 
-@LAT30LON24 | created:1770646802 | updated:1770649832 | relates:
+@LAT13.7LON-59.8 | created:1770646802 | updated:1770649832 | relates:
 
 ## TTN RFC manifest
 Hash manifest for TTN RFC bundle.
@@ -712,7 +723,7 @@ Hash manifest for TTN RFC bundle.
 
 ---
 
-@LAT30LON19 | created:1770646802 | updated:1770649832 | relates:
+@LAT15.0LON78.1 | created:1770646802 | updated:1770649832 | relates:
 
 ## TTE-RFC-0001
 Workflow and role definitions for TTE.
@@ -723,7 +734,7 @@ Workflow and role definitions for TTE.
 
 ---
 
-@LAT30LON20 | created:1770646802 | updated:1770649832 | relates:
+@LAT16.2LON-144.0 | created:1770646802 | updated:1770649832 | relates:
 
 ## TTE-RFC-0002
 PLAN, LOG, and checklist requirements.
@@ -734,7 +745,7 @@ PLAN, LOG, and checklist requirements.
 
 ---
 
-@LAT30LON21 | created:1770646802 | updated:1770649832 | relates:
+@LAT17.5LON-6.1 | created:1770646802 | updated:1770649832 | relates:
 
 ## TTE-RFC-0003
 Definition of done and release packaging rules.
@@ -745,7 +756,7 @@ Definition of done and release packaging rules.
 
 ---
 
-@LAT30LON13 | created:1770646802 | updated:1770649832 | relates:references>@LAT0LON52
+@LAT18.8LON131.8 | created:1770646802 | updated:1770649832 | relates:references>@LAT-38.6LON-175.7
 
 ## TTDB-RFC-0001
 TTDB file format and record structure.
@@ -756,7 +767,7 @@ TTDB file format and record structure.
 
 ---
 
-@LAT30LON14 | created:1770646802 | updated:1770649832 | relates:references>@LAT20LON2,references>@LAT0LON52
+@LAT20.1LON-90.3 | created:1770646802 | updated:1770649832 | relates:references>@LAT59.3LON-20.7,references>@LAT-38.6LON-175.7
 
 ## TTDB-RFC-0002
 Cursor semantics for TTDB.
@@ -767,7 +778,7 @@ Cursor semantics for TTDB.
 
 ---
 
-@LAT30LON15 | created:1770646802 | updated:1770649832 | relates:references>@LAT0LON52
+@LAT21.4LON47.6 | created:1770646802 | updated:1770649832 | relates:references>@LAT-38.6LON-175.7
 
 ## TTDB-RFC-0003
 Typed edge semantics for TTDB.
@@ -778,7 +789,7 @@ Typed edge semantics for TTDB.
 
 ---
 
-@LAT30LON16 | created:1770646802 | updated:1770649832 | relates:references>@LAT0LON52
+@LAT22.8LON-174.5 | created:1770646802 | updated:1770649832 | relates:references>@LAT-38.6LON-175.7
 
 ## TTDB-RFC-0004
 Event ID assignment and collision handling.
@@ -789,7 +800,7 @@ Event ID assignment and collision handling.
 
 ---
 
-@LAT30LON25 | created:1770646802 | updated:1770649832 | relates:references>@LAT2LON50
+@LAT24.1LON-36.6 | created:1770646802 | updated:1770649832 | relates:references>@LAT-40.2LON46.4
 
 ## TTN-RFC-0001
 TTN core semantic mesh specification.
@@ -800,7 +811,7 @@ TTN core semantic mesh specification.
 
 ---
 
-@LAT30LON26 | created:1770646802 | updated:1770649832 | relates:references>@LAT2LON50
+@LAT25.5LON101.3 | created:1770646802 | updated:1770649832 | relates:references>@LAT-40.2LON46.4
 
 ## TTN-RFC-0002
 TTN typed edge taxonomy.
@@ -811,7 +822,7 @@ TTN typed edge taxonomy.
 
 ---
 
-@LAT30LON27 | created:1770646802 | updated:1770649832 | relates:references>@LAT2LON50
+@LAT26.8LON-120.8 | created:1770646802 | updated:1770649832 | relates:references>@LAT-40.2LON46.4
 
 ## TTN-RFC-0003
 Reference implementation checklist for TTN nodes.
@@ -822,7 +833,7 @@ Reference implementation checklist for TTN nodes.
 
 ---
 
-@LAT30LON28 | created:1770646802 | updated:1770649832 | relates:references>@LAT2LON50
+@LAT28.2LON17.1 | created:1770646802 | updated:1770649832 | relates:references>@LAT-40.2LON46.4
 
 ## TTN-RFC-0004
 Semantic compression and token dictionary for constrained links.
@@ -833,7 +844,7 @@ Semantic compression and token dictionary for constrained links.
 
 ---
 
-@LAT30LON29 | created:1770646802 | updated:1770649832 | relates:references>@LAT2LON50
+@LAT29.6LON155.0 | created:1770646802 | updated:1770649832 | relates:references>@LAT-40.2LON46.4
 
 ## TTN-RFC-0005
 Trust, reputation, and moderation modeling.
@@ -844,7 +855,7 @@ Trust, reputation, and moderation modeling.
 
 ---
 
-@LAT30LON30 | created:1770646802 | updated:1770649832 | relates:references>@LAT2LON50
+@LAT31.1LON-67.1 | created:1770646802 | updated:1770649832 | relates:references>@LAT-40.2LON46.4
 
 ## TTN-RFC-0006
 Minimal LoRa packet framing for non-Meshtastic nodes.
@@ -855,7 +866,7 @@ Minimal LoRa packet framing for non-Meshtastic nodes.
 
 ---
 
-@LAT30LON12 | created:1770646802 | updated:1770649832 | relates:references>@LAT10LON10
+@LAT32.5LON70.8 | created:1770646802 | updated:1770649832 | relates:references>@LAT-35.5LON100.1
 
 ## TTAI_SPEC.md
 Core identity and behavior requirements for TTAI.
@@ -866,7 +877,7 @@ Core identity and behavior requirements for TTAI.
 
 ---
 
-@LAT30LON4 | created:1770646802 | updated:1770649832 | relates:references>@LAT10LON10
+@LAT34.0LON-151.3 | created:1770646802 | updated:1770649832 | relates:references>@LAT-35.5LON100.1
 
 ## DEFAULT_NETWORK.md
 Narrative default network definition for TTAI.
@@ -877,7 +888,7 @@ Narrative default network definition for TTAI.
 
 ---
 
-@LAT30LON2 | created:1770646802 | updated:1770649832 | relates:references>@LAT10LON10
+@LAT35.5LON-13.4 | created:1770646802 | updated:1770649832 | relates:references>@LAT-35.5LON100.1
 
 ## BEHAVIOR_SPEC.md
 TTAI idle-time and TTN join/leave behavior.
@@ -888,7 +899,7 @@ TTAI idle-time and TTN join/leave behavior.
 
 ---
 
-@LAT20LON9 | created:1770646802 | updated:1770649832 | relates:required_by>@LAT30LON25,references>@LAT2LON50
+@LAT37.0LON124.5 | created:1770646802 | updated:1770649832 | relates:required_by>@LAT24.1LON-36.6,references>@LAT-40.2LON46.4
 
 ## Node ID
 Stable cryptographic identifier for a TTN node.
@@ -899,7 +910,7 @@ Stable cryptographic identifier for a TTN node.
 
 ---
 
-@LAT20LON17 | created:1770646802 | updated:1770649832 | relates:required_by>@LAT30LON25,references>@LAT2LON50
+@LAT38.6LON-97.6 | created:1770646802 | updated:1770649832 | relates:required_by>@LAT24.1LON-36.6,references>@LAT-40.2LON46.4
 
 ## Semantic ID
 Location-anchored identifier for semantic events.
@@ -910,7 +921,7 @@ Location-anchored identifier for semantic events.
 
 ---
 
-@LAT20LON16 | created:1770646802 | updated:1770649832 | relates:references>@LAT0LON52
+@LAT40.2LON40.3 | created:1770646802 | updated:1770649832 | relates:references>@LAT-38.6LON-175.7
 
 ## Semantic Event
 A structured event in TTN with provenance and typed edges.
@@ -921,7 +932,7 @@ A structured event in TTN with provenance and typed edges.
 
 ---
 
-@LAT20LON23 | created:1770646802 | updated:1770649832 | relates:
+@LAT41.8LON178.2 | created:1770646802 | updated:1770649832 | relates:
 
 ## Typed edge
 A directional link with a type token between records.
@@ -932,7 +943,7 @@ A directional link with a type token between records.
 
 ---
 
-@LAT20LON21 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT30LON25,references>@LAT2LON50
+@LAT43.5LON-43.9 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT24.1LON-36.6,references>@LAT-40.2LON46.4
 
 ## TTN compliance level
 Capability tier for a TTN node.
@@ -943,7 +954,7 @@ Capability tier for a TTN node.
 
 ---
 
-@LAT20LON13 | created:1770646802 | updated:1770649832 | relates:
+@LAT45.2LON94.0 | created:1770646802 | updated:1770649832 | relates:
 
 ## Presence event
 A semantic event announcing a node on the network.
@@ -954,7 +965,7 @@ A semantic event announcing a node on the network.
 
 ---
 
-@LAT20LON8 | created:1770646802 | updated:1770649832 | relates:references>@LAT30LON27,references>@LAT2LON50
+@LAT47.0LON-128.1 | created:1770646802 | updated:1770649832 | relates:references>@LAT26.8LON-120.8,references>@LAT-40.2LON46.4
 
 ## Mesh grammar
 Compact, transport-friendly representation of TTN semantics.
@@ -965,7 +976,7 @@ Compact, transport-friendly representation of TTN semantics.
 
 ---
 
-@LAT20LON22 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT30LON28,references>@LAT2LON50
+@LAT48.8LON9.8 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT28.2LON17.1,references>@LAT-40.2LON46.4
 
 ## Token dictionary
 The on-mesh token set for semantic compression.
@@ -976,7 +987,7 @@ The on-mesh token set for semantic compression.
 
 ---
 
-@LAT20LON7 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT30LON30,references>@LAT2LON50
+@LAT50.7LON147.7 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT31.1LON-67.1,references>@LAT-40.2LON46.4
 
 ## LoRa frame
 Minimal packet framing for non-Meshtastic TTN nodes.
@@ -987,7 +998,7 @@ Minimal packet framing for non-Meshtastic TTN nodes.
 
 ---
 
-@LAT20LON19 | created:1770646802 | updated:1770649832 | relates:references>@LAT20LON20
+@LAT52.7LON-74.4 | created:1770646802 | updated:1770649832 | relates:references>@LAT54.8LON63.5
 
 ## TTDB record
 A single TTDB node block with ID, metadata, and body.
@@ -998,7 +1009,7 @@ A single TTDB node block with ID, metadata, and body.
 
 ---
 
-@LAT20LON20 | created:1770646802 | updated:1770649832 | relates:
+@LAT54.8LON63.5 | created:1770646802 | updated:1770649832 | relates:
 
 ## TTDB record ID
 A lat/lon coordinate on the knowledge globe.
@@ -1009,7 +1020,7 @@ A lat/lon coordinate on the knowledge globe.
 
 ---
 
-@LAT20LON6 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT30LON16,references>@LAT0LON52
+@LAT57.0LON-158.6 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT22.8LON-174.5,references>@LAT-38.6LON-175.7
 
 ## Knowledge globe
 The subjective coordinate map for TTDB IDs.
@@ -1020,7 +1031,7 @@ The subjective coordinate map for TTDB IDs.
 
 ---
 
-@LAT20LON2 | created:1770646802 | updated:1770649832 | relates:references>@LAT0LON52
+@LAT59.3LON-20.7 | created:1770646802 | updated:1770649832 | relates:references>@LAT-38.6LON-175.7
 
 ## Cursor
 The active selection window for TTDB records.
@@ -1031,7 +1042,7 @@ The active selection window for TTDB records.
 
 ---
 
-@LAT20LON3 | created:1770646802 | updated:1770649832 | relates:references>@LAT30LON7
+@LAT61.9LON117.2 | created:1770646802 | updated:1770649832 | relates:references>@LAT-37.0LON-37.8
 
 ## Cursor policy
 Limits for TTDB preview and node list sizes.
@@ -1042,7 +1053,7 @@ Limits for TTDB preview and node list sizes.
 
 ---
 
-@LAT20LON0 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT30LON16,references>@LAT0LON52
+@LAT64.6LON-104.9 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT22.8LON-174.5,references>@LAT-38.6LON-175.7
 
 ## Collision policy
 TTDB rule for resolving ID collisions.
@@ -1053,7 +1064,7 @@ TTDB rule for resolving ID collisions.
 
 ---
 
-@LAT20LON14 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT30LON2,references>@LAT10LON10
+@LAT67.6LON33.0 | created:1770646802 | updated:1770649832 | relates:defined_in>@LAT35.5LON-13.4,references>@LAT-35.5LON100.1
 
 ## Primitive mode
 Reduced umwelt and verb set for constrained devices.
@@ -1064,7 +1075,7 @@ Reduced umwelt and verb set for constrained devices.
 
 ---
 
-@LAT50LON1 | created:1770646802 | updated:1770649832 | relates:implemented_in>@LAT40LON1
+@LAT71.1LON170.9 | created:1770646802 | updated:1770649832 | relates:implemented_in>@LAT9.9LON-113.5
 
 ## Monitor UI
 The Tkinter application for viewing plan, log, and DB.
@@ -1075,7 +1086,7 @@ The Tkinter application for viewing plan, log, and DB.
 
 ---
 
-@LAT20LON10 | created:1770646802 | updated:1770649832 | relates:references>@LAT40LON0
+@LAT75.4LON-51.2 | created:1770646802 | updated:1770649832 | relates:references>@LAT8.7LON108.7
 
 ## OpenAI API key
 Environment variable required to run the agent.
@@ -1086,7 +1097,7 @@ Environment variable required to run the agent.
 
 ---
 
-@LAT20LON11 | created:1770646802 | updated:1770649832 | relates:used_in>@LAT40LON0
+@LAT81.6LON86.7 | created:1770646802 | updated:1770649832 | relates:used_in>@LAT8.7LON108.7
 
 ## OpenAI Responses API
 The model execution interface used by the agent.
