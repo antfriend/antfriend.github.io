@@ -330,6 +330,22 @@
     <a class="home-link" href="index.html">TTE Home</a>
     <header>
       <div class="header-left">
+        <div class="record" id="recordView"></div>
+      </div>
+      <div class="header-right">
+        <div class="graph-wrap header-graph">
+          <canvas id="graph"></canvas>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="panel">
+        <strong>Records</strong>
+        <ul class="list" id="recordList"></ul>
+      </section>
+
+      <section class="panel record-panel">
         <div class="title">
           <h1>TTDB: MyMentalPalace</h1>
           <p>A single-file semantic story database. It stores records as <a href="https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0001-File-Format.md">markdown nodes in a network graph</a> of semantic links. The ID of each record is a latitudinal and longitudinal point on a knowledge globe, defined by the <a href="https://github.com/antfriend/toot-toot-engineering/blob/main/standards/ttai/TTAI_SPEC.md">librarian's</a> <a href="https://github.com/antfriend/toot-toot-engineering/blob/main/standards/umwelt/TTE_Agent_Umwelt_v1.yaml">umwelt.</a></p>
@@ -346,22 +362,6 @@
             Auto refresh
           </label>
         </div>
-      </div>
-      <div class="header-right">
-        <div class="graph-wrap header-graph">
-          <canvas id="graph"></canvas>
-        </div>
-      </div>
-    </header>
-
-    <div class="layout">
-      <section class="panel">
-        <strong>Records</strong>
-        <ul class="list" id="recordList"></ul>
-      </section>
-
-      <section class="panel record-panel">
-        <div class="record" id="recordView"></div>
       </section>
     </div>
   </div>
