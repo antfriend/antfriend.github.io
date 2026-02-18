@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TTDB Viewer</title>
+  <title>Toot Toot Terminology</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/eyeball.css" />
   <link rel="stylesheet" href="css/tte-common.css" />
+  <link rel="stylesheet" href="css/tte-core.css" />
   <style>
     .page {
       max-width: 1280px;
@@ -17,29 +19,6 @@
       gap: 20px;
       position: relative;
       z-index: 1;
-    }
-
-    header {
-      display: grid;
-      grid-template-columns: minmax(320px, 1.1fr) minmax(280px, 1fr);
-      align-items: stretch;
-      gap: 18px;
-      padding: 18px 22px;
-      border-radius: 18px;
-      background: rgba(192, 232, 207, 0.88);
-      border: 1px solid rgba(11, 17, 18, 0.12);
-      box-shadow: 0 18px 36px rgba(11, 17, 18, 0.18);
-    }
-
-    .header-left {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-
-    .header-right {
-      display: grid;
-      align-content: stretch;
     }
 
     .home-link {
@@ -64,30 +43,85 @@
       box-shadow: 0 0 14px var(--glow);
     }
 
-    .title {
+    header {
       display: grid;
-      gap: 6px;
+      grid-template-columns: minmax(320px, 1.2fr) minmax(280px, 0.9fr);
+      gap: 18px;
+      padding: 18px 22px;
+      border-radius: 20px;
+      background: rgba(192, 232, 207, 0.88);
+      border: 1px solid rgba(11, 17, 18, 0.12);
+      box-shadow: 0 18px 36px rgba(11, 17, 18, 0.18);
     }
 
-    .title h1 {
+    .header-left {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .hero-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .title-block h1 {
       margin: 0;
       font-family: "Unbounded", "Space Grotesk", sans-serif;
       font-size: clamp(26px, 4vw, 38px);
-      letter-spacing: 0.5px;
     }
 
-    .title span {
+    .title-block p {
+      margin: 6px 0 0;
       color: var(--muted);
       font-size: 14px;
     }
 
-    .title a {
-      color: var(--accent);
-      text-decoration: none;
+    .eyeball-slot {
+      display: grid;
+      place-items: center;
+      width: 88px;
+      height: 88px;
+      border-radius: 20px;
+      background: rgba(11, 17, 18, 0.1);
+      border: 1px solid rgba(11, 17, 18, 0.12);
     }
 
-    .title a:hover {
-      text-decoration: underline;
+    .graph-wrap {
+      width: 100%;
+      height: 260px;
+      border-radius: 18px;
+      background: rgba(11, 17, 18, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.75fr) minmax(300px, 2fr);
+      gap: 20px;
+      min-height: 70vh;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 16px 36px rgba(11, 17, 18, 0.14);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-content: start;
+      height: 100%;
+    }
+
+    .panel.record-panel {
+      height: auto;
     }
 
     .controls {
@@ -130,34 +164,19 @@
       accent-color: var(--accent);
     }
 
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(200px, 0.75fr) minmax(280px, 2fr);
-      gap: 20px;
-      min-height: 70vh;
-      align-items: start;
+    .search {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(11, 17, 18, 0.2);
+      background: rgba(255, 255, 255, 0.85);
+      font-family: inherit;
+      font-size: 14px;
     }
 
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 16px;
-      box-shadow: 0 16px 36px rgba(11, 17, 18, 0.14);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-content: start;
-      height: 100%;
-    }
-
-    .panel.record-panel {
-      height: auto;
-      align-self: start;
-    }
-
-    .panel.record-panel .record {
-      flex: none;
+    .search-meta {
+      font-size: 12px;
+      color: var(--muted);
     }
 
     .list {
@@ -201,8 +220,6 @@
       min-height: 240px;
       overflow: auto;
       padding-right: 6px;
-      flex: 1;
-      min-height: 0;
     }
 
     .record h2,
@@ -218,21 +235,19 @@
     }
 
     .record h3 {
-      color: var(--teal);
-      font-size: 18px;
-    }
-
-    .record .record-title {
-      color: var(--eyeball-red);
-    }
-
-    .record h4 {
-      color: var(--eyeball-red);
+      color: var(--accent);
       font-size: 16px;
     }
 
-    .record p {
+    .record h4 {
+      font-size: 14px;
+    }
+
+    .record p,
+    .record li,
+    .record blockquote {
       margin: 0;
+      font-size: 15px;
       line-height: 1.6;
       color: var(--ink);
     }
@@ -240,87 +255,74 @@
     .record ul {
       margin: 0;
       padding-left: 18px;
+      display: grid;
+      gap: 6px;
     }
 
     .record blockquote {
-      margin: 0;
-      padding: 8px 12px;
-      border-left: 3px solid rgba(15, 139, 141, 0.45);
+      border-left: 3px solid var(--accent);
+      padding-left: 12px;
       color: var(--muted);
-      background: rgba(11, 17, 18, 0.08);
     }
 
-    .record pre {
-      margin: 0;
-      padding: 12px;
-      background: #0b0f14;
-      border-radius: 12px;
-      color: #c4f1ff;
-      font-family: "Courier New", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 13px;
-      overflow: auto;
-    }
-
-    .record img {
+    .record img,
+    .record object {
       max-width: 100%;
-      height: auto;
-      display: block;
-      margin: 10px 0;
-      border-radius: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(11, 17, 18, 0.12);
+      background: rgba(255, 255, 255, 0.9);
     }
 
-    .record .muted {
+    .record object {
+      width: 100%;
+      min-height: 180px;
+    }
+
+    .related {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 6px;
+    }
+
+    .related li {
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      font-size: 14px;
+    }
+
+    .muted {
       color: var(--muted);
       font-size: 13px;
     }
 
-    .record .related a {
-      color: var(--accent);
-      text-decoration: none;
+    .tour-note {
+      font-size: 13px;
+      color: var(--muted);
     }
 
-    .record .related a:hover {
-      text-decoration: underline;
+    footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      color: rgba(230, 255, 240, 0.7);
+      padding: 24px 0 8px;
     }
 
-    .graph-wrap {
-      background: rgba(11, 17, 18, 0.08);
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      min-height: 220px;
-      position: relative;
-    }
-
-    .header-graph {
-      height: 100%;
-      min-height: 240px;
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    @media (max-width: 920px) {
+    @media (max-width: 900px) {
       header {
         grid-template-columns: 1fr;
       }
 
       .layout {
         grid-template-columns: 1fr;
-        min-height: auto;
       }
 
-      .record {
-        height: auto;
-        flex: none;
-      }
-
-      .list {
-        height: auto;
-        max-height: 40vh;
-        flex: none;
+      .graph-wrap {
+        height: 220px;
       }
     }
   </style>
@@ -330,10 +332,19 @@
     <a class="home-link" href="index.html">TTE Home</a>
     <header>
       <div class="header-left">
+        <div class="hero-row">
+          <div class="title-block">
+            <h1>Toot Toot Terminology</h1>
+            <p>Definitions, examples, illustrations, and a guided tour of TTE terms.</p>
+          </div>
+          <div class="eyeball-slot">
+            <span id="eyeball-terminology"></span>
+          </div>
+        </div>
         <div class="record" id="recordView"></div>
       </div>
       <div class="header-right">
-        <div class="graph-wrap header-graph">
+        <div class="graph-wrap">
           <canvas id="graph"></canvas>
         </div>
       </div>
@@ -342,19 +353,16 @@
     <div class="layout">
       <section class="panel">
         <strong>Records</strong>
+        <input class="search" id="searchInput" type="search" placeholder="Search terms, examples, or links" />
+        <div class="search-meta" id="searchMeta">Loading...</div>
         <ul class="list" id="recordList"></ul>
       </section>
 
       <section class="panel record-panel">
         <div class="title">
-          <h1>TTDB: MyMentalPalace</h1>
-          <p>A single-file semantic story database. It stores records as <a href="https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0001-File-Format.md">markdown nodes in a network graph</a> of semantic links. The ID of each record is a latitudinal and longitudinal point on a knowledge globe, defined by the <a href="https://github.com/antfriend/toot-toot-engineering/blob/main/standards/ttai/TTAI_SPEC.md">librarian's</a> <a href="https://github.com/antfriend/toot-toot-engineering/blob/main/standards/umwelt/TTE_Agent_Umwelt_v1.yaml">umwelt.</a></p>
-
-          <p>This web page has no react, packages, or libraries 🛍️ because only foundation level HTML, javascript, and CSS are necessary to parse and render TTDB record and relationship data. It also can be rendered as <a href="graph-view.html">a one-page d3 app.</a></p>
-
-          <p>TTDB has <a href="https://github.com/antfriend/toot-toot-engineering/blob/main/standards/ttai/BEHAVIOR_SPEC.md#primitive-mode-constraints">a default network</a> for defining autonomous behavior of micro-scale (esp32/Arduino) devices within the semantic globe of their point of view. Recording sensor data, listening for birds, defending territory kinds-of-things when they have free time. Specifically <a href="https://meshtastic.org/">Meshtastic</a> devices.</p>
-          <p><a href="terminology.html">Explore the TTE terminology guided tour.</a></p>
-          <span id="status">Loading MyMentalPalaceDB.md...</span>
+          <h2>TTDB: Terminology</h2>
+          <p>Single-file glossary DB. Guided tour starts at Umwelt and steps through each term.</p>
+          <span id="status">Loading TootTootTerminologyDB.md...</span>
         </div>
         <div class="controls">
           <button class="pill" id="refresh">Refresh</button>
@@ -362,18 +370,31 @@
             <input type="checkbox" id="autoRefresh" checked />
             Auto refresh
           </label>
+          <label class="toggle">
+            <input type="checkbox" id="tourToggle" checked />
+            Guided tour
+          </label>
         </div>
+        <div class="tour-note" id="tourNote">Default network tour will advance after a short pause.</div>
       </section>
     </div>
+
+    <footer>
+      <span id="eyeball-foot"></span>
+      &copy; 2026 Toot Toot Engineering. All signals cleared.
+    </footer>
   </div>
 
+  <script src="js/eyeball.js"></script>
   <script>
-    const DB_PATH = "MyMentalPalaceDB.md";
+    const DB_PATH = "TootTootTerminologyDB.md";
     const REFRESH_MS = 1500;
+    const TOUR_DELAY_MS = 3500;
 
     const state = {
       records: {},
       order: [],
+      filteredOrder: [],
       selectedId: null,
       lastText: "",
       coords: {},
@@ -383,6 +404,10 @@
       globeTargetLat: 0,
       globeTargetLon: 0,
       globeAnimating: false,
+      searchIndex: {},
+      searchTerm: "",
+      tourEnabled: true,
+      tourTimer: null,
     };
 
     const palette = (() => {
@@ -403,12 +428,29 @@
     const graphCanvas = document.getElementById("graph");
     const refreshBtn = document.getElementById("refresh");
     const autoRefresh = document.getElementById("autoRefresh");
+    const searchInput = document.getElementById("searchInput");
+    const searchMeta = document.getElementById("searchMeta");
+    const tourToggle = document.getElementById("tourToggle");
+    const tourNote = document.getElementById("tourNote");
 
     const ctx = graphCanvas.getContext("2d");
     const resizeObserver = new ResizeObserver(() => renderGraph());
     resizeObserver.observe(graphCanvas.parentElement);
 
     refreshBtn.addEventListener("click", () => loadDb(true));
+    searchInput.addEventListener("input", () => {
+      state.searchTerm = searchInput.value.trim().toLowerCase();
+      applySearch();
+      noteInteraction();
+    });
+    tourToggle.addEventListener("change", () => {
+      state.tourEnabled = tourToggle.checked;
+      if (state.tourEnabled) {
+        scheduleTour();
+      } else {
+        clearTour();
+      }
+    });
 
     function setStatusMessage(message) {
       statusEl.textContent = message;
@@ -424,6 +466,50 @@
       return div.innerHTML;
     }
 
+    function buildSearchIndex() {
+      state.searchIndex = {};
+      state.order.forEach((recordId) => {
+        const record = state.records[recordId];
+        if (!record) return;
+        const text = [record.title, record.header, record.body].filter(Boolean).join("\n");
+        state.searchIndex[recordId] = text.toLowerCase();
+      });
+    }
+
+    function applySearch() {
+      const term = state.searchTerm;
+      if (!term) {
+        state.filteredOrder = [...state.order];
+      } else {
+        state.filteredOrder = state.order.filter((recordId) => {
+          const blob = state.searchIndex[recordId] || "";
+          return blob.includes(term);
+        });
+      }
+
+      if (state.filteredOrder.length && !state.filteredOrder.includes(state.selectedId)) {
+        state.selectedId = state.filteredOrder[0];
+      }
+
+      renderList();
+      renderRecord();
+      centerOnSelected();
+      renderGraph();
+      updateSearchMeta();
+    }
+
+    function updateSearchMeta() {
+      if (!state.order.length) {
+        searchMeta.textContent = "No records.";
+        return;
+      }
+      if (!state.searchTerm) {
+        searchMeta.textContent = `${state.order.length} terms loaded.`;
+        return;
+      }
+      searchMeta.textContent = `${state.filteredOrder.length} matches for "${sanitize(state.searchTerm)}".`;
+    }
+
     function loadDb(force = false) {
       fetch(DB_PATH, { cache: "no-store" })
         .then((res) => {
@@ -437,24 +523,28 @@
           state.records = records;
           state.order = order;
           state.coords = coords;
+          buildSearchIndex();
           if (!state.selectedId || !records[state.selectedId]) {
             state.selectedId = selected || order[0] || null;
           }
-          renderList();
+          applySearch();
           renderRecord();
           centerOnSelected();
           renderGraph();
           setStatusLink(order.length);
+          scheduleTour();
         })
         .catch((err) => {
           setStatusMessage(err.message);
           state.records = {};
           state.order = [];
+          state.filteredOrder = [];
           state.selectedId = null;
           state.coords = {};
           renderList();
           renderRecord();
           renderGraph();
+          updateSearchMeta();
         });
     }
 
@@ -552,7 +642,8 @@
 
     function renderList() {
       listEl.innerHTML = "";
-      if (!state.order.length) {
+      const source = state.searchTerm ? state.filteredOrder : state.order;
+      if (!source.length) {
         const empty = document.createElement("div");
         empty.className = "muted";
         empty.textContent = "No records available.";
@@ -560,7 +651,7 @@
         return;
       }
 
-      state.order.forEach((recordId) => {
+      source.forEach((recordId) => {
         const title = state.records[recordId]?.title;
         const label = title ? `${recordId} - ${title}` : recordId;
         const li = document.createElement("li");
@@ -570,19 +661,25 @@
         if (recordId === state.selectedId) {
           button.classList.add("active");
         }
-        button.addEventListener("click", () => selectRecord(recordId));
+        button.addEventListener("click", () => {
+          selectRecord(recordId);
+          noteInteraction();
+        });
         li.appendChild(button);
         listEl.appendChild(li);
       });
     }
 
-    function selectRecord(recordId) {
+    function selectRecord(recordId, opts = {}) {
       if (!state.records[recordId]) return;
       state.selectedId = recordId;
       renderList();
       renderRecord();
       centerOnSelected();
       renderGraph();
+      if (!opts.fromTour) {
+        scheduleTour();
+      }
     }
 
     function renderRecord() {
@@ -628,6 +725,7 @@
             link.addEventListener("click", (event) => {
               event.preventDefault();
               selectRecord(edge.target);
+              noteInteraction();
             });
             item.appendChild(link);
           } else {
@@ -644,6 +742,26 @@
       if (record.body) {
         viewEl.appendChild(renderMarkdown(record.body));
       }
+    }
+
+    function createMediaNode(src, alt, title) {
+      const cleaned = src.split("?")[0].split("#")[0].toLowerCase();
+      const isSvg = cleaned.endsWith(".svg");
+      if (isSvg) {
+        const obj = document.createElement("object");
+        obj.data = src;
+        obj.type = "image/svg+xml";
+        obj.setAttribute("role", "img");
+        obj.setAttribute("aria-label", alt || "svg image");
+        if (title) obj.setAttribute("title", title);
+        return obj;
+      }
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = alt;
+      if (title) img.title = title;
+      img.loading = "lazy";
+      return img;
     }
 
     function renderMarkdown(text) {
@@ -778,20 +896,13 @@
         if (match[1] !== undefined) {
           const alt = match[1];
           const src = match[2].trim();
-          const img = document.createElement("img");
-          img.src = src;
-          img.alt = alt;
-          nodes.push(img);
+          nodes.push(createMediaNode(src, alt));
         } else if (match[3] !== undefined) {
           const alt = match[3];
           const refKey = match[4].trim().toLowerCase();
           const ref = references[refKey];
           if (ref && !/^javascript:/i.test(ref.href)) {
-            const img = document.createElement("img");
-            img.src = ref.href;
-            img.alt = alt;
-            if (ref.title) img.title = ref.title;
-            nodes.push(img);
+            nodes.push(createMediaNode(ref.href, alt, ref.title));
           } else {
             nodes.push(document.createTextNode(match[0]));
           }
@@ -807,6 +918,7 @@
               link.addEventListener("click", (event) => {
                 event.preventDefault();
                 selectRecord(recordId);
+                noteInteraction();
               });
               nodes.push(link);
             } else {
@@ -836,6 +948,7 @@
               link.addEventListener("click", (event) => {
                 event.preventDefault();
                 selectRecord(recordId);
+                noteInteraction();
               });
               nodes.push(link);
             } else {
@@ -1138,8 +1251,40 @@
       });
       if (closest && closestDist < 16) {
         selectRecord(closest);
+        noteInteraction();
       }
     });
+
+    function scheduleTour() {
+      if (!state.tourEnabled || !state.order.length) return;
+      clearTour();
+      tourNote.textContent = "Default network tour will advance after a short pause.";
+      state.tourTimer = window.setTimeout(() => {
+        advanceTour();
+      }, TOUR_DELAY_MS);
+    }
+
+    function clearTour() {
+      if (state.tourTimer) {
+        clearTimeout(state.tourTimer);
+        state.tourTimer = null;
+      }
+    }
+
+    function advanceTour() {
+      if (!state.tourEnabled || !state.order.length) return;
+      const order = state.order;
+      let index = order.indexOf(state.selectedId);
+      if (index < 0) index = 0;
+      const nextId = order[(index + 1) % order.length];
+      selectRecord(nextId, { fromTour: true });
+      scheduleTour();
+    }
+
+    function noteInteraction() {
+      if (!state.tourEnabled) return;
+      scheduleTour();
+    }
 
     function startAutoRefresh() {
       setInterval(() => {
@@ -1148,6 +1293,9 @@
         }
       }, REFRESH_MS);
     }
+
+    window.mountEyeball("eyeball-terminology");
+    window.mountEyeball("eyeball-foot");
 
     loadDb(true);
     startAutoRefresh();
