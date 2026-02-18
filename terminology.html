@@ -410,8 +410,8 @@
   <script src="js/eyeball.js"></script>
   <script>
     const DB_PATH = "TootTootTerminologyDB.md";
-    const REFRESH_MS = 1500;
-    const TOUR_DELAY_MS = 3500;
+    const REFRESH_MS = 8000;
+    const TOUR_DELAY_MS = 12000;
 
     const state = {
       records: {},
@@ -712,10 +712,7 @@
       }
 
       const record = state.records[state.selectedId];
-      const header = document.createElement("h3");
-      header.textContent = state.selectedId;
-      viewEl.appendChild(header);
-
+      const leadMediaInfo = extractLeadMedia(record.body || "");
       if (record.title) {
         const title = document.createElement("h2");
         title.className = "record-title";
@@ -723,10 +720,13 @@
         viewEl.appendChild(title);
       }
 
-      const meta = document.createElement("div");
-      meta.className = "muted";
-      meta.textContent = record.header;
-      viewEl.appendChild(meta);
+      if (leadMediaInfo.leadMedia) {
+        viewEl.appendChild(leadMediaInfo.leadMedia);
+      }
+
+      if (leadMediaInfo.body) {
+        viewEl.appendChild(renderMarkdown(leadMediaInfo.body));
+      }
 
       if (record.edges.length) {
         const relatedTitle = document.createElement("h3");
@@ -760,10 +760,6 @@
         });
         viewEl.appendChild(list);
       }
-
-      if (record.body) {
-        viewEl.appendChild(renderMarkdown(record.body));
-      }
     }
 
     function createMediaNode(src, alt, title) {
@@ -784,6 +780,75 @@
       if (title) img.title = title;
       img.loading = "lazy";
       return img;
+    }
+
+    function extractLeadMedia(text) {
+      if (!text) return { body: text, leadMedia: null };
+      const lines = text.split(/\r?\n/);
+      const references = {};
+      const refPattern = /^\s*\[([^\]]+)\]:\s*(\S+)(?:\s+"([^"]+)")?\s*$/;
+      let inRefCode = false;
+      lines.forEach((rawLine) => {
+        const trimmed = rawLine.trim();
+        if (trimmed.startsWith("```")) {
+          inRefCode = !inRefCode;
+          return;
+        }
+        if (inRefCode) return;
+        const match = rawLine.match(refPattern);
+        if (match) {
+          references[match[1].trim().toLowerCase()] = {
+            href: match[2],
+            title: match[3] || "",
+          };
+        }
+      });
+
+      const imagePattern = /!\[([^\]]*)\]\(([^)]+)\)|!\[([^\]]*)\]\[([^\]]+)\]/;
+      const output = [];
+      let leadMedia = null;
+      let inCode = false;
+
+      for (const rawLine of lines) {
+        const trimmed = rawLine.trim();
+        if (trimmed.startsWith("```")) {
+          inCode = !inCode;
+          output.push(rawLine);
+          continue;
+        }
+        if (inCode || leadMedia) {
+          output.push(rawLine);
+          continue;
+        }
+
+        const match = rawLine.match(imagePattern);
+        if (!match) {
+          output.push(rawLine);
+          continue;
+        }
+
+        if (match[1] !== undefined) {
+          const alt = match[1];
+          const src = match[2].trim();
+          if (!/^javascript:/i.test(src)) {
+            leadMedia = createMediaNode(src, alt);
+          }
+        } else if (match[3] !== undefined) {
+          const alt = match[3];
+          const refKey = match[4].trim().toLowerCase();
+          const ref = references[refKey];
+          if (ref && !/^javascript:/i.test(ref.href)) {
+            leadMedia = createMediaNode(ref.href, alt, ref.title);
+          }
+        }
+
+        const before = rawLine.slice(0, match.index);
+        const after = rawLine.slice(match.index + match[0].length);
+        const rebuilt = `${before}${after}`;
+        output.push(rebuilt);
+      }
+
+      return { body: output.join("\n"), leadMedia };
     }
 
     function renderMarkdown(text) {
