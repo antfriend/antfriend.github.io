@@ -1,0 +1,14 @@
+# Toot Toot Network RFC Bundle Manifest
+
+- TTN-RFC-0001.md: sha256=4687b040b2515ca2d48bafe99c26e323f5ab5cef480c30b339611471ccd5c1ca
+- TTN-RFC-0002-Typed-Edges.md: sha256=751ee732ed4b9a5759b01af409423d88f117e29bbb8de8684e4307d37b319f84
+- TTN-RFC-0003-Reference-Implementation.md: sha256=e219c29d923413ee298379d9a333b94a1e897b9a92a9441765473cfc069e0664
+- TTN-RFC-0004-Semantic-Compression.md: sha256=b1b0388f3e92261bd85cee4d87d60eba05b65b2affa7f4f650a3ca3a5675d141
+- TTDB-RFC-0001-File-Format.md: sha256=3ba793fb244b51d98d9831136061b8ccc0a331fd931e298e33c69f54e07091ec
+- TTDB-RFC-0002-Cursor-Semantics.md: sha256=de00cd06ffb8cb9155ac31e5aefb0d99241034752e4d35cb8f596cd11d8287f8
+- TTDB-RFC-0003-Typed-Edges.md: sha256=d2efdfa9a777124119bcb1f9baae531504b82a90362d7fed573764b697e92481
+- TTDB-RFC-0004-Event-ID-and-Collision.md: sha256=fc0adafd06f970e9f36a152f14f20a2c2f8b5cab0862e480540d4c19792aa939
+- TTN-RFC-0006-LoRa-Packet-Framing.md: sha256=a063fa163d2e4ecdd3347cc215a82fd5e0f588696ab35bc00db6007b2bd0300c
+- TTE-RFC-0001-Workflow-and-Roles.md: sha256=7acd46d6eb5757e1b79afeac2c1a3c6393a596d3e593ce4371fc8f72529627f7
+- TTE-RFC-0002-Plan-Log-and-Checklist.md: sha256=4c026c2199c0140aa4d56c5264290ccda20778c36dc3f978369c25e9aff402ab
+- TTE-RFC-0003-Definition-of-Done-and-Release.md: sha256=d1f8c09809809de4089f9c0250025cd2b8499a776bcdfbec41872e898b62032e
