@@ -124,6 +124,34 @@
       height: auto;
     }
 
+    .info-panel {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .info-panel summary {
+      cursor: pointer;
+      font-family: "Unbounded", "Space Grotesk", sans-serif;
+      font-size: 18px;
+      color: var(--title);
+      list-style: none;
+    }
+
+    .info-panel summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .info-panel summary::after {
+      content: "▾";
+      margin-left: 8px;
+      font-size: 16px;
+      color: var(--accent);
+    }
+
+    .info-panel[open] summary::after {
+      content: "▴";
+    }
+
     .controls {
       display: flex;
       flex-wrap: wrap;
@@ -358,26 +386,27 @@
         <ul class="list" id="recordList"></ul>
       </section>
 
-      <section class="panel record-panel">
-        <div class="title">
-          <h2>TTDB: Terminology</h2>
-          <p>Single-file glossary DB. Guided tour starts at Umwelt and steps through each term.</p>
-          <span id="status">Loading TootTootTerminologyDB.md...</span>
-        </div>
-        <div class="controls">
-          <button class="pill" id="refresh">Refresh</button>
-          <label class="toggle">
-            <input type="checkbox" id="autoRefresh" checked />
-            Auto refresh
-          </label>
-          <label class="toggle">
-            <input type="checkbox" id="tourToggle" checked />
-            Guided tour
-          </label>
-        </div>
-        <div class="tour-note" id="tourNote">Default network tour will advance after a short pause.</div>
-      </section>
     </div>
+
+    <details class="panel record-panel info-panel">
+      <summary>TTDB: Terminology</summary>
+      <div class="title">
+        <p>Single-file glossary DB. Guided tour starts at Umwelt and steps through each term.</p>
+        <span id="status">Loading TootTootTerminologyDB.md...</span>
+      </div>
+      <div class="controls">
+        <button class="pill" id="refresh">Refresh</button>
+        <label class="toggle">
+          <input type="checkbox" id="autoRefresh" checked />
+          Auto refresh
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="tourToggle" checked />
+          Guided tour
+        </label>
+      </div>
+      <div class="tour-note" id="tourNote">Default network tour will advance after a short pause.</div>
+    </details>
 
     <footer>
       <span id="eyeball-foot"></span>
