@@ -395,7 +395,7 @@
       <ul class="list" id="recordList"></ul>
     </section>
 
-    <details class="panel record-panel info-panel">
+    <details class="panel record-panel info-panel" open>
       <summary>TTDB: Terminology</summary>
       <div class="title">
         <p>Single-file glossary DB. Guided tour starts at Umwelt and steps through each term.</p>
@@ -485,6 +485,14 @@
       state.searchTerm = searchInput.value.trim().toLowerCase();
       applySearch();
       noteInteraction();
+    });
+    searchInput.addEventListener("focus", () => {
+      clearTour();
+    });
+    searchInput.addEventListener("blur", () => {
+      if (state.tourEnabled) {
+        scheduleTour();
+      }
     });
     tourToggle.addEventListener("change", () => {
       state.tourEnabled = tourToggle.checked;
@@ -1132,7 +1140,11 @@
 
       drawGraticule(cx, cy, radius);
 
-      const coordsEntries = Object.entries(state.coords);
+      const visibleOrder = state.filteredOrder.length ? state.filteredOrder : state.order;
+      const visibleSet = new Set(visibleOrder);
+      const coordsEntries = visibleOrder
+        .map((recordId) => [recordId, state.coords[recordId]])
+        .filter(([, coords]) => coords);
       if (!coordsEntries.length) return;
 
       const selected = state.selectedId;
@@ -1162,6 +1174,7 @@
       });
 
       Object.entries(state.records).forEach(([sourceId, record]) => {
+        if (!visibleSet.has(sourceId)) return;
         const edges = record.edges || [];
         if (!edges.length) return;
         const sourceProj = projections[sourceId];
@@ -1173,6 +1186,7 @@
         edges.forEach((edge) => {
           const targetId = edge.target;
           if (!targetId) return;
+          if (!visibleSet.has(targetId)) return;
           const targetProj = projections[targetId];
           if (!targetProj) return;
           const [tx, ty, tz] = targetProj;

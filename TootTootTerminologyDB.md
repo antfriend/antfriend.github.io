@@ -44,15 +44,15 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT34.1LON-118.2
+  - @LAT1.1LON1.2
 preview:
-  @LAT34.1LON-118.2: "Umwelt is the bounded worldview that defines what the librarian can sense, store, relate, and act upon."
+  @LAT1.1LON1.2: "Umwelt is the bounded worldview that defines what the librarian can sense, store, relate, and act upon."
 agent_note: "This TTDB is a guided glossary. Use it for definitions, examples, and cross-links between RFCs and standards."
 ```
 
 ---
 
-@LAT34.1LON-118.2 | created:1771434888 | updated:1771434888 | relates:frames>@LAT40.7LON-74.0,frames>@LAT35.7LON139.7,informs>@LAT51.5LON-0.1
+@LAT1.1LON1.2 | created:1771434888 | updated:1771434888 | relates:frames>@LAT40.7LON-74.0,frames>@LAT35.7LON139.7,informs>@LAT51.5LON-0.1
 
 ## Umwelt
 ### Definition
