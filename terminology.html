@@ -485,6 +485,11 @@
       state.invertDragY = invertPref === "true";
       invertDragToggle.checked = state.invertDragY;
     }
+    const tourPref = localStorage.getItem("tte-terminology-guided-tour");
+    if (tourPref !== null) {
+      state.tourEnabled = tourPref === "true";
+      tourToggle.checked = state.tourEnabled;
+    }
 
     let searchDebounceTimer = null;
 
@@ -510,6 +515,7 @@
     });
     tourToggle.addEventListener("change", () => {
       state.tourEnabled = tourToggle.checked;
+      localStorage.setItem("tte-terminology-guided-tour", String(state.tourEnabled));
       if (state.tourEnabled) {
         scheduleTour();
       } else {
