@@ -107,6 +107,11 @@
       width: 100%;
       height: 100%;
       display: block;
+      cursor: grab;
+    }
+
+    #graph.is-dragging {
+      cursor: grabbing;
     }
 
     .layout {
@@ -436,6 +441,9 @@
       globeTargetLon: 0,
       globeAnimating: false,
       globeZoom: 1,
+      globeDragging: false,
+      globeDragX: 0,
+      globeDragY: 0,
       searchIndex: {},
       searchTerm: "",
       tourEnabled: true,
@@ -1205,9 +1213,12 @@
         ctx.stroke();
         state.screenPoints[recordId] = [px, py];
 
-        ctx.fillStyle = "#e9e9f0";
-        ctx.font = "bold 11px Space Grotesk";
-        ctx.fillText(recordId, px + 8, py - 8);
+        const recordTitle = state.records[recordId]?.title;
+        if (recordTitle) {
+          ctx.fillStyle = "#e9e9f0";
+          ctx.font = "bold 11px Space Grotesk";
+          ctx.fillText(recordTitle, px + 8, py - 8);
+        }
       }
     }
 
@@ -1359,11 +1370,47 @@
         event.preventDefault();
         const direction = Math.sign(event.deltaY);
         const nextZoom = state.globeZoom * (direction > 0 ? 0.92 : 1.08);
-        state.globeZoom = Math.min(1.35, Math.max(0.7, nextZoom));
+        state.globeZoom = Math.min(2.1, Math.max(0.7, nextZoom));
         renderGraph();
       },
       { passive: false },
     );
+
+    graphCanvas.addEventListener("mousedown", (event) => {
+      if (event.button !== 0) return;
+      state.globeDragging = true;
+      state.globeDragX = event.clientX;
+      state.globeDragY = event.clientY;
+      graphCanvas.classList.add("is-dragging");
+      event.preventDefault();
+    });
+
+    graphCanvas.addEventListener("mousemove", (event) => {
+      if (!state.globeDragging) return;
+      const dx = event.clientX - state.globeDragX;
+      const dy = event.clientY - state.globeDragY;
+      state.globeDragX = event.clientX;
+      state.globeDragY = event.clientY;
+      const sensitivity = 0.005;
+      state.globeRotLon += dx * sensitivity;
+      state.globeRotLat -= dy * sensitivity;
+      const limit = Math.PI / 2 - 0.05;
+      state.globeRotLat = Math.max(-limit, Math.min(limit, state.globeRotLat));
+      state.globeTargetLat = state.globeRotLat;
+      state.globeTargetLon = state.globeRotLon;
+      state.globeAnimating = false;
+      renderGraph();
+    });
+
+    function endGlobeDrag() {
+      if (!state.globeDragging) return;
+      state.globeDragging = false;
+      graphCanvas.classList.remove("is-dragging");
+    }
+
+    graphCanvas.addEventListener("mouseup", endGlobeDrag);
+    graphCanvas.addEventListener("mouseleave", endGlobeDrag);
+    window.addEventListener("mouseup", endGlobeDrag);
 
     function scheduleTour() {
       if (!state.tourEnabled || !state.order.length) return;
