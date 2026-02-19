@@ -404,10 +404,6 @@
       <div class="controls">
         <button class="pill" id="refresh">Refresh</button>
         <label class="toggle">
-          <input type="checkbox" id="autoRefresh" checked />
-          Auto refresh
-        </label>
-        <label class="toggle">
           <input type="checkbox" id="tourToggle" checked />
           Guided tour
         </label>
@@ -428,7 +424,6 @@
   <script src="js/eyeball.js"></script>
   <script>
     const DB_PATH = "TootTootTerminologyDB.md";
-    const REFRESH_MS = 8000;
     const TOUR_DELAY_MS = 12000;
 
     const state = {
@@ -475,7 +470,6 @@
     const viewEl = document.getElementById("recordView");
     const graphCanvas = document.getElementById("graph");
     const refreshBtn = document.getElementById("refresh");
-    const autoRefresh = document.getElementById("autoRefresh");
     const searchInput = document.getElementById("searchInput");
     const searchMeta = document.getElementById("searchMeta");
     const tourToggle = document.getElementById("tourToggle");
@@ -1429,7 +1423,7 @@
         event.preventDefault();
         const direction = Math.sign(event.deltaY);
         const nextZoom = state.globeZoom * (direction > 0 ? 0.92 : 1.08);
-        state.globeZoom = Math.min(2.1, Math.max(0.7, nextZoom));
+        state.globeZoom = Math.min(3.5, Math.max(0.7, nextZoom));
         renderGraph();
       },
       { passive: false },
@@ -1516,19 +1510,10 @@
       scheduleTour();
     }
 
-    function startAutoRefresh() {
-      setInterval(() => {
-        if (autoRefresh.checked) {
-          loadDb();
-        }
-      }, REFRESH_MS);
-    }
-
     window.mountEyeball("eyeball-terminology");
     window.mountEyeball("eyeball-foot");
 
     loadDb(true);
-    startAutoRefresh();
   </script>
 </body>
 </html>
