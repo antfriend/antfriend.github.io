@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Toot Toot Terminology</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/eyeball.css" />
   <link rel="stylesheet" href="css/tte-common.css" />
   <link rel="stylesheet" href="css/tte-core.css" />
@@ -74,7 +71,7 @@
 
     .title-block h1 {
       margin: 0;
-      font-family: "Unbounded", "Space Grotesk", sans-serif;
+      font-family: "Trebuchet MS", "Segoe UI", "Verdana", sans-serif;
       font-size: clamp(26px, 4vw, 38px);
     }
 
@@ -149,7 +146,7 @@
 
     .info-panel summary {
       cursor: pointer;
-      font-family: "Unbounded", "Space Grotesk", sans-serif;
+      font-family: "Trebuchet MS", "Segoe UI", "Verdana", sans-serif;
       font-size: 18px;
       color: var(--title);
       list-style: none;
@@ -273,7 +270,7 @@
     .record h3,
     .record h4 {
       margin: 0;
-      font-family: "Unbounded", "Space Grotesk", sans-serif;
+      font-family: "Trebuchet MS", "Segoe UI", "Verdana", sans-serif;
     }
 
     .record h2 {
@@ -1244,7 +1241,7 @@
         if (recordTitle) {
           const labelSize = Math.max(9, Math.min(14, 10 * state.globeZoom));
           ctx.fillStyle = "#dfe7f2";
-          ctx.font = `600 ${labelSize}px Space Grotesk`;
+          ctx.font = `600 ${labelSize}px Trebuchet MS`;
           ctx.fillText(recordTitle, px + labelSize * 0.6, py - labelSize * 0.4);
         }
       });
@@ -1266,7 +1263,7 @@
         if (recordTitle) {
           const labelSize = Math.max(10, Math.min(16, 11 * state.globeZoom));
           ctx.fillStyle = "#e9e9f0";
-          ctx.font = `bold ${labelSize}px Space Grotesk`;
+          ctx.font = `bold ${labelSize}px Trebuchet MS`;
           ctx.fillText(recordTitle, px + labelSize * 0.7, py - labelSize * 0.6);
         }
       }
