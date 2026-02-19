@@ -444,6 +444,9 @@
       globeDragging: false,
       globeDragX: 0,
       globeDragY: 0,
+      globeVelX: 0,
+      globeVelY: 0,
+      globeVelT: 0,
       searchIndex: {},
       searchTerm: "",
       tourEnabled: true,
@@ -1290,6 +1293,32 @@
       return [x1, y1, z2];
     }
 
+    function findNearestRecordToCenter() {
+      const parent = graphCanvas.parentElement;
+      const width = parent.clientWidth;
+      const height = parent.clientHeight;
+      if (!width || !height) return null;
+      const padding = 6;
+      const baseRadius = Math.min(width, height) / 2 - padding;
+      const radius = Math.max(10, baseRadius * state.globeZoom);
+      const cx = width / 2;
+      const cy = height / 2;
+      let closest = null;
+      let closestDist = Infinity;
+      Object.entries(state.coords).forEach(([recordId, [lat, lon]]) => {
+        const [x, y, z] = projectPoint(lat, lon);
+        if (z <= 0) return;
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        const dist = Math.hypot(px - cx, py - cy);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = recordId;
+        }
+      });
+      return closest;
+    }
+
     function drawGraticule(cx, cy, radius) {
       ctx.strokeStyle = "#1a1f2a";
       ctx.lineWidth = 1;
@@ -1381,6 +1410,9 @@
       state.globeDragging = true;
       state.globeDragX = event.clientX;
       state.globeDragY = event.clientY;
+      state.globeVelX = 0;
+      state.globeVelY = 0;
+      state.globeVelT = performance.now();
       graphCanvas.classList.add("is-dragging");
       event.preventDefault();
     });
@@ -1389,6 +1421,11 @@
       if (!state.globeDragging) return;
       const dx = event.clientX - state.globeDragX;
       const dy = event.clientY - state.globeDragY;
+      const now = performance.now();
+      const dt = Math.max(1, now - state.globeVelT);
+      state.globeVelX = dx / dt;
+      state.globeVelY = dy / dt;
+      state.globeVelT = now;
       state.globeDragX = event.clientX;
       state.globeDragY = event.clientY;
       const sensitivity = 0.005;
@@ -1406,6 +1443,11 @@
       if (!state.globeDragging) return;
       state.globeDragging = false;
       graphCanvas.classList.remove("is-dragging");
+      const targetId = findNearestRecordToCenter();
+      if (targetId) {
+        selectRecord(targetId);
+        noteInteraction();
+      }
     }
 
     graphCanvas.addEventListener("mouseup", endGlobeDrag);
