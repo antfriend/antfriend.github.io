@@ -486,11 +486,19 @@
       invertDragToggle.checked = state.invertDragY;
     }
 
+    let searchDebounceTimer = null;
+
     refreshBtn.addEventListener("click", () => loadDb(true));
     searchInput.addEventListener("input", () => {
-      state.searchTerm = searchInput.value.trim().toLowerCase();
-      applySearch();
-      noteInteraction();
+      if (searchDebounceTimer) {
+        clearTimeout(searchDebounceTimer);
+      }
+      searchDebounceTimer = window.setTimeout(() => {
+        state.searchTerm = searchInput.value.trim().toLowerCase();
+        applySearch();
+        noteInteraction();
+        searchDebounceTimer = null;
+      }, 100);
     });
     searchInput.addEventListener("focus", () => {
       clearTour();
