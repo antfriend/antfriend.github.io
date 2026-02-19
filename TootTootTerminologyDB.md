@@ -44,15 +44,15 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT0.0LON0.0
+  - @LAT34.1LON-118.2
 preview:
-  @LAT0.0LON0.0: "Umwelt is the bounded worldview that defines what the librarian can sense, store, relate, and act upon."
+  @LAT34.1LON-118.2: "Umwelt is the bounded worldview that defines what the librarian can sense, store, relate, and act upon."
 agent_note: "This TTDB is a guided glossary. Use it for definitions, examples, and cross-links between RFCs and standards."
 ```
 
 ---
 
-@LAT0.0LON0.0 | created:1771434888 | updated:1771434888 | relates:frames>@LAT1.0LON1.0,frames>@LAT2.0LON-1.0,informs>@LAT1.0LON-2.0
+@LAT34.1LON-118.2 | created:1771434888 | updated:1771434888 | relates:frames>@LAT40.7LON-74.0,frames>@LAT35.7LON139.7,informs>@LAT51.5LON-0.1
 
 ## Umwelt
 ### Definition
@@ -69,7 +69,7 @@ An AI librarian only acknowledges files and devices referenced in the repo, not 
 
 ---
 
-@LAT1.0LON1.0 | created:1771434898 | updated:1771434898 | relates:assumes>@LAT0.0LON0.0,references>@LAT1.0LON-2.0,logs_to>@LAT2.0LON-1.0,constrained_by>@LAT1.5LON2.0
+@LAT40.7LON-74.0 | created:1771434898 | updated:1771434898 | relates:assumes>@LAT34.1LON-118.2,references>@LAT51.5LON-0.1,logs_to>@LAT35.7LON139.7,constrained_by>@LAT-1.3LON36.8
 
 ## TTAI
 ### Definition
@@ -87,7 +87,7 @@ A device on the TTN can request: "@AI STATUS" to receive a short, structured rep
 
 ---
 
-@LAT1.0LON-2.0 | created:1771434908 | updated:1771434908 | relates:supports>@LAT1.0LON1.0,keeps_alive>@LAT6.0LON1.5
+@LAT51.5LON-0.1 | created:1771434908 | updated:1771434908 | relates:supports>@LAT40.7LON-74.0,keeps_alive>@LAT-34.6LON-58.4
 
 ## Default Network
 ### Definition
@@ -104,7 +104,7 @@ When idle, TTAI replays memories and connects distant ideas without making disru
 
 ---
 
-@LAT2.0LON-1.0 | created:1771434918 | updated:1771434918 | relates:specified_by>@LAT2.0LON-2.0,uses>@LAT3.0LON0.5,uses>@LAT3.0LON-0.5,uses>@LAT4.0LON1.0
+@LAT35.7LON139.7 | created:1771434918 | updated:1771434918 | relates:specified_by>@LAT-33.9LON151.2,uses>@LAT48.9LON2.4,uses>@LAT37.8LON-122.4,uses>@LAT-23.6LON-46.6
 
 ## TTDB (Toot Toot Database)
 ### Definition
@@ -124,7 +124,7 @@ A node logs sensor events locally, using TTDB as its default backend.
 
 ---
 
-@LAT2.0LON-2.0 | created:1771434928 | updated:1771434928 | relates:defines>@LAT2.0LON-1.0
+@LAT-33.9LON151.2 | created:1771434928 | updated:1771434928 | relates:defines>@LAT35.7LON139.7
 
 ## TTDB-RFC-0001
 ### Definition
@@ -138,7 +138,7 @@ A valid TTDB Markdown file begins with `#`, then `mmpdb`, then `cursor`, then re
 
 ---
 
-@LAT3.0LON0.5 | created:1771434938 | updated:1771434938 | relates:defined_by>@LAT2.5LON0.5,selects>@LAT2.0LON-1.0
+@LAT48.9LON2.4 | created:1771434938 | updated:1771434938 | relates:defined_by>@LAT52.5LON13.4,selects>@LAT35.7LON139.7
 
 ## Cursor
 ### Definition
@@ -152,7 +152,7 @@ A device selects the "Umwelt" record as the primary cursor and supplies preview 
 
 ---
 
-@LAT2.5LON0.5 | created:1771434948 | updated:1771434948 | relates:defines>@LAT3.0LON0.5
+@LAT52.5LON13.4 | created:1771434948 | updated:1771434948 | relates:defines>@LAT48.9LON2.4
 
 ## TTDB-RFC-0002
 ### Definition
@@ -166,14 +166,14 @@ A cursor MUST include preview text for every selected record.
 
 ---
 
-@LAT3.0LON-0.5 | created:1771434958 | updated:1771434958 | relates:defined_by>@LAT3.0LON-1.5,aligned_with>@LAT5.0LON-0.5
+@LAT37.8LON-122.4 | created:1771434958 | updated:1771434958 | relates:defined_by>@LAT41.9LON12.5,aligned_with>@LAT-26.2LON28.0
 
 ## Typed Edges
 ### Definition
 Typed edges are directional links between TTDB records using the configured syntax, typically `type>@TARGET_ID`.
 
 ### Example
-`relates:defines>@LAT2.0LON-1.0` declares a definitional edge to the TTDB record.
+`relates:defines>@LAT35.7LON139.7` declares a definitional edge to the TTDB record.
 
 ### References
 - [TTDB-RFC-0003](RFCs/TTDB-RFC-0003-Typed-Edges.md)
@@ -181,7 +181,7 @@ Typed edges are directional links between TTDB records using the configured synt
 
 ---
 
-@LAT3.0LON-1.5 | created:1771434968 | updated:1771434968 | relates:defines>@LAT3.0LON-0.5
+@LAT41.9LON12.5 | created:1771434968 | updated:1771434968 | relates:defines>@LAT37.8LON-122.4
 
 ## TTDB-RFC-0003
 ### Definition
@@ -195,7 +195,7 @@ Edges are directional and must not be inferred in reverse unless explicitly pres
 
 ---
 
-@LAT4.0LON1.0 | created:1771434978 | updated:1771434978 | relates:defined_by>@LAT4.0LON2.0
+@LAT-23.6LON-46.6 | created:1771434978 | updated:1771434978 | relates:defined_by>@LAT19.4LON-99.1
 
 ## Record ID and Collision Policy
 ### Definition
@@ -209,7 +209,7 @@ If two records land on the same coordinate, the southeast_step policy moves the 
 
 ---
 
-@LAT4.0LON2.0 | created:1771434988 | updated:1771434988 | relates:defines>@LAT4.0LON1.0
+@LAT19.4LON-99.1 | created:1771434988 | updated:1771434988 | relates:defines>@LAT-23.6LON-46.6
 
 ## TTDB-RFC-0004
 ### Definition
@@ -223,7 +223,7 @@ Record IDs are interpreted as positions on the TTDB knowledge globe.
 
 ---
 
-@LAT5.0LON1.0 | created:1771434998 | updated:1771434998 | relates:defined_by>@LAT5.0LON2.0,uses>@LAT3.0LON-0.5,logs_to>@LAT2.0LON-1.0,uses>@LAT6.0LON1.5,uses>@LAT6.0LON-1.0
+@LAT55.8LON37.6 | created:1771434998 | updated:1771434998 | relates:defined_by>@LAT1.3LON103.8,uses>@LAT37.8LON-122.4,logs_to>@LAT35.7LON139.7,uses>@LAT-34.6LON-58.4,uses>@LAT35.8LON-78.6
 
 ## TTN (Toot Toot Network)
 ### Definition
@@ -237,7 +237,7 @@ A node joins the TTN, emits a presence event, and logs it locally in TTDB.
 
 ---
 
-@LAT5.0LON2.0 | created:1771435008 | updated:1771435008 | relates:defines>@LAT5.0LON1.0
+@LAT1.3LON103.8 | created:1771435008 | updated:1771435008 | relates:defines>@LAT55.8LON37.6
 
 ## TTN-RFC-0001
 ### Definition
@@ -251,7 +251,7 @@ TTN etiquette requires that assertions include provenance and avoid autonomous A
 
 ---
 
-@LAT5.0LON-0.5 | created:1771435018 | updated:1771435018 | relates:defined_by>@LAT5.0LON-1.5,aligns_with>@LAT3.0LON-0.5
+@LAT-26.2LON28.0 | created:1771435018 | updated:1771435018 | relates:defined_by>@LAT59.9LON30.3,aligns_with>@LAT37.8LON-122.4
 
 ## TTN Typed Edge Taxonomy
 ### Definition
@@ -265,7 +265,7 @@ A suggested taxonomy of typed edges for TTN, spanning identity, conversation, AI
 
 ---
 
-@LAT5.0LON-1.5 | created:1771435028 | updated:1771435028 | relates:defines>@LAT5.0LON-0.5
+@LAT59.9LON30.3 | created:1771435028 | updated:1771435028 | relates:defines>@LAT-26.2LON28.0
 
 ## TTN-RFC-0002
 ### Definition
@@ -279,7 +279,7 @@ Conversation edges include `replies_to` and `mentions`.
 
 ---
 
-@LAT6.0LON1.5 | created:1771435038 | updated:1771435038 | relates:logged_in>@LAT2.0LON-1.0,compressed_by>@LAT6.0LON-1.0
+@LAT-34.6LON-58.4 | created:1771435038 | updated:1771435038 | relates:logged_in>@LAT35.7LON139.7,compressed_by>@LAT35.8LON-78.6
 
 ## Semantic Event
 ### Definition
@@ -296,7 +296,7 @@ A semantic event is a structured, typed statement about state or intent that can
 
 ---
 
-@LAT6.0LON-1.0 | created:1771435048 | updated:1771435048 | relates:defined_by>@LAT6.0LON-2.0
+@LAT35.8LON-78.6 | created:1771435048 | updated:1771435048 | relates:defined_by>@LAT64.1LON-21.9
 
 ## Semantic Compression
 ### Definition
@@ -313,7 +313,7 @@ Semantic compression maps rich semantic events into compact tokens suitable for 
 
 ---
 
-@LAT6.0LON-2.0 | created:1771435058 | updated:1771435058 | relates:defines>@LAT6.0LON-1.0
+@LAT64.1LON-21.9 | created:1771435058 | updated:1771435058 | relates:defines>@LAT35.8LON-78.6
 
 ## TTN-RFC-0004
 ### Definition
@@ -327,7 +327,7 @@ Core tokens include `P`, `OK`, and `SOS`.
 
 ---
 
-@LAT1.5LON2.0 | created:1771435068 | updated:1771435068 | relates:defined_by>@LAT1.5LON2.5,constrains>@LAT1.0LON1.0
+@LAT-1.3LON36.8 | created:1771435068 | updated:1771435068 | relates:defined_by>@LAT25.2LON55.3,constrains>@LAT40.7LON-74.0
 
 ## Primitive Mode
 ### Definition
@@ -341,7 +341,7 @@ A microcontroller uses only `select`, `find`, `edges`, `last`, and `status`.
 
 ---
 
-@LAT1.5LON2.5 | created:1771435078 | updated:1771435078 | relates:defines>@LAT1.5LON2.0,guides>@LAT1.0LON1.0
+@LAT25.2LON55.3 | created:1771435078 | updated:1771435078 | relates:defines>@LAT-1.3LON36.8,guides>@LAT40.7LON-74.0
 
 ## TTAI Behavior Spec
 ### Definition
