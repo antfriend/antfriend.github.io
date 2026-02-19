@@ -1225,6 +1225,14 @@
         ctx.fill();
         ctx.stroke();
         state.screenPoints[recordId] = [px, py];
+
+        const recordTitle = state.records[recordId]?.title;
+        if (recordTitle) {
+          const labelSize = Math.max(9, Math.min(14, 10 * state.globeZoom));
+          ctx.fillStyle = "#dfe7f2";
+          ctx.font = `600 ${labelSize}px Space Grotesk`;
+          ctx.fillText(recordTitle, px + labelSize * 0.6, py - labelSize * 0.4);
+        }
       });
 
       if (selectedPoint) {
@@ -1242,9 +1250,10 @@
 
         const recordTitle = state.records[recordId]?.title;
         if (recordTitle) {
+          const labelSize = Math.max(10, Math.min(16, 11 * state.globeZoom));
           ctx.fillStyle = "#e9e9f0";
-          ctx.font = "bold 11px Space Grotesk";
-          ctx.fillText(recordTitle, px + 8, py - 8);
+          ctx.font = `bold ${labelSize}px Space Grotesk`;
+          ctx.fillText(recordTitle, px + labelSize * 0.7, py - labelSize * 0.6);
         }
       }
     }
