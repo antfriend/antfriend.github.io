@@ -411,6 +411,10 @@
           <input type="checkbox" id="tourToggle" checked />
           Guided tour
         </label>
+        <label class="toggle">
+          <input type="checkbox" id="invertDragToggle" />
+          Invert drag Y
+        </label>
       </div>
       <div class="tour-note" id="tourNote">Default network tour will advance after a short pause.</div>
     </details>
@@ -447,6 +451,7 @@
       globeVelX: 0,
       globeVelY: 0,
       globeVelT: 0,
+      invertDragY: false,
       searchIndex: {},
       searchTerm: "",
       tourEnabled: true,
@@ -474,11 +479,18 @@
     const searchInput = document.getElementById("searchInput");
     const searchMeta = document.getElementById("searchMeta");
     const tourToggle = document.getElementById("tourToggle");
+    const invertDragToggle = document.getElementById("invertDragToggle");
     const tourNote = document.getElementById("tourNote");
 
     const ctx = graphCanvas.getContext("2d");
     const resizeObserver = new ResizeObserver(() => renderGraph());
     resizeObserver.observe(graphCanvas.parentElement);
+
+    const invertPref = localStorage.getItem("tte-terminology-invert-drag-y");
+    if (invertPref !== null) {
+      state.invertDragY = invertPref === "true";
+      invertDragToggle.checked = state.invertDragY;
+    }
 
     refreshBtn.addEventListener("click", () => loadDb(true));
     searchInput.addEventListener("input", () => {
@@ -501,6 +513,10 @@
       } else {
         clearTour();
       }
+    });
+    invertDragToggle.addEventListener("change", () => {
+      state.invertDragY = invertDragToggle.checked;
+      localStorage.setItem("tte-terminology-invert-drag-y", String(state.invertDragY));
     });
 
     function setStatusMessage(message) {
@@ -1444,7 +1460,8 @@
       state.globeDragY = event.clientY;
       const sensitivity = 0.005;
       state.globeRotLon += dx * sensitivity;
-      state.globeRotLat -= dy * sensitivity;
+      const invert = state.invertDragY ? 1 : -1;
+      state.globeRotLat += dy * sensitivity * invert;
       const limit = Math.PI / 2 - 0.05;
       state.globeRotLat = Math.max(-limit, Math.min(limit, state.globeRotLat));
       state.globeTargetLat = state.globeRotLat;
