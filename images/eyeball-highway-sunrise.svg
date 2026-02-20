@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 600" width="1800" height="600" role="img" aria-labelledby="title desc">
+  <title id="title">Sunrise landscape with animated eyeballs</title>
+  <desc id="desc">A 6 by 2 landscape with a horizon at mid-height, a highway from bottom-left to center horizon, a giant rising eyeball sun, and a white eyeball backside traveling up the road while shrinking.</desc>
+
+  <defs>
+    <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1f4f96"/>
+      <stop offset="60%" stop-color="#5ea9e9"/>
+      <stop offset="100%" stop-color="#a3d5ff"/>
+    </linearGradient>
+
+    <linearGradient id="horizonGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff8ad8" stop-opacity="0"/>
+      <stop offset="42%" stop-color="#ff8ad8" stop-opacity="0.5"/>
+      <stop offset="78%" stop-color="#9f62ff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#9f62ff" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="pinkStreak" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff7ecf" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ff7ecf" stop-opacity="0.7"/>
+      <stop offset="70%" stop-color="#ffb2dd" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#ff7ecf" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="purpleStreak" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8b66ff" stop-opacity="0"/>
+      <stop offset="28%" stop-color="#9d64ff" stop-opacity="0.65"/>
+      <stop offset="72%" stop-color="#d08fff" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#8b66ff" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="fieldGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6aac54"/>
+      <stop offset="45%" stop-color="#3f8536"/>
+      <stop offset="100%" stop-color="#1d4d22"/>
+    </linearGradient>
+
+    <linearGradient id="roadGradient" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2c2c32"/>
+      <stop offset="55%" stop-color="#4a4a54"/>
+      <stop offset="100%" stop-color="#5f5f66"/>
+    </linearGradient>
+
+    <radialGradient id="roadEyeShade" cx="38%" cy="32%" r="72%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="68%" stop-color="#f2f2f2"/>
+      <stop offset="100%" stop-color="#dbdbdb"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1800" height="600" fill="url(#skyGradient)"/>
+  <rect x="0" y="220" width="1800" height="150" fill="url(#horizonGlow)"/>
+
+  <path d="M -120 242 C 250 205 650 213 1040 246 C 1320 270 1565 266 1920 242" fill="none" stroke="url(#pinkStreak)" stroke-width="24" stroke-linecap="round" opacity="0.62">
+    <animate attributeName="opacity" values="0.4;0.72;0.48;0.4" dur="9s" repeatCount="indefinite"/>
+  </path>
+  <path d="M -140 278 C 320 246 760 246 1220 272 C 1510 287 1710 285 1940 269" fill="none" stroke="url(#purpleStreak)" stroke-width="20" stroke-linecap="round" opacity="0.54">
+    <animate attributeName="opacity" values="0.34;0.62;0.4;0.34" dur="11s" repeatCount="indefinite"/>
+  </path>
+  <path d="M -180 296 C 180 282 560 277 980 292 C 1320 302 1620 309 1980 298" fill="none" stroke="url(#pinkStreak)" stroke-width="14" stroke-linecap="round" opacity="0.42">
+    <animate attributeName="opacity" values="0.25;0.5;0.3;0.25" dur="8s" repeatCount="indefinite"/>
+  </path>
+
+  <g id="sun-eye-rise" transform="translate(900 548)">
+    <animateTransform attributeName="transform" type="translate" values="900 548;900 520;900 300;900 220;900 220;900 548" keyTimes="0;0.08;0.5;0.72;0.86;1" dur="20s" repeatCount="indefinite"/>
+    <circle cx="0" cy="0" r="260" fill="#ffffff" stroke="#111111" stroke-width="12"/>
+    <ellipse id="sun-eye-iris" cx="0" cy="0" rx="128" ry="128" fill="#ff0000" stroke="#111111" stroke-width="8">
+      <animate attributeName="cx" values="-24;16;8;-20;-24" dur="6.2s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="-14;10;2;-10;-14" dur="5.4s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse id="sun-eye-pupil" cx="0" cy="0" rx="66" ry="66" fill="#000000" stroke="#111111" stroke-width="6">
+      <animate attributeName="cx" values="-24;16;8;-20;-24" dur="6.2s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="-14;10;2;-10;-14" dur="5.4s" repeatCount="indefinite"/>
+    </ellipse>
+    <circle cx="-72" cy="-76" r="30" fill="#ffffff" fill-opacity="0.82"/>
+  </g>
+
+  <rect x="0" y="300" width="1800" height="300" fill="url(#fieldGradient)"/>
+  <path d="M 0 318 C 210 294 372 312 572 334 C 760 355 992 352 1166 324 C 1362 292 1594 292 1800 312 L 1800 600 L 0 600 Z" fill="#387431" fill-opacity="0.55"/>
+  <path d="M 0 334 C 168 319 328 349 512 374 C 760 405 1034 404 1224 380 C 1452 352 1634 341 1800 359 L 1800 600 L 0 600 Z" fill="#285e28" fill-opacity="0.47"/>
+
+  <line x1="0" y1="300" x2="1800" y2="300" stroke="#d7f7ff" stroke-opacity="0.46" stroke-width="2"/>
+
+  <polygon points="-280,620 646,620 910,300 818,300" fill="url(#roadGradient)"/>
+  <line x1="-148" y1="620" x2="842" y2="300" stroke="#f2f2f2" stroke-width="5" stroke-opacity="0.75"/>
+  <line x1="582" y1="620" x2="895" y2="300" stroke="#f2f2f2" stroke-width="3" stroke-opacity="0.62"/>
+  <path d="M 214 620 C 516 520 706 430 878 300" fill="none" stroke="#ffd166" stroke-width="8" stroke-linecap="round" stroke-dasharray="58 34" stroke-opacity="0.88"/>
+
+  <g id="road-eye-motion">
+    <animateMotion dur="10.5s" repeatCount="indefinite" path="M -240 700 C 126 628 566 468 900 300"/>
+    <g id="road-eye-scale">
+      <animateTransform attributeName="transform" type="scale" values="1;0.7;0.38;0.1;0" keyTimes="0;0.42;0.72;0.92;1" dur="10.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;1;0.8;0.25;0" keyTimes="0;0.7;0.88;0.97;1" dur="10.5s" repeatCount="indefinite"/>
+      <circle cx="0" cy="0" r="96" fill="url(#roadEyeShade)" stroke="#111111" stroke-width="8"/>
+      <ellipse cx="-18" cy="-26" rx="46" ry="22" fill="#ffffff" fill-opacity="0.62"/>
+    </g>
+  </g>
+</svg>
