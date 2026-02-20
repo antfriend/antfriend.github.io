@@ -93,7 +93,7 @@
 
     .graph-wrap {
       width: 100%;
-      height: 260px;
+      height: 208px;
       border-radius: 18px;
       background: rgba(11, 17, 18, 0.92);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -366,7 +366,7 @@
       }
 
       .graph-wrap {
-        height: 220px;
+        height: 176px;
       }
     }
   </style>
@@ -459,6 +459,7 @@
       return {
         accent: read("--accent", "#0f8b8d"),
         accentAlt: read("--accent-2", "#e76f51"),
+        eyeballRed: read("--eyeball-red", "#ff0000"),
         ink: read("--ink", "#0b1112"),
         muted: read("--muted", "rgba(11, 17, 18, 0.6)"),
         line: read("--line", "rgba(11, 17, 18, 0.2)"),
@@ -1323,13 +1324,44 @@
         const [recordId, x, y] = selectedPoint;
         const px = cx + x * radius;
         const py = cy - y * radius;
-        ctx.fillStyle = "#ffd166";
-        ctx.strokeStyle = "#f4a261";
+        const eyeRadius = Math.max(8, Math.min(15, 8 + 2.6 * Math.sqrt(state.globeZoom)));
+        const toCenterX = cx - px;
+        const toCenterY = cy - py;
+        const toCenterMag = Math.hypot(toCenterX, toCenterY) || 1;
+        const lookScale = eyeRadius * 0.22;
+        const irisCx = px + (toCenterX / toCenterMag) * lookScale;
+        const irisCy = py + (toCenterY / toCenterMag) * lookScale;
+
+        ctx.save();
+        ctx.shadowColor = "rgba(255, 74, 74, 0.44)";
+        ctx.shadowBlur = eyeRadius * 1.8;
+
+        ctx.fillStyle = "#f7f9ff";
+        ctx.strokeStyle = "#0b0b10";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(px, py, 7, 0, Math.PI * 2);
+        ctx.arc(px, py, eyeRadius, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
+
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = palette.eyeballRed;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(irisCx, irisCy, eyeRadius * 0.54, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#07090c";
+        ctx.beginPath();
+        ctx.arc(irisCx, irisCy, eyeRadius * 0.28, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.82)";
+        ctx.beginPath();
+        ctx.arc(irisCx - eyeRadius * 0.21, irisCy - eyeRadius * 0.25, eyeRadius * 0.16, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
         state.screenPoints[recordId] = [px, py];
 
         const recordTitle = state.records[recordId]?.title;
@@ -1384,7 +1416,7 @@
         const isSelected = recordId === state.selectedId;
         const haloRadius = Math.max(16, Math.min(64, 34 * Math.sqrt(state.globeZoom)));
         if (isSelected) {
-          ctx.strokeStyle = "rgba(255, 209, 102, 0.78)";
+          ctx.strokeStyle = "rgba(255, 74, 74, 0.72)";
         } else if (isFirst) {
           ctx.strokeStyle = "rgba(15, 139, 141, 0.72)";
         } else {
