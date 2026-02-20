@@ -62,22 +62,19 @@ The world as it is experienced by a particular organism.
 The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can be sensed, stored, related, or acted on. It is a feature of toot toot data encoding and more generally, [natural systems.](https://en.wikipedia.org/wiki/Umwelt)
 
 
-### References
-- [TTE Agent Umwelt v1](standards/umwelt/TTE_Agent_Umwelt_v1.yaml)
 
 ---
 
 @LAT40.7LON-74.0 | created:1771434898 | updated:1771434898 | relates:assumes>@LAT34.1LON-118.2,references>@LAT51.5LON-0.1,logs_to>@LAT35.7LON139.7,constrained_by>@LAT-1.3LON36.8
 
 ## TTAI
+![Librarian mark](favicon.ico)
 ### Definition
-TTAI is the maker-scale librarian role that assumes the active TTDB umwelt and answers to "@AI".
+TTAI is the maker-scale librarian role that assumes the active TTDB umwelt and answers to "@AI". ==>> [TTE Agent Umwelt v1](standards/umwelt/TTE_Agent_Umwelt_v1.yaml)
 
 ### Example
 A device on the TTN can request: "@AI STATUS" to receive a short, structured reply.
 
-### Illustration
-![Librarian mark](images/logo192.png)
 
 ### References
 - [TTAI Spec v1](standards/ttai/TTAI_SPEC.md)
@@ -94,8 +91,6 @@ The default network is the background circuitry that maintains narrative continu
 ### Example
 When idle, TTAI replays memories and connects distant ideas without making disruptive edits.
 
-### Illustration
-![Background signal](images/feature-side-by-side.png)
 
 ### References
 - [Default Network (TTAI)](standards/ttai/DEFAULT_NETWORK.md)
@@ -111,8 +106,6 @@ TTDB is a single-file semantic story database. Records are markdown nodes connec
 ### Example
 A node logs sensor events locally, using TTDB as its default backend.
 
-### Illustration
-![TTDB map](images/how-toot-toot-engineering-helps.png)
 
 ### References
 - [TTDB File Format](RFCs/TTDB-RFC-0001-File-Format.md)
