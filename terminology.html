@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="css/eyeball.css" />
   <link rel="stylesheet" href="css/tte-common.css" />
   <link rel="stylesheet" href="css/tte-core.css" />
-  <style>
+  <style> 
     .page {
       max-width: 100%;
       margin: 0 auto;
@@ -1265,6 +1265,8 @@
         ctx.fill();
       });
 
+      drawFogOfUnknown(cx, cy, radius, projections);
+
       Object.entries(state.records).forEach(([sourceId, record]) => {
         if (!visibleSet.has(sourceId)) return;
         const edges = record.edges || [];
@@ -1338,8 +1340,6 @@
           ctx.fillText(recordTitle, px + labelSize * 0.7, py - labelSize * 0.6);
         }
       }
-
-      drawFogOfUnknown(cx, cy, radius, projections);
     }
 
     function drawFogOfUnknown(cx, cy, radius, projections) {
@@ -1357,7 +1357,7 @@
         .filter(Boolean);
 
       ctx.save();
-      ctx.fillStyle = "rgba(5, 8, 12, 0.84)";
+      ctx.fillStyle = "rgba(5, 8, 12, 0.16)";
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.fill();
@@ -1371,11 +1371,7 @@
           26,
           Math.min(70, 36 * zoomFactor + (isSelected ? 10 : 0) + (isFirst ? 4 : 0)),
         );
-        const clearGradient = ctx.createRadialGradient(px, py, clearRadius * 0.18, px, py, clearRadius);
-        clearGradient.addColorStop(0, "rgba(0, 0, 0, 1)");
-        clearGradient.addColorStop(0.72, "rgba(0, 0, 0, 0.56)");
-        clearGradient.addColorStop(1, "rgba(0, 0, 0, 0)");
-        ctx.fillStyle = clearGradient;
+        ctx.fillStyle = "rgba(0, 0, 0, 1)";
         ctx.beginPath();
         ctx.arc(px, py, clearRadius, 0, Math.PI * 2);
         ctx.fill();
