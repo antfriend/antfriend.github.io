@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 600" width="1800" height="600" role="img" aria-labelledby="title desc">
+  <title id="title">Two TTAI eyeball agents on Meshtastic ESP32 devices scanning humongous fungus bio marks and searching for Ball</title>
+  <desc id="desc">Panoramic six-by-two scene with two eyeball agents perched on ESP32 square devices, linked by Meshtastic signals around a giant fungus with bio mark overlays and a glowing red Ball location beacon.</desc>
+
+  <defs>
+    <linearGradient id="bgSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#10283a"/>
+      <stop offset="58%" stop-color="#1f4a46"/>
+      <stop offset="100%" stop-color="#264132"/>
+    </linearGradient>
+
+    <linearGradient id="groundGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#334f34"/>
+      <stop offset="100%" stop-color="#1f2f20"/>
+    </linearGradient>
+
+    <linearGradient id="boardGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#37617d"/>
+      <stop offset="100%" stop-color="#1d3345"/>
+    </linearGradient>
+
+    <linearGradient id="screenGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0e1720"/>
+      <stop offset="100%" stop-color="#122737"/>
+    </linearGradient>
+
+    <radialGradient id="irisGrad" cx="50%" cy="45%" r="62%">
+      <stop offset="0%" stop-color="#74f7d2"/>
+      <stop offset="100%" stop-color="#1c876f"/>
+    </radialGradient>
+
+    <radialGradient id="fungusCap" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#f5c5ab"/>
+      <stop offset="100%" stop-color="#815947"/>
+    </radialGradient>
+
+    <radialGradient id="fungusStem" cx="50%" cy="10%" r="80%">
+      <stop offset="0%" stop-color="#f3ebd6"/>
+      <stop offset="100%" stop-color="#b5a486"/>
+    </radialGradient>
+
+    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="1800" height="600" fill="url(#bgSky)"/>
+  <rect x="0" y="360" width="1800" height="240" fill="url(#groundGrad)"/>
+
+  <g opacity="0.26">
+    <circle cx="180" cy="115" r="3" fill="#d8fff2"/>
+    <circle cx="320" cy="80" r="2" fill="#d8fff2"/>
+    <circle cx="540" cy="130" r="3" fill="#d8fff2"/>
+    <circle cx="780" cy="90" r="2" fill="#d8fff2"/>
+    <circle cx="1040" cy="120" r="3" fill="#d8fff2"/>
+    <circle cx="1320" cy="75" r="2" fill="#d8fff2"/>
+    <circle cx="1570" cy="110" r="3" fill="#d8fff2"/>
+  </g>
+
+  <g id="fungus-center">
+    <ellipse cx="900" cy="224" rx="300" ry="116" fill="url(#fungusCap)" stroke="#523729" stroke-width="6"/>
+    <path d="M 640 226 C 770 284 1030 286 1160 226" fill="none" stroke="#f3d0bc" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 680 246 C 790 282 1010 282 1120 246" fill="none" stroke="#f3d0bc" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 768 252 C 835 270 965 270 1032 252" fill="none" stroke="#f3d0bc" stroke-width="3" stroke-linecap="round"/>
+    <path d="M 830 255 L 815 370 C 812 408 836 432 900 432 C 964 432 988 408 985 370 L 970 255 Z" fill="url(#fungusStem)" stroke="#7f715b" stroke-width="5"/>
+    <ellipse cx="900" cy="220" rx="355" ry="146" fill="none" stroke="#8bfad8" stroke-width="3" stroke-dasharray="14 12" opacity="0.75">
+      <animate attributeName="stroke-dashoffset" values="0;-52" dur="6s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="900" cy="222" rx="248" ry="94" fill="none" stroke="#8bfad8" stroke-width="2" stroke-dasharray="10 8" opacity="0.6">
+      <animate attributeName="stroke-dashoffset" values="0;42" dur="5s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+
+  <g id="mycelium" fill="none" stroke="#8dd2a8" stroke-linecap="round">
+    <path d="M 900 430 C 790 460 720 500 610 534" stroke-width="4"/>
+    <path d="M 900 430 C 980 462 1060 496 1178 530" stroke-width="4"/>
+    <path d="M 900 432 C 855 474 790 507 702 548" stroke-width="3"/>
+    <path d="M 900 432 C 962 472 1032 506 1122 548" stroke-width="3"/>
+    <path d="M 900 432 C 896 492 887 540 874 578" stroke-width="2"/>
+  </g>
+
+  <g id="mesh-link" fill="none" stroke="#6af0d2" stroke-width="5" stroke-linecap="round" stroke-dasharray="18 12">
+    <path d="M 410 194 C 560 126 714 106 900 166 C 1092 224 1230 204 1390 194">
+      <animate attributeName="stroke-dashoffset" values="0;-60" dur="2.4s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  <g fill="#6af0d2" filter="url(#softGlow)">
+    <circle cx="410" cy="194" r="8"/>
+    <circle cx="900" cy="166" r="8"/>
+    <circle cx="1390" cy="194" r="8"/>
+  </g>
+
+  <g id="left-node" transform="translate(210 250)">
+    <rect x="0" y="0" width="360" height="270" rx="24" fill="url(#boardGrad)" stroke="#8fb9cf" stroke-width="4"/>
+    <rect x="36" y="42" width="288" height="138" rx="14" fill="url(#screenGrad)" stroke="#6da6c2" stroke-width="3"/>
+    <circle cx="36" cy="20" r="8" fill="#9ad0e7"/>
+    <circle cx="324" cy="20" r="8" fill="#9ad0e7"/>
+    <line x1="36" y1="-30" x2="36" y2="0" stroke="#9ad0e7" stroke-width="5" stroke-linecap="round"/>
+    <line x1="324" y1="-30" x2="324" y2="0" stroke="#9ad0e7" stroke-width="5" stroke-linecap="round"/>
+    <text x="180" y="92" font-size="24" fill="#9df6dc" text-anchor="middle" font-family="monospace">TTAI-AGENT-A</text>
+    <text x="180" y="124" font-size="20" fill="#90d7ff" text-anchor="middle" font-family="monospace">MESHTASTIC LINK</text>
+    <text x="180" y="218" font-size="26" fill="#d5ecf8" text-anchor="middle" font-family="monospace">ESP32</text>
+    <g transform="translate(180 -48)">
+      <ellipse cx="0" cy="0" rx="82" ry="66" fill="#f6f8fb" stroke="#1e2830" stroke-width="6"/>
+      <ellipse cx="0" cy="0" rx="34" ry="34" fill="url(#irisGrad)" stroke="#123c34" stroke-width="4"/>
+      <circle cx="0" cy="0" r="15" fill="#0b1218"/>
+      <circle cx="-16" cy="-13" r="7" fill="#ffffff" fill-opacity="0.78"/>
+      <animateTransform attributeName="transform" type="translate" values="180 -48;180 -52;180 -48" dur="2.6s" repeatCount="indefinite"/>
+    </g>
+  </g>
+
+  <g id="right-node" transform="translate(1230 250)">
+    <rect x="0" y="0" width="360" height="270" rx="24" fill="url(#boardGrad)" stroke="#8fb9cf" stroke-width="4"/>
+    <rect x="36" y="42" width="288" height="138" rx="14" fill="url(#screenGrad)" stroke="#6da6c2" stroke-width="3"/>
+    <circle cx="36" cy="20" r="8" fill="#9ad0e7"/>
+    <circle cx="324" cy="20" r="8" fill="#9ad0e7"/>
+    <line x1="36" y1="-30" x2="36" y2="0" stroke="#9ad0e7" stroke-width="5" stroke-linecap="round"/>
+    <line x1="324" y1="-30" x2="324" y2="0" stroke="#9ad0e7" stroke-width="5" stroke-linecap="round"/>
+    <text x="180" y="92" font-size="24" fill="#9df6dc" text-anchor="middle" font-family="monospace">TTAI-AGENT-B</text>
+    <text x="180" y="124" font-size="20" fill="#90d7ff" text-anchor="middle" font-family="monospace">BALL QUERY MODE</text>
+    <text x="180" y="218" font-size="26" fill="#d5ecf8" text-anchor="middle" font-family="monospace">ESP32</text>
+    <g transform="translate(180 -48)">
+      <ellipse cx="0" cy="0" rx="82" ry="66" fill="#f6f8fb" stroke="#1e2830" stroke-width="6"/>
+      <ellipse cx="0" cy="0" rx="34" ry="34" fill="url(#irisGrad)" stroke="#123c34" stroke-width="4"/>
+      <circle cx="0" cy="0" r="15" fill="#0b1218"/>
+      <circle cx="-16" cy="-13" r="7" fill="#ffffff" fill-opacity="0.78"/>
+      <animateTransform attributeName="transform" type="translate" values="180 -48;180 -44;180 -48" dur="2.2s" repeatCount="indefinite"/>
+    </g>
+  </g>
+
+  <g id="bio-marks-labels" font-family="monospace">
+    <rect x="650" y="42" width="504" height="92" rx="14" fill="#111922" fill-opacity="0.78" stroke="#66d9bd" stroke-width="2"/>
+    <text x="902" y="78" text-anchor="middle" fill="#9df6dc" font-size="26">HUMONGOUS FUNGUS: BIO MARKS</text>
+    <text x="902" y="110" text-anchor="middle" fill="#c2f8ee" font-size="18">spore pulse | cap ring shift | mycelium branch map</text>
+  </g>
+
+  <g id="left-bubble" font-family="monospace">
+    <path d="M 170 172 L 380 172 Q 400 172 400 192 L 400 232 Q 400 252 380 252 L 222 252 L 188 276 L 196 252 L 170 252 Q 150 252 150 232 L 150 192 Q 150 172 170 172 Z" fill="#122029" stroke="#89d8c4" stroke-width="3"/>
+    <text x="275" y="212" text-anchor="middle" fill="#b6fce9" font-size="22">BIO MARKS?</text>
+    <text x="275" y="238" text-anchor="middle" fill="#8ddcc5" font-size="16">tracking cap signal</text>
+  </g>
+
+  <g id="right-bubble" font-family="monospace">
+    <path d="M 1420 174 L 1630 174 Q 1650 174 1650 194 L 1650 234 Q 1650 254 1630 254 L 1468 254 L 1434 280 L 1442 254 L 1420 254 Q 1400 254 1400 234 L 1400 194 Q 1400 174 1420 174 Z" fill="#122029" stroke="#89d8c4" stroke-width="3"/>
+    <text x="1525" y="214" text-anchor="middle" fill="#b6fce9" font-size="22">WHERE IS BALL?</text>
+    <text x="1525" y="240" text-anchor="middle" fill="#8ddcc5" font-size="16">requesting mesh fix</text>
+  </g>
+
+  <g id="ball-locator" transform="translate(1118 508)">
+    <circle cx="0" cy="0" r="26" fill="#ff4d4f" stroke="#ffe2e2" stroke-width="4"/>
+    <circle cx="0" cy="0" r="10" fill="#8f1017"/>
+    <circle cx="0" cy="0" r="32" fill="none" stroke="#ff8a8c" stroke-width="4" opacity="0.8">
+      <animate attributeName="r" values="32;54;32" dur="2.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.85;0.2;0.85" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+    <text x="70" y="-4" font-family="monospace" font-size="24" fill="#ffe8dc">Ball</text>
+    <text x="70" y="24" font-family="monospace" font-size="17" fill="#ffd3c8">last seen near roots</text>
+  </g>
+</svg>
