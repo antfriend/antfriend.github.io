@@ -55,14 +55,15 @@ agent_note: "This TTDB is a guided glossary. Use it for definitions, examples, a
 @LAT1.1LON1.2 | created:1771434888 | updated:1771434888 | relates:frames>@LAT40.7LON-74.0,frames>@LAT35.7LON139.7,informs>@LAT51.5LON-0.1
 
 ## Umwelt
+![Umwelt scope](images/eyeball-highway-sunrise.svg)
+
 ### Definition
 The umwelt is the bounded worldview for a TTE agent. It defines what can be sensed, stored, related, or acted on.
 
 ### Example
 An AI librarian only acknowledges files and devices referenced in the repo, not the entire internet.
 
-### Illustration
-![Umwelt scope](images/time-foundry.svg)
+
 
 ### References
 - [TTE Agent Umwelt v1](standards/umwelt/TTE_Agent_Umwelt_v1.yaml)
