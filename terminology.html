@@ -395,7 +395,7 @@
     <details class="panel record-panel info-panel" open>
       <summary>TTDB: Terminology</summary>
       <div class="title">
-        <p>Single-file glossary DB. Guided tour starts at Umwelt and steps through each term.</p>
+        <p>Single-file glossary DB. Discovery starts from the first term and expands as you navigate.</p>
         <span id="status">Loading TootTootTerminologyDB.md...</span>
       </div>
       <div class="controls">
@@ -422,6 +422,7 @@
   <script>
     const DB_PATH = "TootTootTerminologyDB.md";
     const TOUR_DELAY_MS = 12000;
+    const DISCOVERY_KEY = "tte-terminology-discovered-records-v1";
 
     const state = {
       records: {},
@@ -448,6 +449,8 @@
       searchTerm: "",
       tourEnabled: true,
       tourTimer: null,
+      firstRecordId: null,
+      discoveredIds: [],
     };
 
     const palette = (() => {
@@ -529,13 +532,75 @@
     }
 
     function setStatusLink(recordCount) {
-      statusEl.innerHTML = `DB: <a href="${DB_PATH}">${DB_PATH}</a> · ${recordCount} records`;
+      const discoveredCount = getDiscoveredOrder().length;
+      statusEl.innerHTML = `DB: <a href="${DB_PATH}">${DB_PATH}</a> · ${discoveredCount}/${recordCount} discovered`;
     }
 
-    function sanitize(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
+    function getDiscoveredOrder() {
+      if (!state.order.length || !state.discoveredIds.length) return [];
+      const discoveredSet = new Set(state.discoveredIds);
+      return state.order.filter((recordId) => discoveredSet.has(recordId));
+    }
+
+    function getVisibleOrderForGraph() {
+      if (state.searchTerm) return [...state.filteredOrder];
+      return getDiscoveredOrder();
+    }
+
+    function persistDiscovery() {
+      try {
+        localStorage.setItem(DISCOVERY_KEY, JSON.stringify(state.discoveredIds));
+      } catch (err) {
+        // Ignore storage failures and continue with in-memory discovery state.
+      }
+    }
+
+    function initializeDiscovery() {
+      const firstRecordId = state.order[0] || null;
+      state.firstRecordId = firstRecordId;
+
+      let storedIds = [];
+      try {
+        const raw = localStorage.getItem(DISCOVERY_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            storedIds = parsed.filter((value) => typeof value === "string");
+          }
+        }
+      } catch (err) {
+        storedIds = [];
+      }
+
+      const discoveredSet = new Set(storedIds.filter((recordId) => Boolean(state.records[recordId])));
+      if (firstRecordId && state.records[firstRecordId]) {
+        discoveredSet.add(firstRecordId);
+      }
+
+      state.discoveredIds = state.order.filter((recordId) => discoveredSet.has(recordId));
+      persistDiscovery();
+    }
+
+    function discoverRecord(recordId) {
+      if (!recordId || !state.records[recordId]) return false;
+      const discoveredSet = new Set(state.discoveredIds);
+      const firstRecordId = state.firstRecordId || state.order[0] || null;
+      let changed = false;
+
+      if (firstRecordId && state.records[firstRecordId] && !discoveredSet.has(firstRecordId)) {
+        discoveredSet.add(firstRecordId);
+        changed = true;
+      }
+
+      if (!discoveredSet.has(recordId)) {
+        discoveredSet.add(recordId);
+        changed = true;
+      }
+
+      if (!changed) return false;
+      state.discoveredIds = state.order.filter((id) => discoveredSet.has(id));
+      persistDiscovery();
+      return true;
     }
 
     function buildSearchIndex() {
@@ -548,18 +613,20 @@
       });
     }
 
-    function applySearch() {
+    function applySearch(opts = {}) {
+      const { preferVisibleSelection = true } = opts;
       const term = state.searchTerm;
+      const discoveredOrder = getDiscoveredOrder();
       if (!term) {
-        state.filteredOrder = [...state.order];
+        state.filteredOrder = [...discoveredOrder];
       } else {
-        state.filteredOrder = state.order.filter((recordId) => {
+        state.filteredOrder = discoveredOrder.filter((recordId) => {
           const blob = state.searchIndex[recordId] || "";
           return blob.includes(term);
         });
       }
 
-      if (state.filteredOrder.length && !state.filteredOrder.includes(state.selectedId)) {
+      if (preferVisibleSelection && state.filteredOrder.length && !state.filteredOrder.includes(state.selectedId)) {
         state.selectedId = state.filteredOrder[0];
       }
 
@@ -575,11 +642,13 @@
         searchMeta.textContent = "No records.";
         return;
       }
+      const discoveredCount = getDiscoveredOrder().length;
       if (!state.searchTerm) {
-        searchMeta.textContent = `${state.order.length} terms loaded.`;
+        searchMeta.textContent = `${discoveredCount} discovered of ${state.order.length} terms.`;
         return;
       }
-      searchMeta.textContent = `${state.filteredOrder.length} matches for "${sanitize(state.searchTerm)}".`;
+      searchMeta.textContent =
+        `${state.filteredOrder.length} matches within ${discoveredCount} discovered terms for "${state.searchTerm}".`;
     }
 
     function loadDb(force = false) {
@@ -595,14 +664,15 @@
           state.records = records;
           state.order = order;
           state.coords = coords;
+          initializeDiscovery();
           buildSearchIndex();
           if (!state.selectedId || !records[state.selectedId]) {
             state.selectedId = selected || order[0] || null;
           }
+          if (state.selectedId) {
+            discoverRecord(state.selectedId);
+          }
           applySearch();
-          renderRecord();
-          centerOnSelected();
-          renderGraph();
           setStatusLink(order.length);
           scheduleTour();
         })
@@ -613,6 +683,8 @@
           state.filteredOrder = [];
           state.selectedId = null;
           state.coords = {};
+          state.firstRecordId = null;
+          state.discoveredIds = [];
           renderList();
           renderRecord();
           renderGraph();
@@ -714,11 +786,11 @@
 
     function renderList() {
       listEl.innerHTML = "";
-      const source = state.searchTerm ? state.filteredOrder : state.order;
+      const source = state.filteredOrder;
       if (!source.length) {
         const empty = document.createElement("div");
         empty.className = "muted";
-        empty.textContent = "No records available.";
+        empty.textContent = state.searchTerm ? "No matching discovered records." : "No discovered records yet.";
         listEl.appendChild(empty);
         return;
       }
@@ -744,11 +816,10 @@
 
     function selectRecord(recordId, opts = {}) {
       if (!state.records[recordId]) return;
+      discoverRecord(recordId);
       state.selectedId = recordId;
-      renderList();
-      renderRecord();
-      centerOnSelected();
-      renderGraph();
+      applySearch({ preferVisibleSelection: false });
+      setStatusLink(state.order.length);
       if (!opts.fromTour) {
         scheduleTour();
       }
@@ -1161,7 +1232,7 @@
 
       drawGraticule(cx, cy, radius);
 
-      const visibleOrder = state.filteredOrder.length ? state.filteredOrder : state.order;
+      const visibleOrder = getVisibleOrderForGraph();
       const visibleSet = new Set(visibleOrder);
       const coordsEntries = visibleOrder
         .map((recordId) => [recordId, state.coords[recordId]])
@@ -1267,6 +1338,68 @@
           ctx.fillText(recordTitle, px + labelSize * 0.7, py - labelSize * 0.6);
         }
       }
+
+      drawFogOfUnknown(cx, cy, radius, projections);
+    }
+
+    function drawFogOfUnknown(cx, cy, radius, projections) {
+      const discoveredOrder = getDiscoveredOrder();
+      if (!discoveredOrder.length) return;
+
+      const points = discoveredOrder
+        .map((recordId) => {
+          const projected = projections[recordId];
+          if (!projected) return null;
+          const [x, y, z] = projected;
+          if (z <= 0) return null;
+          return { recordId, px: cx + x * radius, py: cy - y * radius };
+        })
+        .filter(Boolean);
+
+      ctx.save();
+      ctx.fillStyle = "rgba(5, 8, 12, 0.84)";
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.globalCompositeOperation = "destination-out";
+      points.forEach(({ recordId, px, py }) => {
+        const isFirst = recordId === state.firstRecordId;
+        const isSelected = recordId === state.selectedId;
+        const zoomFactor = Math.sqrt(state.globeZoom);
+        const clearRadius = Math.max(
+          26,
+          Math.min(70, 36 * zoomFactor + (isSelected ? 10 : 0) + (isFirst ? 4 : 0)),
+        );
+        const clearGradient = ctx.createRadialGradient(px, py, clearRadius * 0.18, px, py, clearRadius);
+        clearGradient.addColorStop(0, "rgba(0, 0, 0, 1)");
+        clearGradient.addColorStop(0.72, "rgba(0, 0, 0, 0.56)");
+        clearGradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = clearGradient;
+        ctx.beginPath();
+        ctx.arc(px, py, clearRadius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+
+      ctx.save();
+      points.forEach(({ recordId, px, py }) => {
+        const isFirst = recordId === state.firstRecordId;
+        const isSelected = recordId === state.selectedId;
+        const haloRadius = Math.max(16, Math.min(64, 34 * Math.sqrt(state.globeZoom)));
+        if (isSelected) {
+          ctx.strokeStyle = "rgba(255, 209, 102, 0.78)";
+        } else if (isFirst) {
+          ctx.strokeStyle = "rgba(15, 139, 141, 0.72)";
+        } else {
+          ctx.strokeStyle = "rgba(124, 199, 255, 0.66)";
+        }
+        ctx.lineWidth = isSelected ? 2.2 : 1.4;
+        ctx.beginPath();
+        ctx.arc(px, py, haloRadius, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+      ctx.restore();
     }
 
     function centerOnSelected() {
@@ -1349,7 +1482,9 @@
       const cy = height / 2;
       let closest = null;
       let closestDist = Infinity;
+      const visibleSet = new Set(getVisibleOrderForGraph());
       Object.entries(state.coords).forEach(([recordId, [lat, lon]]) => {
+        if (!visibleSet.has(recordId)) return;
         const [x, y, z] = projectPoint(lat, lon);
         if (z <= 0) return;
         const px = cx + x * radius;
@@ -1500,8 +1635,13 @@
     window.addEventListener("mouseup", endGlobeDrag);
 
     function scheduleTour() {
-      if (!state.tourEnabled || !state.order.length) return;
       clearTour();
+      const discoveredOrder = getDiscoveredOrder();
+      if (!state.tourEnabled) return;
+      if (discoveredOrder.length < 2) {
+        tourNote.textContent = "Discover another record to expand the guided tour.";
+        return;
+      }
       tourNote.textContent = "Default network tour will advance after a short pause.";
       state.tourTimer = window.setTimeout(() => {
         advanceTour();
@@ -1516,8 +1656,8 @@
     }
 
     function advanceTour() {
-      if (!state.tourEnabled || !state.order.length) return;
-      const order = state.order;
+      const order = getDiscoveredOrder();
+      if (!state.tourEnabled || !order.length) return;
       let index = order.indexOf(state.selectedId);
       if (index < 0) index = 0;
       const nextId = order[(index + 1) % order.length];
