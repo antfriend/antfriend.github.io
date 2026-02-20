@@ -46,7 +46,7 @@ librarian:
 selected:
   - @LAT1.1LON1.2
 preview:
-  @LAT1.1LON1.2: "Umwelt is the bounded worldview that defines what the librarian can sense, store, relate, and act upon."
+  @LAT1.1LON1.2: "The world as it is experienced by a particular organism."
 agent_note: "This TTDB is a guided glossary. Use it for definitions, examples, and cross-links between RFCs and standards."
 ```
 
@@ -57,12 +57,9 @@ agent_note: "This TTDB is a guided glossary. Use it for definitions, examples, a
 ## Umwelt
 ![Umwelt scope](images/eyeball-highway-sunrise.svg)
 
-### Definition
-The umwelt is the bounded worldview for a TTE agent. It defines what can be sensed, stored, related, or acted on.
+The world as it is experienced by a particular organism.
 
-### Example
-An AI librarian only acknowledges files and devices referenced in the repo, not the entire internet.
-
+The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can be sensed, stored, related, or acted on. It is a feature of toot toot data encoding and more generally, [natural systems.](https://en.wikipedia.org/wiki/Umwelt)
 
 
 ### References
