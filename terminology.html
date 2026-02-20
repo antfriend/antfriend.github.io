@@ -262,8 +262,19 @@
       display: grid;
       gap: 14px;
       min-height: 240px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .record-frame {
+      display: grid;
+      gap: 14px;
+      min-height: 240px;
+      max-height: 100%;
       overflow: auto;
       padding-right: 6px;
+      scrollbar-gutter: stable;
+      will-change: transform, opacity;
     }
 
     .record h2,
@@ -451,6 +462,8 @@
       tourTimer: null,
       firstRecordId: null,
       discoveredIds: [],
+      pendingRecordTransition: null,
+      recordTransitionToken: 0,
     };
 
     const palette = (() => {
@@ -628,7 +641,9 @@
       }
 
       if (preferVisibleSelection && state.filteredOrder.length && !state.filteredOrder.includes(state.selectedId)) {
-        state.selectedId = state.filteredOrder[0];
+        const nextRecordId = state.filteredOrder[0];
+        queueRecordTransition(state.selectedId, nextRecordId);
+        state.selectedId = nextRecordId;
       }
 
       renderList();
@@ -818,6 +833,7 @@
     function selectRecord(recordId, opts = {}) {
       if (!state.records[recordId]) return;
       discoverRecord(recordId);
+      queueRecordTransition(state.selectedId, recordId);
       state.selectedId = recordId;
       applySearch({ preferVisibleSelection: false });
       setStatusLink(state.order.length);
@@ -826,34 +842,178 @@
       }
     }
 
+    function queueRecordTransition(fromId, toId) {
+      if (!fromId || !toId || fromId === toId) {
+        state.pendingRecordTransition = null;
+        return;
+      }
+      state.pendingRecordTransition = describeRecordTransition(fromId, toId);
+    }
+
+    function describeRecordTransition(fromId, toId) {
+      let dirX = 1;
+      let dirY = 0;
+      let distanceFraction = 0.03;
+      const fromCoords = parseCoords(fromId);
+      const toCoords = parseCoords(toId);
+
+      if (fromCoords && toCoords) {
+        const latDelta = toCoords[0] - fromCoords[0];
+        const lonDelta = deltaDegrees(toCoords[1], fromCoords[1]);
+        dirX = lonDelta;
+        dirY = -latDelta;
+        distanceFraction = greatCircleDistanceFraction(fromCoords, toCoords);
+      } else {
+        const fromIndex = state.order.indexOf(fromId);
+        const toIndex = state.order.indexOf(toId);
+        if (fromIndex >= 0 && toIndex >= 0) {
+          const indexDelta = toIndex - fromIndex;
+          dirX = indexDelta === 0 ? 1 : Math.sign(indexDelta);
+          dirY = 0;
+          const maxDelta = Math.max(1, state.order.length - 1);
+          distanceFraction = Math.min(1, Math.abs(indexDelta) / maxDelta);
+        }
+      }
+
+      const magnitude = Math.hypot(dirX, dirY);
+      if (magnitude < 0.0001) {
+        dirX = 1;
+        dirY = 0;
+      } else {
+        dirX /= magnitude;
+        dirY /= magnitude;
+      }
+
+      const scaledDistance = Math.max(0.03, Math.min(1, distanceFraction));
+      const durationMs = Math.round(160 + Math.pow(scaledDistance, 0.55) * 1400);
+      const travelPx = Math.round(72 + Math.pow(scaledDistance, 0.75) * 300);
+      return { fromId, toId, dirX, dirY, durationMs, travelPx };
+    }
+
+    function deltaDegrees(target, current) {
+      let delta = target - current;
+      while (delta > 180) delta -= 360;
+      while (delta < -180) delta += 360;
+      return delta;
+    }
+
+    function greatCircleDistanceFraction(fromCoords, toCoords) {
+      const lat1 = toRadians(fromCoords[0]);
+      const lat2 = toRadians(toCoords[0]);
+      const dLat = lat2 - lat1;
+      const dLon = toRadians(deltaDegrees(toCoords[1], fromCoords[1]));
+      const sinLat = Math.sin(dLat / 2);
+      const sinLon = Math.sin(dLon / 2);
+      const a = sinLat * sinLat + Math.cos(lat1) * Math.cos(lat2) * sinLon * sinLon;
+      const clamped = Math.min(1, Math.max(0, a));
+      const arc = 2 * Math.atan2(Math.sqrt(clamped), Math.sqrt(1 - clamped));
+      return arc / Math.PI;
+    }
+
+    function toRadians(value) {
+      return (value * Math.PI) / 180;
+    }
+
     function renderRecord() {
-      viewEl.innerHTML = "";
+      viewEl.querySelectorAll(".record-frame:not(.is-current)").forEach((frame) => frame.remove());
       if (!state.selectedId || !state.records[state.selectedId]) {
-        viewEl.textContent = "No record selected.";
+        viewEl.innerHTML = "";
+        const empty = document.createElement("div");
+        empty.className = "record-frame is-current";
+        empty.textContent = "No record selected.";
+        viewEl.appendChild(empty);
+        state.pendingRecordTransition = null;
         return;
       }
 
-      const record = state.records[state.selectedId];
+      const transition = state.pendingRecordTransition;
+      state.pendingRecordTransition = null;
+      const incoming = buildRecordFrame(state.selectedId);
+      incoming.classList.add("is-current");
+      const current = viewEl.querySelector(".record-frame.is-current");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const shouldAnimate =
+        Boolean(current) &&
+        Boolean(transition) &&
+        !reduceMotion &&
+        current.dataset.recordId === transition.fromId &&
+        transition.toId === state.selectedId;
+
+      if (!shouldAnimate) {
+        viewEl.replaceChildren(incoming);
+        return;
+      }
+
+      current.classList.remove("is-current");
+      const token = (state.recordTransitionToken += 1);
+      const enterX = Math.round(transition.dirX * transition.travelPx);
+      const enterY = Math.round(transition.dirY * transition.travelPx);
+      const exitX = -enterX;
+      const exitY = -enterY;
+      const easing = "cubic-bezier(0.2, 0.8, 0.2, 1)";
+      const alphaDuration = Math.max(140, Math.round(transition.durationMs * 0.72));
+
+      current.style.position = "absolute";
+      current.style.inset = "0";
+      current.style.pointerEvents = "none";
+      current.style.zIndex = "1";
+
+      incoming.style.position = "absolute";
+      incoming.style.inset = "0";
+      incoming.style.zIndex = "2";
+      incoming.style.transform = `translate(${enterX}px, ${enterY}px)`;
+      incoming.style.opacity = "0.06";
+      viewEl.appendChild(incoming);
+
+      requestAnimationFrame(() => {
+        if (token !== state.recordTransitionToken) return;
+        current.style.transition = `transform ${transition.durationMs}ms ${easing}, opacity ${alphaDuration}ms ease`;
+        incoming.style.transition = `transform ${transition.durationMs}ms ${easing}, opacity ${alphaDuration}ms ease`;
+        current.style.transform = `translate(${exitX}px, ${exitY}px)`;
+        current.style.opacity = "0";
+        incoming.style.transform = "translate(0px, 0px)";
+        incoming.style.opacity = "1";
+      });
+
+      window.setTimeout(() => {
+        if (token !== state.recordTransitionToken) return;
+        if (current.parentElement === viewEl) {
+          current.remove();
+        }
+        incoming.style.position = "relative";
+        incoming.style.inset = "";
+        incoming.style.zIndex = "";
+        incoming.style.transition = "";
+        incoming.style.transform = "";
+        incoming.style.opacity = "";
+      }, transition.durationMs + 80);
+    }
+
+    function buildRecordFrame(recordId) {
+      const record = state.records[recordId];
+      const frame = document.createElement("div");
+      frame.className = "record-frame";
+      frame.dataset.recordId = recordId;
       const leadMediaInfo = extractLeadMedia(record.body || "");
       if (record.title) {
         const title = document.createElement("h2");
         title.className = "record-title";
         title.textContent = record.title;
-        viewEl.appendChild(title);
+        frame.appendChild(title);
       }
 
       if (leadMediaInfo.leadMedia) {
-        viewEl.appendChild(leadMediaInfo.leadMedia);
+        frame.appendChild(leadMediaInfo.leadMedia);
       }
 
       if (leadMediaInfo.body) {
-        viewEl.appendChild(renderMarkdown(leadMediaInfo.body));
+        frame.appendChild(renderMarkdown(leadMediaInfo.body));
       }
 
       if (record.edges.length) {
         const relatedTitle = document.createElement("h3");
         relatedTitle.textContent = "Related records";
-        viewEl.appendChild(relatedTitle);
+        frame.appendChild(relatedTitle);
 
         const list = document.createElement("ul");
         list.className = "related";
@@ -880,8 +1040,9 @@
           }
           list.appendChild(item);
         });
-        viewEl.appendChild(list);
+        frame.appendChild(list);
       }
+      return frame;
     }
 
     function createMediaNode(src, alt, title) {
