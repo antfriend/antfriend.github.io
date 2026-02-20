@@ -68,7 +68,7 @@ The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can b
 @LAT40.7LON-74.0 | created:1771434898 | updated:1771434898 | relates:assumes>@LAT34.1LON-118.2,references>@LAT51.5LON-0.1,logs_to>@LAT35.7LON139.7,constrained_by>@LAT-1.3LON36.8
 
 ## TTAI
-![Librarian mark](favicon.ico)
+![Librarian mark](images/ttai-meshtastic-fungus-ball.svg)
 ### Definition
 TTAI is the maker-scale librarian role that assumes the active TTDB umwelt and answers to "@AI". ==>> [TTE Agent Umwelt v1](standards/umwelt/TTE_Agent_Umwelt_v1.yaml)
 

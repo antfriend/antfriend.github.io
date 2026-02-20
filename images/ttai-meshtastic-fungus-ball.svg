@@ -25,8 +25,8 @@
     </linearGradient>
 
     <radialGradient id="irisGrad" cx="50%" cy="45%" r="62%">
-      <stop offset="0%" stop-color="#74f7d2"/>
-      <stop offset="100%" stop-color="#1c876f"/>
+      <stop offset="0%" stop-color="#ff9a9c"/>
+      <stop offset="100%" stop-color="#a90f24"/>
     </radialGradient>
 
     <radialGradient id="fungusCap" cx="50%" cy="38%" r="65%">
@@ -106,7 +106,7 @@
     <text x="180" y="218" font-size="26" fill="#d5ecf8" text-anchor="middle" font-family="monospace">ESP32</text>
     <g transform="translate(180 -48)">
       <ellipse cx="0" cy="0" rx="82" ry="66" fill="#f6f8fb" stroke="#1e2830" stroke-width="6"/>
-      <ellipse cx="0" cy="0" rx="34" ry="34" fill="url(#irisGrad)" stroke="#123c34" stroke-width="4"/>
+      <ellipse cx="0" cy="0" rx="34" ry="34" fill="url(#irisGrad)" stroke="#5c0f1c" stroke-width="4"/>
       <circle cx="0" cy="0" r="15" fill="#0b1218"/>
       <circle cx="-16" cy="-13" r="7" fill="#ffffff" fill-opacity="0.78"/>
       <animateTransform attributeName="transform" type="translate" values="180 -48;180 -52;180 -48" dur="2.6s" repeatCount="indefinite"/>
@@ -125,7 +125,7 @@
     <text x="180" y="218" font-size="26" fill="#d5ecf8" text-anchor="middle" font-family="monospace">ESP32</text>
     <g transform="translate(180 -48)">
       <ellipse cx="0" cy="0" rx="82" ry="66" fill="#f6f8fb" stroke="#1e2830" stroke-width="6"/>
-      <ellipse cx="0" cy="0" rx="34" ry="34" fill="url(#irisGrad)" stroke="#123c34" stroke-width="4"/>
+      <ellipse cx="0" cy="0" rx="34" ry="34" fill="url(#irisGrad)" stroke="#5c0f1c" stroke-width="4"/>
       <circle cx="0" cy="0" r="15" fill="#0b1218"/>
       <circle cx="-16" cy="-13" r="7" fill="#ffffff" fill-opacity="0.78"/>
       <animateTransform attributeName="transform" type="translate" values="180 -48;180 -44;180 -48" dur="2.2s" repeatCount="indefinite"/>
@@ -139,25 +139,63 @@
   </g>
 
   <g id="left-bubble" font-family="monospace">
-    <path d="M 170 172 L 380 172 Q 400 172 400 192 L 400 232 Q 400 252 380 252 L 222 252 L 188 276 L 196 252 L 170 252 Q 150 252 150 232 L 150 192 Q 150 172 170 172 Z" fill="#122029" stroke="#89d8c4" stroke-width="3"/>
-    <text x="275" y="212" text-anchor="middle" fill="#b6fce9" font-size="22">BIO MARKS?</text>
-    <text x="275" y="238" text-anchor="middle" fill="#8ddcc5" font-size="16">tracking cap signal</text>
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="4.2s" repeatCount="indefinite"/>
+    <path d="M 56 34 L 474 34 Q 500 34 500 60 L 500 138 Q 500 164 474 164 L 218 164 L 188 196 L 194 164 L 56 164 Q 30 164 30 138 L 30 60 Q 30 34 56 34 Z" fill="#122029" stroke="#89d8c4" stroke-width="3"/>
+    <text x="266" y="87" text-anchor="middle" fill="#b6fce9" font-size="21" opacity="1">BIO MARKS CONFIRMED.
+      <animate attributeName="opacity" values="1;1;0;0;0;1" keyTimes="0;0.32;0.33;0.66;0.99;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="266" y="118" text-anchor="middle" fill="#8ddcc5" font-size="17" opacity="1">FUNGUS STATUS: ENORMOUS.
+      <animate attributeName="opacity" values="1;1;0;0;0;1" keyTimes="0;0.32;0.33;0.66;0.99;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="266" y="87" text-anchor="middle" fill="#b6fce9" font-size="21" opacity="0">DOES BALL PAY RENT HERE?
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.32;0.33;0.66;0.67;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="266" y="118" text-anchor="middle" fill="#8ddcc5" font-size="17" opacity="0">MYCELIUM SAYS MAYBE.
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.32;0.33;0.66;0.67;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="266" y="87" text-anchor="middle" fill="#b6fce9" font-size="21" opacity="0">HOLDING LAUGH.EXE
+      <animate attributeName="opacity" values="0;0;0;0;1;1" keyTimes="0;0.66;0.67;0.68;0.99;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="266" y="118" text-anchor="middle" fill="#8ddcc5" font-size="17" opacity="0">SCAN CONTINUES...
+      <animate attributeName="opacity" values="0;0;0;0;1;1" keyTimes="0;0.66;0.67;0.68;0.99;1" dur="9s" repeatCount="indefinite"/>
+    </text>
   </g>
 
   <g id="right-bubble" font-family="monospace">
-    <path d="M 1420 174 L 1630 174 Q 1650 174 1650 194 L 1650 234 Q 1650 254 1630 254 L 1468 254 L 1434 280 L 1442 254 L 1420 254 Q 1400 254 1400 234 L 1400 194 Q 1400 174 1420 174 Z" fill="#122029" stroke="#89d8c4" stroke-width="3"/>
-    <text x="1525" y="214" text-anchor="middle" fill="#b6fce9" font-size="22">WHERE IS BALL?</text>
-    <text x="1525" y="240" text-anchor="middle" fill="#8ddcc5" font-size="16">requesting mesh fix</text>
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 -5;0 0" dur="3.8s" repeatCount="indefinite"/>
+    <path d="M 1306 34 L 1744 34 Q 1770 34 1770 60 L 1770 138 Q 1770 164 1744 164 L 1602 164 L 1608 196 L 1576 164 L 1306 164 Q 1280 164 1280 138 L 1280 60 Q 1280 34 1306 34 Z" fill="#122029" stroke="#89d8c4" stroke-width="3"/>
+    <text x="1525" y="87" text-anchor="middle" fill="#b6fce9" font-size="21" opacity="1">WHERE IS BALL?
+      <animate attributeName="opacity" values="1;1;0;0;0;1" keyTimes="0;0.32;0.33;0.66;0.99;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="1525" y="118" text-anchor="middle" fill="#8ddcc5" font-size="17" opacity="1">REQUESTING MESH FIX...
+      <animate attributeName="opacity" values="1;1;0;0;0;1" keyTimes="0;0.32;0.33;0.66;0.99;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="1525" y="87" text-anchor="middle" fill="#b6fce9" font-size="21" opacity="0">PING RETURN: ROOT ZONE.
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.32;0.33;0.66;0.67;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="1525" y="118" text-anchor="middle" fill="#8ddcc5" font-size="17" opacity="0">ALSO: 12 CONFUSED SPORES.
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.32;0.33;0.66;0.67;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="1525" y="87" text-anchor="middle" fill="#b6fce9" font-size="21" opacity="0">BALL ACQUIRED. DIGNITY?
+      <animate attributeName="opacity" values="0;0;0;0;1;1" keyTimes="0;0.66;0.67;0.68;0.99;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="1525" y="118" text-anchor="middle" fill="#8ddcc5" font-size="17" opacity="0">DIGNITY NOT FOUND.
+      <animate attributeName="opacity" values="0;0;0;0;1;1" keyTimes="0;0.66;0.67;0.68;0.99;1" dur="9s" repeatCount="indefinite"/>
+    </text>
   </g>
 
-  <g id="ball-locator" transform="translate(1118 508)">
-    <circle cx="0" cy="0" r="26" fill="#ff4d4f" stroke="#ffe2e2" stroke-width="4"/>
-    <circle cx="0" cy="0" r="10" fill="#8f1017"/>
-    <circle cx="0" cy="0" r="32" fill="none" stroke="#ff8a8c" stroke-width="4" opacity="0.8">
-      <animate attributeName="r" values="32;54;32" dur="2.8s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="0.85;0.2;0.85" dur="2.8s" repeatCount="indefinite"/>
+  <g id="ball-locator-foreground" transform="translate(1088 496)">
+    <path d="M -14 -8 C -96 -30 -184 -55 -274 -80" fill="none" stroke="#ffd4cf" stroke-width="4" stroke-linecap="round" stroke-dasharray="9 9">
+      <animate attributeName="stroke-dashoffset" values="0;-36" dur="1.8s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="0" cy="0" r="36" fill="#ff5b5d" stroke="#fff2ef" stroke-width="5"/>
+    <circle cx="0" cy="0" r="13" fill="#811018"/>
+    <circle cx="0" cy="0" r="42" fill="none" stroke="#ff9e9f" stroke-width="5" opacity="0.86">
+      <animate attributeName="r" values="42;66;42" dur="2.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.9;0.22;0.9" dur="2.2s" repeatCount="indefinite"/>
     </circle>
-    <text x="70" y="-4" font-family="monospace" font-size="24" fill="#ffe8dc">Ball</text>
-    <text x="70" y="24" font-family="monospace" font-size="17" fill="#ffd3c8">last seen near roots</text>
+    <rect x="54" y="-48" width="364" height="104" rx="16" fill="#0f1319" fill-opacity="0.82" stroke="#ffd5d0" stroke-width="3"/>
+    <text x="236" y="-12" font-family="monospace" font-size="28" text-anchor="middle" fill="#ffe9e3">BALL LOCATOR LOCK</text>
+    <text x="236" y="20" font-family="monospace" font-size="18" text-anchor="middle" fill="#ffd3cb">foreground fix: near fungus roots</text>
   </g>
 </svg>
