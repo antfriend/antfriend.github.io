@@ -39,6 +39,33 @@
       <stop offset="100%" stop-color="#b5a486"/>
     </radialGradient>
 
+    <g id="branchFanLeft" fill="none">
+      <path d="M 0 0 C -24 0 -48 4 -72 12"/>
+      <path d="M -40 6 C -58 18 -72 34 -86 54"/>
+      <path d="M -40 6 C -46 22 -44 40 -36 60"/>
+      <path d="M -62 14 C -80 22 -96 40 -108 62"/>
+      <path d="M -62 14 C -70 30 -68 48 -58 70"/>
+      <path d="M -84 24 C -98 38 -110 56 -120 78"/>
+    </g>
+
+    <g id="branchFanRight" fill="none">
+      <path d="M 0 0 C 24 0 48 4 72 12"/>
+      <path d="M 40 6 C 58 18 72 34 86 54"/>
+      <path d="M 40 6 C 46 22 44 40 36 60"/>
+      <path d="M 62 14 C 80 22 96 40 108 62"/>
+      <path d="M 62 14 C 70 30 68 48 58 70"/>
+      <path d="M 84 24 C 98 38 110 56 120 78"/>
+    </g>
+
+    <g id="branchFanDown" fill="none">
+      <path d="M 0 0 C -22 0 -38 8 -48 22"/>
+      <path d="M 0 0 C 22 0 38 8 48 22"/>
+      <path d="M -22 8 C -30 26 -30 42 -24 62"/>
+      <path d="M 22 8 C 30 26 30 42 24 62"/>
+      <path d="M -40 18 C -52 34 -58 50 -60 70"/>
+      <path d="M 40 18 C 52 34 58 50 60 70"/>
+    </g>
+
     <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
       <feGaussianBlur stdDeviation="6" result="blur"/>
       <feMerge>
@@ -75,12 +102,162 @@
     </ellipse>
   </g>
 
-  <g id="mycelium" fill="none" stroke="#8dd2a8" stroke-linecap="round">
-    <path d="M 900 430 C 790 460 720 500 610 534" stroke-width="4"/>
-    <path d="M 900 430 C 980 462 1060 496 1178 530" stroke-width="4"/>
-    <path d="M 900 432 C 855 474 790 507 702 548" stroke-width="3"/>
-    <path d="M 900 432 C 962 472 1032 506 1122 548" stroke-width="3"/>
-    <path d="M 900 432 C 896 492 887 540 874 578" stroke-width="2"/>
+  <g id="mycelium" fill="none" stroke-linecap="round">
+    <g id="mycelium-trunks" stroke="#8e5d3c" opacity="0.9">
+      <path d="M 900 430 C 790 460 720 500 610 534" stroke-width="5"/>
+      <path d="M 900 430 C 980 462 1060 496 1178 530" stroke-width="5"/>
+      <path d="M 900 432 C 855 474 790 507 702 548" stroke-width="4"/>
+      <path d="M 900 432 C 962 472 1032 506 1122 548" stroke-width="4"/>
+      <path d="M 900 432 C 896 492 887 540 874 578" stroke-width="3"/>
+      <path d="M 900 432 C 880 500 854 548 820 596" stroke-width="2.4"/>
+      <path d="M 900 432 C 920 500 946 548 980 596" stroke-width="2.4"/>
+    </g>
+
+    <g id="mycelium-cross-links" stroke="#73472e" stroke-width="2.2" opacity="0.38">
+      <path d="M 34 378 C 284 408 548 430 900 434 C 1256 438 1538 412 1768 382"/>
+      <path d="M 22 416 C 250 448 522 478 898 486 C 1278 494 1550 458 1780 426"/>
+      <path d="M 18 458 C 274 490 540 518 896 526 C 1272 534 1526 508 1776 468"/>
+      <path d="M 42 514 C 302 540 566 562 890 568 C 1216 574 1480 552 1742 520"/>
+    </g>
+
+    <g id="mycelium-web-top" stroke="#d9aa7b" stroke-width="1.6" opacity="0.54">
+      <use href="#branchFanLeft" transform="translate(868 366)"/>
+      <use href="#branchFanLeft" transform="translate(764 368)"/>
+      <use href="#branchFanLeft" transform="translate(656 370)"/>
+      <use href="#branchFanLeft" transform="translate(548 372)"/>
+      <use href="#branchFanLeft" transform="translate(438 372)"/>
+      <use href="#branchFanLeft" transform="translate(330 370)"/>
+      <use href="#branchFanLeft" transform="translate(220 368)"/>
+      <use href="#branchFanLeft" transform="translate(124 366)"/>
+      <use href="#branchFanLeft" transform="translate(72 366)"/>
+      <use href="#branchFanRight" transform="translate(932 366)"/>
+      <use href="#branchFanRight" transform="translate(1036 368)"/>
+      <use href="#branchFanRight" transform="translate(1144 370)"/>
+      <use href="#branchFanRight" transform="translate(1252 372)"/>
+      <use href="#branchFanRight" transform="translate(1362 372)"/>
+      <use href="#branchFanRight" transform="translate(1470 370)"/>
+      <use href="#branchFanRight" transform="translate(1578 368)"/>
+      <use href="#branchFanRight" transform="translate(1674 366)"/>
+      <use href="#branchFanRight" transform="translate(1728 366)"/>
+      <use href="#branchFanDown" transform="translate(900 362)"/>
+      <use href="#branchFanDown" transform="translate(724 368)"/>
+      <use href="#branchFanDown" transform="translate(540 372)"/>
+      <use href="#branchFanDown" transform="translate(356 370)"/>
+      <use href="#branchFanDown" transform="translate(170 366)"/>
+      <use href="#branchFanDown" transform="translate(1080 368)"/>
+      <use href="#branchFanDown" transform="translate(1262 372)"/>
+      <use href="#branchFanDown" transform="translate(1446 370)"/>
+      <use href="#branchFanDown" transform="translate(1630 366)"/>
+    </g>
+
+    <g id="mycelium-web-mid" stroke="#c98a58" stroke-width="1.95" opacity="0.58">
+      <use href="#branchFanLeft" transform="translate(882 402)"/>
+      <use href="#branchFanLeft" transform="translate(808 410)"/>
+      <use href="#branchFanLeft" transform="translate(730 418)"/>
+      <use href="#branchFanLeft" transform="translate(650 426)"/>
+      <use href="#branchFanLeft" transform="translate(568 434)"/>
+      <use href="#branchFanLeft" transform="translate(484 440)"/>
+      <use href="#branchFanLeft" transform="translate(400 444)"/>
+      <use href="#branchFanLeft" transform="translate(314 446)"/>
+      <use href="#branchFanLeft" transform="translate(228 446)"/>
+      <use href="#branchFanLeft" transform="translate(142 444)"/>
+      <use href="#branchFanLeft" transform="translate(74 438)"/>
+      <use href="#branchFanRight" transform="translate(918 402)"/>
+      <use href="#branchFanRight" transform="translate(992 410)"/>
+      <use href="#branchFanRight" transform="translate(1070 418)"/>
+      <use href="#branchFanRight" transform="translate(1150 426)"/>
+      <use href="#branchFanRight" transform="translate(1232 434)"/>
+      <use href="#branchFanRight" transform="translate(1316 440)"/>
+      <use href="#branchFanRight" transform="translate(1400 444)"/>
+      <use href="#branchFanRight" transform="translate(1486 446)"/>
+      <use href="#branchFanRight" transform="translate(1572 446)"/>
+      <use href="#branchFanRight" transform="translate(1658 444)"/>
+      <use href="#branchFanRight" transform="translate(1726 438)"/>
+      <use href="#branchFanDown" transform="translate(900 394)"/>
+      <use href="#branchFanDown" transform="translate(804 410)"/>
+      <use href="#branchFanDown" transform="translate(706 424)"/>
+      <use href="#branchFanDown" transform="translate(606 436)"/>
+      <use href="#branchFanDown" transform="translate(504 444)"/>
+      <use href="#branchFanDown" transform="translate(396 448)"/>
+      <use href="#branchFanDown" transform="translate(286 448)"/>
+      <use href="#branchFanDown" transform="translate(176 444)"/>
+      <use href="#branchFanDown" transform="translate(994 410)"/>
+      <use href="#branchFanDown" transform="translate(1092 424)"/>
+      <use href="#branchFanDown" transform="translate(1192 436)"/>
+      <use href="#branchFanDown" transform="translate(1294 444)"/>
+      <use href="#branchFanDown" transform="translate(1402 448)"/>
+      <use href="#branchFanDown" transform="translate(1512 448)"/>
+      <use href="#branchFanDown" transform="translate(1622 444)"/>
+    </g>
+
+    <g id="mycelium-web-deep" stroke="#a8673f" stroke-width="2.25" opacity="0.62">
+      <use href="#branchFanLeft" transform="translate(868 446)"/>
+      <use href="#branchFanLeft" transform="translate(824 462)"/>
+      <use href="#branchFanLeft" transform="translate(778 480)"/>
+      <use href="#branchFanLeft" transform="translate(730 500)"/>
+      <use href="#branchFanLeft" transform="translate(682 520)"/>
+      <use href="#branchFanLeft" transform="translate(634 540)"/>
+      <use href="#branchFanLeft" transform="translate(586 558)"/>
+      <use href="#branchFanLeft" transform="translate(538 572)"/>
+      <use href="#branchFanLeft" transform="translate(490 582)"/>
+      <use href="#branchFanLeft" transform="translate(438 586)"/>
+      <use href="#branchFanLeft" transform="translate(386 586)"/>
+      <use href="#branchFanLeft" transform="translate(332 582)"/>
+      <use href="#branchFanLeft" transform="translate(278 574)"/>
+      <use href="#branchFanLeft" transform="translate(224 562)"/>
+      <use href="#branchFanLeft" transform="translate(170 548)"/>
+      <use href="#branchFanLeft" transform="translate(116 532)"/>
+      <use href="#branchFanLeft" transform="translate(72 514)"/>
+      <use href="#branchFanRight" transform="translate(932 446)"/>
+      <use href="#branchFanRight" transform="translate(976 462)"/>
+      <use href="#branchFanRight" transform="translate(1022 480)"/>
+      <use href="#branchFanRight" transform="translate(1070 500)"/>
+      <use href="#branchFanRight" transform="translate(1118 520)"/>
+      <use href="#branchFanRight" transform="translate(1166 540)"/>
+      <use href="#branchFanRight" transform="translate(1214 558)"/>
+      <use href="#branchFanRight" transform="translate(1262 572)"/>
+      <use href="#branchFanRight" transform="translate(1310 582)"/>
+      <use href="#branchFanRight" transform="translate(1362 586)"/>
+      <use href="#branchFanRight" transform="translate(1414 586)"/>
+      <use href="#branchFanRight" transform="translate(1468 582)"/>
+      <use href="#branchFanRight" transform="translate(1522 574)"/>
+      <use href="#branchFanRight" transform="translate(1576 562)"/>
+      <use href="#branchFanRight" transform="translate(1630 548)"/>
+      <use href="#branchFanRight" transform="translate(1684 532)"/>
+      <use href="#branchFanRight" transform="translate(1728 514)"/>
+      <use href="#branchFanDown" transform="translate(900 442)"/>
+      <use href="#branchFanDown" transform="translate(892 472)"/>
+      <use href="#branchFanDown" transform="translate(884 502)"/>
+      <use href="#branchFanDown" transform="translate(876 530)"/>
+      <use href="#branchFanDown" transform="translate(868 556)"/>
+      <use href="#branchFanDown" transform="translate(860 578)"/>
+      <use href="#branchFanDown" transform="translate(940 472)"/>
+      <use href="#branchFanDown" transform="translate(948 502)"/>
+      <use href="#branchFanDown" transform="translate(956 530)"/>
+      <use href="#branchFanDown" transform="translate(964 556)"/>
+      <use href="#branchFanDown" transform="translate(972 578)"/>
+    </g>
+
+    <g id="mycelium-capillary" stroke="#efbf93" stroke-width="1.15" opacity="0.34">
+      <use href="#branchFanLeft" transform="translate(906 380)"/>
+      <use href="#branchFanLeft" transform="translate(700 384)"/>
+      <use href="#branchFanLeft" transform="translate(494 388)"/>
+      <use href="#branchFanLeft" transform="translate(288 390)"/>
+      <use href="#branchFanLeft" transform="translate(92 390)"/>
+      <use href="#branchFanRight" transform="translate(894 380)"/>
+      <use href="#branchFanRight" transform="translate(1100 384)"/>
+      <use href="#branchFanRight" transform="translate(1306 388)"/>
+      <use href="#branchFanRight" transform="translate(1512 390)"/>
+      <use href="#branchFanRight" transform="translate(1708 390)"/>
+      <use href="#branchFanDown" transform="translate(808 384)"/>
+      <use href="#branchFanDown" transform="translate(620 390)"/>
+      <use href="#branchFanDown" transform="translate(430 392)"/>
+      <use href="#branchFanDown" transform="translate(238 392)"/>
+      <use href="#branchFanDown" transform="translate(1048 384)"/>
+      <use href="#branchFanDown" transform="translate(1240 390)"/>
+      <use href="#branchFanDown" transform="translate(1430 392)"/>
+      <use href="#branchFanDown" transform="translate(1622 392)"/>
+    </g>
   </g>
 
   <g id="mesh-link" fill="none" stroke="#6af0d2" stroke-width="5" stroke-linecap="round" stroke-dasharray="18 12">
