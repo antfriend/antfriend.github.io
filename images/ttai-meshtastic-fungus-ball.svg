@@ -185,7 +185,7 @@
   </g>
 
   <g id="ball-locator-foreground" transform="translate(1088 496)">
-    <path d="M -14 -8 C -96 -30 -184 -55 -274 -80" fill="none" stroke="#ffd4cf" stroke-width="4" stroke-linecap="round" stroke-dasharray="9 9">
+    <path d="M -14 -8 C -96 -30 -154 -48 -188 -64" fill="none" stroke="#ffd4cf" stroke-width="4" stroke-linecap="round" stroke-dasharray="9 9">
       <animate attributeName="stroke-dashoffset" values="0;-36" dur="1.8s" repeatCount="indefinite"/>
     </path>
     <circle cx="0" cy="0" r="36" fill="#ff5b5d" stroke="#fff2ef" stroke-width="5"/>
