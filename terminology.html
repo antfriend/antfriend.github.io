@@ -944,10 +944,14 @@
       incoming.classList.add("is-current");
       const current = viewEl.querySelector(".record-frame.is-current");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const currentHasMedia = Boolean(current?.querySelector("img, object"));
+      const incomingHasMedia = Boolean(incoming.querySelector("img, object"));
       const shouldAnimate =
         Boolean(current) &&
         Boolean(transition) &&
         !reduceMotion &&
+        !currentHasMedia &&
+        !incomingHasMedia &&
         current.dataset.recordId === transition.fromId &&
         transition.toId === state.selectedId;
 
@@ -1058,22 +1062,12 @@
     }
 
     function createMediaNode(src, alt, title) {
-      const cleaned = src.split("?")[0].split("#")[0].toLowerCase();
-      const isSvg = cleaned.endsWith(".svg");
-      if (isSvg) {
-        const obj = document.createElement("object");
-        obj.data = src;
-        obj.type = "image/svg+xml";
-        obj.setAttribute("role", "img");
-        obj.setAttribute("aria-label", alt || "svg image");
-        if (title) obj.setAttribute("title", title);
-        return obj;
-      }
       const img = document.createElement("img");
       img.src = src;
-      img.alt = alt;
+      img.alt = alt || "";
       if (title) img.title = title;
-      img.loading = "lazy";
+      img.loading = "eager";
+      img.decoding = "async";
       return img;
     }
 
@@ -1152,6 +1146,7 @@
       const references = {};
       const contentLines = [];
       const refPattern = /^\s*\[([^\]]+)\]:\s*(\S+)(?:\s+"([^"]+)")?\s*$/;
+      const imageLinePattern = /^\s*!\[([^\]]*)\]\(([^)]+)\)\s*$|^\s*!\[([^\]]*)\]\[([^\]]+)\]\s*$/;
       let inRefCode = false;
       lines.forEach((rawLine) => {
         const trimmed = rawLine.trim();
@@ -1208,6 +1203,34 @@
 
         if (inCode) {
           codeBlock.textContent += `${line}\n`;
+          continue;
+        }
+
+        const imageLineMatch = line.match(imageLinePattern);
+        if (imageLineMatch) {
+          flushList();
+          let media = null;
+          if (imageLineMatch[1] !== undefined) {
+            const alt = imageLineMatch[1];
+            const src = imageLineMatch[2].trim();
+            if (!/^javascript:/i.test(src)) {
+              media = createMediaNode(src, alt);
+            }
+          } else if (imageLineMatch[3] !== undefined) {
+            const alt = imageLineMatch[3];
+            const refKey = imageLineMatch[4].trim().toLowerCase();
+            const ref = references[refKey];
+            if (ref && !/^javascript:/i.test(ref.href)) {
+              media = createMediaNode(ref.href, alt, ref.title);
+            }
+          }
+          if (media) {
+            fragment.appendChild(media);
+          } else {
+            const para = document.createElement("p");
+            para.textContent = line;
+            fragment.appendChild(para);
+          }
           continue;
         }
 
