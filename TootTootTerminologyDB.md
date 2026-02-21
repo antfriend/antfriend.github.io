@@ -59,7 +59,9 @@ preview:
 
 The world as it is experienced by a particular organism.
 
-The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can be sensed, stored, related, or acted on. It is a feature of toot toot data encoding and more generally, natural systems - see [Wikipedia.](https://en.wikipedia.org/wiki/Umwelt) It all begins here. Our mortal engines fire.   
+The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can be sensed, stored, related, or acted on. It is a feature of toot toot data encoding and more generally, natural systems - see [Wikipedia.](https://en.wikipedia.org/wiki/Umwelt)    
+
+It all begins here. Our mortal engines fire.   
 - From here you may visit the [meshtastic](https://meshtastic.org) world of microcontroller agent networks at ==>> [Toot Toot AI](@LAT40.7LON-74.0)
 - Or discover more about how the umwelt is part of the Toot Toot data encoding of a [TTDB](@LAT35.7LON139.7)
 
@@ -282,7 +284,7 @@ A semantic event is a structured, typed statement about state or intent that can
 "reports_sensor@node:temp" with a measured value, logged in TTDB.
 
 ### Illustration
-![Semantic event](images/logo512.png)
+![Semantic event](images/semantic-pulse.svg)
 
 ### References
 - [TTN-RFC-0001](RFCs/TTN-RFC-0001.md)
