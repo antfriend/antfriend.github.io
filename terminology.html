@@ -553,6 +553,7 @@
       searchIndex: {},
       searchTerm: "",
       tourEnabled: true,
+      tourPaused: false,
       tourSlowPace: false,
       tourTimer: null,
       firstRecordId: null,
@@ -659,6 +660,21 @@
     invertDragToggle.addEventListener("change", () => {
       state.invertDragY = invertDragToggle.checked;
       localStorage.setItem("tte-terminology-invert-drag-y", String(state.invertDragY));
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.code !== "Space" || event.repeat) return;
+      if (document.activeElement === searchInput) return;
+      if (!state.tourEnabled) return;
+
+      event.preventDefault();
+      state.tourPaused = !state.tourPaused;
+      if (state.tourPaused) {
+        clearTour();
+        tourNote.textContent = "Guided tour paused. Press Space to resume.";
+      } else {
+        scheduleTour();
+      }
     });
 
     function setStatusMessage(message) {
@@ -2173,6 +2189,10 @@
       clearTour();
       const discoveredOrder = getDiscoveredOrder();
       if (!state.tourEnabled) return;
+      if (state.tourPaused) {
+        tourNote.textContent = "Guided tour paused. Press Space to resume.";
+        return;
+      }
       if (discoveredOrder.length < 2) {
         tourNote.textContent = "Discover another record to expand the guided tour.";
         return;
