@@ -47,7 +47,7 @@ selected:
   - @LAT1.1LON1.2
 preview:
   @LAT1.1LON1.2: "The world as it is experienced by a particular organism."
-agent_note: "This TTDB is a guided glossary. Use it for definitions, examples, and cross-links between RFCs and standards."
+
 ```
 
 ---
@@ -60,7 +60,8 @@ agent_note: "This TTDB is a guided glossary. Use it for definitions, examples, a
 The world as it is experienced by a particular organism.
 
 The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can be sensed, stored, related, or acted on. It is a feature of toot toot data encoding and more generally, natural systems - see [Wikipedia.](https://en.wikipedia.org/wiki/Umwelt) It all begins here. Our mortal engines fire.   
-- From here you may visit the [meshtastic](https://meshtastic.org) world of microcontroller agent networks at ==>> [Toot Toot AI.](@LAT40.7LON-74.0)
+- From here you may visit the [meshtastic](https://meshtastic.org) world of microcontroller agent networks at ==>> [Toot Toot AI](@LAT40.7LON-74.0)
+- Or discover more about how the umwelt is part of the Toot Toot data encoding of a [TTDB](@LAT35.7LON139.7)
 
 ---
 
@@ -99,18 +100,18 @@ When idle, TTAI replays memories and connects distant ideas without making disru
 @LAT35.7LON139.7 | created:1771434918 | updated:1771434918 | relates:specified_by>@LAT-33.9LON151.2,uses>@LAT48.9LON2.4,uses>@LAT37.8LON-122.4,uses>@LAT-23.6LON-46.6
 
 ## TTDB (Toot Toot Database)
+![TTDB](images/Toot%20Toot%20Terminology.png)
 ### Definition
-TTDB is a single-file semantic story database. Records are markdown nodes connected by typed edges on a knowledge globe.
+A single-file semantic story database. Records are markdown nodes connected by typed edges on a knowledge globe.
 
 ### Example
 A node logs sensor events locally, using TTDB as its default backend.
 
-
 ### References
-- [TTDB File Format](RFCs/TTDB-RFC-0001-File-Format.md)
-- [Cursor Semantics](RFCs/TTDB-RFC-0002-Cursor-Semantics.md)
-- [Typed Edges](RFCs/TTDB-RFC-0003-Typed-Edges.md)
-- [Event ID and Collision](RFCs/TTDB-RFC-0004-Event-ID-and-Collision.md)
+- document: [TTDB File Format](RFCs/TTDB-RFC-0001-File-Format.md)
+- document: [Cursor Semantics](RFCs/TTDB-RFC-0002-Cursor-Semantics.md)
+- document: [Typed Edges](RFCs/TTDB-RFC-0003-Typed-Edges.md)
+- document: [Event ID and Collision](RFCs/TTDB-RFC-0004-Event-ID-and-Collision.md)
 
 ---
 
