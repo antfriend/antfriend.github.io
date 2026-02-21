@@ -370,7 +370,8 @@
     }
 
     .record img,
-    .record object {
+    .record object,
+    .record iframe.record-html-embed {
       display: block;
       clear: both;
       float: none;
@@ -384,6 +385,13 @@
     .record object {
       width: 100%;
       min-height: 180px;
+    }
+
+    .record iframe.record-html-embed {
+      width: min(100%, 560px);
+      aspect-ratio: 1 / 1;
+      height: auto;
+      border: 1px solid rgba(11, 17, 18, 0.2);
     }
 
     .related {
@@ -1162,7 +1170,20 @@
       return frame;
     }
 
+    function isHtmlEmbedSource(src) {
+      return /\.html(?:[?#].*)?$/i.test(src.trim());
+    }
+
     function createMediaNode(src, alt, title) {
+      if (isHtmlEmbedSource(src)) {
+        const iframe = document.createElement("iframe");
+        iframe.src = src;
+        iframe.className = "record-html-embed";
+        iframe.loading = "lazy";
+        iframe.title = title || alt || "Embedded HTML content";
+        return iframe;
+      }
+
       const img = document.createElement("img");
       img.src = src;
       img.alt = alt || "";
