@@ -98,6 +98,7 @@
       background: rgba(11, 17, 18, 0.92);
       border: 1px solid rgba(255, 255, 255, 0.08);
       overflow: hidden;
+      position: relative;
     }
 
     #graph {
@@ -105,10 +106,55 @@
       height: 100%;
       display: block;
       cursor: grab;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     #graph.is-dragging {
       cursor: grabbing;
+    }
+
+    .graph-controls {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      z-index: 2;
+      display: grid;
+      gap: 6px;
+      justify-items: end;
+    }
+
+    .graph-zoom-btn {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 6px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(124, 199, 255, 0.45);
+      background: rgba(7, 10, 18, 0.78);
+      color: #e9f6ff;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      touch-action: manipulation;
+      backdrop-filter: blur(3px);
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .graph-zoom-btn:hover {
+      transform: translateY(-1px);
+      border-color: #9ad6ff;
+      box-shadow: 0 0 12px rgba(124, 199, 255, 0.3);
+    }
+
+    .graph-zoom-btn[data-action="reset"] {
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      font-weight: 600;
+      padding-inline: 8px;
     }
 
     .layout {
@@ -387,6 +433,17 @@
         height: 176px;
       }
 
+      .graph-controls {
+        right: 8px;
+        bottom: 8px;
+        gap: 5px;
+      }
+
+      .graph-zoom-btn {
+        min-width: 48px;
+        min-height: 48px;
+      }
+
       .record {
         height: clamp(330px, calc((100vh - 280px) * 1.5), 690px);
         height: clamp(330px, calc((100dvh - 280px) * 1.5), 690px);
@@ -401,6 +458,13 @@
       <div class="header-left">
         <div class="graph-wrap">
           <canvas id="graph"></canvas>
+          <div class="graph-controls" role="group" aria-label="Globe zoom controls">
+            <button class="graph-zoom-btn" id="zoomInBtn" type="button" aria-label="Zoom in">+</button>
+            <button class="graph-zoom-btn" id="zoomOutBtn" type="button" aria-label="Zoom out">-</button>
+            <button class="graph-zoom-btn" id="zoomResetBtn" data-action="reset" type="button" aria-label="Reset zoom">
+              100%
+            </button>
+          </div>
         </div>
       </div>
       <div class="header-right">
@@ -452,6 +516,9 @@
     const TOUR_SLOW_DELAY_MULTIPLIER = 1.7;
     const TOUR_SLOW_TRANSITION_MULTIPLIER = 1.5;
     const DISCOVERY_KEY = "tte-terminology-discovered-records-v1";
+    const GLOBE_ZOOM_MIN = 0.7;
+    const GLOBE_ZOOM_MAX = 3.5;
+    const GLOBE_ZOOM_STEP = 1.12;
 
     const state = {
       records: {},
@@ -473,6 +540,7 @@
       globeVelX: 0,
       globeVelY: 0,
       globeVelT: 0,
+      globeDragMoved: false,
       invertDragY: true,
       searchIndex: {},
       searchTerm: "",
@@ -502,6 +570,9 @@
     const listEl = document.getElementById("recordList");
     const viewEl = document.getElementById("recordView");
     const graphCanvas = document.getElementById("graph");
+    const zoomInBtn = document.getElementById("zoomInBtn");
+    const zoomOutBtn = document.getElementById("zoomOutBtn");
+    const zoomResetBtn = document.getElementById("zoomResetBtn");
     const forgetDiscoveriesBtn = document.getElementById("forgetDiscoveries");
     const searchInput = document.getElementById("searchInput");
     const searchMeta = document.getElementById("searchMeta");
@@ -1805,62 +1876,67 @@
       }
     }
 
-    graphCanvas.addEventListener("click", (event) => {
-      const rect = graphCanvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+    function clampGlobeZoom(value) {
+      return Math.min(GLOBE_ZOOM_MAX, Math.max(GLOBE_ZOOM_MIN, value));
+    }
+
+    function setGlobeZoom(value) {
+      const nextZoom = clampGlobeZoom(value);
+      if (Math.abs(nextZoom - state.globeZoom) < 0.0001) return false;
+      state.globeZoom = nextZoom;
+      renderGraph();
+      return true;
+    }
+
+    function zoomGlobeByStep(direction) {
+      const multiplier = direction > 0 ? GLOBE_ZOOM_STEP : 1 / GLOBE_ZOOM_STEP;
+      return setGlobeZoom(state.globeZoom * multiplier);
+    }
+
+    function selectRecordNearPoint(canvasX, canvasY, pointerType = "mouse") {
       let closest = null;
       let closestDist = Infinity;
       Object.entries(state.screenPoints).forEach(([id, pos]) => {
-        const dx = pos[0] - x;
-        const dy = pos[1] - y;
+        const dx = pos[0] - canvasX;
+        const dy = pos[1] - canvasY;
         const dist = Math.hypot(dx, dy);
         if (dist < closestDist) {
           closestDist = dist;
           closest = id;
         }
       });
-      if (closest && closestDist < 16) {
+      const threshold = pointerType === "touch" ? 28 : 16;
+      if (closest && closestDist <= threshold) {
         selectRecord(closest);
-        noteInteraction();
+        return true;
       }
-    });
+      return false;
+    }
 
-    graphCanvas.addEventListener(
-      "wheel",
-      (event) => {
-        event.preventDefault();
-        const direction = Math.sign(event.deltaY);
-        const nextZoom = state.globeZoom * (direction > 0 ? 0.92 : 1.08);
-        state.globeZoom = Math.min(3.5, Math.max(0.7, nextZoom));
-        renderGraph();
-      },
-      { passive: false },
-    );
-
-    graphCanvas.addEventListener("mousedown", (event) => {
-      if (event.button !== 0) return;
+    function beginGlobeDrag(clientX, clientY) {
       state.globeDragging = true;
-      state.globeDragX = event.clientX;
-      state.globeDragY = event.clientY;
+      state.globeDragMoved = false;
+      state.globeDragX = clientX;
+      state.globeDragY = clientY;
       state.globeVelX = 0;
       state.globeVelY = 0;
       state.globeVelT = performance.now();
       graphCanvas.classList.add("is-dragging");
-      event.preventDefault();
-    });
+    }
 
-    graphCanvas.addEventListener("mousemove", (event) => {
-      if (!state.globeDragging) return;
-      const dx = event.clientX - state.globeDragX;
-      const dy = event.clientY - state.globeDragY;
+    function handleGlobeDragMove(clientX, clientY) {
+      if (!state.globeDragging) return false;
+      const dx = clientX - state.globeDragX;
+      const dy = clientY - state.globeDragY;
+      if (dx === 0 && dy === 0) return false;
       const now = performance.now();
       const dt = Math.max(1, now - state.globeVelT);
       state.globeVelX = dx / dt;
       state.globeVelY = dy / dt;
       state.globeVelT = now;
-      state.globeDragX = event.clientX;
-      state.globeDragY = event.clientY;
+      state.globeDragX = clientX;
+      state.globeDragY = clientY;
+      state.globeDragMoved = true;
       const sensitivity = 0.005;
       state.globeRotLon += dx * sensitivity;
       const invert = state.invertDragY ? 1 : -1;
@@ -1871,22 +1947,201 @@
       state.globeTargetLon = state.globeRotLon;
       state.globeAnimating = false;
       renderGraph();
-    });
+      return true;
+    }
 
     function endGlobeDrag() {
-      if (!state.globeDragging) return;
+      if (!state.globeDragging) return false;
+      const didMove = state.globeDragMoved;
       state.globeDragging = false;
+      state.globeDragMoved = false;
       graphCanvas.classList.remove("is-dragging");
+      if (!didMove) return false;
       const targetId = findNearestRecordToCenter();
       if (targetId) {
         selectRecord(targetId);
-        noteInteraction();
       }
+      return true;
     }
 
-    graphCanvas.addEventListener("mouseup", endGlobeDrag);
-    graphCanvas.addEventListener("mouseleave", endGlobeDrag);
-    window.addEventListener("mouseup", endGlobeDrag);
+    graphCanvas.addEventListener(
+      "wheel",
+      (event) => {
+        event.preventDefault();
+        const direction = Math.sign(event.deltaY);
+        const changed = zoomGlobeByStep(direction > 0 ? -1 : 1);
+        if (changed) {
+          noteInteraction();
+        }
+      },
+      { passive: false },
+    );
+
+    zoomInBtn.addEventListener("click", () => {
+      const changed = zoomGlobeByStep(1);
+      if (changed) {
+        noteInteraction();
+      }
+    });
+    zoomOutBtn.addEventListener("click", () => {
+      const changed = zoomGlobeByStep(-1);
+      if (changed) {
+        noteInteraction();
+      }
+    });
+    zoomResetBtn.addEventListener("click", () => {
+      const changed = setGlobeZoom(1);
+      if (changed) {
+        noteInteraction();
+      }
+    });
+
+    const pointerGesture = {
+      active: new Map(),
+      primaryId: null,
+      startX: 0,
+      startY: 0,
+      startTime: 0,
+      moved: false,
+      movedOrZoomed: false,
+      pinchDistance: 0,
+      pinchStartZoom: 1,
+    };
+
+    function getPinchDistance() {
+      const points = Array.from(pointerGesture.active.values());
+      if (points.length < 2) return 0;
+      return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+    }
+
+    graphCanvas.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      pointerGesture.active.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (graphCanvas.setPointerCapture) {
+        try {
+          graphCanvas.setPointerCapture(event.pointerId);
+        } catch (err) {
+          // Ignore capture failures and continue with regular pointer tracking.
+        }
+      }
+
+      if (pointerGesture.active.size === 1) {
+        pointerGesture.primaryId = event.pointerId;
+        pointerGesture.startX = event.clientX;
+        pointerGesture.startY = event.clientY;
+        pointerGesture.startTime = performance.now();
+        pointerGesture.moved = false;
+        pointerGesture.movedOrZoomed = false;
+        beginGlobeDrag(event.clientX, event.clientY);
+      } else {
+        pointerGesture.primaryId = null;
+        pointerGesture.moved = true;
+        pointerGesture.pinchDistance = getPinchDistance();
+        pointerGesture.pinchStartZoom = state.globeZoom;
+        state.globeDragging = false;
+        graphCanvas.classList.remove("is-dragging");
+      }
+      event.preventDefault();
+    });
+
+    graphCanvas.addEventListener("pointermove", (event) => {
+      if (!pointerGesture.active.has(event.pointerId)) return;
+      pointerGesture.active.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+      if (pointerGesture.active.size >= 2) {
+        const distance = getPinchDistance();
+        if (pointerGesture.pinchDistance > 0 && distance > 0) {
+          const scale = distance / pointerGesture.pinchDistance;
+          const changed = setGlobeZoom(pointerGesture.pinchStartZoom * scale);
+          if (changed) {
+            pointerGesture.movedOrZoomed = true;
+          }
+        }
+        event.preventDefault();
+        return;
+      }
+
+      if (event.pointerId !== pointerGesture.primaryId) {
+        event.preventDefault();
+        return;
+      }
+
+      const traveled = Math.hypot(event.clientX - pointerGesture.startX, event.clientY - pointerGesture.startY);
+      if (traveled > 6) {
+        pointerGesture.moved = true;
+      }
+      const moved = handleGlobeDragMove(event.clientX, event.clientY);
+      if (moved && pointerGesture.moved) {
+        pointerGesture.movedOrZoomed = true;
+      }
+      event.preventDefault();
+    });
+
+    function handlePointerEnd(event) {
+      if (!pointerGesture.active.has(event.pointerId)) return;
+      const wasPrimary = pointerGesture.primaryId === event.pointerId;
+      const wasSinglePointer = pointerGesture.active.size === 1;
+      const wasTap =
+        wasPrimary && wasSinglePointer && !pointerGesture.moved && performance.now() - pointerGesture.startTime < 350;
+
+      pointerGesture.active.delete(event.pointerId);
+      if (graphCanvas.releasePointerCapture && graphCanvas.hasPointerCapture?.(event.pointerId)) {
+        try {
+          graphCanvas.releasePointerCapture(event.pointerId);
+        } catch (err) {
+          // Ignore capture release failures.
+        }
+      }
+
+      if (pointerGesture.active.size >= 2) {
+        pointerGesture.primaryId = null;
+        pointerGesture.pinchDistance = getPinchDistance();
+        pointerGesture.pinchStartZoom = state.globeZoom;
+        event.preventDefault();
+        return;
+      }
+
+      if (pointerGesture.active.size === 1) {
+        const entry = pointerGesture.active.entries().next().value;
+        const remainingId = entry[0];
+        const remainingPoint = entry[1];
+        pointerGesture.primaryId = remainingId;
+        pointerGesture.startX = remainingPoint.x;
+        pointerGesture.startY = remainingPoint.y;
+        pointerGesture.startTime = performance.now();
+        pointerGesture.moved = true;
+        pointerGesture.pinchDistance = 0;
+        pointerGesture.pinchStartZoom = state.globeZoom;
+        beginGlobeDrag(remainingPoint.x, remainingPoint.y);
+        event.preventDefault();
+        return;
+      }
+
+      const usedDrag = endGlobeDrag();
+      let usedTap = false;
+      if (wasTap) {
+        const rect = graphCanvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        usedTap = selectRecordNearPoint(x, y, event.pointerType);
+      }
+
+      if (usedDrag || usedTap || pointerGesture.movedOrZoomed) {
+        noteInteraction();
+      }
+
+      pointerGesture.primaryId = null;
+      pointerGesture.moved = false;
+      pointerGesture.movedOrZoomed = false;
+      pointerGesture.pinchDistance = 0;
+      pointerGesture.pinchStartZoom = state.globeZoom;
+      event.preventDefault();
+    }
+
+    graphCanvas.addEventListener("pointerup", handlePointerEnd);
+    graphCanvas.addEventListener("pointercancel", handlePointerEnd);
+    window.addEventListener("pointerup", handlePointerEnd);
+    window.addEventListener("pointercancel", handlePointerEnd);
 
     function getTourDelayMs() {
       if (!state.tourSlowPace) return TOUR_DELAY_MS;
