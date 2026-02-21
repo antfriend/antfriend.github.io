@@ -1117,15 +1117,15 @@
       frame.className = "record-frame";
       frame.dataset.recordId = recordId;
       const leadMediaInfo = extractLeadMedia(record.body || "");
+      if (leadMediaInfo.leadMedia) {
+        frame.appendChild(leadMediaInfo.leadMedia);
+      }
+
       if (record.title) {
         const title = document.createElement("h2");
         title.className = "record-title";
         title.textContent = record.title;
         frame.appendChild(title);
-      }
-
-      if (leadMediaInfo.leadMedia) {
-        frame.appendChild(leadMediaInfo.leadMedia);
       }
 
       if (leadMediaInfo.body) {
