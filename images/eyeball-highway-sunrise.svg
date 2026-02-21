@@ -76,20 +76,20 @@
   </path>
 
   <g id="sun-eye-rise-back">
-    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.43;0.44;1" dur="20s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.59;0.6;1" dur="20s" repeatCount="indefinite"/>
     <animateMotion
       dur="20s"
       repeatCount="indefinite"
-      keyPoints="0;0.31;0.42;0.58;0.78;1"
-      keyTimes="0;0.44;0.66;0.8;0.9;1"
+      keyPoints="0;0.34;0.47;0.63;0.8;1"
+      keyTimes="0;0.6;0.74;0.84;0.92;1"
       calcMode="linear"
-      path="M 900 560 C 900 504 900 402 900 304 C 900 270 900 244 900 232 C 842 300 722 408 560 526 C 434 618 332 692 250 760"/>
+      path="M 900 560 C 900 510 900 420 900 320 C 900 248 900 185 900 110 C 842 238 722 382 560 526 C 434 618 332 692 250 760"/>
     <g id="sun-eye-scale-back">
       <animateTransform
         attributeName="transform"
         type="scale"
-        values="0.33;0.44;0.62;0.9;1.32;1.95;2.5"
-        keyTimes="0;0.14;0.3;0.48;0.66;0.84;1"
+        values="0.33;0.44;0.62;0.9;1.32;1.95;1.95"
+        keyTimes="0;0.14;0.3;0.48;0.66;0.86;1"
         dur="20s"
         repeatCount="indefinite"/>
       <use href="#sunEyeArt"/>
@@ -108,20 +108,20 @@
   <path d="M 214 620 C 516 520 706 430 878 300" fill="none" stroke="#ffd166" stroke-width="8" stroke-linecap="round" stroke-dasharray="58 34" stroke-opacity="0.88"/>
 
   <g id="sun-eye-rise-front">
-    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.43;0.44;1" dur="20s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.59;0.6;1" dur="20s" repeatCount="indefinite"/>
     <animateMotion
       dur="20s"
       repeatCount="indefinite"
-      keyPoints="0;0.31;0.42;0.58;0.78;1"
-      keyTimes="0;0.44;0.66;0.8;0.9;1"
+      keyPoints="0;0.34;0.47;0.63;0.8;1"
+      keyTimes="0;0.6;0.74;0.84;0.92;1"
       calcMode="linear"
-      path="M 900 560 C 900 504 900 402 900 304 C 900 270 900 244 900 232 C 842 300 722 408 560 526 C 434 618 332 692 250 760"/>
+      path="M 900 560 C 900 510 900 420 900 320 C 900 248 900 185 900 110 C 842 238 722 382 560 526 C 434 618 332 692 250 760"/>
     <g id="sun-eye-scale-front">
       <animateTransform
         attributeName="transform"
         type="scale"
-        values="0.33;0.44;0.62;0.9;1.32;1.95;2.5"
-        keyTimes="0;0.14;0.3;0.48;0.66;0.84;1"
+        values="0.33;0.44;0.62;0.9;1.32;1.95;1.95"
+        keyTimes="0;0.14;0.3;0.48;0.66;0.86;1"
         dur="20s"
         repeatCount="indefinite"/>
       <use href="#sunEyeArt"/>
