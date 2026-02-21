@@ -59,9 +59,7 @@ agent_note: "This TTDB is a guided glossary. Use it for definitions, examples, a
 
 The world as it is experienced by a particular organism.
 
-The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can be sensed, stored, related, or acted on. It is a feature of toot toot data encoding and more generally, [natural systems.](https://en.wikipedia.org/wiki/Umwelt)
-
-
+The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can be sensed, stored, related, or acted on. It is a feature of toot toot data encoding and more generally, [natural systems, as described in wikipedia.](https://en.wikipedia.org/wiki/Umwelt). It all begins here. We are all mortal engines.
 
 ---
 
@@ -73,10 +71,10 @@ The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can b
 TTAI is the maker-scale librarian role that assumes the active TTDB umwelt and answers to "@AI". ==>> [TTE Agent Umwelt v1](standards/umwelt/TTE_Agent_Umwelt_v1.yaml)
 
 ### Example
-A device on the TTN can request: "@AI STATUS" to receive a short, structured reply.
+A device on the Toot Toot Network can request: "@AI STATUS" to receive a short, structured reply suitable for a low-bandwidth (meshtastic network)[https://meshtastic.org/].
 
 
-### References
+### Reference Specification Documents
 - [TTAI Spec v1](standards/ttai/TTAI_SPEC.md)
 - [TTAI Behavior Spec v1](standards/ttai/BEHAVIOR_SPEC.md)
 
