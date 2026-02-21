@@ -422,7 +422,7 @@
         <span id="status">Loading TootTootTerminologyDB.md...</span>
       </div>
       <div class="controls">
-        <button class="pill" id="refresh">Refresh</button>
+        <button class="pill" id="forgetDiscoveries">Forget Discoveries</button>
         <label class="toggle">
           <input type="checkbox" id="tourToggle" checked />
           Guided tour
@@ -502,7 +502,7 @@
     const listEl = document.getElementById("recordList");
     const viewEl = document.getElementById("recordView");
     const graphCanvas = document.getElementById("graph");
-    const refreshBtn = document.getElementById("refresh");
+    const forgetDiscoveriesBtn = document.getElementById("forgetDiscoveries");
     const searchInput = document.getElementById("searchInput");
     const searchMeta = document.getElementById("searchMeta");
     const tourToggle = document.getElementById("tourToggle");
@@ -532,7 +532,16 @@
 
     let searchDebounceTimer = null;
 
-    refreshBtn.addEventListener("click", () => loadDb(true));
+    forgetDiscoveriesBtn.addEventListener("click", () => {
+      try {
+        localStorage.removeItem(DISCOVERY_KEY);
+      } catch (err) {
+        // Ignore storage failures and continue with in-memory reset.
+      }
+      initializeDiscovery();
+      applySearch();
+      setStatusLink(state.order.length);
+    });
     searchInput.addEventListener("input", () => {
       if (searchDebounceTimer) {
         clearTimeout(searchDebounceTimer);
