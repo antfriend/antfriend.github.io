@@ -11,34 +11,12 @@
     .page {
       max-width: 100%;
       margin: 0 auto;
-      padding: 32px clamp(18px, 4vw, 48px) 48px;
+      padding: 18px clamp(10px, 2.2vw, 24px) 28px;
       display: grid;
       grid-template-columns: 1fr;
       gap: 20px;
       position: relative;
       z-index: 1;
-    }
-
-    .home-link {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      z-index: 10;
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(192, 232, 207, 0.92);
-      color: var(--ink);
-      font-size: 14px;
-      text-decoration: none;
-      box-shadow: 0 10px 24px rgba(11, 17, 18, 0.18);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-    }
-
-    .home-link:hover {
-      transform: translateY(-1px);
-      border-color: var(--accent);
-      box-shadow: 0 0 14px var(--glow);
     }
 
     header {
@@ -461,7 +439,6 @@
 </head>
 <body>
   <div class="page">
-    <a class="home-link" href="index.html">TTE Home</a>
     <header>
       <div class="header-left">
         <div class="graph-wrap">
