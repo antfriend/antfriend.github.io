@@ -70,8 +70,10 @@
     }
 
     .graph-wrap {
+      --graph-zoom-btn-size: 44px;
+      --graph-zoom-gap: 6px;
       width: 100%;
-      height: 234px;
+      height: calc((var(--graph-zoom-btn-size) * 3) + (var(--graph-zoom-gap) * 2));
       border-radius: 18px;
       background: rgba(11, 17, 18, 0.92);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -97,16 +99,17 @@
     .graph-controls {
       position: absolute;
       right: 10px;
-      bottom: 10px;
+      top: 50%;
+      transform: translateY(-50%);
       z-index: 2;
       display: grid;
-      gap: 6px;
+      gap: var(--graph-zoom-gap);
       justify-items: end;
     }
 
     .graph-zoom-btn {
-      min-width: 44px;
-      min-height: 44px;
+      min-width: var(--graph-zoom-btn-size);
+      min-height: var(--graph-zoom-btn-size);
       padding: 6px 12px;
       border-radius: 12px;
       border: 1px solid rgba(124, 199, 255, 0.45);
@@ -416,18 +419,17 @@
       }
 
       .graph-wrap {
-        height: 198px;
+        --graph-zoom-btn-size: 48px;
+        --graph-zoom-gap: 5px;
       }
 
       .graph-controls {
         right: 8px;
-        bottom: 8px;
-        gap: 5px;
       }
 
       .graph-zoom-btn {
-        min-width: 48px;
-        min-height: 48px;
+        min-width: var(--graph-zoom-btn-size);
+        min-height: var(--graph-zoom-btn-size);
       }
 
       .record {
@@ -504,6 +506,8 @@
     const GLOBE_ZOOM_MIN = 0.7;
     const GLOBE_ZOOM_MAX = 3.5;
     const GLOBE_ZOOM_STEP = 1.12;
+    const GLOBE_DEFAULT_ZOOM = 1.2;
+    const GLOBE_BASE_RADIUS_SCALE = 1.18;
 
     const state = {
       records: {},
@@ -518,7 +522,7 @@
       globeTargetLat: 0,
       globeTargetLon: 0,
       globeAnimating: false,
-      globeZoom: 1,
+      globeZoom: GLOBE_DEFAULT_ZOOM,
       globeDragging: false,
       globeDragX: 0,
       globeDragY: 0,
@@ -1510,6 +1514,12 @@
       return nodes;
     }
 
+    function getGlobeBaseRadius(width, height) {
+      const padding = 6;
+      const baseRadius = Math.min(width, height) / 2 - padding;
+      return Math.max(10, baseRadius * GLOBE_BASE_RADIUS_SCALE);
+    }
+
     function renderGraph() {
       const parent = graphCanvas.parentElement;
       const width = parent.clientWidth;
@@ -1520,8 +1530,7 @@
 
       ctx.clearRect(0, 0, width, height);
 
-      const padding = 6;
-      const baseRadius = Math.min(width, height) / 2 - padding;
+      const baseRadius = getGlobeBaseRadius(width, height);
       const radius = Math.max(10, baseRadius * state.globeZoom);
       if (radius <= 10) return;
 
@@ -1814,8 +1823,7 @@
       const width = parent.clientWidth;
       const height = parent.clientHeight;
       if (!width || !height) return null;
-      const padding = 6;
-      const baseRadius = Math.min(width, height) / 2 - padding;
+      const baseRadius = getGlobeBaseRadius(width, height);
       const radius = Math.max(10, baseRadius * state.globeZoom);
       const cx = width / 2;
       const cy = height / 2;
