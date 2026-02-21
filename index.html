@@ -502,6 +502,7 @@
     const TOUR_DELAY_MS = 12000;
     const TOUR_SLOW_DELAY_MULTIPLIER = 1.7;
     const TOUR_SLOW_TRANSITION_MULTIPLIER = 1.5;
+    const TOUR_AUDIO_PATH = "sounds/Toot_Toot_Goat_Chant.WAV";
     const DISCOVERY_KEY = "tte-terminology-discovered-records-v1";
     const GLOBE_ZOOM_MIN = 0.7;
     const GLOBE_ZOOM_MAX = 3.5;
@@ -574,6 +575,9 @@
     const ctx = graphCanvas.getContext("2d");
     const resizeObserver = new ResizeObserver(() => renderGraph());
     resizeObserver.observe(graphCanvas.parentElement);
+    const tourAudio = new Audio(TOUR_AUDIO_PATH);
+    tourAudio.preload = "auto";
+    tourAudio.loop = true;
 
     const invertPref = localStorage.getItem("tte-terminology-invert-drag-y");
     if (invertPref !== null) {
@@ -615,7 +619,7 @@
       }, 100);
     });
     searchInput.addEventListener("focus", () => {
-      clearTour();
+      clearTour(true);
     });
     searchInput.addEventListener("blur", () => {
       if (state.tourEnabled) {
@@ -628,7 +632,7 @@
       if (state.tourEnabled) {
         scheduleTour();
       } else {
-        clearTour();
+        clearTour(true);
       }
     });
     slowTourToggle.addEventListener("change", () => {
@@ -651,7 +655,7 @@
       event.preventDefault();
       state.tourPaused = !state.tourPaused;
       if (state.tourPaused) {
-        clearTour();
+        clearTour(true);
         tourNote.textContent = "Guided tour paused. Press Space to resume.";
       } else {
         scheduleTour();
@@ -2170,9 +2174,25 @@
       return Math.round(TOUR_DELAY_MS * TOUR_SLOW_DELAY_MULTIPLIER);
     }
 
+    function setTourAudioPlaying(shouldPlay) {
+      if (shouldPlay) {
+        if (!tourAudio.paused) return;
+        const playPromise = tourAudio.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(() => {});
+        }
+        return;
+      }
+      if (tourAudio.paused) return;
+      tourAudio.pause();
+      tourAudio.currentTime = 0;
+    }
+
     function scheduleTour() {
       clearTour();
       const discoveredOrder = getDiscoveredOrder();
+      const shouldPlayTourAudio = state.tourEnabled && !state.tourPaused && discoveredOrder.length >= 2;
+      setTourAudioPlaying(shouldPlayTourAudio);
       if (!state.tourEnabled) return;
       if (state.tourPaused) {
         tourNote.textContent = "Guided tour paused. Press Space to resume.";
@@ -2190,10 +2210,13 @@
       }, getTourDelayMs());
     }
 
-    function clearTour() {
+    function clearTour(stopAudio = false) {
       if (state.tourTimer) {
         clearTimeout(state.tourTimer);
         state.tourTimer = null;
+      }
+      if (stopAudio) {
+        setTourAudioPlaying(false);
       }
     }
 
