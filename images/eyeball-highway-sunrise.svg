@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 600" width="1800" height="600" role="img" aria-labelledby="title desc">
   <title id="title">Sunrise landscape with animated eyeballs</title>
-  <desc id="desc">A 6 by 2 landscape with a horizon at mid-height, a highway from bottom-left to center horizon, a giant rising eyeball sun, and a white eyeball backside traveling up the road while shrinking.</desc>
+  <desc id="desc">A 6 by 2 landscape with a horizon at mid-height, a highway from bottom-left to center horizon, a giant eyeball that rises above the horizon and then rolls down the highway while growing, and a smaller white eyeball that starts oversized, disappears into the distance, and repeats with the same cycle.</desc>
 
   <defs>
     <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
@@ -47,6 +47,19 @@
       <stop offset="68%" stop-color="#f2f2f2"/>
       <stop offset="100%" stop-color="#dbdbdb"/>
     </radialGradient>
+
+    <g id="sunEyeArt">
+      <circle cx="0" cy="0" r="260" fill="#ffffff" stroke="#111111" stroke-width="12"/>
+      <ellipse cx="0" cy="0" rx="128" ry="128" fill="#ff0000" stroke="#111111" stroke-width="8">
+        <animate attributeName="cx" values="-24;16;8;-20;-24" dur="6.2s" repeatCount="indefinite"/>
+        <animate attributeName="cy" values="-14;10;2;-10;-14" dur="5.4s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="0" cy="0" rx="66" ry="66" fill="#000000" stroke="#111111" stroke-width="6">
+        <animate attributeName="cx" values="-24;16;8;-20;-24" dur="6.2s" repeatCount="indefinite"/>
+        <animate attributeName="cy" values="-14;10;2;-10;-14" dur="5.4s" repeatCount="indefinite"/>
+      </ellipse>
+      <circle cx="-72" cy="-76" r="30" fill="#ffffff" fill-opacity="0.82"/>
+    </g>
   </defs>
 
   <rect x="0" y="0" width="1800" height="600" fill="url(#skyGradient)"/>
@@ -62,18 +75,25 @@
     <animate attributeName="opacity" values="0.25;0.5;0.3;0.25" dur="8s" repeatCount="indefinite"/>
   </path>
 
-  <g id="sun-eye-rise" transform="translate(900 548)">
-    <animateTransform attributeName="transform" type="translate" values="900 548;900 520;900 300;900 220;900 220;900 548" keyTimes="0;0.08;0.5;0.72;0.86;1" dur="20s" repeatCount="indefinite"/>
-    <circle cx="0" cy="0" r="260" fill="#ffffff" stroke="#111111" stroke-width="12"/>
-    <ellipse id="sun-eye-iris" cx="0" cy="0" rx="128" ry="128" fill="#ff0000" stroke="#111111" stroke-width="8">
-      <animate attributeName="cx" values="-24;16;8;-20;-24" dur="6.2s" repeatCount="indefinite"/>
-      <animate attributeName="cy" values="-14;10;2;-10;-14" dur="5.4s" repeatCount="indefinite"/>
-    </ellipse>
-    <ellipse id="sun-eye-pupil" cx="0" cy="0" rx="66" ry="66" fill="#000000" stroke="#111111" stroke-width="6">
-      <animate attributeName="cx" values="-24;16;8;-20;-24" dur="6.2s" repeatCount="indefinite"/>
-      <animate attributeName="cy" values="-14;10;2;-10;-14" dur="5.4s" repeatCount="indefinite"/>
-    </ellipse>
-    <circle cx="-72" cy="-76" r="30" fill="#ffffff" fill-opacity="0.82"/>
+  <g id="sun-eye-rise-back">
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.21;0.22;1" dur="20s" repeatCount="indefinite"/>
+    <animateMotion
+      dur="20s"
+      repeatCount="indefinite"
+      keyPoints="0;0.31;1"
+      keyTimes="0;0.22;1"
+      calcMode="linear"
+      path="M 900 560 C 900 504 900 402 900 304 C 900 270 900 244 900 232 C 842 300 722 408 560 526 C 434 618 332 692 250 760"/>
+    <g id="sun-eye-scale-back">
+      <animateTransform
+        attributeName="transform"
+        type="scale"
+        values="0.22;0.32;0.5;0.8;1.24;1.88;2.5"
+        keyTimes="0;0.14;0.3;0.48;0.66;0.84;1"
+        dur="20s"
+        repeatCount="indefinite"/>
+      <use href="#sunEyeArt"/>
+    </g>
   </g>
 
   <rect x="0" y="300" width="1800" height="300" fill="url(#fieldGradient)"/>
@@ -87,11 +107,49 @@
   <line x1="582" y1="620" x2="895" y2="300" stroke="#f2f2f2" stroke-width="3" stroke-opacity="0.62"/>
   <path d="M 214 620 C 516 520 706 430 878 300" fill="none" stroke="#ffd166" stroke-width="8" stroke-linecap="round" stroke-dasharray="58 34" stroke-opacity="0.88"/>
 
+  <g id="sun-eye-rise-front">
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.21;0.22;1" dur="20s" repeatCount="indefinite"/>
+    <animateMotion
+      dur="20s"
+      repeatCount="indefinite"
+      keyPoints="0;0.31;1"
+      keyTimes="0;0.22;1"
+      calcMode="linear"
+      path="M 900 560 C 900 504 900 402 900 304 C 900 270 900 244 900 232 C 842 300 722 408 560 526 C 434 618 332 692 250 760"/>
+    <g id="sun-eye-scale-front">
+      <animateTransform
+        attributeName="transform"
+        type="scale"
+        values="0.22;0.32;0.5;0.8;1.24;1.88;2.5"
+        keyTimes="0;0.14;0.3;0.48;0.66;0.84;1"
+        dur="20s"
+        repeatCount="indefinite"/>
+      <use href="#sunEyeArt"/>
+    </g>
+  </g>
+
   <g id="road-eye-motion">
-    <animateMotion dur="10.5s" repeatCount="indefinite" path="M -240 700 C 126 628 566 468 900 300"/>
+    <animateMotion
+      dur="20s"
+      repeatCount="indefinite"
+      keyPoints="0;1;1"
+      keyTimes="0;0.55;1"
+      calcMode="linear"
+      path="M -120 690 C 180 618 566 468 900 300"/>
     <g id="road-eye-scale">
-      <animateTransform attributeName="transform" type="scale" values="1;0.7;0.38;0.1;0" keyTimes="0;0.42;0.72;0.92;1" dur="10.5s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="1;1;0.8;0.25;0" keyTimes="0;0.7;0.88;0.97;1" dur="10.5s" repeatCount="indefinite"/>
+      <animateTransform
+        attributeName="transform"
+        type="scale"
+        values="2;1.45;0.9;0.35;0.05;0"
+        keyTimes="0;0.2;0.35;0.48;0.55;1"
+        dur="20s"
+        repeatCount="indefinite"/>
+      <animate
+        attributeName="opacity"
+        values="1;1;0.9;0.5;0;0"
+        keyTimes="0;0.2;0.35;0.48;0.55;1"
+        dur="20s"
+        repeatCount="indefinite"/>
       <circle cx="0" cy="0" r="96" fill="url(#roadEyeShade)" stroke="#111111" stroke-width="8"/>
       <ellipse cx="-18" cy="-26" rx="46" ry="22" fill="#ffffff" fill-opacity="0.62"/>
     </g>
