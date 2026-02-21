@@ -59,7 +59,8 @@ agent_note: "This TTDB is a guided glossary. Use it for definitions, examples, a
 
 The world as it is experienced by a particular organism.
 
-The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can be sensed, stored, related, or acted on. It is a feature of toot toot data encoding and more generally, [natural systems, as described in wikipedia.](https://en.wikipedia.org/wiki/Umwelt). It all begins here. We are all mortal engines.
+The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can be sensed, stored, related, or acted on. It is a feature of toot toot data encoding and more generally, natural systems - see [Wikipedia.](https://en.wikipedia.org/wiki/Umwelt) It all begins here. Our mortal engines fire.   
+- From here you may visit the [meshtastic](https://meshtastic.org) world of microcontroller agent networks at ==>> [Toot Toot AI.](@LAT40.7LON-74.0)
 
 ---
 
@@ -68,10 +69,10 @@ The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can b
 ## TTAI
 ![Librarian mark](images/ttai-meshtastic-fungus-ball.svg)
 ### Definition
-TTAI is the maker-scale librarian role that assumes the active TTDB umwelt and answers to "@AI". ==>> [TTE Agent Umwelt v1](standards/umwelt/TTE_Agent_Umwelt_v1.yaml)
+Toot Toot AI is the maker-scale librarian role that assumes the active TTDB umwelt and answers to "@AI". ==>> [TTE Agent Umwelt v1](standards/umwelt/TTE_Agent_Umwelt_v1.yaml)
 
 ### Example
-A device on the Toot Toot Network can request: "@AI STATUS" to receive a short, structured reply suitable for a low-bandwidth (meshtastic network)[https://meshtastic.org/].
+A device on the Toot Toot Network can request: "@AI STATUS" to receive a short, structured reply suitable for a low-bandwidth (meshtastic network.)[https://meshtastic.org]
 
 
 ### Reference Specification Documents
