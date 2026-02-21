@@ -428,6 +428,10 @@
           Guided tour
         </label>
         <label class="toggle">
+          <input type="checkbox" id="slowTourToggle" />
+          Slow tour pace
+        </label>
+        <label class="toggle">
           <input type="checkbox" id="invertDragToggle" checked />
           Invert drag Y
         </label>
@@ -445,6 +449,8 @@
   <script>
     const DB_PATH = "TootTootTerminologyDB.md";
     const TOUR_DELAY_MS = 12000;
+    const TOUR_SLOW_DELAY_MULTIPLIER = 1.7;
+    const TOUR_SLOW_TRANSITION_MULTIPLIER = 1.5;
     const DISCOVERY_KEY = "tte-terminology-discovered-records-v1";
 
     const state = {
@@ -471,6 +477,7 @@
       searchIndex: {},
       searchTerm: "",
       tourEnabled: true,
+      tourSlowPace: false,
       tourTimer: null,
       firstRecordId: null,
       discoveredIds: [],
@@ -499,6 +506,7 @@
     const searchInput = document.getElementById("searchInput");
     const searchMeta = document.getElementById("searchMeta");
     const tourToggle = document.getElementById("tourToggle");
+    const slowTourToggle = document.getElementById("slowTourToggle");
     const invertDragToggle = document.getElementById("invertDragToggle");
     const tourNote = document.getElementById("tourNote");
 
@@ -515,6 +523,11 @@
     if (tourPref !== null) {
       state.tourEnabled = tourPref === "true";
       tourToggle.checked = state.tourEnabled;
+    }
+    const slowTourPref = localStorage.getItem("tte-terminology-guided-tour-slow");
+    if (slowTourPref !== null) {
+      state.tourSlowPace = slowTourPref === "true";
+      slowTourToggle.checked = state.tourSlowPace;
     }
 
     let searchDebounceTimer = null;
@@ -546,6 +559,13 @@
         scheduleTour();
       } else {
         clearTour();
+      }
+    });
+    slowTourToggle.addEventListener("change", () => {
+      state.tourSlowPace = slowTourToggle.checked;
+      localStorage.setItem("tte-terminology-guided-tour-slow", String(state.tourSlowPace));
+      if (state.tourEnabled) {
+        scheduleTour();
       }
     });
     invertDragToggle.addEventListener("change", () => {
@@ -845,7 +865,7 @@
     function selectRecord(recordId, opts = {}) {
       if (!state.records[recordId]) return;
       discoverRecord(recordId);
-      queueRecordTransition(state.selectedId, recordId);
+      queueRecordTransition(state.selectedId, recordId, opts);
       state.selectedId = recordId;
       applySearch({ preferVisibleSelection: false });
       setStatusLink(state.order.length);
@@ -854,15 +874,15 @@
       }
     }
 
-    function queueRecordTransition(fromId, toId) {
+    function queueRecordTransition(fromId, toId, opts = {}) {
       if (!fromId || !toId || fromId === toId) {
         state.pendingRecordTransition = null;
         return;
       }
-      state.pendingRecordTransition = describeRecordTransition(fromId, toId);
+      state.pendingRecordTransition = describeRecordTransition(fromId, toId, opts);
     }
 
-    function describeRecordTransition(fromId, toId) {
+    function describeRecordTransition(fromId, toId, opts = {}) {
       let dirX = 1;
       let dirY = 0;
       let distanceFraction = 0.03;
@@ -897,7 +917,9 @@
       }
 
       const scaledDistance = Math.max(0.03, Math.min(1, distanceFraction));
-      const durationMs = Math.round(160 + Math.pow(scaledDistance, 0.55) * 1400);
+      const baseDurationMs = Math.round(160 + Math.pow(scaledDistance, 0.55) * 1400);
+      const durationScale = opts.fromTour && state.tourSlowPace ? TOUR_SLOW_TRANSITION_MULTIPLIER : 1;
+      const durationMs = Math.round(baseDurationMs * durationScale);
       const travelPx = Math.round(72 + Math.pow(scaledDistance, 0.75) * 300);
       return { fromId, toId, dirX, dirY, durationMs, travelPx };
     }
@@ -1857,6 +1879,11 @@
     graphCanvas.addEventListener("mouseleave", endGlobeDrag);
     window.addEventListener("mouseup", endGlobeDrag);
 
+    function getTourDelayMs() {
+      if (!state.tourSlowPace) return TOUR_DELAY_MS;
+      return Math.round(TOUR_DELAY_MS * TOUR_SLOW_DELAY_MULTIPLIER);
+    }
+
     function scheduleTour() {
       clearTour();
       const discoveredOrder = getDiscoveredOrder();
@@ -1865,10 +1892,12 @@
         tourNote.textContent = "Discover another record to expand the guided tour.";
         return;
       }
-      tourNote.textContent = "Default network tour will advance after a short pause.";
+      tourNote.textContent = state.tourSlowPace
+        ? "Slow tour pace is on: transitions are slower and pauses are longer."
+        : "Default network tour will advance after a short pause.";
       state.tourTimer = window.setTimeout(() => {
         advanceTour();
-      }, TOUR_DELAY_MS);
+      }, getTourDelayMs());
     }
 
     function clearTour() {
