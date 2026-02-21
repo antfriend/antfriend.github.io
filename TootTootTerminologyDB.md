@@ -72,12 +72,12 @@ The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can b
 Toot Toot AI is the maker-scale librarian role that assumes the active TTDB umwelt and answers to "@AI". ==>> [TTE Agent Umwelt v1](standards/umwelt/TTE_Agent_Umwelt_v1.yaml)
 
 ### Example
-A device on the Toot Toot Network can request: "@AI STATUS" to receive a short, structured reply suitable for a low-bandwidth (meshtastic network.)[https://meshtastic.org]
+A device on the Toot Toot Network can request: "@AI STATUS" to receive a short, structured reply suitable for a low-bandwidth [meshtastic network.](https://meshtastic.org)
 
 
-### Reference Specification Documents
-- [TTAI Spec v1](standards/ttai/TTAI_SPEC.md)
-- [TTAI Behavior Spec v1](standards/ttai/BEHAVIOR_SPEC.md)
+### Reference Specifications
+- Document: [TTAI Spec v1](standards/ttai/TTAI_SPEC.md)
+- Document: [TTAI Behavior Spec v1](standards/ttai/BEHAVIOR_SPEC.md)
 
 ---
 
