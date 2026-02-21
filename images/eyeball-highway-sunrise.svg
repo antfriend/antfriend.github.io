@@ -76,20 +76,20 @@
   </path>
 
   <g id="sun-eye-rise-back">
-    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.32;0.325;1" dur="20s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.72;0.725;1" dur="20s" repeatCount="indefinite"/>
     <animateMotion
       dur="20s"
       repeatCount="indefinite"
-      keyPoints="0;0.34;0.47;0.63;0.8;1"
-      keyTimes="0;0.6;0.74;0.84;0.92;1"
+      keyPoints="0;0.182;0.34;0.47;0.63;0.8;1"
+      keyTimes="0;0.72;0.82;0.9;0.95;0.98;1"
       calcMode="linear"
       path="M 900 560 C 900 510 900 420 900 320 C 900 248 900 185 900 140 C 842 238 722 382 560 526 C 434 618 332 692 250 760 C 160 836 10 980 -620 1220"/>
     <g id="sun-eye-scale-back">
       <animateTransform
         attributeName="transform"
         type="scale"
-        values="0.33;0.44;0.62;0.9;1.32;1.95;1.95"
-        keyTimes="0;0.14;0.3;0.48;0.66;0.86;1"
+        values="0.33;0.39;0.48;0.62;0.92;1.38;1.95"
+        keyTimes="0;0.24;0.5;0.72;0.82;0.9;1"
         dur="20s"
         repeatCount="indefinite"/>
       <use href="#sunEyeArt"/>
@@ -135,20 +135,20 @@
   </g>
 
   <g id="sun-eye-rise-front">
-    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.32;0.325;1" dur="20s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.72;0.725;1" dur="20s" repeatCount="indefinite"/>
     <animateMotion
       dur="20s"
       repeatCount="indefinite"
-      keyPoints="0;0.34;0.47;0.63;0.8;1"
-      keyTimes="0;0.6;0.74;0.84;0.92;1"
+      keyPoints="0;0.182;0.34;0.47;0.63;0.8;1"
+      keyTimes="0;0.72;0.82;0.9;0.95;0.98;1"
       calcMode="linear"
       path="M 900 560 C 900 510 900 420 900 320 C 900 248 900 185 900 140 C 842 238 722 382 560 526 C 434 618 332 692 250 760 C 160 836 10 980 -620 1220"/>
     <g id="sun-eye-scale-front">
       <animateTransform
         attributeName="transform"
         type="scale"
-        values="0.33;0.44;0.62;0.9;1.32;1.95;1.95"
-        keyTimes="0;0.14;0.3;0.48;0.66;0.86;1"
+        values="0.33;0.39;0.48;0.62;0.92;1.38;1.95"
+        keyTimes="0;0.24;0.5;0.72;0.82;0.9;1"
         dur="20s"
         repeatCount="indefinite"/>
       <use href="#sunEyeArt"/>
