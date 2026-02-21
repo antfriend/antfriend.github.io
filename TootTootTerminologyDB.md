@@ -102,7 +102,7 @@ When idle, TTAI replays memories and connects distant ideas without making disru
 @LAT35.7LON139.7 | created:1771434918 | updated:1771434918 | relates:specified_by>@LAT-33.9LON151.2,uses>@LAT48.9LON2.4,uses>@LAT37.8LON-122.4,uses>@LAT-23.6LON-46.6
 
 ## TTDB (Toot Toot Database)
-![TTDB](terminology.html)
+![TTDB](index.html)
 ### Definition
 A single-file semantic story database. Records are markdown nodes connected by typed edges on a knowledge globe.
 
