@@ -140,7 +140,7 @@
 
   <g id="left-bubble" font-family="monospace">
     <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="4.2s" repeatCount="indefinite"/>
-    <path d="M 56 34 L 474 34 Q 500 34 500 60 L 500 138 Q 500 164 474 164 L 218 164 L 188 196 L 194 164 L 56 164 Q 30 164 30 138 L 30 60 Q 30 34 56 34 Z" fill="#122029" stroke="#89d8c4" stroke-width="3"/>
+    <path d="M 56 34 L 474 34 Q 500 34 500 60 L 500 138 Q 500 164 474 164 L 244 164 L 296 186 L 204 164 L 56 164 Q 30 164 30 138 L 30 60 Q 30 34 56 34 Z" fill="#122029" stroke="#89d8c4" stroke-width="3"/>
     <text x="266" y="87" text-anchor="middle" fill="#b6fce9" font-size="21" opacity="1">BIO MARKS CONFIRMED.
       <animate attributeName="opacity" values="1;1;0;0;0;1" keyTimes="0;0.32;0.33;0.66;0.99;1" dur="9s" repeatCount="indefinite"/>
     </text>
@@ -163,7 +163,7 @@
 
   <g id="right-bubble" font-family="monospace">
     <animateTransform attributeName="transform" type="translate" values="0 0;0 -5;0 0" dur="3.8s" repeatCount="indefinite"/>
-    <path d="M 1306 34 L 1744 34 Q 1770 34 1770 60 L 1770 138 Q 1770 164 1744 164 L 1602 164 L 1608 196 L 1576 164 L 1306 164 Q 1280 164 1280 138 L 1280 60 Q 1280 34 1306 34 Z" fill="#122029" stroke="#89d8c4" stroke-width="3"/>
+    <path d="M 1306 34 L 1744 34 Q 1770 34 1770 60 L 1770 138 Q 1770 164 1744 164 L 1668 164 L 1524 186 L 1616 164 L 1306 164 Q 1280 164 1280 138 L 1280 60 Q 1280 34 1306 34 Z" fill="#122029" stroke="#89d8c4" stroke-width="3"/>
     <text x="1525" y="87" text-anchor="middle" fill="#b6fce9" font-size="21" opacity="1">WHERE IS BALL?
       <animate attributeName="opacity" values="1;1;0;0;0;1" keyTimes="0;0.32;0.33;0.66;0.99;1" dur="9s" repeatCount="indefinite"/>
     </text>
