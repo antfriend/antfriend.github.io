@@ -3,196 +3,2219 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Toot Toot Engineering</title>
-  <meta name="description" content="Toot Toot Engineering is a free, open-source workflow engine and toolset for building stories, specs, and autonomous projects with agent-friendly docs." />
-  <link rel="canonical" href="https://antfriend.github.io/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Toot Toot Engineering" />
-  <meta property="og:title" content="Toot Toot Engineering" />
-  <meta property="og:description" content="Toot Toot Engineering is a free, open-source workflow engine and toolset for building stories, specs, and autonomous projects with agent-friendly docs." />
-  <meta property="og:url" content="https://antfriend.github.io/" />
-  <meta property="og:image" content="https://antfriend.github.io/images/time-foundry.svg" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Toot Toot Engineering" />
-  <meta name="twitter:description" content="Toot Toot Engineering is a free, open-source workflow engine and toolset for building stories, specs, and autonomous projects with agent-friendly docs." />
-  <meta name="twitter:image" content="https://antfriend.github.io/images/time-foundry.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet" />
+  <title>Toot Toot Terminology</title>
   <link rel="stylesheet" href="css/eyeball.css" />
   <link rel="stylesheet" href="css/tte-common.css" />
   <link rel="stylesheet" href="css/tte-core.css" />
-  <style>
-    .brand h1 {
-      font-size: clamp(30px, 4vw, 48px);
-    }
-
-    .hero h2 {
-      font-size: clamp(26px, 3vw, 36px);
-    }
-
-    h2,
-    h2 a {
-      color: #c7ffd9;
-    }
-
-    h2 a {
-      display: inline-block;
-      padding: 0.08em 0.35em;
-      border-radius: 999px;
-      background: rgba(255, 0, 0, 0.32);
-      box-shadow: 0 0 14px rgba(255, 0, 0, 0.55);
-    }
-
-    .video-embed {
+  <style> 
+    .page {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 0 clamp(10px, 2.2vw, 24px) 28px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
       position: relative;
-      width: min(100%, 560px);
-      aspect-ratio: 16 / 9;
+      z-index: 1;
     }
 
-    .video-embed iframe {
-      position: absolute;
-      inset: 0;
+    header {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      padding: 18px 22px;
+      width: 100%;
+      border-radius: 20px;
+      background: rgba(192, 232, 207, 0.88);
+      border: 1px solid rgba(11, 17, 18, 0.12);
+      box-shadow: 0 18px 36px rgba(11, 17, 18, 0.18);
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .header-left {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .hero-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-family: "Trebuchet MS", "Segoe UI", "Verdana", sans-serif;
+      font-size: clamp(26px, 4vw, 38px);
+    }
+
+    .title-block p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .eyeball-slot {
+      display: grid;
+      place-items: center;
+      width: 88px;
+      height: 88px;
+      border-radius: 20px;
+      background: rgba(11, 17, 18, 0.1);
+      border: 1px solid rgba(11, 17, 18, 0.12);
+    }
+
+    .graph-wrap {
+      --graph-zoom-btn-size: 44px;
+      --graph-zoom-gap: 6px;
+      width: 100%;
+      height: calc((var(--graph-zoom-btn-size) * 3) + (var(--graph-zoom-gap) * 2));
+      border-radius: 18px;
+      background: rgba(11, 17, 18, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      position: relative;
+    }
+
+    #graph {
       width: 100%;
       height: 100%;
-      border: 0;
+      display: block;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #graph.is-dragging {
+      cursor: grabbing;
+    }
+
+    .graph-controls {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      display: grid;
+      gap: var(--graph-zoom-gap);
+      justify-items: end;
+    }
+
+    .graph-zoom-btn {
+      min-width: var(--graph-zoom-btn-size);
+      min-height: var(--graph-zoom-btn-size);
+      padding: 6px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(124, 199, 255, 0.45);
+      background: rgba(7, 10, 18, 0.78);
+      color: #e9f6ff;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      touch-action: manipulation;
+      backdrop-filter: blur(3px);
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .graph-zoom-btn:hover {
+      transform: translateY(-1px);
+      border-color: #9ad6ff;
+      box-shadow: 0 0 12px rgba(124, 199, 255, 0.3);
+    }
+
+    .graph-zoom-btn[data-action="reset"] {
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      font-weight: 600;
+      padding-inline: 8px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.75fr) minmax(300px, 2fr);
+      gap: 20px;
+      min-height: 70vh;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 16px 36px rgba(11, 17, 18, 0.14);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-content: start;
+      height: 100%;
+    }
+
+    .panel.record-panel {
+      height: auto;
+    }
+
+    .panel.records-panel {
+      margin-top: 8px;
+    }
+    .info-panel {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .info-panel summary {
+      cursor: pointer;
+      font-family: "Trebuchet MS", "Segoe UI", "Verdana", sans-serif;
+      font-size: 18px;
+      color: var(--title);
+      list-style: none;
+    }
+
+    .info-panel summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .info-panel summary::after {
+      content: "▾";
+      margin-left: 8px;
+      font-size: 16px;
+      color: var(--accent);
+    }
+
+    .info-panel[open] summary::after {
+      content: "▴";
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pill {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--ink);
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .pill:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--glow);
+    }
+
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      font-size: 14px;
+      color: var(--ink);
+    }
+
+    .toggle input {
+      accent-color: var(--accent);
+    }
+
+    .search {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(11, 17, 18, 0.2);
+      background: rgba(255, 255, 255, 0.85);
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .search-meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 6px;
+      overflow: auto;
+      align-content: start;
+      flex: 1;
+      min-height: 0;
+      max-height: 420px;
+    }
+
+    .list button {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: var(--panel-2);
+      color: var(--ink);
+      font-family: inherit;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .list button:hover {
+      border-color: rgba(124, 199, 255, 0.4);
+    }
+
+    .list button.active {
+      border-color: var(--accent);
+      background: rgba(15, 139, 141, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(15, 139, 141, 0.2);
+    }
+
+    .record {
+      display: grid;
+      gap: 14px;
+      min-height: 0;
+      height: clamp(540px, calc((100vh - 320px) * 1.5 + 180px), 1020px);
+      height: clamp(540px, calc((100dvh - 320px) * 1.5 + 180px), 1020px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .record-frame {
+      display: grid;
+      gap: 14px;
+      min-height: 0;
+      height: 100%;
+      max-height: 100%;
+      overflow: auto;
+      padding-right: 6px;
+      scrollbar-gutter: stable;
+      will-change: transform, opacity;
+    }
+
+    .record h2,
+    .record h3,
+    .record h4 {
+      margin: 0;
+      font-family: "Trebuchet MS", "Segoe UI", "Verdana", sans-serif;
+    }
+
+    .record h2 {
+      color: var(--title);
+      font-size: 22px;
+    }
+
+    .record h3 {
+      color: var(--accent);
+      font-size: 16px;
+    }
+
+    .record h4 {
+      font-size: 14px;
+    }
+
+    .record p,
+    .record li,
+    .record blockquote {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    .record ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .record blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 12px;
+      color: var(--muted);
+    }
+
+    .record img,
+    .record object,
+    .record iframe.record-html-embed {
+      display: block;
+      clear: both;
+      float: none;
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(11, 17, 18, 0.12);
+      background: rgba(255, 255, 255, 0.9);
+      margin: 0 0 12px;
+    }
+
+    .record object {
+      width: 100%;
+      min-height: 180px;
+    }
+
+    .record iframe.record-html-embed {
+      width: min(100%, 560px);
+      aspect-ratio: 2 / 1;
+      height: auto;
+      border: 1px solid rgba(11, 17, 18, 0.2);
+    }
+
+    .related {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 6px;
+    }
+
+    .related li {
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      font-size: 14px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .tour-note {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      color: rgba(230, 255, 240, 0.7);
+      padding: 24px 0 8px;
+    }
+
+    @media (max-width: 900px) {
+      header {
+        grid-template-columns: 1fr;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .graph-wrap {
+        --graph-zoom-btn-size: 48px;
+        --graph-zoom-gap: 5px;
+      }
+
+      .graph-controls {
+        right: 8px;
+      }
+
+      .graph-zoom-btn {
+        min-width: var(--graph-zoom-btn-size);
+        min-height: var(--graph-zoom-btn-size);
+      }
+
+      .record {
+        height: clamp(480px, calc((100vh - 280px) * 1.5 + 150px), 840px);
+        height: clamp(480px, calc((100dvh - 280px) * 1.5 + 150px), 840px);
+      }
     }
   </style>
 </head>
 <body>
   <div class="page">
     <header>
-      <div class="brand">
-        
-        <div>
-          <h1><a href="https://github.com/antfriend/toot-toot-engineering/blob/main/README.md">Toot Toot Engineering</a></h1>
-          <h2><a href="https://github.com/antfriend/toot-toot-engineering">Free, Open Source</a></h2>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/XsNf0IEUOdQ?si=z-u9-foGxN0vBohG" title="YouTube video player" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <div class="header-left">
+        <div class="graph-wrap">
+          <canvas id="graph"></canvas>
+          <div class="graph-controls" role="group" aria-label="Globe zoom controls">
+            <button class="graph-zoom-btn" id="zoomInBtn" type="button" aria-label="Zoom in">+</button>
+            <button class="graph-zoom-btn" id="zoomOutBtn" type="button" aria-label="Zoom out">-</button>
+            <button class="graph-zoom-btn" id="zoomResetBtn" data-action="reset" type="button" aria-label="Reset zoom">
+              100%
+            </button>
           </div>
         </div>
-        
       </div>
-      <section class="hero">
-        <h2>A workbench, a toolset, you make it "go."</h2>
-        <p>
-          Works with any agent/coding apps like Claude Code or Codex in vscode. The TTE tools are a collection of documents in English. But they function like code, because agents follow the instructions. All the files are available on GitHub but you only need the files and it is fine to just make copies for wherever you like to keep your projects. You actually tell your agent to "go" or "read the readme and go" and away it goes.
-        </p>
-        <h2><a href="Humon_ReadMe.html#quickstart">See the Quickstart!</a></h2>
-        <div class="cta-row">
-          <a class="cta" href="#what_the">what the</a>
-          <a class="cta alt" href="#who_the">who the</a>
-        </div>
-      </section>
-      
+      <div class="header-right">
+        <div class="record" id="recordView"></div>
+      </div>
     </header>
 
-    <main>
-      <section class="modules" id="what_the">
-        <article class="module">
-          <h3>TTE - The Workflow Engine</h3>
-          <p>Making things GO the Toot Toot way.</p>
+    <section class="panel records-panel">
+      <strong>Records</strong>
+      <input class="search" id="searchInput" type="search" placeholder="Search terms, examples, or links" />
+      <div class="search-meta" id="searchMeta">Loading...</div>
+      <ul class="list" id="recordList"></ul>
+    </section>
 
-          <p> . </p>
-          <p>For Humans: </p>
-          <h2><a href="Humon_ReadMe.html">I am human.</a></h2>
-                    <p>  . </p>
-          <p>¦̵̱ ̵̱ ̵̱ ̵̱ ̵̱(̢ ̡͇̅└͇̅┘͇̅ (▤8כ−◦ </p>
-          <p>Description for Agents:<a href="https://github.com/antfriend/toot-toot-engineering/blob/main/README.md">Toot Toot Engineering</a></p>
-        </article>
-        
-        <article class="module">
-          <h3>TTDB - the Toot Toot Database</h3>
+    <details class="panel record-panel info-panel" open>
+      <summary>TTDB: Terminology</summary>
+      <div class="title">
+        <p>Single-file glossary DB. Discovery starts from the first term and expands as you navigate.</p>
+        <span id="status">Loading TootTootTerminologyDB.md...</span>
+      </div>
+      <div class="controls">
+        <button class="pill" id="forgetDiscoveries">Forget Discoveries</button>
+        <label class="toggle">
+          <input type="checkbox" id="tourToggle" checked />
+          Guided tour
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="slowTourToggle" />
+          Slow tour pace
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="invertDragToggle" checked />
+          Invert drag Y
+        </label>
+      </div>
+      <div class="tour-note" id="tourNote">Default network tour will advance after a short pause.</div>
+    </details>
 
-          <p>A single-file semantic story database. It stores records as markdown nodes in a network graph of semantic links. It is a data base for rich, complex stories, scientific processes, robot behaviors, and networked friends and familiars.</p>
-          
-          <h2><a href="TTDB.html">Open the TTDB viewer!</a></h2>
-          <h2><a href="terminology.html">Explore TTE terminology</a></h2>
-          
-        </article>
-        
-        <article class="module">
-          <h3>TTN - Toot Toot Networks</h3>
-          <p>Meshtastic/IP hybrid network on or off grid. Control autonomous robots running ESP32 class processors. <a href="https://github.com/antfriend/toot-toot-engineering/blob/TTN-cyc-1/deliverables/cycle-01/SOLUTION.md">SUCH AS THIS TOOT TOOT DELIVERABLE</a></p><p><span id="eyeball-one"></span></p>
-        </article>
-        
-      </section>
-
-      <section class="signal" id="who_the">
-        <div class="steam-stack">
-          <div class="steam"></div>
-          <div class="steam"></div>
-          <div class="steam"></div>
-          <h3>For me and my friends who are ...</h3>
-        </div>
-
-      </section>
-
-      <section class="panel-grid">
-        <article class="panel">
-          <h4>Storytellers</h4>
-          <div class="whistle"></div>
-          <p>The story is the heart of every project. The TTE Workflow helps the technology media/medium details take care of themselves.</p>
-        </article>
-        <article class="panel">
-          <h4>Engineers</h4>
-          <div class="whistle"></div>
-          <p>Engineers enjoy having our specifications followed as well as our intent.  We like the complete logs, the checklists, the versioning, the factory code which produced the artifact versions, the artifacts themselves, reccomendations to do it better next time, implemented for next iteration. That's what the TTE Workflow does for us.</p>
-        </article>
-        <article class="panel">
-          <h4>Researchers</h4>
-          <div class="whistle"></div>
-          <p>Because references, facts, and scientific processes make a difference. TTDB databases can be implemented in <em><a href="https://en.wikipedia.org/wiki/LaTeX">LaTeX</a></em> or <em>Markdown.</em></p>
-          <p>Record entries can contain code, sub graphs, tabular data, image and video links, and links to other records in other TTDB databases.</p>
-        </article>
-        <article class="panel">
-          <h4>Makers</h4>
-          <div class="whistle"></div>
-          <p>Makers are sometimes Engineers and Storytellers and Researchers, and always making creations.</p>
-          <p>The Toot Toot Network can integrate an IP/Meshtastic group of devices. The Toot Toot DB uses the same semantic edges as the Network, for semantic compression in the DB, making it small enough to deploy on micro-scale devices.</p>
-        </article>
-      </section>
-    </main>
     <footer>
-        <span id="eyeball-foot"></span>
-        &copy; 2026 Toot Toot Engineering. All signals cleared.
-      </footer>
+      <span id="eyeball-foot"></span>
+      &copy; 2026 Toot Toot Engineering. All signals cleared.
+    </footer>
   </div>
-      <script src="js/eyeball.js"></script>
-    <script>
 
-      window.mountEyeball("eyeball-one");
-      window.mountEyeball("eyeball-foot");
-      (function enableImageZoom() {
-        const zoomables = document.querySelectorAll(".media");
-        let overlay = null;
+  <script src="js/eyeball.js"></script>
+  <script>
+    const DB_PATH = "TootTootTerminologyDB.md";
+    const TOUR_DELAY_MS = 12000;
+    const TOUR_SLOW_DELAY_MULTIPLIER = 1.7;
+    const TOUR_SLOW_TRANSITION_MULTIPLIER = 1.5;
+    const DISCOVERY_KEY = "tte-terminology-discovered-records-v1";
+    const GLOBE_ZOOM_MIN = 0.7;
+    const GLOBE_ZOOM_MAX = 3.5;
+    const GLOBE_ZOOM_STEP = 1.12;
+    const GLOBE_DEFAULT_ZOOM = 1.2;
+    const GLOBE_BASE_RADIUS_SCALE = 1.18;
 
-        const closeZoom = () => {
-          if (!overlay) return;
-          overlay.remove();
-          overlay = null;
-          document.body.classList.remove("has-zoom");
-        };
+    const state = {
+      records: {},
+      order: [],
+      filteredOrder: [],
+      selectedId: null,
+      lastText: "",
+      coords: {},
+      screenPoints: {},
+      globeRotLat: 0,
+      globeRotLon: 0,
+      globeTargetLat: 0,
+      globeTargetLon: 0,
+      globeAnimating: false,
+      globeZoom: GLOBE_DEFAULT_ZOOM,
+      globeDragging: false,
+      globeDragX: 0,
+      globeDragY: 0,
+      globeVelX: 0,
+      globeVelY: 0,
+      globeVelT: 0,
+      globeDragMoved: false,
+      invertDragY: true,
+      searchIndex: {},
+      searchTerm: "",
+      tourEnabled: true,
+      tourPaused: false,
+      tourSlowPace: false,
+      tourTimer: null,
+      firstRecordId: null,
+      discoveredIds: [],
+      pendingRecordTransition: null,
+      recordTransitionToken: 0,
+    };
 
-        zoomables.forEach((img) => {
-          img.addEventListener("click", (event) => {
-            event.stopPropagation();
-            closeZoom();
-            overlay = document.createElement("div");
-            overlay.className = "media-zoom-overlay";
-            const clone = img.cloneNode(true);
-            overlay.appendChild(clone);
-            document.body.appendChild(overlay);
-            document.body.classList.add("has-zoom");
-            overlay.addEventListener("click", closeZoom);
-          });
+    const palette = (() => {
+      const styles = getComputedStyle(document.documentElement);
+      const read = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+      return {
+        accent: read("--accent", "#0f8b8d"),
+        accentAlt: read("--accent-2", "#e76f51"),
+        eyeballRed: read("--eyeball-red", "#ff0000"),
+        ink: read("--ink", "#0b1112"),
+        muted: read("--muted", "rgba(11, 17, 18, 0.6)"),
+        line: read("--line", "rgba(11, 17, 18, 0.2)"),
+      };
+    })();
+
+    const statusEl = document.getElementById("status");
+    const listEl = document.getElementById("recordList");
+    const viewEl = document.getElementById("recordView");
+    const graphCanvas = document.getElementById("graph");
+    const zoomInBtn = document.getElementById("zoomInBtn");
+    const zoomOutBtn = document.getElementById("zoomOutBtn");
+    const zoomResetBtn = document.getElementById("zoomResetBtn");
+    const forgetDiscoveriesBtn = document.getElementById("forgetDiscoveries");
+    const searchInput = document.getElementById("searchInput");
+    const searchMeta = document.getElementById("searchMeta");
+    const tourToggle = document.getElementById("tourToggle");
+    const slowTourToggle = document.getElementById("slowTourToggle");
+    const invertDragToggle = document.getElementById("invertDragToggle");
+    const tourNote = document.getElementById("tourNote");
+
+    const ctx = graphCanvas.getContext("2d");
+    const resizeObserver = new ResizeObserver(() => renderGraph());
+    resizeObserver.observe(graphCanvas.parentElement);
+
+    const invertPref = localStorage.getItem("tte-terminology-invert-drag-y");
+    if (invertPref !== null) {
+      state.invertDragY = invertPref === "true";
+      invertDragToggle.checked = state.invertDragY;
+    }
+    const tourPref = localStorage.getItem("tte-terminology-guided-tour");
+    if (tourPref !== null) {
+      state.tourEnabled = tourPref === "true";
+      tourToggle.checked = state.tourEnabled;
+    }
+    const slowTourPref = localStorage.getItem("tte-terminology-guided-tour-slow");
+    if (slowTourPref !== null) {
+      state.tourSlowPace = slowTourPref === "true";
+      slowTourToggle.checked = state.tourSlowPace;
+    }
+
+    let searchDebounceTimer = null;
+
+    forgetDiscoveriesBtn.addEventListener("click", () => {
+      try {
+        localStorage.removeItem(DISCOVERY_KEY);
+      } catch (err) {
+        // Ignore storage failures and continue with in-memory reset.
+      }
+      initializeDiscovery();
+      applySearch();
+      setStatusLink(state.order.length);
+    });
+    searchInput.addEventListener("input", () => {
+      if (searchDebounceTimer) {
+        clearTimeout(searchDebounceTimer);
+      }
+      searchDebounceTimer = window.setTimeout(() => {
+        state.searchTerm = searchInput.value.trim().toLowerCase();
+        applySearch();
+        noteInteraction();
+        searchDebounceTimer = null;
+      }, 100);
+    });
+    searchInput.addEventListener("focus", () => {
+      clearTour();
+    });
+    searchInput.addEventListener("blur", () => {
+      if (state.tourEnabled) {
+        scheduleTour();
+      }
+    });
+    tourToggle.addEventListener("change", () => {
+      state.tourEnabled = tourToggle.checked;
+      localStorage.setItem("tte-terminology-guided-tour", String(state.tourEnabled));
+      if (state.tourEnabled) {
+        scheduleTour();
+      } else {
+        clearTour();
+      }
+    });
+    slowTourToggle.addEventListener("change", () => {
+      state.tourSlowPace = slowTourToggle.checked;
+      localStorage.setItem("tte-terminology-guided-tour-slow", String(state.tourSlowPace));
+      if (state.tourEnabled) {
+        scheduleTour();
+      }
+    });
+    invertDragToggle.addEventListener("change", () => {
+      state.invertDragY = invertDragToggle.checked;
+      localStorage.setItem("tte-terminology-invert-drag-y", String(state.invertDragY));
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.code !== "Space" || event.repeat) return;
+      if (document.activeElement === searchInput) return;
+      if (!state.tourEnabled) return;
+
+      event.preventDefault();
+      state.tourPaused = !state.tourPaused;
+      if (state.tourPaused) {
+        clearTour();
+        tourNote.textContent = "Guided tour paused. Press Space to resume.";
+      } else {
+        scheduleTour();
+      }
+    });
+
+    function setStatusMessage(message) {
+      statusEl.textContent = message;
+    }
+
+    function setStatusLink(recordCount) {
+      const discoveredCount = getDiscoveredOrder().length;
+      statusEl.innerHTML = `DB: <a href="${DB_PATH}">${DB_PATH}</a> · ${discoveredCount}/${recordCount} discovered`;
+    }
+
+    function getDiscoveredOrder() {
+      if (!state.order.length || !state.discoveredIds.length) return [];
+      const discoveredSet = new Set(state.discoveredIds);
+      return state.order.filter((recordId) => discoveredSet.has(recordId));
+    }
+
+    function getVisibleOrderForGraph() {
+      if (state.searchTerm) return [...state.filteredOrder];
+      return getDiscoveredOrder();
+    }
+
+    function persistDiscovery() {
+      try {
+        localStorage.setItem(DISCOVERY_KEY, JSON.stringify(state.discoveredIds));
+      } catch (err) {
+        // Ignore storage failures and continue with in-memory discovery state.
+      }
+    }
+
+    function initializeDiscovery() {
+      const firstRecordId = state.order[0] || null;
+      state.firstRecordId = firstRecordId;
+
+      let storedIds = [];
+      try {
+        const raw = localStorage.getItem(DISCOVERY_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            storedIds = parsed.filter((value) => typeof value === "string");
+          }
+        }
+      } catch (err) {
+        storedIds = [];
+      }
+
+      const discoveredSet = new Set(storedIds.filter((recordId) => Boolean(state.records[recordId])));
+      if (firstRecordId && state.records[firstRecordId]) {
+        discoveredSet.add(firstRecordId);
+      }
+
+      state.discoveredIds = state.order.filter((recordId) => discoveredSet.has(recordId));
+      persistDiscovery();
+    }
+
+    function discoverRecord(recordId) {
+      if (!recordId || !state.records[recordId]) return false;
+      const discoveredSet = new Set(state.discoveredIds);
+      const firstRecordId = state.firstRecordId || state.order[0] || null;
+      let changed = false;
+
+      if (firstRecordId && state.records[firstRecordId] && !discoveredSet.has(firstRecordId)) {
+        discoveredSet.add(firstRecordId);
+        changed = true;
+      }
+
+      if (!discoveredSet.has(recordId)) {
+        discoveredSet.add(recordId);
+        changed = true;
+      }
+
+      if (!changed) return false;
+      state.discoveredIds = state.order.filter((id) => discoveredSet.has(id));
+      persistDiscovery();
+      return true;
+    }
+
+    function buildSearchIndex() {
+      state.searchIndex = {};
+      state.order.forEach((recordId) => {
+        const record = state.records[recordId];
+        if (!record) return;
+        const text = [record.title, record.header, record.body].filter(Boolean).join("\n");
+        state.searchIndex[recordId] = text.toLowerCase();
+      });
+    }
+
+    function applySearch(opts = {}) {
+      const { preferVisibleSelection = true } = opts;
+      const term = state.searchTerm;
+      const discoveredOrder = getDiscoveredOrder();
+      if (!term) {
+        state.filteredOrder = [...discoveredOrder];
+      } else {
+        state.filteredOrder = discoveredOrder.filter((recordId) => {
+          const blob = state.searchIndex[recordId] || "";
+          return blob.includes(term);
         });
+      }
 
-        document.addEventListener("click", closeZoom);
-        document.addEventListener("keydown", (event) => {
-          if (event.key === "Escape") closeZoom();
+      if (preferVisibleSelection && state.filteredOrder.length && !state.filteredOrder.includes(state.selectedId)) {
+        const nextRecordId = state.filteredOrder[0];
+        queueRecordTransition(state.selectedId, nextRecordId);
+        state.selectedId = nextRecordId;
+      }
+
+      renderList();
+      renderRecord();
+      centerOnSelected();
+      renderGraph();
+      updateSearchMeta();
+    }
+
+    function updateSearchMeta() {
+      if (!state.order.length) {
+        searchMeta.textContent = "No records.";
+        return;
+      }
+      const discoveredCount = getDiscoveredOrder().length;
+      if (!state.searchTerm) {
+        searchMeta.textContent = `${discoveredCount} discovered of ${state.order.length} terms.`;
+        return;
+      }
+      searchMeta.textContent =
+        `${state.filteredOrder.length} matches within ${discoveredCount} discovered terms for "${state.searchTerm}".`;
+    }
+
+    function loadDb(force = false) {
+      fetch(DB_PATH, { cache: "no-store" })
+        .then((res) => {
+          if (!res.ok) throw new Error(`Failed to load ${DB_PATH}`);
+          return res.text();
+        })
+        .then((text) => {
+          if (!force && text === state.lastText) return;
+          state.lastText = text;
+          const { records, order, selected, coords } = parseRecords(text);
+          state.records = records;
+          state.order = order;
+          state.coords = coords;
+          initializeDiscovery();
+          buildSearchIndex();
+          if (!state.selectedId || !records[state.selectedId]) {
+            state.selectedId = selected || order[0] || null;
+          }
+          if (state.selectedId) {
+            discoverRecord(state.selectedId);
+          }
+          applySearch();
+          setStatusLink(order.length);
+          scheduleTour();
+        })
+        .catch((err) => {
+          setStatusMessage(err.message);
+          state.records = {};
+          state.order = [];
+          state.filteredOrder = [];
+          state.selectedId = null;
+          state.coords = {};
+          state.firstRecordId = null;
+          state.discoveredIds = [];
+          renderList();
+          renderRecord();
+          renderGraph();
+          updateSearchMeta();
         });
-      })();
-    </script>
+    }
+
+    function parseRecords(content) {
+      let selected = null;
+      const cursorMatch = content.match(/```cursor([\s\S]*?)```/);
+      if (cursorMatch) {
+        const lines = cursorMatch[1].split(/\r?\n/);
+        let inSelected = false;
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith("selected:")) {
+            inSelected = true;
+            continue;
+          }
+          if (inSelected) {
+            const itemMatch = trimmed.match(/^-\s*(\S+)/);
+            if (itemMatch) {
+              selected = itemMatch[1];
+              break;
+            }
+            if (trimmed && !trimmed.startsWith("-")) {
+              break;
+            }
+          }
+        }
+      }
+
+      const records = {};
+      const order = [];
+      const coords = {};
+      const blocks = content.split(/^\s*---+\s*$/m);
+      for (const block of blocks) {
+        const lines = block.split(/\r?\n/);
+        let headerIndex = -1;
+        for (let i = 0; i < lines.length; i += 1) {
+          if (lines[i].startsWith("@")) {
+            headerIndex = i;
+            break;
+          }
+        }
+        if (headerIndex < 0) continue;
+        const headerLine = lines[headerIndex].trim();
+        const recordId = headerLine.split(/\s+/)[0];
+        const bodyLines = lines.slice(headerIndex + 1);
+        let title = null;
+        let titleRemoved = false;
+        const filteredBodyLines = [];
+        for (const line of bodyLines) {
+          const match = line.match(/^##\s+(.*)$/);
+          if (match && !titleRemoved) {
+            title = match[1].trim();
+            titleRemoved = true;
+            continue;
+          }
+          filteredBodyLines.push(line);
+        }
+        const body = filteredBodyLines.join("\n").trim();
+
+        const edges = [];
+        const relatesMatch = headerLine.match(/relates:([^|]+)/);
+        if (relatesMatch) {
+          const tokens = relatesMatch[1].split(",");
+          for (const tokenRaw of tokens) {
+            const token = tokenRaw.trim();
+            if (!token) continue;
+            let edgeType = "relates";
+            let target = token;
+            if (token.includes(">")) {
+              const [left, right] = token.split(">", 2);
+              edgeType = left.trim();
+              target = right.trim();
+            }
+            edges.push({ type: edgeType, target });
+          }
+        }
+
+        const recordCoords = parseCoords(recordId);
+        if (recordCoords) {
+          coords[recordId] = recordCoords;
+        }
+
+        records[recordId] = { header: headerLine, body, title, edges };
+        order.push(recordId);
+      }
+
+      return { records, order, selected, coords };
+    }
+
+    function parseCoords(recordId) {
+      const match = recordId.match(/^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$/);
+      if (!match) return null;
+      return [Number(match[1]), Number(match[2])];
+    }
+
+    function renderList() {
+      listEl.innerHTML = "";
+      const source = state.filteredOrder;
+      if (!source.length) {
+        const empty = document.createElement("div");
+        empty.className = "muted";
+        empty.textContent = state.searchTerm ? "No matching discovered records." : "No discovered records yet.";
+        listEl.appendChild(empty);
+        return;
+      }
+
+      source.forEach((recordId) => {
+        const title = state.records[recordId]?.title;
+        const label = title ? `${recordId} - ${title}` : recordId;
+        const li = document.createElement("li");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = label;
+        if (recordId === state.selectedId) {
+          button.classList.add("active");
+        }
+        button.addEventListener("click", () => {
+          selectRecord(recordId);
+          noteInteraction();
+        });
+        li.appendChild(button);
+        listEl.appendChild(li);
+      });
+    }
+
+    function selectRecord(recordId, opts = {}) {
+      if (!state.records[recordId]) return;
+      discoverRecord(recordId);
+      queueRecordTransition(state.selectedId, recordId, opts);
+      state.selectedId = recordId;
+      applySearch({ preferVisibleSelection: false });
+      setStatusLink(state.order.length);
+      if (!opts.fromTour) {
+        scheduleTour();
+      }
+    }
+
+    function queueRecordTransition(fromId, toId, opts = {}) {
+      if (!fromId || !toId || fromId === toId) {
+        state.pendingRecordTransition = null;
+        return;
+      }
+      state.pendingRecordTransition = describeRecordTransition(fromId, toId, opts);
+    }
+
+    function describeRecordTransition(fromId, toId, opts = {}) {
+      let dirX = 1;
+      let dirY = 0;
+      let distanceFraction = 0.03;
+      const fromCoords = parseCoords(fromId);
+      const toCoords = parseCoords(toId);
+
+      if (fromCoords && toCoords) {
+        const latDelta = toCoords[0] - fromCoords[0];
+        const lonDelta = deltaDegrees(toCoords[1], fromCoords[1]);
+        dirX = lonDelta;
+        dirY = -latDelta;
+        distanceFraction = greatCircleDistanceFraction(fromCoords, toCoords);
+      } else {
+        const fromIndex = state.order.indexOf(fromId);
+        const toIndex = state.order.indexOf(toId);
+        if (fromIndex >= 0 && toIndex >= 0) {
+          const indexDelta = toIndex - fromIndex;
+          dirX = indexDelta === 0 ? 1 : Math.sign(indexDelta);
+          dirY = 0;
+          const maxDelta = Math.max(1, state.order.length - 1);
+          distanceFraction = Math.min(1, Math.abs(indexDelta) / maxDelta);
+        }
+      }
+
+      const magnitude = Math.hypot(dirX, dirY);
+      if (magnitude < 0.0001) {
+        dirX = 1;
+        dirY = 0;
+      } else {
+        dirX /= magnitude;
+        dirY /= magnitude;
+      }
+
+      const scaledDistance = Math.max(0.03, Math.min(1, distanceFraction));
+      const baseDurationMs = Math.round(160 + Math.pow(scaledDistance, 0.55) * 1400);
+      const durationScale = opts.fromTour && state.tourSlowPace ? TOUR_SLOW_TRANSITION_MULTIPLIER : 1;
+      const durationMs = Math.round(baseDurationMs * durationScale);
+      const travelPx = Math.round(72 + Math.pow(scaledDistance, 0.75) * 300);
+      return { fromId, toId, dirX, dirY, durationMs, travelPx };
+    }
+
+    function deltaDegrees(target, current) {
+      let delta = target - current;
+      while (delta > 180) delta -= 360;
+      while (delta < -180) delta += 360;
+      return delta;
+    }
+
+    function greatCircleDistanceFraction(fromCoords, toCoords) {
+      const lat1 = toRadians(fromCoords[0]);
+      const lat2 = toRadians(toCoords[0]);
+      const dLat = lat2 - lat1;
+      const dLon = toRadians(deltaDegrees(toCoords[1], fromCoords[1]));
+      const sinLat = Math.sin(dLat / 2);
+      const sinLon = Math.sin(dLon / 2);
+      const a = sinLat * sinLat + Math.cos(lat1) * Math.cos(lat2) * sinLon * sinLon;
+      const clamped = Math.min(1, Math.max(0, a));
+      const arc = 2 * Math.atan2(Math.sqrt(clamped), Math.sqrt(1 - clamped));
+      return arc / Math.PI;
+    }
+
+    function toRadians(value) {
+      return (value * Math.PI) / 180;
+    }
+
+    function renderRecord() {
+      viewEl.querySelectorAll(".record-frame:not(.is-current)").forEach((frame) => frame.remove());
+      if (!state.selectedId || !state.records[state.selectedId]) {
+        viewEl.innerHTML = "";
+        const empty = document.createElement("div");
+        empty.className = "record-frame is-current";
+        empty.textContent = "No record selected.";
+        viewEl.appendChild(empty);
+        state.pendingRecordTransition = null;
+        return;
+      }
+
+      const transition = state.pendingRecordTransition;
+      state.pendingRecordTransition = null;
+      const incoming = buildRecordFrame(state.selectedId);
+      incoming.classList.add("is-current");
+      const current = viewEl.querySelector(".record-frame.is-current");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const currentHasMedia = Boolean(current?.querySelector("img, object"));
+      const incomingHasMedia = Boolean(incoming.querySelector("img, object"));
+      const hasMediaTransition = currentHasMedia || incomingHasMedia;
+      const shouldAnimate =
+        Boolean(current) &&
+        Boolean(transition) &&
+        !reduceMotion &&
+        current.dataset.recordId === transition.fromId &&
+        transition.toId === state.selectedId;
+
+      if (!shouldAnimate) {
+        viewEl.replaceChildren(incoming);
+        return;
+      }
+
+      current.classList.remove("is-current");
+      const token = (state.recordTransitionToken += 1);
+      const enterX = Math.round(transition.dirX * transition.travelPx);
+      const enterY = Math.round(transition.dirY * transition.travelPx);
+      const exitX = -enterX;
+      const exitY = -enterY;
+      const easing = "cubic-bezier(0.2, 0.8, 0.2, 1)";
+      const alphaDuration = Math.max(140, Math.round(transition.durationMs * 0.72));
+
+      current.style.position = "absolute";
+      current.style.inset = "0";
+      current.style.pointerEvents = "none";
+      current.style.zIndex = "1";
+
+      incoming.style.position = "absolute";
+      incoming.style.inset = "0";
+      incoming.style.zIndex = "2";
+      incoming.style.transform = `translate(${enterX}px, ${enterY}px)`;
+      incoming.style.opacity = hasMediaTransition ? "1" : "0.06";
+      viewEl.appendChild(incoming);
+
+      requestAnimationFrame(() => {
+        if (token !== state.recordTransitionToken) return;
+        current.style.transition = `transform ${transition.durationMs}ms ${easing}, opacity ${alphaDuration}ms ease`;
+        incoming.style.transition = `transform ${transition.durationMs}ms ${easing}, opacity ${alphaDuration}ms ease`;
+        current.style.transform = `translate(${exitX}px, ${exitY}px)`;
+        current.style.opacity = "0";
+        incoming.style.transform = "translate(0px, 0px)";
+        incoming.style.opacity = "1";
+      });
+
+      window.setTimeout(() => {
+        if (token !== state.recordTransitionToken) return;
+        if (current.parentElement === viewEl) {
+          current.remove();
+        }
+        incoming.style.position = "relative";
+        incoming.style.inset = "";
+        incoming.style.zIndex = "";
+        incoming.style.transition = "";
+        incoming.style.transform = "";
+        incoming.style.opacity = "";
+      }, transition.durationMs + 80);
+    }
+
+    function buildRecordFrame(recordId) {
+      const record = state.records[recordId];
+      const frame = document.createElement("div");
+      frame.className = "record-frame";
+      frame.dataset.recordId = recordId;
+      const leadMediaInfo = extractLeadMedia(record.body || "");
+      if (leadMediaInfo.leadMedia) {
+        frame.appendChild(leadMediaInfo.leadMedia);
+      }
+
+      if (record.title) {
+        const title = document.createElement("h2");
+        title.className = "record-title";
+        title.textContent = record.title;
+        frame.appendChild(title);
+      }
+
+      if (leadMediaInfo.body) {
+        frame.appendChild(renderMarkdown(leadMediaInfo.body));
+      }
+
+      if (record.edges.length) {
+        const relatedTitle = document.createElement("h3");
+        relatedTitle.textContent = "Related records";
+        frame.appendChild(relatedTitle);
+
+        const list = document.createElement("ul");
+        list.className = "related";
+        record.edges.forEach((edge) => {
+          const item = document.createElement("li");
+          const label = document.createElement("span");
+          label.textContent = `${edge.type} -> `;
+          item.appendChild(label);
+          if (state.records[edge.target]) {
+            const link = document.createElement("a");
+            link.href = "#";
+            link.textContent = state.records[edge.target]?.title || edge.target;
+            link.addEventListener("click", (event) => {
+              event.preventDefault();
+              selectRecord(edge.target);
+              noteInteraction();
+            });
+            item.appendChild(link);
+          } else {
+            const missing = document.createElement("span");
+            missing.className = "muted";
+            missing.textContent = edge.target;
+            item.appendChild(missing);
+          }
+          list.appendChild(item);
+        });
+        frame.appendChild(list);
+      }
+      return frame;
+    }
+
+    function isHtmlEmbedSource(src) {
+      return /\.html(?:[?#].*)?$/i.test(src.trim());
+    }
+
+    function createMediaNode(src, alt, title) {
+      if (isHtmlEmbedSource(src)) {
+        const iframe = document.createElement("iframe");
+        iframe.src = src;
+        iframe.className = "record-html-embed";
+        iframe.loading = "lazy";
+        iframe.title = title || alt || "Embedded HTML content";
+        return iframe;
+      }
+
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = alt || "";
+      if (title) img.title = title;
+      img.loading = "eager";
+      img.decoding = "async";
+      return img;
+    }
+
+    function extractLeadMedia(text) {
+      if (!text) return { body: text, leadMedia: null };
+      const lines = text.split(/\r?\n/);
+      const references = {};
+      const refPattern = /^\s*\[([^\]]+)\]:\s*(\S+)(?:\s+"([^"]+)")?\s*$/;
+      let inRefCode = false;
+      lines.forEach((rawLine) => {
+        const trimmed = rawLine.trim();
+        if (trimmed.startsWith("```")) {
+          inRefCode = !inRefCode;
+          return;
+        }
+        if (inRefCode) return;
+        const match = rawLine.match(refPattern);
+        if (match) {
+          references[match[1].trim().toLowerCase()] = {
+            href: match[2],
+            title: match[3] || "",
+          };
+        }
+      });
+
+      const imagePattern = /!\[([^\]]*)\]\(([^)]+)\)|!\[([^\]]*)\]\[([^\]]+)\]/;
+      const output = [];
+      let leadMedia = null;
+      let inCode = false;
+
+      for (const rawLine of lines) {
+        const trimmed = rawLine.trim();
+        if (trimmed.startsWith("```")) {
+          inCode = !inCode;
+          output.push(rawLine);
+          continue;
+        }
+        if (inCode || leadMedia) {
+          output.push(rawLine);
+          continue;
+        }
+
+        const match = rawLine.match(imagePattern);
+        if (!match) {
+          output.push(rawLine);
+          continue;
+        }
+
+        if (match[1] !== undefined) {
+          const alt = match[1];
+          const src = match[2].trim();
+          if (!/^javascript:/i.test(src)) {
+            leadMedia = createMediaNode(src, alt);
+          }
+        } else if (match[3] !== undefined) {
+          const alt = match[3];
+          const refKey = match[4].trim().toLowerCase();
+          const ref = references[refKey];
+          if (ref && !/^javascript:/i.test(ref.href)) {
+            leadMedia = createMediaNode(ref.href, alt, ref.title);
+          }
+        }
+
+        const before = rawLine.slice(0, match.index);
+        const after = rawLine.slice(match.index + match[0].length);
+        const rebuilt = `${before}${after}`;
+        output.push(rebuilt);
+      }
+
+      return { body: output.join("\n"), leadMedia };
+    }
+
+    function renderMarkdown(text) {
+      const fragment = document.createDocumentFragment();
+      const lines = text.split(/\r?\n/);
+      const references = {};
+      const contentLines = [];
+      const refPattern = /^\s*\[([^\]]+)\]:\s*(\S+)(?:\s+"([^"]+)")?\s*$/;
+      const imageLinePattern = /^\s*!\[([^\]]*)\]\(([^)]+)\)\s*$|^\s*!\[([^\]]*)\]\[([^\]]+)\]\s*$/;
+      let inRefCode = false;
+      lines.forEach((rawLine) => {
+        const trimmed = rawLine.trim();
+        if (trimmed.startsWith("```")) {
+          inRefCode = !inRefCode;
+          contentLines.push(rawLine);
+          return;
+        }
+        if (inRefCode) {
+          contentLines.push(rawLine);
+          return;
+        }
+        const match = rawLine.match(refPattern);
+        if (match) {
+          references[match[1].trim().toLowerCase()] = {
+            href: match[2],
+            title: match[3] || "",
+          };
+          return;
+        }
+        contentLines.push(rawLine);
+      });
+      let inCode = false;
+      let codeBlock = null;
+      let list = null;
+
+      const flushList = () => {
+        if (list) {
+          fragment.appendChild(list);
+          list = null;
+        }
+      };
+
+      const appendInline = (parent, content) => {
+        const nodes = renderInlineMarkdownLinks(content, references);
+        nodes.forEach((node) => parent.appendChild(node));
+      };
+
+      for (const rawLine of contentLines) {
+        const line = rawLine.replace(/\s+$/g, "");
+
+        if (line.startsWith("```")) {
+          if (!inCode) {
+            flushList();
+            inCode = true;
+            codeBlock = document.createElement("pre");
+          } else {
+            fragment.appendChild(codeBlock || document.createElement("pre"));
+            inCode = false;
+            codeBlock = null;
+          }
+          continue;
+        }
+
+        if (inCode) {
+          codeBlock.textContent += `${line}\n`;
+          continue;
+        }
+
+        const imageLineMatch = line.match(imageLinePattern);
+        if (imageLineMatch) {
+          flushList();
+          let media = null;
+          if (imageLineMatch[1] !== undefined) {
+            const alt = imageLineMatch[1];
+            const src = imageLineMatch[2].trim();
+            if (!/^javascript:/i.test(src)) {
+              media = createMediaNode(src, alt);
+            }
+          } else if (imageLineMatch[3] !== undefined) {
+            const alt = imageLineMatch[3];
+            const refKey = imageLineMatch[4].trim().toLowerCase();
+            const ref = references[refKey];
+            if (ref && !/^javascript:/i.test(ref.href)) {
+              media = createMediaNode(ref.href, alt, ref.title);
+            }
+          }
+          if (media) {
+            fragment.appendChild(media);
+          } else {
+            const para = document.createElement("p");
+            para.textContent = line;
+            fragment.appendChild(para);
+          }
+          continue;
+        }
+
+        const headingMatch = line.match(/^(#{1,4})\s+(.*)$/);
+        if (headingMatch) {
+          flushList();
+          const level = Math.min(4, headingMatch[1].length);
+          const tag = level === 1 ? "h2" : level === 2 ? "h3" : "h4";
+          const heading = document.createElement(tag);
+          appendInline(heading, headingMatch[2]);
+          fragment.appendChild(heading);
+          continue;
+        }
+
+        if (/^\s*(-|\*|\d+\.)\s+/.test(line)) {
+          if (!list) {
+            list = document.createElement("ul");
+          }
+          const item = document.createElement("li");
+          appendInline(item, line.replace(/^\s*(-|\*|\d+\.)\s+/, ""));
+          list.appendChild(item);
+          continue;
+        }
+
+        if (/^\s*>\s+/.test(line)) {
+          flushList();
+          const quote = document.createElement("blockquote");
+          appendInline(quote, line.replace(/^\s*>\s+/, ""));
+          fragment.appendChild(quote);
+          continue;
+        }
+
+        if (/^\s*---+\s*$/.test(line)) {
+          flushList();
+          const rule = document.createElement("div");
+          rule.style.borderTop = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue("--line")}`;
+          rule.style.margin = "8px 0";
+          fragment.appendChild(rule);
+          continue;
+        }
+
+        if (!line.trim()) {
+          flushList();
+          continue;
+        }
+
+        flushList();
+        const para = document.createElement("p");
+        appendInline(para, line);
+        fragment.appendChild(para);
+      }
+
+      flushList();
+      return fragment;
+    }
+
+    function renderInlineMarkdownLinks(text, references) {
+      const nodes = [];
+      const pattern = /!\[([^\]]*)\]\(([^)]+)\)|!\[([^\]]*)\]\[([^\]]+)\]|\[([^\]]+)\]\(([^)]+)\)|\[([^\]]+)\]\[([^\]]+)\]|(https?:\/\/[^\s<]+|www\.[^\s<]+)/g;
+      let lastIndex = 0;
+      let match = pattern.exec(text);
+
+      while (match) {
+        if (match.index > lastIndex) {
+          nodes.push(document.createTextNode(text.slice(lastIndex, match.index)));
+        }
+
+        if (match[1] !== undefined) {
+          const alt = match[1];
+          const src = match[2].trim();
+          nodes.push(createMediaNode(src, alt));
+        } else if (match[3] !== undefined) {
+          const alt = match[3];
+          const refKey = match[4].trim().toLowerCase();
+          const ref = references[refKey];
+          if (ref && !/^javascript:/i.test(ref.href)) {
+            nodes.push(createMediaNode(ref.href, alt, ref.title));
+          } else {
+            nodes.push(document.createTextNode(match[0]));
+          }
+        } else if (match[5] !== undefined) {
+          const label = match[5];
+          const href = match[6].trim();
+          if (href.startsWith("@")) {
+            const recordId = href;
+            if (state.records[recordId]) {
+              const link = document.createElement("a");
+              link.href = "#";
+              link.textContent = label;
+              link.addEventListener("click", (event) => {
+                event.preventDefault();
+                selectRecord(recordId);
+                noteInteraction();
+              });
+              nodes.push(link);
+            } else {
+              const missing = document.createElement("span");
+              missing.className = "muted";
+              missing.textContent = label;
+              nodes.push(missing);
+            }
+          } else if (/^javascript:/i.test(href)) {
+            nodes.push(document.createTextNode(match[0]));
+          } else {
+            const link = document.createElement("a");
+            link.href = href;
+            link.textContent = label;
+            nodes.push(link);
+          }
+        } else if (match[7] !== undefined) {
+          const label = match[7];
+          const refKey = match[8].trim().toLowerCase();
+          const ref = references[refKey];
+          if (ref && ref.href && ref.href.trim().startsWith("@")) {
+            const recordId = ref.href.trim();
+            if (state.records[recordId]) {
+              const link = document.createElement("a");
+              link.href = "#";
+              link.textContent = label;
+              link.addEventListener("click", (event) => {
+                event.preventDefault();
+                selectRecord(recordId);
+                noteInteraction();
+              });
+              nodes.push(link);
+            } else {
+              const missing = document.createElement("span");
+              missing.className = "muted";
+              missing.textContent = label;
+              nodes.push(missing);
+            }
+          } else if (ref && !/^javascript:/i.test(ref.href)) {
+            const link = document.createElement("a");
+            link.href = ref.href;
+            link.textContent = label;
+            if (ref.title) link.title = ref.title;
+            nodes.push(link);
+          } else {
+            nodes.push(document.createTextNode(match[0]));
+          }
+        } else if (match[9] !== undefined) {
+          const raw = match[9];
+          const href = raw.startsWith("www.") ? `https://${raw}` : raw;
+          const link = document.createElement("a");
+          link.href = href;
+          link.textContent = raw;
+          nodes.push(link);
+        }
+
+        lastIndex = match.index + match[0].length;
+        match = pattern.exec(text);
+      }
+
+      if (lastIndex < text.length) {
+        nodes.push(document.createTextNode(text.slice(lastIndex)));
+      }
+
+      if (!nodes.length) {
+        nodes.push(document.createTextNode(text));
+      }
+
+      return nodes;
+    }
+
+    function getGlobeBaseRadius(width, height) {
+      const padding = 6;
+      const baseRadius = Math.min(width, height) / 2 - padding;
+      return Math.max(10, baseRadius * GLOBE_BASE_RADIUS_SCALE);
+    }
+
+    function renderGraph() {
+      const parent = graphCanvas.parentElement;
+      const width = parent.clientWidth;
+      const height = parent.clientHeight;
+      graphCanvas.width = Math.max(1, Math.floor(width * devicePixelRatio));
+      graphCanvas.height = Math.max(1, Math.floor(height * devicePixelRatio));
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+
+      ctx.clearRect(0, 0, width, height);
+
+      const baseRadius = getGlobeBaseRadius(width, height);
+      const radius = Math.max(10, baseRadius * state.globeZoom);
+      if (radius <= 10) return;
+
+      const cx = width / 2;
+      const cy = height / 2;
+
+      ctx.fillStyle = "#0e1117";
+      ctx.strokeStyle = "#2a2f3a";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.strokeStyle = "#141824";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius * 0.92, 0, Math.PI * 2);
+      ctx.stroke();
+
+      drawGraticule(cx, cy, radius);
+
+      const visibleOrder = getVisibleOrderForGraph();
+      const visibleSet = new Set(visibleOrder);
+      const coordsEntries = visibleOrder
+        .map((recordId) => [recordId, state.coords[recordId]])
+        .filter(([, coords]) => coords);
+      if (!coordsEntries.length) return;
+
+      const selected = state.selectedId;
+      const nodesFront = [];
+      const nodesBack = [];
+      const projections = {};
+      let selectedPoint = null;
+      coordsEntries.forEach(([recordId, [lat, lon]]) => {
+        const [x, y, z] = projectPoint(lat, lon);
+        projections[recordId] = [x, y, z];
+        if (recordId === selected) {
+          selectedPoint = [recordId, x, y, z];
+        } else if (z > 0) {
+          nodesFront.push([recordId, x, y, z]);
+        } else {
+          nodesBack.push([recordId, x, y, z]);
+        }
+      });
+
+      ctx.fillStyle = "#2b303b";
+      nodesBack.forEach(([, x, y]) => {
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        ctx.beginPath();
+        ctx.arc(px, py, 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      drawFogOfUnknown(cx, cy, radius, projections);
+
+      Object.entries(state.records).forEach(([sourceId, record]) => {
+        if (!visibleSet.has(sourceId)) return;
+        const edges = record.edges || [];
+        if (!edges.length) return;
+        const sourceProj = projections[sourceId];
+        if (!sourceProj) return;
+        const [sx, sy, sz] = sourceProj;
+        if (sz <= 0) return;
+        const sxp = cx + sx * radius;
+        const syp = cy - sy * radius;
+        edges.forEach((edge) => {
+          const targetId = edge.target;
+          if (!targetId) return;
+          if (!visibleSet.has(targetId)) return;
+          const targetProj = projections[targetId];
+          if (!targetProj) return;
+          const [tx, ty, tz] = targetProj;
+          if (tz <= 0) return;
+          const txp = cx + tx * radius;
+          const typ = cy - ty * radius;
+          const isSelectedEdge = sourceId === selected || targetId === selected;
+          ctx.strokeStyle = isSelectedEdge ? "#7cc7ff" : "#2a3a4d";
+          ctx.lineWidth = isSelectedEdge ? 2 : 1;
+          ctx.beginPath();
+          ctx.moveTo(sxp, syp);
+          ctx.lineTo(txp, typ);
+          ctx.stroke();
+        });
+      });
+
+      state.screenPoints = {};
+      nodesFront.forEach(([recordId, x, y]) => {
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        ctx.fillStyle = "#7cc7ff";
+        ctx.strokeStyle = "#0b0b10";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(px, py, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        state.screenPoints[recordId] = [px, py];
+
+        const recordTitle = state.records[recordId]?.title;
+        if (recordTitle) {
+          const labelSize = Math.max(9, Math.min(14, 10 * state.globeZoom));
+          ctx.fillStyle = "#dfe7f2";
+          ctx.font = `600 ${labelSize}px Trebuchet MS`;
+          ctx.fillText(recordTitle, px + labelSize * 0.6, py - labelSize * 0.4);
+        }
+      });
+
+      if (selectedPoint) {
+        const [recordId, x, y] = selectedPoint;
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        const eyeRadius = Math.max(8, Math.min(15, 8 + 2.6 * Math.sqrt(state.globeZoom)));
+        const toCenterX = cx - px;
+        const toCenterY = cy - py;
+        const toCenterMag = Math.hypot(toCenterX, toCenterY) || 1;
+        const lookScale = eyeRadius * 0.22;
+        const irisCx = px + (toCenterX / toCenterMag) * lookScale;
+        const irisCy = py + (toCenterY / toCenterMag) * lookScale;
+
+        ctx.save();
+        ctx.shadowColor = "rgba(255, 74, 74, 0.44)";
+        ctx.shadowBlur = eyeRadius * 1.8;
+
+        ctx.fillStyle = "#f7f9ff";
+        ctx.strokeStyle = "#0b0b10";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(px, py, eyeRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = palette.eyeballRed;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(irisCx, irisCy, eyeRadius * 0.54, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#07090c";
+        ctx.beginPath();
+        ctx.arc(irisCx, irisCy, eyeRadius * 0.28, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.82)";
+        ctx.beginPath();
+        ctx.arc(irisCx - eyeRadius * 0.21, irisCy - eyeRadius * 0.25, eyeRadius * 0.16, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        state.screenPoints[recordId] = [px, py];
+
+        const recordTitle = state.records[recordId]?.title;
+        if (recordTitle) {
+          const labelSize = Math.max(10, Math.min(16, 11 * state.globeZoom));
+          ctx.fillStyle = "#e9e9f0";
+          ctx.font = `bold ${labelSize}px Trebuchet MS`;
+          ctx.fillText(recordTitle, px + labelSize * 0.7, py - labelSize * 0.6);
+        }
+      }
+    }
+
+    function drawFogOfUnknown(cx, cy, radius, projections) {
+      const discoveredOrder = getDiscoveredOrder();
+      if (!discoveredOrder.length) return;
+
+      const points = discoveredOrder
+        .map((recordId) => {
+          const projected = projections[recordId];
+          if (!projected) return null;
+          const [x, y, z] = projected;
+          if (z <= 0) return null;
+          return { recordId, px: cx + x * radius, py: cy - y * radius };
+        })
+        .filter(Boolean);
+
+      ctx.save();
+      ctx.fillStyle = "rgba(5, 8, 12, 0.16)";
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.globalCompositeOperation = "destination-out";
+      points.forEach(({ recordId, px, py }) => {
+        const isFirst = recordId === state.firstRecordId;
+        const isSelected = recordId === state.selectedId;
+        const zoomFactor = Math.sqrt(state.globeZoom);
+        const clearRadius = Math.max(
+          26,
+          Math.min(70, 36 * zoomFactor + (isSelected ? 10 : 0) + (isFirst ? 4 : 0)),
+        );
+        ctx.fillStyle = "rgba(0, 0, 0, 1)";
+        ctx.beginPath();
+        ctx.arc(px, py, clearRadius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+
+      ctx.save();
+      points.forEach(({ recordId, px, py }) => {
+        const isFirst = recordId === state.firstRecordId;
+        const isSelected = recordId === state.selectedId;
+        const haloRadius = Math.max(16, Math.min(64, 34 * Math.sqrt(state.globeZoom)));
+        if (isSelected) {
+          ctx.strokeStyle = "rgba(255, 74, 74, 0.72)";
+        } else if (isFirst) {
+          ctx.strokeStyle = "rgba(15, 139, 141, 0.72)";
+        } else {
+          ctx.strokeStyle = "rgba(124, 199, 255, 0.66)";
+        }
+        ctx.lineWidth = isSelected ? 2.2 : 1.4;
+        ctx.beginPath();
+        ctx.arc(px, py, haloRadius, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    function centerOnSelected() {
+      const recordId = state.selectedId;
+      if (!recordId) return;
+      const coords = state.coords[recordId];
+      if (!coords) return;
+      const [lat, lon] = coords;
+      const latR = (lat * Math.PI) / 180;
+      const lonR = (lon * Math.PI) / 180;
+      const x = Math.cos(latR) * Math.sin(lonR);
+      const y = Math.sin(latR);
+      const z = Math.cos(latR) * Math.cos(lonR);
+      const rotLon = -Math.atan2(x, z);
+      const z1 = Math.hypot(x, z);
+      const rotLat = Math.atan2(y, z1);
+      state.globeTargetLat = rotLat;
+      state.globeTargetLon = rotLon;
+      if (!state.globeAnimating) {
+        state.globeAnimating = true;
+        requestAnimationFrame(animateGlobe);
+      }
+    }
+
+    function animateGlobe() {
+      if (!state.globeAnimating) return;
+      const deltaLat = angleDelta(state.globeTargetLat, state.globeRotLat);
+      const deltaLon = angleDelta(state.globeTargetLon, state.globeRotLon);
+
+      if (Math.abs(deltaLat) < 0.002 && Math.abs(deltaLon) < 0.002) {
+        state.globeRotLat = state.globeTargetLat;
+        state.globeRotLon = state.globeTargetLon;
+        state.globeAnimating = false;
+        renderGraph();
+        return;
+      }
+
+      state.globeRotLat += deltaLat * 0.15;
+      state.globeRotLon += deltaLon * 0.15;
+      renderGraph();
+      requestAnimationFrame(animateGlobe);
+    }
+
+    function angleDelta(target, current) {
+      let delta = target - current;
+      while (delta > Math.PI) delta -= Math.PI * 2;
+      while (delta < -Math.PI) delta += Math.PI * 2;
+      return delta;
+    }
+
+    function projectPoint(lat, lon) {
+      const latR = (lat * Math.PI) / 180;
+      const lonR = (lon * Math.PI) / 180;
+      const x = Math.cos(latR) * Math.sin(lonR);
+      const y = Math.sin(latR);
+      const z = Math.cos(latR) * Math.cos(lonR);
+
+      const cosY = Math.cos(state.globeRotLon);
+      const sinY = Math.sin(state.globeRotLon);
+      const x1 = x * cosY + z * sinY;
+      const z1 = -x * sinY + z * cosY;
+
+      const cosX = Math.cos(state.globeRotLat);
+      const sinX = Math.sin(state.globeRotLat);
+      const y1 = y * cosX - z1 * sinX;
+      const z2 = y * sinX + z1 * cosX;
+
+      return [x1, y1, z2];
+    }
+
+    function findNearestRecordToCenter() {
+      const parent = graphCanvas.parentElement;
+      const width = parent.clientWidth;
+      const height = parent.clientHeight;
+      if (!width || !height) return null;
+      const baseRadius = getGlobeBaseRadius(width, height);
+      const radius = Math.max(10, baseRadius * state.globeZoom);
+      const cx = width / 2;
+      const cy = height / 2;
+      let closest = null;
+      let closestDist = Infinity;
+      const visibleSet = new Set(getVisibleOrderForGraph());
+      Object.entries(state.coords).forEach(([recordId, [lat, lon]]) => {
+        if (!visibleSet.has(recordId)) return;
+        const [x, y, z] = projectPoint(lat, lon);
+        if (z <= 0) return;
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        const dist = Math.hypot(px - cx, py - cy);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = recordId;
+        }
+      });
+      return closest;
+    }
+
+    function drawGraticule(cx, cy, radius) {
+      ctx.strokeStyle = "#1a1f2a";
+      ctx.lineWidth = 1;
+      for (let lon = -150; lon < 180; lon += 30) {
+        const points = [];
+        for (let lat = -90; lat <= 90; lat += 6) {
+          const [x, y, z] = projectPoint(lat, lon);
+          if (z > 0) {
+            points.push([cx + x * radius, cy - y * radius, true]);
+          } else {
+            points.push([0, 0, false]);
+          }
+        }
+        drawVisibleLine(points);
+      }
+
+      for (let lat = -60; lat < 90; lat += 30) {
+        const points = [];
+        for (let lon = -180; lon <= 180; lon += 6) {
+          const [x, y, z] = projectPoint(lat, lon);
+          if (z > 0) {
+            points.push([cx + x * radius, cy - y * radius, true]);
+          } else {
+            points.push([0, 0, false]);
+          }
+        }
+        drawVisibleLine(points);
+      }
+    }
+
+    function drawVisibleLine(points) {
+      let segment = [];
+      points.forEach(([px, py, visible]) => {
+        if (visible) {
+          segment.push([px, py]);
+          return;
+        }
+        if (segment.length >= 2) {
+          ctx.beginPath();
+          ctx.moveTo(segment[0][0], segment[0][1]);
+          segment.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
+          ctx.stroke();
+        }
+        segment = [];
+      });
+      if (segment.length >= 2) {
+        ctx.beginPath();
+        ctx.moveTo(segment[0][0], segment[0][1]);
+        segment.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
+        ctx.stroke();
+      }
+    }
+
+    function clampGlobeZoom(value) {
+      return Math.min(GLOBE_ZOOM_MAX, Math.max(GLOBE_ZOOM_MIN, value));
+    }
+
+    function setGlobeZoom(value) {
+      const nextZoom = clampGlobeZoom(value);
+      if (Math.abs(nextZoom - state.globeZoom) < 0.0001) return false;
+      state.globeZoom = nextZoom;
+      renderGraph();
+      return true;
+    }
+
+    function zoomGlobeByStep(direction) {
+      const multiplier = direction > 0 ? GLOBE_ZOOM_STEP : 1 / GLOBE_ZOOM_STEP;
+      return setGlobeZoom(state.globeZoom * multiplier);
+    }
+
+    function selectRecordNearPoint(canvasX, canvasY, pointerType = "mouse") {
+      let closest = null;
+      let closestDist = Infinity;
+      Object.entries(state.screenPoints).forEach(([id, pos]) => {
+        const dx = pos[0] - canvasX;
+        const dy = pos[1] - canvasY;
+        const dist = Math.hypot(dx, dy);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = id;
+        }
+      });
+      const threshold = pointerType === "touch" ? 28 : 16;
+      if (closest && closestDist <= threshold) {
+        selectRecord(closest);
+        return true;
+      }
+      return false;
+    }
+
+    function beginGlobeDrag(clientX, clientY) {
+      state.globeDragging = true;
+      state.globeDragMoved = false;
+      state.globeDragX = clientX;
+      state.globeDragY = clientY;
+      state.globeVelX = 0;
+      state.globeVelY = 0;
+      state.globeVelT = performance.now();
+      graphCanvas.classList.add("is-dragging");
+    }
+
+    function handleGlobeDragMove(clientX, clientY) {
+      if (!state.globeDragging) return false;
+      const dx = clientX - state.globeDragX;
+      const dy = clientY - state.globeDragY;
+      if (dx === 0 && dy === 0) return false;
+      const now = performance.now();
+      const dt = Math.max(1, now - state.globeVelT);
+      state.globeVelX = dx / dt;
+      state.globeVelY = dy / dt;
+      state.globeVelT = now;
+      state.globeDragX = clientX;
+      state.globeDragY = clientY;
+      state.globeDragMoved = true;
+      const sensitivity = 0.005;
+      state.globeRotLon += dx * sensitivity;
+      const invert = state.invertDragY ? 1 : -1;
+      state.globeRotLat += dy * sensitivity * invert;
+      const limit = Math.PI / 2 - 0.05;
+      state.globeRotLat = Math.max(-limit, Math.min(limit, state.globeRotLat));
+      state.globeTargetLat = state.globeRotLat;
+      state.globeTargetLon = state.globeRotLon;
+      state.globeAnimating = false;
+      renderGraph();
+      return true;
+    }
+
+    function endGlobeDrag() {
+      if (!state.globeDragging) return false;
+      const didMove = state.globeDragMoved;
+      state.globeDragging = false;
+      state.globeDragMoved = false;
+      graphCanvas.classList.remove("is-dragging");
+      if (!didMove) return false;
+      const targetId = findNearestRecordToCenter();
+      if (targetId) {
+        selectRecord(targetId);
+      }
+      return true;
+    }
+
+    graphCanvas.addEventListener(
+      "wheel",
+      (event) => {
+        event.preventDefault();
+        const direction = Math.sign(event.deltaY);
+        const changed = zoomGlobeByStep(direction > 0 ? -1 : 1);
+        if (changed) {
+          noteInteraction();
+        }
+      },
+      { passive: false },
+    );
+
+    zoomInBtn.addEventListener("click", () => {
+      const changed = zoomGlobeByStep(1);
+      if (changed) {
+        noteInteraction();
+      }
+    });
+    zoomOutBtn.addEventListener("click", () => {
+      const changed = zoomGlobeByStep(-1);
+      if (changed) {
+        noteInteraction();
+      }
+    });
+    zoomResetBtn.addEventListener("click", () => {
+      const changed = setGlobeZoom(1);
+      if (changed) {
+        noteInteraction();
+      }
+    });
+
+    const pointerGesture = {
+      active: new Map(),
+      primaryId: null,
+      startX: 0,
+      startY: 0,
+      startTime: 0,
+      moved: false,
+      movedOrZoomed: false,
+      pinchDistance: 0,
+      pinchStartZoom: 1,
+    };
+
+    function getPinchDistance() {
+      const points = Array.from(pointerGesture.active.values());
+      if (points.length < 2) return 0;
+      return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+    }
+
+    graphCanvas.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      pointerGesture.active.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (graphCanvas.setPointerCapture) {
+        try {
+          graphCanvas.setPointerCapture(event.pointerId);
+        } catch (err) {
+          // Ignore capture failures and continue with regular pointer tracking.
+        }
+      }
+
+      if (pointerGesture.active.size === 1) {
+        pointerGesture.primaryId = event.pointerId;
+        pointerGesture.startX = event.clientX;
+        pointerGesture.startY = event.clientY;
+        pointerGesture.startTime = performance.now();
+        pointerGesture.moved = false;
+        pointerGesture.movedOrZoomed = false;
+        beginGlobeDrag(event.clientX, event.clientY);
+      } else {
+        pointerGesture.primaryId = null;
+        pointerGesture.moved = true;
+        pointerGesture.pinchDistance = getPinchDistance();
+        pointerGesture.pinchStartZoom = state.globeZoom;
+        state.globeDragging = false;
+        graphCanvas.classList.remove("is-dragging");
+      }
+      event.preventDefault();
+    });
+
+    graphCanvas.addEventListener("pointermove", (event) => {
+      if (!pointerGesture.active.has(event.pointerId)) return;
+      pointerGesture.active.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+      if (pointerGesture.active.size >= 2) {
+        const distance = getPinchDistance();
+        if (pointerGesture.pinchDistance > 0 && distance > 0) {
+          const scale = distance / pointerGesture.pinchDistance;
+          const changed = setGlobeZoom(pointerGesture.pinchStartZoom * scale);
+          if (changed) {
+            pointerGesture.movedOrZoomed = true;
+          }
+        }
+        event.preventDefault();
+        return;
+      }
+
+      if (event.pointerId !== pointerGesture.primaryId) {
+        event.preventDefault();
+        return;
+      }
+
+      const traveled = Math.hypot(event.clientX - pointerGesture.startX, event.clientY - pointerGesture.startY);
+      if (traveled > 6) {
+        pointerGesture.moved = true;
+      }
+      const moved = handleGlobeDragMove(event.clientX, event.clientY);
+      if (moved && pointerGesture.moved) {
+        pointerGesture.movedOrZoomed = true;
+      }
+      event.preventDefault();
+    });
+
+    function handlePointerEnd(event) {
+      if (!pointerGesture.active.has(event.pointerId)) return;
+      const wasPrimary = pointerGesture.primaryId === event.pointerId;
+      const wasSinglePointer = pointerGesture.active.size === 1;
+      const wasTap =
+        wasPrimary && wasSinglePointer && !pointerGesture.moved && performance.now() - pointerGesture.startTime < 350;
+
+      pointerGesture.active.delete(event.pointerId);
+      if (graphCanvas.releasePointerCapture && graphCanvas.hasPointerCapture?.(event.pointerId)) {
+        try {
+          graphCanvas.releasePointerCapture(event.pointerId);
+        } catch (err) {
+          // Ignore capture release failures.
+        }
+      }
+
+      if (pointerGesture.active.size >= 2) {
+        pointerGesture.primaryId = null;
+        pointerGesture.pinchDistance = getPinchDistance();
+        pointerGesture.pinchStartZoom = state.globeZoom;
+        event.preventDefault();
+        return;
+      }
+
+      if (pointerGesture.active.size === 1) {
+        const entry = pointerGesture.active.entries().next().value;
+        const remainingId = entry[0];
+        const remainingPoint = entry[1];
+        pointerGesture.primaryId = remainingId;
+        pointerGesture.startX = remainingPoint.x;
+        pointerGesture.startY = remainingPoint.y;
+        pointerGesture.startTime = performance.now();
+        pointerGesture.moved = true;
+        pointerGesture.pinchDistance = 0;
+        pointerGesture.pinchStartZoom = state.globeZoom;
+        beginGlobeDrag(remainingPoint.x, remainingPoint.y);
+        event.preventDefault();
+        return;
+      }
+
+      const usedDrag = endGlobeDrag();
+      let usedTap = false;
+      if (wasTap) {
+        const rect = graphCanvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        usedTap = selectRecordNearPoint(x, y, event.pointerType);
+      }
+
+      if (usedDrag || usedTap || pointerGesture.movedOrZoomed) {
+        noteInteraction();
+      }
+
+      pointerGesture.primaryId = null;
+      pointerGesture.moved = false;
+      pointerGesture.movedOrZoomed = false;
+      pointerGesture.pinchDistance = 0;
+      pointerGesture.pinchStartZoom = state.globeZoom;
+      event.preventDefault();
+    }
+
+    graphCanvas.addEventListener("pointerup", handlePointerEnd);
+    graphCanvas.addEventListener("pointercancel", handlePointerEnd);
+    window.addEventListener("pointerup", handlePointerEnd);
+    window.addEventListener("pointercancel", handlePointerEnd);
+
+    function getTourDelayMs() {
+      if (!state.tourSlowPace) return TOUR_DELAY_MS;
+      return Math.round(TOUR_DELAY_MS * TOUR_SLOW_DELAY_MULTIPLIER);
+    }
+
+    function scheduleTour() {
+      clearTour();
+      const discoveredOrder = getDiscoveredOrder();
+      if (!state.tourEnabled) return;
+      if (state.tourPaused) {
+        tourNote.textContent = "Guided tour paused. Press Space to resume.";
+        return;
+      }
+      if (discoveredOrder.length < 2) {
+        tourNote.textContent = "Discover another record to expand the guided tour.";
+        return;
+      }
+      tourNote.textContent = state.tourSlowPace
+        ? "Slow tour pace is on: transitions are slower and pauses are longer."
+        : "Default network tour will advance after a short pause.";
+      state.tourTimer = window.setTimeout(() => {
+        advanceTour();
+      }, getTourDelayMs());
+    }
+
+    function clearTour() {
+      if (state.tourTimer) {
+        clearTimeout(state.tourTimer);
+        state.tourTimer = null;
+      }
+    }
+
+    function advanceTour() {
+      const order = getDiscoveredOrder();
+      if (!state.tourEnabled || !order.length) return;
+      let index = order.indexOf(state.selectedId);
+      if (index < 0) index = 0;
+      const nextId = order[(index + 1) % order.length];
+      selectRecord(nextId, { fromTour: true });
+      scheduleTour();
+    }
+
+    function noteInteraction() {
+      if (!state.tourEnabled) return;
+      scheduleTour();
+    }
+
+    window.mountEyeball("eyeball-terminology");
+    window.mountEyeball("eyeball-foot");
+
+    loadDb(true);
+  </script>
 </body>
 </html>
