@@ -946,12 +946,11 @@
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const currentHasMedia = Boolean(current?.querySelector("img, object"));
       const incomingHasMedia = Boolean(incoming.querySelector("img, object"));
+      const hasMediaTransition = currentHasMedia || incomingHasMedia;
       const shouldAnimate =
         Boolean(current) &&
         Boolean(transition) &&
         !reduceMotion &&
-        !currentHasMedia &&
-        !incomingHasMedia &&
         current.dataset.recordId === transition.fromId &&
         transition.toId === state.selectedId;
 
@@ -978,7 +977,7 @@
       incoming.style.inset = "0";
       incoming.style.zIndex = "2";
       incoming.style.transform = `translate(${enterX}px, ${enterY}px)`;
-      incoming.style.opacity = "0.06";
+      incoming.style.opacity = hasMediaTransition ? "1" : "0.06";
       viewEl.appendChild(incoming);
 
       requestAnimationFrame(() => {
