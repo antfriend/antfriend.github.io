@@ -59,7 +59,7 @@ Optional tour audio for this deck.
 
 ```ttdb-special
 kind: tour_sound
-audio_path: banjo/banjo.wav
+audio_path: sounds/aireggica.wav
 ```
 
 ---
