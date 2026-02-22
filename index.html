@@ -518,7 +518,6 @@
     const SPECIAL_RECORD_SOUTH_POLE_LAT = -90;
     const TOUR_AUDIO_SPECIAL_KIND = "tour_sound";
     const DISCOVERY_KEY_PREFIX = "tte-terminology-discovered-records-v2";
-    const DISCOVERY_HALO_LIMIT = 3;
     const GLOBE_ZOOM_MIN = 0.7;
     const GLOBE_ZOOM_MAX = 3.5;
     const GLOBE_ZOOM_STEP = 1.12;
@@ -565,6 +564,7 @@
       tourTimer: null,
       firstRecordId: null,
       discoveredIds: [],
+      discoveredNodeColors: {},
       pendingRecordTransition: null,
       recordTransitionToken: 0,
       specialRecords: {},
@@ -746,8 +746,36 @@
     }
 
     function getVisibleOrderForGraph() {
-      if (state.searchTerm) return [...state.filteredOrder];
-      return getDiscoveredOrder();
+      return [...state.order];
+    }
+
+    function pickRandomDiscoveredNodeColor() {
+      const hue = Math.floor(Math.random() * 360);
+      const saturation = 62 + Math.floor(Math.random() * 24);
+      const lightness = 50 + Math.floor(Math.random() * 14);
+      return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+
+    function syncDiscoveredNodeColors() {
+      const discoveredSet = new Set(state.discoveredIds);
+      Object.keys(state.discoveredNodeColors).forEach((recordId) => {
+        if (!discoveredSet.has(recordId)) {
+          delete state.discoveredNodeColors[recordId];
+        }
+      });
+      state.discoveredIds.forEach((recordId) => {
+        if (!state.discoveredNodeColors[recordId]) {
+          state.discoveredNodeColors[recordId] = pickRandomDiscoveredNodeColor();
+        }
+      });
+    }
+
+    function getNodeColor(recordId, discoveredSet) {
+      if (!discoveredSet.has(recordId)) return "#6a6f78";
+      if (!state.discoveredNodeColors[recordId]) {
+        state.discoveredNodeColors[recordId] = pickRandomDiscoveredNodeColor();
+      }
+      return state.discoveredNodeColors[recordId];
     }
 
     function persistDiscovery() {
@@ -781,6 +809,7 @@
       }
 
       state.discoveredIds = state.order.filter((recordId) => discoveredSet.has(recordId));
+      syncDiscoveredNodeColors();
       persistDiscovery();
     }
 
@@ -802,6 +831,7 @@
 
       if (!changed) return false;
       state.discoveredIds = state.order.filter((id) => discoveredSet.has(id));
+      syncDiscoveredNodeColors();
       persistDiscovery();
       return true;
     }
@@ -905,6 +935,7 @@
           state.coords = {};
           state.firstRecordId = null;
           state.discoveredIds = [];
+          state.discoveredNodeColors = {};
           state.specialRecords = {};
           setTourAudioPath(null);
           renderList();
@@ -1857,6 +1888,7 @@
 
       const visibleOrder = getVisibleOrderForGraph();
       const visibleSet = new Set(visibleOrder);
+      const discoveredSet = new Set(state.discoveredIds);
       const coordsEntries = visibleOrder
         .map((recordId) => [recordId, state.coords[recordId]])
         .filter(([, coords]) => coords);
@@ -1879,16 +1911,14 @@
         }
       });
 
-      ctx.fillStyle = "#2b303b";
-      nodesBack.forEach(([, x, y]) => {
+      nodesBack.forEach(([recordId, x, y]) => {
         const px = cx + x * radius;
         const py = cy - y * radius;
+        ctx.fillStyle = getNodeColor(recordId, discoveredSet);
         ctx.beginPath();
         ctx.arc(px, py, 3, 0, Math.PI * 2);
         ctx.fill();
       });
-
-      drawFogOfUnknown(cx, cy, radius, projections);
 
       Object.entries(state.records).forEach(([sourceId, record]) => {
         if (!visibleSet.has(sourceId)) return;
@@ -1924,7 +1954,8 @@
       nodesFront.forEach(([recordId, x, y]) => {
         const px = cx + x * radius;
         const py = cy - y * radius;
-        ctx.fillStyle = "#7cc7ff";
+        const isDiscovered = discoveredSet.has(recordId);
+        ctx.fillStyle = getNodeColor(recordId, discoveredSet);
         ctx.strokeStyle = "#0b0b10";
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -1933,7 +1964,7 @@
         ctx.stroke();
         state.screenPoints[recordId] = [px, py];
 
-        const recordTitle = state.records[recordId]?.title;
+        const recordTitle = isDiscovered ? state.records[recordId]?.title : null;
         if (recordTitle) {
           const labelSize = Math.max(9, Math.min(14, 10 * state.globeZoom));
           ctx.fillStyle = "#dfe7f2";
@@ -1946,6 +1977,7 @@
         const [recordId, x, y] = selectedPoint;
         const px = cx + x * radius;
         const py = cy - y * radius;
+        const selectedColor = getNodeColor(recordId, discoveredSet);
         const eyeRadius = Math.max(8, Math.min(15, 8 + 2.6 * Math.sqrt(state.globeZoom)));
         const toCenterX = cx - px;
         const toCenterY = cy - py;
@@ -1955,7 +1987,7 @@
         const irisCy = py + (toCenterY / toCenterMag) * lookScale;
 
         ctx.save();
-        ctx.shadowColor = "rgba(255, 74, 74, 0.44)";
+        ctx.shadowColor = "rgba(255, 255, 255, 0.28)";
         ctx.shadowBlur = eyeRadius * 1.8;
 
         ctx.fillStyle = "#f7f9ff";
@@ -1967,7 +1999,7 @@
         ctx.stroke();
 
         ctx.shadowBlur = 0;
-        ctx.fillStyle = palette.eyeballRed;
+        ctx.fillStyle = selectedColor;
         ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.arc(irisCx, irisCy, eyeRadius * 0.54, 0, Math.PI * 2);
@@ -1994,64 +2026,6 @@
           ctx.fillText(recordTitle, px + labelSize * 0.7, py - labelSize * 0.6);
         }
       }
-    }
-
-    function drawFogOfUnknown(cx, cy, radius, projections) {
-      const discoveredOrder = getDiscoveredOrder();
-      if (!discoveredOrder.length) return;
-
-      const points = discoveredOrder
-        .map((recordId) => {
-          const projected = projections[recordId];
-          if (!projected) return null;
-          const [x, y, z] = projected;
-          if (z <= 0) return null;
-          return { recordId, px: cx + x * radius, py: cy - y * radius };
-        })
-        .filter(Boolean);
-
-      ctx.save();
-      ctx.fillStyle = "rgba(5, 8, 12, 0.16)";
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.globalCompositeOperation = "destination-out";
-      points.forEach(({ recordId, px, py }) => {
-        const isFirst = recordId === state.firstRecordId;
-        const isSelected = recordId === state.selectedId;
-        const zoomFactor = Math.sqrt(state.globeZoom);
-        const clearRadius = Math.max(
-          26,
-          Math.min(70, 36 * zoomFactor + (isSelected ? 10 : 0) + (isFirst ? 4 : 0)),
-        );
-        ctx.fillStyle = "rgba(0, 0, 0, 1)";
-        ctx.beginPath();
-        ctx.arc(px, py, clearRadius, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      ctx.restore();
-
-      if (discoveredOrder.length > DISCOVERY_HALO_LIMIT) return;
-
-      ctx.save();
-      points.forEach(({ recordId, px, py }) => {
-        const isFirst = recordId === state.firstRecordId;
-        const isSelected = recordId === state.selectedId;
-        const haloRadius = Math.max(16, Math.min(64, 34 * Math.sqrt(state.globeZoom)));
-        if (isSelected) {
-          ctx.strokeStyle = "rgba(255, 74, 74, 0.72)";
-        } else if (isFirst) {
-          ctx.strokeStyle = "rgba(15, 139, 141, 0.72)";
-        } else {
-          ctx.strokeStyle = "rgba(124, 199, 255, 0.66)";
-        }
-        ctx.lineWidth = isSelected ? 2.2 : 1.4;
-        ctx.beginPath();
-        ctx.arc(px, py, haloRadius, 0, Math.PI * 2);
-        ctx.stroke();
-      });
-      ctx.restore();
     }
 
     function centerOnSelected() {
