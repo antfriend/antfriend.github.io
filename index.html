@@ -518,6 +518,7 @@
     const SPECIAL_RECORD_SOUTH_POLE_LAT = -90;
     const TOUR_AUDIO_SPECIAL_KIND = "tour_sound";
     const DISCOVERY_KEY_PREFIX = "tte-terminology-discovered-records-v2";
+    const DISCOVERY_HALO_LIMIT = 3;
     const GLOBE_ZOOM_MIN = 0.7;
     const GLOBE_ZOOM_MAX = 3.5;
     const GLOBE_ZOOM_STEP = 1.12;
@@ -2030,6 +2031,8 @@
         ctx.fill();
       });
       ctx.restore();
+
+      if (discoveredOrder.length > DISCOVERY_HALO_LIMIT) return;
 
       ctx.save();
       points.forEach(({ recordId, px, py }) => {
