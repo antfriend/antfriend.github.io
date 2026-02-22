@@ -502,7 +502,9 @@
     const TOUR_DELAY_MS = 12000;
     const TOUR_SLOW_DELAY_MULTIPLIER = 1.7;
     const TOUR_SLOW_TRANSITION_MULTIPLIER = 1.5;
-    const TOUR_AUDIO_PATH = "sounds/Toot_Toot_Goat_Chant.WAV";
+    const SPECIAL_RECORD_BLOCK_LANG = "ttdb-special";
+    const SPECIAL_RECORD_SOUTH_POLE_LAT = -90;
+    const TOUR_AUDIO_SPECIAL_KIND = "tour_sound";
     const DISCOVERY_KEY = "tte-terminology-discovered-records-v1";
     const GLOBE_ZOOM_MIN = 0.7;
     const GLOBE_ZOOM_MAX = 3.5;
@@ -542,6 +544,9 @@
       discoveredIds: [],
       pendingRecordTransition: null,
       recordTransitionToken: 0,
+      specialRecords: {},
+      tourAudioPath: null,
+      tourAudio: null,
     };
 
     const palette = (() => {
@@ -575,10 +580,6 @@
     const ctx = graphCanvas.getContext("2d");
     const resizeObserver = new ResizeObserver(() => renderGraph());
     resizeObserver.observe(graphCanvas.parentElement);
-    const tourAudio = new Audio(TOUR_AUDIO_PATH);
-    tourAudio.preload = "auto";
-    tourAudio.loop = true;
-
     const invertPref = localStorage.getItem("tte-terminology-invert-drag-y");
     if (invertPref !== null) {
       state.invertDragY = invertPref === "true";
@@ -797,10 +798,12 @@
         .then((text) => {
           if (!force && text === state.lastText) return;
           state.lastText = text;
-          const { records, order, selected, coords } = parseRecords(text);
+          const { records, order, selected, coords, specialRecords } = parseRecords(text);
           state.records = records;
           state.order = order;
           state.coords = coords;
+          state.specialRecords = specialRecords;
+          setTourAudioPath(getTourAudioPath(state.specialRecords));
           initializeDiscovery();
           buildSearchIndex();
           if (!state.selectedId || !records[state.selectedId]) {
@@ -822,6 +825,8 @@
           state.coords = {};
           state.firstRecordId = null;
           state.discoveredIds = [];
+          state.specialRecords = {};
+          setTourAudioPath(null);
           renderList();
           renderRecord();
           renderGraph();
@@ -857,6 +862,7 @@
       const records = {};
       const order = [];
       const coords = {};
+      const specialRecords = {};
       const blocks = content.split(/^\s*---+\s*$/m);
       for (const block of blocks) {
         const lines = block.split(/\r?\n/);
@@ -885,6 +891,13 @@
         }
         const body = filteredBodyLines.join("\n").trim();
 
+        const recordCoords = parseCoords(recordId);
+        const specialRecord = parseSpecialRecord(recordCoords, body);
+        if (specialRecord) {
+          specialRecords[specialRecord.kind] = { recordId, ...specialRecord };
+          continue;
+        }
+
         const edges = [];
         const relatesMatch = headerLine.match(/relates:([^|]+)/);
         if (relatesMatch) {
@@ -903,7 +916,6 @@
           }
         }
 
-        const recordCoords = parseCoords(recordId);
         if (recordCoords) {
           coords[recordId] = recordCoords;
         }
@@ -912,7 +924,61 @@
         order.push(recordId);
       }
 
-      return { records, order, selected, coords };
+      return { records, order, selected, coords, specialRecords };
+    }
+
+    function parseSpecialRecord(recordCoords, body) {
+      if (!recordCoords || recordCoords[0] !== SPECIAL_RECORD_SOUTH_POLE_LAT) return null;
+      const specialBlockRegex = new RegExp(`\`\`\`${SPECIAL_RECORD_BLOCK_LANG}([\\s\\S]*?)\`\`\``, "i");
+      const specialBlockMatch = body.match(specialBlockRegex);
+      if (!specialBlockMatch) return null;
+      const config = {};
+      const lines = specialBlockMatch[1].split(/\r?\n/);
+      lines.forEach((line) => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#")) return;
+        const entryMatch = trimmed.match(/^([A-Za-z0-9._-]+)\s*:\s*(.+)$/);
+        if (!entryMatch) return;
+        const key = entryMatch[1].toLowerCase();
+        let value = entryMatch[2].trim();
+        if (
+          (value.startsWith("\"") && value.endsWith("\"")) ||
+          (value.startsWith("'") && value.endsWith("'"))
+        ) {
+          value = value.slice(1, -1);
+        }
+        config[key] = value;
+      });
+      const kind = typeof config.kind === "string" ? config.kind.trim().toLowerCase() : "";
+      if (!kind) return null;
+      return { kind, config };
+    }
+
+    function getTourAudioPath(specialRecords) {
+      const tourSoundConfig = specialRecords[TOUR_AUDIO_SPECIAL_KIND]?.config;
+      if (!tourSoundConfig) return null;
+      const audioPath = typeof tourSoundConfig.audio_path === "string" ? tourSoundConfig.audio_path.trim() : "";
+      return audioPath || null;
+    }
+
+    function setTourAudioPath(path) {
+      const normalizedPath = typeof path === "string" ? path.trim() : "";
+      const nextPath = normalizedPath || null;
+      if (nextPath === state.tourAudioPath) return;
+
+      if (state.tourAudio) {
+        state.tourAudio.pause();
+        state.tourAudio.currentTime = 0;
+        state.tourAudio = null;
+      }
+
+      state.tourAudioPath = nextPath;
+      if (!nextPath) return;
+
+      const nextAudio = new Audio(nextPath);
+      nextAudio.preload = "auto";
+      nextAudio.loop = true;
+      state.tourAudio = nextAudio;
     }
 
     function parseCoords(recordId) {
@@ -2175,6 +2241,8 @@
     }
 
     function setTourAudioPlaying(shouldPlay) {
+      const tourAudio = state.tourAudio;
+      if (!tourAudio) return;
       if (shouldPlay) {
         if (!tourAudio.paused) return;
         const playPromise = tourAudio.play();

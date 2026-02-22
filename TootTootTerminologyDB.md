@@ -52,6 +52,19 @@ preview:
 
 ---
 
+@LAT-90LON0 | created:1771434880 | updated:1771434880
+
+## TTDB Special Record: Tour Sound
+
+Defines the optional tour audio for this TTDB.
+
+```ttdb-special
+kind: tour_sound
+audio_path: sounds/Toot_Toot_Goat_Chant.WAV
+```
+
+---
+
 @LAT1.1LON1.2 | created:1771434888 | updated:1771434888 | relates:frames>@LAT40.7LON-74.0,frames>@LAT35.7LON139.7,informs>@LAT51.5LON-0.1
 
 ## Umwelt
