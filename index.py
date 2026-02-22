@@ -39,6 +39,23 @@ GLOBE_ZOOM_MAX = 3.5
 GLOBE_ZOOM_STEP = 1.12
 GLOBE_DEFAULT_ZOOM = 1.2
 GLOBE_BASE_RADIUS_SCALE = 1.18
+LAYOUT_COMPACT_BREAKPOINT = 900
+GRAPH_ZOOM_BTN_SIZE = 44
+GRAPH_ZOOM_GAP = 6
+GRAPH_PANEL_HEIGHT = (GRAPH_ZOOM_BTN_SIZE * 3) + (GRAPH_ZOOM_GAP * 2)
+GRAPH_ZOOM_BTN_SIZE_COMPACT = 48
+GRAPH_ZOOM_GAP_COMPACT = 5
+GRAPH_PANEL_HEIGHT_COMPACT = (GRAPH_ZOOM_BTN_SIZE_COMPACT * 3) + (GRAPH_ZOOM_GAP_COMPACT * 2)
+RECORD_PANEL_MIN_HEIGHT = 540
+RECORD_PANEL_MAX_HEIGHT = 1020
+RECORD_PANEL_OFFSET = 320
+RECORD_PANEL_SCALE = 1.5
+RECORD_PANEL_BIAS = 180
+RECORD_PANEL_MIN_HEIGHT_COMPACT = 480
+RECORD_PANEL_MAX_HEIGHT_COMPACT = 840
+RECORD_PANEL_OFFSET_COMPACT = 280
+RECORD_PANEL_BIAS_COMPACT = 150
+RECORDS_LIST_MAX_HEIGHT = 420
 Z_SCALE = 0.1
 Z_MIN_SCALE = 0.5
 Z_MAX_SCALE = 1.5
@@ -139,6 +156,8 @@ class IndexApp(tk.Tk):
         self._record_current_id: str | None = None
         self._record_animation_after_id: str | None = None
         self._record_animation_token = 0
+        self.graph_wrap: tk.Frame | None = None
+        self.record_panel_body: ttk.Frame | None = None
 
         self.tour_enabled = tk.BooleanVar(value=True)
         self.slow_tour_enabled = tk.BooleanVar(value=False)
@@ -199,29 +218,36 @@ class IndexApp(tk.Tk):
         page = ttk.Frame(self, padding=(10, 10, 10, 10), style="Card.TFrame")
         page.grid(row=0, column=0, sticky="nsew")
         page.columnconfigure(0, weight=1)
-        page.rowconfigure(0, weight=5)
-        page.rowconfigure(1, weight=3)
+        page.rowconfigure(0, weight=0)
+        page.rowconfigure(1, weight=0)
         page.rowconfigure(2, weight=0)
         page.rowconfigure(3, weight=0)
 
         header = ttk.Frame(page, style="Card.TFrame")
         header.grid(row=0, column=0, sticky="nsew", pady=(0, 10))
-        header.columnconfigure(0, weight=5)
-        header.columnconfigure(1, weight=6)
-        header.rowconfigure(0, weight=1)
+        header.columnconfigure(0, weight=1)
+        header.rowconfigure(0, weight=0)
+        header.rowconfigure(1, weight=0)
 
         graph_card = ttk.Frame(header, padding=(8, 8, 8, 8), style="Card.TFrame")
-        graph_card.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
+        graph_card.grid(row=0, column=0, sticky="ew", pady=(0, 10))
         graph_card.columnconfigure(0, weight=1)
         graph_card.rowconfigure(0, weight=1)
 
-        graph_wrap = tk.Frame(graph_card, bg=PALETTE["graph_bg"], highlightthickness=1, highlightbackground="#1f2a2d")
-        graph_wrap.grid(row=0, column=0, sticky="nsew")
-        graph_wrap.rowconfigure(0, weight=1)
-        graph_wrap.columnconfigure(0, weight=1)
+        self.graph_wrap = tk.Frame(
+            graph_card,
+            bg=PALETTE["graph_bg"],
+            highlightthickness=1,
+            highlightbackground="#1f2a2d",
+            height=GRAPH_PANEL_HEIGHT,
+        )
+        self.graph_wrap.grid(row=0, column=0, sticky="ew")
+        self.graph_wrap.grid_propagate(False)
+        self.graph_wrap.rowconfigure(0, weight=1)
+        self.graph_wrap.columnconfigure(0, weight=1)
 
         self.graph_canvas = tk.Canvas(
-            graph_wrap,
+            self.graph_wrap,
             background=PALETTE["graph_bg"],
             highlightthickness=0,
             bd=0,
@@ -230,7 +256,7 @@ class IndexApp(tk.Tk):
         )
         self.graph_canvas.grid(row=0, column=0, sticky="nsew")
 
-        graph_controls = tk.Frame(graph_wrap, bg=PALETTE["graph_bg"])
+        graph_controls = tk.Frame(self.graph_wrap, bg=PALETTE["graph_bg"])
         graph_controls.grid(row=0, column=1, sticky="ns", padx=(6, 8), pady=12)
 
         self.zoom_in_btn = tk.Button(
@@ -280,7 +306,7 @@ class IndexApp(tk.Tk):
         self.zoom_reset_btn.pack()
 
         record_card = ttk.Frame(header, padding=(8, 8, 8, 8), style="Card.TFrame")
-        record_card.grid(row=0, column=1, sticky="nsew")
+        record_card.grid(row=1, column=0, sticky="nsew")
         record_card.columnconfigure(0, weight=1)
         record_card.rowconfigure(1, weight=1)
 
@@ -292,13 +318,14 @@ class IndexApp(tk.Tk):
         )
         ttk.Label(record_head, textvariable=self.selected_var, style="Muted.TLabel").grid(row=0, column=1, sticky="e")
 
-        text_frame = ttk.Frame(record_card, style="Card.TFrame")
-        text_frame.grid(row=1, column=0, sticky="nsew")
-        text_frame.rowconfigure(0, weight=1)
-        text_frame.columnconfigure(0, weight=1)
+        self.record_panel_body = ttk.Frame(record_card, style="Card.TFrame", height=RECORD_PANEL_MIN_HEIGHT)
+        self.record_panel_body.grid(row=1, column=0, sticky="nsew")
+        self.record_panel_body.grid_propagate(False)
+        self.record_panel_body.rowconfigure(0, weight=1)
+        self.record_panel_body.columnconfigure(0, weight=1)
 
         self.record_view_host = tk.Frame(
-            text_frame,
+            self.record_panel_body,
             bg="#0f0f12",
             highlightthickness=0,
             bd=0,
@@ -325,8 +352,9 @@ class IndexApp(tk.Tk):
             row=2, column=0, sticky="w", pady=(0, 6)
         )
 
-        list_frame = ttk.Frame(records_panel, style="Card.TFrame")
-        list_frame.grid(row=3, column=0, sticky="nsew")
+        list_frame = ttk.Frame(records_panel, style="Card.TFrame", height=RECORDS_LIST_MAX_HEIGHT)
+        list_frame.grid(row=3, column=0, sticky="ew")
+        list_frame.grid_propagate(False)
         list_frame.rowconfigure(0, weight=1)
         list_frame.columnconfigure(0, weight=1)
 
@@ -406,6 +434,46 @@ class IndexApp(tk.Tk):
         self.graph_canvas.bind("<MouseWheel>", self._on_graph_zoom)
         self.graph_canvas.bind("<Button-4>", self._on_graph_zoom)
         self.graph_canvas.bind("<Button-5>", self._on_graph_zoom)
+        self.bind("<Configure>", self._on_window_resize)
+        self.after_idle(self._sync_panel_dimensions)
+
+    def _on_window_resize(self, event: tk.Event) -> None:
+        if event.widget is not self:
+            return
+        self._sync_panel_dimensions()
+
+    def _sync_panel_dimensions(self) -> None:
+        if self.graph_wrap is None or self.record_panel_body is None:
+            return
+
+        width = max(self.winfo_width(), 1)
+        height = max(self.winfo_height(), 1)
+        compact = width <= LAYOUT_COMPACT_BREAKPOINT
+
+        graph_height = GRAPH_PANEL_HEIGHT_COMPACT if compact else GRAPH_PANEL_HEIGHT
+        if self._widget_height(self.graph_wrap) != graph_height:
+            self.graph_wrap.configure(height=graph_height)
+
+        record_height = self._compute_record_panel_height(width, height)
+        if self._widget_height(self.record_panel_body) != record_height:
+            self.record_panel_body.configure(height=record_height)
+
+        self._render_globe()
+
+    def _widget_height(self, widget: tk.Widget) -> int:
+        try:
+            return int(float(widget.cget("height")))
+        except Exception:
+            return -1
+
+    def _compute_record_panel_height(self, width: int, height: int) -> int:
+        if width <= LAYOUT_COMPACT_BREAKPOINT:
+            value = (height - RECORD_PANEL_OFFSET_COMPACT) * RECORD_PANEL_SCALE + RECORD_PANEL_BIAS_COMPACT
+            return int(
+                max(RECORD_PANEL_MIN_HEIGHT_COMPACT, min(RECORD_PANEL_MAX_HEIGHT_COMPACT, round(value)))
+            )
+        value = (height - RECORD_PANEL_OFFSET) * RECORD_PANEL_SCALE + RECORD_PANEL_BIAS
+        return int(max(RECORD_PANEL_MIN_HEIGHT, min(RECORD_PANEL_MAX_HEIGHT, round(value))))
 
     def _apply_text_tags(self, text: tk.Text) -> None:
         text.tag_configure("h2", font=self.font_h2, foreground="#ffd166")
@@ -1740,8 +1808,10 @@ class IndexApp(tk.Tk):
         canvas.delete("all")
         self.screen_points = {}
 
-        width = max(canvas.winfo_width(), 200)
-        height = max(canvas.winfo_height(), 200)
+        width = max(canvas.winfo_width(), 1)
+        height = max(canvas.winfo_height(), 1)
+        if width <= 1 or height <= 1:
+            return
         radius = max(10.0, self._get_globe_base_radius(width, height) * self.globe_zoom)
         if radius <= 10:
             return
