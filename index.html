@@ -749,10 +749,20 @@
       return [...state.order];
     }
 
-    function pickRandomDiscoveredNodeColor() {
-      const hue = Math.floor(Math.random() * 360);
-      const saturation = 62 + Math.floor(Math.random() * 24);
-      const lightness = 50 + Math.floor(Math.random() * 14);
+    function hashRecordId(recordId) {
+      let hash = 2166136261;
+      for (let i = 0; i < recordId.length; i += 1) {
+        hash ^= recordId.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      return hash >>> 0;
+    }
+
+    function pickDeterministicDiscoveredNodeColor(recordId) {
+      const hash = hashRecordId(recordId);
+      const hue = hash % 360;
+      const saturation = 62 + (Math.floor(hash / 360) % 22);
+      const lightness = 48 + (Math.floor(hash / (360 * 22)) % 16);
       return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     }
 
@@ -765,7 +775,7 @@
       });
       state.discoveredIds.forEach((recordId) => {
         if (!state.discoveredNodeColors[recordId]) {
-          state.discoveredNodeColors[recordId] = pickRandomDiscoveredNodeColor();
+          state.discoveredNodeColors[recordId] = pickDeterministicDiscoveredNodeColor(recordId);
         }
       });
     }
@@ -773,7 +783,7 @@
     function getNodeColor(recordId, discoveredSet) {
       if (!discoveredSet.has(recordId)) return "#6a6f78";
       if (!state.discoveredNodeColors[recordId]) {
-        state.discoveredNodeColors[recordId] = pickRandomDiscoveredNodeColor();
+        state.discoveredNodeColors[recordId] = pickDeterministicDiscoveredNodeColor(recordId);
       }
       return state.discoveredNodeColors[recordId];
     }
