@@ -17,6 +17,11 @@ try:
 except Exception:  # pragma: no cover - optional on non-Windows platforms
     winsound = None
 
+try:
+    from tkinterweb import HtmlFrame  # type: ignore
+except Exception:  # pragma: no cover - optional dependency for embedded browser media
+    HtmlFrame = None
+
 
 DB_PATH = Path("TootTootTerminologyDB.md")
 DISCOVERY_STATE_PATH = Path(".index_discovery.json")
@@ -56,6 +61,7 @@ RECORD_PANEL_MAX_HEIGHT_COMPACT = 840
 RECORD_PANEL_OFFSET_COMPACT = 280
 RECORD_PANEL_BIAS_COMPACT = 150
 RECORDS_LIST_MAX_HEIGHT = 420
+LEAD_MEDIA_PANEL_HEIGHT = 232
 Z_SCALE = 0.1
 Z_MIN_SCALE = 0.5
 Z_MAX_SCALE = 1.5
@@ -1213,8 +1219,21 @@ class IndexApp(tk.Tk):
             bd=0,
             relief="flat",
         )
-        frame.rowconfigure(0, weight=1)
+        frame.rowconfigure(1, weight=1)
         frame.columnconfigure(0, weight=1)
+
+        media_host = tk.Frame(
+            frame,
+            bg="#0f0f12",
+            highlightbackground="#2a2f3a",
+            highlightthickness=1,
+            bd=0,
+            relief="flat",
+            height=LEAD_MEDIA_PANEL_HEIGHT,
+        )
+        media_host.grid(row=0, column=0, columnspan=2, sticky="ew", padx=12, pady=(12, 0))
+        media_host.grid_propagate(False)
+        media_host.grid_remove()
 
         text = tk.Text(
             frame,
@@ -1228,32 +1247,27 @@ class IndexApp(tk.Tk):
             padx=12,
             pady=12,
         )
-        text.grid(row=0, column=0, sticky="nsew")
+        text.grid(row=1, column=0, sticky="nsew")
         text_scroll = ttk.Scrollbar(frame, orient="vertical", command=text.yview)
-        text_scroll.grid(row=0, column=1, sticky="ns")
+        text_scroll.grid(row=1, column=1, sticky="ns")
         text.configure(yscrollcommand=text_scroll.set)
         self._apply_text_tags(text)
-        self._populate_record_widget(text, record_id)
+        self._populate_record_widget(text, media_host, record_id)
         return frame, text
 
-    def _populate_record_widget(self, widget: tk.Text, record_id: str | None) -> None:
+    def _populate_record_widget(self, widget: tk.Text, media_host: tk.Frame, record_id: str | None) -> None:
         widget.configure(state="normal")
         widget.delete("1.0", "end")
 
         if not record_id or record_id not in self.records:
+            self._clear_media_host(media_host)
             widget.insert("end", "No record selected.\n", ("muted",))
             widget.configure(state="disabled")
             return
 
         record = self.records[record_id]
         body, lead_media = self._extract_lead_media(record.body)
-
-        if lead_media:
-            widget.insert("end", "Lead media: ", ("muted",))
-            self._insert_link(widget, lead_media.alt or lead_media.src, lead_media.src, ("media",))
-            if lead_media.title:
-                widget.insert("end", f" ({lead_media.title})", ("muted",))
-            widget.insert("end", "\n\n")
+        self._populate_lead_media(media_host, lead_media)
 
         if record.title:
             widget.insert("end", record.title + "\n", ("h2",))
@@ -1275,6 +1289,188 @@ class IndexApp(tk.Tk):
 
         widget.configure(state="disabled")
         widget.see("1.0")
+
+    def _populate_lead_media(self, media_host: tk.Frame, lead_media: LeadMedia | None) -> None:
+        self._clear_media_host(media_host)
+        if lead_media is None:
+            return
+
+        media_host.grid()
+        media_host.rowconfigure(1, weight=1)
+        media_host.columnconfigure(0, weight=1)
+
+        header = tk.Frame(media_host, bg="#111720", highlightthickness=0, bd=0)
+        header.grid(row=0, column=0, sticky="ew")
+        header.columnconfigure(0, weight=1)
+
+        tk.Label(
+            header,
+            text="Lead media",
+            bg="#111720",
+            fg="#c6d8ff",
+            font=("TkDefaultFont", 9, "bold"),
+            padx=10,
+            pady=6,
+            anchor="w",
+        ).grid(row=0, column=0, sticky="w")
+        tk.Button(
+            header,
+            text="Open",
+            command=lambda src=lead_media.src: self._open_target(src),
+            bg="#111720",
+            fg="#c6d8ff",
+            activebackground="#1a2536",
+            activeforeground="#e9f6ff",
+            relief="flat",
+            bd=0,
+            padx=8,
+            pady=4,
+            cursor="hand2",
+        ).grid(row=0, column=1, sticky="e", padx=6)
+
+        body = tk.Frame(media_host, bg="#0f0f12", highlightthickness=0, bd=0)
+        body.grid(row=1, column=0, sticky="nsew", padx=8, pady=(6, 8))
+        body.rowconfigure(0, weight=1)
+        body.columnconfigure(0, weight=1)
+
+        rendered = self._try_embed_media(body, lead_media)
+        if not rendered:
+            rendered = self._try_bitmap_preview(body, lead_media)
+        if not rendered:
+            self._render_media_fallback(body, lead_media)
+
+        caption_parts = [part.strip() for part in (lead_media.alt, lead_media.title) if part and part.strip()]
+        if caption_parts:
+            tk.Label(
+                body,
+                text=" · ".join(caption_parts),
+                bg="#0f0f12",
+                fg="#9da8bd",
+                anchor="w",
+                justify="left",
+                wraplength=760,
+            ).grid(row=1, column=0, sticky="ew", pady=(6, 0))
+
+    def _clear_media_host(self, media_host: tk.Frame) -> None:
+        for child in media_host.winfo_children():
+            child.destroy()
+        media_host.grid_remove()
+
+    def _try_embed_media(self, parent: tk.Frame, media: LeadMedia) -> bool:
+        if HtmlFrame is None:
+            return False
+
+        source_uri = self._target_to_external_uri(media.src)
+        if not source_uri:
+            return False
+        local_source = self._resolve_local_target_path(media.src)
+
+        should_embed = (
+            self._is_html_embed_source(media.src)
+            or self._is_svg_source(media.src)
+            or source_uri.startswith("http://")
+            or source_uri.startswith("https://")
+        )
+        if not should_embed:
+            return False
+
+        try:
+            viewer = HtmlFrame(parent)  # type: ignore[misc,call-arg]
+        except Exception:
+            return False
+
+        viewer.grid(row=0, column=0, sticky="nsew")
+        try:
+            load_file = getattr(viewer, "load_file", None)
+            if callable(load_file) and local_source is not None:
+                load_file(str(local_source))
+                return True
+            load_website = getattr(viewer, "load_website", None)
+            if callable(load_website):
+                load_website(source_uri)
+                return True
+            load_url = getattr(viewer, "load_url", None)
+            if callable(load_url):
+                load_url(source_uri)
+                return True
+        except Exception:
+            viewer.destroy()
+            return False
+        viewer.destroy()
+        return False
+
+    def _try_bitmap_preview(self, parent: tk.Frame, media: LeadMedia) -> bool:
+        if not self._is_bitmap_preview_source(media.src):
+            return False
+
+        local = self._resolve_local_target_path(media.src)
+        if local is None:
+            return False
+
+        try:
+            image = tk.PhotoImage(file=str(local))
+        except Exception:
+            return False
+
+        max_width = 720
+        max_height = 180
+        step_x = max(1, math.ceil(image.width() / max_width))
+        step_y = max(1, math.ceil(image.height() / max_height))
+        step = max(step_x, step_y)
+        if step > 1:
+            image = image.subsample(step, step)
+
+        label = tk.Label(
+            parent,
+            image=image,
+            bg="#0f0f12",
+            highlightbackground="#2a2f3a",
+            highlightthickness=1,
+            bd=0,
+            relief="flat",
+            cursor="hand2",
+        )
+        label.image = image  # keep reference alive
+        label.grid(row=0, column=0, sticky="nsew")
+        label.bind("<Button-1>", lambda _event, src=media.src: self._open_target(src))
+        return True
+
+    def _render_media_fallback(self, parent: tk.Frame, media: LeadMedia) -> None:
+        note = (
+            "Inline HTML/SVG preview requires `tkinterweb`."
+            if (self._is_html_embed_source(media.src) or self._is_svg_source(media.src))
+            else "Inline preview is unavailable for this media source."
+        )
+
+        card = tk.Frame(parent, bg="#121620", highlightbackground="#2a2f3a", highlightthickness=1, bd=0, relief="flat")
+        card.grid(row=0, column=0, sticky="nsew")
+        card.columnconfigure(0, weight=1)
+
+        tk.Label(
+            card,
+            text=note,
+            bg="#121620",
+            fg="#9da8bd",
+            justify="left",
+            anchor="w",
+            padx=10,
+            pady=10,
+            wraplength=760,
+        ).grid(row=0, column=0, sticky="ew")
+        tk.Button(
+            card,
+            text=f"Open {media.alt or media.src}",
+            command=lambda src=media.src: self._open_target(src),
+            bg="#1a2536",
+            fg="#d7e4ff",
+            activebackground="#22314a",
+            activeforeground="#ecf3ff",
+            relief="flat",
+            bd=0,
+            padx=10,
+            pady=6,
+            cursor="hand2",
+        ).grid(row=1, column=0, sticky="w", padx=10, pady=(0, 10))
 
     def _set_record_frame(self, frame: tk.Frame, record_id: str | None) -> None:
         for child in self.record_view_host.winfo_children():
@@ -1631,6 +1827,18 @@ class IndexApp(tk.Tk):
     def _is_javascript_uri(self, target: str) -> bool:
         return target.strip().lower().startswith("javascript:")
 
+    def _clean_target(self, target: str) -> str:
+        cleaned = target.strip()
+        if cleaned.startswith("<") and cleaned.endswith(">"):
+            cleaned = cleaned[1:-1].strip()
+        return cleaned
+
+    def _split_target_suffix(self, target: str) -> tuple[str, str]:
+        for idx, char in enumerate(target):
+            if char in "?#":
+                return target[:idx], target[idx:]
+        return target, ""
+
     def _resolve_asset_path(self, value: str) -> Path | None:
         cleaned = value.strip()
         if not cleaned:
@@ -1648,22 +1856,54 @@ class IndexApp(tk.Tk):
             return candidate.resolve()
         return None
 
-    def _open_target(self, target: str) -> None:
-        cleaned = target.strip()
-        if cleaned.startswith("<") and cleaned.endswith(">"):
-            cleaned = cleaned[1:-1].strip()
+    def _resolve_local_target_path(self, target: str) -> Path | None:
+        cleaned = self._clean_target(target)
+        if not cleaned or re.match(r"^[A-Za-z][A-Za-z0-9+.-]*://", cleaned):
+            return None
+        base, _suffix = self._split_target_suffix(cleaned)
+        if not base:
+            return None
+        return self._resolve_asset_path(base)
+
+    def _target_to_external_uri(self, target: str) -> str | None:
+        cleaned = self._clean_target(target)
         if not cleaned or self._is_javascript_uri(cleaned):
-            return
+            return None
         if cleaned.startswith("www."):
             cleaned = f"https://{cleaned}"
         if re.match(r"^[A-Za-z][A-Za-z0-9+.-]*://", cleaned):
-            webbrowser.open(cleaned)
-            return
-        local = self._resolve_asset_path(cleaned)
+            return cleaned
+        base, suffix = self._split_target_suffix(cleaned)
+        if not base:
+            return cleaned
+        local = self._resolve_asset_path(base)
         if local is not None:
-            webbrowser.open(local.as_uri())
+            return local.as_uri() + suffix
+        return cleaned
+
+    def _media_extension(self, target: str) -> str:
+        cleaned = self._clean_target(target)
+        if not cleaned:
+            return ""
+        base, _suffix = self._split_target_suffix(cleaned)
+        if not base:
+            return ""
+        return Path(base).suffix.lower()
+
+    def _is_html_embed_source(self, target: str) -> bool:
+        return self._media_extension(target) == ".html"
+
+    def _is_svg_source(self, target: str) -> bool:
+        return self._media_extension(target) == ".svg"
+
+    def _is_bitmap_preview_source(self, target: str) -> bool:
+        return self._media_extension(target) in {".png", ".gif", ".ppm", ".pgm"}
+
+    def _open_target(self, target: str) -> None:
+        uri = self._target_to_external_uri(target)
+        if not uri:
             return
-        webbrowser.open(cleaned)
+        webbrowser.open(uri)
 
     def _open_db_file(self) -> None:
         if self.db_path.exists():
