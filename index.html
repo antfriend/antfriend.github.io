@@ -498,19 +498,23 @@
 
   <script src="js/eyeball.js"></script>
   <script>
-    const DB_PATH = "TootTootTerminologyDB.md";
+    const DEFAULT_DB_PATH = "TootTootTerminologyDB.md";
+    const DB_CANDIDATE_PATHS = [DEFAULT_DB_PATH, "MyMentalPalaceDB.md"];
     const TOUR_DELAY_MS = 12000;
     const TOUR_SLOW_DELAY_MULTIPLIER = 1.7;
     const TOUR_SLOW_TRANSITION_MULTIPLIER = 1.5;
     const SPECIAL_RECORD_BLOCK_LANG = "ttdb-special";
     const SPECIAL_RECORD_SOUTH_POLE_LAT = -90;
     const TOUR_AUDIO_SPECIAL_KIND = "tour_sound";
-    const DISCOVERY_KEY = "tte-terminology-discovered-records-v1";
+    const DISCOVERY_KEY_PREFIX = "tte-terminology-discovered-records-v2";
     const GLOBE_ZOOM_MIN = 0.7;
     const GLOBE_ZOOM_MAX = 3.5;
     const GLOBE_ZOOM_STEP = 1.12;
     const GLOBE_DEFAULT_ZOOM = 1.2;
     const GLOBE_BASE_RADIUS_SCALE = 1.18;
+    const DB_SIDE_GLOBE_SCALE = 0.25;
+    const DB_SIDE_GLOBE_NEAR_OVERLAP = 0.72;
+    const DB_SIDE_GLOBE_STEP = 1.68;
 
     const state = {
       records: {},
@@ -518,8 +522,15 @@
       filteredOrder: [],
       selectedId: null,
       lastText: "",
+      lastLoadedDbPath: null,
+      activeDbPath: DEFAULT_DB_PATH,
+      availableDbPaths: [DEFAULT_DB_PATH],
       coords: {},
       screenPoints: {},
+      dbGlobeHitTargets: [],
+      dbShiftPx: 0,
+      dbShiftAnimation: null,
+      dbLoadToken: 0,
       globeRotLat: 0,
       globeRotLon: 0,
       globeTargetLat: 0,
@@ -600,7 +611,7 @@
 
     forgetDiscoveriesBtn.addEventListener("click", () => {
       try {
-        localStorage.removeItem(DISCOVERY_KEY);
+        localStorage.removeItem(getDiscoveryKey());
       } catch (err) {
         // Ignore storage failures and continue with in-memory reset.
       }
@@ -669,7 +680,51 @@
 
     function setStatusLink(recordCount) {
       const discoveredCount = getDiscoveredOrder().length;
-      statusEl.innerHTML = `DB: <a href="${DB_PATH}">${DB_PATH}</a> · ${discoveredCount}/${recordCount} discovered`;
+      const activeDbPath = state.activeDbPath || DEFAULT_DB_PATH;
+      statusEl.innerHTML =
+        `DB: <a href="${activeDbPath}">${activeDbPath}</a> · ${discoveredCount}/${recordCount} discovered`;
+    }
+
+    function getDiscoveryKey(dbPath = state.activeDbPath) {
+      const keyPath = dbPath || DEFAULT_DB_PATH;
+      return `${DISCOVERY_KEY_PREFIX}:${keyPath}`;
+    }
+
+    function getDbBaseName(dbPath) {
+      return dbPath.replace(/^.*[\\/]/, "").replace(/\.md$/i, "");
+    }
+
+    function getDbBadgeLabel(dbPath) {
+      const baseName = getDbBaseName(dbPath).replace(/DB$/i, "");
+      const initials = (baseName.match(/[A-Z]/g) || []).join("").slice(0, 5);
+      if (initials.length >= 2) return initials;
+      const compact = baseName.replace(/[^A-Za-z0-9]/g, "");
+      return compact.slice(0, 4).toUpperCase() || "DB";
+    }
+
+    function normalizeDbCatalog(paths) {
+      const unique = [];
+      const seen = new Set();
+      paths.forEach((value) => {
+        if (typeof value !== "string") return;
+        const trimmed = value.trim();
+        if (!trimmed.toLowerCase().endsWith(".md")) return;
+        if (seen.has(trimmed)) return;
+        seen.add(trimmed);
+        unique.push(trimmed);
+      });
+      if (!seen.has(DEFAULT_DB_PATH)) {
+        unique.unshift(DEFAULT_DB_PATH);
+      } else if (unique[0] !== DEFAULT_DB_PATH) {
+        const idx = unique.indexOf(DEFAULT_DB_PATH);
+        unique.splice(idx, 1);
+        unique.unshift(DEFAULT_DB_PATH);
+      }
+      return unique;
+    }
+
+    function initializeDbCatalog() {
+      state.availableDbPaths = normalizeDbCatalog(DB_CANDIDATE_PATHS);
     }
 
     function getDiscoveredOrder() {
@@ -685,7 +740,7 @@
 
     function persistDiscovery() {
       try {
-        localStorage.setItem(DISCOVERY_KEY, JSON.stringify(state.discoveredIds));
+        localStorage.setItem(getDiscoveryKey(), JSON.stringify(state.discoveredIds));
       } catch (err) {
         // Ignore storage failures and continue with in-memory discovery state.
       }
@@ -697,7 +752,7 @@
 
       let storedIds = [];
       try {
-        const raw = localStorage.getItem(DISCOVERY_KEY);
+        const raw = localStorage.getItem(getDiscoveryKey());
         if (raw) {
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed)) {
@@ -789,15 +844,27 @@
         `${state.filteredOrder.length} matches within ${discoveredCount} discovered terms for "${state.searchTerm}".`;
     }
 
-    function loadDb(force = false) {
-      fetch(DB_PATH, { cache: "no-store" })
+    function loadDb(dbPath = state.activeDbPath, opts = {}) {
+      const { force = false, resetSelection = false } = opts;
+      const targetDbPath = dbPath || DEFAULT_DB_PATH;
+      const loadToken = (state.dbLoadToken += 1);
+      state.activeDbPath = targetDbPath;
+      if (!state.availableDbPaths.includes(targetDbPath)) {
+        state.availableDbPaths = normalizeDbCatalog([...state.availableDbPaths, targetDbPath]);
+      }
+      setStatusMessage(`Loading ${targetDbPath}...`);
+      renderGraph();
+
+      fetch(targetDbPath, { cache: "no-store" })
         .then((res) => {
-          if (!res.ok) throw new Error(`Failed to load ${DB_PATH}`);
+          if (!res.ok) throw new Error(`Failed to load ${targetDbPath}`);
           return res.text();
         })
         .then((text) => {
-          if (!force && text === state.lastText) return;
+          if (loadToken !== state.dbLoadToken) return;
+          if (!force && targetDbPath === state.lastLoadedDbPath && text === state.lastText) return;
           state.lastText = text;
+          state.lastLoadedDbPath = targetDbPath;
           const { records, order, selected, coords, specialRecords } = parseRecords(text);
           state.records = records;
           state.order = order;
@@ -806,7 +873,7 @@
           setTourAudioPath(getTourAudioPath(state.specialRecords));
           initializeDiscovery();
           buildSearchIndex();
-          if (!state.selectedId || !records[state.selectedId]) {
+          if (resetSelection || !state.selectedId || !records[state.selectedId]) {
             state.selectedId = selected || order[0] || null;
           }
           if (state.selectedId) {
@@ -817,6 +884,7 @@
           scheduleTour();
         })
         .catch((err) => {
+          if (loadToken !== state.dbLoadToken) return;
           setStatusMessage(err.message);
           state.records = {};
           state.order = [];
@@ -1018,6 +1086,7 @@
     }
 
     function selectRecord(recordId, opts = {}) {
+      if (state.dbShiftAnimation) return;
       if (!state.records[recordId]) return;
       discoverRecord(recordId);
       queueRecordTransition(state.selectedId, recordId, opts);
@@ -1590,6 +1659,154 @@
       return Math.max(10, baseRadius * GLOBE_BASE_RADIUS_SCALE);
     }
 
+    function buildDbSideGlobes(cx, cy, mainRadius) {
+      const others = state.availableDbPaths.filter((dbPath) => dbPath !== state.activeDbPath);
+      if (!others.length) return [];
+
+      const sideRadius = Math.max(8, mainRadius * DB_SIDE_GLOBE_SCALE);
+      const top = cy - mainRadius;
+      const y = top + sideRadius;
+      const firstOffset = mainRadius + sideRadius * DB_SIDE_GLOBE_NEAR_OVERLAP;
+      const stepOffset = sideRadius * DB_SIDE_GLOBE_STEP;
+
+      let rightRank = 0;
+      let leftRank = 0;
+      return others.map((dbPath, idx) => {
+        const side = idx % 2 === 0 ? 1 : -1;
+        const rank = side > 0 ? ++rightRank : ++leftRank;
+        const offset = firstOffset + (rank - 1) * stepOffset;
+        const offsetX = side * offset;
+        return {
+          dbPath,
+          side,
+          rank,
+          offsetX,
+          x: cx + offsetX,
+          y,
+          radius: sideRadius,
+          badge: getDbBadgeLabel(dbPath),
+        };
+      });
+    }
+
+    function drawDbSideGlobes(sideGlobes) {
+      state.dbGlobeHitTargets = sideGlobes.map(({ dbPath, x, y, radius, offsetX, side }) => ({
+        dbPath,
+        x,
+        y,
+        radius,
+        offsetX,
+        side,
+      }));
+      if (!sideGlobes.length) return;
+
+      const drawOrder = [...sideGlobes].sort((a, b) => b.rank - a.rank);
+      drawOrder.forEach((entry) => {
+        const depthFade = Math.max(0.28, 0.54 - (entry.rank - 1) * 0.11);
+        const haloAlpha = Math.max(0.2, 0.56 - (entry.rank - 1) * 0.1);
+        const { x, y, radius } = entry;
+
+        ctx.save();
+        ctx.fillStyle = `rgba(7, 10, 18, ${Math.min(0.95, 0.7 + depthFade * 0.2)})`;
+        ctx.strokeStyle = `rgba(124, 199, 255, ${0.4 * depthFade})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.22 * depthFade})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(x, y, radius * 0.84, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = `rgba(124, 199, 255, ${haloAlpha * 0.44})`;
+        ctx.beginPath();
+        ctx.arc(x - radius * 0.16, y - radius * 0.18, radius * 0.33, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = `rgba(233, 246, 255, ${0.82 * depthFade})`;
+        ctx.font = `700 ${Math.max(8, Math.floor(radius * 0.43))}px Trebuchet MS`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(entry.badge, x, y);
+        ctx.restore();
+      });
+    }
+
+    function easeInOutCubic(t) {
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function animateDbShift(now) {
+      const animation = state.dbShiftAnimation;
+      if (!animation) return;
+      const elapsed = now - animation.start;
+      const t = Math.max(0, Math.min(1, elapsed / animation.durationMs));
+      const eased = easeInOutCubic(t);
+      state.dbShiftPx = animation.from + (animation.to - animation.from) * eased;
+      renderGraph();
+      if (t < 1) {
+        requestAnimationFrame(animateDbShift);
+        return;
+      }
+      const nextDbPath = animation.nextDbPath;
+      state.dbShiftAnimation = null;
+      state.dbShiftPx = 0;
+      loadDb(nextDbPath, { force: true, resetSelection: true });
+    }
+
+    function startDbShiftAndLoad(target) {
+      if (!target || !target.dbPath || target.dbPath === state.activeDbPath) return false;
+      if (state.dbShiftAnimation) return false;
+      clearTour(true);
+      const from = state.dbShiftPx;
+      const to = -target.offsetX;
+      const distance = Math.abs(to - from);
+      const durationMs = Math.round(Math.max(220, Math.min(760, 260 + distance * 0.35)));
+      state.dbShiftAnimation = {
+        from,
+        to,
+        start: performance.now(),
+        durationMs,
+        nextDbPath: target.dbPath,
+      };
+      requestAnimationFrame(animateDbShift);
+      return true;
+    }
+
+    function selectDbPath(dbPath) {
+      if (!dbPath || dbPath === state.activeDbPath) return false;
+      const target = state.dbGlobeHitTargets.find((entry) => entry.dbPath === dbPath);
+      if (!target) {
+        loadDb(dbPath, { force: true, resetSelection: true });
+        return true;
+      }
+      return startDbShiftAndLoad(target);
+    }
+
+    function selectDbGlobeNearPoint(canvasX, canvasY, pointerType = "mouse") {
+      if (!state.dbGlobeHitTargets.length || state.dbShiftAnimation) return false;
+      let closest = null;
+      let closestDist = Infinity;
+      state.dbGlobeHitTargets.forEach((entry) => {
+        const dx = entry.x - canvasX;
+        const dy = entry.y - canvasY;
+        const dist = Math.hypot(dx, dy);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = entry;
+        }
+      });
+      if (!closest) return false;
+      const pad = pointerType === "touch" ? 10 : 4;
+      if (closestDist > closest.radius + pad) return false;
+      return startDbShiftAndLoad(closest);
+    }
+
     function renderGraph() {
       const parent = graphCanvas.parentElement;
       const width = parent.clientWidth;
@@ -1602,10 +1819,14 @@
 
       const baseRadius = getGlobeBaseRadius(width, height);
       const radius = Math.max(10, baseRadius * state.globeZoom);
+      state.screenPoints = {};
+      state.dbGlobeHitTargets = [];
       if (radius <= 10) return;
 
-      const cx = width / 2;
+      const cx = width / 2 + state.dbShiftPx;
       const cy = height / 2;
+      const sideGlobes = buildDbSideGlobes(cx, cy, radius);
+      drawDbSideGlobes(sideGlobes);
 
       ctx.fillStyle = "#0e1117";
       ctx.strokeStyle = "#2a2f3a";
@@ -1986,6 +2207,7 @@
     }
 
     function selectRecordNearPoint(canvasX, canvasY, pointerType = "mouse") {
+      if (state.dbShiftAnimation) return false;
       let closest = null;
       let closestDist = Infinity;
       Object.entries(state.screenPoints).forEach(([id, pos]) => {
@@ -2006,6 +2228,7 @@
     }
 
     function beginGlobeDrag(clientX, clientY) {
+      if (state.dbShiftAnimation) return;
       state.globeDragging = true;
       state.globeDragMoved = false;
       state.globeDragX = clientX;
@@ -2017,6 +2240,7 @@
     }
 
     function handleGlobeDragMove(clientX, clientY) {
+      if (state.dbShiftAnimation) return false;
       if (!state.globeDragging) return false;
       const dx = clientX - state.globeDragX;
       const dy = clientY - state.globeDragY;
@@ -2043,6 +2267,7 @@
     }
 
     function endGlobeDrag() {
+      if (state.dbShiftAnimation) return false;
       if (!state.globeDragging) return false;
       const didMove = state.globeDragMoved;
       state.globeDragging = false;
@@ -2215,7 +2440,10 @@
         const rect = graphCanvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        usedTap = selectRecordNearPoint(x, y, event.pointerType);
+        usedTap = selectDbGlobeNearPoint(x, y, event.pointerType);
+        if (!usedTap) {
+          usedTap = selectRecordNearPoint(x, y, event.pointerType);
+        }
       }
 
       if (usedDrag || usedTap || pointerGesture.movedOrZoomed) {
@@ -2300,13 +2528,15 @@
 
     function noteInteraction() {
       if (!state.tourEnabled) return;
+      if (state.dbShiftAnimation) return;
       scheduleTour();
     }
 
     window.mountEyeball("eyeball-terminology");
     window.mountEyeball("eyeball-foot");
 
-    loadDb(true);
+    initializeDbCatalog();
+    loadDb(DEFAULT_DB_PATH, { force: true, resetSelection: true });
   </script>
 </body>
 </html>
