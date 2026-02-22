@@ -9,6 +9,9 @@
   <link rel="stylesheet" href="css/tte-core.css" />
   <style> 
     .page {
+      --graph-zoom-btn-size: 44px;
+      --graph-zoom-gap: 6px;
+      --globe-panel-height: calc((var(--graph-zoom-btn-size) * 3) + (var(--graph-zoom-gap) * 2));
       max-width: 100%;
       margin: 0 auto;
       padding: 0 clamp(10px, 2.2vw, 24px) 28px;
@@ -70,10 +73,8 @@
     }
 
     .graph-wrap {
-      --graph-zoom-btn-size: 44px;
-      --graph-zoom-gap: 6px;
       width: 100%;
-      height: calc((var(--graph-zoom-btn-size) * 3) + (var(--graph-zoom-gap) * 2));
+      height: var(--globe-panel-height);
       border-radius: 18px;
       background: rgba(11, 17, 18, 0.92);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -165,6 +166,7 @@
 
     .panel.records-panel {
       margin-top: 8px;
+      height: calc(var(--globe-panel-height) * 2);
     }
     .info-panel {
       max-width: 900px;
@@ -418,7 +420,7 @@
         grid-template-columns: 1fr;
       }
 
-      .graph-wrap {
+      .page {
         --graph-zoom-btn-size: 48px;
         --graph-zoom-gap: 5px;
       }
