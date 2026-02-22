@@ -28,6 +28,7 @@ ANIMATION_MS = 16
 
 TOUR_DELAY_MS = 12000
 TOUR_SLOW_DELAY_MULTIPLIER = 1.7
+TOUR_SLOW_TRANSITION_MULTIPLIER = 1.5
 
 SPECIAL_RECORD_BLOCK_LANG = "ttdb-special"
 SPECIAL_RECORD_SOUTH_POLE_LAT = -90.0
@@ -133,6 +134,11 @@ class IndexApp(tk.Tk):
         self._file_mtime: float | None = None
         self._last_text = ""
         self._link_counter = 0
+        self._pending_record_transition: dict[str, float | str] | None = None
+        self._record_current_frame: tk.Frame | None = None
+        self._record_current_id: str | None = None
+        self._record_animation_after_id: str | None = None
+        self._record_animation_token = 0
 
         self.tour_enabled = tk.BooleanVar(value=True)
         self.slow_tour_enabled = tk.BooleanVar(value=False)
@@ -162,7 +168,6 @@ class IndexApp(tk.Tk):
 
         self._init_fonts()
         self._build_ui()
-        self._apply_text_tags(self.record_text)
         self._load_preferences()
 
         self.bind("<KeyPress-space>", self._on_space_press)
@@ -292,23 +297,14 @@ class IndexApp(tk.Tk):
         text_frame.rowconfigure(0, weight=1)
         text_frame.columnconfigure(0, weight=1)
 
-        self.record_text = tk.Text(
+        self.record_view_host = tk.Frame(
             text_frame,
-            wrap="word",
-            font=self.font_body,
-            background="#0f0f12",
-            foreground="#e9e9f0",
-            insertbackground="#e9e9f0",
-            relief="flat",
+            bg="#0f0f12",
+            highlightthickness=0,
             bd=0,
-            padx=12,
-            pady=12,
+            relief="flat",
         )
-        self.record_text.grid(row=0, column=0, sticky="nsew")
-        self.record_text.configure(state="disabled")
-        text_scroll = ttk.Scrollbar(text_frame, orient="vertical", command=self.record_text.yview)
-        text_scroll.grid(row=0, column=1, sticky="ns")
-        self.record_text.configure(yscrollcommand=text_scroll.set)
+        self.record_view_host.grid(row=0, column=0, sticky="nsew")
 
         records_panel = ttk.Frame(page, padding=(10, 10, 10, 10), style="Card.TFrame")
         records_panel.grid(row=1, column=0, sticky="nsew", pady=(0, 10))
@@ -425,6 +421,7 @@ class IndexApp(tk.Tk):
 
     def _on_close(self) -> None:
         self._clear_tour(stop_audio=True)
+        self._stop_record_animation(normalize_current=False)
         if self._poll_after_id:
             self.after_cancel(self._poll_after_id)
             self._poll_after_id = None
@@ -815,7 +812,9 @@ class IndexApp(tk.Tk):
             ]
 
         if prefer_visible_selection and self.filtered_order and self.selected_id not in self.filtered_order:
+            previous_id = self.selected_id
             self.selected_id = self.filtered_order[0]
+            self._queue_record_transition(previous_id, self.selected_id, from_tour=False)
             self._discover_record(self.selected_id)
 
         self._render_list()
@@ -875,7 +874,9 @@ class IndexApp(tk.Tk):
     def _select_record(self, record_id: str, from_tour: bool = False, from_list: bool = False) -> None:
         if record_id not in self.records:
             return
+        previous_id = self.selected_id
         self._discover_record(record_id)
+        self._queue_record_transition(previous_id, record_id, from_tour=from_tour)
         self.selected_id = record_id
         self._apply_search(prefer_visible_selection=False, schedule_tour=False)
         if not from_tour:
@@ -888,18 +889,130 @@ class IndexApp(tk.Tk):
             self.record_listbox.see(idx)
 
     def _render_record(self) -> None:
-        widget = self.record_text
+        selected_id = self.selected_id if self.selected_id in self.records else None
+        if selected_id:
+            self.selected_var.set(f"Selected: {selected_id}")
+        else:
+            self.selected_var.set("Selected: (none)")
+
+        transition = self._pending_record_transition
+        self._pending_record_transition = None
+
+        self._stop_record_animation(normalize_current=True)
+
+        incoming_frame, _incoming_text = self._build_record_frame(selected_id)
+        current_frame = self._record_current_frame
+        current_id = self._record_current_id
+
+        should_animate = (
+            current_frame is not None
+            and transition is not None
+            and selected_id is not None
+            and transition.get("from_id") == current_id
+            and transition.get("to_id") == selected_id
+        )
+
+        if not should_animate:
+            self._set_record_frame(incoming_frame, selected_id)
+            return
+
+        duration_ms = max(120, int(transition.get("duration_ms", 240)))
+        travel_px = max(24, int(transition.get("travel_px", 80)))
+        dir_x = float(transition.get("dir_x", 1.0))
+        dir_y = float(transition.get("dir_y", 0.0))
+        enter_x = int(round(dir_x * travel_px))
+        enter_y = int(round(dir_y * travel_px))
+        exit_x = -enter_x
+        exit_y = -enter_y
+
+        current_frame.place(x=0, y=0, relwidth=1, relheight=1)
+        incoming_frame.place(x=enter_x, y=enter_y, relwidth=1, relheight=1)
+        self._record_current_frame = incoming_frame
+        self._record_current_id = selected_id
+
+        self._record_animation_token += 1
+        token = self._record_animation_token
+        started_at = time.perf_counter()
+
+        def tick() -> None:
+            if token != self._record_animation_token:
+                return
+            elapsed_ms = (time.perf_counter() - started_at) * 1000.0
+            progress = 1.0 if duration_ms <= 0 else min(1.0, elapsed_ms / duration_ms)
+            ease = 1.0 - pow(1.0 - progress, 3)
+            out_x = int(round(exit_x * ease))
+            out_y = int(round(exit_y * ease))
+            in_x = int(round(enter_x * (1.0 - ease)))
+            in_y = int(round(enter_y * (1.0 - ease)))
+
+            try:
+                current_frame.place_configure(x=out_x, y=out_y)
+                incoming_frame.place_configure(x=in_x, y=in_y)
+            except tk.TclError:
+                self._record_animation_after_id = None
+                return
+
+            if progress >= 1.0:
+                try:
+                    current_frame.destroy()
+                except tk.TclError:
+                    pass
+                try:
+                    incoming_frame.place_configure(x=0, y=0, relwidth=1, relheight=1)
+                except tk.TclError:
+                    self._record_animation_after_id = None
+                    return
+                for child in self.record_view_host.winfo_children():
+                    if child is not incoming_frame:
+                        child.destroy()
+                self._record_animation_after_id = None
+                return
+
+            self._record_animation_after_id = self.after(ANIMATION_MS, tick)
+
+        self._record_animation_after_id = self.after(ANIMATION_MS, tick)
+
+    def _build_record_frame(self, record_id: str | None) -> tuple[tk.Frame, tk.Text]:
+        frame = tk.Frame(
+            self.record_view_host,
+            bg="#0f0f12",
+            highlightthickness=0,
+            bd=0,
+            relief="flat",
+        )
+        frame.rowconfigure(0, weight=1)
+        frame.columnconfigure(0, weight=1)
+
+        text = tk.Text(
+            frame,
+            wrap="word",
+            font=self.font_body,
+            background="#0f0f12",
+            foreground="#e9e9f0",
+            insertbackground="#e9e9f0",
+            relief="flat",
+            bd=0,
+            padx=12,
+            pady=12,
+        )
+        text.grid(row=0, column=0, sticky="nsew")
+        text_scroll = ttk.Scrollbar(frame, orient="vertical", command=text.yview)
+        text_scroll.grid(row=0, column=1, sticky="ns")
+        text.configure(yscrollcommand=text_scroll.set)
+        self._apply_text_tags(text)
+        self._populate_record_widget(text, record_id)
+        return frame, text
+
+    def _populate_record_widget(self, widget: tk.Text, record_id: str | None) -> None:
         widget.configure(state="normal")
         widget.delete("1.0", "end")
 
-        if not self.selected_id or self.selected_id not in self.records:
-            self.selected_var.set("Selected: (none)")
+        if not record_id or record_id not in self.records:
             widget.insert("end", "No record selected.\n", ("muted",))
             widget.configure(state="disabled")
             return
 
-        self.selected_var.set(f"Selected: {self.selected_id}")
-        record = self.records[self.selected_id]
+        record = self.records[record_id]
         body, lead_media = self._extract_lead_media(record.body)
 
         if lead_media:
@@ -929,6 +1042,116 @@ class IndexApp(tk.Tk):
 
         widget.configure(state="disabled")
         widget.see("1.0")
+
+    def _set_record_frame(self, frame: tk.Frame, record_id: str | None) -> None:
+        for child in self.record_view_host.winfo_children():
+            if child is not frame:
+                child.destroy()
+        frame.place(x=0, y=0, relwidth=1, relheight=1)
+        self._record_current_frame = frame
+        self._record_current_id = record_id
+
+    def _stop_record_animation(self, normalize_current: bool = False) -> None:
+        if self._record_animation_after_id:
+            try:
+                self.after_cancel(self._record_animation_after_id)
+            except tk.TclError:
+                pass
+            self._record_animation_after_id = None
+        self._record_animation_token += 1
+        if normalize_current and self._record_current_frame is not None:
+            try:
+                self._record_current_frame.place(x=0, y=0, relwidth=1, relheight=1)
+            except tk.TclError:
+                self._record_current_frame = None
+                self._record_current_id = None
+        for child in self.record_view_host.winfo_children():
+            if child is not self._record_current_frame:
+                child.destroy()
+
+    def _queue_record_transition(self, from_id: str | None, to_id: str | None, from_tour: bool = False) -> None:
+        if not from_id or not to_id or from_id == to_id:
+            self._pending_record_transition = None
+            return
+        self._pending_record_transition = self._describe_record_transition(from_id, to_id, from_tour=from_tour)
+
+    def _describe_record_transition(self, from_id: str, to_id: str, from_tour: bool = False) -> dict[str, float | str]:
+        dir_x = 1.0
+        dir_y = 0.0
+        distance_fraction = 0.03
+
+        from_coords = self._coords_for_transition(from_id)
+        to_coords = self._coords_for_transition(to_id)
+
+        if from_coords and to_coords:
+            lat_delta = to_coords[0] - from_coords[0]
+            lon_delta = self._delta_degrees(to_coords[1], from_coords[1])
+            dir_x = lon_delta
+            dir_y = -lat_delta
+            distance_fraction = self._great_circle_distance_fraction(from_coords, to_coords)
+        else:
+            from_idx = self.order.index(from_id) if from_id in self.order else -1
+            to_idx = self.order.index(to_id) if to_id in self.order else -1
+            if from_idx >= 0 and to_idx >= 0:
+                idx_delta = to_idx - from_idx
+                dir_x = 1.0 if idx_delta == 0 else float(math.copysign(1.0, idx_delta))
+                dir_y = 0.0
+                max_delta = max(1, len(self.order) - 1)
+                distance_fraction = min(1.0, abs(idx_delta) / max_delta)
+
+        magnitude = math.hypot(dir_x, dir_y)
+        if magnitude < 0.0001:
+            dir_x, dir_y = 1.0, 0.0
+        else:
+            dir_x /= magnitude
+            dir_y /= magnitude
+
+        scaled_distance = max(0.03, min(1.0, distance_fraction))
+        base_duration = round(160 + pow(scaled_distance, 0.55) * 1400)
+        duration_scale = TOUR_SLOW_TRANSITION_MULTIPLIER if (from_tour and self.slow_tour_enabled.get()) else 1.0
+        duration_ms = round(base_duration * duration_scale)
+        travel_px = round(72 + pow(scaled_distance, 0.75) * 300)
+        return {
+            "from_id": from_id,
+            "to_id": to_id,
+            "dir_x": dir_x,
+            "dir_y": dir_y,
+            "duration_ms": float(duration_ms),
+            "travel_px": float(travel_px),
+        }
+
+    def _coords_for_transition(self, record_id: str) -> tuple[float, float] | None:
+        record_coords = self.coords.get(record_id)
+        if record_coords:
+            return record_coords[0], record_coords[1]
+        match = re.match(r"^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$", record_id)
+        if not match:
+            return None
+        return float(match.group(1)), float(match.group(2))
+
+    def _delta_degrees(self, target: float, current: float) -> float:
+        delta = target - current
+        while delta > 180:
+            delta -= 360
+        while delta < -180:
+            delta += 360
+        return delta
+
+    def _great_circle_distance_fraction(
+        self,
+        from_coords: tuple[float, float],
+        to_coords: tuple[float, float],
+    ) -> float:
+        lat1 = math.radians(from_coords[0])
+        lat2 = math.radians(to_coords[0])
+        d_lat = lat2 - lat1
+        d_lon = math.radians(self._delta_degrees(to_coords[1], from_coords[1]))
+        sin_lat = math.sin(d_lat / 2.0)
+        sin_lon = math.sin(d_lon / 2.0)
+        a = sin_lat * sin_lat + math.cos(lat1) * math.cos(lat2) * sin_lon * sin_lon
+        clamped = min(1.0, max(0.0, a))
+        arc = 2.0 * math.atan2(math.sqrt(clamped), math.sqrt(max(0.0, 1.0 - clamped)))
+        return arc / math.pi
 
     def _extract_lead_media(self, text: str) -> tuple[str, LeadMedia | None]:
         if not text:
