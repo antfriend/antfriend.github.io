@@ -1,5 +1,6 @@
 {
   "guided_tour": true,
   "guided_tour_slow": false,
-  "invert_drag_y": true
+  "invert_drag_y": true,
+  "scroll_y": 0.0
 }
