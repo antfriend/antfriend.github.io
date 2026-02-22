@@ -156,6 +156,11 @@ class IndexApp(tk.Tk):
         self._record_current_id: str | None = None
         self._record_animation_after_id: str | None = None
         self._record_animation_token = 0
+        self._prefs_save_after_id: str | None = None
+        self._pending_scroll_fraction: float | None = None
+        self.app_canvas: tk.Canvas | None = None
+        self.page_frame: ttk.Frame | None = None
+        self.page_window_id: int | None = None
         self.graph_wrap: tk.Frame | None = None
         self.record_panel_body: ttk.Frame | None = None
 
@@ -192,6 +197,8 @@ class IndexApp(tk.Tk):
         self.bind("<KeyPress-space>", self._on_space_press)
 
         self._load_db(force=True)
+        self.after_idle(self._restore_saved_scroll_position)
+        self.after(180, self._restore_saved_scroll_position)
         self._start_polling()
 
     def _init_fonts(self) -> None:
@@ -215,8 +222,34 @@ class IndexApp(tk.Tk):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
-        page = ttk.Frame(self, padding=(10, 10, 10, 10), style="Card.TFrame")
-        page.grid(row=0, column=0, sticky="nsew")
+        scroll_host = ttk.Frame(self, style="Card.TFrame")
+        scroll_host.grid(row=0, column=0, sticky="nsew")
+        scroll_host.columnconfigure(0, weight=1)
+        scroll_host.rowconfigure(0, weight=1)
+
+        self.app_canvas = tk.Canvas(
+            scroll_host,
+            background=PALETTE["bg"],
+            highlightthickness=0,
+            bd=0,
+            relief="flat",
+        )
+        self.app_canvas.grid(row=0, column=0, sticky="nsew")
+
+        app_scrollbar = ttk.Scrollbar(scroll_host, orient="vertical", command=self._on_app_scrollbar)
+        app_scrollbar.grid(row=0, column=1, sticky="ns")
+        self.app_canvas.configure(yscrollcommand=app_scrollbar.set)
+
+        page = ttk.Frame(self.app_canvas, padding=(10, 10, 10, 10), style="Card.TFrame")
+        self.page_frame = page
+        self.page_window_id = self.app_canvas.create_window((0, 0), window=page, anchor="nw")
+        page.bind("<Configure>", self._on_page_configure)
+        self.app_canvas.bind("<Configure>", self._on_app_canvas_configure)
+
+        self.bind_all("<MouseWheel>", self._on_app_mousewheel, add="+")
+        self.bind_all("<Button-4>", self._on_app_mousewheel, add="+")
+        self.bind_all("<Button-5>", self._on_app_mousewheel, add="+")
+
         page.columnconfigure(0, weight=1)
         page.rowconfigure(0, weight=0)
         page.rowconfigure(1, weight=0)
@@ -437,6 +470,113 @@ class IndexApp(tk.Tk):
         self.bind("<Configure>", self._on_window_resize)
         self.after_idle(self._sync_panel_dimensions)
 
+    def _on_page_configure(self, _event: tk.Event) -> None:
+        self._update_app_scrollregion()
+
+    def _on_app_canvas_configure(self, event: tk.Event) -> None:
+        if self.app_canvas is None or self.page_window_id is None:
+            return
+        try:
+            self.app_canvas.itemconfigure(self.page_window_id, width=event.width)
+        except tk.TclError:
+            return
+        self._update_app_scrollregion()
+        self._restore_saved_scroll_position()
+        self._sync_panel_dimensions()
+
+    def _update_app_scrollregion(self) -> None:
+        if self.app_canvas is None:
+            return
+        bbox = self.app_canvas.bbox("all")
+        if bbox:
+            self.app_canvas.configure(scrollregion=bbox)
+
+    def _on_app_scrollbar(self, *args: str) -> None:
+        if self.app_canvas is None:
+            return
+        self.app_canvas.yview(*args)
+        self._schedule_preferences_save()
+
+    def _on_app_mousewheel(self, event: tk.Event) -> str | None:
+        if self.app_canvas is None:
+            return None
+        widget = event.widget if isinstance(event.widget, tk.Misc) else None
+        if self._should_skip_global_scroll(widget):
+            return None
+
+        if getattr(event, "delta", 0):
+            steps = -int(event.delta / 120)
+            if steps == 0:
+                steps = -1 if event.delta > 0 else 1
+        else:
+            num = getattr(event, "num", 0)
+            if num == 4:
+                steps = -1
+            elif num == 5:
+                steps = 1
+            else:
+                return None
+
+        self.app_canvas.yview_scroll(steps, "units")
+        self._schedule_preferences_save()
+        return "break"
+
+    def _restore_saved_scroll_position(self) -> None:
+        if self.app_canvas is None or self._pending_scroll_fraction is None:
+            return
+        if self.app_canvas.winfo_height() <= 1:
+            return
+        bbox = self.app_canvas.bbox("all")
+        if not bbox:
+            return
+        try:
+            self.app_canvas.yview_moveto(self._pending_scroll_fraction)
+        except tk.TclError:
+            return
+        self._pending_scroll_fraction = None
+
+    def _schedule_preferences_save(self, delay_ms: int = 350) -> None:
+        if self._prefs_save_after_id:
+            try:
+                self.after_cancel(self._prefs_save_after_id)
+            except tk.TclError:
+                pass
+            self._prefs_save_after_id = None
+        self._prefs_save_after_id = self.after(delay_ms, self._flush_preferences_save)
+
+    def _flush_preferences_save(self) -> None:
+        self._prefs_save_after_id = None
+        self._save_preferences()
+
+    def _should_skip_global_scroll(self, widget: tk.Misc | None) -> bool:
+        if widget is None:
+            return False
+
+        graph_canvas = getattr(self, "graph_canvas", None)
+        if self._is_descendant_of(widget, graph_canvas):
+            return True
+        record_host = getattr(self, "record_view_host", None)
+        if self._is_descendant_of(widget, record_host):
+            return True
+
+        klass = widget.winfo_class()
+        if klass in {"Text", "Listbox", "Entry", "TEntry", "Spinbox", "TCombobox", "Treeview"}:
+            return True
+        return False
+
+    def _is_descendant_of(self, widget: tk.Misc | None, ancestor: tk.Misc | None) -> bool:
+        if widget is None or ancestor is None:
+            return False
+        current: tk.Misc | None = widget
+        while current is not None:
+            if current is ancestor:
+                return True
+            parent = getattr(current, "master", None)
+            if parent is current:
+                break
+            current = parent
+        return False
+
     def _on_window_resize(self, event: tk.Event) -> None:
         if event.widget is not self:
             return
@@ -446,8 +586,12 @@ class IndexApp(tk.Tk):
         if self.graph_wrap is None or self.record_panel_body is None:
             return
 
-        width = max(self.winfo_width(), 1)
-        height = max(self.winfo_height(), 1)
+        if self.app_canvas is not None:
+            width = max(self.app_canvas.winfo_width(), 1)
+            height = max(self.app_canvas.winfo_height(), 1)
+        else:
+            width = max(self.winfo_width(), 1)
+            height = max(self.winfo_height(), 1)
         compact = width <= LAYOUT_COMPACT_BREAKPOINT
 
         graph_height = GRAPH_PANEL_HEIGHT_COMPACT if compact else GRAPH_PANEL_HEIGHT
@@ -458,6 +602,7 @@ class IndexApp(tk.Tk):
         if self._widget_height(self.record_panel_body) != record_height:
             self.record_panel_body.configure(height=record_height)
 
+        self._update_app_scrollregion()
         self._render_globe()
 
     def _widget_height(self, widget: tk.Widget) -> int:
@@ -490,6 +635,13 @@ class IndexApp(tk.Tk):
     def _on_close(self) -> None:
         self._clear_tour(stop_audio=True)
         self._stop_record_animation(normalize_current=False)
+        if self._prefs_save_after_id:
+            try:
+                self.after_cancel(self._prefs_save_after_id)
+            except tk.TclError:
+                pass
+            self._prefs_save_after_id = None
+        self._save_preferences()
         if self._poll_after_id:
             self.after_cancel(self._poll_after_id)
             self._poll_after_id = None
@@ -511,17 +663,30 @@ class IndexApp(tk.Tk):
         invert = payload.get("invert_drag_y")
         if isinstance(invert, bool):
             self.invert_drag_y.set(invert)
+        scroll_y = payload.get("scroll_y")
+        if isinstance(scroll_y, (int, float)):
+            self._pending_scroll_fraction = max(0.0, min(1.0, float(scroll_y)))
 
     def _save_preferences(self) -> None:
         payload = {
             "guided_tour": bool(self.tour_enabled.get()),
             "guided_tour_slow": bool(self.slow_tour_enabled.get()),
             "invert_drag_y": bool(self.invert_drag_y.get()),
+            "scroll_y": self._get_app_scroll_fraction(),
         }
         try:
             self.preferences_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         except Exception:
             pass
+
+    def _get_app_scroll_fraction(self) -> float:
+        if self.app_canvas is None:
+            return 0.0
+        try:
+            first, _last = self.app_canvas.yview()
+        except Exception:
+            return 0.0
+        return max(0.0, min(1.0, float(first)))
 
     def _start_polling(self) -> None:
         if self._poll_after_id:
