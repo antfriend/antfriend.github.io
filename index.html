@@ -1675,8 +1675,7 @@
       if (!others.length) return [];
 
       const sideRadius = Math.max(8, mainRadius * DB_SIDE_GLOBE_SCALE);
-      const top = cy - mainRadius;
-      const y = top + sideRadius;
+      const y = cy;
       const firstOffset = mainRadius + sideRadius * DB_SIDE_GLOBE_NEAR_OVERLAP;
       const stepOffset = sideRadius * DB_SIDE_GLOBE_STEP;
 
