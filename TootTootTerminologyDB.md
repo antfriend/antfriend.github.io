@@ -70,7 +70,7 @@ audio_path: sounds/Toot_Toot_Goat_Chant.WAV
 ## Umwelt
 ![Umwelt scope](images/eyeball-highway-sunrise.svg)
 
-The world as it is experienced by a particular organism.
+The world as it is experienced by a particular organism. In a less-specific word, "perspective". In symbolic terminology, "viewport".
 
 The umwelt is the bounded worldview for a Toot Toot Agent. It defines what can be sensed, stored, related, or acted on. It is a feature of toot toot data encoding and more generally, natural systems - see [Wikipedia.](https://en.wikipedia.org/wiki/Umwelt)    
 
