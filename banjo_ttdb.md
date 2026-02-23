@@ -66,8 +66,8 @@ audio_path: sounds/aireggica.wav
 
 @LAT84LON-170 | created:1771797320 | updated:1771797320 | relates:next>@LAT60LON-40,reverse>@LAT-74LON-30
 
-## Card 01: banjo
-![Card 01 banjo](banjo/banjo_taro_01.png)
+## banjo
+![banjo](banjo/banjo_taro_01.png)
 
 - Asset: `banjo/banjo_taro_01.png`
 - Card code: `iooo`
@@ -90,8 +90,8 @@ epiphany. the moment of recognition.
 
 @LAT60LON-40 | created:1771797330 | updated:1771797330 | relates:prev>@LAT84LON-170,next>@LAT36LON90
 
-## Card 02: cowbell
-![Card 02 cowbell](banjo/banjo_taro_02.png)
+## cowbell
+![cowbell](banjo/banjo_taro_02.png)
 
 - Asset: `banjo/banjo_taro_02.png`
 - Card code: `oioo`
@@ -109,8 +109,8 @@ the smirk begets a jerk. the rustic factory clang rings. it is an over the top a
 
 @LAT36LON90 | created:1771797340 | updated:1771797340 | relates:prev>@LAT60LON-40,next>@LAT12LON-140
 
-## Card 03: violin
-![Card 03 violin](banjo/banjo_taro_03.png)
+## violin
+![violin](banjo/banjo_taro_03.png)
 
 - Asset: `banjo/banjo_taro_03.png`
 - Card code: `iioo`
@@ -128,8 +128,8 @@ loss. a trainride ticketed to everyone. imagine the mirror of the soul and refle
 
 @LAT12LON-140 | created:1771797350 | updated:1771797350 | relates:prev>@LAT36LON90,next>@LAT-12LON-10
 
-## Card 04: swistle
-![Card 04 swistle](banjo/banjo_taro_04.png)
+## swistle
+![swistle](banjo/banjo_taro_04.png)
 
 - Asset: `banjo/banjo_taro_04.png`
 - Card code: `ooio`
@@ -147,8 +147,8 @@ the slide whistle does not care whether it is respected or not.
 
 @LAT-12LON-10 | created:1771797360 | updated:1771797360 | relates:prev>@LAT12LON-140,next>@LAT-36LON120
 
-## Card 05: bass
-![Card 05 bass](banjo/banjo_taro_05.png)
+## bass
+![bass](banjo/banjo_taro_05.png)
 
 - Asset: `banjo/banjo_taro_05.png`
 - Card code: `ioio`
@@ -166,8 +166,8 @@ elephants communicate subsonically. we can feel what we cannot hear.
 
 @LAT-36LON120 | created:1771797370 | updated:1771797370 | relates:prev>@LAT-12LON-10,next>@LAT-60LON-110
 
-## Card 06: guitar
-![Card 06 guitar](banjo/banjo_taro_06.png)
+## guitar
+![guitar](banjo/banjo_taro_06.png)
 
 - Asset: `banjo/banjo_taro_06.png`
 - Card code: `oiio`
@@ -185,8 +185,8 @@ a wonderous woman commands the stage, hair swinging in a heavy metal stance.
 
 @LAT-60LON-110 | created:1771797380 | updated:1771797380 | relates:prev>@LAT-36LON120,next>@LAT70LON30
 
-## Card 07: bell
-![Card 07 bell](banjo/banjo_taro_07.png)
+## bell
+![bell](banjo/banjo_taro_07.png)
 
 - Asset: `banjo/banjo_taro_07.png`
 - Card code: `iiio`
@@ -204,8 +204,8 @@ assets in your possession allow you access to a priority. the banjo player uses 
 
 @LAT70LON30 | created:1771797390 | updated:1771797390 | relates:prev>@LAT-60LON-110,next>@LAT46LON160
 
-## Card 08: tuba
-![Card 08 tuba](banjo/banjo_taro_08.png)
+## tuba
+![tuba](banjo/banjo_taro_08.png)
 
 - Asset: `banjo/banjo_taro_08.png`
 - Card code: `oooi`
@@ -223,8 +223,8 @@ not a good thing. the banjo player's bad self that plays at xmas like a fart in 
 
 @LAT46LON160 | created:1771797400 | updated:1771797400 | relates:prev>@LAT70LON30,next>@LAT22LON-80
 
-## Card 09: verbalizer
-![Card 09 verbalizer](banjo/banjo_taro_09.png)
+## verbalizer
+![verbalizer](banjo/banjo_taro_09.png)
 
 - Asset: `banjo/banjo_taro_09.png`
 - Card code: `iooi`
@@ -242,8 +242,8 @@ the experience of experience, qualia; these are words that describe the indescri
 
 @LAT22LON-80 | created:1771797410 | updated:1771797410 | relates:prev>@LAT46LON160,next>@LAT-2LON50
 
-## Card 10: sax
-![Card 10 sax](banjo/banjo_taro_10.png)
+## sax
+![sax](banjo/banjo_taro_10.png)
 
 - Asset: `banjo/banjo_taro_10.png`
 - Card code: `oioi`
@@ -261,8 +261,8 @@ self assurance is like a sonorous tone
 
 @LAT-2LON50 | created:1771797420 | updated:1771797420 | relates:prev>@LAT22LON-80,next>@LAT-26LON-170
 
-## Card 11: flute
-![Card 11 flute](banjo/banjo_taro_11.png)
+## flute
+![flute](banjo/banjo_taro_11.png)
 
 - Asset: `banjo/banjo_taro_11.png`
 - Card code: `iioi`
@@ -280,8 +280,8 @@ the banjo player gratefully accepts gifts
 
 @LAT-26LON-170 | created:1771797430 | updated:1771797430 | relates:prev>@LAT-2LON50,next>@LAT-74LON-30
 
-## Card 12: piano
-![Card 12 piano](banjo/banjo_taro_12.png)
+## piano
+![piano](banjo/banjo_taro_12.png)
 
 - Asset: `banjo/banjo_taro_12.png`
 - Card code: `ooii`
@@ -299,8 +299,8 @@ was that a good thing or a bad thing?
 
 @LAT-74LON-30 | created:1771797440 | updated:1771797440 | relates:prev>@LAT-26LON-170,reverse_of>@LAT84LON-170
 
-## Card 13: card back
-![Card 13 card back](banjo/banjo_taro_13.png)
+## card back
+![card back](banjo/banjo_taro_13.png)
 
 - Asset: `banjo/banjo_taro_13.png`
 - Card role: card back
