@@ -247,3 +247,14 @@ was that a good thing or a bad thing?
 
 ## card back
 ![card back](banjo/banjo_taro_13.png)
+
+---
+
+@LAT88LON140 | created:1771797450 | updated:1771797450 | relates:spins_from>@LAT84LON-170
+
+## banjo dice globe
+![banjo dice globe](banjo/banjo.html)
+
+### one page game
+
+press play to roll a 12-face globe of the banjo cards. three cards are drawn and remain visible on the left.

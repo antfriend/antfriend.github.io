@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Banjo Globe Roll</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f2f6f9;
+      --muted: #9cb2bf;
+      --line: rgba(156, 178, 191, 0.28);
+      --panel: rgba(7, 16, 24, 0.84);
+      --panel-2: rgba(18, 34, 48, 0.72);
+      --accent: #f2c14d;
+      --accent-2: #7cc7ff;
+      --glow: rgba(124, 199, 255, 0.32);
+      --card-rad: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: "Trebuchet MS", "Segoe UI", "Verdana", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(120% 150% at 20% 20%, #122235 0%, #05080d 55%, #030406 100%);
+    }
+
+    .app {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(190px, 1fr) minmax(0, 2fr);
+      border: 1px solid rgba(11, 20, 28, 0.72);
+    }
+
+    .draw-panel {
+      background:
+        linear-gradient(170deg, rgba(11, 24, 35, 0.96), rgba(4, 10, 16, 0.92));
+      border-right: 1px solid var(--line);
+      padding: clamp(10px, 1.5vw, 16px);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .draw-panel h1 {
+      margin: 0;
+      font-size: clamp(18px, 2.1vw, 24px);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    .slots {
+      display: grid;
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .slot {
+      border: 1px dashed rgba(156, 178, 191, 0.38);
+      border-radius: var(--card-rad);
+      background: rgba(5, 13, 21, 0.84);
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .slot.filled {
+      border-style: solid;
+      border-color: rgba(242, 193, 77, 0.5);
+      background: linear-gradient(180deg, rgba(33, 52, 67, 0.9), rgba(14, 24, 34, 0.92));
+      box-shadow: inset 0 0 0 1px rgba(242, 193, 77, 0.14);
+    }
+
+    .placeholder {
+      color: rgba(156, 178, 191, 0.82);
+      font-size: clamp(11px, 1.5vw, 13px);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      user-select: none;
+    }
+
+    .draw-card {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      gap: 4px;
+      padding: 8px;
+    }
+
+    .draw-card.spring {
+      animation: springIn 680ms cubic-bezier(0.2, 1.4, 0.35, 1);
+      transform-origin: 80% 50%;
+    }
+
+    .draw-card img {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid rgba(156, 178, 191, 0.26);
+      background: rgba(0, 0, 0, 0.26);
+    }
+
+    .draw-card .label {
+      font-size: clamp(11px, 1.35vw, 13px);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #f2f6f9;
+      text-align: center;
+      padding-bottom: 2px;
+      line-height: 1.2;
+    }
+
+    .play-again {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(124, 199, 255, 0.52);
+      background: rgba(12, 28, 40, 0.84);
+      color: #eaf6ff;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 10px 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .play-again:hover {
+      transform: translateY(-1px);
+      border-color: #9ad6ff;
+      box-shadow: 0 0 12px var(--glow);
+    }
+
+    .globe-panel {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(120% 130% at 58% 46%, rgba(23, 39, 57, 0.85), rgba(5, 8, 13, 0.95) 72%);
+    }
+
+    #globeCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #globeCanvas.is-dragging {
+      cursor: grabbing;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at center, rgba(5, 11, 17, 0.38), rgba(2, 4, 7, 0.82));
+      transition: opacity 0.32s ease;
+    }
+
+    .overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .play-start {
+      min-width: min(72%, 320px);
+      border-radius: 18px;
+      border: 1px solid rgba(242, 193, 77, 0.64);
+      background: linear-gradient(180deg, rgba(71, 55, 20, 0.85), rgba(41, 30, 11, 0.85));
+      color: #fff0c7;
+      font-size: clamp(32px, 6vw, 64px);
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: clamp(16px, 2.8vw, 26px) 24px;
+      cursor: pointer;
+      box-shadow: 0 16px 46px rgba(0, 0, 0, 0.42), 0 0 28px rgba(242, 193, 77, 0.34);
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .play-start:hover {
+      transform: translateY(-2px) scale(1.01);
+      filter: brightness(1.08);
+    }
+
+    .status {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      padding: 6px 12px;
+      border: 1px solid rgba(156, 178, 191, 0.3);
+      background: rgba(4, 9, 14, 0.64);
+      color: #d5e6f3;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      text-align: center;
+      max-width: calc(100% - 18px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+    }
+
+    @keyframes springIn {
+      0% {
+        opacity: 0;
+        transform: translate3d(58%, 0, 0) scale(0.72) rotate(-8deg);
+      }
+      62% {
+        opacity: 1;
+        transform: translate3d(-8%, 0, 0) scale(1.06) rotate(2deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        grid-template-columns: 38% 62%;
+      }
+
+      .slots {
+        gap: 8px;
+      }
+
+      .status {
+        bottom: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="draw-panel">
+      <div>
+        <h1>Banjo Dice</h1>
+        <p class="subtitle">Roll three face cards.</p>
+      </div>
+
+      <div class="slots" id="slots">
+        <div class="slot"><div class="placeholder">Card 1</div></div>
+        <div class="slot"><div class="placeholder">Card 2</div></div>
+        <div class="slot"><div class="placeholder">Card 3</div></div>
+      </div>
+
+      <button id="playAgainBtn" class="play-again" type="button" hidden>Roll Again</button>
+    </aside>
+
+    <section class="globe-panel">
+      <canvas id="globeCanvas" aria-label="Banjo face card globe"></canvas>
+      <div id="startOverlay" class="overlay">
+        <button id="playBtn" class="play-start" type="button">Play</button>
+      </div>
+      <div class="status" id="statusText">Press Play to roll.</div>
+    </section>
+  </div>
+
+  <script>
+    const FACE_CARDS = [
+      { id: "01", title: "banjo", src: "banjo_taro_01.png", lat: 84, lon: -170 },
+      { id: "02", title: "cowbell", src: "banjo_taro_02.png", lat: 60, lon: -40 },
+      { id: "03", title: "violin", src: "banjo_taro_03.png", lat: 36, lon: 90 },
+      { id: "04", title: "swistle", src: "banjo_taro_04.png", lat: 12, lon: -140 },
+      { id: "05", title: "bass", src: "banjo_taro_05.png", lat: -12, lon: -10 },
+      { id: "06", title: "guitar", src: "banjo_taro_06.png", lat: -36, lon: 120 },
+      { id: "07", title: "bell", src: "banjo_taro_07.png", lat: -60, lon: -110 },
+      { id: "08", title: "tuba", src: "banjo_taro_08.png", lat: 70, lon: 30 },
+      { id: "09", title: "verbalizer", src: "banjo_taro_09.png", lat: 46, lon: 160 },
+      { id: "10", title: "sax", src: "banjo_taro_10.png", lat: 22, lon: -80 },
+      { id: "11", title: "flute", src: "banjo_taro_11.png", lat: -2, lon: 50 },
+      { id: "12", title: "piano", src: "banjo_taro_12.png", lat: -26, lon: -170 },
+    ];
+
+    const canvas = document.getElementById("globeCanvas");
+    const ctx = canvas.getContext("2d");
+    const playBtn = document.getElementById("playBtn");
+    const playAgainBtn = document.getElementById("playAgainBtn");
+    const startOverlay = document.getElementById("startOverlay");
+    const statusText = document.getElementById("statusText");
+    const slotsContainer = document.getElementById("slots");
+    const slotEls = Array.from(slotsContainer.querySelectorAll(".slot"));
+
+    const state = {
+      width: 0,
+      height: 0,
+      dpr: 1,
+      rotLat: 0.04,
+      rotLon: 0.22,
+      targetLat: 0,
+      targetLon: 0,
+      phase: "ready",
+      activeCard: null,
+      drawnCards: [],
+      availableCards: [...FACE_CARDS],
+      spinVelLon: 0,
+      spinVelLat: 0,
+      rollEndAt: 0,
+      rollTimer: null,
+      gameToken: 0,
+      lastFrameAt: 0,
+      dragging: false,
+      dragX: 0,
+      dragY: 0,
+      allowManualDrag: true,
+      images: new Map(),
+    };
+
+    FACE_CARDS.forEach((card) => {
+      const img = new Image();
+      img.src = card.src;
+      img.decoding = "async";
+      state.images.set(card.id, img);
+    });
+
+    const resizeObserver = new ResizeObserver(() => resizeCanvas());
+    resizeObserver.observe(canvas.parentElement);
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.max(1, rect.width);
+      const height = Math.max(1, rect.height);
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      state.width = width;
+      state.height = height;
+      state.dpr = dpr;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function toRadians(value) {
+      return (value * Math.PI) / 180;
+    }
+
+    function angleDelta(target, current) {
+      let delta = target - current;
+      while (delta > Math.PI) delta -= Math.PI * 2;
+      while (delta < -Math.PI) delta += Math.PI * 2;
+      return delta;
+    }
+
+    function projectPoint(lat, lon) {
+      const latR = toRadians(lat);
+      const lonR = toRadians(lon);
+      const x = Math.cos(latR) * Math.sin(lonR);
+      const y = Math.sin(latR);
+      const z = Math.cos(latR) * Math.cos(lonR);
+
+      const cosY = Math.cos(state.rotLon);
+      const sinY = Math.sin(state.rotLon);
+      const x1 = x * cosY + z * sinY;
+      const z1 = -x * sinY + z * cosY;
+
+      const cosX = Math.cos(state.rotLat);
+      const sinX = Math.sin(state.rotLat);
+      const y1 = y * cosX - z1 * sinX;
+      const z2 = y * sinX + z1 * cosX;
+      return [x1, y1, z2];
+    }
+
+    function orientationForCard(card) {
+      const latR = toRadians(card.lat);
+      const lonR = toRadians(card.lon);
+      const x = Math.cos(latR) * Math.sin(lonR);
+      const y = Math.sin(latR);
+      const z = Math.cos(latR) * Math.cos(lonR);
+      const rotLon = -Math.atan2(x, z);
+      const z1 = Math.hypot(x, z);
+      const rotLat = Math.atan2(y, z1);
+      return { rotLat, rotLon };
+    }
+
+    function clampLat(value) {
+      const limit = Math.PI / 2 - 0.08;
+      return Math.max(-limit, Math.min(limit, value));
+    }
+
+    function drawVisibleLine(points) {
+      let segment = [];
+      points.forEach(([px, py, visible]) => {
+        if (visible) {
+          segment.push([px, py]);
+          return;
+        }
+        if (segment.length >= 2) {
+          ctx.beginPath();
+          ctx.moveTo(segment[0][0], segment[0][1]);
+          segment.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
+          ctx.stroke();
+        }
+        segment = [];
+      });
+      if (segment.length >= 2) {
+        ctx.beginPath();
+        ctx.moveTo(segment[0][0], segment[0][1]);
+        segment.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
+        ctx.stroke();
+      }
+    }
+
+    function drawGraticule(cx, cy, radius) {
+      ctx.strokeStyle = "rgba(70, 102, 126, 0.32)";
+      ctx.lineWidth = 1;
+      for (let lon = -150; lon < 180; lon += 30) {
+        const points = [];
+        for (let lat = -90; lat <= 90; lat += 6) {
+          const [x, y, z] = projectPoint(lat, lon);
+          if (z > 0) {
+            points.push([cx + x * radius, cy - y * radius, true]);
+          } else {
+            points.push([0, 0, false]);
+          }
+        }
+        drawVisibleLine(points);
+      }
+
+      for (let lat = -60; lat < 90; lat += 30) {
+        const points = [];
+        for (let lon = -180; lon <= 180; lon += 6) {
+          const [x, y, z] = projectPoint(lat, lon);
+          if (z > 0) {
+            points.push([cx + x * radius, cy - y * radius, true]);
+          } else {
+            points.push([0, 0, false]);
+          }
+        }
+        drawVisibleLine(points);
+      }
+    }
+
+    function roundedRectPath(x, y, width, height, radius) {
+      const r = Math.max(0, Math.min(radius, width * 0.5, height * 0.5));
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + width - r, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+      ctx.lineTo(x + width, y + height - r);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+      ctx.lineTo(x + r, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    function drawCardNode(card, px, py, depth, isActive) {
+      const depthScale = 0.78 + Math.max(0, depth) * 0.3;
+      const width = 24 * depthScale;
+      const height = 34 * depthScale;
+      const x = px - width * 0.5;
+      const y = py - height * 0.5;
+      const image = state.images.get(card.id);
+
+      ctx.save();
+      ctx.shadowColor = isActive ? "rgba(242, 193, 77, 0.6)" : "rgba(0, 0, 0, 0.45)";
+      ctx.shadowBlur = isActive ? 14 : 8;
+      roundedRectPath(x, y, width, height, 4);
+      ctx.fillStyle = "#0f1a26";
+      ctx.fill();
+
+      if (image && image.complete && image.naturalWidth > 0) {
+        ctx.save();
+        roundedRectPath(x, y, width, height, 4);
+        ctx.clip();
+        ctx.drawImage(image, x, y, width, height);
+        ctx.restore();
+      } else {
+        ctx.fillStyle = "rgba(124, 199, 255, 0.36)";
+        roundedRectPath(x, y, width, height, 4);
+        ctx.fill();
+      }
+
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = isActive ? "rgba(242, 193, 77, 0.95)" : "rgba(220, 238, 249, 0.8)";
+      ctx.lineWidth = isActive ? 1.9 : 1.2;
+      roundedRectPath(x, y, width, height, 4);
+      ctx.stroke();
+
+      if (isActive) {
+        ctx.strokeStyle = "rgba(242, 193, 77, 0.52)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(px, py, Math.max(width, height) * 0.72, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    function renderGlobe() {
+      const width = state.width;
+      const height = state.height;
+      ctx.clearRect(0, 0, width, height);
+      if (!width || !height) return;
+
+      const radius = Math.max(60, Math.min(width, height) * 0.41);
+      const cx = width * 0.5;
+      const cy = height * 0.5;
+
+      ctx.fillStyle = "#0d1118";
+      ctx.strokeStyle = "rgba(87, 122, 150, 0.42)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.strokeStyle = "rgba(44, 67, 87, 0.45)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius * 0.92, 0, Math.PI * 2);
+      ctx.stroke();
+
+      drawGraticule(cx, cy, radius);
+
+      const front = [];
+      const back = [];
+      FACE_CARDS.forEach((card) => {
+        const [x, y, z] = projectPoint(card.lat, card.lon);
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        const entry = { card, x: px, y: py, z };
+        if (z > 0) {
+          front.push(entry);
+        } else {
+          back.push(entry);
+        }
+      });
+
+      back.forEach((entry) => {
+        ctx.fillStyle = "rgba(110, 139, 160, 0.25)";
+        ctx.beginPath();
+        ctx.arc(entry.x, entry.y, 2, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      front.sort((a, b) => a.z - b.z);
+      front.forEach((entry) => {
+        const isActive = state.activeCard && entry.card.id === state.activeCard.id;
+        drawCardNode(entry.card, entry.x, entry.y, entry.z, isActive);
+      });
+    }
+
+    function buildCardNode(card, shouldSpring) {
+      const wrapper = document.createElement("div");
+      wrapper.className = `draw-card${shouldSpring ? " spring" : ""}`;
+      const image = document.createElement("img");
+      image.src = card.src;
+      image.alt = card.title;
+      image.loading = "eager";
+      const label = document.createElement("div");
+      label.className = "label";
+      label.textContent = card.title;
+      wrapper.appendChild(image);
+      wrapper.appendChild(label);
+      return wrapper;
+    }
+
+    function renderSlots(lastRevealIndex = -1) {
+      slotEls.forEach((slot, index) => {
+        const card = state.drawnCards[index];
+        slot.innerHTML = "";
+        if (!card) {
+          slot.classList.remove("filled");
+          const placeholder = document.createElement("div");
+          placeholder.className = "placeholder";
+          placeholder.textContent = `Card ${index + 1}`;
+          slot.appendChild(placeholder);
+          return;
+        }
+        slot.classList.add("filled");
+        slot.appendChild(buildCardNode(card, index === lastRevealIndex));
+      });
+    }
+
+    function randomFromAvailable() {
+      if (!state.availableCards.length) return null;
+      const index = Math.floor(Math.random() * state.availableCards.length);
+      return state.availableCards[index];
+    }
+
+    function startRoll(token) {
+      if (token !== state.gameToken) return;
+      if (state.drawnCards.length >= 3) {
+        state.phase = "done";
+        statusText.textContent = "Spread complete. Your three cards stay on the left.";
+        playAgainBtn.hidden = false;
+        state.activeCard = null;
+        return;
+      }
+
+      const target = randomFromAvailable();
+      if (!target) {
+        state.phase = "done";
+        state.activeCard = null;
+        playAgainBtn.hidden = false;
+        return;
+      }
+
+      state.activeCard = target;
+      state.phase = "rolling";
+      state.spinVelLon = (Math.random() < 0.5 ? -1 : 1) * (0.009 + Math.random() * 0.004);
+      state.spinVelLat = (Math.random() - 0.5) * 0.004;
+      state.rollEndAt = performance.now() + 1450 + Math.random() * 900;
+      statusText.textContent = `Rolling card ${state.drawnCards.length + 1} of 3...`;
+    }
+
+    function revealCurrentCard(token) {
+      if (token !== state.gameToken) return;
+      if (!state.activeCard) return;
+      const card = state.activeCard;
+      state.drawnCards.push(card);
+      state.availableCards = state.availableCards.filter((entry) => entry.id !== card.id);
+      const revealIndex = state.drawnCards.length - 1;
+      renderSlots(revealIndex);
+      statusText.textContent = `Card ${state.drawnCards.length}: ${card.title}`;
+      state.activeCard = null;
+
+      if (state.drawnCards.length >= 3) {
+        state.phase = "done";
+        playAgainBtn.hidden = false;
+        statusText.textContent = "Game over. The three cards remain.";
+        return;
+      }
+
+      state.phase = "reveal_wait";
+      state.rollTimer = window.setTimeout(() => startRoll(token), 900);
+    }
+
+    function resetGame() {
+      state.gameToken += 1;
+      state.drawnCards = [];
+      state.availableCards = [...FACE_CARDS];
+      state.activeCard = null;
+      state.phase = "ready";
+      playAgainBtn.hidden = true;
+      if (state.rollTimer) {
+        clearTimeout(state.rollTimer);
+        state.rollTimer = null;
+      }
+      renderSlots();
+      statusText.textContent = "Press Play to roll.";
+    }
+
+    function startGame() {
+      resetGame();
+      startOverlay.classList.add("hidden");
+      const token = state.gameToken;
+      startRoll(token);
+    }
+
+    function updateAnimation(dt, now) {
+      if (state.phase === "rolling") {
+        state.rotLon += state.spinVelLon * dt;
+        state.rotLat = clampLat(state.rotLat + state.spinVelLat * dt + Math.sin(now * 0.003) * 0.0009 * dt);
+        state.spinVelLon *= 0.999;
+        state.spinVelLat *= 0.9985;
+
+        if (now >= state.rollEndAt && state.activeCard) {
+          const targetOrientation = orientationForCard(state.activeCard);
+          state.targetLat = targetOrientation.rotLat;
+          state.targetLon = targetOrientation.rotLon;
+          state.phase = "settling";
+        }
+        return;
+      }
+
+      if (state.phase === "settling") {
+        const deltaLat = angleDelta(state.targetLat, state.rotLat);
+        const deltaLon = angleDelta(state.targetLon, state.rotLon);
+        state.rotLat = clampLat(state.rotLat + deltaLat * 0.14);
+        state.rotLon += deltaLon * 0.14;
+        if (Math.abs(deltaLat) < 0.002 && Math.abs(deltaLon) < 0.002) {
+          state.rotLat = state.targetLat;
+          state.rotLon = state.targetLon;
+          const token = state.gameToken;
+          state.phase = "revealing";
+          revealCurrentCard(token);
+        }
+        return;
+      }
+
+      state.rotLon += 0.00018 * dt;
+    }
+
+    function animationFrame(now) {
+      if (!state.lastFrameAt) {
+        state.lastFrameAt = now;
+      }
+      const dt = Math.max(0, Math.min(50, now - state.lastFrameAt));
+      state.lastFrameAt = now;
+      updateAnimation(dt, now);
+      renderGlobe();
+      requestAnimationFrame(animationFrame);
+    }
+
+    playBtn.addEventListener("click", () => {
+      startGame();
+    });
+
+    playAgainBtn.addEventListener("click", () => {
+      startGame();
+    });
+
+    canvas.addEventListener("pointerdown", (event) => {
+      if (!state.allowManualDrag) return;
+      if (state.phase !== "ready" && state.phase !== "done") return;
+      state.dragging = true;
+      state.dragX = event.clientX;
+      state.dragY = event.clientY;
+      canvas.classList.add("is-dragging");
+      if (canvas.setPointerCapture) {
+        try {
+          canvas.setPointerCapture(event.pointerId);
+        } catch (err) {}
+      }
+    });
+
+    canvas.addEventListener("pointermove", (event) => {
+      if (!state.dragging) return;
+      const dx = event.clientX - state.dragX;
+      const dy = event.clientY - state.dragY;
+      state.dragX = event.clientX;
+      state.dragY = event.clientY;
+      state.rotLon += dx * 0.005;
+      state.rotLat = clampLat(state.rotLat + dy * 0.005);
+    });
+
+    function stopDrag(event) {
+      state.dragging = false;
+      canvas.classList.remove("is-dragging");
+      if (canvas.releasePointerCapture && canvas.hasPointerCapture?.(event.pointerId)) {
+        try {
+          canvas.releasePointerCapture(event.pointerId);
+        } catch (err) {}
+      }
+    }
+
+    canvas.addEventListener("pointerup", stopDrag);
+    canvas.addEventListener("pointercancel", stopDrag);
+
+    resetGame();
+    resizeCanvas();
+    requestAnimationFrame(animationFrame);
+  </script>
+</body>
+</html>
