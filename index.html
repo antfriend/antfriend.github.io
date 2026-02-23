@@ -311,6 +311,29 @@
       will-change: transform, opacity;
     }
 
+    .record-main {
+      display: grid;
+      gap: 14px;
+      min-width: 0;
+      align-items: start;
+    }
+
+    .record-main-text {
+      display: grid;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .record-main.record-main-split {
+      grid-template-columns: auto minmax(0, 1fr);
+      column-gap: 14px;
+    }
+
+    .record-main.record-main-split > .record-lead-media {
+      margin: 0;
+      width: auto;
+    }
+
     .record h2,
     .record h3,
     .record h4 {
@@ -528,6 +551,7 @@
     const DB_SIDE_GLOBE_SCALE = 0.25;
     const DB_SIDE_GLOBE_NEAR_OVERLAP = 2.22;
     const DB_SIDE_GLOBE_STEP = 1.68;
+    const RECORD_SPLIT_IMAGE_WIDTH_RATIO = 0.75;
 
     const state = {
       records: {},
@@ -1310,26 +1334,31 @@
       const frame = document.createElement("div");
       frame.className = "record-frame";
       frame.dataset.recordId = recordId;
+      const main = document.createElement("div");
+      main.className = "record-main";
+      const textColumn = document.createElement("div");
+      textColumn.className = "record-main-text";
       const leadMediaInfo = extractLeadMedia(record.body || "");
       if (leadMediaInfo.leadMedia) {
-        frame.appendChild(leadMediaInfo.leadMedia);
+        leadMediaInfo.leadMedia.classList.add("record-lead-media");
+        main.appendChild(leadMediaInfo.leadMedia);
       }
 
       if (record.title) {
         const title = document.createElement("h2");
         title.className = "record-title";
         title.textContent = record.title;
-        frame.appendChild(title);
+        textColumn.appendChild(title);
       }
 
       if (leadMediaInfo.body) {
-        frame.appendChild(renderMarkdown(leadMediaInfo.body));
+        textColumn.appendChild(renderMarkdown(leadMediaInfo.body));
       }
 
       if (record.edges.length) {
         const relatedTitle = document.createElement("h3");
         relatedTitle.textContent = "Related records";
-        frame.appendChild(relatedTitle);
+        textColumn.appendChild(relatedTitle);
 
         const list = document.createElement("ul");
         list.className = "related";
@@ -1356,9 +1385,64 @@
           }
           list.appendChild(item);
         });
-        frame.appendChild(list);
+        textColumn.appendChild(list);
+      }
+
+      main.appendChild(textColumn);
+      frame.appendChild(main);
+      if (leadMediaInfo.leadMedia instanceof HTMLImageElement) {
+        updateRecordSplitImageLayout(main, leadMediaInfo.leadMedia);
       }
       return frame;
+    }
+
+    function parseCssPx(value) {
+      const parsed = Number.parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    function getScaledImageWidth(image, availableWidth, maxHeight) {
+      const naturalWidth = image.naturalWidth;
+      const naturalHeight = image.naturalHeight;
+      if (!naturalWidth || !naturalHeight || !availableWidth) return 0;
+
+      let width = naturalWidth;
+      let height = naturalHeight;
+      if (maxHeight > 0 && height > maxHeight) {
+        const scaleByHeight = maxHeight / height;
+        width *= scaleByHeight;
+        height = maxHeight;
+      }
+
+      if (width > availableWidth) {
+        const scaleByWidth = availableWidth / width;
+        width = availableWidth;
+        height *= scaleByWidth;
+      }
+
+      return width;
+    }
+
+    function updateRecordSplitImageLayout(main, image) {
+      const update = () => {
+        if (!main.isConnected) return;
+        const availableWidth = main.clientWidth;
+        if (!availableWidth) return;
+
+        const maxHeight = parseCssPx(getComputedStyle(image).maxHeight);
+        const scaledWidth = getScaledImageWidth(image, availableWidth, maxHeight);
+        if (!scaledWidth) return;
+
+        const shouldSplit = scaledWidth < availableWidth * RECORD_SPLIT_IMAGE_WIDTH_RATIO;
+        main.classList.toggle("record-main-split", shouldSplit);
+      };
+
+      if (image.complete && image.naturalWidth > 0) {
+        update();
+      } else {
+        image.addEventListener("load", update, { once: true });
+      }
+      requestAnimationFrame(update);
     }
 
     function isHtmlEmbedSource(src) {
