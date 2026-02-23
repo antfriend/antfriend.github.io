@@ -124,15 +124,16 @@
 
     .dealer-card {
       --x: 50%;
-      --y: 72%;
+      --y: 50%;
       --rot: 0deg;
       --z: 2;
+      --scale: 1;
       position: absolute;
       left: var(--x);
       top: var(--y);
       width: clamp(122px, 22vw, 220px);
       aspect-ratio: 2 / 3;
-      transform: translate(-50%, -50%) rotate(var(--rot));
+      transform: translate(-50%, -50%) rotate(var(--rot)) scale(var(--scale));
       transform-origin: 50% 75%;
       border-radius: 12px;
       border: 1px solid rgba(227, 240, 250, 0.8);
@@ -140,6 +141,7 @@
       box-shadow: 0 14px 24px rgba(0, 0, 0, 0.42);
       overflow: hidden;
       z-index: var(--z);
+      pointer-events: auto;
     }
 
     .dealer-card img {
@@ -214,15 +216,21 @@
     @keyframes dealIn {
       0% {
         opacity: 0;
-        transform: translate(calc(-50% + 140px), calc(-50% + 12px)) rotate(calc(var(--rot) + 18deg)) scale(0.74);
+        transform:
+          translate(calc(-50% + 140px), calc(-50% + 12px))
+          rotate(calc(var(--rot) + 18deg))
+          scale(calc(0.74 * var(--scale)));
       }
       70% {
         opacity: 1;
-        transform: translate(-50%, -50%) rotate(calc(var(--rot) - 3deg)) scale(1.03);
+        transform:
+          translate(-50%, -50%)
+          rotate(calc(var(--rot) - 3deg))
+          scale(calc(1.03 * var(--scale)));
       }
       100% {
         opacity: 1;
-        transform: translate(-50%, -50%) rotate(var(--rot)) scale(1);
+        transform: translate(-50%, -50%) rotate(var(--rot)) scale(var(--scale));
       }
     }
 
@@ -246,8 +254,8 @@
     <section class="globe-panel">
       <canvas id="globeCanvas" aria-label="Banjo face card globe"></canvas>
       <div class="hud">
-        <h1>Banjo Dice</h1>
-        <p>Roll three face cards.</p>
+        <h1>Banjo Taro</h1>
+        <p>Your story in 3 parts.</p>
       </div>
       <div id="dealerSpread" class="dealer-spread" aria-live="polite"></div>
       <button id="playAgainBtn" class="play-again" type="button" hidden>Deal Again</button>
@@ -281,19 +289,9 @@
     const startOverlay = document.getElementById("startOverlay");
     const statusText = document.getElementById("statusText");
     const dealerSpread = document.getElementById("dealerSpread");
-
-    const DEAL_LAYOUTS = {
-      1: [{ x: 50, y: 72, rot: 0, z: 3 }],
-      2: [
-        { x: 43, y: 72, rot: -8, z: 2 },
-        { x: 57, y: 72, rot: 8, z: 3 },
-      ],
-      3: [
-        { x: 33, y: 72, rot: -11, z: 2 },
-        { x: 50, y: 68, rot: 1, z: 4 },
-        { x: 67, y: 72, rot: 10, z: 3 },
-      ],
-    };
+    const SPREAD_ZOOM_MIN = 0.75;
+    const SPREAD_ZOOM_MAX = 2.5;
+    const SPREAD_ZOOM_STEP = 1.1;
 
     const state = {
       width: 0,
@@ -316,6 +314,7 @@
       dragging: false,
       dragX: 0,
       dragY: 0,
+      spreadZoom: 1,
       allowManualDrag: true,
       images: new Map(),
     };
@@ -461,8 +460,8 @@
 
     function drawCardNode(card, px, py, depth, isActive) {
       const depthScale = 0.78 + Math.max(0, depth) * 0.3;
-      const width = 24 * depthScale;
-      const height = 34 * depthScale;
+      const width = 48 * depthScale;
+      const height = 68 * depthScale;
       const x = px - width * 0.5;
       const y = py - height * 0.5;
       const image = state.images.get(card.id);
@@ -557,13 +556,45 @@
       });
     }
 
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function getDealerCardWidthPx() {
+      if (state.width <= 760) {
+        return clamp(state.width * 0.27, 104, 170);
+      }
+      return clamp(state.width * 0.22, 122, 220);
+    }
+
+    function pxToPctX(px) {
+      return (px / Math.max(1, state.width)) * 100;
+    }
+
     function getDealerLayout(count) {
-      const layout = DEAL_LAYOUTS[count] || [];
-      if (state.width >= 520 || count !== 3) return layout;
+      if (!count) return [];
+      const equatorY = 50;
+      const cardWidth = getDealerCardWidthPx();
+      const sidePadding = 12;
+      const leftX = pxToPctX(sidePadding + cardWidth * 0.5);
+      const middleX = 50;
+      const rightX = pxToPctX(Math.max(0, state.width - sidePadding - cardWidth * 0.5));
+
+      if (count === 1) {
+        return [{ x: leftX, y: equatorY, rot: -9, z: 2 }];
+      }
+
+      if (count === 2) {
+        return [
+          { x: leftX, y: equatorY, rot: -9, z: 2 },
+          { x: middleX, y: equatorY, rot: 0, z: 4 },
+        ];
+      }
+
       return [
-        { x: 31, y: 74, rot: -11, z: 2 },
-        { x: 50, y: 69, rot: 1, z: 4 },
-        { x: 69, y: 74, rot: 10, z: 3 },
+        { x: leftX, y: equatorY, rot: -9, z: 2 },
+        { x: middleX, y: equatorY, rot: 0, z: 4 },
+        { x: rightX, y: equatorY, rot: 9, z: 3 },
       ];
     }
 
@@ -574,6 +605,7 @@
       wrapper.style.setProperty("--y", `${placement.y}%`);
       wrapper.style.setProperty("--rot", `${placement.rot}deg`);
       wrapper.style.setProperty("--z", String(placement.z));
+      wrapper.style.setProperty("--scale", String(state.spreadZoom));
       const image = document.createElement("img");
       image.src = card.src;
       image.alt = card.title;
@@ -582,12 +614,20 @@
       return wrapper;
     }
 
+    function setSpreadZoom(value) {
+      const nextZoom = clamp(value, SPREAD_ZOOM_MIN, SPREAD_ZOOM_MAX);
+      if (Math.abs(nextZoom - state.spreadZoom) < 0.0001) return false;
+      state.spreadZoom = nextZoom;
+      renderSpread();
+      return true;
+    }
+
     function renderSpread(lastRevealIndex = -1) {
       dealerSpread.innerHTML = "";
       const cards = state.drawnCards;
       const layout = getDealerLayout(cards.length);
       cards.forEach((card, index) => {
-        const placement = layout[index] || { x: 50, y: 72, rot: 0, z: index + 1 };
+        const placement = layout[index] || { x: 50, y: 50, rot: 0, z: index + 1 };
         const node = buildCardNode(card, placement, index === lastRevealIndex);
         dealerSpread.appendChild(node);
       });
@@ -621,7 +661,7 @@
       state.phase = "rolling";
       state.spinVelLon = (Math.random() < 0.5 ? -1 : 1) * (0.009 + Math.random() * 0.004);
       state.spinVelLat = (Math.random() - 0.5) * 0.004;
-      state.rollEndAt = performance.now() + 1450 + Math.random() * 900;
+      state.rollEndAt = performance.now() + 3000 + Math.random() * 9000;
       statusText.textContent = `Rolling card ${state.drawnCards.length + 1} of 3...`;
     }
 
@@ -639,7 +679,7 @@
       if (state.drawnCards.length >= 3) {
         state.phase = "done";
         playAgainBtn.hidden = false;
-        statusText.textContent = "Game over. The three cards remain.";
+        statusText.textContent = "The story is told. The meaning is your own.";
         return;
       }
 
@@ -721,6 +761,21 @@
     playAgainBtn.addEventListener("click", () => {
       startGame();
     });
+
+    dealerSpread.addEventListener(
+      "wheel",
+      (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        if (!target.closest(".dealer-card")) return;
+        event.preventDefault();
+        const direction = Math.sign(event.deltaY);
+        if (direction === 0) return;
+        const factor = direction > 0 ? 1 / SPREAD_ZOOM_STEP : SPREAD_ZOOM_STEP;
+        setSpreadZoom(state.spreadZoom * factor);
+      },
+      { passive: false },
+    );
 
     canvas.addEventListener("pointerdown", (event) => {
       if (!state.allowManualDrag) return;
