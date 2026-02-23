@@ -290,6 +290,7 @@
     .record {
       --record-panel-height: clamp(540px, calc((100vh - 320px) * 1.5 + 180px), 1020px);
       --record-panel-height: clamp(540px, calc((100dvh - 320px) * 1.5 + 180px), 1020px);
+      --record-media-max-height: calc(var(--record-panel-height) * 0.75);
       display: grid;
       gap: 14px;
       min-height: 0;
@@ -369,7 +370,7 @@
     .record img {
       width: auto;
       height: auto;
-      max-height: calc(var(--record-panel-height) * 0.75);
+      max-height: var(--record-media-max-height);
       object-fit: contain;
     }
 
@@ -379,9 +380,10 @@
     }
 
     .record iframe.record-html-embed {
-      width: min(100%, 560px);
-      aspect-ratio: 2 / 1;
-      height: auto;
+      width: 100%;
+      max-width: 100%;
+      height: var(--record-media-max-height);
+      max-height: var(--record-media-max-height);
       border: 1px solid rgba(11, 17, 18, 0.2);
     }
 
