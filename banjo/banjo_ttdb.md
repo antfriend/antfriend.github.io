@@ -13,7 +13,7 @@ umwelt:
   umwelt_id: umwelt:banjo:taro:reader:v1
   role: card_librarian
   perspective: "A transcription-first catalog of the banjo taro cards."
-  scope: "Card text and card-back notes from banjo/banjo_taro_*.png, with TTDB structure aligned to RFCs/."
+  scope: "Card text and card-back notes from banjo_taro_*.png, with TTDB structure aligned to RFCs/."
   constraints:
     - "One record per card image."
     - "Card 13 is the back face."
@@ -66,7 +66,7 @@ audio_path: sounds/aireggica.wav
 @LAT84LON-170 | created:1771797320 | updated:1771797320 | relates:next>@LAT60LON-40,reverse>@LAT-74LON-30
 
 ## banjo
-![banjo](banjo/banjo_taro_01.png)
+![banjo](banjo_taro_01.png)
 
 ### iooo
 
@@ -81,7 +81,7 @@ epiphany. the moment of recognition.
 @LAT60LON-40 | created:1771797330 | updated:1771797330 | relates:prev>@LAT84LON-170,next>@LAT36LON90
 
 ## cowbell
-![cowbell](banjo/banjo_taro_02.png)
+![cowbell](banjo_taro_02.png)
 
 ### oioo
 
@@ -96,7 +96,7 @@ the smirk begets a jerk. the rustic factory clang rings. it is an over the top a
 @LAT36LON90 | created:1771797340 | updated:1771797340 | relates:prev>@LAT60LON-40,next>@LAT12LON-140
 
 ## violin
-![violin](banjo/banjo_taro_03.png)
+![violin](banjo_taro_03.png)
 
 ### iioo
 
@@ -111,7 +111,7 @@ loss. a trainride ticketed to everyone. imagine the mirror of the soul and refle
 @LAT12LON-140 | created:1771797350 | updated:1771797350 | relates:prev>@LAT36LON90,next>@LAT-12LON-10
 
 ## swistle
-![swistle](banjo/banjo_taro_04.png)
+![swistle](banjo_taro_04.png)
 
 ### ooio
 
@@ -126,7 +126,7 @@ the slide whistle does not care whether it is respected or not.
 @LAT-12LON-10 | created:1771797360 | updated:1771797360 | relates:prev>@LAT12LON-140,next>@LAT-36LON120
 
 ## bass
-![bass](banjo/banjo_taro_05.png)
+![bass](banjo_taro_05.png)
 
 ### ioio
 
@@ -141,7 +141,7 @@ elephants communicate subsonically. we can feel what we cannot hear.
 @LAT-36LON120 | created:1771797370 | updated:1771797370 | relates:prev>@LAT-12LON-10,next>@LAT-60LON-110
 
 ## guitar
-![guitar](banjo/banjo_taro_06.png)
+![guitar](banjo_taro_06.png)
 
 ### oiio
 
@@ -156,7 +156,7 @@ a wonderous woman commands the stage, hair swinging in a heavy metal stance.
 @LAT-60LON-110 | created:1771797380 | updated:1771797380 | relates:prev>@LAT-36LON120,next>@LAT70LON30
 
 ## bell
-![bell](banjo/banjo_taro_07.png)
+![bell](banjo_taro_07.png)
 
 ### iiio
 
@@ -171,7 +171,7 @@ assets in your possession allow you access to a priority. the banjo player uses 
 @LAT70LON30 | created:1771797390 | updated:1771797390 | relates:prev>@LAT-60LON-110,next>@LAT46LON160
 
 ## tuba
-![tuba](banjo/banjo_taro_08.png)
+![tuba](banjo_taro_08.png)
 
 ### oooi
 
@@ -186,7 +186,7 @@ not a good thing. the banjo player's bad self that plays at xmas like a fart in 
 @LAT46LON160 | created:1771797400 | updated:1771797400 | relates:prev>@LAT70LON30,next>@LAT22LON-80
 
 ## verbalizer
-![verbalizer](banjo/banjo_taro_09.png)
+![verbalizer](banjo_taro_09.png)
 
 ### iooi
 
@@ -201,7 +201,7 @@ the experience of experience, qualia; these are words that describe the indescri
 @LAT22LON-80 | created:1771797410 | updated:1771797410 | relates:prev>@LAT46LON160,next>@LAT-2LON50
 
 ## sax
-![sax](banjo/banjo_taro_10.png)
+![sax](banjo_taro_10.png)
 
 ### oioi
 
@@ -216,7 +216,7 @@ self assurance is like a sonorous tone
 @LAT-2LON50 | created:1771797420 | updated:1771797420 | relates:prev>@LAT22LON-80,next>@LAT-26LON-170
 
 ## flute
-![flute](banjo/banjo_taro_11.png)
+![flute](banjo_taro_11.png)
 
 ### iioi
 
@@ -231,7 +231,7 @@ the banjo player gratefully accepts gifts
 @LAT-26LON-170 | created:1771797430 | updated:1771797430 | relates:prev>@LAT-2LON50,next>@LAT-74LON-30
 
 ## piano
-![piano](banjo/banjo_taro_12.png)
+![piano](banjo_taro_12.png)
 
 ### ooii
 
@@ -246,4 +246,4 @@ was that a good thing or a bad thing?
 @LAT-74LON-30 | created:1771797440 | updated:1771797440 | relates:prev>@LAT-26LON-170,reverse_of>@LAT84LON-170
 
 ## card back
-![card back](banjo/banjo_taro_13.png)
+![card back](banjo_taro_13.png)
