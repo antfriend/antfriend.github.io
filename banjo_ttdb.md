@@ -252,9 +252,11 @@ was that a good thing or a bad thing?
 
 @LAT88LON140 | created:1771797450 | updated:1771797450 | relates:spins_from>@LAT84LON-170
 
-## banjo dice globe
-![banjo dice globe](banjo/banjo.html)
+## banjo taro
+![banjo taro](banjo/banjo.html)
 
-### one page game
+### your past, your present, your idea of your future in this thread
 
-press play to roll a 12-face globe of the banjo cards. three cards are drawn and remain visible on the left.
+The left card represents an aspect from your past.   
+The middle card might have something to do with that last thing, but in the present.
+The right card is a super-position possible conclusion to the thread.
