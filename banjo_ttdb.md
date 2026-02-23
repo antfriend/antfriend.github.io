@@ -3,7 +3,7 @@ A TTDB transcription of the 13-card banjo taro image set in `banjo/`, structured
 
 ```mmpdb
 db_id: ttdb:banjo:taro:v1
-db_name: "Banjo TTDB"
+db_name: "Banjo"
 coord_increment:
   lat: 1
   lon: 1
@@ -16,8 +16,7 @@ umwelt:
   scope: "Card text and card-back notes from banjo/banjo_taro_*.png, with TTDB structure aligned to RFCs/."
   constraints:
     - "One record per card image."
-    - "Preserve printed wording, punctuation, and casing as shown."
-    - "Card 13 is symbol-only and has no meaningful text."
+    - "Card 13 is the back face."
   globe:
     frame: "banjo_card_map"
     origin: "Card 1 starts the sequence; cards advance by card number."
@@ -69,22 +68,13 @@ audio_path: sounds/aireggica.wav
 ## banjo
 ![banjo](banjo/banjo_taro_01.png)
 
-- Asset: `banjo/banjo_taro_01.png`
-- Card code: `iooo`
+### iooo
 
-### Right column text
 perhaps what it is cannot be described. your source of being is telling you something. be listening now.
 
-### Center quote
 "u play?" the banjo winner is grateful
 
-### Bottom text
 epiphany. the moment of recognition.
-
-### References
-- [RFC index](RFCs/INDEX.md)
-- [TTDB file format](RFCs/TTDB-RFC-0001-File-Format.md)
-- [TTDB typed edges](RFCs/TTDB-RFC-0003-Typed-Edges.md)
 
 ---
 
@@ -93,16 +83,12 @@ epiphany. the moment of recognition.
 ## cowbell
 ![cowbell](banjo/banjo_taro_02.png)
 
-- Asset: `banjo/banjo_taro_02.png`
-- Card code: `oioo`
+### oioo
 
-### Right column text
 what is fun for one is not fun for another. teens bear the heaviest burden. legends of rock repulse and attract, a short lived flash of sound. a heartbeat
 
-### Center quote
 "more cowbell leads to more cows"
 
-### Bottom text
 the smirk begets a jerk. the rustic factory clang rings. it is an over the top accompaniment of beefy metal.
 
 ---
@@ -112,16 +98,12 @@ the smirk begets a jerk. the rustic factory clang rings. it is an over the top a
 ## violin
 ![violin](banjo/banjo_taro_03.png)
 
-- Asset: `banjo/banjo_taro_03.png`
-- Card code: `iioo`
+### iioo
 
-### Right column text
 the ache of a tension between a past that was and now isn't. a pause in the song, the sound of silence when the violin has stopped
 
-### Center quote
 "too bad, so sad"
 
-### Bottom text
 loss. a trainride ticketed to everyone. imagine the mirror of the soul and reflect on all that is fleeting and all that remains.
 
 ---
@@ -131,16 +113,12 @@ loss. a trainride ticketed to everyone. imagine the mirror of the soul and refle
 ## swistle
 ![swistle](banjo/banjo_taro_04.png)
 
-- Asset: `banjo/banjo_taro_04.png`
-- Card code: `ooio`
+### ooio
 
-### Right column text
 commitment to silliness.
 
-### Center quote
 "fweeoop!"
 
-### Bottom text
 the slide whistle does not care whether it is respected or not.
 
 ---
@@ -150,16 +128,12 @@ the slide whistle does not care whether it is respected or not.
 ## bass
 ![bass](banjo/banjo_taro_05.png)
 
-- Asset: `banjo/banjo_taro_05.png`
-- Card code: `ioio`
+### ioio
 
-### Right column text
 don't follow the rhythm, ride it
 
-### Center quote
 "i've got your back"
 
-### Bottom text
 elephants communicate subsonically. we can feel what we cannot hear.
 
 ---
@@ -169,16 +143,12 @@ elephants communicate subsonically. we can feel what we cannot hear.
 ## guitar
 ![guitar](banjo/banjo_taro_06.png)
 
-- Asset: `banjo/banjo_taro_06.png`
-- Card code: `oiio`
+### oiio
 
-### Right column text
 give everything, everything to this moment
 
-### Center quote
 "let's jam!"
 
-### Bottom text
 a wonderous woman commands the stage, hair swinging in a heavy metal stance.
 
 ---
@@ -188,16 +158,12 @@ a wonderous woman commands the stage, hair swinging in a heavy metal stance.
 ## bell
 ![bell](banjo/banjo_taro_07.png)
 
-- Asset: `banjo/banjo_taro_07.png`
-- Card code: `iiio`
+### iiio
 
-### Right column text
 an opportunity to free one of an asset and make a change.
 
-### Center quote
 "ding!"
 
-### Bottom text
 assets in your possession allow you access to a priority. the banjo player uses contemplation before pursuing an exchange
 
 ---
@@ -207,16 +173,12 @@ assets in your possession allow you access to a priority. the banjo player uses 
 ## tuba
 ![tuba](banjo/banjo_taro_08.png)
 
-- Asset: `banjo/banjo_taro_08.png`
-- Card code: `oooi`
+### oooi
 
-### Right column text
 when the horn blows, that ship has sailed. wait it out
 
-### Center quote
 "HALT!"
 
-### Bottom text
 not a good thing. the banjo player's bad self that plays at xmas like a fart in their general direction.
 
 ---
@@ -226,16 +188,12 @@ not a good thing. the banjo player's bad self that plays at xmas like a fart in 
 ## verbalizer
 ![verbalizer](banjo/banjo_taro_09.png)
 
-- Asset: `banjo/banjo_taro_09.png`
-- Card code: `iooi`
+### iooi
 
-### Right column text
 a chorus of heavenly robots usher in the poly future. imagining it is bringing it to life. a tension between the future and the present. what could be, could be
 
-### Center quote
 "verbalize it, don't criticise it"
 
-### Bottom text
 the experience of experience, qualia; these are words that describe the indescribable, the conscious mirror
 
 ---
@@ -245,16 +203,12 @@ the experience of experience, qualia; these are words that describe the indescri
 ## sax
 ![sax](banjo/banjo_taro_10.png)
 
-- Asset: `banjo/banjo_taro_10.png`
-- Card code: `oioi`
+### oioi
 
-### Right column text
 the sax finds the path
 
-### Center quote
 "Noooo!"
 
-### Bottom text
 self assurance is like a sonorous tone
 
 ---
@@ -264,16 +218,12 @@ self assurance is like a sonorous tone
 ## flute
 ![flute](banjo/banjo_taro_11.png)
 
-- Asset: `banjo/banjo_taro_11.png`
-- Card code: `iioi`
+### iioi
 
-### Right column text
 enjoy the abundance
 
-### Center quote
 "yes!"
 
-### Bottom text
 the banjo player gratefully accepts gifts
 
 ---
@@ -283,16 +233,12 @@ the banjo player gratefully accepts gifts
 ## piano
 ![piano](banjo/banjo_taro_12.png)
 
-- Asset: `banjo/banjo_taro_12.png`
-- Card code: `ooii`
+### ooii
 
-### Right column text
 a big, loud, beautiful, quiet presence
 
-### Center quote
 "free piano?"
 
-### Bottom text
 was that a good thing or a bad thing?
 
 ---
@@ -301,12 +247,3 @@ was that a good thing or a bad thing?
 
 ## card back
 ![card back](banjo/banjo_taro_13.png)
-
-- Asset: `banjo/banjo_taro_13.png`
-- Card role: card back
-
-### Text content
-No meaningful text is present. The card shows symbols only.
-
-### Source notes
-The full deck assets are in `banjo/`, and TTDB structure here follows `RFCs/TTDB-RFC-0001-File-Format.md`.
