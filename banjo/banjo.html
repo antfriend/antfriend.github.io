@@ -142,6 +142,14 @@
       overflow: hidden;
       z-index: var(--z);
       pointer-events: auto;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .dealer-card.is-dragging {
+      cursor: grabbing;
     }
 
     .dealer-card img {
@@ -318,6 +326,8 @@
       dragY: 0,
       spreadZoom: 1,
       allowManualDrag: true,
+      drawnCardPlacements: [],
+      dealerDrag: null,
       images: new Map(),
     };
 
@@ -603,17 +613,104 @@
     function buildCardNode(card, placement, shouldSpring) {
       const wrapper = document.createElement("article");
       wrapper.className = `dealer-card${shouldSpring ? " spring" : ""}`;
-      wrapper.style.setProperty("--x", `${placement.x}%`);
-      wrapper.style.setProperty("--y", `${placement.y}%`);
-      wrapper.style.setProperty("--rot", `${placement.rot}deg`);
-      wrapper.style.setProperty("--z", String(placement.z));
-      wrapper.style.setProperty("--scale", String(state.spreadZoom));
+      setNodePlacement(wrapper, placement);
       const image = document.createElement("img");
       image.src = card.src;
       image.alt = card.title;
       image.loading = "eager";
       wrapper.appendChild(image);
       return wrapper;
+    }
+
+    function setNodePlacement(node, placement) {
+      node.style.setProperty("--x", `${placement.x}%`);
+      node.style.setProperty("--y", `${placement.y}%`);
+      node.style.setProperty("--rot", `${placement.rot}deg`);
+      node.style.setProperty("--z", String(placement.z));
+      node.style.setProperty("--scale", String(state.spreadZoom));
+    }
+
+    function getDragBoundsPct() {
+      const widthPx = getDealerCardWidthPx() * state.spreadZoom;
+      const heightPx = widthPx * 1.5;
+      const halfWidthPct = (widthPx / Math.max(1, state.width)) * 50;
+      const halfHeightPct = (heightPx / Math.max(1, state.height)) * 50;
+      const canFitX = halfWidthPct <= 50;
+      const canFitY = halfHeightPct <= 50;
+      return {
+        minX: canFitX ? halfWidthPct : 50,
+        maxX: canFitX ? 100 - halfWidthPct : 50,
+        minY: canFitY ? halfHeightPct : 50,
+        maxY: canFitY ? 100 - halfHeightPct : 50,
+      };
+    }
+
+    function clampPlacementToBounds(placement) {
+      const bounds = getDragBoundsPct();
+      placement.x = clamp(placement.x, bounds.minX, bounds.maxX);
+      placement.y = clamp(placement.y, bounds.minY, bounds.maxY);
+      return placement;
+    }
+
+    function pointerToSpreadPct(event) {
+      const rect = dealerSpread.getBoundingClientRect();
+      const width = Math.max(1, rect.width);
+      const height = Math.max(1, rect.height);
+      return {
+        x: ((event.clientX - rect.left) / width) * 100,
+        y: ((event.clientY - rect.top) / height) * 100,
+      };
+    }
+
+    function beginDealerDrag(event, index, node) {
+      if (event.button !== 0) return;
+      const placement = state.drawnCardPlacements[index];
+      if (!placement) return;
+      const pointer = pointerToSpreadPct(event);
+      state.dealerDrag = {
+        pointerId: event.pointerId,
+        index,
+        node,
+        startZ: placement.z,
+        offsetX: placement.x - pointer.x,
+        offsetY: placement.y - pointer.y,
+      };
+      node.classList.add("is-dragging");
+      node.style.setProperty("--z", "12");
+      if (node.setPointerCapture) {
+        try {
+          node.setPointerCapture(event.pointerId);
+        } catch (err) {}
+      }
+      event.preventDefault();
+    }
+
+    function moveDealerDrag(event) {
+      const drag = state.dealerDrag;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      const placement = state.drawnCardPlacements[drag.index];
+      if (!placement) return;
+      const pointer = pointerToSpreadPct(event);
+      placement.x = pointer.x + drag.offsetX;
+      placement.y = pointer.y + drag.offsetY;
+      clampPlacementToBounds(placement);
+      setNodePlacement(drag.node, placement);
+    }
+
+    function endDealerDrag(event) {
+      const drag = state.dealerDrag;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      const placement = state.drawnCardPlacements[drag.index];
+      if (placement) {
+        drag.node.style.setProperty("--z", String(placement.z ?? drag.startZ));
+      }
+      drag.node.classList.remove("is-dragging");
+      if (drag.node.releasePointerCapture && drag.node.hasPointerCapture?.(event.pointerId)) {
+        try {
+          drag.node.releasePointerCapture(event.pointerId);
+        } catch (err) {}
+      }
+      state.dealerDrag = null;
     }
 
     function setSpreadZoom(value) {
@@ -625,12 +722,19 @@
     }
 
     function renderSpread(lastRevealIndex = -1) {
+      state.dealerDrag = null;
       dealerSpread.innerHTML = "";
       const cards = state.drawnCards;
       const layout = getDealerLayout(cards.length);
       cards.forEach((card, index) => {
-        const placement = layout[index] || { x: 50, y: 50, rot: 0, z: index + 1 };
+        let placement = state.drawnCardPlacements[index];
+        if (!placement) {
+          placement = { ...(layout[index] || { x: 50, y: 50, rot: 0, z: index + 1 }) };
+          state.drawnCardPlacements[index] = placement;
+        }
+        clampPlacementToBounds(placement);
         const node = buildCardNode(card, placement, index === lastRevealIndex);
+        node.addEventListener("pointerdown", (event) => beginDealerDrag(event, index, node));
         dealerSpread.appendChild(node);
       });
     }
@@ -674,6 +778,8 @@
       state.drawnCards.push(card);
       state.availableCards = state.availableCards.filter((entry) => entry.id !== card.id);
       const revealIndex = state.drawnCards.length - 1;
+      const layout = getDealerLayout(state.drawnCards.length);
+      state.drawnCardPlacements[revealIndex] = { ...(layout[revealIndex] || { x: 50, y: 50, rot: 0, z: revealIndex + 1 }) };
       renderSpread(revealIndex);
       statusText.textContent = `Card ${state.drawnCards.length}: ${card.title}`;
       state.activeCard = null;
@@ -692,8 +798,10 @@
     function resetGame() {
       state.gameToken += 1;
       state.drawnCards = [];
+      state.drawnCardPlacements = [];
       state.availableCards = [...FACE_CARDS];
       state.activeCard = null;
+      state.dealerDrag = null;
       state.phase = "ready";
       playAgainBtn.hidden = true;
       if (state.rollTimer) {
@@ -784,6 +892,10 @@
       },
       { passive: false },
     );
+
+    dealerSpread.addEventListener("pointermove", moveDealerDrag);
+    dealerSpread.addEventListener("pointerup", endDealerDrag);
+    dealerSpread.addEventListener("pointercancel", endDealerDrag);
 
     canvas.addEventListener("pointerdown", (event) => {
       if (!state.allowManualDrag) return;
