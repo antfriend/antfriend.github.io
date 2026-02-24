@@ -266,6 +266,7 @@
     </section>
   </div>
 
+  <script src="../js/audio-player.js"></script>
   <script>
     const FACE_CARDS = [
       { id: "01", title: "banjo", src: "banjo_taro_01.png", lat: 84, lon: -170 },
@@ -289,6 +290,7 @@
     const startOverlay = document.getElementById("startOverlay");
     const statusText = document.getElementById("statusText");
     const dealerSpread = document.getElementById("dealerSpread");
+    const playSound = window.CommonAudio?.createSoundPlayer("../sounds/aireggica.wav");
     const SPREAD_ZOOM_MIN = 0.75;
     const SPREAD_ZOOM_MAX = 2.5;
     const SPREAD_ZOOM_STEP = 1.1;
@@ -709,6 +711,10 @@
       startRoll(token);
     }
 
+    function playButtonSound() {
+      playSound?.play();
+    }
+
     function updateAnimation(dt, now) {
       if (state.phase === "rolling") {
         state.rotLon += state.spinVelLon * dt;
@@ -755,10 +761,12 @@
     }
 
     playBtn.addEventListener("click", () => {
+      playButtonSound();
       startGame();
     });
 
     playAgainBtn.addEventListener("click", () => {
+      playButtonSound();
       startGame();
     });
 
