@@ -1,0 +1,296 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{verbatim}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+
+\newenvironment{ttdb_mmpdb}{\begin{verbatim}}{\end{verbatim}}
+\newenvironment{ttdb_cursor}{\begin{verbatim}}{\end{verbatim}}
+\newenvironment{ttdb_record}{\par\bigskip\hrule\medskip}{\medskip\hrule\bigskip}
+\newcommand{\ttdbheader}[1]{\noindent\texttt{#1}\par\medskip}
+
+\begin{document}
+\section*{Mathematical TTDB}
+This LaTeX TTDB specifies generalized mathematical processing for TTDB features used in \texttt{index.html} and \texttt{banjo/banjo.html}. It is intended as an implementation-neutral reference model.
+
+\begin{ttdb_mmpdb}
+db_id: ttdb:mathematical:processing:v1
+db_name: "Mathematical"
+coord_increment:
+  lat: 1
+  lon: 1
+collision_policy: southeast_step
+timestamp_kind: unix_utc
+umwelt:
+  umwelt_id: umwelt:tte:mathematical:model:v1
+  role: process_librarian
+  perspective: "A formal model of TTDB parsing, cursoring, rendering, interaction, and stochastic reveal."
+  scope: "Features represented in index.html and banjo/banjo.html."
+  constraints:
+    - "Use deterministic transforms where possible."
+    - "Preserve typed-edge directionality."
+    - "Treat random card choice as explicit stochastic sampling."
+  globe:
+    frame: "unit_sphere_knowledge_globe"
+    origin: "Record coordinates are points on a subjective globe."
+    mapping: "Record ID @LATxLONy maps to spherical coordinates (phi, lambda) in degrees."
+    note: "Projection and visibility are camera-dependent."
+cursor_policy:
+  max_preview_chars: 280
+  max_nodes: 80
+typed_edges:
+  enabled: true
+  syntax: "type>@TARGET_ID"
+  note: "Edges are directed and canonical in header metadata."
+librarian:
+  enabled: true
+  primitive_queries:
+    - "SELECT <record_id>"
+    - "FIND <token>"
+    - "EDGES <record_id>"
+    - "STATUS"
+  max_reply_chars: 280
+  invocation_prefix: "@AI"
+\end{ttdb_mmpdb}
+
+\begin{ttdb_cursor}
+selected:
+  - @LAT0LON0
+preview:
+  @LAT0LON0: "State-space model for TTDB processing and rendering."
+agent_note: "When ambiguity exists, prefer deterministic tie-break rules or explicit clarification."
+\end{ttdb_cursor}
+
+\begin{ttdb_record}
+\ttdbheader{@LAT0LON0 | created:1771900000 | updated:1771900000 | relates:defines>@LAT18LON-120,defines>@LAT35LON-60,defines>@LAT52LON20,defines>@LAT28LON95,defines>@LAT5LON150,defines>@LAT-22LON60,defines>@LAT-42LON-30,defines>@LAT-12LON-150,defines>@LAT-62LON120}
+\subsection*{System State and Dynamics}
+Let the application state at time $t$ be
+\[
+S_t = (M_t, C_t, R_t, E_t, G_t, V_t, U_t),
+\]
+where:
+\[
+\begin{aligned}
+M_t &: \text{mmpdb metadata}, \\
+C_t &: \text{cursor state}, \\
+R_t &: \text{record map}, \\
+E_t &: \text{typed directed edges}, \\
+G_t &: \text{record coordinate map}, \\
+V_t &: \text{view/camera state}, \\
+U_t &: \text{UI and timers}.
+\end{aligned}
+\]
+An implementation evolves by
+\[
+S_{t+1} = F(S_t, a_t, \eta_t),
+\]
+with input action $a_t$ and optional stochastic term $\eta_t$ (used for random card draws).
+\end{ttdb_record}
+
+\begin{ttdb_record}
+\ttdbheader{@LAT18LON-120 | created:1771900010 | updated:1771900010 | relates:refines>@LAT0LON0,feeds>@LAT35LON-60,feeds>@LAT52LON20}
+\subsection*{Parsing and Canonicalization}
+Define parser
+\[
+P : \Sigma^* \to (M, C, \mathcal{R}),
+\]
+where $\Sigma^*$ is file text and $\mathcal{R} = (r_1,\dots,r_n)$ is ordered records.
+Each record is
+\[
+r_i = (id_i, h_i, b_i, title_i, X_i, \mathcal{E}_i).
+\]
+The ID grammar is
+\[
+id_i = \texttt{@LAT}\phi_i\texttt{LON}\lambda_i,\quad \phi_i,\lambda_i \in \mathbb{R}.
+\]
+Coordinate extraction is deterministic:
+\[
+X_i = (\phi_i, \lambda_i).
+\]
+For header token list $\texttt{relates:}$,
+\[
+\mathcal{E}_i = \{(\tau, id_j)\},
+\]
+with token syntax $\tau\texttt{>}id_j$ and default $\tau=\texttt{relates}$ if omitted.
+\end{ttdb_record}
+
+\begin{ttdb_record}
+\ttdbheader{@LAT35LON-60 | created:1771900020 | updated:1771900020 | relates:refines>@LAT0LON0,depends_on>@LAT18LON-120,feeds>@LAT28LON95}
+\subsection*{Typed-Edge Graph Semantics}
+Define graph
+\[
+\mathcal{G}_{TTDB} = (\mathcal{V}, \mathcal{E}_{dir}),
+\]
+where $\mathcal{V}=\{id_i\}$ and
+\[
+\mathcal{E}_{dir} = \{(id_i,\tau,id_j)\mid (\tau,id_j)\in \mathcal{E}_i\}.
+\]
+Directionality rule:
+\[
+(id_i,\tau,id_j) \not\Rightarrow (id_j,\tau,id_i).
+\]
+Duplicate edges may be canonicalized by set projection:
+\[
+\mathcal{E}_{canon} = \text{unique}(\mathcal{E}_{dir}).
+\]
+Rendering may use $\mathcal{E}_{canon}$, but stored edge headers remain authoritative.
+\end{ttdb_record}
+
+\begin{ttdb_record}
+\ttdbheader{@LAT52LON20 | created:1771900030 | updated:1771900030 | relates:refines>@LAT0LON0,depends_on>@LAT18LON-120}
+\subsection*{Cursor, Discovery, and Search}
+Let ordered record IDs be $\mathcal{O}=(id_1,\dots,id_n)$ and selected ID be $s_t$.
+Discovery set $D_t\subseteq \mathcal{O}$ updates by:
+\[
+D_{t+1} =
+\begin{cases}
+\mathcal{O}, & \text{if discovery mode is disabled},\\
+D_t \cup \{id_1,s_t\}, & \text{otherwise}.
+\end{cases}
+\]
+Search term $q$ yields visible order:
+\[
+\mathcal{F}(q)=
+\begin{cases}
+\mathcal{O}\cap D_t, & q=\varnothing,\\
+\{id\in D_t\mid q\subseteq \text{blob}(id)\}, & q\neq\varnothing.
+\end{cases}
+\]
+If $s_t\notin \mathcal{F}(q)$ and $\mathcal{F}(q)\neq\varnothing$, select first element.
+\end{ttdb_record}
+
+\begin{ttdb_record}
+\ttdbheader{@LAT28LON95 | created:1771900040 | updated:1771900040 | relates:refines>@LAT0LON0,depends_on>@LAT35LON-60,feeds>@LAT5LON150}
+\subsection*{Spherical Projection and Visibility}
+Given $(\phi,\lambda)$ in degrees, convert to radians and map to the unit sphere:
+\[
+x=\cos\phi\sin\lambda,\quad y=\sin\phi,\quad z=\cos\phi\cos\lambda.
+\]
+Apply yaw $\rho$ then pitch $\theta$:
+\[
+\begin{bmatrix}x_1\\y_1\\z_1\end{bmatrix}
+= R_x(\theta)R_y(\rho)\begin{bmatrix}x\\y\\z\end{bmatrix}.
+\]
+Node is front-visible iff $z_1>0$.
+Screen projection for globe center $(c_x,c_y)$ and radius $r$:
+\[
+p_x=c_x+r x_1,\quad p_y=c_y-r y_1.
+\]
+This model is shared by TTDB globe and banjo globe rendering.
+\end{ttdb_record}
+
+\begin{ttdb_record}
+\ttdbheader{@LAT5LON150 | created:1771900050 | updated:1771900050 | relates:refines>@LAT0LON0,depends_on>@LAT28LON95,selects>@LAT52LON20}
+\subsection*{Interaction Operators}
+Nearest-node selection at pointer $p$:
+\[
+\hat{id}=\arg\min_{id\in \mathcal{V}_{screen}} \|s(id)-p\|_2,
+\]
+accepted when $\|s(\hat{id})-p\|_2\le \tau_{hit}$.
+
+Drag updates camera:
+\[
+\rho \leftarrow \rho + k_x \Delta x,\quad
+\theta \leftarrow \text{clamp}(\theta + \sigma k_y \Delta y,\;[-\tfrac{\pi}{2}+\epsilon,\tfrac{\pi}{2}-\epsilon]),
+\]
+where $\sigma\in\{-1,1\}$ encodes Y-axis inversion preference.
+
+Zoom update:
+\[
+z \leftarrow \text{clamp}(z\cdot \gamma,\;[z_{min},z_{max}]).
+\]
+\end{ttdb_record}
+
+\begin{ttdb_record}
+\ttdbheader{@LAT-22LON60 | created:1771900060 | updated:1771900060 | relates:refines>@LAT0LON0,depends_on>@LAT28LON95,depends_on>@LAT5LON150}
+\subsection*{Record-to-Record Transition Dynamics}
+For transition $id_a\to id_b$, direction uses longitude wrap delta $\Delta\lambda$ and latitude delta $\Delta\phi$:
+\[
+\mathbf{d} = (\Delta\lambda,-\Delta\phi),\quad \hat{\mathbf{d}}=\frac{\mathbf{d}}{\|\mathbf{d}\|_2}.
+\]
+Great-circle fraction
+\[
+\delta = \frac{2\arctan2\left(\sqrt{\alpha},\sqrt{1-\alpha}\right)}{\pi},
+\]
+\[
+\alpha=\sin^2\!\left(\frac{\Delta\phi_r}{2}\right)+\cos\phi_{a,r}\cos\phi_{b,r}\sin^2\!\left(\frac{\Delta\lambda_r}{2}\right),
+\]
+clamped to $[0,1]$, then
+\[
+\delta'=\text{clamp}(\delta,[0.03,1]).
+\]
+Duration and travel:
+\[
+T=\text{round}\!\left((160+1400(\delta')^{0.55})\cdot \kappa\right),\quad
+L=\text{round}\!\left(72+300(\delta')^{0.75}\right),
+\]
+where $\kappa$ is a pace multiplier (e.g., slow tour mode).
+\end{ttdb_record}
+
+\begin{ttdb_record}
+\ttdbheader{@LAT-42LON-30 | created:1771900070 | updated:1771900070 | relates:refines>@LAT0LON0,depends_on>@LAT52LON20,depends_on>@LAT-22LON60}
+\subsection*{Guided Tour Automaton}
+Tour state machine:
+\[
+Q=\{\text{off},\text{paused},\text{scheduled}\}.
+\]
+If enabled and $|D_t|\ge 2$, schedule timer $\Delta t_{tour}$.
+On timeout:
+\[
+next(s_t)=\mathcal{D}\left[(\text{index}(s_t)+1)\bmod |\mathcal{D}|\right],
+\]
+where $\mathcal{D}$ is discovered order.
+Interaction events reset schedule (unless tour is off).
+\end{ttdb_record}
+
+\begin{ttdb_record}
+\ttdbheader{@LAT-12LON-150 | created:1771900080 | updated:1771900080 | relates:refines>@LAT0LON0,depends_on>@LAT28LON95}
+\subsection*{Banjo Three-Card Stochastic Reveal}
+Let available set $A_t$ and drawn sequence $B_t$.
+For each reveal step while $|B_t|<3$:
+\[
+c_t \sim \text{Uniform}(A_t).
+\]
+Rolling phase updates orientation:
+\[
+\rho \leftarrow \rho + \omega_\rho \Delta t,\quad
+\theta \leftarrow \text{clamp}(\theta + \omega_\theta \Delta t + \epsilon\sin(\kappa t)\Delta t).
+\]
+At settle trigger, target orientation $(\theta^\star,\rho^\star)$ from card coordinate is approached by:
+\[
+\theta \leftarrow \theta + \beta\cdot \Delta\theta,\quad
+\rho \leftarrow \rho + \beta\cdot \Delta\rho.
+\]
+When $|\Delta\theta|,|\Delta\rho|<\varepsilon$, reveal card:
+\[
+B_{t+1}=B_t \Vert [c_t],\quad A_{t+1}=A_t\setminus\{c_t\}.
+\]
+\end{ttdb_record}
+
+\begin{ttdb_record}
+\ttdbheader{@LAT-62LON120 | created:1771900090 | updated:1771900090 | relates:implements>@LAT18LON-120,implements>@LAT35LON-60,implements>@LAT52LON20}
+\subsection*{Strategies for Rendering .latex TTDB in index.html}
+\textbf{Strategy A: Build-time canonicalization.}
+Convert \texttt{.latex} TTDB into canonical JSON:
+\[
+\texttt{latex} \xrightarrow{P_{latex}} \texttt{TTDB-JSON},
+\]
+then reuse existing renderer unchanged.
+
+\textbf{Strategy B: Dual-parser client path.}
+Detect extension and parse either markdown or LaTeX into the same in-memory model:
+\[
+\texttt{parseAny}(file)=
+\begin{cases}
+P_{md}(file), & \text{if .md}\\
+P_{latex}(file), & \text{if .latex}
+\end{cases}
+\]
+followed by shared rendering pipeline.
+
+\textbf{Strategy C: On-load transpile to markdown subset.}
+Map deterministic LaTeX environments to markdown-equivalent text and pass through current \texttt{parseRecords} with minimal UI changes.
+\end{ttdb_record}
+
+\end{document}

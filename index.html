@@ -537,7 +537,7 @@
   <script src="js/audio-player.js"></script>
   <script>
     const DEFAULT_DB_PATH = "banjo_ttdb.md";
-    const DB_CANDIDATE_PATHS = [DEFAULT_DB_PATH, "TootTootTerminologyDB.md", "MyMentalPalaceDB.md"];
+    const DB_CANDIDATE_PATHS = [DEFAULT_DB_PATH, "TootTootTerminologyDB.md", "MyMentalPalaceDB.md", "Mathematical.latex"];
     const TOUR_DELAY_MS = 12000;
     const TOUR_SLOW_DELAY_MULTIPLIER = 1.7;
     const TOUR_SLOW_TRANSITION_MULTIPLIER = 2.5;
@@ -735,8 +735,22 @@
       return `${DISCOVERY_KEY_PREFIX}:${keyPath}`;
     }
 
+    function isSupportedDbPath(path) {
+      if (typeof path !== "string") return false;
+      const lower = path.trim().toLowerCase();
+      return lower.endsWith(".md") || lower.endsWith(".latex");
+    }
+
+    function detectDbFormat(content, dbPath = state.activeDbPath) {
+      const lowerPath = typeof dbPath === "string" ? dbPath.trim().toLowerCase() : "";
+      if (lowerPath.endsWith(".latex")) return "latex";
+      if (lowerPath.endsWith(".md")) return "markdown";
+      if (/\\begin\{ttdb_record\}/i.test(content)) return "latex";
+      return "markdown";
+    }
+
     function getDbBaseName(dbPath) {
-      return dbPath.replace(/^.*[\\/]/, "").replace(/\.md$/i, "");
+      return dbPath.replace(/^.*[\\/]/, "").replace(/\.(md|latex)$/i, "");
     }
 
     function getDbBadgeLabel(dbPath) {
@@ -753,7 +767,7 @@
       paths.forEach((value) => {
         if (typeof value !== "string") return;
         const trimmed = value.trim();
-        if (!trimmed.toLowerCase().endsWith(".md")) return;
+        if (!isSupportedDbPath(trimmed)) return;
         if (seen.has(trimmed)) return;
         seen.add(trimmed);
         unique.push(trimmed);
@@ -976,7 +990,7 @@
           if (!force && targetDbPath === state.lastLoadedDbPath && text === state.lastText) return;
           state.lastText = text;
           state.lastLoadedDbPath = targetDbPath;
-          const { records, order, selected, coords, specialRecords } = parseRecords(text);
+          const { records, order, selected, coords, specialRecords } = parseRecords(text, targetDbPath);
           state.records = records;
           state.order = order;
           state.coords = coords;
@@ -1018,29 +1032,61 @@
         });
     }
 
-    function parseRecords(content) {
+    function parseCursorSelection(cursorBlock) {
+      let selected = null;
+      const lines = cursorBlock.split(/\r?\n/);
+      let inSelected = false;
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith("selected:")) {
+          inSelected = true;
+          continue;
+        }
+        if (inSelected) {
+          const itemMatch = trimmed.match(/^-\s*(\S+)/);
+          if (itemMatch) {
+            selected = itemMatch[1];
+            break;
+          }
+          if (trimmed && !trimmed.startsWith("-")) {
+            break;
+          }
+        }
+      }
+      return selected;
+    }
+
+    function parseRecordEdges(headerLine) {
+      const edges = [];
+      const relatesMatch = headerLine.match(/relates:([^|]+)/);
+      if (!relatesMatch) return edges;
+      const tokens = relatesMatch[1].split(",");
+      for (const tokenRaw of tokens) {
+        const token = tokenRaw.trim();
+        if (!token) continue;
+        let edgeType = "relates";
+        let target = token;
+        if (token.includes(">")) {
+          const [left, right] = token.split(">", 2);
+          edgeType = left.trim();
+          target = right.trim();
+        }
+        edges.push({ type: edgeType, target });
+      }
+      return edges;
+    }
+
+    function parseRecords(content, dbPath = state.activeDbPath) {
+      const format = detectDbFormat(content, dbPath);
+      if (format === "latex") return parseLatexRecords(content);
+      return parseMarkdownRecords(content);
+    }
+
+    function parseMarkdownRecords(content) {
       let selected = null;
       const cursorMatch = content.match(/```cursor([\s\S]*?)```/);
       if (cursorMatch) {
-        const lines = cursorMatch[1].split(/\r?\n/);
-        let inSelected = false;
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (trimmed.startsWith("selected:")) {
-            inSelected = true;
-            continue;
-          }
-          if (inSelected) {
-            const itemMatch = trimmed.match(/^-\s*(\S+)/);
-            if (itemMatch) {
-              selected = itemMatch[1];
-              break;
-            }
-            if (trimmed && !trimmed.startsWith("-")) {
-              break;
-            }
-          }
-        }
+        selected = parseCursorSelection(cursorMatch[1]);
       }
 
       const records = {};
@@ -1076,29 +1122,13 @@
         const body = filteredBodyLines.join("\n").trim();
 
         const recordCoords = parseCoords(recordId);
-        const specialRecord = parseSpecialRecord(recordCoords, body);
+        const specialRecord = parseSpecialRecord(recordCoords, body, "markdown");
         if (specialRecord) {
           specialRecords[specialRecord.kind] = { recordId, ...specialRecord };
           continue;
         }
 
-        const edges = [];
-        const relatesMatch = headerLine.match(/relates:([^|]+)/);
-        if (relatesMatch) {
-          const tokens = relatesMatch[1].split(",");
-          for (const tokenRaw of tokens) {
-            const token = tokenRaw.trim();
-            if (!token) continue;
-            let edgeType = "relates";
-            let target = token;
-            if (token.includes(">")) {
-              const [left, right] = token.split(">", 2);
-              edgeType = left.trim();
-              target = right.trim();
-            }
-            edges.push({ type: edgeType, target });
-          }
-        }
+        const edges = parseRecordEdges(headerLine);
 
         if (recordCoords) {
           coords[recordId] = recordCoords;
@@ -1111,16 +1141,105 @@
       return { records, order, selected, coords, specialRecords };
     }
 
-    function parseSpecialRecord(recordCoords, body) {
-      if (!recordCoords || recordCoords[0] !== SPECIAL_RECORD_SOUTH_POLE_LAT) return null;
-      const specialBlockRegex = new RegExp(`\`\`\`${SPECIAL_RECORD_BLOCK_LANG}([\\s\\S]*?)\`\`\``, "i");
-      const specialBlockMatch = body.match(specialBlockRegex);
-      if (!specialBlockMatch) return null;
+    function latexToMarkdownBody(bodySource) {
+      if (!bodySource) return "";
+
+      let text = bodySource.replace(/\r\n/g, "\n");
+      const mathBlocks = [];
+      text = text.replace(/\\\[([\s\S]*?)\\\]/g, (_match, expr) => {
+        const token = `@@TTDB_MATH_${mathBlocks.length}@@`;
+        mathBlocks.push(expr.trim());
+        return token;
+      });
+
+      text = text
+        .replace(/\\section\*\{([^}]*)\}/g, "## $1")
+        .replace(/\\subsection\*\{([^}]*)\}/g, "### $1")
+        .replace(/\\subsubsection\*\{([^}]*)\}/g, "#### $1")
+        .replace(/\\textbf\{([^}]*)\}/g, "**$1**")
+        .replace(/\\texttt\{([^}]*)\}/g, "`$1`")
+        .replace(/\\emph\{([^}]*)\}/g, "*$1*")
+        .replace(/\\begin\{itemize\}/g, "")
+        .replace(/\\end\{itemize\}/g, "")
+        .replace(/\\begin\{enumerate\}/g, "")
+        .replace(/\\end\{enumerate\}/g, "")
+        .replace(/\\item\s+/g, "- ")
+        .replace(/\\\\/g, "\n")
+        .replace(/\\([{}_$%&#])/g, "$1");
+
+      text = text.replace(/\$([^$\n]+)\$/g, (_match, expr) => `\`${expr.trim()}\``);
+
+      text = text.replace(/@@TTDB_MATH_(\d+)@@/g, (_match, idxRaw) => {
+        const expr = mathBlocks[Number(idxRaw)] || "";
+        if (!expr) return "";
+        return `\n\`\`\`math\n${expr}\n\`\`\`\n`;
+      });
+
+      return text
+        .replace(/[ \t]+\n/g, "\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+
+    function parseLatexRecords(content) {
+      let selected = null;
+      const cursorMatch = content.match(/\\begin\{ttdb_cursor\}([\s\S]*?)\\end\{ttdb_cursor\}/i);
+      if (cursorMatch) {
+        selected = parseCursorSelection(cursorMatch[1]);
+      }
+
+      const records = {};
+      const order = [];
+      const coords = {};
+      const specialRecords = {};
+      const recordRegex = /\\begin\{ttdb_record\}([\s\S]*?)\\end\{ttdb_record\}/gi;
+      let blockMatch = recordRegex.exec(content);
+
+      while (blockMatch) {
+        const block = blockMatch[1];
+        const headerMatch = block.match(/\\ttdbheader\{([\s\S]*?)\}/);
+        if (headerMatch) {
+          const headerLine = headerMatch[1].replace(/\s+/g, " ").trim();
+          const recordId = headerLine.split(/\s+/)[0];
+          if (recordId.startsWith("@")) {
+            let bodySource = block.replace(headerMatch[0], "").trim();
+            bodySource = bodySource.replace(/^\s*%.*$/gm, "").trim();
+            const recordCoords = parseCoords(recordId);
+
+            const specialRecord = parseSpecialRecord(recordCoords, bodySource, "latex");
+            if (specialRecord) {
+              specialRecords[specialRecord.kind] = { recordId, ...specialRecord };
+            } else {
+              let title = null;
+              const titleMatch = bodySource.match(/\\subsection\*\{([^}]*)\}/);
+              if (titleMatch) {
+                title = titleMatch[1].trim();
+                bodySource = bodySource.replace(titleMatch[0], "").trim();
+              }
+
+              const body = latexToMarkdownBody(bodySource);
+              const edges = parseRecordEdges(headerLine);
+              if (recordCoords) {
+                coords[recordId] = recordCoords;
+              }
+
+              records[recordId] = { header: headerLine, body, title, edges };
+              order.push(recordId);
+            }
+          }
+        }
+        blockMatch = recordRegex.exec(content);
+      }
+
+      return { records, order, selected, coords, specialRecords };
+    }
+
+    function parseSpecialConfigBlock(blockText) {
       const config = {};
-      const lines = specialBlockMatch[1].split(/\r?\n/);
+      const lines = blockText.split(/\r?\n/);
       lines.forEach((line) => {
         const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith("#")) return;
+        if (!trimmed || trimmed.startsWith("#") || trimmed.startsWith("%")) return;
         const entryMatch = trimmed.match(/^([A-Za-z0-9._-]+)\s*:\s*(.+)$/);
         if (!entryMatch) return;
         const key = entryMatch[1].toLowerCase();
@@ -1133,6 +1252,30 @@
         }
         config[key] = value;
       });
+      return config;
+    }
+
+    function parseSpecialRecord(recordCoords, body, format = "markdown") {
+      if (!recordCoords || recordCoords[0] !== SPECIAL_RECORD_SOUTH_POLE_LAT) return null;
+      let specialBlockBody = "";
+
+      if (format === "latex") {
+        const latexSpecialMatch = body.match(/\\begin\{ttdb_special\}([\s\S]*?)\\end\{ttdb_special\}/i);
+        if (latexSpecialMatch) {
+          specialBlockBody = latexSpecialMatch[1];
+        }
+      }
+
+      if (!specialBlockBody) {
+        const specialBlockRegex = new RegExp(`\`\`\`${SPECIAL_RECORD_BLOCK_LANG}([\\s\\S]*?)\`\`\``, "i");
+        const specialBlockMatch = body.match(specialBlockRegex);
+        if (specialBlockMatch) {
+          specialBlockBody = specialBlockMatch[1];
+        }
+      }
+
+      if (!specialBlockBody) return null;
+      const config = parseSpecialConfigBlock(specialBlockBody);
       const kind = typeof config.kind === "string" ? config.kind.trim().toLowerCase() : "";
       if (!kind) return null;
       return { kind, config };
