@@ -534,6 +534,7 @@
 
   <script src="js/link-hover-preview.js"></script>
   <script src="js/eyeball.js"></script>
+  <script src="js/audio-player.js"></script>
   <script>
     const DEFAULT_DB_PATH = "TootTootTerminologyDB.md";
     const DB_CANDIDATE_PATHS = [DEFAULT_DB_PATH, "banjo_ttdb.md", "TTE/MyMentalPalaceDB.md"];
@@ -596,7 +597,7 @@
       recordTransitionToken: 0,
       specialRecords: {},
       tourAudioPath: null,
-      tourAudio: null,
+      tourAudioPlayer: null,
     };
 
     const palette = (() => {
@@ -1114,19 +1115,15 @@
       const nextPath = normalizedPath || null;
       if (nextPath === state.tourAudioPath) return;
 
-      if (state.tourAudio) {
-        state.tourAudio.pause();
-        state.tourAudio.currentTime = 0;
-        state.tourAudio = null;
+      if (state.tourAudioPlayer) {
+        state.tourAudioPlayer.stop();
+        state.tourAudioPlayer = null;
       }
 
       state.tourAudioPath = nextPath;
       if (!nextPath) return;
 
-      const nextAudio = new Audio(nextPath);
-      nextAudio.preload = "auto";
-      nextAudio.loop = true;
-      state.tourAudio = nextAudio;
+      state.tourAudioPlayer = window.CommonAudio?.createSoundPlayer(nextPath, { loop: true }) || null;
     }
 
     function parseCoords(recordId) {
@@ -2553,19 +2550,16 @@
     }
 
     function setTourAudioPlaying(shouldPlay) {
-      const tourAudio = state.tourAudio;
-      if (!tourAudio) return;
+      const tourAudioPlayer = state.tourAudioPlayer;
+      if (!tourAudioPlayer) return;
+      const tourAudio = tourAudioPlayer.audio;
       if (shouldPlay) {
         if (!tourAudio.paused) return;
-        const playPromise = tourAudio.play();
-        if (playPromise && typeof playPromise.catch === "function") {
-          playPromise.catch(() => {});
-        }
+        tourAudioPlayer.play({ restart: false });
         return;
       }
       if (tourAudio.paused) return;
-      tourAudio.pause();
-      tourAudio.currentTime = 0;
+      tourAudioPlayer.stop();
     }
 
     function scheduleTour() {
