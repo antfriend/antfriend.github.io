@@ -544,6 +544,7 @@
     const SPECIAL_RECORD_BLOCK_LANG = "ttdb-special";
     const SPECIAL_RECORD_SOUTH_POLE_LAT = -90;
     const TOUR_AUDIO_SPECIAL_KIND = "tour_sound";
+    const DISCOVERY_TOUR_OFF_SPECIAL_KIND = "discovery_tour_off";
     const DISCOVERY_KEY_PREFIX = "tte-terminology-discovered-records-v2";
     const GLOBE_ZOOM_MIN = 0.7;
     const GLOBE_ZOOM_MAX = 3.5;
@@ -596,6 +597,7 @@
       pendingRecordTransition: null,
       recordTransitionToken: 0,
       specialRecords: {},
+      discoveryTourOff: false,
       tourAudioPath: null,
       tourAudioPlayer: null,
     };
@@ -627,6 +629,8 @@
     const slowTourToggle = document.getElementById("slowTourToggle");
     const invertDragToggle = document.getElementById("invertDragToggle");
     const tourNote = document.getElementById("tourNote");
+    const tourToggleLabel = tourToggle.closest("label");
+    const slowTourToggleLabel = slowTourToggle.closest("label");
 
     const ctx = graphCanvas.getContext("2d");
     const resizeObserver = new ResizeObserver(() => renderGraph());
@@ -702,6 +706,7 @@
     window.addEventListener("keydown", (event) => {
       if (event.code !== "Space" || event.repeat) return;
       if (document.activeElement === searchInput) return;
+      if (state.discoveryTourOff) return;
       if (!state.tourEnabled) return;
 
       event.preventDefault();
@@ -767,8 +772,26 @@
       state.availableDbPaths = normalizeDbCatalog(DB_CANDIDATE_PATHS);
     }
 
+    function hasDiscoveryTourOffSpecialRecord(specialRecords) {
+      return Boolean(specialRecords[DISCOVERY_TOUR_OFF_SPECIAL_KIND]);
+    }
+
+    function syncDiscoveryTourControls() {
+      const suppressed = state.discoveryTourOff;
+      if (suppressed) {
+        state.tourPaused = false;
+        clearTour(true);
+      }
+      forgetDiscoveriesBtn.hidden = suppressed;
+      if (tourToggleLabel) tourToggleLabel.hidden = suppressed;
+      if (slowTourToggleLabel) slowTourToggleLabel.hidden = suppressed;
+      tourNote.hidden = suppressed;
+    }
+
     function getDiscoveredOrder() {
-      if (!state.order.length || !state.discoveredIds.length) return [];
+      if (!state.order.length) return [];
+      if (state.discoveryTourOff) return [...state.order];
+      if (!state.discoveredIds.length) return [];
       const discoveredSet = new Set(state.discoveredIds);
       return state.order.filter((recordId) => discoveredSet.has(recordId));
     }
@@ -817,6 +840,7 @@
     }
 
     function persistDiscovery() {
+      if (state.discoveryTourOff) return;
       try {
         localStorage.setItem(getDiscoveryKey(), JSON.stringify(state.discoveredIds));
       } catch (err) {
@@ -827,6 +851,12 @@
     function initializeDiscovery() {
       const firstRecordId = state.order[0] || null;
       state.firstRecordId = firstRecordId;
+
+      if (state.discoveryTourOff) {
+        state.discoveredIds = [...state.order];
+        syncDiscoveredNodeColors();
+        return;
+      }
 
       let storedIds = [];
       try {
@@ -852,6 +882,7 @@
     }
 
     function discoverRecord(recordId) {
+      if (state.discoveryTourOff) return false;
       if (!recordId || !state.records[recordId]) return false;
       const discoveredSet = new Set(state.discoveredIds);
       const firstRecordId = state.firstRecordId || state.order[0] || null;
@@ -950,7 +981,9 @@
           state.order = order;
           state.coords = coords;
           state.specialRecords = specialRecords;
-          setTourAudioPath(getTourAudioPath(state.specialRecords));
+          state.discoveryTourOff = hasDiscoveryTourOffSpecialRecord(state.specialRecords);
+          syncDiscoveryTourControls();
+          setTourAudioPath(state.discoveryTourOff ? null : getTourAudioPath(state.specialRecords));
           initializeDiscovery();
           buildSearchIndex();
           if (resetSelection || !state.selectedId || !records[state.selectedId]) {
@@ -975,6 +1008,8 @@
           state.discoveredIds = [];
           state.discoveredNodeColors = {};
           state.specialRecords = {};
+          state.discoveryTourOff = false;
+          syncDiscoveryTourControls();
           setTourAudioPath(null);
           renderList();
           renderRecord();
@@ -2564,6 +2599,10 @@
 
     function scheduleTour() {
       clearTour();
+      if (state.discoveryTourOff) {
+        setTourAudioPlaying(false);
+        return;
+      }
       const discoveredOrder = getDiscoveredOrder();
       const shouldPlayTourAudio = state.tourEnabled && !state.tourPaused && discoveredOrder.length >= 2;
       setTourAudioPlaying(shouldPlayTourAudio);
@@ -2596,7 +2635,7 @@
 
     function advanceTour() {
       const order = getDiscoveredOrder();
-      if (!state.tourEnabled || !order.length) return;
+      if (state.discoveryTourOff || !state.tourEnabled || !order.length) return;
       let index = order.indexOf(state.selectedId);
       if (index < 0) index = 0;
       const nextId = order[(index + 1) % order.length];
@@ -2605,6 +2644,7 @@
     }
 
     function noteInteraction() {
+      if (state.discoveryTourOff) return;
       if (!state.tourEnabled) return;
       if (state.dbShiftAnimation) return;
       scheduleTour();

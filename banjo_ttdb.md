@@ -52,13 +52,13 @@ preview:
 
 @LAT-90LON0 | created:1771797310 | updated:1771797310
 
-## TTDB Special Record: Tour Sound
+## TTDB Special Record: Tour Off
 
-Optional tour audio for this deck.
+An option for this deck.
 
 ```ttdb-special
-kind: tour_sound
-audio_path: sounds/aireggica.wav
+kind: discovery_tour_off
+
 ```
 
 ---
