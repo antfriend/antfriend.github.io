@@ -43,9 +43,9 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT84LON-170
+  - @LAT88LON140
 preview:
-  @LAT84LON-170: "banjo. epiphany. the moment of recognition."
+  @LAT88LON140: "banjo taro. your past, your present, your idea of your future in this thread."
 ```
 
 ---
@@ -60,6 +60,19 @@ Optional tour audio for this deck.
 kind: tour_sound
 audio_path: sounds/aireggica.wav
 ```
+
+---
+
+@LAT88LON140 | created:1771797450 | updated:1771797450 | relates:spins_from>@LAT84LON-170
+
+## banjo taro
+![banjo taro](banjo/banjo.html)
+
+### your past, your present, your idea of your future in this thread
+
+The left card represents an aspect from your past.   
+The middle card might have something to do with that last thing, but in the present.
+The right card is a super-position possible conclusion to the thread.
 
 ---
 
@@ -249,14 +262,3 @@ was that a good thing or a bad thing?
 ![card back](banjo/banjo_taro_13.png)
 
 ---
-
-@LAT88LON140 | created:1771797450 | updated:1771797450 | relates:spins_from>@LAT84LON-170
-
-## banjo taro
-![banjo taro](banjo/banjo.html)
-
-### your past, your present, your idea of your future in this thread
-
-The left card represents an aspect from your past.   
-The middle card might have something to do with that last thing, but in the present.
-The right card is a super-position possible conclusion to the thread.
