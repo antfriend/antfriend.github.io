@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Toot Toot Engineering</title>
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <link rel="stylesheet" href="css/eyeball.css" />
   <link rel="stylesheet" href="css/tte-common.css" />
   <link rel="stylesheet" href="css/tte-core.css" />
@@ -410,6 +412,12 @@
       border: 1px solid rgba(11, 17, 18, 0.2);
     }
 
+    .record .katex-display {
+      margin: 0.6em 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
     .related {
       list-style: none;
       padding: 0;
@@ -535,7 +543,9 @@
   <script src="js/link-hover-preview.js"></script>
   <script src="js/eyeball.js"></script>
   <script src="js/audio-player.js"></script>
-  <script>
+  <script type="module">
+    import { renderLatex } from "./js/latex-renderer.js";
+
     const DEFAULT_DB_PATH = "banjo_ttdb.md";
     const DB_CANDIDATE_PATHS = [DEFAULT_DB_PATH, "TootTootTerminologyDB.md", "MyMentalPalaceDB.md", "Mathematical.latex"];
     const TOUR_DELAY_MS = 12000;
@@ -1169,7 +1179,7 @@
         .replace(/\\\\/g, "\n")
         .replace(/\\([{}_$%&#])/g, "$1");
 
-      text = text.replace(/\$([^$\n]+)\$/g, (_match, expr) => `\`${expr.trim()}\``);
+      text = text.replace(/\$([^$\n]+)\$/g, (_match, expr) => `\\(${expr.trim()}\\)`);
 
       text = text.replace(/@@TTDB_MATH_(\d+)@@/g, (_match, idxRaw) => {
         const expr = mathBlocks[Number(idxRaw)] || "";
@@ -1746,6 +1756,7 @@
       });
       let inCode = false;
       let codeBlock = null;
+      let codeBlockLang = "";
       let list = null;
 
       const flushList = () => {
@@ -1768,10 +1779,22 @@
             flushList();
             inCode = true;
             codeBlock = document.createElement("pre");
+            codeBlockLang = line.slice(3).trim().toLowerCase();
           } else {
-            fragment.appendChild(codeBlock || document.createElement("pre"));
+            const codeText = codeBlock?.textContent || "";
+            if (codeBlockLang === "math" || codeBlockLang === "latex") {
+              const mathHost = document.createElement("div");
+              const tex = codeText.trim();
+              if (tex) {
+                renderLatex(mathHost, tex, { displayMode: true });
+              }
+              fragment.appendChild(mathHost);
+            } else {
+              fragment.appendChild(codeBlock || document.createElement("pre"));
+            }
             inCode = false;
             codeBlock = null;
+            codeBlockLang = "";
           }
           continue;
         }
@@ -1920,6 +1943,33 @@
       return link;
     }
 
+    function appendTextWithInlineLatex(nodes, value) {
+      if (!value) return;
+      const inlineMathPattern = /\\\(([\s\S]*?)\\\)/g;
+      let lastIndex = 0;
+      let match = inlineMathPattern.exec(value);
+
+      while (match) {
+        if (match.index > lastIndex) {
+          nodes.push(document.createTextNode(value.slice(lastIndex, match.index)));
+        }
+
+        const expr = (match[1] || "").trim();
+        if (expr) {
+          const inlineMath = document.createElement("span");
+          renderLatex(inlineMath, expr, { displayMode: false });
+          nodes.push(inlineMath);
+        }
+
+        lastIndex = match.index + match[0].length;
+        match = inlineMathPattern.exec(value);
+      }
+
+      if (lastIndex < value.length) {
+        nodes.push(document.createTextNode(value.slice(lastIndex)));
+      }
+    }
+
     function renderInlineMarkdownLinks(text, references) {
       const nodes = [];
       const pattern = /!\[([^\]]*)\]\(([^)]+)\)|!\[([^\]]*)\]\[([^\]]+)\]|\[([^\]]+)\]\(([^)]+)\)|\[([^\]]+)\]\[([^\]]+)\]|(https?:\/\/[^\s<]+|www\.[^\s<]+)/g;
@@ -1928,7 +1978,7 @@
 
       while (match) {
         if (match.index > lastIndex) {
-          nodes.push(document.createTextNode(text.slice(lastIndex, match.index)));
+          appendTextWithInlineLatex(nodes, text.slice(lastIndex, match.index));
         }
 
         if (match[1] !== undefined) {
@@ -1942,7 +1992,7 @@
           if (ref && !/^javascript:/i.test(ref.href)) {
             nodes.push(createMediaNode(ref.href, alt, ref.title));
           } else {
-            nodes.push(document.createTextNode(match[0]));
+            appendTextWithInlineLatex(nodes, match[0]);
           }
         } else if (match[5] !== undefined) {
           const label = match[5];
@@ -1958,7 +2008,7 @@
               nodes.push(missing);
             }
           } else if (/^javascript:/i.test(href)) {
-            nodes.push(document.createTextNode(match[0]));
+            appendTextWithInlineLatex(nodes, match[0]);
           } else {
             const link = document.createElement("a");
             link.href = href;
@@ -1986,7 +2036,7 @@
             if (ref.title) link.title = ref.title;
             nodes.push(link);
           } else {
-            nodes.push(document.createTextNode(match[0]));
+            appendTextWithInlineLatex(nodes, match[0]);
           }
         } else if (match[9] !== undefined) {
           const raw = match[9];
@@ -2002,11 +2052,11 @@
       }
 
       if (lastIndex < text.length) {
-        nodes.push(document.createTextNode(text.slice(lastIndex)));
+        appendTextWithInlineLatex(nodes, text.slice(lastIndex));
       }
 
       if (!nodes.length) {
-        nodes.push(document.createTextNode(text));
+        appendTextWithInlineLatex(nodes, text);
       }
 
       return nodes;
