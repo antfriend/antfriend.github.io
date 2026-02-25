@@ -380,6 +380,7 @@
     }
 
     .record img,
+    .record video,
     .record object,
     .record iframe.record-html-embed {
       display: block;
@@ -393,6 +394,13 @@
     }
 
     .record img {
+      width: auto;
+      height: auto;
+      max-height: var(--record-media-max-height);
+      object-fit: contain;
+    }
+
+    .record video {
       width: auto;
       height: auto;
       max-height: var(--record-media-max-height);
@@ -1530,8 +1538,8 @@
       incoming.classList.add("is-current");
       const current = viewEl.querySelector(".record-frame.is-current");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const currentHasMedia = Boolean(current?.querySelector("img, object"));
-      const incomingHasMedia = Boolean(incoming.querySelector("img, object"));
+      const currentHasMedia = Boolean(current?.querySelector("img, video, object, iframe.record-html-embed"));
+      const incomingHasMedia = Boolean(incoming.querySelector("img, video, object, iframe.record-html-embed"));
       const hasMediaTransition = currentHasMedia || incomingHasMedia;
       const shouldAnimate =
         Boolean(current) &&
@@ -1710,6 +1718,10 @@
       return /\.html(?:[?#].*)?$/i.test(src.trim());
     }
 
+    function isVideoSource(src) {
+      return /\.(mp4|webm|ogg|mov)(?:[?#].*)?$/i.test(src.trim());
+    }
+
     function createMediaNode(src, alt, title) {
       if (isHtmlEmbedSource(src)) {
         const iframe = document.createElement("iframe");
@@ -1718,6 +1730,19 @@
         iframe.loading = "lazy";
         iframe.title = title || alt || "Embedded HTML content";
         return iframe;
+      }
+
+      if (isVideoSource(src)) {
+        const video = document.createElement("video");
+        video.src = src;
+        video.controls = true;
+        video.preload = "metadata";
+        video.playsInline = true;
+        if (title) video.title = title;
+        if (alt || title) {
+          video.setAttribute("aria-label", alt || title);
+        }
+        return video;
       }
 
       const img = document.createElement("img");
