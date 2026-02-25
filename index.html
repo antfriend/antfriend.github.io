@@ -548,6 +548,9 @@
 
     const DEFAULT_DB_PATH = "banjo_ttdb.md";
     const DB_CANDIDATE_PATHS = [DEFAULT_DB_PATH, "TootTootTerminologyDB.md", "MyMentalPalaceDB.md", "Mathematical.latex"];
+    const DB_URL_PARAM_PRIMARY = "ttdb";
+    const DB_URL_PARAM_FALLBACK = "db";
+    const DB_URL_PARAM_KEYS = [DB_URL_PARAM_PRIMARY, DB_URL_PARAM_FALLBACK];
     const TOUR_DELAY_MS = 12000;
     const TOUR_SLOW_DELAY_MULTIPLIER = 1.7;
     const TOUR_SLOW_TRANSITION_MULTIPLIER = 2.5;
@@ -736,8 +739,12 @@
     function setStatusLink(recordCount) {
       const discoveredCount = getDiscoveredOrder().length;
       const activeDbPath = state.activeDbPath || DEFAULT_DB_PATH;
-      statusEl.innerHTML =
-        `DB: <a href="${activeDbPath}">${activeDbPath}</a> · ${discoveredCount}/${recordCount} discovered`;
+      statusEl.textContent = "";
+      statusEl.append("DB: ");
+      const link = document.createElement("a");
+      link.href = activeDbPath;
+      link.textContent = activeDbPath;
+      statusEl.append(link, ` · ${discoveredCount}/${recordCount} discovered`);
     }
 
     function getDiscoveryKey(dbPath = state.activeDbPath) {
@@ -794,6 +801,71 @@
 
     function initializeDbCatalog() {
       state.availableDbPaths = normalizeDbCatalog(DB_CANDIDATE_PATHS);
+    }
+
+    function getDbAliasCandidates(dbPath) {
+      const aliases = new Set();
+      const lowerPath = dbPath.toLowerCase();
+      const baseName = getDbBaseName(dbPath).toLowerCase();
+      aliases.add(lowerPath);
+      aliases.add(baseName);
+      aliases.add(baseName.replace(/[_-]?ttdb$/, ""));
+      if (!baseName.endsWith("ttdb")) {
+        aliases.add(baseName.replace(/db$/, ""));
+      }
+      return [...aliases].filter(Boolean);
+    }
+
+    function resolveDbPathToken(rawToken, availablePaths = state.availableDbPaths) {
+      if (typeof rawToken !== "string") return null;
+      const trimmed = rawToken.trim();
+      if (!trimmed) return null;
+      if (/^[A-Za-z][A-Za-z0-9+.-]*:/.test(trimmed)) return null;
+      if (/^[\\/]/.test(trimmed)) return null;
+      if (/[?#]/.test(trimmed)) return null;
+
+      const normalizedToken = trimmed.toLowerCase();
+      const normalizedNoExt = normalizedToken.replace(/\.(md|latex)$/i, "");
+      for (const dbPath of availablePaths) {
+        const aliases = getDbAliasCandidates(dbPath);
+        if (aliases.includes(normalizedToken) || aliases.includes(normalizedNoExt)) {
+          return dbPath;
+        }
+      }
+
+      return isSupportedDbPath(trimmed) ? trimmed : null;
+    }
+
+    function getInitialDbPathFromUrl() {
+      let params = null;
+      try {
+        params = new URLSearchParams(window.location.search || "");
+      } catch (err) {
+        return DEFAULT_DB_PATH;
+      }
+
+      for (const key of DB_URL_PARAM_KEYS) {
+        const rawValue = params.get(key);
+        if (!rawValue) continue;
+        const resolvedPath = resolveDbPathToken(rawValue, state.availableDbPaths);
+        if (resolvedPath) return resolvedPath;
+      }
+      return DEFAULT_DB_PATH;
+    }
+
+    function syncDbParamInUrl(dbPath) {
+      if (!dbPath) return;
+      try {
+        const url = new URL(window.location.href);
+        const current = url.searchParams.get(DB_URL_PARAM_PRIMARY);
+        if (current !== dbPath) {
+          url.searchParams.set(DB_URL_PARAM_PRIMARY, dbPath);
+        }
+        url.searchParams.delete(DB_URL_PARAM_FALLBACK);
+        window.history.replaceState(null, "", url.toString());
+      } catch (err) {
+        // Ignore URL update failures and continue using in-memory state.
+      }
     }
 
     function hasDiscoveryTourOffSpecialRecord(specialRecords) {
@@ -981,12 +1053,13 @@
 
     function loadDb(dbPath = state.activeDbPath, opts = {}) {
       const { force = false, resetSelection = false, preferredRecordId = null } = opts;
-      const targetDbPath = dbPath || DEFAULT_DB_PATH;
+      const targetDbPath = resolveDbPathToken(dbPath, state.availableDbPaths) || DEFAULT_DB_PATH;
       const loadToken = (state.dbLoadToken += 1);
       state.activeDbPath = targetDbPath;
       if (!state.availableDbPaths.includes(targetDbPath)) {
         state.availableDbPaths = normalizeDbCatalog([...state.availableDbPaths, targetDbPath]);
       }
+      syncDbParamInUrl(targetDbPath);
       setStatusMessage(`Loading ${targetDbPath}...`);
       renderGraph();
 
@@ -2891,7 +2964,8 @@
     window.mountEyeball("eyeball-foot");
 
     initializeDbCatalog();
-    loadDb(DEFAULT_DB_PATH, { force: true, resetSelection: true });
+    const initialDbPath = getInitialDbPathFromUrl();
+    loadDb(initialDbPath, { force: true, resetSelection: true });
   </script>
 </body>
 </html>

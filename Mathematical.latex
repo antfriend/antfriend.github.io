@@ -8,6 +8,7 @@
 \newenvironment{ttdb_mmpdb}{\begin{verbatim}}{\end{verbatim}}
 \newenvironment{ttdb_cursor}{\begin{verbatim}}{\end{verbatim}}
 \newenvironment{ttdb_record}{\par\bigskip\hrule\medskip}{\medskip\hrule\bigskip}
+\newenvironment{ttdb_special}{\begin{verbatim}}{\end{verbatim}}
 \newcommand{\ttdbheader}[1]{\noindent\texttt{#1}\par\medskip}
 
 \begin{document}
@@ -61,6 +62,13 @@ preview:
   @LAT0LON0: "State-space model for TTDB processing and rendering."
 agent_note: "When ambiguity exists, prefer deterministic tie-break rules or explicit clarification."
 \end{ttdb_cursor}
+
+\begin{ttdb_record}
+\ttdbheader{@LAT-90LON0 | created:1771899990 | updated:1771899990}
+\begin{ttdb_special}
+kind: discovery_tour_off
+\end{ttdb_special}
+\end{ttdb_record}
 
 \begin{ttdb_record}
 \ttdbheader{@LAT0LON0 | created:1771900000 | updated:1771900000 | relates:defines>@LAT18LON-120,defines>@LAT35LON-60,defines>@LAT52LON20,defines>@LAT28LON95,defines>@LAT5LON150,defines>@LAT-22LON60,defines>@LAT-42LON-30,defines>@LAT-12LON-150,defines>@LAT-62LON120}
