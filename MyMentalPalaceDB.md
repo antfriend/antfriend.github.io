@@ -319,7 +319,9 @@ The perceived world that bounds what exists for the system.
 @LAT-32.5LON15.9 | created:1770646802 | updated:1770649832 | relates:
 
 ## TTE Umwelt
+![Umwelt scope](images/eyeball-highway-sunrise.svg)
 Narrative description of the TTE umwelt and its domains.
+relates to [Umwelt](@LAT1.1LON1.2 TootTootTerminologyDB.md)
 
 - kind: document
 - aliases: TTE_Umwelt.md

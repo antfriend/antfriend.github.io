@@ -970,7 +970,7 @@
     }
 
     function loadDb(dbPath = state.activeDbPath, opts = {}) {
-      const { force = false, resetSelection = false } = opts;
+      const { force = false, resetSelection = false, preferredRecordId = null } = opts;
       const targetDbPath = dbPath || DEFAULT_DB_PATH;
       const loadToken = (state.dbLoadToken += 1);
       state.activeDbPath = targetDbPath;
@@ -1000,7 +1000,9 @@
           setTourAudioPath(state.discoveryTourOff ? null : getTourAudioPath(state.specialRecords));
           initializeDiscovery();
           buildSearchIndex();
-          if (resetSelection || !state.selectedId || !records[state.selectedId]) {
+          if (preferredRecordId && records[preferredRecordId]) {
+            state.selectedId = preferredRecordId;
+          } else if (resetSelection || !state.selectedId || !records[state.selectedId]) {
             state.selectedId = selected || order[0] || null;
           }
           if (state.selectedId) {
@@ -1860,6 +1862,64 @@
       return fragment;
     }
 
+    function parseRecordLinkTarget(rawHref) {
+      if (typeof rawHref !== "string") return null;
+      const trimmed = rawHref.trim();
+      if (!trimmed.startsWith("@")) return null;
+
+      const firstWhitespace = trimmed.search(/\s/);
+      if (firstWhitespace < 0) {
+        return { recordId: trimmed, dbPath: null };
+      }
+
+      const recordId = trimmed.slice(0, firstWhitespace).trim();
+      const dbPath = trimmed.slice(firstWhitespace).trim();
+      if (!recordId) return null;
+      return { recordId, dbPath: dbPath || null };
+    }
+
+    function canResolveRecordLinkTarget(target) {
+      if (!target || !target.recordId) return false;
+      if (!target.dbPath) {
+        return Boolean(state.records[target.recordId]);
+      }
+      if (!isSupportedDbPath(target.dbPath)) return false;
+      if (target.dbPath === state.activeDbPath) {
+        return Boolean(state.records[target.recordId]);
+      }
+      return true;
+    }
+
+    function navigateToRecordLinkTarget(target) {
+      if (!target || !target.recordId) return false;
+      const targetDbPath = target.dbPath || state.activeDbPath;
+      if (!targetDbPath) return false;
+      if (target.dbPath && !isSupportedDbPath(target.dbPath)) return false;
+
+      if (targetDbPath !== state.activeDbPath) {
+        loadDb(targetDbPath, { force: true, resetSelection: true, preferredRecordId: target.recordId });
+        return true;
+      }
+
+      if (!state.records[target.recordId]) return false;
+      selectRecord(target.recordId);
+      return true;
+    }
+
+    function createRecordLinkNode(label, target) {
+      const link = document.createElement("a");
+      link.href = target.dbPath || "#";
+      link.textContent = label;
+      link.dataset.preview = "off";
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (navigateToRecordLinkTarget(target)) {
+          noteInteraction();
+        }
+      });
+      return link;
+    }
+
     function renderInlineMarkdownLinks(text, references) {
       const nodes = [];
       const pattern = /!\[([^\]]*)\]\(([^)]+)\)|!\[([^\]]*)\]\[([^\]]+)\]|\[([^\]]+)\]\(([^)]+)\)|\[([^\]]+)\]\[([^\]]+)\]|(https?:\/\/[^\s<]+|www\.[^\s<]+)/g;
@@ -1888,17 +1948,9 @@
           const label = match[5];
           const href = match[6].trim();
           if (href.startsWith("@")) {
-            const recordId = href;
-            if (state.records[recordId]) {
-              const link = document.createElement("a");
-              link.href = "#";
-              link.textContent = label;
-              link.addEventListener("click", (event) => {
-                event.preventDefault();
-                selectRecord(recordId);
-                noteInteraction();
-              });
-              nodes.push(link);
+            const target = parseRecordLinkTarget(href);
+            if (canResolveRecordLinkTarget(target)) {
+              nodes.push(createRecordLinkNode(label, target));
             } else {
               const missing = document.createElement("span");
               missing.className = "muted";
@@ -1918,17 +1970,9 @@
           const refKey = match[8].trim().toLowerCase();
           const ref = references[refKey];
           if (ref && ref.href && ref.href.trim().startsWith("@")) {
-            const recordId = ref.href.trim();
-            if (state.records[recordId]) {
-              const link = document.createElement("a");
-              link.href = "#";
-              link.textContent = label;
-              link.addEventListener("click", (event) => {
-                event.preventDefault();
-                selectRecord(recordId);
-                noteInteraction();
-              });
-              nodes.push(link);
+            const target = parseRecordLinkTarget(ref.href.trim());
+            if (canResolveRecordLinkTarget(target)) {
+              nodes.push(createRecordLinkNode(label, target));
             } else {
               const missing = document.createElement("span");
               missing.className = "muted";
