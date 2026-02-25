@@ -188,6 +188,7 @@ This node **maps_to** the observatory.
 @LAT-50.7LON-61.0 | created:1700000600 | updated:1700001300 | relates:observes>@LAT-81.6LON0.0,validates>@LAT-61.9LON-30.5
 
 ## Observatory of the Whole
+![Umwelt](index.html?ttdb=TootTootTerminologyDB)   
 From here you can see the workbench at the root and the workshop below,
 like constellations connected by deliberate lines.
 
