@@ -331,6 +331,15 @@
       column-gap: 14px;
     }
 
+    .record-main.record-main-split.record-main-split-iframe {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .record-main.record-main-split.record-main-split-iframe > iframe.record-lead-media.record-html-embed {
+      width: 100%;
+      max-width: 100%;
+    }
+
     .record-main.record-main-split > .record-lead-media {
       margin: 0;
       width: auto;
@@ -1661,6 +1670,8 @@
       frame.appendChild(main);
       if (leadMediaInfo.leadMedia instanceof HTMLImageElement) {
         updateRecordSplitImageLayout(main, leadMediaInfo.leadMedia);
+      } else if (leadMediaInfo.leadMedia instanceof HTMLIFrameElement) {
+        main.classList.add("record-main-split", "record-main-split-iframe");
       }
       return frame;
     }
