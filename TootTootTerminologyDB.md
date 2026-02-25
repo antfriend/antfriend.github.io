@@ -351,6 +351,7 @@ A microcontroller uses only `select`, `find`, `edges`, `last`, and `status`.
 @LAT25.2LON55.3 | created:1771435078 | updated:1771435078 | relates:defines>@LAT-1.3LON36.8,guides>@LAT40.7LON-74.0
 
 ## TTAI Behavior Spec
+![Test1](video/Test1.mp4)
 ### Definition
 Defines idle-time behavior, TTN join/leave behavior, and primitive mode constraints.
 
