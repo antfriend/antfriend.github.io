@@ -578,6 +578,9 @@
     const DB_URL_PARAM_PRIMARY = "ttdb";
     const DB_URL_PARAM_FALLBACK = "db";
     const DB_URL_PARAM_KEYS = [DB_URL_PARAM_PRIMARY, DB_URL_PARAM_FALLBACK];
+    const TOOT_URL_PARAM_PRIMARY = "toot";
+    const TOOT_URL_PARAM_FALLBACK = "record";
+    const TOOT_URL_PARAM_KEYS = [TOOT_URL_PARAM_PRIMARY, TOOT_URL_PARAM_FALLBACK];
     const TOUR_DELAY_MS = 12000;
     const TOUR_SLOW_DELAY_MULTIPLIER = 1.7;
     const TOUR_SLOW_TRANSITION_MULTIPLIER = 2.5;
@@ -876,6 +879,40 @@
       return isSupportedDbPath(trimmed) ? trimmed : null;
     }
 
+    function getFirstSearchParam(searchParams, keys) {
+      for (const key of keys) {
+        const rawValue = searchParams.get(key);
+        if (rawValue) return rawValue;
+      }
+      return null;
+    }
+
+    function normalizeRecordIdToken(rawToken) {
+      if (typeof rawToken !== "string") return null;
+      const trimmed = rawToken.trim();
+      if (!trimmed) return null;
+
+      const directMatch = trimmed.match(/^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$/i);
+      if (directMatch) {
+        return `@LAT${directMatch[1]}LON${directMatch[2]}`;
+      }
+
+      const compactMatch = trimmed.match(/^lat(-?\d+(?:\.\d+)?)lon(-?\d+(?:\.\d+)?)$/i);
+      if (compactMatch) {
+        return `@LAT${compactMatch[1]}LON${compactMatch[2]}`;
+      }
+
+      return null;
+    }
+
+    function toTootRecordToken(recordId) {
+      const normalized = normalizeRecordIdToken(recordId);
+      if (!normalized) return "";
+      const match = normalized.match(/^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$/i);
+      if (!match) return normalized;
+      return `lat${match[1]}lon${match[2]}`;
+    }
+
     function getInitialDbPathFromUrl() {
       let params = null;
       try {
@@ -884,24 +921,46 @@
         return DEFAULT_DB_PATH;
       }
 
-      for (const key of DB_URL_PARAM_KEYS) {
-        const rawValue = params.get(key);
-        if (!rawValue) continue;
-        const resolvedPath = resolveDbPathToken(rawValue, state.availableDbPaths);
-        if (resolvedPath) return resolvedPath;
-      }
-      return DEFAULT_DB_PATH;
+      const rawValue = getFirstSearchParam(params, DB_URL_PARAM_KEYS);
+      if (!rawValue) return DEFAULT_DB_PATH;
+      return resolveDbPathToken(rawValue, state.availableDbPaths) || DEFAULT_DB_PATH;
     }
 
-    function syncDbParamInUrl(dbPath) {
+    function getInitialTootTargetFromUrl() {
+      let params = null;
+      try {
+        params = new URLSearchParams(window.location.search || "");
+      } catch (err) {
+        return null;
+      }
+
+      const rawValue = getFirstSearchParam(params, TOOT_URL_PARAM_KEYS);
+      if (!rawValue) return null;
+
+      const parsedTarget = parseRecordLinkTarget(rawValue);
+      if (!parsedTarget?.recordId) return null;
+
+      const dbFromQuery = resolveDbPathToken(getFirstSearchParam(params, DB_URL_PARAM_KEYS), state.availableDbPaths);
+      return {
+        recordId: parsedTarget.recordId,
+        dbPath: parsedTarget.dbPath || dbFromQuery || null,
+      };
+    }
+
+    function syncSelectionInUrl(dbPath, recordId = null) {
       if (!dbPath) return;
       try {
         const url = new URL(window.location.href);
-        const current = url.searchParams.get(DB_URL_PARAM_PRIMARY);
-        if (current !== dbPath) {
-          url.searchParams.set(DB_URL_PARAM_PRIMARY, dbPath);
-        }
+        url.searchParams.set(DB_URL_PARAM_PRIMARY, dbPath);
         url.searchParams.delete(DB_URL_PARAM_FALLBACK);
+
+        const tootToken = toTootRecordToken(recordId);
+        if (tootToken) {
+          url.searchParams.set(TOOT_URL_PARAM_PRIMARY, tootToken);
+        } else {
+          url.searchParams.delete(TOOT_URL_PARAM_PRIMARY);
+        }
+        url.searchParams.delete(TOOT_URL_PARAM_FALLBACK);
         window.history.replaceState(null, "", url.toString());
       } catch (err) {
         // Ignore URL update failures and continue using in-memory state.
@@ -1074,6 +1133,7 @@
       renderRecord();
       centerOnSelected();
       renderGraph();
+      syncSelectionInUrl(state.activeDbPath || DEFAULT_DB_PATH, state.selectedId);
       updateSearchMeta();
     }
 
@@ -1099,7 +1159,7 @@
       if (!state.availableDbPaths.includes(targetDbPath)) {
         state.availableDbPaths = normalizeDbCatalog([...state.availableDbPaths, targetDbPath]);
       }
-      syncDbParamInUrl(targetDbPath);
+      syncSelectionInUrl(targetDbPath, null);
       setStatusMessage(`Loading ${targetDbPath}...`);
       renderGraph();
 
@@ -2067,20 +2127,121 @@
       return fragment;
     }
 
-    function parseRecordLinkTarget(rawHref) {
+    function decodeURIComponentSafe(value) {
+      if (typeof value !== "string") return "";
+      try {
+        return decodeURIComponent(value);
+      } catch (err) {
+        return value;
+      }
+    }
+
+    function parseLegacyRecordLinkTarget(rawHref) {
       if (typeof rawHref !== "string") return null;
       const trimmed = rawHref.trim();
       if (!trimmed.startsWith("@")) return null;
 
       const firstWhitespace = trimmed.search(/\s/);
       if (firstWhitespace < 0) {
-        return { recordId: trimmed, dbPath: null };
+        const recordId = normalizeRecordIdToken(trimmed);
+        return recordId ? { recordId, dbPath: null } : null;
       }
 
-      const recordId = trimmed.slice(0, firstWhitespace).trim();
-      const dbPath = trimmed.slice(firstWhitespace).trim();
+      const recordId = normalizeRecordIdToken(trimmed.slice(0, firstWhitespace));
+      const dbPath = resolveDbPathToken(trimmed.slice(firstWhitespace).trim(), state.availableDbPaths);
+      if (!recordId || !dbPath) return null;
+      return { recordId, dbPath };
+    }
+
+    function parseTootPathTarget(rawPayload) {
+      if (typeof rawPayload !== "string") return null;
+      const payload = rawPayload.trim().replace(/^\/+/, "");
+      if (!payload) return null;
+
+      const [pathPart, queryPart = ""] = payload.split("?", 2);
+      const segments = pathPart.split("/").map((segment) => decodeURIComponentSafe(segment.trim())).filter(Boolean);
+      if (!segments.length && !queryPart) return null;
+
+      let queryRecordId = null;
+      let queryDbPath = null;
+      if (queryPart) {
+        try {
+          const params = new URLSearchParams(queryPart);
+          queryRecordId = normalizeRecordIdToken(getFirstSearchParam(params, TOOT_URL_PARAM_KEYS));
+          queryDbPath = resolveDbPathToken(getFirstSearchParam(params, DB_URL_PARAM_KEYS), state.availableDbPaths);
+        } catch (err) {
+          // Ignore malformed query strings and continue with path parsing.
+        }
+      }
+
+      if (!segments.length) {
+        if (!queryRecordId) return null;
+        return { recordId: queryRecordId, dbPath: queryDbPath || null };
+      }
+
+      const recordId = normalizeRecordIdToken(segments[segments.length - 1]) || queryRecordId;
       if (!recordId) return null;
-      return { recordId, dbPath: dbPath || null };
+
+      if (segments.length === 1) {
+        return { recordId, dbPath: queryDbPath || null };
+      }
+
+      const rawDbToken = segments.slice(0, -1).join("/");
+      const dbPath = resolveDbPathToken(rawDbToken, state.availableDbPaths) || queryDbPath;
+      if (!dbPath) return null;
+      return { recordId, dbPath };
+    }
+
+    function parseTootUriTarget(rawHref) {
+      if (typeof rawHref !== "string") return null;
+      const trimmed = rawHref.trim();
+      if (!/^toot:/i.test(trimmed)) return null;
+      const payload = trimmed.replace(/^toot:(\/\/)?/i, "");
+      return parseTootPathTarget(payload);
+    }
+
+    function parseRecordTokenTarget(rawToken) {
+      const legacy = parseLegacyRecordLinkTarget(rawToken);
+      if (legacy) return legacy;
+
+      const directRecordId = normalizeRecordIdToken(rawToken);
+      if (directRecordId) {
+        return { recordId: directRecordId, dbPath: null };
+      }
+
+      return parseTootUriTarget(rawToken);
+    }
+
+    function parseViewerUrlRecordTarget(rawHref) {
+      if (typeof rawHref !== "string") return null;
+      let url = null;
+      try {
+        url = new URL(rawHref, window.location.href);
+      } catch (err) {
+        return null;
+      }
+
+      if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+      if (url.origin !== window.location.origin) return null;
+
+      const rawRecordToken = getFirstSearchParam(url.searchParams, TOOT_URL_PARAM_KEYS);
+      if (!rawRecordToken) return null;
+
+      const recordTarget = parseRecordTokenTarget(rawRecordToken);
+      if (!recordTarget?.recordId) return null;
+
+      const dbPathFromQuery = resolveDbPathToken(getFirstSearchParam(url.searchParams, DB_URL_PARAM_KEYS), state.availableDbPaths);
+      return {
+        recordId: recordTarget.recordId,
+        dbPath: recordTarget.dbPath || dbPathFromQuery || null,
+      };
+    }
+
+    function parseRecordLinkTarget(rawHref) {
+      if (typeof rawHref !== "string") return null;
+      const trimmed = rawHref.trim();
+      if (!trimmed) return null;
+      return parseRecordTokenTarget(trimmed) || parseViewerUrlRecordTarget(trimmed);
     }
 
     function canResolveRecordLinkTarget(target) {
@@ -2111,9 +2272,27 @@
       return true;
     }
 
+    function buildRecordLinkHref(target) {
+      if (!target || !target.recordId) return "#";
+      const dbPath = target.dbPath || state.activeDbPath || DEFAULT_DB_PATH;
+      const recordToken = toTootRecordToken(target.recordId);
+      if (!recordToken) return dbPath || "#";
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set(DB_URL_PARAM_PRIMARY, dbPath);
+        url.searchParams.delete(DB_URL_PARAM_FALLBACK);
+        url.searchParams.set(TOOT_URL_PARAM_PRIMARY, recordToken);
+        url.searchParams.delete(TOOT_URL_PARAM_FALLBACK);
+        url.hash = "";
+        return `${url.pathname}${url.search}`;
+      } catch (err) {
+        return dbPath || "#";
+      }
+    }
+
     function createRecordLinkNode(label, target) {
       const link = document.createElement("a");
-      link.href = target.dbPath || "#";
+      link.href = buildRecordLinkHref(target);
       link.textContent = label;
       link.dataset.preview = "off";
       link.addEventListener("click", (event) => {
@@ -2179,8 +2358,8 @@
         } else if (match[5] !== undefined) {
           const label = match[5];
           const href = match[6].trim();
-          if (href.startsWith("@")) {
-            const target = parseRecordLinkTarget(href);
+          const target = parseRecordLinkTarget(href);
+          if (target) {
             if (canResolveRecordLinkTarget(target)) {
               nodes.push(createRecordLinkNode(label, target));
             } else {
@@ -2201,8 +2380,8 @@
           const label = match[7];
           const refKey = match[8].trim().toLowerCase();
           const ref = references[refKey];
-          if (ref && ref.href && ref.href.trim().startsWith("@")) {
-            const target = parseRecordLinkTarget(ref.href.trim());
+          const target = ref && ref.href ? parseRecordLinkTarget(ref.href.trim()) : null;
+          if (target) {
             if (canResolveRecordLinkTarget(target)) {
               nodes.push(createRecordLinkNode(label, target));
             } else {
@@ -3114,8 +3293,13 @@
 
     applyRecordViewportMode();
     initializeDbCatalog();
-    const initialDbPath = getInitialDbPathFromUrl();
-    loadDb(initialDbPath, { force: true, resetSelection: true });
+    const initialTootTarget = getInitialTootTargetFromUrl();
+    const initialDbPath = initialTootTarget?.dbPath || getInitialDbPathFromUrl();
+    loadDb(initialDbPath, {
+      force: true,
+      resetSelection: true,
+      preferredRecordId: initialTootTarget?.recordId || null,
+    });
   </script>
 </body>
 </html>

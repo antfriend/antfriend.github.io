@@ -131,6 +131,21 @@ A node logs sensor events locally, using TTDB as its default backend.
 
 ---
 
+@LAT12.9LON77.6 | created:1771435088 | updated:1771435088 | relates:extends>@LAT35.7LON139.7,connects>@LAT48.9LON2.4,references>@LAT1.1LON1.2
+
+## Toot Links
+### Definition
+Toot links are URL-friendly direct links to TTDB records. They can target records in the active TTDB or jump directly into records in other TTDB files.
+
+### Example
+- Same TTDB record: [Umwelt](toot:lat1.1lon1.2)
+- Cross-TTDB record: [The Root Workbench](toot://MyMentalPalaceDB.md/lat-81.6lon0.0)
+
+### Illustration
+Selecting the cross-TTDB toot link loads `MyMentalPalaceDB.md` and directly opens `@LAT-81.6LON0.0`.
+
+---
+
 @LAT-33.9LON151.2 | created:1771434928 | updated:1771434928 | relates:defines>@LAT35.7LON139.7
 
 ## TTDB-RFC-0001
