@@ -97,6 +97,28 @@ A device on the Toot Toot Network can request: "@AI STATUS" to receive a short, 
 
 ---
 
+@LAT18.4LON22.6 | created:1771800100 | updated:1771800100 | type:scene | relates:starts_at>@LAT1.1LON1.2,plays>@LAT40.7LON-74.0,plays>@LAT-34.6LON-58.4
+
+## Scene: Umwelt Loop
+
+Play this scene to run a looping viewport sequence through the TTDB graph.
+
+```ttdb-scene
+audio_path: sounds/aireggica.wav
+start_node: @LAT1.1LON1.2
+loop: true
+edge: next | from:@LAT1.1LON1.2 | to:@LAT40.7LON-74.0 | hold_ms:5000 | duration_ms:1100 | travel_px:340
+edge: bloom | from:@LAT40.7LON-74.0 | to:@LAT-34.6LON-58.4 | hold_ms:1800 | duration_ms:1500 | dir_x:-0.34 | dir_y:-0.94
+edge: return_home | from:@LAT-34.6LON-58.4 | to:@LAT1.1LON1.2 | hold_ms:2100 | duration_ms:1240 | travel_px:300
+```
+
+Sequence:
+- `next`: hold at Umwelt for five seconds, then slide left to TTAI.
+- `bloom`: diagonal spin-like transition to Semantic Event.
+- `return_home`: twist back to Umwelt and repeat.
+
+---
+
 @LAT51.5LON-0.1 | created:1771434908 | updated:1771434908 | relates:supports>@LAT40.7LON-74.0,keeps_alive>@LAT-34.6LON-58.4
 
 ## Default Network

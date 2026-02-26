@@ -470,6 +470,47 @@
       color: var(--muted);
     }
 
+    .scene-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(15, 139, 141, 0.28);
+      background: rgba(15, 139, 141, 0.08);
+    }
+
+    .scene-controls button {
+      border-radius: 999px;
+      border: 1px solid rgba(11, 17, 18, 0.22);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 7px 12px;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .scene-controls button:hover:enabled {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(15, 139, 141, 0.2);
+    }
+
+    .scene-controls button:disabled {
+      cursor: default;
+      opacity: 0.45;
+      box-shadow: none;
+    }
+
+    .scene-status {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
     footer {
       display: flex;
       align-items: center;
@@ -585,6 +626,9 @@
     const TOUR_SLOW_DELAY_MULTIPLIER = 1.7;
     const TOUR_SLOW_TRANSITION_MULTIPLIER = 2.5;
     const SPECIAL_RECORD_BLOCK_LANG = "ttdb-special";
+    const SCENE_RECORD_TYPE = "scene";
+    const SCENE_BLOCK_LANG = "ttdb-scene";
+    const SCENE_DEFAULT_EDGE_HOLD_MS = 1400;
     const SPECIAL_RECORD_SOUTH_POLE_LAT = -90;
     const TOUR_AUDIO_SPECIAL_KIND = "tour_sound";
     const DISCOVERY_TOUR_OFF_SPECIAL_KIND = "discovery_tour_off";
@@ -648,6 +692,15 @@
       discoveryTourOff: false,
       tourAudioPath: null,
       tourAudioPlayer: null,
+      scenePlayback: {
+        token: 0,
+        timer: null,
+        active: false,
+        sceneRecordId: null,
+        scene: null,
+        audioPath: null,
+        audioPlayer: null,
+      },
     };
 
     const palette = (() => {
@@ -1155,6 +1208,7 @@
       const { force = false, resetSelection = false, preferredRecordId = null } = opts;
       const targetDbPath = resolveDbPathToken(dbPath, state.availableDbPaths) || DEFAULT_DB_PATH;
       const loadToken = (state.dbLoadToken += 1);
+      stopScenePlayback({ stopAudio: true, refreshControls: false });
       state.activeDbPath = targetDbPath;
       if (!state.availableDbPaths.includes(targetDbPath)) {
         state.availableDbPaths = normalizeDbCatalog([...state.availableDbPaths, targetDbPath]);
@@ -1210,6 +1264,7 @@
           state.discoveryTourOff = false;
           syncDiscoveryTourControls();
           setTourAudioPath(null);
+          stopScenePlayback({ stopAudio: true, refreshControls: false });
           renderList();
           renderRecord();
           renderGraph();
@@ -1261,6 +1316,165 @@
       return edges;
     }
 
+    function parseRecordHeaderMetadata(headerLine) {
+      const metadata = {};
+      if (typeof headerLine !== "string") return metadata;
+      const segments = headerLine.split("|").slice(1);
+      segments.forEach((segmentRaw) => {
+        const segment = segmentRaw.trim();
+        if (!segment) return;
+        const entryMatch = segment.match(/^([A-Za-z0-9._-]+)\s*:\s*(.+)$/);
+        if (!entryMatch) return;
+        const key = entryMatch[1].toLowerCase();
+        metadata[key] = entryMatch[2].trim();
+      });
+      return metadata;
+    }
+
+    function parseRecordType(headerLine) {
+      const metadata = parseRecordHeaderMetadata(headerLine);
+      const rawType = typeof metadata.type === "string" ? metadata.type.trim().toLowerCase() : "";
+      return rawType || "record";
+    }
+
+    function stripOptionalQuotes(value) {
+      if (typeof value !== "string") return value;
+      const trimmed = value.trim();
+      if (
+        (trimmed.startsWith("\"") && trimmed.endsWith("\"")) ||
+        (trimmed.startsWith("'") && trimmed.endsWith("'"))
+      ) {
+        return trimmed.slice(1, -1);
+      }
+      return trimmed;
+    }
+
+    function parseSceneScalar(value) {
+      const stripped = stripOptionalQuotes(value);
+      if (typeof stripped !== "string") return stripped;
+      const lower = stripped.toLowerCase();
+      if (lower === "true") return true;
+      if (lower === "false") return false;
+      const numeric = Number(stripped);
+      if (Number.isFinite(numeric)) return numeric;
+      return stripped;
+    }
+
+    function parseSceneNumber(value) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) return null;
+      return numeric;
+    }
+
+    function parseSceneEdgeConfig(line) {
+      if (typeof line !== "string") return null;
+      const segments = line.split("|").map((part) => part.trim()).filter(Boolean);
+      if (!segments.length) return null;
+      const edgeMatch = segments[0].match(/^edge\s*:\s*([A-Za-z0-9._-]+)$/i);
+      if (!edgeMatch) return null;
+
+      const edge = {
+        name: edgeMatch[1].trim().toLowerCase(),
+        from: null,
+        to: null,
+        holdMs: null,
+        params: {},
+      };
+
+      for (let i = 1; i < segments.length; i += 1) {
+        const entryMatch = segments[i].match(/^([A-Za-z0-9._-]+)\s*:\s*(.+)$/);
+        if (!entryMatch) continue;
+        const key = entryMatch[1].toLowerCase();
+        const parsedValue = parseSceneScalar(entryMatch[2]);
+
+        if (key === "from") {
+          edge.from = normalizeRecordIdToken(String(parsedValue ?? ""));
+          continue;
+        }
+        if (key === "to") {
+          edge.to = normalizeRecordIdToken(String(parsedValue ?? ""));
+          continue;
+        }
+        if (key === "hold_ms" || key === "pause_ms") {
+          const holdMs = parseSceneNumber(parsedValue);
+          if (holdMs !== null) edge.holdMs = Math.max(0, Math.round(holdMs));
+          continue;
+        }
+        edge.params[key] = parsedValue;
+      }
+
+      if (!edge.from || !edge.to) return null;
+      return edge;
+    }
+
+    function parseSceneConfigBlock(blockText) {
+      const scene = {
+        audioPath: null,
+        startNode: null,
+        loop: true,
+        edges: [],
+      };
+
+      const lines = blockText.split(/\r?\n/);
+      lines.forEach((line) => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#") || trimmed.startsWith("%")) return;
+
+        if (/^edge\s*:/i.test(trimmed)) {
+          const edge = parseSceneEdgeConfig(trimmed);
+          if (edge) scene.edges.push(edge);
+          return;
+        }
+
+        const entryMatch = trimmed.match(/^([A-Za-z0-9._-]+)\s*:\s*(.+)$/);
+        if (!entryMatch) return;
+        const key = entryMatch[1].toLowerCase();
+        const parsedValue = parseSceneScalar(entryMatch[2]);
+
+        if (key === "audio_path") {
+          scene.audioPath = typeof parsedValue === "string" ? parsedValue.trim() : "";
+          return;
+        }
+        if (key === "start" || key === "start_node") {
+          scene.startNode = normalizeRecordIdToken(String(parsedValue ?? ""));
+          return;
+        }
+        if (key === "loop") {
+          scene.loop = Boolean(parsedValue);
+        }
+      });
+
+      if (!scene.edges.length) return null;
+      if (!scene.startNode) {
+        scene.startNode = scene.edges[0]?.from || null;
+      }
+      if (!scene.startNode) return null;
+      if (!scene.audioPath) scene.audioPath = null;
+      return scene;
+    }
+
+    function parseSceneRecordBody(body) {
+      if (typeof body !== "string" || !body.trim()) {
+        return { scene: null, body: body || "" };
+      }
+
+      const sceneBlockRegex = new RegExp("```" + SCENE_BLOCK_LANG + "([\\s\\S]*?)```", "i");
+      const sceneBlockMatch = body.match(sceneBlockRegex);
+      if (!sceneBlockMatch) {
+        return { scene: null, body };
+      }
+
+      const scene = parseSceneConfigBlock(sceneBlockMatch[1]);
+      if (!scene) {
+        return { scene: null, body };
+      }
+
+      const before = body.slice(0, sceneBlockMatch.index).trimEnd();
+      const after = body.slice(sceneBlockMatch.index + sceneBlockMatch[0].length).trimStart();
+      const bodyWithoutScene = [before, after].filter(Boolean).join("\n\n").trim();
+      return { scene, body: bodyWithoutScene };
+    }
+
     function parseRecords(content, dbPath = state.activeDbPath) {
       const format = detectDbFormat(content, dbPath);
       if (format === "latex") return parseLatexRecords(content);
@@ -1304,7 +1518,16 @@
           }
           filteredBodyLines.push(line);
         }
-        const body = filteredBodyLines.join("\n").trim();
+        let body = filteredBodyLines.join("\n").trim();
+        const recordType = parseRecordType(headerLine);
+        let scene = null;
+        if (recordType === SCENE_RECORD_TYPE) {
+          const parsedSceneRecord = parseSceneRecordBody(body);
+          if (parsedSceneRecord.scene) {
+            scene = parsedSceneRecord.scene;
+            body = parsedSceneRecord.body;
+          }
+        }
 
         const recordCoords = parseCoords(recordId);
         const specialRecord = parseSpecialRecord(recordCoords, body, "markdown");
@@ -1319,7 +1542,7 @@
           coords[recordId] = recordCoords;
         }
 
-        records[recordId] = { header: headerLine, body, title, edges };
+        records[recordId] = { header: headerLine, body, title, edges, type: recordType, scene };
         order.push(recordId);
       }
 
@@ -1402,13 +1625,22 @@
                 bodySource = bodySource.replace(titleMatch[0], "").trim();
               }
 
-              const body = latexToMarkdownBody(bodySource);
+              let body = latexToMarkdownBody(bodySource);
+              const recordType = parseRecordType(headerLine);
+              let scene = null;
+              if (recordType === SCENE_RECORD_TYPE) {
+                const parsedSceneRecord = parseSceneRecordBody(body);
+                if (parsedSceneRecord.scene) {
+                  scene = parsedSceneRecord.scene;
+                  body = parsedSceneRecord.body;
+                }
+              }
               const edges = parseRecordEdges(headerLine);
               if (recordCoords) {
                 coords[recordId] = recordCoords;
               }
 
-              records[recordId] = { header: headerLine, body, title, edges };
+              records[recordId] = { header: headerLine, body, title, edges, type: recordType, scene };
               order.push(recordId);
             }
           }
@@ -1528,12 +1760,15 @@
     function selectRecord(recordId, opts = {}) {
       if (state.dbShiftAnimation) return;
       if (!state.records[recordId]) return;
+      if (state.scenePlayback.active && !opts.fromScene) {
+        stopScenePlayback({ stopAudio: true, refreshControls: false });
+      }
       discoverRecord(recordId);
       queueRecordTransition(state.selectedId, recordId, opts);
       state.selectedId = recordId;
       applySearch({ preferVisibleSelection: false });
       setStatusLink(state.order.length);
-      if (!opts.fromTour) {
+      if (!opts.fromTour && !opts.fromScene) {
         scheduleTour();
       }
     }
@@ -1543,7 +1778,51 @@
         state.pendingRecordTransition = null;
         return;
       }
+      if (opts.customTransition && typeof opts.customTransition === "object") {
+        state.pendingRecordTransition = createCustomRecordTransition(fromId, toId, opts.customTransition, opts);
+        return;
+      }
       state.pendingRecordTransition = describeRecordTransition(fromId, toId, opts);
+    }
+
+    function toFiniteNumber(value, fallback) {
+      const parsed = Number(value);
+      if (!Number.isFinite(parsed)) return fallback;
+      return parsed;
+    }
+
+    function createCustomRecordTransition(fromId, toId, customTransition, opts = {}) {
+      const baseTransition = describeRecordTransition(fromId, toId, opts);
+      const merged = {
+        ...baseTransition,
+        ...customTransition,
+        fromId,
+        toId,
+      };
+
+      merged.durationMs = Math.max(120, Math.round(toFiniteNumber(merged.durationMs, baseTransition.durationMs)));
+      merged.travelPx = Math.max(24, Math.round(toFiniteNumber(merged.travelPx, baseTransition.travelPx)));
+
+      let dirX = toFiniteNumber(merged.dirX, baseTransition.dirX);
+      let dirY = toFiniteNumber(merged.dirY, baseTransition.dirY);
+      const magnitude = Math.hypot(dirX, dirY);
+      if (magnitude < 0.0001) {
+        dirX = 1;
+        dirY = 0;
+      } else {
+        dirX /= magnitude;
+        dirY /= magnitude;
+      }
+      merged.dirX = dirX;
+      merged.dirY = dirY;
+
+      if (typeof merged.style === "string") {
+        merged.style = merged.style.trim().toLowerCase();
+      } else {
+        delete merged.style;
+      }
+
+      return merged;
     }
 
     function describeRecordTransition(fromId, toId, opts = {}) {
@@ -1612,6 +1891,259 @@
       return (value * Math.PI) / 180;
     }
 
+    function describeRecordTransitionVisuals(transition, enterX, enterY, exitX, exitY) {
+      const style = typeof transition.style === "string" ? transition.style.trim().toLowerCase() : "slide";
+      const hasCustomTransforms =
+        typeof transition.currentFromTransform === "string" ||
+        typeof transition.currentToTransform === "string" ||
+        typeof transition.incomingFromTransform === "string" ||
+        typeof transition.incomingToTransform === "string";
+
+      if (hasCustomTransforms) {
+        return {
+          currentFromTransform: transition.currentFromTransform || "translate(0px, 0px) scale(1) rotate(0deg)",
+          currentToTransform: transition.currentToTransform || `translate(${exitX}px, ${exitY}px)`,
+          incomingFromTransform: transition.incomingFromTransform || `translate(${enterX}px, ${enterY}px)`,
+          incomingToTransform: transition.incomingToTransform || "translate(0px, 0px)",
+          incomingOpacityStart: toFiniteNumber(transition.incomingOpacityStart, null),
+          incomingOpacityEnd: toFiniteNumber(transition.incomingOpacityEnd, 1),
+          currentOpacityEnd: toFiniteNumber(transition.currentOpacityEnd, 0),
+        };
+      }
+
+      if (style === "bloom") {
+        return {
+          currentFromTransform: "translate(0px, 0px) scale(1) rotate(0deg)",
+          currentToTransform: `translate(${exitX}px, ${exitY}px) scale(1.08) rotate(8deg)`,
+          incomingFromTransform: `translate(${enterX}px, ${enterY}px) scale(0.72) rotate(-12deg)`,
+          incomingToTransform: "translate(0px, 0px) scale(1) rotate(0deg)",
+          incomingOpacityStart: 0.12,
+          incomingOpacityEnd: 1,
+          currentOpacityEnd: 0,
+        };
+      }
+
+      if (style === "twist") {
+        return {
+          currentFromTransform: "translate(0px, 0px) scale(1) rotate(0deg)",
+          currentToTransform: `translate(${exitX}px, ${exitY}px) scale(0.8) rotate(-18deg)`,
+          incomingFromTransform: `translate(${enterX}px, ${enterY}px) scale(1.22) rotate(14deg)`,
+          incomingToTransform: "translate(0px, 0px) scale(1) rotate(0deg)",
+          incomingOpacityStart: 0.18,
+          incomingOpacityEnd: 1,
+          currentOpacityEnd: 0,
+        };
+      }
+
+      return {
+        currentFromTransform: "translate(0px, 0px)",
+        currentToTransform: `translate(${exitX}px, ${exitY}px)`,
+        incomingFromTransform: `translate(${enterX}px, ${enterY}px)`,
+        incomingToTransform: "translate(0px, 0px)",
+        incomingOpacityStart: null,
+        incomingOpacityEnd: 1,
+        currentOpacityEnd: 0,
+      };
+    }
+
+    function getSceneEdgeParamNumber(edge, key, fallback) {
+      if (!edge?.params || !(key in edge.params)) return fallback;
+      return toFiniteNumber(edge.params[key], fallback);
+    }
+
+    function getSceneEdgeHoldMs(edge, fallback = SCENE_DEFAULT_EDGE_HOLD_MS) {
+      return Math.max(0, Math.round(toFiniteNumber(edge?.holdMs, fallback)));
+    }
+
+    // Edge names in `ttdb-scene` map directly to transition functions here.
+    const sceneEdgeTransitionFunctions = {
+      next(edge) {
+        return {
+          holdMs: getSceneEdgeHoldMs(edge, 5000),
+          transition: {
+            dirX: 1,
+            dirY: 0,
+            durationMs: Math.round(getSceneEdgeParamNumber(edge, "duration_ms", 960)),
+            travelPx: Math.round(getSceneEdgeParamNumber(edge, "travel_px", 320)),
+            style: "slide",
+          },
+        };
+      },
+      bloom(edge) {
+        return {
+          holdMs: getSceneEdgeHoldMs(edge, 1700),
+          transition: {
+            dirX: getSceneEdgeParamNumber(edge, "dir_x", -0.58),
+            dirY: getSceneEdgeParamNumber(edge, "dir_y", -0.82),
+            durationMs: Math.round(getSceneEdgeParamNumber(edge, "duration_ms", 1300)),
+            travelPx: Math.round(getSceneEdgeParamNumber(edge, "travel_px", 300)),
+            style: "bloom",
+          },
+        };
+      },
+      return_home(edge) {
+        return {
+          holdMs: getSceneEdgeHoldMs(edge, 1900),
+          transition: {
+            dirX: getSceneEdgeParamNumber(edge, "dir_x", -0.96),
+            dirY: getSceneEdgeParamNumber(edge, "dir_y", 0.16),
+            durationMs: Math.round(getSceneEdgeParamNumber(edge, "duration_ms", 1180)),
+            travelPx: Math.round(getSceneEdgeParamNumber(edge, "travel_px", 280)),
+            style: "twist",
+          },
+        };
+      },
+      default(edge) {
+        return {
+          holdMs: getSceneEdgeHoldMs(edge, SCENE_DEFAULT_EDGE_HOLD_MS),
+          transition: {
+            dirX: getSceneEdgeParamNumber(edge, "dir_x", 1),
+            dirY: getSceneEdgeParamNumber(edge, "dir_y", 0),
+            durationMs: Math.round(getSceneEdgeParamNumber(edge, "duration_ms", 900)),
+            travelPx: Math.round(getSceneEdgeParamNumber(edge, "travel_px", 260)),
+            style: typeof edge?.params?.style === "string" ? edge.params.style.trim().toLowerCase() : "slide",
+          },
+        };
+      },
+    };
+
+    function resolveSceneEdgeTransitionFunction(edgeName) {
+      if (typeof edgeName !== "string") return sceneEdgeTransitionFunctions.default;
+      const normalized = edgeName.trim().toLowerCase();
+      return sceneEdgeTransitionFunctions[normalized] || sceneEdgeTransitionFunctions.default;
+    }
+
+    function isScenePlaybackActive(sceneRecordId = null) {
+      if (!state.scenePlayback.active) return false;
+      if (!sceneRecordId) return true;
+      return state.scenePlayback.sceneRecordId === sceneRecordId;
+    }
+
+    function refreshSceneControlState() {
+      const controls = viewEl.querySelectorAll(".scene-controls");
+      controls.forEach((controlsNode) => {
+        const sceneRecordId = controlsNode.dataset.sceneRecordId || "";
+        const isActive = isScenePlaybackActive(sceneRecordId);
+        const playBtn = controlsNode.querySelector("[data-scene-action='play']");
+        const stopBtn = controlsNode.querySelector("[data-scene-action='stop']");
+        const statusNode = controlsNode.querySelector(".scene-status");
+
+        if (playBtn) {
+          playBtn.textContent = isActive ? "Replay Scene" : "Play Scene";
+        }
+        if (stopBtn) {
+          stopBtn.disabled = !isActive;
+        }
+        if (statusNode) {
+          if (isActive) {
+            statusNode.textContent = "Playing scene loop.";
+          } else {
+            const edgeCount = Number(controlsNode.dataset.edgeCount || "0");
+            statusNode.textContent = edgeCount > 0 ? `${edgeCount} transitions ready.` : "No transitions configured.";
+          }
+        }
+      });
+    }
+
+    function stopScenePlayback(opts = {}) {
+      const { stopAudio = true, refreshControls = true } = opts;
+      if (state.scenePlayback.timer) {
+        clearTimeout(state.scenePlayback.timer);
+        state.scenePlayback.timer = null;
+      }
+      if (stopAudio && state.scenePlayback.audioPlayer) {
+        state.scenePlayback.audioPlayer.stop();
+      }
+
+      state.scenePlayback.active = false;
+      state.scenePlayback.sceneRecordId = null;
+      state.scenePlayback.scene = null;
+      state.scenePlayback.audioPath = null;
+      state.scenePlayback.audioPlayer = null;
+      state.scenePlayback.token += 1;
+
+      if (refreshControls) {
+        refreshSceneControlState();
+      }
+    }
+
+    function findSceneEdgeFromNode(scene, fromNodeId) {
+      if (!scene?.edges?.length) return null;
+      return scene.edges.find((edge) => edge.from === fromNodeId) || null;
+    }
+
+    function scheduleScenePlaybackStep(token, fromNodeId) {
+      if (!state.scenePlayback.active || token !== state.scenePlayback.token) return;
+      const scene = state.scenePlayback.scene;
+      if (!scene) return;
+
+      const edge = findSceneEdgeFromNode(scene, fromNodeId);
+      if (!edge) {
+        if (scene.loop && scene.startNode && state.records[scene.startNode] && scene.startNode !== fromNodeId) {
+          const holdMs = SCENE_DEFAULT_EDGE_HOLD_MS;
+          state.scenePlayback.timer = window.setTimeout(() => {
+            if (!state.scenePlayback.active || token !== state.scenePlayback.token) return;
+            selectRecord(scene.startNode, { fromScene: true });
+            scheduleScenePlaybackStep(token, scene.startNode);
+          }, holdMs);
+          return;
+        }
+        stopScenePlayback({ stopAudio: true });
+        return;
+      }
+
+      if (!state.records[edge.to]) {
+        stopScenePlayback({ stopAudio: true });
+        return;
+      }
+
+      const transitionFactory = resolveSceneEdgeTransitionFunction(edge.name);
+      const step = transitionFactory(edge, { scene, fromId: edge.from, toId: edge.to }) || {};
+      const holdMs = Math.max(0, Math.round(toFiniteNumber(step.holdMs, getSceneEdgeHoldMs(edge))));
+      const customTransition = step.transition && typeof step.transition === "object" ? step.transition : null;
+
+      state.scenePlayback.timer = window.setTimeout(() => {
+        if (!state.scenePlayback.active || token !== state.scenePlayback.token) return;
+        selectRecord(edge.to, { fromScene: true, customTransition });
+        scheduleScenePlaybackStep(token, edge.to);
+      }, holdMs);
+    }
+
+    function startScenePlayback(sceneRecordId) {
+      const sceneRecord = state.records[sceneRecordId];
+      if (!sceneRecord || sceneRecord.type !== SCENE_RECORD_TYPE || !sceneRecord.scene) return;
+      const scene = sceneRecord.scene;
+
+      let startNode = scene.startNode;
+      if (!startNode || !state.records[startNode]) {
+        startNode = scene.edges.find((edge) => state.records[edge.from])?.from || null;
+      }
+      if (!startNode) return;
+
+      stopScenePlayback({ stopAudio: true, refreshControls: false });
+      clearTour(true);
+
+      state.scenePlayback.active = true;
+      state.scenePlayback.sceneRecordId = sceneRecordId;
+      state.scenePlayback.scene = scene;
+      state.scenePlayback.token += 1;
+
+      const token = state.scenePlayback.token;
+      const audioPath = typeof scene.audioPath === "string" ? scene.audioPath.trim() : "";
+      if (audioPath) {
+        state.scenePlayback.audioPath = audioPath;
+        state.scenePlayback.audioPlayer = window.CommonAudio?.createSoundPlayer(audioPath, { loop: true }) || null;
+        state.scenePlayback.audioPlayer?.play();
+      } else {
+        state.scenePlayback.audioPath = null;
+        state.scenePlayback.audioPlayer = null;
+      }
+
+      selectRecord(startNode, { fromScene: true });
+      scheduleScenePlaybackStep(token, startNode);
+      refreshSceneControlState();
+    }
+
     function renderRecord() {
       viewEl.querySelectorAll(".record-frame:not(.is-current)").forEach((frame) => frame.remove());
       if (!state.selectedId || !state.records[state.selectedId]) {
@@ -1621,6 +2153,7 @@
         empty.textContent = "No record selected.";
         viewEl.appendChild(empty);
         state.pendingRecordTransition = null;
+        refreshSceneControlState();
         return;
       }
 
@@ -1642,6 +2175,7 @@
 
       if (!shouldAnimate) {
         viewEl.replaceChildren(incoming);
+        refreshSceneControlState();
         return;
       }
 
@@ -1653,27 +2187,34 @@
       const exitY = -enterY;
       const easing = "cubic-bezier(0.2, 0.8, 0.2, 1)";
       const alphaDuration = Math.max(140, Math.round(transition.durationMs * 0.72));
+      const visuals = describeRecordTransitionVisuals(transition, enterX, enterY, exitX, exitY);
+      const incomingOpacityStart =
+        visuals.incomingOpacityStart === null || visuals.incomingOpacityStart === undefined
+          ? (hasMediaTransition ? 1 : 0.06)
+          : visuals.incomingOpacityStart;
 
       current.style.position = "absolute";
       current.style.inset = "0";
       current.style.pointerEvents = "none";
       current.style.zIndex = "1";
+      current.style.transform = visuals.currentFromTransform;
 
       incoming.style.position = "absolute";
       incoming.style.inset = "0";
       incoming.style.zIndex = "2";
-      incoming.style.transform = `translate(${enterX}px, ${enterY}px)`;
-      incoming.style.opacity = hasMediaTransition ? "1" : "0.06";
+      incoming.style.transform = visuals.incomingFromTransform;
+      incoming.style.opacity = String(incomingOpacityStart);
       viewEl.appendChild(incoming);
+      refreshSceneControlState();
 
       requestAnimationFrame(() => {
         if (token !== state.recordTransitionToken) return;
         current.style.transition = `transform ${transition.durationMs}ms ${easing}, opacity ${alphaDuration}ms ease`;
         incoming.style.transition = `transform ${transition.durationMs}ms ${easing}, opacity ${alphaDuration}ms ease`;
-        current.style.transform = `translate(${exitX}px, ${exitY}px)`;
-        current.style.opacity = "0";
-        incoming.style.transform = "translate(0px, 0px)";
-        incoming.style.opacity = "1";
+        current.style.transform = visuals.currentToTransform;
+        current.style.opacity = String(visuals.currentOpacityEnd);
+        incoming.style.transform = visuals.incomingToTransform;
+        incoming.style.opacity = String(visuals.incomingOpacityEnd);
       });
 
       window.setTimeout(() => {
@@ -1687,6 +2228,7 @@
         incoming.style.transition = "";
         incoming.style.transform = "";
         incoming.style.opacity = "";
+        refreshSceneControlState();
       }, transition.durationMs + 80);
     }
 
@@ -1731,6 +2273,40 @@
       main.classList.remove("record-main-split");
     }
 
+    function buildSceneControls(recordId, scene) {
+      if (!scene) return null;
+      const controls = document.createElement("div");
+      controls.className = "scene-controls";
+      controls.dataset.sceneRecordId = recordId;
+      controls.dataset.edgeCount = String(scene.edges?.length || 0);
+
+      const playBtn = document.createElement("button");
+      playBtn.type = "button";
+      playBtn.dataset.sceneAction = "play";
+      playBtn.textContent = "Play Scene";
+      playBtn.addEventListener("click", () => {
+        startScenePlayback(recordId);
+      });
+      controls.appendChild(playBtn);
+
+      const stopBtn = document.createElement("button");
+      stopBtn.type = "button";
+      stopBtn.dataset.sceneAction = "stop";
+      stopBtn.textContent = "Stop";
+      stopBtn.addEventListener("click", () => {
+        stopScenePlayback({ stopAudio: true });
+        scheduleTour();
+      });
+      controls.appendChild(stopBtn);
+
+      const status = document.createElement("span");
+      status.className = "scene-status";
+      status.textContent = `${scene.edges?.length || 0} transitions ready.`;
+      controls.appendChild(status);
+
+      return controls;
+    }
+
     function buildRecordFrame(recordId) {
       const record = state.records[recordId];
       const frame = document.createElement("div");
@@ -1751,6 +2327,18 @@
         title.className = "record-title";
         title.textContent = record.title;
         textColumn.appendChild(title);
+      }
+
+      if (record.type === SCENE_RECORD_TYPE) {
+        const sceneControls = buildSceneControls(recordId, record.scene);
+        if (sceneControls) {
+          textColumn.appendChild(sceneControls);
+        } else {
+          const sceneWarning = document.createElement("p");
+          sceneWarning.className = "muted";
+          sceneWarning.textContent = "Scene record missing a valid ttdb-scene block.";
+          textColumn.appendChild(sceneWarning);
+        }
       }
 
       if (leadMediaInfo.body) {
@@ -3237,6 +3825,11 @@
 
     function scheduleTour() {
       clearTour();
+      if (state.scenePlayback.active) {
+        setTourAudioPlaying(false);
+        tourNote.textContent = "Scene playback is active.";
+        return;
+      }
       if (state.discoveryTourOff) {
         setTourAudioPlaying(false);
         return;
@@ -3273,6 +3866,7 @@
 
     function advanceTour() {
       const order = getDiscoveredOrder();
+      if (state.scenePlayback.active) return;
       if (state.discoveryTourOff || !state.tourEnabled || !order.length) return;
       let index = order.indexOf(state.selectedId);
       if (index < 0) index = 0;
@@ -3282,6 +3876,9 @@
     }
 
     function noteInteraction() {
+      if (state.scenePlayback.active) {
+        stopScenePlayback({ stopAudio: true });
+      }
       if (state.discoveryTourOff) return;
       if (!state.tourEnabled) return;
       if (state.dbShiftAnimation) return;
