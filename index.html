@@ -2954,19 +2954,34 @@
     }
 
     function buildDbSideGlobes(cx, cy, mainRadius) {
-      const others = state.availableDbPaths.filter((dbPath) => dbPath !== state.activeDbPath);
-      if (!others.length) return [];
+      const total = state.availableDbPaths.length;
+      const activeIndex = state.availableDbPaths.indexOf(state.activeDbPath);
+      if (total < 2 || activeIndex < 0) return [];
 
       const sideRadius = Math.max(8, mainRadius * DB_SIDE_GLOBE_SCALE);
       const y = cy;
       const firstOffset = mainRadius + sideRadius * DB_SIDE_GLOBE_NEAR_OVERLAP;
       const stepOffset = sideRadius * DB_SIDE_GLOBE_STEP;
 
-      let rightRank = 0;
-      let leftRank = 0;
-      return others.map((dbPath, idx) => {
-        const side = idx % 2 === 0 ? 1 : -1;
-        const rank = side > 0 ? ++rightRank : ++leftRank;
+      const seen = new Set([state.activeDbPath]);
+      const ordered = [];
+      for (let rank = 1; rank < total && seen.size < total; rank += 1) {
+        const rightPath = state.availableDbPaths[(activeIndex + rank) % total];
+        if (!seen.has(rightPath)) {
+          seen.add(rightPath);
+          ordered.push({ dbPath: rightPath, side: 1, rank });
+        }
+
+        if (seen.size >= total) break;
+
+        const leftPath = state.availableDbPaths[(activeIndex - rank + total) % total];
+        if (!seen.has(leftPath)) {
+          seen.add(leftPath);
+          ordered.push({ dbPath: leftPath, side: -1, rank });
+        }
+      }
+
+      return ordered.map(({ dbPath, side, rank }) => {
         const offset = firstOffset + (rank - 1) * stepOffset;
         const offsetX = side * offset;
         return {
@@ -3071,12 +3086,29 @@
       return true;
     }
 
-    function selectDbPath(dbPath) {
+    function createDbShiftFallbackTarget(dbPath, direction = 1) {
+      const parent = graphCanvas.parentElement;
+      const width = parent?.clientWidth || 0;
+      const height = parent?.clientHeight || 0;
+      const baseRadius = getGlobeBaseRadius(width, height);
+      const mainRadius = Math.max(10, baseRadius * state.globeZoom);
+      const sideRadius = Math.max(8, mainRadius * DB_SIDE_GLOBE_SCALE);
+      const offset = mainRadius + sideRadius * DB_SIDE_GLOBE_NEAR_OVERLAP;
+      const side = direction >= 0 ? 1 : -1;
+      return {
+        dbPath,
+        side,
+        rank: 1,
+        offsetX: side * offset,
+      };
+    }
+
+    function selectDbPath(dbPath, opts = {}) {
       if (!dbPath || dbPath === state.activeDbPath) return false;
       const target = state.dbGlobeHitTargets.find((entry) => entry.dbPath === dbPath);
       if (!target) {
-        loadDb(dbPath, { force: true, resetSelection: true });
-        return true;
+        const direction = Number.isFinite(opts.direction) && opts.direction < 0 ? -1 : 1;
+        return startDbShiftAndLoad(createDbShiftFallbackTarget(dbPath, direction));
       }
       return startDbShiftAndLoad(target);
     }
@@ -3113,24 +3145,12 @@
       return Math.abs(deltaY) <= absX * DB_SWIPE_MAX_VERTICAL_RATIO;
     }
 
-    function getClosestDbTargetOnSide(side) {
-      const matches = state.dbGlobeHitTargets.filter((entry) => entry.side === side);
-      if (!matches.length) return null;
-      return matches.reduce((closest, entry) => (entry.rank < closest.rank ? entry : closest));
-    }
-
     function selectDbByHorizontalSwipe(deltaX) {
       const direction = deltaX < 0 ? 1 : -1;
-      const swipeSide = direction;
-      const sideTarget = getClosestDbTargetOnSide(swipeSide);
-      if (sideTarget) {
-        return startDbShiftAndLoad(sideTarget);
-      }
-
       const activeIndex = state.availableDbPaths.indexOf(state.activeDbPath);
       if (activeIndex < 0) return false;
       const nextIndex = (activeIndex + direction + state.availableDbPaths.length) % state.availableDbPaths.length;
-      return selectDbPath(state.availableDbPaths[nextIndex]);
+      return selectDbPath(state.availableDbPaths[nextIndex], { direction });
     }
 
     function renderGraph() {
