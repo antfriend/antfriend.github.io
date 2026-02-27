@@ -295,55 +295,6 @@ class IndexApp(tk.Tk):
         )
         self.graph_canvas.grid(row=0, column=0, sticky="nsew")
 
-        graph_controls = tk.Frame(self.graph_wrap, bg=PALETTE["graph_bg"])
-        graph_controls.grid(row=0, column=1, sticky="ns", padx=(6, 8), pady=12)
-
-        self.zoom_in_btn = tk.Button(
-            graph_controls,
-            text="+",
-            width=4,
-            font=("TkDefaultFont", 12, "bold"),
-            command=lambda: self._on_zoom_button(1),
-            bg="#070a12",
-            fg="#e9f6ff",
-            activebackground="#16263d",
-            activeforeground="#e9f6ff",
-            relief="solid",
-            bd=1,
-            highlightthickness=0,
-        )
-        self.zoom_in_btn.pack(pady=(0, 6))
-        self.zoom_out_btn = tk.Button(
-            graph_controls,
-            text="-",
-            width=4,
-            font=("TkDefaultFont", 12, "bold"),
-            command=lambda: self._on_zoom_button(-1),
-            bg="#070a12",
-            fg="#e9f6ff",
-            activebackground="#16263d",
-            activeforeground="#e9f6ff",
-            relief="solid",
-            bd=1,
-            highlightthickness=0,
-        )
-        self.zoom_out_btn.pack(pady=(0, 6))
-        self.zoom_reset_btn = tk.Button(
-            graph_controls,
-            text="100%",
-            width=4,
-            font=("TkDefaultFont", 9, "bold"),
-            command=self._on_zoom_reset,
-            bg="#070a12",
-            fg="#e9f6ff",
-            activebackground="#16263d",
-            activeforeground="#e9f6ff",
-            relief="solid",
-            bd=1,
-            highlightthickness=0,
-        )
-        self.zoom_reset_btn.pack()
-
         record_card = ttk.Frame(header, padding=(8, 8, 8, 8), style="Card.TFrame")
         record_card.grid(row=1, column=0, sticky="nsew")
         record_card.columnconfigure(0, weight=1)
@@ -2007,16 +1958,6 @@ class IndexApp(tk.Tk):
 
     def _on_graph_resize(self, _event: tk.Event) -> None:
         self._render_globe()
-
-    def _on_zoom_button(self, direction: int) -> None:
-        changed = self._zoom_globe_step(direction)
-        if changed:
-            self._note_interaction()
-
-    def _on_zoom_reset(self) -> None:
-        changed = self._set_globe_zoom(1.0)
-        if changed:
-            self._note_interaction()
 
     def _on_graph_press(self, event: tk.Event) -> None:
         self.graph_canvas.focus_set()

@@ -11,9 +11,7 @@
   <link rel="stylesheet" href="css/tte-core.css" />
   <style> 
     .page {
-      --graph-zoom-btn-size: 44px;
-      --graph-zoom-gap: 6px;
-      --globe-panel-height: calc((var(--graph-zoom-btn-size) * 3) + (var(--graph-zoom-gap) * 2));
+      --globe-panel-height: 144px;
       max-width: 100%;
       margin: 0 auto;
       padding: 0 clamp(10px, 2.2vw, 24px) 28px;
@@ -97,48 +95,6 @@
 
     #graph.is-dragging {
       cursor: grabbing;
-    }
-
-    .graph-controls {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 2;
-      display: grid;
-      gap: var(--graph-zoom-gap);
-      justify-items: end;
-    }
-
-    .graph-zoom-btn {
-      min-width: var(--graph-zoom-btn-size);
-      min-height: var(--graph-zoom-btn-size);
-      padding: 6px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(124, 199, 255, 0.45);
-      background: rgba(7, 10, 18, 0.78);
-      color: #e9f6ff;
-      font-family: inherit;
-      font-weight: 700;
-      font-size: 20px;
-      line-height: 1;
-      cursor: pointer;
-      touch-action: manipulation;
-      backdrop-filter: blur(3px);
-      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    .graph-zoom-btn:hover {
-      transform: translateY(-1px);
-      border-color: #9ad6ff;
-      box-shadow: 0 0 12px rgba(124, 199, 255, 0.3);
-    }
-
-    .graph-zoom-btn[data-action="reset"] {
-      font-size: 12px;
-      letter-spacing: 0.02em;
-      font-weight: 600;
-      padding-inline: 8px;
     }
 
     .layout {
@@ -530,17 +486,7 @@
       }
 
       .page {
-        --graph-zoom-btn-size: 48px;
-        --graph-zoom-gap: 5px;
-      }
-
-      .graph-controls {
-        right: 8px;
-      }
-
-      .graph-zoom-btn {
-        min-width: var(--graph-zoom-btn-size);
-        min-height: var(--graph-zoom-btn-size);
+        --globe-panel-height: 154px;
       }
 
       .record {
@@ -557,13 +503,6 @@
       <div class="header-left">
         <div class="graph-wrap">
           <canvas id="graph"></canvas>
-          <div class="graph-controls" role="group" aria-label="Globe zoom controls">
-            <button class="graph-zoom-btn" id="zoomInBtn" type="button" aria-label="Zoom in">+</button>
-            <button class="graph-zoom-btn" id="zoomOutBtn" type="button" aria-label="Zoom out">-</button>
-            <button class="graph-zoom-btn" id="zoomResetBtn" data-action="reset" type="button" aria-label="Reset zoom">
-              100%
-            </button>
-          </div>
         </div>
       </div>
       <div class="header-right">
@@ -721,9 +660,6 @@
     const viewEl = document.getElementById("recordView");
     const pageEl = document.querySelector(".page");
     const graphCanvas = document.getElementById("graph");
-    const zoomInBtn = document.getElementById("zoomInBtn");
-    const zoomOutBtn = document.getElementById("zoomOutBtn");
-    const zoomResetBtn = document.getElementById("zoomResetBtn");
     const forgetDiscoveriesBtn = document.getElementById("forgetDiscoveries");
     const searchInput = document.getElementById("searchInput");
     const searchMeta = document.getElementById("searchMeta");
@@ -3628,25 +3564,6 @@
       },
       { passive: false },
     );
-
-    zoomInBtn.addEventListener("click", () => {
-      const changed = zoomGlobeByStep(1);
-      if (changed) {
-        noteInteraction();
-      }
-    });
-    zoomOutBtn.addEventListener("click", () => {
-      const changed = zoomGlobeByStep(-1);
-      if (changed) {
-        noteInteraction();
-      }
-    });
-    zoomResetBtn.addEventListener("click", () => {
-      const changed = setGlobeZoom(1);
-      if (changed) {
-        noteInteraction();
-      }
-    });
 
     const pointerGesture = {
       active: new Map(),
