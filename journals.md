@@ -47,27 +47,18 @@ preview:
 ## Fishbowl
 ![Fishbowl](journals/eye/Fishbowl.png)
 
-[Image source](journals/eye/Fishbowl.png)
+### Hook
+A reflective note on mirrored identity, where perspective shapes meaning and defines the world each mind can perceive.
 
 ### Text
-This is 8 bit |iKo looking in a
-Fish and seeing a Fish
-back 4, you
-With Your ovy
-retlecting Youn inney- expemence
-in the other world before you,
-by another
-wold
-round,
-dre things which <8n be
-or
-The proof depends on cs
-Se the meaning depend
-Aivection aye you <omiha trom?
-Facts depend on” the
-percieved world that bounds
-exists for yely the
-percept, ve systew),
+This is a bit like looking in a fishbowl and seeing a fish looking back at you with your own expression, reflecting your inner experience in the other world before you, as experienced by another being.
+
+The world is round.
+
+Facts are things which can be true or false, mathematically.
+The proof depends on semantics.
+Semantics, the meaning, depends on the point of view, which direction are you coming from?
+Facts depend on "Umwelt", the perceived world that bounds what exists for you, the perceptive system.
 
 ---
 
@@ -76,33 +67,18 @@ percept, ve systew),
 ## Mechanistic
 ![Mechanistic](journals/eye/Mechanistic.png)
 
-[Image source](journals/eye/Mechanistic.png)
+### Hook
+A cartographic meditation on thought, where meaning is a path-finding act and perspective is the compass that determines what is reachable.
 
 ### Text
-aera LOT. 84 PRE AY A daa!
-Fgh OMT Ey PEN Ses tot iin a 2
-Figs OR
-a i at MOS a a
-ie eae ig
-ao od AG ‘Gs. RATS rte he few ed
-Las a ey, a Ee i de.
-ees Ba
-ir 3 Bok Se oat?
-sid, aay mon Be Sy ks Ne wpe
-Ne es te RNS eee a i
-Fal hate Ne a SR RRA Spal het,
-es ee a es
-A Fg Se ee ee tay Be
-ite aN A PENS
-We VET SFR tae ae eee aS RIGS as
-SSE ee
-oe a pe Se SS ES aa
-Se Shy t Ov iS aes Seg eee
-a q Se tt 2 a te
-bid 5 eae 7 ite
-wae bases p x te ie os ee
-Ay SS ee
-Cone Sey Seo ee RS 2 De
+Parse the summary meaning as a sparse matrix.
+
+Meaning cuts through a landscape of perils and false paths.
+
+Perspective.
+Semantic compass.
+Intent or purpose.
+Perspective.
 
 ---
 
@@ -111,23 +87,19 @@ Cone Sey Seo ee RS 2 De
 ## Timex3
 ![Timex3](journals/eye/Timex3.png)
 
-[Image source](journals/eye/Timex3.png)
+### Hook
+A compact visual grammar of time, showing how one idea can be mapped as a line, a frame, or a cycle.
 
 ### Text
-ie x 3 at
-fh poe Th
-yok eee Chou TF Sat
-Lines Shoo
-oy UPR ae
-A et
-ES ee 2 23 ite
-(2) The time) box or time rane
-Sat Ss ee 3 3
-Se ee Se
-the tine
-Cr i Ce, W hy eh
-SSS po 3 repeats
-i a a
+Time times three, the ways lines show it.
+
+1) The timeline:
+start -> stop.
+
+2) The time box, or time frame.
+
+3) The time cycle:
+repeating circle, which repeats itself again and again and again.
 
 ---
 
@@ -136,7 +108,7 @@ i a a
 ## Prints Sleestack
 ![Prints Sleestack](journals/prints/prints_sleestack.png)
 
-[Image source](journals/prints/prints_sleestack.png)
+
 
 ### Text
 Size
