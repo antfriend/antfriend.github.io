@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Fishbowl Scene</title>
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #05070d;
+      font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    }
+
+    .viewport {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.1), transparent 62%),
+        radial-gradient(circle at 50% 60%, rgba(22, 122, 196, 0.18), transparent 68%),
+        #05070d;
+    }
+
+    .art {
+      position: absolute;
+      inset: -8%;
+      width: 116%;
+      height: 116%;
+      object-fit: contain;
+      object-position: center;
+      transform-origin: center center;
+      will-change: transform;
+      filter: saturate(1.03) contrast(1.03);
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .vignette {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at center, transparent 56%, rgba(0, 0, 0, 0.56) 100%);
+    }
+
+    .panel {
+      position: absolute;
+      left: 50%;
+      top: 7%;
+      transform: translateX(-50%);
+      width: min(92%, 860px);
+      padding: clamp(10px, 1.9vw, 20px) clamp(12px, 2.2vw, 24px);
+      border-radius: 16px;
+      border: 1px solid rgba(248, 252, 255, 0.24);
+      background: rgba(10, 18, 30, 0.62);
+      color: #f7fbff;
+      font-size: clamp(15px, 2vw, 28px);
+      line-height: 1.35;
+      text-align: center;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      animation: float-panel 5.2s ease-in-out infinite;
+    }
+
+    .panel.is-hidden {
+      opacity: 0;
+      transform: translate(-50%, 18px);
+    }
+
+    @keyframes float-panel {
+      0%,
+      100% {
+        translate: 0 0;
+      }
+      50% {
+        translate: 0 -6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="viewport" aria-label="Fishbowl animated scene">
+    <img class="art" id="art" src="./Fishbowl.png" alt="Fishbowl" />
+    <div class="vignette" aria-hidden="true"></div>
+    <section class="panel" id="panel">
+      <span id="copy"></span>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const TOTAL_MS = 65000;
+      const ZOOM_MS = 60000;
+      const HOOK_MS = 8000;
+      const START_SCALE = 0.84;
+      const END_SCALE = 18.6;
+
+      const hook = "A reflective note on mirrored identity, where perspective shapes meaning and the world each mind perceives.";
+      const sentences = [
+        "This is a bit like looking in a fishbowl and seeing a fish looking back at you with your own expression, reflecting your inner experience in the other world before you, as experienced by another being.",
+        "The world is round.",
+        "Facts are things which can be true or false, mathematically.",
+        "The proof depends on semantics.",
+        "Semantics, the meaning, depends on the point of view, which direction are you coming from?",
+        "Facts depend on \"Umwelt\", the perceived world that bounds what exists for you, the perceptive system.",
+      ];
+
+      const art = document.getElementById("art");
+      const panel = document.getElementById("panel");
+      const copy = document.getElementById("copy");
+      const startAt = performance.now();
+      let activeText = "";
+      let panelVisible = true;
+
+      const setPanel = (text, visible) => {
+        if (text !== activeText) {
+          copy.textContent = text;
+          activeText = text;
+        }
+        if (visible !== panelVisible) {
+          panel.classList.toggle("is-hidden", !visible);
+          panelVisible = visible;
+        }
+      };
+
+      const getPanelText = (elapsed) => {
+        if (elapsed < HOOK_MS) {
+          return { text: hook, visible: true };
+        }
+        if (elapsed < ZOOM_MS) {
+          const sentenceWindow = (ZOOM_MS - HOOK_MS) / Math.max(1, sentences.length);
+          const sentenceIndex = Math.min(
+            sentences.length - 1,
+            Math.floor((elapsed - HOOK_MS) / sentenceWindow)
+          );
+          return { text: sentences[sentenceIndex], visible: true };
+        }
+        return { text: "", visible: false };
+      };
+
+      const tick = (now) => {
+        const elapsed = Math.max(0, now - startAt);
+        const zoomProgress = Math.min(elapsed / ZOOM_MS, 1);
+        const eased = 1 - Math.pow(1 - zoomProgress, 2.4);
+        const scale = START_SCALE + (END_SCALE - START_SCALE) * eased;
+        art.style.transform = `scale(${scale.toFixed(5)})`;
+
+        const panelState = getPanelText(elapsed);
+        setPanel(panelState.text, panelState.visible);
+
+        if (elapsed < TOTAL_MS + 1000) {
+          window.requestAnimationFrame(tick);
+        }
+      };
+
+      window.requestAnimationFrame(tick);
+    })();
+  </script>
+</body>
+</html>

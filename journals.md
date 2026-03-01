@@ -42,13 +42,36 @@ preview:
 
 ---
 
+@LAT86LON0 | created:1772201003 | updated:1772201003 | type:scene | relates:starts_at>@LAT88LON0,plays>@LAT84LON0
+
+## Scene: Fishbowl Mechanistic Zoom Loop
+
+Play this scene to run a two-node zoom cycle with Fishbowl audio.
+
+```ttdb-scene
+audio_path: sounds/fishbowl.wav
+start_node: @LAT88LON0
+loop: true
+edge: next | from:@LAT88LON0 | to:@LAT84LON0 | hold_ms:65000 | duration_ms:1500 | travel_px:340
+edge: return_home | from:@LAT84LON0 | to:@LAT88LON0 | hold_ms:65000 | duration_ms:1500 | travel_px:340 | dir_x:-1 | dir_y:0
+```
+
+Sequence:
+- At each node, a 60-second center zoom runs with a floating Hook panel, then Text one sentence at a time.
+- Text clears at 1:00 and the zoomed image remains alone until 1:05.
+- The scene transitions to the other node and loops.
+
+---
+
 @LAT88LON0 | created:1772201002 | updated:1772201002
 
 ## Fishbowl
-![Fishbowl](journals/eye/Fishbowl.png)
+![Fishbowl](journals/eye/fishbowl_scene.html)
+
+[Image source](journals/eye/Fishbowl.png)
 
 ### Hook
-A reflective note on mirrored identity, where perspective shapes meaning and defines the world each mind can perceive.
+A reflective note on mirrored identity, where perspective shapes meaning and the world each mind perceives.
 
 ### Text
 This is a bit like looking in a fishbowl and seeing a fish looking back at you with your own expression, reflecting your inner experience in the other world before you, as experienced by another being.
@@ -65,7 +88,9 @@ Facts depend on "Umwelt", the perceived world that bounds what exists for you, t
 @LAT84LON0 | created:1772201002 | updated:1772201002
 
 ## Mechanistic
-![Mechanistic](journals/eye/Mechanistic.png)
+![Mechanistic](journals/eye/mechanistic_scene.html)
+
+[Image source](journals/eye/Mechanistic.png)
 
 ### Hook
 A cartographic meditation on thought, where meaning is a path-finding act and perspective is the compass that determines what is reachable.
@@ -108,14 +133,8 @@ repeating circle, which repeats itself again and again and again.
 ## Prints Sleestack
 ![Prints Sleestack](journals/prints/prints_sleestack.png)
 
-
-
 ### Text
-Size
-Qa 4
-Se 7 ry ip
-Lf aN by bins 3
-ies
+Its a sleestack.
 
 ---
 
