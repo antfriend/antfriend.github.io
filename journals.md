@@ -35,9 +35,9 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT88LON81
+  - @LAT86LON55
 preview:
-  @LAT88LON81: "This is 8 bit |iKo looking in a"
+  @LAT86LON55: "Scene: Fishbowl Mechanistic Zoom Loop"
 ```
 
 ---
