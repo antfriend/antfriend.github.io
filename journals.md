@@ -35,14 +35,14 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT88LON0
+  - @LAT88LON81
 preview:
-  @LAT88LON0: "This is 8 bit |iKo looking in a"
+  @LAT88LON81: "This is 8 bit |iKo looking in a"
 ```
 
 ---
 
-@LAT86LON0 | created:1772201003 | updated:1772201003 | type:scene | relates:starts_at>@LAT88LON0,plays>@LAT84LON0
+@LAT86LON55 | created:1772201003 | updated:1772201003 | type:scene | relates:starts_at>@LAT88LON81,plays>@LAT84LON29
 
 ## Scene: Fishbowl Mechanistic Zoom Loop
 
@@ -50,10 +50,10 @@ Play this scene to run a two-node zoom cycle with Fishbowl audio.
 
 ```ttdb-scene
 audio_path: sounds/fishbowl.wav
-start_node: @LAT88LON0
+start_node: @LAT88LON81
 loop: true
-edge: next | from:@LAT88LON0 | to:@LAT84LON0 | hold_ms:65000 | duration_ms:1500 | travel_px:340
-edge: return_home | from:@LAT84LON0 | to:@LAT88LON0 | hold_ms:65000 | duration_ms:1500 | travel_px:340 | dir_x:-1 | dir_y:0
+edge: next | from:@LAT88LON81 | to:@LAT84LON29 | hold_ms:65000 | duration_ms:1500 | travel_px:340
+edge: return_home | from:@LAT84LON29 | to:@LAT88LON81 | hold_ms:65000 | duration_ms:1500 | travel_px:340 | dir_x:-1 | dir_y:0
 ```
 
 Sequence:
@@ -63,7 +63,7 @@ Sequence:
 
 ---
 
-@LAT88LON0 | created:1772201002 | updated:1772201002
+@LAT88LON81 | created:1772201002 | updated:1772201002
 
 ## Fishbowl
 ![Fishbowl](journals/eye/fishbowl_scene.html)
@@ -85,7 +85,7 @@ Facts depend on "Umwelt", the perceived world that bounds what exists for you, t
 
 ---
 
-@LAT84LON0 | created:1772201002 | updated:1772201002
+@LAT84LON29 | created:1772201002 | updated:1772201002
 
 ## Mechanistic
 ![Mechanistic](journals/eye/mechanistic_scene.html)
@@ -107,7 +107,7 @@ Perspective.
 
 ---
 
-@LAT80LON0 | created:1772201002 | updated:1772201002
+@LAT80LON-23 | created:1772201002 | updated:1772201002
 
 ## Timex3
 ![Timex3](journals/eye/Timex3.png)
@@ -128,7 +128,7 @@ repeating circle, which repeats itself again and again and again.
 
 ---
 
-@LAT76LON0 | created:1772201002 | updated:1772201002
+@LAT76LON-75 | created:1772201002 | updated:1772201002
 
 ## Prints Sleestack
 ![Prints Sleestack](journals/prints/prints_sleestack.png)
@@ -138,7 +138,7 @@ Its a sleestack.
 
 ---
 
-@LAT72LON0 | created:1772201002 | updated:1772201002
+@LAT72LON-127 | created:1772201002 | updated:1772201002
 
 ## Projects Horn Grill
 ![Projects Horn Grill](journals/projects/projects_horn_grill.png)
@@ -150,7 +150,7 @@ _No clear OCR text detected._
 
 ---
 
-@LAT68LON0 | created:1772201002 | updated:1772201002
+@LAT68LON-179 | created:1772201002 | updated:1772201002
 
 ## Spatula
 ![Spatula](journals/robots/Spatula.png)
@@ -166,7 +166,7 @@ at oe
 
 ---
 
-@LAT64LON0 | created:1772201002 | updated:1772201002
+@LAT64LON129 | created:1772201002 | updated:1772201002
 
 ## Sbt 1
 ![Sbt 1](journals/sbt/sbt_1.png)
@@ -191,7 +191,7 @@ Aimension, of ee
 
 ---
 
-@LAT60LON0 | created:1772201002 | updated:1772201002
+@LAT60LON77 | created:1772201002 | updated:1772201002
 
 ## Sbt 17
 ![Sbt 17](journals/sbt/sbt_17.png)
@@ -215,7 +215,7 @@ the events wich have
 
 ---
 
-@LAT56LON0 | created:1772201002 | updated:1772201002
+@LAT56LON25 | created:1772201002 | updated:1772201002
 
 ## Sbt 19
 ![Sbt 19](journals/sbt/sbt_19.png)
@@ -236,7 +236,7 @@ Concept Vectov. Concept these. A
 
 ---
 
-@LAT52LON0 | created:1772201002 | updated:1772201002
+@LAT52LON-27 | created:1772201002 | updated:1772201002
 
 ## Sbt 23
 ![Sbt 23](journals/sbt/sbt_23.png)
@@ -256,7 +256,7 @@ My es
 
 ---
 
-@LAT48LON0 | created:1772201002 | updated:1772201002
+@LAT48LON-79 | created:1772201002 | updated:1772201002
 
 ## Sbt 5
 ![Sbt 5](journals/sbt/sbt_5.png)
@@ -273,7 +273,7 @@ A+. the .essence. of Meaning 5 1 1 1 7 6 2048 1119 178 38 26.151924 —— 4 1 1
 
 ---
 
-@LAT44LON0 | created:1772201002 | updated:1772201002
+@LAT44LON-131 | created:1772201002 | updated:1772201002
 
 ## Umwelt 75
 ![Umwelt 75](journals/umwelt/umwelt_75.png)
@@ -308,7 +308,7 @@ TE RT (hock
 
 ---
 
-@LAT40LON0 | created:1772201002 | updated:1772201002
+@LAT40LON177 | created:1772201002 | updated:1772201002
 
 ## Umwelt 83
 ![Umwelt 83](journals/umwelt/umwelt_83.png)
@@ -324,7 +324,7 @@ a 6. words
 
 ---
 
-@LAT36LON0 | created:1772201002 | updated:1772201002
+@LAT36LON125 | created:1772201002 | updated:1772201002
 
 ## Umwelt 84
 ![Umwelt 84](journals/umwelt/umwelt_84.png)
@@ -349,7 +349,7 @@ Wy hyn
 
 ---
 
-@LAT32LON0 | created:1772201002 | updated:1772201002
+@LAT32LON73 | created:1772201002 | updated:1772201002
 
 ## Vectors 1
 ![Vectors 1](journals/vectors/vectors_1.png)
@@ -375,7 +375,7 @@ COSMIC
 
 ---
 
-@LAT28LON0 | created:1772201002 | updated:1772201002
+@LAT28LON21 | created:1772201002 | updated:1772201002
 
 ## Vectors 10
 ![Vectors 10](journals/vectors/vectors_10.png)
@@ -389,7 +389,7 @@ Oro
 
 ---
 
-@LAT24LON0 | created:1772201002 | updated:1772201002
+@LAT24LON-31 | created:1772201002 | updated:1772201002
 
 ## Vectors 12
 ![Vectors 12](journals/vectors/vectors_12.png)
@@ -418,7 +418,7 @@ pun
 
 ---
 
-@LAT20LON0 | created:1772201002 | updated:1772201002
+@LAT20LON-83 | created:1772201002 | updated:1772201002
 
 ## Vectors 16
 ![Vectors 16](journals/vectors/vectors_16.png)
@@ -447,7 +447,7 @@ oT My prain Feads
 
 ---
 
-@LAT16LON0 | created:1772201002 | updated:1772201002
+@LAT16LON-135 | created:1772201002 | updated:1772201002
 
 ## Vectors 18
 ![Vectors 18](journals/vectors/vectors_18.png)
@@ -467,7 +467,7 @@ es f
 
 ---
 
-@LAT12LON0 | created:1772201002 | updated:1772201002
+@LAT12LON173 | created:1772201002 | updated:1772201002
 
 ## Vectors 2
 ![Vectors 2](journals/vectors/vectors_2.png)
@@ -496,7 +496,7 @@ rmMe 4
 
 ---
 
-@LAT8LON0 | created:1772201002 | updated:1772201002
+@LAT8LON121 | created:1772201002 | updated:1772201002
 
 ## Vectors 21
 ![Vectors 21](journals/vectors/vectors_21.png)
@@ -521,7 +521,7 @@ doings
 
 ---
 
-@LAT4LON0 | created:1772201002 | updated:1772201002
+@LAT4LON69 | created:1772201002 | updated:1772201002
 
 ## Vectors 31
 ![Vectors 31](journals/vectors/vectors_31.png)
@@ -545,7 +545,7 @@ W heve Fourier thou?
 
 ---
 
-@LAT0LON0 | created:1772201002 | updated:1772201002
+@LAT0LON17 | created:1772201002 | updated:1772201002
 
 ## Vectors 32
 ![Vectors 32](journals/vectors/vectors_32.png)
@@ -567,7 +567,7 @@ vy
 
 ---
 
-@LAT-4LON0 | created:1772201002 | updated:1772201002
+@LAT-4LON-35 | created:1772201002 | updated:1772201002
 
 ## Vectors 38
 ![Vectors 38](journals/vectors/vectors_38.png)
@@ -590,7 +590,7 @@ So oe
 
 ---
 
-@LAT-8LON0 | created:1772201002 | updated:1772201002
+@LAT-8LON-87 | created:1772201002 | updated:1772201002
 
 ## Vectors 42
 ![Vectors 42](journals/vectors/vectors_42.png)
@@ -609,7 +609,7 @@ fan cinging the dance
 
 ---
 
-@LAT-12LON0 | created:1772201002 | updated:1772201002
+@LAT-12LON-139 | created:1772201002 | updated:1772201002
 
 ## Vectors 51
 ![Vectors 51](journals/vectors/vectors_51.png)
@@ -631,7 +631,7 @@ J Coffee
 
 ---
 
-@LAT-16LON0 | created:1772201002 | updated:1772201002
+@LAT-16LON169 | created:1772201002 | updated:1772201002
 
 ## Vectors 6
 ![Vectors 6](journals/vectors/vectors_6.png)
@@ -654,7 +654,7 @@ Lv ar,
 
 ---
 
-@LAT-20LON0 | created:1772201002 | updated:1772201002
+@LAT-20LON117 | created:1772201002 | updated:1772201002
 
 ## Vectors 78
 ![Vectors 78](journals/vectors/vectors_78.png)
@@ -681,7 +681,7 @@ Bb the nodes and edae S
 
 ---
 
-@LAT-24LON0 | created:1772201002 | updated:1772201002
+@LAT-24LON65 | created:1772201002 | updated:1772201002
 
 ## Vectors 84
 ![Vectors 84](journals/vectors/vectors_84.png)
@@ -702,7 +702,7 @@ S [2 Positive ‘it
 
 ---
 
-@LAT-28LON0 | created:1772201002 | updated:1772201002
+@LAT-28LON13 | created:1772201002 | updated:1772201002
 
 ## Vectors 9
 ![Vectors 9](journals/vectors/vectors_9.png)
@@ -737,7 +737,7 @@ ee ga
 
 ---
 
-@LAT-32LON0 | created:1772201002 | updated:1772201002
+@LAT-32LON-39 | created:1772201002 | updated:1772201002
 
 ## Waves 107
 ![Waves 107](journals/waves/waves_107.png)
@@ -772,7 +772,7 @@ ee
 
 ---
 
-@LAT-36LON0 | created:1772201002 | updated:1772201002
+@LAT-36LON-91 | created:1772201002 | updated:1772201002
 
 ## Waves 113
 ![Waves 113](journals/waves/waves_113.png)
@@ -797,7 +797,7 @@ wt
 
 ---
 
-@LAT-40LON0 | created:1772201002 | updated:1772201002
+@LAT-40LON-143 | created:1772201002 | updated:1772201002
 
 ## Waves 149
 ![Waves 149](journals/waves/waves_149.png)
@@ -814,7 +814,7 @@ ccc err. Me NZ
 
 ---
 
-@LAT-44LON0 | created:1772201002 | updated:1772201002
+@LAT-44LON165 | created:1772201002 | updated:1772201002
 
 ## Waves 15
 ![Waves 15](journals/waves/waves_15.png)
@@ -849,7 +849,7 @@ This OCT nerdy, AN SE i
 
 ---
 
-@LAT-48LON0 | created:1772201002 | updated:1772201002
+@LAT-48LON113 | created:1772201002 | updated:1772201002
 
 ## Waves 151
 ![Waves 151](journals/waves/waves_151.png)
@@ -866,7 +866,7 @@ thing ot all. They connect EO a
 
 ---
 
-@LAT-52LON0 | created:1772201002 | updated:1772201002
+@LAT-52LON61 | created:1772201002 | updated:1772201002
 
 ## Waves 152
 ![Waves 152](journals/waves/waves_152.png)
@@ -883,7 +883,7 @@ eee tm
 
 ---
 
-@LAT-56LON0 | created:1772201002 | updated:1772201002
+@LAT-56LON9 | created:1772201002 | updated:1772201002
 
 ## Waves 154
 ![Waves 154](journals/waves/waves_154.png)
@@ -904,7 +904,7 @@ EE aS ee
 
 ---
 
-@LAT-60LON0 | created:1772201002 | updated:1772201002
+@LAT-60LON-43 | created:1772201002 | updated:1772201002
 
 ## Waves 155
 ![Waves 155](journals/waves/waves_155.png)
@@ -936,7 +936,7 @@ etc tor
 
 ---
 
-@LAT-64LON0 | created:1772201002 | updated:1772201002
+@LAT-64LON-95 | created:1772201002 | updated:1772201002
 
 ## Waves 159
 ![Waves 159](journals/waves/waves_159.png)
@@ -957,7 +957,7 @@ eee S SPACE
 
 ---
 
-@LAT-68LON0 | created:1772201002 | updated:1772201002
+@LAT-68LON-147 | created:1772201002 | updated:1772201002
 
 ## Waves 8
 ![Waves 8](journals/waves/waves_8.png)
@@ -992,7 +992,7 @@ Lov ve wi ing vane?
 
 ---
 
-@LAT-72LON0 | created:1772201002 | updated:1772201002
+@LAT-72LON161 | created:1772201002 | updated:1772201002
 
 ## Waves 88
 ![Waves 88](journals/waves/waves_88.png)
