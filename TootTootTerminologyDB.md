@@ -87,6 +87,11 @@ Everything begins here.
 ### Definition
 Toot Toot AI is the maker-scale librarian role that assumes the active TTDB umwelt and answers to "@AI". ==>> [TTE Agent Umwelt v1](standards/umwelt/TTE_Agent_Umwelt_v1.yaml)
 
+```ttdb-record
+audio_path: sounds/mushroom.WAV
+audio_loop: true
+```
+
 ### Example
 A device on the Toot Toot Network can request: "@AI STATUS" to receive a short, structured reply suitable for a low-bandwidth [meshtastic network.](https://meshtastic.org)
 

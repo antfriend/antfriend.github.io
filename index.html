@@ -565,6 +565,7 @@
     const TOUR_SLOW_DELAY_MULTIPLIER = 1.7;
     const TOUR_SLOW_TRANSITION_MULTIPLIER = 2.5;
     const SPECIAL_RECORD_BLOCK_LANG = "ttdb-special";
+    const RECORD_CONFIG_BLOCK_LANG = "ttdb-record";
     const SCENE_RECORD_TYPE = "scene";
     const SCENE_BLOCK_LANG = "ttdb-scene";
     const SCENE_DEFAULT_EDGE_HOLD_MS = 1400;
@@ -631,6 +632,9 @@
       discoveryTourOff: false,
       tourAudioPath: null,
       tourAudioPlayer: null,
+      recordAudioPath: null,
+      recordAudioLoop: false,
+      recordAudioPlayer: null,
       scenePlayback: {
         token: 0,
         timer: null,
@@ -1116,6 +1120,7 @@
         const nextRecordId = state.filteredOrder[0];
         queueRecordTransition(state.selectedId, nextRecordId);
         state.selectedId = nextRecordId;
+        playRecordAudioForSelection(state.selectedId, { restart: true, suppress: state.scenePlayback.active });
       }
 
       renderList();
@@ -1144,7 +1149,7 @@
       const { force = false, resetSelection = false, preferredRecordId = null } = opts;
       const targetDbPath = resolveDbPathToken(dbPath, state.availableDbPaths) || DEFAULT_DB_PATH;
       const loadToken = (state.dbLoadToken += 1);
-      stopScenePlayback({ stopAudio: true, refreshControls: false });
+      stopScenePlayback({ stopAudio: true, refreshControls: false, suppressRecordAudio: true });
       state.activeDbPath = targetDbPath;
       if (!state.availableDbPaths.includes(targetDbPath)) {
         state.availableDbPaths = normalizeDbCatalog([...state.availableDbPaths, targetDbPath]);
@@ -1182,6 +1187,7 @@
             discoverRecord(state.selectedId);
           }
           applySearch();
+          playRecordAudioForSelection(state.selectedId, { restart: true, suppress: false });
           setStatusLink(order.length);
           scheduleTour();
         })
@@ -1200,7 +1206,8 @@
           state.discoveryTourOff = false;
           syncDiscoveryTourControls();
           setTourAudioPath(null);
-          stopScenePlayback({ stopAudio: true, refreshControls: false });
+          stopRecordAudio();
+          stopScenePlayback({ stopAudio: true, refreshControls: false, suppressRecordAudio: true });
           renderList();
           renderRecord();
           renderGraph();
@@ -1411,6 +1418,56 @@
       return { scene, body: bodyWithoutScene };
     }
 
+    function parseRecordConfigBlock(blockText) {
+      const config = {
+        audioPath: null,
+        audioLoop: false,
+      };
+
+      const lines = blockText.split(/\r?\n/);
+      lines.forEach((line) => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#") || trimmed.startsWith("%")) return;
+        const entryMatch = trimmed.match(/^([A-Za-z0-9._-]+)\s*:\s*(.+)$/);
+        if (!entryMatch) return;
+        const key = entryMatch[1].toLowerCase();
+        const parsedValue = parseSceneScalar(entryMatch[2]);
+
+        if (key === "audio_path") {
+          config.audioPath = typeof parsedValue === "string" ? parsedValue.trim() : "";
+          return;
+        }
+        if (key === "audio_loop" || key === "loop_audio") {
+          config.audioLoop = Boolean(parsedValue);
+        }
+      });
+
+      if (!config.audioPath) return null;
+      return config;
+    }
+
+    function parseRecordConfigFromBody(body) {
+      if (typeof body !== "string" || !body.trim()) {
+        return { config: null, body: body || "" };
+      }
+
+      const recordConfigRegex = new RegExp("```" + RECORD_CONFIG_BLOCK_LANG + "([\\s\\S]*?)```", "i");
+      const recordConfigMatch = body.match(recordConfigRegex);
+      if (!recordConfigMatch) {
+        return { config: null, body };
+      }
+
+      const config = parseRecordConfigBlock(recordConfigMatch[1]);
+      if (!config) {
+        return { config: null, body };
+      }
+
+      const before = body.slice(0, recordConfigMatch.index).trimEnd();
+      const after = body.slice(recordConfigMatch.index + recordConfigMatch[0].length).trimStart();
+      const bodyWithoutConfig = [before, after].filter(Boolean).join("\n\n").trim();
+      return { config, body: bodyWithoutConfig };
+    }
+
     function parseRecords(content, dbPath = state.activeDbPath) {
       const format = detectDbFormat(content, dbPath);
       if (format === "latex") return parseLatexRecords(content);
@@ -1464,6 +1521,11 @@
             body = parsedSceneRecord.body;
           }
         }
+        const parsedRecordConfig = parseRecordConfigFromBody(body);
+        if (parsedRecordConfig.config) {
+          body = parsedRecordConfig.body;
+        }
+        const recordConfig = parsedRecordConfig.config;
 
         const recordCoords = parseCoords(recordId);
         const specialRecord = parseSpecialRecord(recordCoords, body, "markdown");
@@ -1478,7 +1540,16 @@
           coords[recordId] = recordCoords;
         }
 
-        records[recordId] = { header: headerLine, body, title, edges, type: recordType, scene };
+        records[recordId] = {
+          header: headerLine,
+          body,
+          title,
+          edges,
+          type: recordType,
+          scene,
+          audioPath: recordConfig?.audioPath || null,
+          audioLoop: Boolean(recordConfig?.audioLoop),
+        };
         order.push(recordId);
       }
 
@@ -1571,12 +1642,26 @@
                   body = parsedSceneRecord.body;
                 }
               }
+              const parsedRecordConfig = parseRecordConfigFromBody(body);
+              if (parsedRecordConfig.config) {
+                body = parsedRecordConfig.body;
+              }
+              const recordConfig = parsedRecordConfig.config;
               const edges = parseRecordEdges(headerLine);
               if (recordCoords) {
                 coords[recordId] = recordCoords;
               }
 
-              records[recordId] = { header: headerLine, body, title, edges, type: recordType, scene };
+              records[recordId] = {
+                header: headerLine,
+                body,
+                title,
+                edges,
+                type: recordType,
+                scene,
+                audioPath: recordConfig?.audioPath || null,
+                audioLoop: Boolean(recordConfig?.audioLoop),
+              };
               order.push(recordId);
             }
           }
@@ -1657,6 +1742,48 @@
       state.tourAudioPlayer = window.CommonAudio?.createSoundPlayer(nextPath, { loop: true }) || null;
     }
 
+    function stopRecordAudio() {
+      if (state.recordAudioPlayer) {
+        state.recordAudioPlayer.stop();
+      }
+      state.recordAudioPath = null;
+      state.recordAudioLoop = false;
+      state.recordAudioPlayer = null;
+    }
+
+    function getRecordAudioConfig(recordId) {
+      const record = recordId ? state.records[recordId] : null;
+      if (!record) return { path: null, loop: false };
+      const rawPath = typeof record.audioPath === "string" ? record.audioPath.trim() : "";
+      if (!rawPath) return { path: null, loop: false };
+      return { path: rawPath, loop: Boolean(record.audioLoop) };
+    }
+
+    function playRecordAudioForSelection(recordId, opts = {}) {
+      const { restart = true, suppress = false } = opts;
+      if (suppress) {
+        stopRecordAudio();
+        return;
+      }
+
+      const { path, loop } = getRecordAudioConfig(recordId);
+      if (!path) {
+        stopRecordAudio();
+        return;
+      }
+
+      const canReusePlayer =
+        Boolean(state.recordAudioPlayer) && state.recordAudioPath === path && state.recordAudioLoop === loop;
+      if (!canReusePlayer) {
+        stopRecordAudio();
+        state.recordAudioPath = path;
+        state.recordAudioLoop = loop;
+        state.recordAudioPlayer = window.CommonAudio?.createSoundPlayer(path, { loop }) || null;
+      }
+
+      state.recordAudioPlayer?.play({ restart });
+    }
+
     function parseCoords(recordId) {
       const match = recordId.match(/^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$/);
       if (!match) return null;
@@ -1697,11 +1824,12 @@
       if (state.dbShiftAnimation) return;
       if (!state.records[recordId]) return;
       if (state.scenePlayback.active && !opts.fromScene) {
-        stopScenePlayback({ stopAudio: true, refreshControls: false });
+        stopScenePlayback({ stopAudio: true, refreshControls: false, suppressRecordAudio: true });
       }
       discoverRecord(recordId);
       queueRecordTransition(state.selectedId, recordId, opts);
       state.selectedId = recordId;
+      playRecordAudioForSelection(recordId, { restart: true, suppress: Boolean(opts.fromScene) });
       applySearch({ preferVisibleSelection: false });
       setStatusLink(state.order.length);
       if (!opts.fromTour && !opts.fromScene) {
@@ -1982,7 +2110,7 @@
     }
 
     function stopScenePlayback(opts = {}) {
-      const { stopAudio = true, refreshControls = true } = opts;
+      const { stopAudio = true, refreshControls = true, suppressRecordAudio = false } = opts;
       if (state.scenePlayback.timer) {
         clearTimeout(state.scenePlayback.timer);
         state.scenePlayback.timer = null;
@@ -2000,6 +2128,9 @@
 
       if (refreshControls) {
         refreshSceneControlState();
+      }
+      if (!suppressRecordAudio) {
+        playRecordAudioForSelection(state.selectedId, { restart: false, suppress: false });
       }
     }
 
@@ -2056,8 +2187,9 @@
       }
       if (!startNode) return;
 
-      stopScenePlayback({ stopAudio: true, refreshControls: false });
+      stopScenePlayback({ stopAudio: true, refreshControls: false, suppressRecordAudio: true });
       clearTour(true);
+      stopRecordAudio();
 
       state.scenePlayback.active = true;
       state.scenePlayback.sceneRecordId = sceneRecordId;
@@ -3772,7 +3904,9 @@
         return;
       }
       const discoveredOrder = getDiscoveredOrder();
-      const shouldPlayTourAudio = state.tourEnabled && !state.tourPaused && discoveredOrder.length >= 2;
+      const selectedRecordHasAudio = Boolean(getRecordAudioConfig(state.selectedId).path);
+      const shouldPlayTourAudio =
+        state.tourEnabled && !state.tourPaused && discoveredOrder.length >= 2 && !selectedRecordHasAudio;
       setTourAudioPlaying(shouldPlayTourAudio);
       if (!state.tourEnabled) return;
       if (state.tourPaused) {

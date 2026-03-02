@@ -36,6 +36,7 @@ TOUR_SLOW_DELAY_MULTIPLIER = 1.7
 TOUR_SLOW_TRANSITION_MULTIPLIER = 1.5
 
 SPECIAL_RECORD_BLOCK_LANG = "ttdb-special"
+RECORD_CONFIG_BLOCK_LANG = "ttdb-record"
 SPECIAL_RECORD_SOUTH_POLE_LAT = -90.0
 TOUR_AUDIO_SPECIAL_KIND = "tour_sound"
 
@@ -114,6 +115,8 @@ class Record:
     body: str
     title: str | None
     edges: list[Edge]
+    audio_path: str | None = None
+    audio_loop: bool = False
 
 
 @dataclass
@@ -195,6 +198,9 @@ class IndexApp(tk.Tk):
 
         self._tour_audio_path: str | None = None
         self._tour_audio_playing = False
+        self._record_audio_path: str | None = None
+        self._record_audio_loop = False
+        self._record_audio_playing = False
 
         self._init_fonts()
         self._build_ui()
@@ -673,6 +679,7 @@ class IndexApp(tk.Tk):
             self.discovered_ids = []
             self.screen_points = {}
             self._set_tour_audio_path(None)
+            self._stop_record_audio()
             self._render_list()
             self._render_record()
             self._render_globe()
@@ -727,6 +734,7 @@ class IndexApp(tk.Tk):
 
         self._build_search_index()
         self._apply_search(prefer_visible_selection=True, schedule_tour=False)
+        self._play_record_audio_for_selection(self.selected_id, restart=True, suppress=False)
         self._set_status_link()
         self._schedule_tour()
 
@@ -798,6 +806,7 @@ class IndexApp(tk.Tk):
                 if kind:
                     special_records[kind] = config
                 continue
+            record_config, body = self._parse_record_config(body)
 
             edges: list[Edge] = []
             relates_match = re.search(r"relates:([^|]+)", header_line)
@@ -823,6 +832,8 @@ class IndexApp(tk.Tk):
                 body=body,
                 title=title,
                 edges=edges,
+                audio_path=record_config.get("audio_path"),
+                audio_loop=bool(record_config.get("audio_loop", False)),
             )
             order.append(record_id)
 
@@ -837,6 +848,52 @@ class IndexApp(tk.Tk):
         z_match = re.search(r"\bz:\s*(-?\d+(?:\.\d+)?)", header_line)
         depth = float(z_match.group(1)) if z_match else 0.0
         return lat, lon, depth
+
+    def _strip_optional_quotes(self, value: str) -> str:
+        stripped = value.strip()
+        if (stripped.startswith('"') and stripped.endswith('"')) or (stripped.startswith("'") and stripped.endswith("'")):
+            return stripped[1:-1]
+        return stripped
+
+    def _parse_record_config(self, body: str) -> tuple[dict[str, object], str]:
+        if not body.strip():
+            return {}, body
+
+        block_re = re.compile(rf"```{re.escape(RECORD_CONFIG_BLOCK_LANG)}([\s\S]*?)```", re.I)
+        match = block_re.search(body)
+        if not match:
+            return {}, body
+
+        config: dict[str, object] = {}
+        for line in match.group(1).splitlines():
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#") or stripped.startswith("%"):
+                continue
+            entry_match = re.match(r"^([A-Za-z0-9._-]+)\s*:\s*(.+)$", stripped)
+            if not entry_match:
+                continue
+            key = entry_match.group(1).lower()
+            raw_value = self._strip_optional_quotes(entry_match.group(2))
+            lowered = raw_value.lower()
+            if key == "audio_path":
+                config["audio_path"] = raw_value.strip()
+                continue
+            if key in {"audio_loop", "loop_audio"}:
+                if lowered in {"1", "true", "yes", "on"}:
+                    config["audio_loop"] = True
+                elif lowered in {"0", "false", "no", "off"}:
+                    config["audio_loop"] = False
+
+        audio_path = str(config.get("audio_path", "")).strip()
+        if not audio_path:
+            return {}, body
+        config["audio_path"] = audio_path
+        config["audio_loop"] = bool(config.get("audio_loop", False))
+
+        before = body[: match.start()].rstrip()
+        after = body[match.end() :].lstrip()
+        body_without_config = "\n\n".join(part for part in (before, after) if part).strip()
+        return config, body_without_config
 
     def _parse_special_record(self, coords: tuple[float, float, float] | None, body: str) -> dict[str, dict] | None:
         if coords is None:
@@ -881,6 +938,72 @@ class IndexApp(tk.Tk):
         self._set_tour_audio_playing(False)
         self._tour_audio_path = next_path
 
+    def _stop_record_audio(self) -> None:
+        if winsound is not None and self._record_audio_playing:
+            try:
+                winsound.PlaySound(None, winsound.SND_ASYNC)
+            except Exception:
+                pass
+        self._record_audio_path = None
+        self._record_audio_loop = False
+        self._record_audio_playing = False
+
+    def _get_record_audio_config(self, record_id: str | None) -> tuple[str | None, bool]:
+        if not record_id:
+            return None, False
+        record = self.records.get(record_id)
+        if not record:
+            return None, False
+        audio_path = record.audio_path.strip() if isinstance(record.audio_path, str) else ""
+        if not audio_path:
+            return None, False
+        return audio_path, bool(record.audio_loop)
+
+    def _play_record_audio_for_selection(self, record_id: str | None, restart: bool = True, suppress: bool = False) -> None:
+        if suppress:
+            self._stop_record_audio()
+            return
+
+        audio_path, audio_loop = self._get_record_audio_config(record_id)
+        if not audio_path:
+            self._stop_record_audio()
+            return
+
+        resolved = self._resolve_asset_path(audio_path)
+        if resolved is None or resolved.suffix.lower() != ".wav":
+            self._stop_record_audio()
+            return
+
+        can_reuse = (
+            self._record_audio_playing
+            and self._record_audio_path == audio_path
+            and self._record_audio_loop == audio_loop
+            and not restart
+        )
+        if can_reuse:
+            return
+
+        if winsound is None:
+            self._record_audio_path = audio_path
+            self._record_audio_loop = audio_loop
+            self._record_audio_playing = False
+            return
+
+        flags = winsound.SND_FILENAME | winsound.SND_ASYNC
+        if audio_loop:
+            flags |= winsound.SND_LOOP
+
+        try:
+            winsound.PlaySound(str(resolved), flags)
+            self._record_audio_path = audio_path
+            self._record_audio_loop = audio_loop
+            self._record_audio_playing = True
+            self._tour_audio_playing = False
+        except Exception:
+            self._record_audio_path = audio_path
+            self._record_audio_loop = audio_loop
+            self._record_audio_playing = False
+
     def _set_tour_audio_playing(self, should_play: bool) -> None:
         if winsound is None:
             self._tour_audio_playing = False
@@ -901,6 +1024,7 @@ class IndexApp(tk.Tk):
                     winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_LOOP,
                 )
                 self._tour_audio_playing = True
+                self._record_audio_playing = False
             except Exception:
                 self._tour_audio_playing = False
             return
@@ -1006,6 +1130,7 @@ class IndexApp(tk.Tk):
             self.selected_id = self.filtered_order[0]
             self._queue_record_transition(previous_id, self.selected_id, from_tour=False)
             self._discover_record(self.selected_id)
+            self._play_record_audio_for_selection(self.selected_id, restart=True, suppress=False)
 
         self._render_list()
         self._render_record()
@@ -1068,6 +1193,7 @@ class IndexApp(tk.Tk):
         self._discover_record(record_id)
         self._queue_record_transition(previous_id, record_id, from_tour=from_tour)
         self.selected_id = record_id
+        self._play_record_audio_for_selection(record_id, restart=True, suppress=False)
         self._apply_search(prefer_visible_selection=False, schedule_tour=False)
         if not from_tour:
             self._schedule_tour()
@@ -1919,7 +2045,13 @@ class IndexApp(tk.Tk):
     def _schedule_tour(self) -> None:
         self._clear_tour(stop_audio=False)
         discovered_order = self._get_discovered_order()
-        should_play_audio = self.tour_enabled.get() and (not self.tour_paused) and len(discovered_order) >= 2
+        selected_record_audio_path, _selected_record_audio_loop = self._get_record_audio_config(self.selected_id)
+        should_play_audio = (
+            self.tour_enabled.get()
+            and (not self.tour_paused)
+            and len(discovered_order) >= 2
+            and not selected_record_audio_path
+        )
         self._set_tour_audio_playing(should_play_audio)
 
         if not self.tour_enabled.get():
