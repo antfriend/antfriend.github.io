@@ -60,7 +60,7 @@ Defines the optional tour audio for this TTDB.
 
 ```ttdb-special
 kind: tour_sound
-audio_path: sounds/Toot_Toot_Goat_Chant.WAV
+audio_path: sounds/mushroom.WAV
 ```
 
 ---
