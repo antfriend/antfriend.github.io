@@ -60,3 +60,7 @@ kind: discovery_tour_off
 ![one drop](images/semantic-pulse.svg)
 
 story goes here
+```ttdb-scene
+audio_path: sounds/one_drop_01.WAV
+
+```
