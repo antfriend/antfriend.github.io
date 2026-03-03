@@ -59,7 +59,7 @@ kind: discovery_tour_off
 ## One Drop
 This is the story of one drop of rain.
 
-## [share link](share/scene.html)
+## [share link](share/onedrop.html)
 
 ```ttdb-scene
 audio_path: sounds/one_drop_01.WAV
