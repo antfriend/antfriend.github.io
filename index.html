@@ -2021,6 +2021,18 @@
 
     // Edge names in `ttdb-scene` map directly to transition functions here.
     const sceneEdgeTransitionFunctions = {
+      down(edge) {
+        return {
+          holdMs: getSceneEdgeHoldMs(edge, 3000),
+          transition: {
+            dirX: getSceneEdgeParamNumber(edge, "dir_x", 0),
+            dirY: getSceneEdgeParamNumber(edge, "dir_y", 1000),
+            durationMs: Math.round(getSceneEdgeParamNumber(edge, "duration_ms", 3000)),
+            travelPx: Math.round(getSceneEdgeParamNumber(edge, "travel_px", 3000)),
+            style: "slide",
+          },
+        };
+      },
       next(edge) {
         return {
           holdMs: getSceneEdgeHoldMs(edge, 5000),

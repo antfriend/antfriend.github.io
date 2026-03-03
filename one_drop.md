@@ -65,18 +65,17 @@ This is the story of one drop of rain.
 audio_path: sounds/one_drop_01.WAV
 start_node: @LAT10LON10
 loop: false
-edge: next | from:@LAT10LON10 | to:@LAT20LON20 | hold_ms:3000 | duration_ms:3000 | travel_px:3000
-edge: bloom | from:@LAT20LON20| to:@LAT-75LON-75 | hold_ms:3000 | duration_ms:3000 | dir_x:10 | dir_y:3000
-edge: return_home | from:@LAT-75LON-75 | to:@LAT1LON1 | hold_ms:9000 | duration_ms:5000 | travel_px:5000
+edge: down | from:@LAT10LON10 | to:@LAT20LON20 | hold_ms:3000 | duration_ms:3000 | dir_x:0 | dir_y:3000
+edge: down | from:@LAT20LON20| to:@LAT-75LON-75 | hold_ms:9000 | duration_ms:12000 | dir_x:0 | dir_y:3000
+edge: return_home | from:@LAT-75LON-75 | to:@LAT1LON1 | hold_ms:9000 | duration_ms:5000 | travel_px:15000
 ```
 
 ---
 
 @LAT10LON10 | created:1771797450 | updated:1771797450  
 
+![one drop](images/semantic-pulse.svg)
 # One Drop
-
-"We feel it in the one drop."
 
 ---
 
@@ -90,4 +89,18 @@ edge: return_home | from:@LAT-75LON-75 | to:@LAT1LON1 | hold_ms:9000 | duration_
 
 
 
-the end
+# the end
+
+### credits
+
+H2O
+
+water bears:
+ - bob
+ - sally
+ 
+no water was harmed   
+in the making   
+of this movie   
+
+#### (c) 2026 toot toot engineering, all signals cleared
