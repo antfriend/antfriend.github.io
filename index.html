@@ -2265,8 +2265,8 @@
       const enterY = Math.round(transition.dirY * transition.travelPx);
       const exitX = -enterX;
       const exitY = -enterY;
-      const easing = "cubic-bezier(0.2, 0.8, 0.2, 1)";
-      const alphaDuration = Math.max(140, Math.round(transition.durationMs * 0.72));
+      const easing = "linear";
+      const alphaDuration = Math.max(180, Math.round(transition.durationMs * 0.9));
       const visuals = describeRecordTransitionVisuals(transition, enterX, enterY, exitX, exitY);
       const incomingOpacityStart =
         visuals.incomingOpacityStart === null || visuals.incomingOpacityStart === undefined
@@ -2289,8 +2289,8 @@
 
       requestAnimationFrame(() => {
         if (token !== state.recordTransitionToken) return;
-        current.style.transition = `transform ${transition.durationMs}ms ${easing}, opacity ${alphaDuration}ms ease`;
-        incoming.style.transition = `transform ${transition.durationMs}ms ${easing}, opacity ${alphaDuration}ms ease`;
+        current.style.transition = `transform ${transition.durationMs}ms ${easing}, opacity ${alphaDuration}ms linear`;
+        incoming.style.transition = `transform ${transition.durationMs}ms ${easing}, opacity ${alphaDuration}ms linear`;
         current.style.transform = visuals.currentToTransform;
         current.style.opacity = String(visuals.currentOpacityEnd);
         incoming.style.transform = visuals.incomingToTransform;
