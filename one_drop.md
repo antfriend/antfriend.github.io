@@ -64,10 +64,10 @@ This is the story of one drop of rain.
 ```ttdb-scene
 audio_path: sounds/one_drop_01.WAV
 start_node: @LAT10LON10
-loop: true
+loop: false
 edge: next | from:@LAT10LON10 | to:@LAT20LON20 | hold_ms:3000 | duration_ms:3000 | travel_px:3000
-edge: bloom | from:@LAT20LON20| to:@LAT10LON10 | hold_ms:3000 | duration_ms:3000 | dir_x:10 | dir_y:3000
-edge: return_home | from:@LAT10LON10 | to:@LAT20LON20 | hold_ms:3000 | duration_ms:3000 | travel_px:3000
+edge: bloom | from:@LAT20LON20| to:@LAT-75LON-75 | hold_ms:3000 | duration_ms:3000 | dir_x:10 | dir_y:3000
+edge: return_home | from:@LAT-75LON-75 | to:@LAT1LON1 | hold_ms:9000 | duration_ms:5000 | travel_px:5000
 ```
 
 ---
@@ -83,3 +83,11 @@ edge: return_home | from:@LAT10LON10 | to:@LAT20LON20 | hold_ms:3000 | duration_
 @LAT20LON20 | created:1771797450 | updated:1771797450  
 
 ![one drop](images/eyeball-highway-sunrise.svg)
+
+---
+
+@LAT-75LON-75 | created:1771797450 | updated:1771797450  
+
+
+
+the end
