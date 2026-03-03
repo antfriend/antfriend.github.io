@@ -34,9 +34,9 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT88LON140
+  - @LAT1LON1
 preview:
-  @LAT88LON140: "one drop story goes here."
+  @LAT1LON1: "one drop story goes here."
 ```
 
 ---
@@ -54,13 +54,32 @@ kind: discovery_tour_off
 
 ---
 
-@LAT88LON140 | created:1771797450 | updated:1771797450  | type:scene
+@LAT1LON1 | created:1771797450 | updated:1771797450  | type:scene
 
-## one drop
-![one drop](images/semantic-pulse.svg)
+## One Drop
+This is the story of one drop of rain.
 
-story goes here
+## [share link](share/scene.html)
+
 ```ttdb-scene
 audio_path: sounds/one_drop_01.WAV
-
+start_node: @LAT10LON10
+loop: true
+edge: next | from:@LAT10LON10 | to:@LAT20LON20 | hold_ms:3000 | duration_ms:3000 | travel_px:3000
+edge: bloom | from:@LAT20LON20| to:@LAT10LON10 | hold_ms:3000 | duration_ms:3000 | dir_x:10 | dir_y:3000
+edge: return_home | from:@LAT10LON10 | to:@LAT20LON20 | hold_ms:3000 | duration_ms:3000 | travel_px:3000
 ```
+
+---
+
+@LAT10LON10 | created:1771797450 | updated:1771797450  
+
+# One Drop
+
+"We feel it in the one drop."
+
+---
+
+@LAT20LON20 | created:1771797450 | updated:1771797450  
+
+![one drop](images/eyeball-highway-sunrise.svg)
