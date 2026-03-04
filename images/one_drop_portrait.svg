@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-labelledby="title desc">
+  <title id="title">One Drop Portrait</title>
+  <desc id="desc">A gentle animated raindrop portrait built from a blue outline oval, transparent blue infill, and a small white highlight oval.</desc>
+
+  <g transform="translate(300 320)">
+    <g id="bob">
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -10;0 0;0 6;0 0" dur="4.8s" repeatCount="indefinite"/>
+      <g id="tilt">
+        <animateTransform attributeName="transform" type="rotate" values="-2;2;-1;1;-2" dur="4.8s" repeatCount="indefinite"/>
+        <g id="squash">
+          <animateTransform attributeName="transform" type="scale" values="1 1;1.02 0.98;0.99 1.01;1.01 0.99;1 1" dur="4.8s" repeatCount="indefinite"/>
+
+          <ellipse cx="0" cy="0" rx="120" ry="170" fill="rgba(80, 165, 255, 0.34)"/>
+          <ellipse cx="0" cy="0" rx="120" ry="170" fill="none" stroke="#1e7ae0" stroke-width="11"/>
+
+          <ellipse cx="-52" cy="-78" rx="22" ry="14" fill="#ffffff">
+            <animate attributeName="cx" values="-52;-48;-56;-52" dur="3.6s" repeatCount="indefinite"/>
+            <animate attributeName="cy" values="-78;-81;-76;-78" dur="3.6s" repeatCount="indefinite"/>
+            <animate attributeName="rx" values="22;23;21;22" dur="3.6s" repeatCount="indefinite"/>
+          </ellipse>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

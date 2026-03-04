@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Raining Continuous Shot</title>
+  <desc id="desc">First-person rainfall through sky, cloud, fog, and into a mountain lake with surrounding droplets and splash impacts.</desc>
+
+  <defs>
+    <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f265d"/>
+      <stop offset="100%" stop-color="#5ec0ff"/>
+    </linearGradient>
+    <radialGradient id="lakeGradient" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#9be5ff"/>
+      <stop offset="45%" stop-color="#4ca8ea"/>
+      <stop offset="100%" stop-color="#1b5da8"/>
+    </radialGradient>
+    <linearGradient id="fogGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.0)"/>
+      <stop offset="45%" stop-color="rgba(255,255,255,0.52)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.16)"/>
+    </linearGradient>
+    <radialGradient id="vignette" cx="50%" cy="50%" r="75%">
+      <stop offset="55%" stop-color="rgba(0,0,0,0)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.34)"/>
+    </radialGradient>
+    <symbol id="drop" viewBox="-9 -20 18 40">
+      <ellipse cx="0" cy="0" rx="6" ry="14" fill="rgba(124, 196, 255, 0.45)" stroke="#2e89e8" stroke-width="1.6"/>
+      <ellipse cx="-2" cy="-7" rx="1.8" ry="1.4" fill="#ffffff" opacity="0.9"/>
+    </symbol>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#skyGradient)"/>
+
+  <g id="cameraDrift">
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 -14;0 0;0 18;0 0" dur="20s" repeatCount="indefinite"/>
+
+    <g id="cloudLayer" opacity="0">
+      <animate attributeName="opacity" values="0;0;0.82;0.9;0.38;0" keyTimes="0;0.12;0.28;0.45;0.62;1" dur="20s" repeatCount="indefinite"/>
+      <g transform="translate(960 560)">
+        <animateTransform attributeName="transform" type="scale" values="0.18;0.24;0.45;0.9;1.6" keyTimes="0;0.22;0.4;0.62;1" dur="20s" repeatCount="indefinite"/>
+        <ellipse cx="0" cy="0" rx="360" ry="190" fill="rgba(255,255,255,0.75)"/>
+        <ellipse cx="-220" cy="25" rx="220" ry="130" fill="rgba(255,255,255,0.68)"/>
+        <ellipse cx="230" cy="40" rx="250" ry="140" fill="rgba(255,255,255,0.62)"/>
+        <ellipse cx="20" cy="-95" rx="210" ry="120" fill="rgba(255,255,255,0.66)"/>
+      </g>
+    </g>
+
+    <g id="fogLayer">
+      <rect width="1920" height="1080" fill="url(#fogGradient)" opacity="0">
+        <animate attributeName="opacity" values="0;0;0.2;0.7;0.82;0.32;0" keyTimes="0;0.24;0.36;0.48;0.56;0.68;1" dur="20s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+
+    <g id="lakeLayer" transform="translate(960 850)">
+      <animateTransform attributeName="transform" type="scale" values="0.03;0.04;0.08;0.15;0.3;0.7;1.4;3.2" keyTimes="0;0.2;0.35;0.5;0.64;0.78;0.9;1" dur="20s" repeatCount="indefinite"/>
+      <ellipse cx="0" cy="0" rx="720" ry="340" fill="url(#lakeGradient)"/>
+      <ellipse cx="0" cy="-12" rx="670" ry="300" fill="rgba(255,255,255,0.08)"/>
+    </g>
+
+    <g id="raindropField">
+      <use href="#drop" x="120" y="-260" opacity="0.55"><animate attributeName="y" values="-260;1210" dur="3.0s" begin="-0.2s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="240" y="-320" opacity="0.48" transform="scale(0.9)"><animate attributeName="y" values="-320;1200" dur="3.6s" begin="-1.1s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="350" y="-210" opacity="0.72" transform="scale(1.15)"><animate attributeName="y" values="-210;1220" dur="2.8s" begin="-2.4s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="470" y="-360" opacity="0.42" transform="scale(0.75)"><animate attributeName="y" values="-360;1200" dur="4.2s" begin="-0.7s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="590" y="-260" opacity="0.64"><animate attributeName="y" values="-260;1200" dur="3.2s" begin="-1.8s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="700" y="-300" opacity="0.58" transform="scale(0.85)"><animate attributeName="y" values="-300;1210" dur="3.5s" begin="-2.0s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="820" y="-240" opacity="0.74" transform="scale(1.12)"><animate attributeName="y" values="-240;1225" dur="2.6s" begin="-0.5s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="930" y="-330" opacity="0.39" transform="scale(0.7)"><animate attributeName="y" values="-330;1205" dur="4.5s" begin="-1.4s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="1040" y="-280" opacity="0.66" transform="scale(1.03)"><animate attributeName="y" values="-280;1220" dur="3.0s" begin="-2.2s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="1160" y="-350" opacity="0.41" transform="scale(0.78)"><animate attributeName="y" values="-350;1200" dur="4.0s" begin="-0.9s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="1270" y="-230" opacity="0.77" transform="scale(1.2)"><animate attributeName="y" values="-230;1235" dur="2.7s" begin="-1.6s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="1380" y="-315" opacity="0.56" transform="scale(0.9)"><animate attributeName="y" values="-315;1210" dur="3.4s" begin="-0.3s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="1490" y="-260" opacity="0.62"><animate attributeName="y" values="-260;1215" dur="3.1s" begin="-2.9s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="1600" y="-340" opacity="0.47" transform="scale(0.82)"><animate attributeName="y" values="-340;1200" dur="3.9s" begin="-1.3s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="1710" y="-220" opacity="0.73" transform="scale(1.18)"><animate attributeName="y" values="-220;1230" dur="2.5s" begin="-2.5s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="1800" y="-305" opacity="0.5" transform="scale(0.88)"><animate attributeName="y" values="-305;1208" dur="3.7s" begin="-0.6s" repeatCount="indefinite"/></use>
+
+      <use href="#drop" x="90" y="-380" opacity="0.33" transform="scale(0.65)"><animate attributeName="y" values="-380;1190" dur="5.0s" begin="-1.9s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="300" y="-420" opacity="0.35" transform="scale(0.62)"><animate attributeName="y" values="-420;1180" dur="5.3s" begin="-3.0s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="540" y="-410" opacity="0.31" transform="scale(0.6)"><animate attributeName="y" values="-410;1185" dur="5.2s" begin="-0.4s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="770" y="-395" opacity="0.36" transform="scale(0.64)"><animate attributeName="y" values="-395;1188" dur="5.1s" begin="-2.1s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="1010" y="-435" opacity="0.29" transform="scale(0.58)"><animate attributeName="y" values="-435;1182" dur="5.6s" begin="-1.0s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="1250" y="-405" opacity="0.34" transform="scale(0.63)"><animate attributeName="y" values="-405;1187" dur="5.0s" begin="-2.7s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="1490" y="-425" opacity="0.3" transform="scale(0.59)"><animate attributeName="y" values="-425;1183" dur="5.5s" begin="-1.5s" repeatCount="indefinite"/></use>
+      <use href="#drop" x="1730" y="-390" opacity="0.37" transform="scale(0.66)"><animate attributeName="y" values="-390;1192" dur="4.9s" begin="-3.2s" repeatCount="indefinite"/></use>
+    </g>
+
+    <g id="splashLayer" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0.2;0.6;0.9;0" keyTimes="0;0.58;0.66;0.74;0.84;0.93;1" dur="20s" repeatCount="indefinite"/>
+      <g transform="translate(960 860)">
+        <circle cx="-240" cy="40" r="8" fill="none" stroke="rgba(208,238,255,0.85)" stroke-width="4">
+          <animate attributeName="r" values="8;44" dur="1.2s" begin="0s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.8;0" dur="1.2s" begin="0s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="-80" cy="70" r="5" fill="none" stroke="rgba(208,238,255,0.8)" stroke-width="3">
+          <animate attributeName="r" values="5;34" dur="0.9s" begin="0.35s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.8;0" dur="0.9s" begin="0.35s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="120" cy="42" r="7" fill="none" stroke="rgba(208,238,255,0.85)" stroke-width="4">
+          <animate attributeName="r" values="7;40" dur="1.0s" begin="0.15s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.85;0" dur="1.0s" begin="0.15s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="290" cy="85" r="6" fill="none" stroke="rgba(208,238,255,0.75)" stroke-width="3">
+          <animate attributeName="r" values="6;32" dur="1.1s" begin="0.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.8;0" dur="1.1s" begin="0.5s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+    </g>
+  </g>
+
+  <rect width="1920" height="1080" fill="#000000" opacity="1">
+    <animate attributeName="opacity" values="1;0" dur="2.4s" repeatCount="indefinite"/>
+  </rect>
+
+  <rect width="1920" height="1080" fill="#2a89d8" opacity="0">
+    <animate attributeName="opacity" values="0;0;0;0;0.15;0.55;1" keyTimes="0;0.72;0.82;0.88;0.93;0.97;1" dur="20s" repeatCount="indefinite"/>
+  </rect>
+
+  <rect width="1920" height="1080" fill="url(#vignette)"/>
+</svg>
