@@ -581,9 +581,6 @@
     const DB_SIDE_GLOBE_SCALE = 0.25;
     const DB_SIDE_GLOBE_NEAR_OVERLAP = 2.22;
     const DB_SIDE_GLOBE_STEP = 1.68;
-    const DB_SWIPE_MIN_DISTANCE_PX = 42;
-    const DB_SWIPE_MIN_DISTANCE_RATIO = 0.1;
-    const DB_SWIPE_MAX_VERTICAL_RATIO = 0.65;
     const RECORD_SPLIT_IMAGE_WIDTH_RATIO = 0.75;
     const RECORD_PROFILE_VIEW_MEDIA_QUERY = "(max-width: 900px), (orientation: portrait)";
 
@@ -3257,44 +3254,34 @@
       return startDbShiftAndLoad(target);
     }
 
-    function selectDbGlobeNearPoint(canvasX, canvasY, pointerType = "mouse") {
-      if (!state.dbGlobeHitTargets.length || state.dbShiftAnimation) return false;
-      let closest = null;
-      let closestDist = Infinity;
-      state.dbGlobeHitTargets.forEach((entry) => {
-        const dx = entry.x - canvasX;
-        const dy = entry.y - canvasY;
-        const dist = Math.hypot(dx, dy);
-        if (dist < closestDist) {
-          closestDist = dist;
-          closest = entry;
-        }
-      });
-      if (!closest) return false;
-      const pad = pointerType === "touch" ? 10 : 4;
-      if (closestDist > closest.radius + pad) return false;
-      return startDbShiftAndLoad(closest);
-    }
-
-    function getDbSwipeThresholdPx() {
-      const width = graphCanvas.clientWidth || graphCanvas.parentElement?.clientWidth || 0;
-      return Math.max(DB_SWIPE_MIN_DISTANCE_PX, width * DB_SWIPE_MIN_DISTANCE_RATIO);
-    }
-
-    function isDbSwipeGesture(deltaX, deltaY) {
+    function selectDbByDirection(direction) {
       if (state.dbShiftAnimation) return false;
       if (state.availableDbPaths.length < 2) return false;
-      const absX = Math.abs(deltaX);
-      if (absX < getDbSwipeThresholdPx()) return false;
-      return Math.abs(deltaY) <= absX * DB_SWIPE_MAX_VERTICAL_RATIO;
-    }
-
-    function selectDbByHorizontalSwipe(deltaX) {
-      const direction = deltaX < 0 ? 1 : -1;
+      const step = direction < 0 ? -1 : 1;
       const activeIndex = state.availableDbPaths.indexOf(state.activeDbPath);
       if (activeIndex < 0) return false;
-      const nextIndex = (activeIndex + direction + state.availableDbPaths.length) % state.availableDbPaths.length;
-      return selectDbPath(state.availableDbPaths[nextIndex], { direction });
+      const nextIndex = (activeIndex + step + state.availableDbPaths.length) % state.availableDbPaths.length;
+      return selectDbPath(state.availableDbPaths[nextIndex], { direction: step });
+    }
+
+    function selectDbByTapSide(canvasX, canvasY) {
+      if (state.dbShiftAnimation) return false;
+      if (state.availableDbPaths.length < 2) return false;
+      const parent = graphCanvas.parentElement;
+      const width = parent?.clientWidth || graphCanvas.clientWidth || 0;
+      const height = parent?.clientHeight || graphCanvas.clientHeight || 0;
+      if (!width || !height) return false;
+
+      const radius = Math.max(10, getGlobeBaseRadius(width, height) * state.globeZoom);
+      const centerX = width / 2 + state.dbShiftPx;
+      const centerY = height / 2;
+      const dx = canvasX - centerX;
+      const dy = canvasY - centerY;
+      // Keep taps on the active globe available for record navigation.
+      if (Math.hypot(dx, dy) <= radius) return false;
+      if (Math.abs(dx) < Math.max(16, radius * 0.15)) return false;
+
+      return selectDbByDirection(dx < 0 ? -1 : 1);
     }
 
     function renderGraph() {
@@ -3816,9 +3803,6 @@
       const wasSinglePointer = pointerGesture.active.size === 1;
       const wasTap =
         wasPrimary && wasSinglePointer && !pointerGesture.moved && performance.now() - pointerGesture.startTime < 350;
-      const gestureDx = wasPrimary && wasSinglePointer ? event.clientX - pointerGesture.startX : 0;
-      const gestureDy = wasPrimary && wasSinglePointer ? event.clientY - pointerGesture.startY : 0;
-      const isDbSwipe = wasPrimary && wasSinglePointer && pointerGesture.moved && !wasTap && isDbSwipeGesture(gestureDx, gestureDy);
 
       pointerGesture.active.delete(event.pointerId);
       if (graphCanvas.releasePointerCapture && graphCanvas.hasPointerCapture?.(event.pointerId)) {
@@ -3854,22 +3838,21 @@
       }
 
       const usedDrag = endGlobeDrag();
-      let usedSwipe = false;
-      if (isDbSwipe) {
-        usedSwipe = selectDbByHorizontalSwipe(gestureDx);
-      }
       let usedTap = false;
-      if (!usedSwipe && wasTap) {
+      if (wasTap) {
         const rect = graphCanvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        usedTap = selectDbGlobeNearPoint(x, y, event.pointerType);
-        if (!usedTap) {
+        const inCanvas = x >= 0 && x <= rect.width && y >= 0 && y <= rect.height;
+        if (inCanvas) {
           usedTap = selectRecordNearPoint(x, y, event.pointerType);
+          if (!usedTap) {
+            usedTap = selectDbByTapSide(x, y);
+          }
         }
       }
 
-      if (usedDrag || usedTap || usedSwipe || pointerGesture.movedOrZoomed) {
+      if (usedDrag || usedTap || pointerGesture.movedOrZoomed) {
         noteInteraction();
       }
 
