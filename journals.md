@@ -158,11 +158,7 @@ _No clear OCR text detected._
 [Image source](journals/robots/Spatula.png)
 
 ### Text
-yy
-AN 4
-ee e 4
-er
-at oe
+I ❤ U GUYS
 
 ---
 
@@ -174,20 +170,21 @@ at oe
 [Image source](journals/sbt/sbt_1.png)
 
 ### Text
-Eg ene en
-The fabric of (A a
-iS a. weave of two
-a elemental forms of
-thy or
-and @the
-actions and es
-which connect the ie
-fT WCan run
-ee Ci re les, PSE
-a on 8 4 J
-Ml The semantic =e
-GE meaning
-Aimension, of ee
+The fabric of Meaning
+is a weave of two
+elemental forms of
+existence: ①the things or
+nouns and ②the verbs or
+actions and relationships
+which connect the things.
+
+noun "I" → verb "can run" → home. circles. the machine.
+
+this is the Semantic Bit
+
+The semantic bit
+ascribes meaning through
+adding a dimension of time.
 
 ---
 
@@ -199,19 +196,22 @@ Aimension, of ee
 [Image source](journals/sbt/sbt_17.png)
 
 ### Text
-A semantic bit ts An element of
-lt can be. oe
-represented. 05.0 am
-8 transitional. Cd ae
-dimensional space =f Ney
-nee VA
-And. i+ can represent the meaning of 7
-B Molecular actions at micvecosmic
-well 25s. the
-of celesttal At the. scale ope
-the cosmas, a5 well ds the
-ing of my (the, 1a
-the events wich have
+A semantic bit is an element of
+symbolic logic, "→".
+It can be mathematically
+represented as a vector,
+a transitional edge in
+3 dimensional space.
+
+going from here → to → here
+
+And it can represent the meaning of
+molecular actions at a microcosmic
+scale as well as the significance
+of celestial events at the scale of
+the cosmos, as well as the
+meaning of my life, in summary,
+by the events which have shaped it.
 
 ---
 
@@ -223,16 +223,23 @@ the events wich have
 [Image source](journals/sbt/sbt_19.png)
 
 ### Text
+It turns out we can represent
 everything in our experience.
-encoded. iy
-Lo. YS ee
-like a schem-.
-see otic represent 5 am
-a flow am
-4) of Clectron
-Another Thig that
-Va one t
-Concept Vectov. Concept these. A
+A Vector encoded. Contents original.
+
+like a schematic represents
+a specific flow
+of electrons.
+LED
+
+Thing 'relates to' Another Thing
+Noun   verb   Noun
+Concept Vector Concept
+
+this is part of that
+this is one of those
+this leads to that
+this came from that
 
 ---
 
@@ -244,15 +251,17 @@ Concept Vectov. Concept these. A
 [Image source](journals/sbt/sbt_23.png)
 
 ### Text
-[the story of my
-is constellation
-4 i. Scales
-oe am
-Me -SXlooked JM Kr
-7, A Stars
-WS NE Zim NS
-Z SSS eee 3
-My es
+The story of my life
+so far
+is a constellation
+of events
+over time at different scales.
+
+actual size — micro scope size — atomic scale
+
+Born here → looked at stars here → want here
+telescopic / macro / cosmos
+molecules / cells
 
 ---
 
@@ -264,12 +273,24 @@ My es
 [Image source](journals/sbt/sbt_5.png)
 
 ### Text
-Some ning
-Wha C a VS
-because Ind
-ag xs
-saa ae
-A+. the .essence. of Meaning 5 1 1 1 7 6 2048 1119 178 38 26.151924 —— 4 1 1 1 8 0 423 1191 1689 216 -1 5 1 1 1 8 1 423 1253 155 73 60.268005 rs 5 1 1 1 8 2 655 1252 166 84 77.486603 the 5 1 1 1 8 3 897 1253 499 154 0.000000 rogest 5 1 1 1 8 4 1458 1234 165 105 92.340385 of 5 1 1 1 8 5 1658 1191 349 156 13.830650 me) 4 1 1 1 9 0 427 1480 1693 107 -1 5 1 1 1 9 1 427 1490 317 86 94.792976 What 5 1 1 1 9 2 814 1491 167 96 88.047523 js. 5 1 1 1 9 3 1050 1492 111 84 49.215195 at 5 1 1 1 9 4 1277 1487 278 93 83.214226 stake 5 1 1 1 9 5 1623 1480 330 95 26.215645 from 4 1 1 1 10 0 614 1666 1768 87 -1 5 1 1 1 10 1 487 1662 166 74 18.294563 NniSS 5 1 1 1 10 2 730 1666 576 75 68.977058 MOMCW)WT. 5 1 1 1 10 3 1382 1731 86 5 47.702744 <—— 5 1 1 1 10 4 1626 1730 399 26 41.375675 wee 5 1 1 1 10 5 2377 1727 5 3 46.437336 | 4 1 1 1 11 0 1466 1725 923 193 -1 5 1 1 1 11 1 433 1824 465 82 16.983231 the. 5 1 1 1 11 2 975 1840 368 69 42.407310 next 4 1 1 1 12 0 672 1975 1725 172 -1 5 1 1 1 12 1 445 1999 99 67 87.819939 is. 5 1 1 1 12 2 643 1999 186 67 86.955482 the 5 1 1 1 12 3 892 1990 299 74 14.285583 ACI 5 1 1 1 12 4 1245 1975 325 157 14.285583 ANAS. 5 1 1 1 12 5 1632 2058 352 18 47.526123 Ro 5 1 1 1 12 6 2156 1994 71 153 79.430756 | 5 1 1 1 12 7 2395 2061 2 2 76.286110 | 4 1 1 1 13 0 641 2057 1760 160 -1 5 1 1 1 13 1 523 2066 1032 151 36.515228 ENE 5 1 1 1 13 2 1774 2057 454 99 23.406349 Sse 4 1 1 1 14 0 462 2139 1944 126 -1 5 1 1 1 14 1 462 2173 82 62 13.543839 st 5 1 1 1 14 2 711 2139 845 126 43.564247 potentials 5 1 1 1 14 3 1459 2135 124 135 58.807716 *. 5 1 1 1 14 4 1719 2226 87 4 28.199203 are 5 1 1 1 14 5 2403 2230 3 3 56.842392 | 4 1 1 1 15 0 720 2308 1695 113 -1 5 1 1 1 15 1 468 2314 172 92 84.355820 the 5 1 1 1 15 2 720 2308 1105 113 0.000000 ZMSSOMANTICMbITS 5 1 1 1 15 3 2146 2314 269 92 0.752762 4 4 1 1 1 16 0 425 2560 2010 147 -1 5 1 1 1 16 1 425 2592 103 92 54.551010 lt 5 1 1 1 16 2 630 2592 428 97 93.074936 means 5 1 1 1 16 3 1139 2584 487 99 85.218330 what.i+ 5 1 1 1 16 4 1722 2560 360 147 68.691574 MEANS 4 1 1 1 17 0 439 2776 1969 80 -1 5 1 1 1 17 1 439 2776 136 74 94.473938 to 5 1 1 1 17 2 710 2781 261 75 76.013847 me. 5 1 1 1 17 3 1224 2836 3 2 6.489250 af 5 1 1 1 17 4 1419 2797 247 59 32.261055 Ow. 5 1 1 1 17 5 2404 2759 43 96 92.503647 4
+"Something is coming."
+It means
+what it means
+because something
+is happening.
+
+At the essence of meaning
+is the progress of time.
+
+What is at stake from
+this moment
+to the next
+is the exchange
+of potentials,
+the semantic bits.
+
+It means what it means
+to me.
 
 ---
 
@@ -281,30 +302,16 @@ A+. the .essence. of Meaning 5 1 1 1 7 6 2048 1119 178 38 26.151924 —— 4 1 1
 [Image source](journals/umwelt/umwelt_75.png)
 
 ### Text
-Settee 3
-7 Cy fs y j
-j Z
-Le
-Nw at, N iN enn
-am a
-Saw) e
-bd Sa ery A 4 gs
-A A
-MA
-ey JZ f GsMENS LON A
-pe
-on Z
-gg Contai
-inet ot jearnt
-lg pT DB
-D Ss a (aes
-evev time
-3 e ta
-e o ee ne
-GOIN Oo
-ah Fie ey
-enon ae TR
-TE RT (hock
+I am a tesseract.
+A four dimensional
+container of learning
+am I.
+
+3D Space
+over time = 4D
+aka #stories — one sea time
+
+8-13-23 4:44 p
 
 ---
 
@@ -316,11 +323,14 @@ TE RT (hock
 [Image source](journals/umwelt/umwelt_83.png)
 
 ### Text
-nM
+information transmission
+
 emitter
-w ave S J
-a Se perceptron
-a 6. words
+waves
+receiver
+perceptron
+
+words
 
 ---
 
@@ -332,20 +342,25 @@ a 6. words
 [Image source](journals/umwelt/umwelt_84.png)
 
 ### Text
-RRO AE RO
-ce
-OMe ity
-(2) a re a a ra of TE ty
-Al ap a Migs be
-Pix t
-h OO
-nS ‘4
-hie i
-Means dD
-id Le
-hes as
-St an Bee
-Wy hyn
+Meaning and understanding
+are a paradox.
+Nothing means anything
+without understanding.
+(as I under/over stand it)
+
+Semantics, the (study of meaning),
+is like quantum entanglement...
+I don’t understand it.
+Because it cannot be understood,
+only inferred,
+logically,
+from a certain perspective.
+
+The concept of "understanding"
+cannot be understood...
+except from one’s own perspective.
+
+perspective
 
 ---
 
@@ -357,21 +372,12 @@ Wy hyn
 [Image source](journals/vectors/vectors_1.png)
 
 ### Text
-Buclt dean Spc Vectove
-Wor
-f a
-N an ti Cc
-5 S$ Fe
-Nie ie
-p aes
-tse
-ne Pe oe
-al
-AY MONIC
-Sonia text vey
-g the
-7 cosmii
-COSMIC
+Euclidean Space Vectors
+
+frequency harmonics
+sonic textures
+sensoring the
+cosmic buzz
 
 ---
 
@@ -383,9 +389,9 @@ COSMIC
 [Image source](journals/vectors/vectors_10.png)
 
 ### Text
+attention has
 a tension
-In
-Oro
+in it
 
 ---
 
@@ -397,24 +403,27 @@ Oro
 [Image source](journals/vectors/vectors_12.png)
 
 ### Text
-a mr (oe ave, and we EX PENIENCE
+We are, and we experience
 the paradox of particle/wave
-duality. We ave solick mattey
-made of a
-a a
-Waves ot
-photonic aS colors.
-Je Waves at
-sonoM as tones music,
+duality. We are solid matter
+made of particles, a person,
+a thing, a noun.
+
+We experience waves of
+photonic energy as colors.
+
+We experience waves of
+sononic energy as tones, music,
 and words.
-What our s;
-Mean Sounds
-OuSs de
-oO ind M
-al travelers of
-hd th
-Ql a CT
-pun
+
+What our sights and sounds
+mean to us depends on
+our individual perspective
+in space and time.
+
+We are all travelers of
+space and time in the
+galactic gyre.
 
 ---
 
@@ -426,24 +435,24 @@ pun
 [Image source](journals/vectors/vectors_16.png)
 
 ### Text
-Se C starlight 3
-my eve
-spooky action at aistance,
-of cons
-is 1S. oa
-and
-isalso ay
-1 ticle
-Ww Pa y A aN he
-EIN Tell cea
-ce
-when it stvike
-Maa 2 Cy
-me” bit ot (S
-aA chain veactin
-Mm a pattevn of
-thy the ce Sr ay
-oT My prain Feads
+From billions of years ago
+in a galaxy no longer there
+
+Starlight touches my eye
+in a weird,
+spooky action at a distance,
+quantum entanglement
+occurs.
+Light is a wave with frequency
+and amplitude.
+Light is also a particle,
+like a hailstone, when it strikes
+the “surface” of a molecule
+a bit of energy is released
+and a chain reaction
+lights a pattern of recognition
+upon the surface, the cerebral cortex
+of my brain reads “starlight”.
 
 ---
 
@@ -455,15 +464,14 @@ oT My prain Feads
 [Image source](journals/vectors/vectors_18.png)
 
 ### Text
-Ba T vemembkel and
-what G dont.
-NW get
+"I don't get to decide
+what I remember and
+what I don't.
+All I get to
 decide
 is what to decide
 about
-What L
-to
-es f
+what I remember."
 
 ---
 
@@ -475,24 +483,23 @@ es f
 [Image source](journals/vectors/vectors_2.png)
 
 ### Text
-Con Scious Be
-iS AwWave, Not a Particles Ov
-a Process, not a thing.
-WY
-story Wa
-tional
-Frame
-mpothetically...
+conscious experience
+is a wave, not a particle,
+a process, not a thing.
+
+our story → attentional frame → continued
+
+hypothetically...
 The process of experience
-can be described jn the
+can be described in the
 mathematical terms
 of a quantum wave function,
-Entanglement
-anda transform
-at the Frequency of
-attentional blink,
-dant
-rmMe 4
+entanglement,
+and a Fourier transform
+at the frequency of
+attentional blink.
+
+spacial events over time
 
 ---
 
@@ -504,20 +511,23 @@ rmMe 4
 [Image source](journals/vectors/vectors_21.png)
 
 ### Text
-(jntui tive hypothetical)
-E x penien ce
-1S the expNience.
-of throug ie
-perspective in Space,
-The AN data of
-the environ is
-into a disposition, a War
-of being the
-5 Con text And
-anol
-Be need
-bein
-doings
+(intuitive hypothetical)
+Conscious Experience
+is the experience
+of proceeding through
+time from a certain
+perspective in space.
+The sensory data of
+the environment is
+integrated
+into a disposition, a way
+of being given the
+organism's context and
+history
+and objective
+or need
+being
+doing
 
 ---
 
@@ -529,19 +539,21 @@ doings
 [Image source](journals/vectors/vectors_31.png)
 
 ### Text
-Me is wheve a person
-1S coming Lom
-Our wmotivat]
-ur motivation determing S
-anc where Wwe ave,
-rhe,
-the
-i AGA Motive
-of 3)
-[Passion oy oy; bein
-the experience of passton
-ANT
-W heve Fourier thou?
+Motive is where a person
+is coming from.
+
+motivating
+
+Our motivation determines
+where we are going
+and where we are.
+
+the idea of Passion
+the noun: Motive is a thing
+being motivated is verb-ing
+the experience of passion
+
+"Where Fourier art thou?"
 
 ---
 
@@ -554,16 +566,16 @@ W heve Fourier thou?
 
 ### Text
 A vector is how any thing
-mean S
-some
-Vectovs connect US O O
-iske the Force, but Vr
-VectoVS
-EEE
-From a
-Eucli dean
-Space Fourie
-vy
+means
+something.
+
+Vectors connect us
+like the Force, but non-fiction
+
+Vectors connect our ideas
+from a Euclidean space
+through a Fourier transform function()
+to our brains
 
 ---
 
@@ -575,18 +587,21 @@ vy
 [Image source](journals/vectors/vectors_38.png)
 
 ### Text
-hs humans we like +o imaging
-WR AV a
-ant Ww a ls
-fj a
-lt+isas rp when we
-U)e see
-Aiffevent.
-ee the same tvee, Out
-mek h ave
-and
-t an 4 of i
-So oe
+As humans, we like to imagine
+that we are different from
+animals.
+
+It is as if when we
+look at the same tree
+we see something
+different.
+
+It is the same tree, but
+we each have our own
+perceptions and understanding of it.
+
+Different, but maybe not
+so different after all.
 
 ---
 
@@ -598,14 +613,19 @@ So oe
 [Image source](journals/vectors/vectors_42.png)
 
 ### Text
-oS
-to my Space
-Phase lock A
+diagramming_my_algorithm(){
+(I'm waves and particles
+in time
+to my space)
+
+PLL
+Phase locked
 loop
-bs
-lake
-oS
-fan cinging the dance
+
+on my soul solstice
+I Am
+dancinging the dance of life
+tidal bulge
 
 ---
 
@@ -617,17 +637,19 @@ fan cinging the dance
 [Image source](journals/vectors/vectors_51.png)
 
 ### Text
-AM PROCESSING
-2 g DATA
-we:
-mo 4
-LOVE STORIES
-mat Ger
-thins
-(0 othe
-ya
-roost ae fy is
-J Coffee
+I AM NOT A thing
+I AM A process,
+a verb,
+a "be"-ing.
+
+I AM PROCESSING:
+① DATA
+② LOVE STORIES
+I do things with other beings.
+③ AIR
+I make stuff
+④ and food!
+coffee, alimentary canal
 
 ---
 
@@ -639,18 +661,17 @@ J Coffee
 [Image source](journals/vectors/vectors_6.png)
 
 ### Text
-YA kitten) SC were
-Oe Cay 60
-D Like an
-LO, Om] Loo 00
-6 Pattern S of
-SyM lod
-where Oecan be
-Say Thine and
-Can be any
-vero
-oO” Velations hip,
-Lv ar,
+“A kitten purrs.”
+“I like cats.”
+“I like cats and dogs.”
+
+6 patterns of
+symbolic logic
+where “O” can be
+any Thing and “_”
+can be any Edge,
+connection, feeling, verb
+or relationship.
 
 ---
 
@@ -662,22 +683,25 @@ Lv ar,
 [Image source](journals/vectors/vectors_78.png)
 
 ### Text
-mThe brain is a Storage
-SA Stoves Symbol 5.
-The nodes and ed aes that
-mm experiences of color and
-land touch Anand Polically
-Weurons Aa i
-[BA memorable moMent My 2
-er ae ASA ee
-wierd Wen NSF ON USS ed ind
-WHA ig what the mi Na took
-WER or Suri) zed in the electro-chemica
-vepresentations of the
-nf |i li Ke read fi
-Ps
-4 m WH PAT throu ah
-Bb the nodes and edae S
+The brain is a storage framework.
+It stores symbols.
+The nodes and edges that comprise
+experiences of color and sound
+and touch and smell, symbolically
+represented in neurons and
+dendrites.
+
+A memorable moment
+is what the mind took away,
+or surmised, in the electro-chemical
+symbolic representations of the
+brain.
+
+The things and relationships
+are followed, like reading
+a path through
+the nodes and edges of
+memory.
 
 ---
 
@@ -689,16 +713,26 @@ Bb the nodes and edae S
 [Image source](journals/vectors/vectors_84.png)
 
 ### Text
-Wii Experience 15 a feeling.
-a That is the Feeling of
-th my observable
-ancient the stan if
-two oF more of us observe
-it in tre same instant, then
-tt will have the same Polarity,
-ret v neaative
-S [2 Positive ‘it
-7 Space, From an anctel\ 8 aa
+Experience is a feeling.
+That is the feeling of
+quantum entanglement
+with my observable universe.
+
+A bit of energy is transferred
+instantly from the star,
+to my eye, as I observe it.
+
+The energy is either positive (+)
+or negative (-).
+
+No matter how far or
+ancient the star, if
+two or more of us observe
+it in the same instant, then
+it will have the same polarity,
+positive or negative.
+Transferred across a vast
+space, from an ancient time.
 
 ---
 
@@ -710,30 +744,12 @@ S [2 Positive ‘it
 [Image source](journals/vectors/vectors_9.png)
 
 ### Text
-i wee gh bres “i 4
-REE sa 1 con Leer y
-i AN ds
-is aioe AG g a
-aCe lousness iS Not
-Re
-xt 2 wy
-A (re a Ae
-Pra A aw, A Sars
-ere ee
-ee pes 4 wy? a
-g's al yo Presa 4 ah:
-ry ug?
-Stet vi hy Sa
-mies y
-7 nd ae My
-og
-ene mo) 4
-Mes ese vas Vou
-ET af Med a iy Tha a ip Vere. 3
-ES ae re
-for Nel Nea
-Lakes sea Le ae
-ee ga
+Consciousness is not
+a thing, like a ghost,
+it is a process,
+like a song
+or a wave,
+a feeling.
 
 ---
 
@@ -745,30 +761,34 @@ ee ga
 [Image source](journals/waves/waves_107.png)
 
 ### Text
-aw ov QO
-Kn Y lire 5...
-ame graphs Know your parts fala 4 ees
-i| MA.
-Altgn ouy-, molecul WO) ee” y Lh ae,
-eS ee. Went places
-are Poy
-yesPonse as ae Be ay sip
-Cee 7 iL Ye]
-i ee 5) ere im NX ee
-0 Ae
-ee RR tp Scots ee
-a he tight. no
-CO
-f Each ove
-a stom,
-or oe Uf Ever: rae
-etal
-birth some
-es
-per cite
-intent
-ve n dayS Are TA
-ee
+Know your graphs. Know your parts.
+Align your molecules.
+
+Story of my life so far...
+triggering a biological response as
+water is flushed from the cells
+around the eyeballs.
+
+I went places and had experiences.
+Now I'm here.
+
+longitude / latitude / metasphere
+All the metadata in scope for this perspective.
+
+All possible human feelings that have ever been
+felt in the history of Earth, and
+the present feelings of each person on
+Earth right now can be represented.
+
+Everything on Earth has been felt,
+experienced, happened.
+3600 DOF of intent for n days
+(story of my life... so far)
+
+Each one is a unique story,
+beginning in a birth somewhere,
+a unique combination of perspectives,
+then the disintegration of that unique community of cells.
 
 ---
 
@@ -780,20 +800,28 @@ ee
 [Image source](journals/waves/waves_113.png)
 
 ### Text
-He
-eoretical oo Ty. q a
-Fats
-ae
-and fine
-cine
-thw a of
-META 0
-0-0 The true story of
-What events:
-Our treatmend of others
-oe
-of ony. experience
-wt
+Theoretical Factual
+accounting for semantic facts
+
+A -because→ B
+FuncY()
+FuncX()
+a signature phrase
+binding space(Y) and time(X)
+(wave function)
+in a carrier wave of
+meta information
+predictive analytics
+
+seeking signal harmony or resonance or resolution
+
+The true story of
+what events happened,
+our treatment of others
+over time, carries the
+meaning of our experience.
+And is our predictor of
+future performance.
 
 ---
 
@@ -805,12 +833,19 @@ wt
 [Image source](journals/waves/waves_149.png)
 
 ### Text
-ot)
-ag.
-ee
-io ere...
-ea ee
-ccc err. Me NZ
+Recognise and represent
+
+schema          function
+wavestate       resonance
+plot            story
+idea/concept    verb/intent
+object          vector
+
+Beat — arrow of time
+ocean of waves and the dawn of everything
+confliction
+Dance
+wheel of time
 
 ---
 
@@ -822,30 +857,47 @@ ccc err. Me NZ
 [Image source](journals/waves/waves_15.png)
 
 ### Text
-Oa ee ve re
-From my perspective oe tind tat
-perspective in this moment in HME at Peery ae
-ee oe y mewo IS persist
-heve on Barth Stay through the
-i, a straw er made when L ol av;
-OF Ova letter th
-potnt on the ma? in my lights up. tele Scope eyes ansthev The story
-euron 5 comect, via ae phetohic the
-quanti realy, vierdly the Star and I, In. 2.02.2. Fhe profound
-that _seemeimpossible,
-LO hes L observe the eee now seem
-TAG ey
-Pe Cosmic ell:
-ee onthe weve
-en 5
-eee tn
-record entanalementS. ve Guy bis. Wbeve anciencent ii ht, billims
-LT ama com CA Pie a:
-So. 7
-Re 1 on
-wry ar wave and OM Favtht
-nase 6 i} eS GE
-This OCT nerdy, AN SE i
+I'm collecting data.
+
+From my perspective
+I am a perspective in this moment in time
+here on Earth.
+
+I look at a star.
+A point on the map in my mind lights up.
+Bioluminescent neurons connect, via photonic energy,
+the quantum realm, wierdly entangling the star and I.
+
+I'm collecting data on the universe, the world around me,
+and my own breath.
+
+The data record persists as wierd entanglements.
+I am a quantum computer.
+
+I look up at the stars and I see them,
+from my perspective.
+This act of observation wierdly entangles us
+through space and time.
+
+I observed it. I'm collecting data.
+
+My memory is persisted objectively in the quantum entanglement
+made when I observe a star, or a letter in a shoebox,
+the eyes of another.
+The story of my life so far is written on the Earth
+and in the starlight I've observed.
+
+The profound coincidences that seemed impossible
+now seem plausible.
+
+In light of the Cosmic Bell Experiments,
+where ancient light, billions of years old,
+wierdly entangled with observation points on Earth.
+
+looking at a star through a straw or maybe a telescope
+In 2022 bioluminescent neurons were discovered in our brains.
+Our brains light up.
+Light is a wave and energy, and a quantum particle.
 
 ---
 
@@ -857,12 +909,13 @@ This OCT nerdy, AN SE i
 [Image source](journals/waves/waves_151.png)
 
 ### Text
-brace
-what doing whee Ty:
-hoe what In a
-Not “gust a feeling” iF is. “move
-Feelings” are not just another thindy They ere
-thing ot all. They connect EO a
+The objective is not
+what I'm doing, it's where I'm
+going. See what I'm doing
+there?
+Not “just a feeling” it is “more than a feeling.”
+“Feelings” are not just another thing. They are
+not a thing at all. They connect everything.
 
 ---
 
@@ -874,12 +927,21 @@ thing ot all. They connect EO a
 [Image source](journals/waves/waves_152.png)
 
 ### Text
-SE
-my which cor
-A place to hola on ae
-w@an todo 7
-ESD inte
-eee tm
+Consciousness is a container
+for my intention, which is a container for
+my attention.
+A place to hold on to
+what I mean to do.
+
+processing sensory info
+into motivational
+actuation.
+
+I'm bound to
+go where
+I'm thinking.
+A song
+in a jar.
 
 ---
 
@@ -891,16 +953,21 @@ eee tm
 [Image source](journals/waves/waves_154.png)
 
 ### Text
-ae
-yn our relationships
-people aids
-ee er AL,
-ee eS,
-OR they
-connect.
-ins things,
-NOUNS
-EE aS ee
+Harmony and resonance
+
+In our relationships
+Our activities
+Our plans
+Our music
+
+"Semantics," what things
+mean in communication
+between people and
+or AI,
+is in the verbs,
+in how they connect
+the things,
+the nouns.
 
 ---
 
@@ -912,27 +979,45 @@ EE aS ee
 [Image source](journals/waves/waves_155.png)
 
 ### Text
-the Lea Bron The Sen OF
-AN.
-obgecy abe ORGS Ba ae
-principle of division for Pegi
-WM
-YY transformed tine ees ye.
-er
-function Bt Grecdic te k
-Onde act) (Predicate)
-Oe fee rangement ot
-GDF pied
-ee “are Converaent with
-be special Language Theoretically ls
-MGS pate, tka Dear
-sada Peo
-upon. a 4 ao yintention. 2
-(Uff a rn
-on Wars et
-a Gates Agel SA CE
-Less te
-etc tor
+The Log From the Sea of Cortez
+subject object standing wave
+
+“The meeting of two personalities is like
+the contact of two chemical substances —
+both are transformed.”
+
+Verbs: function, movement, feeling, relationship, vector, predicate
+
+the context is a special kind of verb phrase, like
+“Once upon a time”
+
+Natural Language Understanding
+
+---
+
+Vectoring
+“Verbing” is a theoretical model,
+is a principle of division for language ontologies.
+
+Objectively, as a process, language is divided into
+noun phrases and verb phrases.
+The subject, predicate, object logical
+arrangement of RDF syntax and English
+are convergent with this model.
+Theoretically this models our cognition,
+symbolically our own.
+How we formulate meaning in intention.
+Phrase segments describe
+story progression. These are the vectors or verbs.
+Verbs are recognised from a taxonomy of
+synonyms and a dictionary of regular
+encoding, morphological.
+Content encoding — life bullets and line
+breaks are interpreted as verbs.
+
+Applications:
+① Natural Language Understanding
+② Topic Summarization
 
 ---
 
@@ -944,16 +1029,32 @@ etc tor
 [Image source](journals/waves/waves_159.png)
 
 ### Text
-Semantic
-say Ce
-COSMIC
-[eee ee
-the ore
-as Aly?
-civeulated in the horizon, et WA
-my whet
-go wit the people and ae
-eee S SPACE
+Semantic Wheel
+
+My story is a
+standing wave.
+The ripple on
+the cosmic pond
+tracing the one drop
+that's me.
+
+my time on earth
+
+The water of my body,
+before it was me,
+circulated in the
+ancient oceans of
+Earth.
+
+Winter / Spring / Summer / Fall
+N / E / S / W
+sunset / sunrise
+horizon → time → height
+story arc V1, V2, V3
+
+My story is told in my intentions, what I do,
+and where I go with the people and beings
+of this time and space.
 
 ---
 
@@ -965,30 +1066,33 @@ eee S SPACE
 [Image source](journals/waves/waves_8.png)
 
 ### Text
-Human
-Origami The Cereb ra
-the surface;
-Miura Fold Similarly deeply
-ge
-COR Arey
-wy a
-(Y) ae ylamals have smooth and
-bral ie.
-MG grown
-oe La round ADS? mayne,
-ear New things sists ot
-updating, repair ne, replacina, and
-Se
-What Cer
-Thy rs ike. ow map of every
-ow. L So Lan,
-lt is limited bY the INS
-of the hard Wave, but it isnt
-only, hes cab any ths minds
-NLP Neural Proarammi nd ANAS tha Move
-and
-Coanitivé Behavioral Thevapy/ tore ave
-Lov ve wi ing vane?
+Origami                Human
+Miura Fold             The Cerebral Cortex,
+                       the surface, is
+                       similarly deeply
+                       folded to create greater
+                       surface area in
+                       the same space.
+
+Many mammals have smooth brains and correspondingly
+smaller cerebral cortexes.
+As a human, the surface area is grown, the brain is
+fully around 25; maybe.
+
+Now, learning new things consists of appending,
+updating, repairing, replacing, and adding
+what I know.
+
+My cerebral cortex is like a map of everything
+I know... so far.
+It is limited by the specifications
+of the hardware, but it isn't read-only;
+you can rewrite anything in your mind.
+
+NLP Neural Linguistic Programming and the more
+developed and more truly established CBT
+Cognitive Behavioral Therapy — those are
+strategies for reprogramming your brain with your mind.
 
 ---
 
@@ -1000,13 +1104,20 @@ Lov ve wi ing vane?
 [Image source](journals/waves/waves_88.png)
 
 ### Text
-i mother
-Nl CAR AR
-Ar the
-AD inothor BS FI
-cH ay
-Fe ‘VG Go 2 SS ica
-GAA
-gg OG
+Story of A1, mother to B2 and C3, two children.
+
+"Story of A1, mother to two children B2 and C3"
+
+At the heart of Semantics is the relation.
+
+vanishing point
+
+"actual time"
+
+Chronologically Sequenced.
+A relatively objective theory/panorama.
+All the data graphs that mean anything,
+by my perspective.
+0=0...2023
 
 ---
