@@ -81,7 +81,7 @@ The world is round.
 Facts are things which can be true or false, mathematically.
 The proof depends on semantics.
 Semantics, the meaning, depends on the point of view, which direction are you coming from?
-Facts depend on "Umwelt", the perceived world that bounds what exists for you, the perceptive system.
+Facts depend on "[Umwelt](#umwelt-84)", the perceived world that bounds what exists for you, the perceptive system.
 
 ---
 
@@ -101,7 +101,7 @@ Parse the summary meaning as a sparse matrix.
 Meaning cuts through a landscape of perils and false paths.
 
 Perspective.
-Semantic compass.
+[Semantic compass](#umwelt-84).
 Intent or purpose.
 Perspective.
 
@@ -123,7 +123,7 @@ start -> stop.
 
 2) The time box, or time frame.
 
-3) The time cycle:
+3) The [time cycle](#waves-159):
 repeating circle, which repeats itself again and again and again.
 
 ---
@@ -174,17 +174,17 @@ The fabric of Meaning
 is a weave of two
 elemental forms of
 existence: ①the things or
-nouns and ②the verbs or
+[nouns](#vectors-6) and ②the [verbs](#waves-155) or
 actions and relationships
 which connect the things.
 
 noun "I" → verb "can run" → home. circles. the machine.
 
-this is the Semantic Bit
+this is the [Semantic Bit](#sbt-17)
 
 The semantic bit
 ascribes meaning through
-adding a dimension of time.
+adding a [dimension of time](#timex3).
 
 ---
 
@@ -199,7 +199,7 @@ adding a dimension of time.
 A semantic bit is an element of
 symbolic logic, "→".
 It can be mathematically
-represented as a vector,
+represented as a [vector](#vectors-32),
 a transitional edge in
 3 dimensional space.
 
@@ -232,9 +232,9 @@ a specific flow
 of electrons.
 LED
 
-Thing 'relates to' Another Thing
+Thing '[relates to](#waves-155)' Another Thing
 Noun   verb   Noun
-Concept Vector Concept
+[Concept Vector Concept](#sbt-17)
 
 this is part of that
 this is one of those
@@ -253,9 +253,9 @@ this came from that
 ### Text
 The story of my life
 so far
-is a constellation
+is a [constellation](#waves-159)
 of events
-over time at different scales.
+over time at [different scales](#waves-107).
 
 actual size — micro scope size — atomic scale
 
@@ -280,14 +280,14 @@ because something
 is happening.
 
 At the essence of meaning
-is the progress of time.
+is the [progress of time](#timex3).
 
 What is at stake from
 this moment
 to the next
 is the exchange
 of potentials,
-the semantic bits.
+the [semantic bits](#sbt-1).
 
 It means what it means
 to me.
@@ -308,8 +308,8 @@ container of learning
 am I.
 
 3D Space
-over time = 4D
-aka #stories — one sea time
+over time = [4D](#timex3)
+aka [#stories](#sbt-23) — one sea time
 
 8-13-23 4:44 p
 
@@ -323,14 +323,14 @@ aka #stories — one sea time
 [Image source](journals/umwelt/umwelt_83.png)
 
 ### Text
-information transmission
+[information transmission](#vectors-12)
 
 emitter
 waves
 receiver
 perceptron
 
-words
+[words](#waves-154)
 
 ---
 
@@ -348,13 +348,13 @@ Nothing means anything
 without understanding.
 (as I under/over stand it)
 
-Semantics, the (study of meaning),
-is like quantum entanglement...
+[Semantics](#sbt-1), the (study of meaning),
+is like [quantum entanglement](#vectors-16)...
 I don’t understand it.
 Because it cannot be understood,
 only inferred,
 logically,
-from a certain perspective.
+from a certain [perspective](#fishbowl).
 
 The concept of "understanding"
 cannot be understood...
@@ -372,7 +372,7 @@ perspective
 [Image source](journals/vectors/vectors_1.png)
 
 ### Text
-Euclidean Space Vectors
+[Euclidean Space Vectors](#vectors-32)
 
 frequency harmonics
 sonic textures
@@ -389,7 +389,7 @@ cosmic buzz
 [Image source](journals/vectors/vectors_10.png)
 
 ### Text
-attention has
+[attention](#vectors-2) has
 a tension
 in it
 
@@ -404,13 +404,13 @@ in it
 
 ### Text
 We are, and we experience
-the paradox of particle/wave
+the paradox of [particle/wave](#vectors-2)
 duality. We are solid matter
 made of particles, a person,
 a thing, a noun.
 
 We experience waves of
-photonic energy as colors.
+[photonic energy](#vectors-16) as colors.
 
 We experience waves of
 sononic energy as tones, music,
@@ -423,7 +423,7 @@ in space and time.
 
 We are all travelers of
 space and time in the
-galactic gyre.
+[galactic gyre](#waves-159).
 
 ---
 
@@ -441,7 +441,7 @@ in a galaxy no longer there
 Starlight touches my eye
 in a weird,
 spooky action at a distance,
-quantum entanglement
+[quantum entanglement](#vectors-84)
 occurs.
 Light is a wave with frequency
 and amplitude.
@@ -451,7 +451,7 @@ the “surface” of a molecule
 a bit of energy is released
 and a chain reaction
 lights a pattern of recognition
-upon the surface, the cerebral cortex
+upon the surface, the [cerebral cortex](#waves-8)
 of my brain reads “starlight”.
 
 ---
@@ -465,7 +465,7 @@ of my brain reads “starlight”.
 
 ### Text
 "I don't get to decide
-what I remember and
+what I [remember](#vectors-78) and
 what I don't.
 All I get to
 decide
@@ -484,7 +484,7 @@ what I remember."
 
 ### Text
 conscious experience
-is a wave, not a particle,
+is a [wave, not a particle](#vectors-9),
 a process, not a thing.
 
 our story → attentional frame → continued
@@ -495,9 +495,9 @@ can be described in the
 mathematical terms
 of a quantum wave function,
 entanglement,
-and a Fourier transform
+and a [Fourier transform](#vectors-32)
 at the frequency of
-attentional blink.
+[attentional blink](#vectors-10).
 
 spacial events over time
 
@@ -516,8 +516,8 @@ Conscious Experience
 is the experience
 of proceeding through
 time from a certain
-perspective in space.
-The sensory data of
+[perspective](#fishbowl) in space.
+The [sensory data](#umwelt-83) of
 the environment is
 integrated
 into a disposition, a way
@@ -553,7 +553,7 @@ the noun: Motive is a thing
 being motivated is verb-ing
 the experience of passion
 
-"Where Fourier art thou?"
+"Where [Fourier](#vectors-32) art thou?"
 
 ---
 
@@ -565,7 +565,7 @@ the experience of passion
 [Image source](journals/vectors/vectors_32.png)
 
 ### Text
-A vector is how any thing
+A [vector](#sbt-17) is how any thing
 means
 something.
 
@@ -574,8 +574,8 @@ like the Force, but non-fiction
 
 Vectors connect our ideas
 from a Euclidean space
-through a Fourier transform function()
-to our brains
+through a [Fourier transform](#vectors-31) function()
+to our [brains](#vectors-78)
 
 ---
 
@@ -598,7 +598,7 @@ different.
 
 It is the same tree, but
 we each have our own
-perceptions and understanding of it.
+[perceptions](#umwelt-84) and understanding of it.
 
 Different, but maybe not
 so different after all.
@@ -614,7 +614,7 @@ so different after all.
 
 ### Text
 diagramming_my_algorithm(){
-(I'm waves and particles
+(I'm [waves and particles](#vectors-12)
 in time
 to my space)
 
@@ -637,8 +637,8 @@ tidal bulge
 [Image source](journals/vectors/vectors_51.png)
 
 ### Text
-I AM NOT A thing
-I AM A process,
+I AM NOT A [thing](#vectors-9)
+I AM A [process](#vectors-2),
 a verb,
 a "be"-ing.
 
@@ -668,9 +668,9 @@ coffee, alimentary canal
 6 patterns of
 symbolic logic
 where “O” can be
-any Thing and “_”
-can be any Edge,
-connection, feeling, verb
+any [Thing](#sbt-1) and “_”
+can be any [Edge](#sbt-17),
+connection, feeling, [verb](#waves-155)
 or relationship.
 
 ---
@@ -683,9 +683,9 @@ or relationship.
 [Image source](journals/vectors/vectors_78.png)
 
 ### Text
-The brain is a storage framework.
+The [brain](#waves-8) is a storage framework.
 It stores symbols.
-The nodes and edges that comprise
+The [nodes and edges](#sbt-19) that comprise
 experiences of color and sound
 and touch and smell, symbolically
 represented in neurons and
@@ -713,9 +713,9 @@ memory.
 [Image source](journals/vectors/vectors_84.png)
 
 ### Text
-Experience is a feeling.
+[Experience is a feeling](#vectors-9).
 That is the feeling of
-quantum entanglement
+[quantum entanglement](#waves-15)
 with my observable universe.
 
 A bit of energy is transferred
@@ -746,10 +746,10 @@ space, from an ancient time.
 ### Text
 Consciousness is not
 a thing, like a ghost,
-it is a process,
+it is a [process](#vectors-2),
 like a song
 or a wave,
-a feeling.
+a [feeling](#vectors-84).
 
 ---
 
@@ -764,7 +764,7 @@ a feeling.
 Know your graphs. Know your parts.
 Align your molecules.
 
-Story of my life so far...
+[Story of my life so far...](#sbt-23)
 triggering a biological response as
 water is flushed from the cells
 around the eyeballs.
@@ -801,7 +801,7 @@ then the disintegration of that unique community of cells.
 
 ### Text
 Theoretical Factual
-accounting for semantic facts
+accounting for [semantic facts](#sbt-1)
 
 A -because→ B
 FuncY()
@@ -819,7 +819,7 @@ The true story of
 what events happened,
 our treatment of others
 over time, carries the
-meaning of our experience.
+[meaning of our experience](#sbt-5).
 And is our predictor of
 future performance.
 
@@ -839,13 +839,13 @@ schema          function
 wavestate       resonance
 plot            story
 idea/concept    verb/intent
-object          vector
+object          [vector](#vectors-32)
 
 Beat — arrow of time
 ocean of waves and the dawn of everything
 confliction
 Dance
-wheel of time
+[wheel of time](#waves-159)
 
 ---
 
@@ -871,8 +871,8 @@ the quantum realm, wierdly entangling the star and I.
 I'm collecting data on the universe, the world around me,
 and my own breath.
 
-The data record persists as wierd entanglements.
-I am a quantum computer.
+The data record persists as wierd [entanglements](#vectors-84).
+I am a [quantum computer](#vectors-42).
 
 I look up at the stars and I see them,
 from my perspective.
@@ -881,7 +881,7 @@ through space and time.
 
 I observed it. I'm collecting data.
 
-My memory is persisted objectively in the quantum entanglement
+My [memory](#vectors-78) is persisted objectively in the [quantum entanglement](#vectors-84)
 made when I observe a star, or a letter in a shoebox,
 the eyes of another.
 The story of my life so far is written on the Earth
@@ -914,7 +914,7 @@ what I'm doing, it's where I'm
 going. See what I'm doing
 there?
 Not “just a feeling” it is “more than a feeling.”
-“Feelings” are not just another thing. They are
+“[Feelings](#waves-154)” are not just another thing. They are
 not a thing at all. They connect everything.
 
 ---
@@ -928,8 +928,8 @@ not a thing at all. They connect everything.
 
 ### Text
 Consciousness is a container
-for my intention, which is a container for
-my attention.
+for my [intention](#vectors-31), which is a container for
+my [attention](#vectors-10).
 A place to hold on to
 what I mean to do.
 
@@ -953,14 +953,14 @@ in a jar.
 [Image source](journals/waves/waves_154.png)
 
 ### Text
-Harmony and resonance
+[Harmony and resonance](#waves-113)
 
 In our relationships
 Our activities
 Our plans
 Our music
 
-"Semantics," what things
+"[Semantics](#waves-155)," what things
 mean in communication
 between people and
 or AI,
@@ -996,11 +996,11 @@ Natural Language Understanding
 ---
 
 Vectoring
-“Verbing” is a theoretical model,
+“[Verbing](#sbt-1)” is a theoretical model,
 is a principle of division for language ontologies.
 
 Objectively, as a process, language is divided into
-noun phrases and verb phrases.
+[noun phrases and verb phrases](#vectors-6).
 The subject, predicate, object logical
 arrangement of RDF syntax and English
 are convergent with this model.
@@ -1008,7 +1008,7 @@ Theoretically this models our cognition,
 symbolically our own.
 How we formulate meaning in intention.
 Phrase segments describe
-story progression. These are the vectors or verbs.
+story progression. These are the [vectors or verbs](#sbt-17).
 Verbs are recognised from a taxonomy of
 synonyms and a dictionary of regular
 encoding, morphological.
@@ -1031,8 +1031,8 @@ Applications:
 ### Text
 Semantic Wheel
 
-My story is a
-standing wave.
+My [story](#sbt-23) is a
+[standing wave](#vectors-9).
 The ripple on
 the cosmic pond
 tracing the one drop
@@ -1067,7 +1067,7 @@ of this time and space.
 
 ### Text
 Origami                Human
-Miura Fold             The Cerebral Cortex,
+Miura Fold             The [Cerebral Cortex](#vectors-78),
                        the surface, is
                        similarly deeply
                        folded to create greater
@@ -1089,7 +1089,7 @@ It is limited by the specifications
 of the hardware, but it isn't read-only;
 you can rewrite anything in your mind.
 
-NLP Neural Linguistic Programming and the more
+[NLP](#waves-155) Neural Linguistic Programming and the more
 developed and more truly established CBT
 Cognitive Behavioral Therapy — those are
 strategies for reprogramming your brain with your mind.
@@ -1108,7 +1108,7 @@ Story of A1, mother to B2 and C3, two children.
 
 "Story of A1, mother to two children B2 and C3"
 
-At the heart of Semantics is the relation.
+At the heart of [Semantics](#sbt-1) is the [relation](#waves-154).
 
 vanishing point
 
