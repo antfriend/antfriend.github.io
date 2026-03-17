@@ -143,9 +143,6 @@ Its a sleestack.
 ## Projects Horn Grill
 ![Projects Horn Grill](journals/projects/projects_horn_grill.png)
 
-[Image source](journals/projects/projects_horn_grill.png)
-
-### Text
 _No clear OCR text detected._
 
 ---
@@ -155,9 +152,6 @@ _No clear OCR text detected._
 ## Spatula
 ![Spatula](journals/robots/Spatula.png)
 
-[Image source](journals/robots/Spatula.png)
-
-### Text
 I ❤ U GUYS
 
 ---
@@ -167,9 +161,6 @@ I ❤ U GUYS
 ## Sbt 1
 ![Sbt 1](journals/sbt/sbt_1.png)
 
-[Image source](journals/sbt/sbt_1.png)
-
-### Text
 The fabric of Meaning
 is a weave of two
 elemental forms of
@@ -193,9 +184,6 @@ adding a [dimension of time](#timex3).
 ## Sbt 17
 ![Sbt 17](journals/sbt/sbt_17.png)
 
-[Image source](journals/sbt/sbt_17.png)
-
-### Text
 A semantic bit is an element of
 symbolic logic, "→".
 It can be mathematically
@@ -220,9 +208,6 @@ by the events which have shaped it.
 ## Sbt 19
 ![Sbt 19](journals/sbt/sbt_19.png)
 
-[Image source](journals/sbt/sbt_19.png)
-
-### Text
 It turns out we can represent
 everything in our experience.
 A Vector encoded. Contents original.
@@ -248,9 +233,6 @@ this came from that
 ## Sbt 23
 ![Sbt 23](journals/sbt/sbt_23.png)
 
-[Image source](journals/sbt/sbt_23.png)
-
-### Text
 The story of my life
 so far
 is a [constellation](#waves-159)
@@ -270,9 +252,6 @@ molecules / cells
 ## Sbt 5
 ![Sbt 5](journals/sbt/sbt_5.png)
 
-[Image source](journals/sbt/sbt_5.png)
-
-### Text
 "Something is coming."
 It means
 what it means
@@ -299,9 +278,6 @@ to me.
 ## Umwelt 75
 ![Umwelt 75](journals/umwelt/umwelt_75.png)
 
-[Image source](journals/umwelt/umwelt_75.png)
-
-### Text
 I am a tesseract.
 A four dimensional
 container of learning
@@ -320,9 +296,6 @@ aka [#stories](#sbt-23) — one sea time
 ## Umwelt 83
 ![Umwelt 83](journals/umwelt/umwelt_83.png)
 
-[Image source](journals/umwelt/umwelt_83.png)
-
-### Text
 [information transmission](#vectors-12)
 
 emitter
@@ -339,9 +312,6 @@ perceptron
 ## Umwelt 84
 ![Umwelt 84](journals/umwelt/umwelt_84.png)
 
-[Image source](journals/umwelt/umwelt_84.png)
-
-### Text
 Meaning and understanding
 are a paradox.
 Nothing means anything
@@ -369,9 +339,6 @@ perspective
 ## Vectors 1
 ![Vectors 1](journals/vectors/vectors_1.png)
 
-[Image source](journals/vectors/vectors_1.png)
-
-### Text
 [Euclidean Space Vectors](#vectors-32)
 
 frequency harmonics
@@ -386,9 +353,6 @@ cosmic buzz
 ## Vectors 10
 ![Vectors 10](journals/vectors/vectors_10.png)
 
-[Image source](journals/vectors/vectors_10.png)
-
-### Text
 [attention](#vectors-2) has
 a tension
 in it
@@ -400,9 +364,6 @@ in it
 ## Vectors 12
 ![Vectors 12](journals/vectors/vectors_12.png)
 
-[Image source](journals/vectors/vectors_12.png)
-
-### Text
 We are, and we experience
 the paradox of [particle/wave](#vectors-2)
 duality. We are solid matter
@@ -432,9 +393,6 @@ space and time in the
 ## Vectors 16
 ![Vectors 16](journals/vectors/vectors_16.png)
 
-[Image source](journals/vectors/vectors_16.png)
-
-### Text
 From billions of years ago
 in a galaxy no longer there
 
@@ -461,9 +419,6 @@ of my brain reads “starlight”.
 ## Vectors 18
 ![Vectors 18](journals/vectors/vectors_18.png)
 
-[Image source](journals/vectors/vectors_18.png)
-
-### Text
 "I don't get to decide
 what I [remember](#vectors-78) and
 what I don't.
@@ -480,9 +435,6 @@ what I remember."
 ## Vectors 2
 ![Vectors 2](journals/vectors/vectors_2.png)
 
-[Image source](journals/vectors/vectors_2.png)
-
-### Text
 conscious experience
 is a [wave, not a particle](#vectors-9),
 a process, not a thing.
@@ -508,9 +460,6 @@ spacial events over time
 ## Vectors 21
 ![Vectors 21](journals/vectors/vectors_21.png)
 
-[Image source](journals/vectors/vectors_21.png)
-
-### Text
 (intuitive hypothetical)
 Conscious Experience
 is the experience
@@ -536,9 +485,6 @@ doing
 ## Vectors 31
 ![Vectors 31](journals/vectors/vectors_31.png)
 
-[Image source](journals/vectors/vectors_31.png)
-
-### Text
 Motive is where a person
 is coming from.
 
@@ -562,9 +508,6 @@ the experience of passion
 ## Vectors 32
 ![Vectors 32](journals/vectors/vectors_32.png)
 
-[Image source](journals/vectors/vectors_32.png)
-
-### Text
 A [vector](#sbt-17) is how any thing
 means
 something.
@@ -584,9 +527,6 @@ to our [brains](#vectors-78)
 ## Vectors 38
 ![Vectors 38](journals/vectors/vectors_38.png)
 
-[Image source](journals/vectors/vectors_38.png)
-
-### Text
 As humans, we like to imagine
 that we are different from
 animals.
@@ -610,9 +550,6 @@ so different after all.
 ## Vectors 42
 ![Vectors 42](journals/vectors/vectors_42.png)
 
-[Image source](journals/vectors/vectors_42.png)
-
-### Text
 diagramming_my_algorithm(){
 (I'm [waves and particles](#vectors-12)
 in time
@@ -634,9 +571,6 @@ tidal bulge
 ## Vectors 51
 ![Vectors 51](journals/vectors/vectors_51.png)
 
-[Image source](journals/vectors/vectors_51.png)
-
-### Text
 I AM NOT A [thing](#vectors-9)
 I AM A [process](#vectors-2),
 a verb,
@@ -658,9 +592,6 @@ coffee, alimentary canal
 ## Vectors 6
 ![Vectors 6](journals/vectors/vectors_6.png)
 
-[Image source](journals/vectors/vectors_6.png)
-
-### Text
 “A kitten purrs.”
 “I like cats.”
 “I like cats and dogs.”
@@ -680,9 +611,6 @@ or relationship.
 ## Vectors 78
 ![Vectors 78](journals/vectors/vectors_78.png)
 
-[Image source](journals/vectors/vectors_78.png)
-
-### Text
 The [brain](#waves-8) is a storage framework.
 It stores symbols.
 The [nodes and edges](#sbt-19) that comprise
@@ -710,9 +638,6 @@ memory.
 ## Vectors 84
 ![Vectors 84](journals/vectors/vectors_84.png)
 
-[Image source](journals/vectors/vectors_84.png)
-
-### Text
 [Experience is a feeling](#vectors-9).
 That is the feeling of
 [quantum entanglement](#waves-15)
@@ -741,9 +666,6 @@ space, from an ancient time.
 ## Vectors 9
 ![Vectors 9](journals/vectors/vectors_9.png)
 
-[Image source](journals/vectors/vectors_9.png)
-
-### Text
 Consciousness is not
 a thing, like a ghost,
 it is a [process](#vectors-2),
@@ -758,9 +680,6 @@ a [feeling](#vectors-84).
 ## Waves 107
 ![Waves 107](journals/waves/waves_107.png)
 
-[Image source](journals/waves/waves_107.png)
-
-### Text
 Know your graphs. Know your parts.
 Align your molecules.
 
@@ -797,9 +716,6 @@ then the disintegration of that unique community of cells.
 ## Waves 113
 ![Waves 113](journals/waves/waves_113.png)
 
-[Image source](journals/waves/waves_113.png)
-
-### Text
 Theoretical Factual
 accounting for [semantic facts](#sbt-1)
 
@@ -830,9 +746,6 @@ future performance.
 ## Waves 149
 ![Waves 149](journals/waves/waves_149.png)
 
-[Image source](journals/waves/waves_149.png)
-
-### Text
 Recognise and represent
 
 schema          function
@@ -854,9 +767,6 @@ Dance
 ## Waves 15
 ![Waves 15](journals/waves/waves_15.png)
 
-[Image source](journals/waves/waves_15.png)
-
-### Text
 I'm collecting data.
 
 From my perspective
@@ -906,9 +816,6 @@ Light is a wave and energy, and a quantum particle.
 ## Waves 151
 ![Waves 151](journals/waves/waves_151.png)
 
-[Image source](journals/waves/waves_151.png)
-
-### Text
 The objective is not
 what I'm doing, it's where I'm
 going. See what I'm doing
@@ -924,9 +831,6 @@ not a thing at all. They connect everything.
 ## Waves 152
 ![Waves 152](journals/waves/waves_152.png)
 
-[Image source](journals/waves/waves_152.png)
-
-### Text
 Consciousness is a container
 for my [intention](#vectors-31), which is a container for
 my [attention](#vectors-10).
@@ -950,9 +854,6 @@ in a jar.
 ## Waves 154
 ![Waves 154](journals/waves/waves_154.png)
 
-[Image source](journals/waves/waves_154.png)
-
-### Text
 [Harmony and resonance](#waves-113)
 
 In our relationships
@@ -976,9 +877,6 @@ the nouns.
 ## Waves 155
 ![Waves 155](journals/waves/waves_155.png)
 
-[Image source](journals/waves/waves_155.png)
-
-### Text
 The Log From the Sea of Cortez
 subject object standing wave
 
@@ -1026,9 +924,6 @@ Applications:
 ## Waves 159
 ![Waves 159](journals/waves/waves_159.png)
 
-[Image source](journals/waves/waves_159.png)
-
-### Text
 Semantic Wheel
 
 My [story](#sbt-23) is a
@@ -1063,9 +958,6 @@ of this time and space.
 ## Waves 8
 ![Waves 8](journals/waves/waves_8.png)
 
-[Image source](journals/waves/waves_8.png)
-
-### Text
 Origami                Human
 Miura Fold             The [Cerebral Cortex](#vectors-78),
                        the surface, is
@@ -1101,9 +993,6 @@ strategies for reprogramming your brain with your mind.
 ## Waves 88
 ![Waves 88](journals/waves/waves_88.png)
 
-[Image source](journals/waves/waves_88.png)
-
-### Text
 Story of A1, mother to B2 and C3, two children.
 
 "Story of A1, mother to two children B2 and C3"
