@@ -2258,8 +2258,8 @@
 
       current.classList.remove("is-current");
       const token = (state.recordTransitionToken += 1);
-      const enterX = Math.round(transition.dirX * transition.travelPx);
-      const enterY = Math.round(transition.dirY * transition.travelPx);
+      const enterX = -Math.round(transition.dirX * transition.travelPx);
+      const enterY = -Math.round(transition.dirY * transition.travelPx);
       const exitX = -enterX;
       const exitY = -enterY;
       const easing = "linear";
