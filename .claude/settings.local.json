@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.faa.gov)",
+      "WebFetch(domain:aeronav.faa.gov)",
+      "WebFetch(domain:nfdc.faa.gov)",
+      "WebFetch(domain:www.flightaware.com)",
+      "WebFetch(domain:www.airnav.com)",
+      "WebFetch(domain:skyvector.com)",
+      "WebFetch(domain:opennav.com)",
+      "WebFetch(domain:resources.globalair.com)"
+    ]
+  }
+}

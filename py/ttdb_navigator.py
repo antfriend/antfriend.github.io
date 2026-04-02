@@ -12,7 +12,7 @@ import webbrowser
 from PIL import Image, ImageTk
 import cairosvg
 
-DB_PATH = Path("MyMentalPalaceDB.md")
+DB_PATH = Path("BOI_approach_plates.md")
 
 REFRESH_MS = 1500
 ANIMATION_MS = 16

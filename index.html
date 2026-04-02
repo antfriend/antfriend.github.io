@@ -554,7 +554,7 @@
     import { renderLatex } from "./js/latex-renderer.js";
 
     const DEFAULT_DB_PATH = "TootTootTerminologyDB.md";
-    const DB_CANDIDATE_PATHS = [DEFAULT_DB_PATH, "journals.md", "MyMentalPalaceDB.md", "Mathematical.latex", "banjo_ttdb.md", "one_drop.md","Dice.md"];
+    const DB_CANDIDATE_PATHS = [DEFAULT_DB_PATH, "journals.md", "MyMentalPalaceDB.md", "Mathematical.latex", "banjo_ttdb.md", "one_drop.md","Dice.md", "BOI_approach_plates.md"];
     const DB_URL_PARAM_PRIMARY = "ttdb";
     const DB_URL_PARAM_FALLBACK = "db";
     const DB_URL_PARAM_KEYS = [DB_URL_PARAM_PRIMARY, DB_URL_PARAM_FALLBACK];
@@ -1782,9 +1782,11 @@
     }
 
     function parseCoords(recordId) {
-      const match = recordId.match(/^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$/);
-      if (!match) return null;
-      return [Number(match[1]), Number(match[2])];
+      const longForm = recordId.match(/^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$/);
+      if (longForm) return [Number(longForm[1]), Number(longForm[2])];
+      const shortForm = recordId.match(/^@(-?\d+(?:\.\d+)?)x(-?\d+(?:\.\d+)?)$/);
+      if (shortForm) return [Number(shortForm[1]), Number(shortForm[2])];
+      return null;
     }
 
     function renderList() {
