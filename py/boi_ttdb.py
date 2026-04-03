@@ -52,23 +52,71 @@ STATE_PATH = OUT_DIR / "state.json"
 
 COORD_INCREMENT = 0.1
 DPI = 150
-ADDS_PER_RUN = 10  # new airports to add each run
+ADDS_PER_RUN = 9  # new airports to add each run
 
 # ---------------------------------------------------------------------------
-# Airport network — ordered by proximity/connectivity from KBOI
+# Airport network — tiered by distance from KBOI, expanded automatically
+# when closer tiers are exhausted.
+#
+# Tier 1 — Local Idaho / immediate neighbors  (~0–150 nm)
+# Tier 2 — Pacific Northwest / Mountain West  (~150–300 nm)
+# Tier 3 — Major Western hubs                 (~300–500 nm)
+# Tier 4 — Distant Western / national         (~500 nm+)
 # ---------------------------------------------------------------------------
 
 AIRPORT_NETWORK = [
-    {"id": "KBOI", "name": "Boise Airport / Gowen Field",           "lat": 43.5644, "lon": -116.2228},
-    {"id": "KTWF", "name": "Magic Valley Regional",                  "lat": 42.4818, "lon": -114.4877},
-    {"id": "KSUN", "name": "Friedman Memorial (Sun Valley/Hailey)",  "lat": 43.5044, "lon": -114.2963},
-    {"id": "KMYL", "name": "McCall Municipal",                       "lat": 44.8897, "lon": -116.1012},
-    {"id": "KPIH", "name": "Pocatello Regional",                     "lat": 42.9098, "lon": -112.5960},
-    {"id": "KIDA", "name": "Idaho Falls Regional",                   "lat": 43.5146, "lon": -112.0702},
-    {"id": "KSMN", "name": "Lemhi County",                           "lat": 45.1238, "lon": -113.8801},
-    {"id": "KBKE", "name": "Baker City Municipal",                   "lat": 44.8373, "lon": -117.8086},
-    {"id": "KLWS", "name": "Lewiston-Nez Perce County",              "lat": 46.3745, "lon": -117.0153},
-    {"id": "KSLC", "name": "Salt Lake City International",           "lat": 40.7884, "lon": -111.9778},
+    # --- Tier 1: Local Idaho / immediate neighbors (~0–150 nm) ---
+    {"id": "KBOI", "name": "Boise Airport / Gowen Field",            "lat": 43.5644, "lon": -116.2228, "tier": 1},
+    {"id": "KTWF", "name": "Magic Valley Regional",                   "lat": 42.4818, "lon": -114.4877, "tier": 1},
+    {"id": "KSUN", "name": "Friedman Memorial (Sun Valley/Hailey)",   "lat": 43.5044, "lon": -114.2963, "tier": 1},
+    {"id": "KMYL", "name": "McCall Municipal",                        "lat": 44.8897, "lon": -116.1012, "tier": 1},
+    {"id": "KPIH", "name": "Pocatello Regional",                      "lat": 42.9098, "lon": -112.5960, "tier": 1},
+    {"id": "KIDA", "name": "Idaho Falls Regional",                    "lat": 43.5146, "lon": -112.0702, "tier": 1},
+    {"id": "KSMN", "name": "Lemhi County",                            "lat": 45.1238, "lon": -113.8801, "tier": 1},
+    {"id": "KBKE", "name": "Baker City Municipal",                    "lat": 44.8373, "lon": -117.8086, "tier": 1},
+    {"id": "KLWS", "name": "Lewiston-Nez Perce County",               "lat": 46.3745, "lon": -117.0153, "tier": 1},
+    {"id": "KSLC", "name": "Salt Lake City International",            "lat": 40.7884, "lon": -111.9778, "tier": 1},
+
+    # --- Tier 2: Pacific Northwest / Mountain West (~150–300 nm) ---
+    {"id": "KCOE", "name": "Coeur d'Alene Airport",                   "lat": 47.7743, "lon": -116.8197, "tier": 2},
+    {"id": "KLGD", "name": "La Grande/Union County",                  "lat": 45.2902, "lon": -118.0073, "tier": 2},
+    {"id": "KPDT", "name": "Eastern Oregon Regional (Pendleton)",     "lat": 45.6950, "lon": -118.8413, "tier": 2},
+    {"id": "KPSC", "name": "Tri-Cities (Pasco)",                      "lat": 46.2647, "lon": -119.1193, "tier": 2},
+    {"id": "KEAT", "name": "Pangborn Memorial (Wenatchee)",           "lat": 47.3988, "lon": -120.2075, "tier": 2},
+    {"id": "KGEG", "name": "Spokane International",                   "lat": 47.6199, "lon": -117.5334, "tier": 2},
+    {"id": "KMSO", "name": "Missoula Montana Airport",                "lat": 46.9163, "lon": -114.0906, "tier": 2},
+    {"id": "KBTM", "name": "Bert Mooney (Butte)",                     "lat": 45.9548, "lon": -112.4975, "tier": 2},
+    {"id": "KBZN", "name": "Bozeman Yellowstone International",       "lat": 45.7775, "lon": -111.1528, "tier": 2},
+    {"id": "KEKO", "name": "Elko Regional",                           "lat": 40.8249, "lon": -115.7914, "tier": 2},
+    {"id": "KPVU", "name": "Provo Municipal",                         "lat": 40.2192, "lon": -111.7227, "tier": 2},
+    {"id": "KOGD", "name": "Ogden-Hinckley",                          "lat": 41.1959, "lon": -112.0121, "tier": 2},
+    {"id": "KRDM", "name": "Roberts Field (Redmond, OR)",             "lat": 44.2541, "lon": -121.1500, "tier": 2},
+    {"id": "KGPI", "name": "Glacier Park International (Kalispell)",  "lat": 48.3105, "lon": -114.2560, "tier": 2},
+    {"id": "KHLN", "name": "Helena Regional",                         "lat": 46.6068, "lon": -111.9827, "tier": 2},
+
+    # --- Tier 3: Major Western hubs (~300–500 nm) ---
+    {"id": "KGTF", "name": "Great Falls International",               "lat": 47.4820, "lon": -111.3709, "tier": 3},
+    {"id": "KBIL", "name": "Billings Logan International",            "lat": 45.8077, "lon": -108.5428, "tier": 3},
+    {"id": "KRNO", "name": "Reno-Tahoe International",                "lat": 39.4991, "lon": -119.7681, "tier": 3},
+    {"id": "KSFO", "name": "San Francisco International",             "lat": 37.6213, "lon": -122.3790, "tier": 3},  # stretch, but major hub
+    {"id": "KGJT", "name": "Grand Junction Regional",                 "lat": 39.1224, "lon": -108.5267, "tier": 3},
+    {"id": "KRKS", "name": "Southwest Wyoming Regional (Rock Springs)","lat": 41.5942, "lon": -109.0654, "tier": 3},
+    {"id": "KPDX", "name": "Portland International",                  "lat": 45.5887, "lon": -122.5975, "tier": 3},
+    {"id": "KSEA", "name": "Seattle-Tacoma International",            "lat": 47.4502, "lon": -122.3088, "tier": 3},
+    {"id": "KDEN", "name": "Denver International",                    "lat": 39.8561, "lon": -104.6737, "tier": 3},
+    {"id": "KLAS", "name": "Harry Reid International (Las Vegas)",    "lat": 36.0840, "lon": -115.1537, "tier": 3},
+
+    # --- Tier 4: Distant Western / national (~500 nm+) ---
+    {"id": "KPHX", "name": "Phoenix Sky Harbor International",        "lat": 33.4373, "lon": -112.0078, "tier": 4},
+    {"id": "KLAX", "name": "Los Angeles International",               "lat": 33.9425, "lon": -118.4081, "tier": 4},
+    {"id": "KORD", "name": "Chicago O'Hare International",            "lat": 41.9742, "lon":  -87.9073, "tier": 4},
+    {"id": "KDFW", "name": "Dallas/Fort Worth International",         "lat": 32.8998, "lon":  -97.0403, "tier": 4},
+    {"id": "KATL", "name": "Hartsfield-Jackson Atlanta International", "lat": 33.6407, "lon":  -84.4277, "tier": 4},
+    {"id": "KJFK", "name": "John F. Kennedy International (New York)","lat": 40.6413, "lon":  -73.7781, "tier": 4},
+    {"id": "KIAH", "name": "Houston George Bush Intercontinental",    "lat": 29.9902, "lon":  -95.3368, "tier": 4},
+    {"id": "KMIA", "name": "Miami International",                     "lat": 25.7959, "lon":  -80.2870, "tier": 4},
+    {"id": "KBOS", "name": "Boston Logan International",              "lat": 42.3656, "lon":  -71.0096, "tier": 4},
+    {"id": "KDTW", "name": "Detroit Metropolitan Wayne County",       "lat": 42.2124, "lon":  -83.3534, "tier": 4},
 ]
 
 # Index for quick lookup
@@ -141,13 +189,23 @@ def save_state(state: dict) -> None:
 
 
 def pick_new_airports(included: list[str], n: int) -> list[str]:
-    """Return up to n airports from AIRPORT_NETWORK not yet in included."""
-    added = []
+    """Return up to n airports from AIRPORT_NETWORK not yet in included.
+    Walks tiers in order, expanding scope automatically when closer tiers
+    are exhausted."""
+    included_set = set(included)
+    added: list[str] = []
+    current_tier = 0
     for airport in AIRPORT_NETWORK:
-        if airport["id"] not in included:
-            added.append(airport["id"])
-            if len(added) >= n:
-                break
+        if airport["id"] in included_set:
+            continue
+        tier = airport.get("tier", 1)
+        if tier != current_tier:
+            current_tier = tier
+            tier_label = {1: "local", 2: "regional", 3: "major hub", 4: "national"}.get(tier, f"tier {tier}")
+            print(f"  Expanding to tier {tier} ({tier_label}) airports.")
+        added.append(airport["id"])
+        if len(added) >= n:
+            break
     return added
 
 
@@ -438,8 +496,11 @@ def make_ttdb(all_plates: dict[str, list[dict]], img_dir: Path,
         airport_recs = by_airport.get(airport_id, [])
         if not airport_recs:
             continue
-        airport_name = AIRPORT_INDEX.get(airport_id, {}).get("name", airport_id)
-        lines.append(f"# {airport_id} — {airport_name}")
+        airport_entry = AIRPORT_INDEX.get(airport_id, {})
+        airport_name  = airport_entry.get("name", airport_id)
+        tier          = airport_entry.get("tier", 1)
+        tier_label    = {1: "local", 2: "regional", 3: "major hub", 4: "national"}.get(tier, f"tier {tier}")
+        lines.append(f"# {airport_id} — {airport_name}  *(tier {tier}: {tier_label})*")
         lines.append("")
 
         for rec in airport_recs:
