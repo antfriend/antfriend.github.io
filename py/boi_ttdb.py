@@ -543,17 +543,14 @@ def main() -> None:
 
     # 1. Load state and decide which airports to add this run
     state = load_state()
-    included = state.get("included_airports", ["KBOI"])
-
-    new_airports = pick_new_airports(included, ADDS_PER_RUN)
-    if new_airports:
-        print(f"Adding new airports this run: {new_airports}")
-        included = included + new_airports
-        state["included_airports"] = included
+    confirmed = list(state.get("included_airports", ["KBOI"]))  # previously succeeded
+    new_candidates = pick_new_airports(confirmed, ADDS_PER_RUN)
+    if new_candidates:
+        print(f"Candidates this run: {new_candidates}")
     else:
         print("All airports in network already included — rebuilding TTDB.")
-
-    print(f"Total airports in TTDB: {included}")
+    included = confirmed + new_candidates
+    print(f"Processing {len(included)} airports total.")
 
     # 2. Fetch metafile (once for all airports)
     metafile_root = fetch_metafile()
@@ -585,9 +582,20 @@ def main() -> None:
 
         all_plates[airport_id] = available
 
-    # 4. Build TTDB from all included airports
+    # 4. Build TTDB — only airports that produced at least one plate get committed
+    with_plates    = [aid for aid in included if all_plates.get(aid)]
+    without_plates = [aid for aid in included if not all_plates.get(aid)]
+    if without_plates:
+        print(f"\nNo plates obtained for: {without_plates}")
+        print("  (Will be retried next run — not committed to state.)")
+
+    # State only advances for airports with real plate data
+    state["included_airports"] = [
+        aid for aid in included if aid in with_plates
+    ]
+
     print("\n--- Building TTDB ---")
-    ttdb_text = make_ttdb(all_plates, IMG_DIR, included)
+    ttdb_text = make_ttdb(all_plates, IMG_DIR, state["included_airports"])
     TTDB_PATH.write_text(ttdb_text, encoding="utf-8")
     print(f"Written: {TTDB_PATH}")
 
@@ -600,7 +608,9 @@ def main() -> None:
     print(f"  PNGs  : {IMG_DIR}")
     print(f"  TTDB  : {TTDB_PATH}")
     print(f"  State : {STATE_PATH}")
-    print(f"  Airports in TTDB: {', '.join(included)}")
+    print(f"  Airports with plates : {', '.join(with_plates)}")
+    if without_plates:
+        print(f"  Airports skipped     : {', '.join(without_plates)}")
 
 
 if __name__ == "__main__":
