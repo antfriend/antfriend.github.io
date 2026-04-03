@@ -643,7 +643,7 @@ A six-beat emotional story arc — from serenity through darkness and back to jo
 
 ```ttdb-scene
 start_node: @LAT10LON-10
-loop: true
+loop: false
 edge: next | from:@LAT10LON-10 | to:@LAT-10LON-10 | hold_ms:4000
 edge: next | from:@LAT-10LON-10 | to:@LAT-30LON20 | hold_ms:4000
 edge: down | from:@LAT-30LON20 | to:@LAT-30LON-30 | hold_ms:4000 | duration_ms:2200 | travel_px:420
