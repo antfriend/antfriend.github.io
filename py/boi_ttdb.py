@@ -52,7 +52,7 @@ STATE_PATH = OUT_DIR / "state.json"
 
 COORD_INCREMENT = 0.1
 DPI = 150
-ADDS_PER_RUN = 2  # new airports to add each run
+ADDS_PER_RUN = 10  # new airports to add each run
 
 # ---------------------------------------------------------------------------
 # Airport network — ordered by proximity/connectivity from KBOI

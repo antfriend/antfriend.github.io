@@ -34,14 +34,14 @@ librarian:
   primitive_queries: [NEXT, PREV, ALT, LIST, SHOW]
   max_reply_chars: 400
   invocation_prefix: "LIB>"
-airports_included: [KBOI, KTWF, KSUN, KMYL, KPIH, KIDA, KSMN]
+airports_included: [KBOI, KTWF, KSUN, KMYL, KPIH, KIDA, KSMN, KBKE, KLWS]
 ```
 
 ```cursor
 selected:
 - @436x-1162
 preview: {}
-agent_note: "BOI network plate graph (7 airports). Navigate: STAR → approach → airport diagram → nearby airports. Query with NEXT/ALT/LIST."
+agent_note: "BOI network plate graph (9 airports). Navigate: STAR → approach → airport diagram → nearby airports. Query with NEXT/ALT/LIST."
 dot: ""
 last_query: ""
 last_answer: ""
@@ -52,7 +52,7 @@ answer_records: []
 
 ---
 
-@436x-1162 | created:1775252610 | updated:1775252610 | relates: references>@437x-1158, references>@437x-1166, references>@435x-1166, references>@435x-1158
+@436x-1162 | created:1775253045 | updated:1775253045 | relates: references>@437x-1158, references>@437x-1166, references>@435x-1166, references>@435x-1158
 ## Airport Diagram: Airport Diagram
 
 **Airport:** KBOI — Boise Airport / Gowen Field  
@@ -66,7 +66,7 @@ answer_records: []
 
 ---
 
-@437x-1158 | created:1775252610 | updated:1775252610 | relates: sequence>@436x-1162, alternate>@437x-1166, alternate>@435x-1166, alternate>@435x-1158
+@437x-1158 | created:1775253045 | updated:1775253045 | relates: sequence>@436x-1162, alternate>@437x-1166, alternate>@435x-1166, alternate>@435x-1158
 ## Approach: Ils Or Loc Rwy 28R
 
 **Airport:** KBOI — Boise Airport / Gowen Field  
@@ -80,7 +80,7 @@ answer_records: []
 
 ---
 
-@437x-1166 | created:1775252610 | updated:1775252610 | relates: sequence>@436x-1162, alternate>@437x-1158, alternate>@435x-1166, alternate>@435x-1158
+@437x-1166 | created:1775253045 | updated:1775253045 | relates: sequence>@436x-1162, alternate>@437x-1158, alternate>@435x-1166, alternate>@435x-1158
 ## Approach: Rnav (Gps) Y Rwy 10L
 
 **Airport:** KBOI — Boise Airport / Gowen Field  
@@ -94,7 +94,7 @@ answer_records: []
 
 ---
 
-@435x-1166 | created:1775252610 | updated:1775252610 | relates: sequence>@436x-1162, alternate>@437x-1158, alternate>@437x-1166, alternate>@435x-1158
+@435x-1166 | created:1775253045 | updated:1775253045 | relates: sequence>@436x-1162, alternate>@437x-1158, alternate>@437x-1166, alternate>@435x-1158
 ## Approach: Rnav (Gps) Y Rwy 10R
 
 **Airport:** KBOI — Boise Airport / Gowen Field  
@@ -108,7 +108,7 @@ answer_records: []
 
 ---
 
-@435x-1158 | created:1775252610 | updated:1775252610 | relates: sequence>@436x-1162, alternate>@437x-1158, alternate>@437x-1166, alternate>@435x-1166
+@435x-1158 | created:1775253045 | updated:1775253045 | relates: sequence>@436x-1162, alternate>@437x-1158, alternate>@437x-1166, alternate>@435x-1166
 ## Approach: Rnav (Gps) Y Rwy 28L
 
 **Airport:** KBOI — Boise Airport / Gowen Field  
@@ -122,7 +122,7 @@ answer_records: []
 
 ---
 
-@440x-1164 | created:1775252610 | updated:1775252610 | relates: sequence>@437x-1158, sequence>@437x-1166, sequence>@435x-1166, sequence>@435x-1158, alternate>@433x-1157, alternate>@442x-1159, alternate>@438x-1166, alternate>@428x-1166
+@440x-1164 | created:1775253045 | updated:1775253045 | relates: sequence>@437x-1158, sequence>@437x-1166, sequence>@435x-1166, sequence>@435x-1158, alternate>@433x-1157, alternate>@442x-1159, alternate>@438x-1166, alternate>@428x-1166
 ## STAR: Bewte Four
 
 **Airport:** KBOI — Boise Airport / Gowen Field  
@@ -136,7 +136,7 @@ answer_records: []
 
 ---
 
-@433x-1157 | created:1775252610 | updated:1775252610 | relates: sequence>@437x-1158, sequence>@437x-1166, sequence>@435x-1166, sequence>@435x-1158, alternate>@440x-1164, alternate>@442x-1159, alternate>@438x-1166, alternate>@428x-1166
+@433x-1157 | created:1775253045 | updated:1775253045 | relates: sequence>@437x-1158, sequence>@437x-1166, sequence>@435x-1166, sequence>@435x-1158, alternate>@440x-1164, alternate>@442x-1159, alternate>@438x-1166, alternate>@428x-1166
 ## STAR: Spuud Four
 
 **Airport:** KBOI — Boise Airport / Gowen Field  
@@ -150,7 +150,7 @@ answer_records: []
 
 ---
 
-@442x-1159 | created:1775252610 | updated:1775252610 | relates: sequence>@437x-1158, sequence>@437x-1166, sequence>@435x-1166, sequence>@435x-1158, alternate>@440x-1164, alternate>@433x-1157, alternate>@438x-1166, alternate>@428x-1166
+@442x-1159 | created:1775253045 | updated:1775253045 | relates: sequence>@437x-1158, sequence>@437x-1166, sequence>@435x-1166, sequence>@435x-1158, alternate>@440x-1164, alternate>@433x-1157, alternate>@438x-1166, alternate>@428x-1166
 ## STAR: Kourt Four
 
 **Airport:** KBOI — Boise Airport / Gowen Field  
@@ -164,7 +164,7 @@ answer_records: []
 
 ---
 
-@438x-1166 | created:1775252610 | updated:1775252610 | relates: sequence>@437x-1158, sequence>@437x-1166, sequence>@435x-1166, sequence>@435x-1158, alternate>@440x-1164, alternate>@433x-1157, alternate>@442x-1159, alternate>@428x-1166
+@438x-1166 | created:1775253045 | updated:1775253045 | relates: sequence>@437x-1158, sequence>@437x-1166, sequence>@435x-1166, sequence>@435x-1158, alternate>@440x-1164, alternate>@433x-1157, alternate>@442x-1159, alternate>@428x-1166
 ## STAR: Kyaan Four
 
 **Airport:** KBOI — Boise Airport / Gowen Field  
@@ -178,7 +178,7 @@ answer_records: []
 
 ---
 
-@428x-1166 | created:1775252610 | updated:1775252610 | relates: sequence>@437x-1158, sequence>@437x-1166, sequence>@435x-1166, sequence>@435x-1158, alternate>@440x-1164, alternate>@433x-1157, alternate>@442x-1159, alternate>@438x-1166
+@428x-1166 | created:1775253045 | updated:1775253045 | relates: sequence>@437x-1158, sequence>@437x-1166, sequence>@435x-1166, sequence>@435x-1158, alternate>@440x-1164, alternate>@433x-1157, alternate>@442x-1159, alternate>@438x-1166
 ## STAR: Sadyl Four
 
 **Airport:** KBOI — Boise Airport / Gowen Field  
