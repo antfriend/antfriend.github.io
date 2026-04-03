@@ -51,6 +51,7 @@ preview:
   @LAT0LON0: "The experiencer at the origin. Dispositions and intents radiate outward from here; feelings and emotions flow inward toward here."
   @LAT10LON-10: "Serenity — a mild, quiet ease. A positive feeling, near."
   @LAT-10LON-10: "Unease — a faint disquiet beneath the surface. A negative feeling, near."
+  @LAT88LON0: "Story: The Hero's Arc — a six-beat emotional cycle from serenity through darkness and back to joy. Play to walk the graph."
 agent_note: "Affective field map. Lat = valence (N=positive, S=negative). Lon = object of affect (E=other-directed, W=self-directed). NE = positive+other; NW = positive+self; SE = negative+other; SW = negative+self. Distance = intensity. Feelings/emotions relate TO the umwelt; dispositions/intents relate FROM the umwelt."
 dot: |
   digraph Affective {
@@ -65,6 +66,13 @@ dot: |
     "@LAT-30LON-30" -> "@LAT0LON0" [label="feels"];
     "@LAT40LON30" -> "@LAT0LON0" [label="emotes"];
     "@LAT-40LON30" -> "@LAT0LON0" [label="emotes"];
+    "@LAT88LON0" -> "@LAT10LON-10" [label="starts_at"];
+    "@LAT10LON-10" -> "@LAT-10LON-10" [label="plays"];
+    "@LAT-10LON-10" -> "@LAT-30LON20" [label="plays"];
+    "@LAT-30LON20" -> "@LAT-30LON-30" [label="plays"];
+    "@LAT-30LON-30" -> "@LAT20LON20" [label="plays"];
+    "@LAT20LON20" -> "@LAT30LON30" [label="plays"];
+    "@LAT30LON30" -> "@LAT10LON-10" [label="plays"];
   }
 last_query: null
 last_answer: null
@@ -624,6 +632,33 @@ The inward mirror of contempt. Where other-directed contempt dismisses an extern
 - **Category:** Disposition
 - **Object:** Self-directed
 - **Intensity:** Very Intense (L4)
+
+---
+
+@LAT88LON0 | created:1775260800 | updated:1775260800 | type:scene | relates:starts_at>@LAT10LON-10,plays>@LAT-10LON-10,plays>@LAT-30LON20,plays>@LAT-30LON-30,plays>@LAT20LON20,plays>@LAT30LON30
+
+## Story: The Hero's Arc
+
+A six-beat emotional story arc — from serenity through darkness and back to joy. Each beat holds long enough to read before sliding to the next.
+
+```ttdb-scene
+start_node: @LAT10LON-10
+loop: true
+edge: next | from:@LAT10LON-10 | to:@LAT-10LON-10 | hold_ms:4000
+edge: next | from:@LAT-10LON-10 | to:@LAT-30LON20 | hold_ms:4000
+edge: down | from:@LAT-30LON20 | to:@LAT-30LON-30 | hold_ms:4000 | duration_ms:2200 | travel_px:420
+edge: bloom | from:@LAT-30LON-30 | to:@LAT20LON20 | hold_ms:4000
+edge: bloom | from:@LAT20LON20 | to:@LAT30LON30 | hold_ms:4000
+edge: return_home | from:@LAT30LON30 | to:@LAT10LON-10 | hold_ms:4000
+```
+
+Arc:
+- **Serenity** — the ordinary world, at ease, nothing demanded
+- **Unease** — the call: something is not quite right
+- **Fear** — the ordeal: danger crystallizes and hijacks attention
+- **Grief** — the dark night: what was loved is irreversibly gone
+- **Hope** — the turn: a possibility opens in the wreckage
+- **Joy** — the return: the self reconstituted and enlarged
 
 ---
 
