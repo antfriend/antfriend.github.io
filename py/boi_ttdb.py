@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
-Download FAA d-TPP approach plates for KBOI (Boise) and build a TTDB.
+Download FAA d-TPP approach plates for KBOI and connected airports,
+building a growing multi-airport TTDB.
+
+Each run adds up to ADDS_PER_RUN new airports from AIRPORT_NETWORK.
+State is tracked in boi_plates/state.json.
 
 Dependencies:
     pip install requests pymupdf
@@ -9,11 +13,14 @@ Output:
     boi_plates/
         pdfs/       raw FAA PDFs
         images/     PNG renders of each plate (one per PDF page)
+        state.json  which airports have been added so far
     BOI_approach_plates.md   the TTDB file
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -37,36 +44,41 @@ CYCLE = "2604"
 BASE_URL = f"https://aeronav.faa.gov/d-tpp/{CYCLE}"
 METAFILE_URL = f"{BASE_URL}/xml/d-TPP_Metafile.xml"
 
-AIRPORT_ID = "KBOI"
 OUT_DIR = Path("boi_plates")
 PDF_DIR = OUT_DIR / "pdfs"
 IMG_DIR = OUT_DIR / "images"
 TTDB_PATH = Path("BOI_approach_plates.md")
-
-DPI = 150  # render resolution; 150 dpi is readable, 200+ is crisp
-
-# ---------------------------------------------------------------------------
-# Geographic coordinate system
-# ---------------------------------------------------------------------------
-# coord_increment = 0.1 degrees.
-# ID = @{round(lat/0.1)}x{round(lon/0.1)}
-# 1 LAT step ≈ 11.1 km. 1 LON step ≈ 8.0 km at 43.5°N (cos(43.5°) ≈ 0.724).
-#
-# Approach plates are placed at their IAF position on the extended runway
-# centerline, approximately 17 nm from the airport threshold.
-# STAR fixes placed at confirmed or estimated real-world positions.
-#
-# KBOI runways 10/28 oriented ~102°/282°:
-#   RWY 28 (landing west): aircraft approach from the EAST  → lon increases
-#   RWY 10 (landing east): aircraft approach from the WEST  → lon decreases
-# Parallel runways: 10L/28R = north (LAT+1), 10R/28L = south (LAT-1).
+STATE_PATH = OUT_DIR / "state.json"
 
 COORD_INCREMENT = 0.1
+DPI = 150
+ADDS_PER_RUN = 2  # new airports to add each run
 
-# Explicit geographic IDs keyed by pdf_name stem.
-# lat/lon are decimal degrees; ID is computed automatically.
-# "estimated": True means the position was inferred, not confirmed.
-PLATE_GEO = {
+# ---------------------------------------------------------------------------
+# Airport network — ordered by proximity/connectivity from KBOI
+# ---------------------------------------------------------------------------
+
+AIRPORT_NETWORK = [
+    {"id": "KBOI", "name": "Boise Airport / Gowen Field",           "lat": 43.5644, "lon": -116.2228},
+    {"id": "KTWF", "name": "Magic Valley Regional",                  "lat": 42.4818, "lon": -114.4877},
+    {"id": "KSUN", "name": "Friedman Memorial (Sun Valley/Hailey)",  "lat": 43.5044, "lon": -114.2963},
+    {"id": "KMYL", "name": "McCall Municipal",                       "lat": 44.8897, "lon": -116.1012},
+    {"id": "KPIH", "name": "Pocatello Regional",                     "lat": 42.9098, "lon": -112.5960},
+    {"id": "KIDA", "name": "Idaho Falls Regional",                   "lat": 43.5146, "lon": -112.0702},
+    {"id": "KSMN", "name": "Lemhi County",                           "lat": 45.1238, "lon": -113.8801},
+    {"id": "KBKE", "name": "Baker City Municipal",                   "lat": 44.8373, "lon": -117.8086},
+    {"id": "KLWS", "name": "Lewiston-Nez Perce County",              "lat": 46.3745, "lon": -117.0153},
+    {"id": "KSLC", "name": "Salt Lake City International",           "lat": 40.7884, "lon": -111.9778},
+]
+
+# Index for quick lookup
+AIRPORT_INDEX = {a["id"]: a for a in AIRPORT_NETWORK}
+
+# ---------------------------------------------------------------------------
+# KBOI-specific plate geographic positions (confirmed or carefully estimated)
+# ---------------------------------------------------------------------------
+
+PLATE_GEO_KBOI = {
     "00057AD":     {"lat": 43.5644, "lon": -116.2228, "estimated": False,
                     "note": "KBOI airport reference point"},
     "00057IL28R":  {"lat": 43.70,   "lon": -115.83,   "estimated": True,
@@ -98,8 +110,8 @@ HUMAN_NAMES = {
     "HOT":  "Hot Spots",
 }
 
-# Fallback plate list when metafile fetch fails (confirmed cycle 2604)
-FALLBACK_PLATES = [
+# Fallback plate list for KBOI when the metafile is unavailable (cycle 2604)
+FALLBACK_PLATES_KBOI = [
     {"chart_code": "APD",  "chart_name": "AIRPORT DIAGRAM",             "pdf_name": "00057AD.PDF",     "chart_seq": "10"},
     {"chart_code": "IAP",  "chart_name": "ILS OR LOC RWY 28R",          "pdf_name": "00057IL28R.PDF",  "chart_seq": "20"},
     {"chart_code": "IAP",  "chart_name": "RNAV (GPS) Y RWY 10L",        "pdf_name": "00057RY10L.PDF",  "chart_seq": "30"},
@@ -114,25 +126,58 @@ FALLBACK_PLATES = [
 
 
 # ---------------------------------------------------------------------------
-# Helpers
+# State
 # ---------------------------------------------------------------------------
 
-def fetch_kboi_plates() -> list[dict]:
-    """Try to pull KBOI plate list from the d-TPP XML metafile."""
+def load_state() -> dict:
+    if STATE_PATH.exists():
+        return json.loads(STATE_PATH.read_text(encoding="utf-8"))
+    return {"included_airports": ["KBOI"]}
+
+
+def save_state(state: dict) -> None:
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    STATE_PATH.write_text(json.dumps(state, indent=2), encoding="utf-8")
+
+
+def pick_new_airports(included: list[str], n: int) -> list[str]:
+    """Return up to n airports from AIRPORT_NETWORK not yet in included."""
+    added = []
+    for airport in AIRPORT_NETWORK:
+        if airport["id"] not in included:
+            added.append(airport["id"])
+            if len(added) >= n:
+                break
+    return added
+
+
+# ---------------------------------------------------------------------------
+# Metafile (fetched once, shared across airports)
+# ---------------------------------------------------------------------------
+
+def fetch_metafile() -> ET.Element | None:
     print(f"Fetching metafile: {METAFILE_URL}")
     try:
         r = requests.get(METAFILE_URL, timeout=30)
         r.raise_for_status()
+        return ET.fromstring(r.content)
     except Exception as exc:
-        print(f"  Metafile unavailable ({exc}), using fallback list.")
-        return FALLBACK_PLATES
+        print(f"  Metafile unavailable ({exc})")
+        return None
 
-    root = ET.fromstring(r.content)
+
+def fetch_airport_plates(airport_id: str, root: ET.Element | None) -> list[dict]:
+    """Return plate dicts for airport_id from metafile root, or fallback."""
+    if root is None:
+        if airport_id == "KBOI":
+            print(f"  Using fallback list for {airport_id}.")
+            return FALLBACK_PLATES_KBOI
+        print(f"  No metafile and no fallback for {airport_id} — skipping.")
+        return []
+
     plates: list[dict] = []
-
-    # Search every airport_name element for our airport ID
     for airport_el in root.iter("airport_name"):
-        if airport_el.get("ID", "").upper() != AIRPORT_ID:
+        if airport_el.get("ID", "").upper() != airport_id:
             continue
         for rec in airport_el.iter("record"):
             pdf = (rec.findtext("pdf_name") or "").strip()
@@ -147,15 +192,21 @@ def fetch_kboi_plates() -> list[dict]:
         break
 
     if not plates:
-        print("  No KBOI records found in metafile, using fallback list.")
-        return FALLBACK_PLATES
+        if airport_id == "KBOI":
+            print(f"  No records for {airport_id} in metafile — using fallback.")
+            return FALLBACK_PLATES_KBOI
+        print(f"  No records found for {airport_id} in metafile — skipping.")
+        return []
 
-    print(f"  Found {len(plates)} KBOI plates in metafile.")
+    print(f"  Found {len(plates)} plates for {airport_id}.")
     return plates
 
 
+# ---------------------------------------------------------------------------
+# Download / render
+# ---------------------------------------------------------------------------
+
 def download_pdf(pdf_name: str, dest: Path) -> bool:
-    """Download a single PDF to dest. Returns True on success."""
     if dest.exists():
         print(f"  Already have {dest.name}")
         return True
@@ -172,7 +223,6 @@ def download_pdf(pdf_name: str, dest: Path) -> bool:
 
 
 def pdf_to_images(pdf_path: Path, img_dir: Path, stem: str) -> list[Path]:
-    """Render each page of pdf_path to a PNG in img_dir."""
     doc = fitz.open(str(pdf_path))
     mat = fitz.Matrix(DPI / 72, DPI / 72)
     paths: list[Path] = []
@@ -190,113 +240,159 @@ def pdf_to_images(pdf_path: Path, img_dir: Path, stem: str) -> list[Path]:
     return paths
 
 
+# ---------------------------------------------------------------------------
+# Geographic IDs
+# ---------------------------------------------------------------------------
+
 def geo_to_id(lat: float, lon: float) -> str:
-    """Convert decimal lat/lon to TTDB ID using coord_increment=0.1."""
     lat_int = round(lat / COORD_INCREMENT)
     lon_int = round(lon / COORD_INCREMENT)
     return f"@{lat_int}x{lon_int}"
 
 
-def make_ttdb(plates: list[dict], img_dir: Path) -> str:
-    """Build the TTDB Markdown string from the plate list."""
+def geo_for_plate(airport_id: str, stem: str, chart_code: str,
+                  airport_info: dict) -> dict:
+    """Return a geo dict {lat, lon, estimated, note} for a plate."""
+    # KBOI has hand-curated positions
+    if airport_id == "KBOI" and stem in PLATE_GEO_KBOI:
+        return PLATE_GEO_KBOI[stem]
+
+    base_lat = airport_info["lat"]
+    base_lon = airport_info["lon"]
+
+    # Airport Diagram sits at the airport reference point
+    if chart_code == "APD":
+        return {
+            "lat": base_lat,
+            "lon": base_lon,
+            "estimated": False,
+            "note": f"{airport_id} airport reference point",
+        }
+
+    # Other plates: small hash-derived offset so each gets a unique cell
+    h = int(hashlib.md5(stem.encode()).hexdigest(), 16)
+    dlat = ((h % 7) - 3) * COORD_INCREMENT
+    dlon = (((h >> 8) % 7) - 3) * COORD_INCREMENT
+    return {
+        "lat": base_lat + dlat,
+        "lon": base_lon + dlon,
+        "estimated": True,
+        "note": f"{airport_id} plate — position estimated from airport reference point",
+    }
+
+
+# ---------------------------------------------------------------------------
+# TTDB builder
+# ---------------------------------------------------------------------------
+
+def make_ttdb(all_plates: dict[str, list[dict]], img_dir: Path,
+              included_airports: list[str]) -> str:
+    """
+    Build the TTDB Markdown string.
+
+    all_plates: {airport_id: [plate_dicts]} — only successfully downloaded plates.
+    included_airports: ordered list of airport IDs to include.
+    """
     now = int(time.time())
 
-    # ---- assign geographic IDs ----
+    # ---- build full record list ----
     records: list[dict] = []
-
-    for p in plates:
-        stem = Path(p["pdf_name"]).stem
-        geo = PLATE_GEO.get(stem)
-
-        if geo:
-            rec_id = geo_to_id(geo["lat"], geo["lon"])
-            pos_note = geo["note"]
-            pos_str = f"{abs(geo['lat']):.3f}°{'N' if geo['lat']>=0 else 'S'} {abs(geo['lon']):.3f}°{'E' if geo['lon']>=0 else 'W'}"
+    for airport_id in included_airports:
+        airport_info = AIRPORT_INDEX.get(airport_id, {
+            "id": airport_id, "name": airport_id,
+            "lat": 0.0, "lon": 0.0,
+        })
+        for p in all_plates.get(airport_id, []):
+            stem = Path(p["pdf_name"]).stem
+            geo  = geo_for_plate(airport_id, stem, p["chart_code"],
+                                 airport_info)
+            rec_id  = geo_to_id(geo["lat"], geo["lon"])
+            pos_str = (f"{abs(geo['lat']):.3f}°{'N' if geo['lat']>=0 else 'S'} "
+                       f"{abs(geo['lon']):.3f}°{'E' if geo['lon']>=0 else 'W'}")
             if geo["estimated"]:
                 pos_str += " (estimated)"
-        else:
-            # fallback: hash-derived position offset from airport
-            import hashlib
-            h = int(hashlib.md5(stem.encode()).hexdigest(), 16) % 100
-            rec_id = geo_to_id(43.5644 + h * 0.01, -116.2228 + h * 0.01)
-            pos_note = "Position not in PLATE_GEO — hash-derived fallback."
-            pos_str = "unknown"
 
-        imgs = sorted(img_dir.glob(f"{stem}*.png"))
-        img_refs = [f"boi_plates/images/{im.name}" for im in imgs]
+            imgs     = sorted(img_dir.glob(f"{stem}*.png"))
+            img_refs = [f"boi_plates/images/{im.name}" for im in imgs]
 
-        records.append({
-            **p,
-            "id":       rec_id,
-            "stem":     stem,
-            "pos_str":  pos_str,
-            "pos_note": pos_note,
-            "img_refs": img_refs,
-        })
+            records.append({
+                **p,
+                "airport_id": airport_id,
+                "airport_name": airport_info["name"],
+                "id":        rec_id,
+                "stem":      stem,
+                "pos_str":   pos_str,
+                "pos_note":  geo["note"],
+                "img_refs":  img_refs,
+            })
 
-    # ---- build edge lists ----
-    # Group by category
-    by_cat: dict[int, list[dict]] = {}
+    # ---- index by airport and by chart code per airport ----
+    by_airport: dict[str, list[dict]] = {}
     for r in records:
-        by_cat.setdefault(r["x"], []).append(r)
+        by_airport.setdefault(r["airport_id"], []).append(r)
 
-    # Find the airport diagram record (APD, x=2)
-    apd_records = by_cat.get(CATEGORY_ORDER["APD"], [])
-    apd_id = apd_records[0]["id"] if apd_records else None
-
-    # Find approach records (IAP, x=1)
-    iap_records = by_cat.get(CATEGORY_ORDER["IAP"], [])
-    iap_ids = [r["id"] for r in iap_records]
+    # Airport diagram node IDs (one per airport)
+    apd_id_for: dict[str, str] = {}
+    for aid, recs in by_airport.items():
+        apds = [r for r in recs if r["chart_code"] == "APD"]
+        if apds:
+            apd_id_for[aid] = apds[0]["id"]
 
     def edges_for(rec: dict) -> str:
         code = rec["chart_code"]
         rid  = rec["id"]
+        aid  = rec["airport_id"]
+        airport_recs = by_airport.get(aid, [])
+
+        iap_ids  = [r["id"] for r in airport_recs if r["chart_code"] == "IAP"]
+        star_ids = [r["id"] for r in airport_recs if r["chart_code"] == "STAR"]
+        apd_id   = apd_id_for.get(aid)
+        dp_ids   = [r["id"] for r in airport_recs if r["chart_code"] == "DP"]
+
         parts: list[str] = []
 
         if code == "STAR":
-            # STARs lead to approaches; alternates are other STARs
             for iid in iap_ids:
                 parts.append(f"sequence>{iid}")
-            others = [r["id"] for r in by_cat.get(CATEGORY_ORDER["STAR"], []) if r["id"] != rid]
-            for oid in others:
-                parts.append(f"alternate>{oid}")
+            for oid in star_ids:
+                if oid != rid:
+                    parts.append(f"alternate>{oid}")
 
         elif code == "IAP":
-            # Approaches lead to airport diagram
             if apd_id:
-                parts.append(f"sequence@{apd_id}")
-            others = [i for i in iap_ids if i != rid]
-            for oid in others:
-                parts.append(f"alternate>{oid}")
+                parts.append(f"sequence>{apd_id}")
+            for oid in iap_ids:
+                if oid != rid:
+                    parts.append(f"alternate>{oid}")
 
         elif code == "APD":
-            # Diagram links back to all approaches (departures/go-around)
             for iid in iap_ids:
                 parts.append(f"references>{iid}")
-            dp_records = by_cat.get(CATEGORY_ORDER.get("DP", 3), [])
-            for dp in dp_records:
-                parts.append(f"sequence>{dp['id']}")
+            for dp in dp_ids:
+                parts.append(f"sequence>{dp}")
+            # Cross-airport edges: link to neighbouring airports' diagrams
+            for other_aid, other_apd in apd_id_for.items():
+                if other_aid != aid:
+                    parts.append(f"nearby>{other_apd}")
 
         return ", ".join(parts)
 
-    # ---- render TTDB text ----
-    lines: list[str] = []
-
     # ---- header ----
-    lines.append("# BOI Approach Plates — TTDB")
+    lines: list[str] = []
+    lines.append("# BOI Network Approach Plates — TTDB")
     lines.append("")
     lines.append("```mmpdb")
-    lines.append(f"db_id: kboi_approach_plates_{CYCLE}")
-    lines.append('db_name: "Boise Airport (KBOI) Approach Plates — FAA d-TPP Cycle ' + CYCLE + '"')
+    lines.append(f"db_id: boi_network_approach_plates_{CYCLE}")
+    lines.append(f'db_name: "BOI Network Approach Plates — FAA d-TPP Cycle {CYCLE}"')
     lines.append(f"coord_increment: {COORD_INCREMENT}")
     lines.append("collision_policy: southeast_step")
     lines.append("timestamp_kind: unix")
     lines.append("umwelt:")
-    lines.append("  umwelt_id: boi_nav")
+    lines.append("  umwelt_id: boi_network_nav")
     lines.append("  role: approach_navigator")
     lines.append("  perspective: pilot_inbound")
-    lines.append("  scope: terminal_area_kboi")
-    lines.append("  constraints: [FAA_public_domain, cycle_" + CYCLE + "]")
+    lines.append("  scope: idaho_and_nearby_terminals")
+    lines.append(f"  constraints: [FAA_public_domain, cycle_{CYCLE}]")
     lines.append("  globe:")
     lines.append("    frame: geographic_decimal")
     lines.append("    origin: kboi_airport_reference_point")
@@ -313,28 +409,23 @@ def make_ttdb(plates: list[dict], img_dir: Path) -> str:
     lines.append("typed_edges:")
     lines.append("  enabled: true")
     lines.append('  syntax: "<type>@<TARGET_ID>"')
-    lines.append('  note: "sequence=next in flight flow; alternate=parallel option; references=back-link"')
+    lines.append('  note: "sequence=next in flight flow; alternate=parallel option; references=back-link; nearby=adjacent airport"')
     lines.append("librarian:")
     lines.append("  enabled: true")
     lines.append("  primitive_queries: [NEXT, PREV, ALT, LIST, SHOW]")
     lines.append("  max_reply_chars: 400")
     lines.append('  invocation_prefix: "LIB>"')
+    lines.append(f"airports_included: [{', '.join(included_airports)}]")
     lines.append("```")
     lines.append("")
 
     # ---- cursor ----
-    if apd_id:
-        selected_id = apd_id
-    elif records:
-        selected_id = records[0]["id"]
-    else:
-        selected_id = ""
-
+    seed_apd = apd_id_for.get("KBOI") or (records[0]["id"] if records else "")
     lines.append("```cursor")
     lines.append("selected:")
-    lines.append(f"- {selected_id}")
+    lines.append(f"- {seed_apd}")
     lines.append("preview: {}")
-    lines.append('agent_note: "KBOI plate graph. Navigate: STAR → approach → airport diagram. Query with NEXT/ALT/LIST."')
+    lines.append(f'agent_note: "BOI network plate graph ({len(included_airports)} airports). Navigate: STAR → approach → airport diagram → nearby airports. Query with NEXT/ALT/LIST."')
     lines.append('dot: ""')
     lines.append('last_query: ""')
     lines.append('last_answer: ""')
@@ -342,32 +433,40 @@ def make_ttdb(plates: list[dict], img_dir: Path) -> str:
     lines.append("```")
     lines.append("")
 
-    # ---- records ----
-    for rec in records:
-        lines.append("---")
+    # ---- per-airport sections ----
+    for airport_id in included_airports:
+        airport_recs = by_airport.get(airport_id, [])
+        if not airport_recs:
+            continue
+        airport_name = AIRPORT_INDEX.get(airport_id, {}).get("name", airport_id)
+        lines.append(f"# {airport_id} — {airport_name}")
         lines.append("")
-        edge_str = edges_for(rec)
-        cat_label = HUMAN_NAMES.get(rec["chart_code"], rec["chart_code"])
-        lines.append(
-            f"{rec['id']} | created:{now} | updated:{now}"
-            + (f" | relates: {edge_str}" if edge_str else "")
-        )
-        lines.append(f"## {cat_label}: {rec['chart_name'].title()}")
-        lines.append("")
-        lines.append(f"**Airport:** KBOI — Boise Airport / Gowen Field  ")
-        lines.append(f"**Position:** {rec['pos_str']} — {rec['pos_note']}  ")
-        lines.append(f"**Chart code:** {rec['chart_code']}  ")
-        lines.append(f"**FAA PDF:** `{rec['pdf_name']}`  ")
-        lines.append(f"**d-TPP cycle:** {CYCLE}  ")
-        lines.append(f"**Source:** public domain, [aeronav.faa.gov](https://aeronav.faa.gov/d-tpp/{CYCLE}/{rec['pdf_name']})  ")
-        lines.append("")
-        if rec["img_refs"]:
-            for img in rec["img_refs"]:
-                lines.append(f"![{rec['chart_name']}]({img})")
-                lines.append("")
-        else:
-            lines.append("_Image not yet rendered — run script with PyMuPDF installed._")
+
+        for rec in airport_recs:
+            lines.append("---")
             lines.append("")
+            edge_str  = edges_for(rec)
+            cat_label = HUMAN_NAMES.get(rec["chart_code"], rec["chart_code"])
+            lines.append(
+                f"{rec['id']} | created:{now} | updated:{now}"
+                + (f" | relates: {edge_str}" if edge_str else "")
+            )
+            lines.append(f"## {cat_label}: {rec['chart_name'].title()}")
+            lines.append("")
+            lines.append(f"**Airport:** {airport_id} — {airport_name}  ")
+            lines.append(f"**Position:** {rec['pos_str']} — {rec['pos_note']}  ")
+            lines.append(f"**Chart code:** {rec['chart_code']}  ")
+            lines.append(f"**FAA PDF:** `{rec['pdf_name']}`  ")
+            lines.append(f"**d-TPP cycle:** {CYCLE}  ")
+            lines.append(f"**Source:** public domain, [aeronav.faa.gov](https://aeronav.faa.gov/d-tpp/{CYCLE}/{rec['pdf_name']})  ")
+            lines.append("")
+            if rec["img_refs"]:
+                for img in rec["img_refs"]:
+                    lines.append(f"![{rec['chart_name']}]({img})")
+                    lines.append("")
+            else:
+                lines.append("_Image not yet rendered — run script with PyMuPDF installed._")
+                lines.append("")
 
     lines.append("---")
     return "\n".join(lines) + "\n"
@@ -381,38 +480,66 @@ def main() -> None:
     PDF_DIR.mkdir(parents=True, exist_ok=True)
     IMG_DIR.mkdir(parents=True, exist_ok=True)
 
-    # 1. Get plate list
-    plates = fetch_kboi_plates()
-    print(f"\nPlates to process: {len(plates)}")
+    # 1. Load state and decide which airports to add this run
+    state = load_state()
+    included = state.get("included_airports", ["KBOI"])
 
-    # 2. Download PDFs
-    print("\n--- Downloading PDFs ---")
-    available: list[dict] = []
-    for p in plates:
-        dest = PDF_DIR / p["pdf_name"]
-        if download_pdf(p["pdf_name"], dest):
-            available.append(p)
+    new_airports = pick_new_airports(included, ADDS_PER_RUN)
+    if new_airports:
+        print(f"Adding new airports this run: {new_airports}")
+        included = included + new_airports
+        state["included_airports"] = included
+    else:
+        print("All airports in network already included — rebuilding TTDB.")
 
-    # 3. Convert to images
-    print("\n--- Rendering PNGs ---")
-    for p in available:
-        pdf_path = PDF_DIR / p["pdf_name"]
-        stem = Path(p["pdf_name"]).stem
-        try:
-            pdf_to_images(pdf_path, IMG_DIR, stem)
-        except Exception as exc:
-            print(f"  Render failed for {p['pdf_name']}: {exc}")
+    print(f"Total airports in TTDB: {included}")
 
-    # 4. Build TTDB
+    # 2. Fetch metafile (once for all airports)
+    metafile_root = fetch_metafile()
+
+    # 3. For each included airport: fetch plate list, download PDFs, render images
+    all_plates: dict[str, list[dict]] = {}
+
+    for airport_id in included:
+        print(f"\n=== {airport_id} ===")
+        plates = fetch_airport_plates(airport_id, metafile_root)
+        if not plates:
+            continue
+
+        available: list[dict] = []
+        print(f"  Downloading {len(plates)} PDFs...")
+        for p in plates:
+            dest = PDF_DIR / p["pdf_name"]
+            if download_pdf(p["pdf_name"], dest):
+                available.append(p)
+
+        print(f"  Rendering PNGs...")
+        for p in available:
+            pdf_path = PDF_DIR / p["pdf_name"]
+            stem = Path(p["pdf_name"]).stem
+            try:
+                pdf_to_images(pdf_path, IMG_DIR, stem)
+            except Exception as exc:
+                print(f"    Render failed for {p['pdf_name']}: {exc}")
+
+        all_plates[airport_id] = available
+
+    # 4. Build TTDB from all included airports
     print("\n--- Building TTDB ---")
-    ttdb_text = make_ttdb(available, IMG_DIR)
+    ttdb_text = make_ttdb(all_plates, IMG_DIR, included)
     TTDB_PATH.write_text(ttdb_text, encoding="utf-8")
     print(f"Written: {TTDB_PATH}")
 
+    # 5. Persist updated state
+    save_state(state)
+    print(f"State saved: {STATE_PATH}")
+
     print("\nDone.")
-    print(f"  PDFs : {PDF_DIR}")
-    print(f"  PNGs : {IMG_DIR}")
-    print(f"  TTDB : {TTDB_PATH}")
+    print(f"  PDFs  : {PDF_DIR}")
+    print(f"  PNGs  : {IMG_DIR}")
+    print(f"  TTDB  : {TTDB_PATH}")
+    print(f"  State : {STATE_PATH}")
+    print(f"  Airports in TTDB: {', '.join(included)}")
 
 
 if __name__ == "__main__":
