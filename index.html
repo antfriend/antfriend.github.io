@@ -358,6 +358,31 @@
       color: var(--muted);
     }
 
+    .record-ew {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      font-family: "Courier New", monospace;
+      padding: 2px 0;
+    }
+    .record-ew-conf-bar-bg {
+      width: 52px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--line);
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .record-ew-conf-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--accent);
+      opacity: 0.8;
+    }
+
     .record img,
     .record video,
     .record object,
@@ -1483,6 +1508,35 @@
       return parseMarkdownRecords(content);
     }
 
+    function parseEpistemicWeight(lines) {
+      let start = -1;
+      for (let i = 0; i < lines.length; i++) {
+        const t = lines[i].trim();
+        if (t === "") continue;
+        if (t === "[ew]") { start = i; break; }
+        break;
+      }
+      if (start < 0) return { ew: null, remaining: lines };
+      let end = -1;
+      for (let i = start + 1; i < lines.length; i++) {
+        if (lines[i].trim() === "[/ew]") { end = i; break; }
+      }
+      if (end < 0) return { ew: null, remaining: lines };
+      const ew = { conf: 128, rev: 0, sal: 0, touched: 0 };
+      for (let i = start + 1; i < end; i++) {
+        const m = lines[i].trim().match(/^([a-z]{1,16}):(\d+)$/);
+        if (!m) continue;
+        const k = m[1];
+        const v = parseInt(m[2], 10);
+        if (k === "conf") ew.conf = Math.min(255, Math.max(0, v));
+        else if (k === "rev") ew.rev = Math.min(65535, Math.max(0, v));
+        else if (k === "sal") ew.sal = Math.min(255, Math.max(0, v));
+        else if (k === "touched") ew.touched = Math.min(4294967295, Math.max(0, v));
+      }
+      ew.eps = Math.round(ew.sal * (255 - ew.conf) / 255);
+      return { ew, remaining: lines.slice(end + 1) };
+    }
+
     function parseMarkdownRecords(content) {
       let selected = null;
       const cursorMatch = content.match(/```cursor([\s\S]*?)```/);
@@ -1508,10 +1562,11 @@
         const headerLine = lines[headerIndex].trim();
         const recordId = headerLine.split(/\s+/)[0];
         const bodyLines = lines.slice(headerIndex + 1);
+        const { ew, remaining: ewBodyLines } = parseEpistemicWeight(bodyLines);
         let title = null;
         let titleRemoved = false;
         const filteredBodyLines = [];
-        for (const line of bodyLines) {
+        for (const line of ewBodyLines) {
           const match = line.match(/^##\s+(.*)$/);
           if (match && !titleRemoved) {
             title = match[1].trim();
@@ -1558,6 +1613,7 @@
           scene,
           audioPath: recordConfig?.audioPath || null,
           audioLoop: Boolean(recordConfig?.audioLoop),
+          ew,
         };
         order.push(recordId);
       }
@@ -2398,6 +2454,45 @@
       return controls;
     }
 
+    function buildEpistemicWeightEl(ew) {
+      const el = document.createElement("div");
+      el.className = "record-ew";
+
+      const barBg = document.createElement("span");
+      barBg.className = "record-ew-conf-bar-bg";
+      const barFill = document.createElement("span");
+      barFill.className = "record-ew-conf-bar-fill";
+      barFill.style.width = `${((ew.conf / 255) * 100).toFixed(1)}%`;
+      barBg.appendChild(barFill);
+      el.appendChild(barBg);
+
+      const confLabel = document.createElement("span");
+      confLabel.textContent = `conf ${ew.conf}`;
+      el.appendChild(confLabel);
+
+      el.appendChild(document.createTextNode(" · "));
+
+      const revLabel = document.createElement("span");
+      revLabel.textContent = `rev ${ew.rev}`;
+      el.appendChild(revLabel);
+
+      el.appendChild(document.createTextNode(" · "));
+
+      const salLabel = document.createElement("span");
+      salLabel.textContent = `sal ${ew.sal}`;
+      el.appendChild(salLabel);
+
+      if (ew.sal > 0) {
+        el.appendChild(document.createTextNode(" · "));
+        const epsLabel = document.createElement("span");
+        epsLabel.style.color = "var(--accent-2)";
+        epsLabel.textContent = `eps ${ew.eps}`;
+        el.appendChild(epsLabel);
+      }
+
+      return el;
+    }
+
     function buildRecordFrame(recordId) {
       const record = state.records[recordId];
       const frame = document.createElement("div");
@@ -2418,6 +2513,10 @@
         title.className = "record-title";
         title.textContent = record.title;
         textColumn.appendChild(title);
+      }
+
+      if (record.ew) {
+        textColumn.appendChild(buildEpistemicWeightEl(record.ew));
       }
 
       if (record.type === SCENE_RECORD_TYPE) {
