@@ -1,3 +1,4 @@
 start.bat
 __pycache__/serve_pages.cpython-310.pyc
 *.pyc
+.claude/settings.local.json

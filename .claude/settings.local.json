@@ -9,7 +9,9 @@
       "WebFetch(domain:www.airnav.com)",
       "WebFetch(domain:skyvector.com)",
       "WebFetch(domain:opennav.com)",
-      "WebFetch(domain:resources.globalair.com)"
+      "WebFetch(domain:resources.globalair.com)",
+      "Bash(gh api *)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }

@@ -44,9 +44,9 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT1.1LON1.2
+  - @LAT0.0LON0.0
 preview:
-  @LAT1.1LON1.2: "The world as it is experienced by a particular organism."
+  @LAT0.0LON0.0: "Toot Toot Engineering — free, open-source semantic, subjective, scientific, storytelling data for networked autonomous agents."
 
 ```
 
@@ -402,3 +402,23 @@ When idle, TTAI should avoid disruptive edits and prefer annotations.
 
 ### References
 - [TTAI Behavior Spec](standards/ttai/BEHAVIOR_SPEC.md)
+
+---
+
+@LAT0.0LON0.0 | created:1771900000 | updated:1771900000 | relates:documents>@LAT55.8LON37.6,documents>@LAT35.7LON139.7,documents>@LAT40.7LON-74.0
+
+## Toot Toot Engineering
+![Toot Toot Engineering](https://raw.githubusercontent.com/antfriend/toot-toot-engineering/main/images/time-foundry.svg)
+
+TTE is free, open-source software. [MIT License](https://github.com/antfriend/toot-toot-engineering/blob/main/LICENSE) | [antfriend.github.io](https://antfriend.github.io/)
+
+### Semantic, Subjective, Scientific, Storytelling Data
+
+- [The Toot Toot Database](https://github.com/antfriend/toot-toot-engineering/blob/main/README_TTDB.md)
+- [Agent 32 — Autonomy for ESP32 devices](https://github.com/antfriend/toot-toot-engineering/blob/main/README_A32.md)
+- [Toot Toot Networking](https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs)
+- [The Toot Toot Workflow](https://github.com/antfriend/toot-toot-engineering/blob/main/README_TTworkflow.md)
+- [TTE Content Publishing](https://github.com/antfriend/toot-toot-engineering)
+
+### Reference
+- [GitHub: antfriend/toot-toot-engineering](https://github.com/antfriend/toot-toot-engineering/blob/main/README.md)
