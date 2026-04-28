@@ -1,0 +1,3488 @@
+    import { renderLatex } from "./latex-renderer.js";
+
+    const DEFAULT_DB_PATH = "feelings_ttdb.md";
+    const DB_CANDIDATE_PATHS = [DEFAULT_DB_PATH, "TootTootTerminologyDB.md", "journals.md", "MyMentalPalaceDB.md", "BOI_approach_plates.md", "Mathematical.latex", "one_drop.md","Dice.md", "banjo_ttdb.md"];
+    const DB_URL_PARAM_PRIMARY = "ttdb";
+    const DB_URL_PARAM_FALLBACK = "db";
+    const DB_URL_PARAM_KEYS = [DB_URL_PARAM_PRIMARY, DB_URL_PARAM_FALLBACK];
+    const TOOT_URL_PARAM_PRIMARY = "toot";
+    const TOOT_URL_PARAM_FALLBACK = "record";
+    const TOOT_URL_PARAM_KEYS = [TOOT_URL_PARAM_PRIMARY, TOOT_URL_PARAM_FALLBACK];
+    const TOUR_DELAY_MS = 12000;
+    const TOUR_SLOW_DELAY_MULTIPLIER = 1.7;
+    const TOUR_SLOW_TRANSITION_MULTIPLIER = 2.5;
+    const SPECIAL_RECORD_BLOCK_LANG = "ttdb-special";
+    const RECORD_CONFIG_BLOCK_LANG = "ttdb-record";
+    const SCENE_RECORD_TYPE = "scene";
+    const SCENE_BLOCK_LANG = "ttdb-scene";
+    const SCENE_DEFAULT_EDGE_HOLD_MS = 1400;
+    const SPECIAL_RECORD_SOUTH_POLE_LAT = -90;
+    const TOUR_AUDIO_SPECIAL_KIND = "tour_sound";
+    const DISCOVERY_TOUR_OFF_SPECIAL_KIND = "discovery_tour_off";
+    const DISCOVERY_KEY_PREFIX = "tte-terminology-discovered-records-v2";
+    const GLOBE_ZOOM_MIN = 0.7;
+    const GLOBE_ZOOM_MAX = 350;
+    const GLOBE_ZOOM_STEP = 1.12;
+    const GLOBE_DEFAULT_ZOOM = 1.2;
+    const GLOBE_BASE_RADIUS_SCALE = 1.23;
+    const DB_SIDE_GLOBE_SCALE = 0.25;
+    const DB_SIDE_GLOBE_NEAR_OVERLAP = 2.22;
+    const DB_SIDE_GLOBE_STEP = 1.68;
+    const RECORD_SPLIT_IMAGE_WIDTH_RATIO = 0.75;
+    const RECORD_PROFILE_VIEW_MEDIA_QUERY = "(max-width: 900px), (orientation: portrait)";
+
+    const state = {
+      records: {},
+      order: [],
+      filteredOrder: [],
+      selectedId: null,
+      lastText: "",
+      lastLoadedDbPath: null,
+      activeDbPath: DEFAULT_DB_PATH,
+      availableDbPaths: [DEFAULT_DB_PATH],
+      coords: {},
+      screenPoints: {},
+      dbGlobeHitTargets: [],
+      dbShiftPx: 0,
+      dbShiftAnimation: null,
+      dbLoadToken: 0,
+      globeRotLat: 0,
+      globeRotLon: 0,
+      globeTargetLat: 0,
+      globeTargetLon: 0,
+      globeAnimating: false,
+      globeZoom: GLOBE_DEFAULT_ZOOM,
+      globeDragging: false,
+      globeDragX: 0,
+      globeDragY: 0,
+      globeVelX: 0,
+      globeVelY: 0,
+      globeVelT: 0,
+      globeDragMoved: false,
+      invertDragY: true,
+      searchIndex: {},
+      searchTerm: "",
+      tourEnabled: true,
+      tourPaused: false,
+      tourSlowPace: false,
+      tourTimer: null,
+      firstRecordId: null,
+      discoveredIds: [],
+      discoveredNodeColors: {},
+      pendingRecordTransition: null,
+      recordTransitionToken: 0,
+      recordViewportMode: null,
+      specialRecords: {},
+      discoveryTourOff: false,
+      tourAudioPath: null,
+      tourAudioPlayer: null,
+      recordAudioPath: null,
+      recordAudioLoop: false,
+      recordAudioPlayer: null,
+      scenePlayback: {
+        token: 0,
+        timer: null,
+        active: false,
+        sceneRecordId: null,
+        scene: null,
+        audioPath: null,
+        audioPlayer: null,
+      },
+    };
+
+    const palette = (() => {
+      const styles = getComputedStyle(document.documentElement);
+      const read = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+      return {
+        accent: read("--accent", "#0f8b8d"),
+        accentAlt: read("--accent-2", "#e76f51"),
+        eyeballRed: read("--eyeball-red", "#ff0000"),
+        ink: read("--ink", "#0b1112"),
+        muted: read("--muted", "rgba(11, 17, 18, 0.6)"),
+        line: read("--line", "rgba(11, 17, 18, 0.2)"),
+      };
+    })();
+
+    const statusEl = document.getElementById("status");
+    const listEl = document.getElementById("recordList");
+    const viewEl = document.getElementById("recordView");
+    const pageEl = document.querySelector(".page");
+    const graphCanvas = document.getElementById("graph");
+    const forgetDiscoveriesBtn = document.getElementById("forgetDiscoveries");
+    const searchInput = document.getElementById("searchInput");
+    const searchMeta = document.getElementById("searchMeta");
+    const tourToggle = document.getElementById("tourToggle");
+    const slowTourToggle = document.getElementById("slowTourToggle");
+    const invertDragToggle = document.getElementById("invertDragToggle");
+    const tourNote = document.getElementById("tourNote");
+    const tourToggleLabel = tourToggle.closest("label");
+    const slowTourToggleLabel = slowTourToggle.closest("label");
+    const recordProfileViewQuery = window.matchMedia(RECORD_PROFILE_VIEW_MEDIA_QUERY);
+
+    const ctx = graphCanvas.getContext("2d");
+    const resizeObserver = new ResizeObserver(() => renderGraph());
+    resizeObserver.observe(graphCanvas.parentElement);
+    const invertPref = localStorage.getItem("tte-terminology-invert-drag-y");
+    if (invertPref !== null) {
+      state.invertDragY = invertPref === "true";
+      invertDragToggle.checked = state.invertDragY;
+    }
+    const tourPref = localStorage.getItem("tte-terminology-guided-tour");
+    if (tourPref !== null) {
+      state.tourEnabled = tourPref === "true";
+      tourToggle.checked = state.tourEnabled;
+    }
+    const slowTourPref = localStorage.getItem("tte-terminology-guided-tour-slow");
+    if (slowTourPref !== null) {
+      state.tourSlowPace = slowTourPref === "true";
+      slowTourToggle.checked = state.tourSlowPace;
+    }
+
+    let searchDebounceTimer = null;
+
+    forgetDiscoveriesBtn.addEventListener("click", () => {
+      try {
+        localStorage.removeItem(getDiscoveryKey());
+      } catch (err) {
+        // Ignore storage failures and continue with in-memory reset.
+      }
+      initializeDiscovery();
+      applySearch();
+      setStatusLink(state.order.length);
+    });
+    searchInput.addEventListener("input", () => {
+      if (searchDebounceTimer) {
+        clearTimeout(searchDebounceTimer);
+      }
+      searchDebounceTimer = window.setTimeout(() => {
+        state.searchTerm = searchInput.value.trim().toLowerCase();
+        applySearch();
+        noteInteraction();
+        searchDebounceTimer = null;
+      }, 100);
+    });
+    searchInput.addEventListener("focus", () => {
+      clearTour(true);
+    });
+    searchInput.addEventListener("blur", () => {
+      if (state.tourEnabled) {
+        scheduleTour();
+      }
+    });
+    tourToggle.addEventListener("change", () => {
+      state.tourEnabled = tourToggle.checked;
+      localStorage.setItem("tte-terminology-guided-tour", String(state.tourEnabled));
+      if (state.tourEnabled) {
+        scheduleTour();
+      } else {
+        clearTour(true);
+      }
+    });
+    slowTourToggle.addEventListener("change", () => {
+      state.tourSlowPace = slowTourToggle.checked;
+      localStorage.setItem("tte-terminology-guided-tour-slow", String(state.tourSlowPace));
+      if (state.tourEnabled) {
+        scheduleTour();
+      }
+    });
+    invertDragToggle.addEventListener("change", () => {
+      state.invertDragY = invertDragToggle.checked;
+      localStorage.setItem("tte-terminology-invert-drag-y", String(state.invertDragY));
+    });
+    if (typeof recordProfileViewQuery.addEventListener === "function") {
+      recordProfileViewQuery.addEventListener("change", applyRecordViewportMode);
+    } else if (typeof recordProfileViewQuery.addListener === "function") {
+      recordProfileViewQuery.addListener(applyRecordViewportMode);
+    }
+    window.addEventListener("resize", applyRecordViewportMode);
+
+    window.addEventListener("keydown", (event) => {
+      if (event.code !== "Space" || event.repeat) return;
+      if (document.activeElement === searchInput) return;
+      if (state.discoveryTourOff) return;
+      if (!state.tourEnabled) return;
+
+      event.preventDefault();
+      state.tourPaused = !state.tourPaused;
+      if (state.tourPaused) {
+        clearTour(true);
+        tourNote.textContent = "Guided tour paused. Press Space to resume.";
+      } else {
+        scheduleTour();
+      }
+    });
+
+    function setStatusMessage(message) {
+      statusEl.textContent = message;
+    }
+
+    function setStatusLink(recordCount) {
+      const discoveredCount = getDiscoveredOrder().length;
+      const activeDbPath = state.activeDbPath || DEFAULT_DB_PATH;
+      statusEl.textContent = "";
+      statusEl.append("DB: ");
+      const link = document.createElement("a");
+      link.href = activeDbPath;
+      link.textContent = activeDbPath;
+      statusEl.append(link, ` · ${discoveredCount}/${recordCount} discovered`);
+    }
+
+    function getDiscoveryKey(dbPath = state.activeDbPath) {
+      const keyPath = dbPath || DEFAULT_DB_PATH;
+      return `${DISCOVERY_KEY_PREFIX}:${keyPath}`;
+    }
+
+    function isSupportedDbPath(path) {
+      if (typeof path !== "string") return false;
+      const lower = path.trim().toLowerCase();
+      return lower.endsWith(".md") || lower.endsWith(".latex");
+    }
+
+    function detectDbFormat(content, dbPath = state.activeDbPath) {
+      const lowerPath = typeof dbPath === "string" ? dbPath.trim().toLowerCase() : "";
+      if (lowerPath.endsWith(".latex")) return "latex";
+      if (lowerPath.endsWith(".md")) return "markdown";
+      if (/\\begin\{ttdb_record\}/i.test(content)) return "latex";
+      return "markdown";
+    }
+
+    function getDbBaseName(dbPath) {
+      return dbPath.replace(/^.*[\\/]/, "").replace(/\.(md|latex)$/i, "");
+    }
+
+    function getDbBadgeLabel(dbPath) {
+      const baseName = getDbBaseName(dbPath).replace(/DB$/i, "");
+      const initials = (baseName.match(/[A-Z]/g) || []).join("").slice(0, 5);
+      if (initials.length >= 2) return initials;
+      const compact = baseName.replace(/[^A-Za-z0-9]/g, "");
+      return compact.slice(0, 4).toUpperCase() || "DB";
+    }
+
+    function normalizeDbCatalog(paths) {
+      const unique = [];
+      const seen = new Set();
+      paths.forEach((value) => {
+        if (typeof value !== "string") return;
+        const trimmed = value.trim();
+        if (!isSupportedDbPath(trimmed)) return;
+        if (seen.has(trimmed)) return;
+        seen.add(trimmed);
+        unique.push(trimmed);
+      });
+      if (!seen.has(DEFAULT_DB_PATH)) {
+        unique.unshift(DEFAULT_DB_PATH);
+      } else if (unique[0] !== DEFAULT_DB_PATH) {
+        const idx = unique.indexOf(DEFAULT_DB_PATH);
+        unique.splice(idx, 1);
+        unique.unshift(DEFAULT_DB_PATH);
+      }
+      return unique;
+    }
+
+    function initializeDbCatalog() {
+      state.availableDbPaths = normalizeDbCatalog(DB_CANDIDATE_PATHS);
+    }
+
+    function getDbAliasCandidates(dbPath) {
+      const aliases = new Set();
+      const lowerPath = dbPath.toLowerCase();
+      const baseName = getDbBaseName(dbPath).toLowerCase();
+      aliases.add(lowerPath);
+      aliases.add(baseName);
+      aliases.add(baseName.replace(/[_-]?ttdb$/, ""));
+      if (!baseName.endsWith("ttdb")) {
+        aliases.add(baseName.replace(/db$/, ""));
+      }
+      return [...aliases].filter(Boolean);
+    }
+
+    function resolveDbPathToken(rawToken, availablePaths = state.availableDbPaths) {
+      if (typeof rawToken !== "string") return null;
+      const trimmed = rawToken.trim();
+      if (!trimmed) return null;
+      if (/^[A-Za-z][A-Za-z0-9+.-]*:/.test(trimmed)) return null;
+      if (/^[\\/]/.test(trimmed)) return null;
+      if (/[?#]/.test(trimmed)) return null;
+
+      const normalizedToken = trimmed.toLowerCase();
+      const normalizedNoExt = normalizedToken.replace(/\.(md|latex)$/i, "");
+      for (const dbPath of availablePaths) {
+        const aliases = getDbAliasCandidates(dbPath);
+        if (aliases.includes(normalizedToken) || aliases.includes(normalizedNoExt)) {
+          return dbPath;
+        }
+      }
+
+      return isSupportedDbPath(trimmed) ? trimmed : null;
+    }
+
+    function getFirstSearchParam(searchParams, keys) {
+      for (const key of keys) {
+        const rawValue = searchParams.get(key);
+        if (rawValue) return rawValue;
+      }
+      return null;
+    }
+
+    function normalizeRecordIdToken(rawToken) {
+      if (typeof rawToken !== "string") return null;
+      const trimmed = rawToken.trim();
+      if (!trimmed) return null;
+
+      const directMatch = trimmed.match(/^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$/i);
+      if (directMatch) {
+        return `@LAT${directMatch[1]}LON${directMatch[2]}`;
+      }
+
+      const compactMatch = trimmed.match(/^lat(-?\d+(?:\.\d+)?)lon(-?\d+(?:\.\d+)?)$/i);
+      if (compactMatch) {
+        return `@LAT${compactMatch[1]}LON${compactMatch[2]}`;
+      }
+
+      return null;
+    }
+
+    function toTootRecordToken(recordId) {
+      const normalized = normalizeRecordIdToken(recordId);
+      if (!normalized) return "";
+      const match = normalized.match(/^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$/i);
+      if (!match) return normalized;
+      return `lat${match[1]}lon${match[2]}`;
+    }
+
+    function getInitialDbPathFromUrl() {
+      let params = null;
+      try {
+        params = new URLSearchParams(window.location.search || "");
+      } catch (err) {
+        return DEFAULT_DB_PATH;
+      }
+
+      const rawValue = getFirstSearchParam(params, DB_URL_PARAM_KEYS);
+      if (!rawValue) return DEFAULT_DB_PATH;
+      return resolveDbPathToken(rawValue, state.availableDbPaths) || DEFAULT_DB_PATH;
+    }
+
+    function getInitialTootTargetFromUrl() {
+      let params = null;
+      try {
+        params = new URLSearchParams(window.location.search || "");
+      } catch (err) {
+        return null;
+      }
+
+      const rawValue = getFirstSearchParam(params, TOOT_URL_PARAM_KEYS);
+      if (!rawValue) return null;
+
+      const parsedTarget = parseRecordLinkTarget(rawValue);
+      if (!parsedTarget?.recordId) return null;
+
+      const dbFromQuery = resolveDbPathToken(getFirstSearchParam(params, DB_URL_PARAM_KEYS), state.availableDbPaths);
+      return {
+        recordId: parsedTarget.recordId,
+        dbPath: parsedTarget.dbPath || dbFromQuery || null,
+      };
+    }
+
+    function syncSelectionInUrl(dbPath, recordId = null) {
+      if (!dbPath) return;
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set(DB_URL_PARAM_PRIMARY, dbPath);
+        url.searchParams.delete(DB_URL_PARAM_FALLBACK);
+
+        const tootToken = toTootRecordToken(recordId);
+        if (tootToken) {
+          url.searchParams.set(TOOT_URL_PARAM_PRIMARY, tootToken);
+        } else {
+          url.searchParams.delete(TOOT_URL_PARAM_PRIMARY);
+        }
+        url.searchParams.delete(TOOT_URL_PARAM_FALLBACK);
+        window.history.replaceState(null, "", url.toString());
+      } catch (err) {
+        // Ignore URL update failures and continue using in-memory state.
+      }
+    }
+
+    function hasDiscoveryTourOffSpecialRecord(specialRecords) {
+      return Boolean(specialRecords[DISCOVERY_TOUR_OFF_SPECIAL_KIND]);
+    }
+
+    function syncDiscoveryTourControls() {
+      const suppressed = state.discoveryTourOff;
+      if (suppressed) {
+        state.tourPaused = false;
+        clearTour(true);
+      }
+      forgetDiscoveriesBtn.hidden = suppressed;
+      if (tourToggleLabel) tourToggleLabel.hidden = suppressed;
+      if (slowTourToggleLabel) slowTourToggleLabel.hidden = suppressed;
+      tourNote.hidden = suppressed;
+    }
+
+    function getDiscoveredOrder() {
+      if (!state.order.length) return [];
+      if (state.discoveryTourOff) return [...state.order];
+      if (!state.discoveredIds.length) return [];
+      const discoveredSet = new Set(state.discoveredIds);
+      return state.order.filter((recordId) => discoveredSet.has(recordId));
+    }
+
+    function getVisibleOrderForGraph() {
+      return [...state.order];
+    }
+
+    function hashRecordId(recordId) {
+      let hash = 2166136261;
+      for (let i = 0; i < recordId.length; i += 1) {
+        hash ^= recordId.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      return hash >>> 0;
+    }
+
+    function pickDeterministicDiscoveredNodeColor(recordId) {
+      const hash = hashRecordId(recordId);
+      const hue = hash % 360;
+      const saturation = 62 + (Math.floor(hash / 360) % 22);
+      const lightness = 48 + (Math.floor(hash / (360 * 22)) % 16);
+      return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+
+    function syncDiscoveredNodeColors() {
+      const discoveredSet = new Set(state.discoveredIds);
+      Object.keys(state.discoveredNodeColors).forEach((recordId) => {
+        if (!discoveredSet.has(recordId)) {
+          delete state.discoveredNodeColors[recordId];
+        }
+      });
+      state.discoveredIds.forEach((recordId) => {
+        if (!state.discoveredNodeColors[recordId]) {
+          state.discoveredNodeColors[recordId] = pickDeterministicDiscoveredNodeColor(recordId);
+        }
+      });
+    }
+
+    function getNodeColor(recordId, discoveredSet) {
+      if (!discoveredSet.has(recordId)) return "#6a6f78";
+      if (!state.discoveredNodeColors[recordId]) {
+        state.discoveredNodeColors[recordId] = pickDeterministicDiscoveredNodeColor(recordId);
+      }
+      return state.discoveredNodeColors[recordId];
+    }
+
+    function persistDiscovery() {
+      if (state.discoveryTourOff) return;
+      try {
+        localStorage.setItem(getDiscoveryKey(), JSON.stringify(state.discoveredIds));
+      } catch (err) {
+        // Ignore storage failures and continue with in-memory discovery state.
+      }
+    }
+
+    function initializeDiscovery() {
+      const firstRecordId = state.order[0] || null;
+      state.firstRecordId = firstRecordId;
+
+      if (state.discoveryTourOff) {
+        state.discoveredIds = [...state.order];
+        syncDiscoveredNodeColors();
+        return;
+      }
+
+      let storedIds = [];
+      try {
+        const raw = localStorage.getItem(getDiscoveryKey());
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            storedIds = parsed.filter((value) => typeof value === "string");
+          }
+        }
+      } catch (err) {
+        storedIds = [];
+      }
+
+      const discoveredSet = new Set(storedIds.filter((recordId) => Boolean(state.records[recordId])));
+      if (firstRecordId && state.records[firstRecordId]) {
+        discoveredSet.add(firstRecordId);
+      }
+
+      state.discoveredIds = state.order.filter((recordId) => discoveredSet.has(recordId));
+      syncDiscoveredNodeColors();
+      persistDiscovery();
+    }
+
+    function discoverRecord(recordId) {
+      if (state.discoveryTourOff) return false;
+      if (!recordId || !state.records[recordId]) return false;
+      const discoveredSet = new Set(state.discoveredIds);
+      const firstRecordId = state.firstRecordId || state.order[0] || null;
+      let changed = false;
+
+      if (firstRecordId && state.records[firstRecordId] && !discoveredSet.has(firstRecordId)) {
+        discoveredSet.add(firstRecordId);
+        changed = true;
+      }
+
+      if (!discoveredSet.has(recordId)) {
+        discoveredSet.add(recordId);
+        changed = true;
+      }
+
+      if (!changed) return false;
+      state.discoveredIds = state.order.filter((id) => discoveredSet.has(id));
+      syncDiscoveredNodeColors();
+      persistDiscovery();
+      return true;
+    }
+
+    function buildSearchIndex() {
+      state.searchIndex = {};
+      state.order.forEach((recordId) => {
+        const record = state.records[recordId];
+        if (!record) return;
+        const text = [record.title, record.header, record.body].filter(Boolean).join("\n");
+        state.searchIndex[recordId] = text.toLowerCase();
+      });
+    }
+
+    function applySearch(opts = {}) {
+      const { preferVisibleSelection = true } = opts;
+      const term = state.searchTerm;
+      const discoveredOrder = getDiscoveredOrder();
+      if (!term) {
+        state.filteredOrder = [...discoveredOrder];
+      } else {
+        state.filteredOrder = discoveredOrder.filter((recordId) => {
+          const blob = state.searchIndex[recordId] || "";
+          return blob.includes(term);
+        });
+      }
+
+      if (preferVisibleSelection && state.filteredOrder.length && !state.filteredOrder.includes(state.selectedId)) {
+        const nextRecordId = state.filteredOrder[0];
+        queueRecordTransition(state.selectedId, nextRecordId);
+        state.selectedId = nextRecordId;
+        playRecordAudioForSelection(state.selectedId, { restart: true, suppress: state.scenePlayback.active });
+      }
+
+      renderList();
+      renderRecord();
+      centerOnSelected();
+      renderGraph();
+      syncSelectionInUrl(state.activeDbPath || DEFAULT_DB_PATH, state.selectedId);
+      updateSearchMeta();
+    }
+
+    function updateSearchMeta() {
+      if (!state.order.length) {
+        searchMeta.textContent = "No records.";
+        return;
+      }
+      const discoveredCount = getDiscoveredOrder().length;
+      if (!state.searchTerm) {
+        searchMeta.textContent = `${discoveredCount} discovered of ${state.order.length} terms.`;
+        return;
+      }
+      searchMeta.textContent =
+        `${state.filteredOrder.length} matches within ${discoveredCount} discovered terms for "${state.searchTerm}".`;
+    }
+
+    function loadDb(dbPath = state.activeDbPath, opts = {}) {
+      const { force = false, resetSelection = false, preferredRecordId = null } = opts;
+      const targetDbPath = resolveDbPathToken(dbPath, state.availableDbPaths) || DEFAULT_DB_PATH;
+      const loadToken = (state.dbLoadToken += 1);
+      stopScenePlayback({ stopAudio: true, refreshControls: false, suppressRecordAudio: true });
+      state.activeDbPath = targetDbPath;
+      if (!state.availableDbPaths.includes(targetDbPath)) {
+        state.availableDbPaths = normalizeDbCatalog([...state.availableDbPaths, targetDbPath]);
+      }
+      syncSelectionInUrl(targetDbPath, null);
+      setStatusMessage(`Loading ${targetDbPath}...`);
+      renderGraph();
+
+      fetch(targetDbPath, { cache: "no-store" })
+        .then((res) => {
+          if (!res.ok) throw new Error(`Failed to load ${targetDbPath}`);
+          return res.text();
+        })
+        .then((text) => {
+          if (loadToken !== state.dbLoadToken) return;
+          if (!force && targetDbPath === state.lastLoadedDbPath && text === state.lastText) return;
+          state.lastText = text;
+          state.lastLoadedDbPath = targetDbPath;
+          const { records, order, selected, coords, specialRecords } = parseRecords(text, targetDbPath);
+          state.records = records;
+          state.order = order;
+          state.coords = coords;
+          state.specialRecords = specialRecords;
+          state.discoveryTourOff = hasDiscoveryTourOffSpecialRecord(state.specialRecords);
+          syncDiscoveryTourControls();
+          setTourAudioPath(state.discoveryTourOff ? null : getTourAudioPath(state.specialRecords));
+          initializeDiscovery();
+          buildSearchIndex();
+          if (preferredRecordId && records[preferredRecordId]) {
+            state.selectedId = preferredRecordId;
+          } else if (resetSelection || !state.selectedId || !records[state.selectedId]) {
+            state.selectedId = selected || order[0] || null;
+          }
+          if (state.selectedId) {
+            discoverRecord(state.selectedId);
+          }
+          applySearch();
+          playRecordAudioForSelection(state.selectedId, { restart: true, suppress: false });
+          setStatusLink(order.length);
+          scheduleTour();
+        })
+        .catch((err) => {
+          if (loadToken !== state.dbLoadToken) return;
+          setStatusMessage(err.message);
+          state.records = {};
+          state.order = [];
+          state.filteredOrder = [];
+          state.selectedId = null;
+          state.coords = {};
+          state.firstRecordId = null;
+          state.discoveredIds = [];
+          state.discoveredNodeColors = {};
+          state.specialRecords = {};
+          state.discoveryTourOff = false;
+          syncDiscoveryTourControls();
+          setTourAudioPath(null);
+          stopRecordAudio();
+          stopScenePlayback({ stopAudio: true, refreshControls: false, suppressRecordAudio: true });
+          renderList();
+          renderRecord();
+          renderGraph();
+          updateSearchMeta();
+        });
+    }
+
+    function parseCursorSelection(cursorBlock) {
+      let selected = null;
+      const lines = cursorBlock.split(/\r?\n/);
+      let inSelected = false;
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith("selected:")) {
+          inSelected = true;
+          continue;
+        }
+        if (inSelected) {
+          const itemMatch = trimmed.match(/^-\s*(\S+)/);
+          if (itemMatch) {
+            selected = itemMatch[1];
+            break;
+          }
+          if (trimmed && !trimmed.startsWith("-")) {
+            break;
+          }
+        }
+      }
+      return selected;
+    }
+
+    function parseRecordEdges(headerLine) {
+      const edges = [];
+      const relatesMatch = headerLine.match(/relates:([^|]+)/);
+      if (!relatesMatch) return edges;
+      const tokens = relatesMatch[1].split(",");
+      for (const tokenRaw of tokens) {
+        const token = tokenRaw.trim();
+        if (!token) continue;
+        let edgeType = "relates";
+        let target = token;
+        if (token.includes(">")) {
+          const [left, right] = token.split(">", 2);
+          edgeType = left.trim();
+          target = right.trim();
+        }
+        edges.push({ type: edgeType, target });
+      }
+      return edges;
+    }
+
+    function parseRecordHeaderMetadata(headerLine) {
+      const metadata = {};
+      if (typeof headerLine !== "string") return metadata;
+      const segments = headerLine.split("|").slice(1);
+      segments.forEach((segmentRaw) => {
+        const segment = segmentRaw.trim();
+        if (!segment) return;
+        const entryMatch = segment.match(/^([A-Za-z0-9._-]+)\s*:\s*(.+)$/);
+        if (!entryMatch) return;
+        const key = entryMatch[1].toLowerCase();
+        metadata[key] = entryMatch[2].trim();
+      });
+      return metadata;
+    }
+
+    function parseRecordType(headerLine) {
+      const metadata = parseRecordHeaderMetadata(headerLine);
+      const rawType = typeof metadata.type === "string" ? metadata.type.trim().toLowerCase() : "";
+      return rawType || "record";
+    }
+
+    function stripOptionalQuotes(value) {
+      if (typeof value !== "string") return value;
+      const trimmed = value.trim();
+      if (
+        (trimmed.startsWith("\"") && trimmed.endsWith("\"")) ||
+        (trimmed.startsWith("'") && trimmed.endsWith("'"))
+      ) {
+        return trimmed.slice(1, -1);
+      }
+      return trimmed;
+    }
+
+    function parseSceneScalar(value) {
+      const stripped = stripOptionalQuotes(value);
+      if (typeof stripped !== "string") return stripped;
+      const lower = stripped.toLowerCase();
+      if (lower === "true") return true;
+      if (lower === "false") return false;
+      const numeric = Number(stripped);
+      if (Number.isFinite(numeric)) return numeric;
+      return stripped;
+    }
+
+    function parseSceneNumber(value) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) return null;
+      return numeric;
+    }
+
+    function parseSceneEdgeConfig(line) {
+      if (typeof line !== "string") return null;
+      const segments = line.split("|").map((part) => part.trim()).filter(Boolean);
+      if (!segments.length) return null;
+      const edgeMatch = segments[0].match(/^edge\s*:\s*([A-Za-z0-9._-]+)$/i);
+      if (!edgeMatch) return null;
+
+      const edge = {
+        name: edgeMatch[1].trim().toLowerCase(),
+        from: null,
+        to: null,
+        holdMs: null,
+        params: {},
+      };
+
+      for (let i = 1; i < segments.length; i += 1) {
+        const entryMatch = segments[i].match(/^([A-Za-z0-9._-]+)\s*:\s*(.+)$/);
+        if (!entryMatch) continue;
+        const key = entryMatch[1].toLowerCase();
+        const parsedValue = parseSceneScalar(entryMatch[2]);
+
+        if (key === "from") {
+          edge.from = normalizeRecordIdToken(String(parsedValue ?? ""));
+          continue;
+        }
+        if (key === "to") {
+          edge.to = normalizeRecordIdToken(String(parsedValue ?? ""));
+          continue;
+        }
+        if (key === "hold_ms" || key === "pause_ms") {
+          const holdMs = parseSceneNumber(parsedValue);
+          if (holdMs !== null) edge.holdMs = Math.max(0, Math.round(holdMs));
+          continue;
+        }
+        edge.params[key] = parsedValue;
+      }
+
+      if (!edge.from || !edge.to) return null;
+      return edge;
+    }
+
+    function parseSceneConfigBlock(blockText) {
+      const scene = {
+        audioPath: null,
+        startNode: null,
+        loop: false,
+        edges: [],
+      };
+
+      const lines = blockText.split(/\r?\n/);
+      lines.forEach((line) => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#") || trimmed.startsWith("%")) return;
+
+        if (/^edge\s*:/i.test(trimmed)) {
+          const edge = parseSceneEdgeConfig(trimmed);
+          if (edge) scene.edges.push(edge);
+          return;
+        }
+
+        const entryMatch = trimmed.match(/^([A-Za-z0-9._-]+)\s*:\s*(.+)$/);
+        if (!entryMatch) return;
+        const key = entryMatch[1].toLowerCase();
+        const parsedValue = parseSceneScalar(entryMatch[2]);
+
+        if (key === "audio_path") {
+          scene.audioPath = typeof parsedValue === "string" ? parsedValue.trim() : "";
+          return;
+        }
+        if (key === "start" || key === "start_node") {
+          scene.startNode = normalizeRecordIdToken(String(parsedValue ?? ""));
+          return;
+        }
+        if (key === "loop") {
+          scene.loop = Boolean(parsedValue);
+        }
+      });
+
+      if (!scene.edges.length) return null;
+      if (!scene.startNode) {
+        scene.startNode = scene.edges[0]?.from || null;
+      }
+      if (!scene.startNode) return null;
+      if (!scene.audioPath) scene.audioPath = null;
+      return scene;
+    }
+
+    function parseSceneRecordBody(body) {
+      if (typeof body !== "string" || !body.trim()) {
+        return { scene: null, body: body || "" };
+      }
+
+      const sceneBlockRegex = new RegExp("```" + SCENE_BLOCK_LANG + "([\\s\\S]*?)```", "i");
+      const sceneBlockMatch = body.match(sceneBlockRegex);
+      if (!sceneBlockMatch) {
+        return { scene: null, body };
+      }
+
+      const scene = parseSceneConfigBlock(sceneBlockMatch[1]);
+      if (!scene) {
+        return { scene: null, body };
+      }
+
+      const before = body.slice(0, sceneBlockMatch.index).trimEnd();
+      const after = body.slice(sceneBlockMatch.index + sceneBlockMatch[0].length).trimStart();
+      const bodyWithoutScene = [before, after].filter(Boolean).join("\n\n").trim();
+      return { scene, body: bodyWithoutScene };
+    }
+
+    function parseRecordConfigBlock(blockText) {
+      const config = {
+        audioPath: null,
+        audioLoop: false,
+      };
+
+      const lines = blockText.split(/\r?\n/);
+      lines.forEach((line) => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#") || trimmed.startsWith("%")) return;
+        const entryMatch = trimmed.match(/^([A-Za-z0-9._-]+)\s*:\s*(.+)$/);
+        if (!entryMatch) return;
+        const key = entryMatch[1].toLowerCase();
+        const parsedValue = parseSceneScalar(entryMatch[2]);
+
+        if (key === "audio_path") {
+          config.audioPath = typeof parsedValue === "string" ? parsedValue.trim() : "";
+          return;
+        }
+        if (key === "audio_loop" || key === "loop_audio") {
+          config.audioLoop = Boolean(parsedValue);
+        }
+      });
+
+      if (!config.audioPath) return null;
+      return config;
+    }
+
+    function parseRecordConfigFromBody(body) {
+      if (typeof body !== "string" || !body.trim()) {
+        return { config: null, body: body || "" };
+      }
+
+      const recordConfigRegex = new RegExp("```" + RECORD_CONFIG_BLOCK_LANG + "([\\s\\S]*?)```", "i");
+      const recordConfigMatch = body.match(recordConfigRegex);
+      if (!recordConfigMatch) {
+        return { config: null, body };
+      }
+
+      const config = parseRecordConfigBlock(recordConfigMatch[1]);
+      if (!config) {
+        return { config: null, body };
+      }
+
+      const before = body.slice(0, recordConfigMatch.index).trimEnd();
+      const after = body.slice(recordConfigMatch.index + recordConfigMatch[0].length).trimStart();
+      const bodyWithoutConfig = [before, after].filter(Boolean).join("\n\n").trim();
+      return { config, body: bodyWithoutConfig };
+    }
+
+    function parseRecords(content, dbPath = state.activeDbPath) {
+      const format = detectDbFormat(content, dbPath);
+      if (format === "latex") return parseLatexRecords(content);
+      return parseMarkdownRecords(content);
+    }
+
+    function parseEpistemicWeight(lines) {
+      let start = -1;
+      for (let i = 0; i < lines.length; i++) {
+        const t = lines[i].trim();
+        if (t === "") continue;
+        if (t === "[ew]") { start = i; break; }
+        break;
+      }
+      if (start < 0) return { ew: null, remaining: lines };
+      let end = -1;
+      for (let i = start + 1; i < lines.length; i++) {
+        if (lines[i].trim() === "[/ew]") { end = i; break; }
+      }
+      if (end < 0) return { ew: null, remaining: lines };
+      const ew = { conf: 128, rev: 0, sal: 0, touched: 0 };
+      for (let i = start + 1; i < end; i++) {
+        const m = lines[i].trim().match(/^([a-z]{1,16}):(\d+)$/);
+        if (!m) continue;
+        const k = m[1];
+        const v = parseInt(m[2], 10);
+        if (k === "conf") ew.conf = Math.min(255, Math.max(0, v));
+        else if (k === "rev") ew.rev = Math.min(65535, Math.max(0, v));
+        else if (k === "sal") ew.sal = Math.min(255, Math.max(0, v));
+        else if (k === "touched") ew.touched = Math.min(4294967295, Math.max(0, v));
+      }
+      ew.eps = Math.round(ew.sal * (255 - ew.conf) / 255);
+      return { ew, remaining: lines.slice(end + 1) };
+    }
+
+    function parseMarkdownRecords(content) {
+      let selected = null;
+      const cursorMatch = content.match(/```cursor([\s\S]*?)```/);
+      if (cursorMatch) {
+        selected = parseCursorSelection(cursorMatch[1]);
+      }
+
+      const records = {};
+      const order = [];
+      const coords = {};
+      const specialRecords = {};
+      const blocks = content.split(/^\s*---+\s*$/m);
+      for (const block of blocks) {
+        const lines = block.split(/\r?\n/);
+        let headerIndex = -1;
+        for (let i = 0; i < lines.length; i += 1) {
+          if (lines[i].startsWith("@")) {
+            headerIndex = i;
+            break;
+          }
+        }
+        if (headerIndex < 0) continue;
+        const headerLine = lines[headerIndex].trim();
+        const recordId = headerLine.split(/\s+/)[0];
+        const bodyLines = lines.slice(headerIndex + 1);
+        const { ew, remaining: ewBodyLines } = parseEpistemicWeight(bodyLines);
+        let title = null;
+        let titleRemoved = false;
+        const filteredBodyLines = [];
+        for (const line of ewBodyLines) {
+          const match = line.match(/^##\s+(.*)$/);
+          if (match && !titleRemoved) {
+            title = match[1].trim();
+            titleRemoved = true;
+            continue;
+          }
+          filteredBodyLines.push(line);
+        }
+        let body = filteredBodyLines.join("\n").trim();
+        const recordType = parseRecordType(headerLine);
+        let scene = null;
+        if (recordType === SCENE_RECORD_TYPE) {
+          const parsedSceneRecord = parseSceneRecordBody(body);
+          if (parsedSceneRecord.scene) {
+            scene = parsedSceneRecord.scene;
+            body = parsedSceneRecord.body;
+          }
+        }
+        const parsedRecordConfig = parseRecordConfigFromBody(body);
+        if (parsedRecordConfig.config) {
+          body = parsedRecordConfig.body;
+        }
+        const recordConfig = parsedRecordConfig.config;
+
+        const recordCoords = parseCoords(recordId);
+        const specialRecord = parseSpecialRecord(recordCoords, body, "markdown");
+        if (specialRecord) {
+          specialRecords[specialRecord.kind] = { recordId, ...specialRecord };
+          continue;
+        }
+
+        const edges = parseRecordEdges(headerLine);
+
+        if (recordCoords) {
+          coords[recordId] = recordCoords;
+        }
+
+        records[recordId] = {
+          header: headerLine,
+          body,
+          title,
+          edges,
+          type: recordType,
+          scene,
+          audioPath: recordConfig?.audioPath || null,
+          audioLoop: Boolean(recordConfig?.audioLoop),
+          ew,
+        };
+        order.push(recordId);
+      }
+
+      return { records, order, selected, coords, specialRecords };
+    }
+
+    function latexToMarkdownBody(bodySource) {
+      if (!bodySource) return "";
+
+      let text = bodySource.replace(/\r\n/g, "\n");
+      const mathBlocks = [];
+      text = text.replace(/\\\[([\s\S]*?)\\\]/g, (_match, expr) => {
+        const token = `@@TTDB_MATH_${mathBlocks.length}@@`;
+        mathBlocks.push(expr.trim());
+        return token;
+      });
+
+      text = text
+        .replace(/\\section\*\{([^}]*)\}/g, "## $1")
+        .replace(/\\subsection\*\{([^}]*)\}/g, "### $1")
+        .replace(/\\subsubsection\*\{([^}]*)\}/g, "#### $1")
+        .replace(/\\textbf\{([^}]*)\}/g, "**$1**")
+        .replace(/\\texttt\{([^}]*)\}/g, "`$1`")
+        .replace(/\\emph\{([^}]*)\}/g, "*$1*")
+        .replace(/\\begin\{itemize\}/g, "")
+        .replace(/\\end\{itemize\}/g, "")
+        .replace(/\\begin\{enumerate\}/g, "")
+        .replace(/\\end\{enumerate\}/g, "")
+        .replace(/\\item\s+/g, "- ")
+        .replace(/\\\\/g, "\n")
+        .replace(/\\([{}_$%&#])/g, "$1");
+
+      text = text.replace(/\$([^$\n]+)\$/g, (_match, expr) => `\\(${expr.trim()}\\)`);
+
+      text = text.replace(/@@TTDB_MATH_(\d+)@@/g, (_match, idxRaw) => {
+        const expr = mathBlocks[Number(idxRaw)] || "";
+        if (!expr) return "";
+        return `\n\`\`\`math\n${expr}\n\`\`\`\n`;
+      });
+
+      return text
+        .replace(/[ \t]+\n/g, "\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+
+    function parseLatexRecords(content) {
+      let selected = null;
+      const cursorMatch = content.match(/\\begin\{ttdb_cursor\}([\s\S]*?)\\end\{ttdb_cursor\}/i);
+      if (cursorMatch) {
+        selected = parseCursorSelection(cursorMatch[1]);
+      }
+
+      const records = {};
+      const order = [];
+      const coords = {};
+      const specialRecords = {};
+      const recordRegex = /\\begin\{ttdb_record\}([\s\S]*?)\\end\{ttdb_record\}/gi;
+      let blockMatch = recordRegex.exec(content);
+
+      while (blockMatch) {
+        const block = blockMatch[1];
+        const headerMatch = block.match(/\\ttdbheader\{([\s\S]*?)\}/);
+        if (headerMatch) {
+          const headerLine = headerMatch[1].replace(/\s+/g, " ").trim();
+          const recordId = headerLine.split(/\s+/)[0];
+          if (recordId.startsWith("@")) {
+            let bodySource = block.replace(headerMatch[0], "").trim();
+            bodySource = bodySource.replace(/^\s*%.*$/gm, "").trim();
+            const recordCoords = parseCoords(recordId);
+
+            const specialRecord = parseSpecialRecord(recordCoords, bodySource, "latex");
+            if (specialRecord) {
+              specialRecords[specialRecord.kind] = { recordId, ...specialRecord };
+            } else {
+              let title = null;
+              const titleMatch = bodySource.match(/\\subsection\*\{([^}]*)\}/);
+              if (titleMatch) {
+                title = titleMatch[1].trim();
+                bodySource = bodySource.replace(titleMatch[0], "").trim();
+              }
+
+              let body = latexToMarkdownBody(bodySource);
+              const recordType = parseRecordType(headerLine);
+              let scene = null;
+              if (recordType === SCENE_RECORD_TYPE) {
+                const parsedSceneRecord = parseSceneRecordBody(body);
+                if (parsedSceneRecord.scene) {
+                  scene = parsedSceneRecord.scene;
+                  body = parsedSceneRecord.body;
+                }
+              }
+              const parsedRecordConfig = parseRecordConfigFromBody(body);
+              if (parsedRecordConfig.config) {
+                body = parsedRecordConfig.body;
+              }
+              const recordConfig = parsedRecordConfig.config;
+              const edges = parseRecordEdges(headerLine);
+              if (recordCoords) {
+                coords[recordId] = recordCoords;
+              }
+
+              records[recordId] = {
+                header: headerLine,
+                body,
+                title,
+                edges,
+                type: recordType,
+                scene,
+                audioPath: recordConfig?.audioPath || null,
+                audioLoop: Boolean(recordConfig?.audioLoop),
+              };
+              order.push(recordId);
+            }
+          }
+        }
+        blockMatch = recordRegex.exec(content);
+      }
+
+      return { records, order, selected, coords, specialRecords };
+    }
+
+    function parseSpecialConfigBlock(blockText) {
+      const config = {};
+      const lines = blockText.split(/\r?\n/);
+      lines.forEach((line) => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#") || trimmed.startsWith("%")) return;
+        const entryMatch = trimmed.match(/^([A-Za-z0-9._-]+)\s*:\s*(.+)$/);
+        if (!entryMatch) return;
+        const key = entryMatch[1].toLowerCase();
+        let value = entryMatch[2].trim();
+        if (
+          (value.startsWith("\"") && value.endsWith("\"")) ||
+          (value.startsWith("'") && value.endsWith("'"))
+        ) {
+          value = value.slice(1, -1);
+        }
+        config[key] = value;
+      });
+      return config;
+    }
+
+    function parseSpecialRecord(recordCoords, body, format = "markdown") {
+      if (!recordCoords || recordCoords[0] !== SPECIAL_RECORD_SOUTH_POLE_LAT) return null;
+      let specialBlockBody = "";
+
+      if (format === "latex") {
+        const latexSpecialMatch = body.match(/\\begin\{ttdb_special\}([\s\S]*?)\\end\{ttdb_special\}/i);
+        if (latexSpecialMatch) {
+          specialBlockBody = latexSpecialMatch[1];
+        }
+      }
+
+      if (!specialBlockBody) {
+        const specialBlockRegex = new RegExp(`\`\`\`${SPECIAL_RECORD_BLOCK_LANG}([\\s\\S]*?)\`\`\``, "i");
+        const specialBlockMatch = body.match(specialBlockRegex);
+        if (specialBlockMatch) {
+          specialBlockBody = specialBlockMatch[1];
+        }
+      }
+
+      if (!specialBlockBody) return null;
+      const config = parseSpecialConfigBlock(specialBlockBody);
+      const kind = typeof config.kind === "string" ? config.kind.trim().toLowerCase() : "";
+      if (!kind) return null;
+      return { kind, config };
+    }
+
+    function getTourAudioPath(specialRecords) {
+      const tourSoundConfig = specialRecords[TOUR_AUDIO_SPECIAL_KIND]?.config;
+      if (!tourSoundConfig) return null;
+      const audioPath = typeof tourSoundConfig.audio_path === "string" ? tourSoundConfig.audio_path.trim() : "";
+      return audioPath || null;
+    }
+
+    function setTourAudioPath(path) {
+      const normalizedPath = typeof path === "string" ? path.trim() : "";
+      const nextPath = normalizedPath || null;
+      if (nextPath === state.tourAudioPath) return;
+
+      if (state.tourAudioPlayer) {
+        state.tourAudioPlayer.stop();
+        state.tourAudioPlayer = null;
+      }
+
+      state.tourAudioPath = nextPath;
+      if (!nextPath) return;
+
+      state.tourAudioPlayer = window.CommonAudio?.createSoundPlayer(nextPath, { loop: true }) || null;
+    }
+
+    function stopRecordAudio() {
+      if (state.recordAudioPlayer) {
+        state.recordAudioPlayer.stop();
+      }
+      state.recordAudioPath = null;
+      state.recordAudioLoop = false;
+      state.recordAudioPlayer = null;
+    }
+
+    function getRecordAudioConfig(recordId) {
+      const record = recordId ? state.records[recordId] : null;
+      if (!record) return { path: null, loop: false };
+      const rawPath = typeof record.audioPath === "string" ? record.audioPath.trim() : "";
+      if (!rawPath) return { path: null, loop: false };
+      return { path: rawPath, loop: Boolean(record.audioLoop) };
+    }
+
+    function playRecordAudioForSelection(recordId, opts = {}) {
+      const { restart = true, suppress = false } = opts;
+      if (suppress) {
+        stopRecordAudio();
+        return;
+      }
+
+      const { path, loop } = getRecordAudioConfig(recordId);
+      if (!path) {
+        stopRecordAudio();
+        return;
+      }
+
+      const canReusePlayer =
+        Boolean(state.recordAudioPlayer) && state.recordAudioPath === path && state.recordAudioLoop === loop;
+      if (!canReusePlayer) {
+        stopRecordAudio();
+        state.recordAudioPath = path;
+        state.recordAudioLoop = loop;
+        state.recordAudioPlayer = window.CommonAudio?.createSoundPlayer(path, { loop }) || null;
+      }
+
+      state.recordAudioPlayer?.play({ restart });
+    }
+
+    function parseCoords(recordId) {
+      const longForm = recordId.match(/^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$/);
+      if (longForm) return [Number(longForm[1]), Number(longForm[2])];
+      const shortForm = recordId.match(/^@(-?\d+(?:\.\d+)?)x(-?\d+(?:\.\d+)?)$/);
+      if (shortForm) return [Number(shortForm[1]), Number(shortForm[2])];
+      return null;
+    }
+
+    function renderList() {
+      listEl.innerHTML = "";
+      const source = state.filteredOrder;
+      if (!source.length) {
+        const empty = document.createElement("div");
+        empty.className = "muted";
+        empty.textContent = state.searchTerm ? "No matching discovered records." : "No discovered records yet.";
+        listEl.appendChild(empty);
+        return;
+      }
+
+      source.forEach((recordId) => {
+        const title = state.records[recordId]?.title;
+        const label = title ? `${recordId} - ${title}` : recordId;
+        const li = document.createElement("li");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = label;
+        if (recordId === state.selectedId) {
+          button.classList.add("active");
+        }
+        button.addEventListener("click", () => {
+          selectRecord(recordId);
+          noteInteraction();
+        });
+        li.appendChild(button);
+        listEl.appendChild(li);
+      });
+    }
+
+    function selectRecord(recordId, opts = {}) {
+      if (state.dbShiftAnimation) return;
+      if (!state.records[recordId]) return;
+      if (state.scenePlayback.active && !opts.fromScene) {
+        stopScenePlayback({ stopAudio: true, refreshControls: false, suppressRecordAudio: true });
+      }
+      discoverRecord(recordId);
+      queueRecordTransition(state.selectedId, recordId, opts);
+      state.selectedId = recordId;
+      playRecordAudioForSelection(recordId, { restart: true, suppress: Boolean(opts.fromScene) });
+      applySearch({ preferVisibleSelection: false });
+      setStatusLink(state.order.length);
+      if (!opts.fromTour && !opts.fromScene) {
+        scheduleTour();
+      }
+    }
+
+    function queueRecordTransition(fromId, toId, opts = {}) {
+      if (!fromId || !toId || fromId === toId) {
+        state.pendingRecordTransition = null;
+        return;
+      }
+      if (opts.customTransition && typeof opts.customTransition === "object") {
+        state.pendingRecordTransition = createCustomRecordTransition(fromId, toId, opts.customTransition, opts);
+        return;
+      }
+      state.pendingRecordTransition = describeRecordTransition(fromId, toId, opts);
+    }
+
+    function toFiniteNumber(value, fallback) {
+      const parsed = Number(value);
+      if (!Number.isFinite(parsed)) return fallback;
+      return parsed;
+    }
+
+    function createCustomRecordTransition(fromId, toId, customTransition, opts = {}) {
+      const baseTransition = describeRecordTransition(fromId, toId, opts);
+      const merged = {
+        ...baseTransition,
+        ...customTransition,
+        fromId,
+        toId,
+      };
+
+      merged.durationMs = Math.max(120, Math.round(toFiniteNumber(merged.durationMs, baseTransition.durationMs)));
+      merged.travelPx = Math.max(24, Math.round(toFiniteNumber(merged.travelPx, baseTransition.travelPx)));
+
+      let dirX = toFiniteNumber(merged.dirX, baseTransition.dirX);
+      let dirY = toFiniteNumber(merged.dirY, baseTransition.dirY);
+      const magnitude = Math.hypot(dirX, dirY);
+      if (magnitude < 0.0001) {
+        dirX = 1;
+        dirY = 0;
+      } else {
+        dirX /= magnitude;
+        dirY /= magnitude;
+      }
+      merged.dirX = dirX;
+      merged.dirY = dirY;
+
+      if (typeof merged.style === "string") {
+        merged.style = merged.style.trim().toLowerCase();
+      } else {
+        delete merged.style;
+      }
+
+      return merged;
+    }
+
+    function describeRecordTransition(fromId, toId, opts = {}) {
+      let dirX = 1;
+      let dirY = 0;
+      let distanceFraction = 0.03;
+      const fromCoords = parseCoords(fromId);
+      const toCoords = parseCoords(toId);
+
+      if (fromCoords && toCoords) {
+        const latDelta = toCoords[0] - fromCoords[0];
+        const lonDelta = deltaDegrees(toCoords[1], fromCoords[1]);
+        dirX = lonDelta;
+        dirY = -latDelta;
+        distanceFraction = greatCircleDistanceFraction(fromCoords, toCoords);
+      } else {
+        const fromIndex = state.order.indexOf(fromId);
+        const toIndex = state.order.indexOf(toId);
+        if (fromIndex >= 0 && toIndex >= 0) {
+          const indexDelta = toIndex - fromIndex;
+          dirX = indexDelta === 0 ? 1 : Math.sign(indexDelta);
+          dirY = 0;
+          const maxDelta = Math.max(1, state.order.length - 1);
+          distanceFraction = Math.min(1, Math.abs(indexDelta) / maxDelta);
+        }
+      }
+
+      const magnitude = Math.hypot(dirX, dirY);
+      if (magnitude < 0.0001) {
+        dirX = 1;
+        dirY = 0;
+      } else {
+        dirX /= magnitude;
+        dirY /= magnitude;
+      }
+
+      const scaledDistance = Math.max(0.03, Math.min(1, distanceFraction));
+      const baseDurationMs = Math.round(160 + Math.pow(scaledDistance, 0.55) * 1400);
+      const durationScale = opts.fromTour && state.tourSlowPace ? TOUR_SLOW_TRANSITION_MULTIPLIER : 1;
+      const durationMs = Math.round(baseDurationMs * durationScale);
+      const travelPx = Math.round(72 + Math.pow(scaledDistance, 0.75) * 300);
+      return { fromId, toId, dirX, dirY, durationMs, travelPx };
+    }
+
+    function deltaDegrees(target, current) {
+      let delta = target - current;
+      while (delta > 180) delta -= 360;
+      while (delta < -180) delta += 360;
+      return delta;
+    }
+
+    function greatCircleDistanceFraction(fromCoords, toCoords) {
+      const lat1 = toRadians(fromCoords[0]);
+      const lat2 = toRadians(toCoords[0]);
+      const dLat = lat2 - lat1;
+      const dLon = toRadians(deltaDegrees(toCoords[1], fromCoords[1]));
+      const sinLat = Math.sin(dLat / 2);
+      const sinLon = Math.sin(dLon / 2);
+      const a = sinLat * sinLat + Math.cos(lat1) * Math.cos(lat2) * sinLon * sinLon;
+      const clamped = Math.min(1, Math.max(0, a));
+      const arc = 2 * Math.atan2(Math.sqrt(clamped), Math.sqrt(1 - clamped));
+      return arc / Math.PI;
+    }
+
+    function toRadians(value) {
+      return (value * Math.PI) / 180;
+    }
+
+    function describeRecordTransitionVisuals(transition, enterX, enterY, exitX, exitY) {
+      const style = typeof transition.style === "string" ? transition.style.trim().toLowerCase() : "slide";
+      const hasCustomTransforms =
+        typeof transition.currentFromTransform === "string" ||
+        typeof transition.currentToTransform === "string" ||
+        typeof transition.incomingFromTransform === "string" ||
+        typeof transition.incomingToTransform === "string";
+
+      if (hasCustomTransforms) {
+        return {
+          currentFromTransform: transition.currentFromTransform || "translate(0px, 0px) scale(1) rotate(0deg)",
+          currentToTransform: transition.currentToTransform || `translate(${exitX}px, ${exitY}px)`,
+          incomingFromTransform: transition.incomingFromTransform || `translate(${enterX}px, ${enterY}px)`,
+          incomingToTransform: transition.incomingToTransform || "translate(0px, 0px)",
+          incomingOpacityStart: toFiniteNumber(transition.incomingOpacityStart, null),
+          incomingOpacityEnd: toFiniteNumber(transition.incomingOpacityEnd, 1),
+          currentOpacityEnd: toFiniteNumber(transition.currentOpacityEnd, 0),
+        };
+      }
+
+      if (style === "bloom") {
+        return {
+          currentFromTransform: "translate(0px, 0px) scale(1) rotate(0deg)",
+          currentToTransform: `translate(${exitX}px, ${exitY}px) scale(1.08) rotate(8deg)`,
+          incomingFromTransform: `translate(${enterX}px, ${enterY}px) scale(0.72) rotate(-12deg)`,
+          incomingToTransform: "translate(0px, 0px) scale(1) rotate(0deg)",
+          incomingOpacityStart: 0.12,
+          incomingOpacityEnd: 1,
+          currentOpacityEnd: 0,
+        };
+      }
+
+      if (style === "twist") {
+        return {
+          currentFromTransform: "translate(0px, 0px) scale(1) rotate(0deg)",
+          currentToTransform: `translate(${exitX}px, ${exitY}px) scale(0.8) rotate(-18deg)`,
+          incomingFromTransform: `translate(${enterX}px, ${enterY}px) scale(1.22) rotate(14deg)`,
+          incomingToTransform: "translate(0px, 0px) scale(1) rotate(0deg)",
+          incomingOpacityStart: 0.18,
+          incomingOpacityEnd: 1,
+          currentOpacityEnd: 0,
+        };
+      }
+
+      return {
+        currentFromTransform: "translate(0px, 0px)",
+        currentToTransform: `translate(${exitX}px, ${exitY}px)`,
+        incomingFromTransform: `translate(${enterX}px, ${enterY}px)`,
+        incomingToTransform: "translate(0px, 0px)",
+        incomingOpacityStart: null,
+        incomingOpacityEnd: 1,
+        currentOpacityEnd: 0,
+      };
+    }
+
+    function getSceneEdgeParamNumber(edge, key, fallback) {
+      if (!edge?.params || !(key in edge.params)) return fallback;
+      return toFiniteNumber(edge.params[key], fallback);
+    }
+
+    function getSceneEdgeHoldMs(edge, fallback = SCENE_DEFAULT_EDGE_HOLD_MS) {
+      return Math.max(0, Math.round(toFiniteNumber(edge?.holdMs, fallback)));
+    }
+
+    // Edge names in `ttdb-scene` map directly to transition functions here.
+    const sceneEdgeTransitionFunctions = {
+      down(edge) {
+        return {
+          holdMs: getSceneEdgeHoldMs(edge, 3000),
+          transition: {
+            dirX: getSceneEdgeParamNumber(edge, "dir_x", 0),
+            dirY: getSceneEdgeParamNumber(edge, "dir_y", 1000),
+            durationMs: Math.round(getSceneEdgeParamNumber(edge, "duration_ms", 3000)),
+            travelPx: Math.round(getSceneEdgeParamNumber(edge, "travel_px", 3000)),
+            style: "slide",
+          },
+        };
+      },
+      next(edge) {
+        return {
+          holdMs: getSceneEdgeHoldMs(edge, 5000),
+          transition: {
+            dirX: 1,
+            dirY: 0,
+            durationMs: Math.round(getSceneEdgeParamNumber(edge, "duration_ms", 960)),
+            travelPx: Math.round(getSceneEdgeParamNumber(edge, "travel_px", 320)),
+            style: "slide",
+          },
+        };
+      },
+      bloom(edge) {
+        return {
+          holdMs: getSceneEdgeHoldMs(edge, 1700),
+          transition: {
+            dirX: getSceneEdgeParamNumber(edge, "dir_x", -0.58),
+            dirY: getSceneEdgeParamNumber(edge, "dir_y", -0.82),
+            durationMs: Math.round(getSceneEdgeParamNumber(edge, "duration_ms", 1300)),
+            travelPx: Math.round(getSceneEdgeParamNumber(edge, "travel_px", 300)),
+            style: "bloom",
+          },
+        };
+      },
+      return_home(edge) {
+        return {
+          holdMs: getSceneEdgeHoldMs(edge, 1900),
+          transition: {
+            dirX: getSceneEdgeParamNumber(edge, "dir_x", -0.96),
+            dirY: getSceneEdgeParamNumber(edge, "dir_y", 0.16),
+            durationMs: Math.round(getSceneEdgeParamNumber(edge, "duration_ms", 1180)),
+            travelPx: Math.round(getSceneEdgeParamNumber(edge, "travel_px", 280)),
+            style: "twist",
+          },
+        };
+      },
+      default(edge) {
+        return {
+          holdMs: getSceneEdgeHoldMs(edge, SCENE_DEFAULT_EDGE_HOLD_MS),
+          transition: {
+            dirX: getSceneEdgeParamNumber(edge, "dir_x", 1),
+            dirY: getSceneEdgeParamNumber(edge, "dir_y", 0),
+            durationMs: Math.round(getSceneEdgeParamNumber(edge, "duration_ms", 900)),
+            travelPx: Math.round(getSceneEdgeParamNumber(edge, "travel_px", 260)),
+            style: typeof edge?.params?.style === "string" ? edge.params.style.trim().toLowerCase() : "slide",
+          },
+        };
+      },
+    };
+
+    function resolveSceneEdgeTransitionFunction(edgeName) {
+      if (typeof edgeName !== "string") return sceneEdgeTransitionFunctions.default;
+      const normalized = edgeName.trim().toLowerCase();
+      return sceneEdgeTransitionFunctions[normalized] || sceneEdgeTransitionFunctions.default;
+    }
+
+    function isScenePlaybackActive(sceneRecordId = null) {
+      if (!state.scenePlayback.active) return false;
+      if (!sceneRecordId) return true;
+      return state.scenePlayback.sceneRecordId === sceneRecordId;
+    }
+
+    function refreshSceneControlState() {
+      const controls = viewEl.querySelectorAll(".scene-controls");
+      controls.forEach((controlsNode) => {
+        const sceneRecordId = controlsNode.dataset.sceneRecordId || "";
+        const isActive = isScenePlaybackActive(sceneRecordId);
+        const playBtn = controlsNode.querySelector("[data-scene-action='play']");
+        const stopBtn = controlsNode.querySelector("[data-scene-action='stop']");
+        const statusNode = controlsNode.querySelector(".scene-status");
+
+        if (playBtn) {
+          playBtn.textContent = isActive ? "Replay Scene" : "Play Scene";
+        }
+        if (stopBtn) {
+          stopBtn.disabled = !isActive;
+        }
+        if (statusNode) {
+          if (isActive) {
+            statusNode.textContent = "Playing scene loop.";
+          } else {
+            const edgeCount = Number(controlsNode.dataset.edgeCount || "0");
+            statusNode.textContent = edgeCount > 0 ? `${edgeCount} transitions ready.` : "No transitions configured.";
+          }
+        }
+      });
+    }
+
+    function stopScenePlayback(opts = {}) {
+      const { stopAudio = true, refreshControls = true, suppressRecordAudio = false } = opts;
+      if (state.scenePlayback.timer) {
+        clearTimeout(state.scenePlayback.timer);
+        state.scenePlayback.timer = null;
+      }
+      if (stopAudio && state.scenePlayback.audioPlayer) {
+        state.scenePlayback.audioPlayer.stop();
+      }
+
+      state.scenePlayback.active = false;
+      state.scenePlayback.sceneRecordId = null;
+      state.scenePlayback.scene = null;
+      state.scenePlayback.audioPath = null;
+      state.scenePlayback.audioPlayer = null;
+      state.scenePlayback.token += 1;
+
+      if (refreshControls) {
+        refreshSceneControlState();
+      }
+      if (!suppressRecordAudio) {
+        playRecordAudioForSelection(state.selectedId, { restart: false, suppress: false });
+      }
+    }
+
+    function findSceneEdgeFromNode(scene, fromNodeId) {
+      if (!scene?.edges?.length) return null;
+      return scene.edges.find((edge) => edge.from === fromNodeId) || null;
+    }
+
+    function scheduleScenePlaybackStep(token, fromNodeId) {
+      if (!state.scenePlayback.active || token !== state.scenePlayback.token) return;
+      const scene = state.scenePlayback.scene;
+      if (!scene) return;
+
+      const edge = findSceneEdgeFromNode(scene, fromNodeId);
+      if (!edge) {
+        if (scene.loop && scene.startNode && state.records[scene.startNode] && scene.startNode !== fromNodeId) {
+          const holdMs = SCENE_DEFAULT_EDGE_HOLD_MS;
+          state.scenePlayback.timer = window.setTimeout(() => {
+            if (!state.scenePlayback.active || token !== state.scenePlayback.token) return;
+            selectRecord(scene.startNode, { fromScene: true });
+            scheduleScenePlaybackStep(token, scene.startNode);
+          }, holdMs);
+          return;
+        }
+        stopScenePlayback({ stopAudio: true });
+        return;
+      }
+
+      if (!state.records[edge.to]) {
+        stopScenePlayback({ stopAudio: true });
+        return;
+      }
+
+      const transitionFactory = resolveSceneEdgeTransitionFunction(edge.name);
+      const step = transitionFactory(edge, { scene, fromId: edge.from, toId: edge.to }) || {};
+      const holdMs = Math.max(0, Math.round(toFiniteNumber(step.holdMs, getSceneEdgeHoldMs(edge))));
+      const customTransition = step.transition && typeof step.transition === "object" ? step.transition : null;
+
+      state.scenePlayback.timer = window.setTimeout(() => {
+        if (!state.scenePlayback.active || token !== state.scenePlayback.token) return;
+        selectRecord(edge.to, { fromScene: true, customTransition });
+        scheduleScenePlaybackStep(token, edge.to);
+      }, holdMs);
+    }
+
+    function startScenePlayback(sceneRecordId) {
+      const sceneRecord = state.records[sceneRecordId];
+      if (!sceneRecord || sceneRecord.type !== SCENE_RECORD_TYPE || !sceneRecord.scene) return;
+      const scene = sceneRecord.scene;
+
+      let startNode = scene.startNode;
+      if (!startNode || !state.records[startNode]) {
+        startNode = scene.edges.find((edge) => state.records[edge.from])?.from || null;
+      }
+      if (!startNode) return;
+
+      stopScenePlayback({ stopAudio: true, refreshControls: false, suppressRecordAudio: true });
+      clearTour(true);
+      stopRecordAudio();
+
+      state.scenePlayback.active = true;
+      state.scenePlayback.sceneRecordId = sceneRecordId;
+      state.scenePlayback.scene = scene;
+      state.scenePlayback.token += 1;
+
+      const token = state.scenePlayback.token;
+      const audioPath = typeof scene.audioPath === "string" ? scene.audioPath.trim() : "";
+      if (audioPath) {
+        state.scenePlayback.audioPath = audioPath;
+        state.scenePlayback.audioPlayer = window.CommonAudio?.createSoundPlayer(audioPath, { loop: true }) || null;
+        state.scenePlayback.audioPlayer?.play();
+      } else {
+        state.scenePlayback.audioPath = null;
+        state.scenePlayback.audioPlayer = null;
+      }
+
+      selectRecord(startNode, { fromScene: true });
+      scheduleScenePlaybackStep(token, startNode);
+      refreshSceneControlState();
+    }
+
+    function renderRecord() {
+      viewEl.querySelectorAll(".record-frame:not(.is-current)").forEach((frame) => frame.remove());
+      if (!state.selectedId || !state.records[state.selectedId]) {
+        viewEl.innerHTML = "";
+        const empty = document.createElement("div");
+        empty.className = "record-frame is-current";
+        empty.textContent = "No record selected.";
+        viewEl.appendChild(empty);
+        state.pendingRecordTransition = null;
+        refreshSceneControlState();
+        return;
+      }
+
+      const transition = state.pendingRecordTransition;
+      state.pendingRecordTransition = null;
+      const incoming = buildRecordFrame(state.selectedId);
+      incoming.classList.add("is-current");
+      const current = viewEl.querySelector(".record-frame.is-current");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const currentHasMedia = Boolean(current?.querySelector("img, video, object, iframe.record-html-embed"));
+      const incomingHasMedia = Boolean(incoming.querySelector("img, video, object, iframe.record-html-embed"));
+      const hasMediaTransition = currentHasMedia || incomingHasMedia;
+      const shouldAnimate =
+        Boolean(current) &&
+        Boolean(transition) &&
+        !reduceMotion &&
+        current.dataset.recordId === transition.fromId &&
+        transition.toId === state.selectedId;
+
+      if (!shouldAnimate) {
+        viewEl.replaceChildren(incoming);
+        refreshSceneControlState();
+        return;
+      }
+
+      current.classList.remove("is-current");
+      const token = (state.recordTransitionToken += 1);
+      const enterX = -Math.round(transition.dirX * transition.travelPx);
+      const enterY = -Math.round(transition.dirY * transition.travelPx);
+      const exitX = -enterX;
+      const exitY = -enterY;
+      const easing = "linear";
+      const alphaDuration = Math.max(180, Math.round(transition.durationMs * 0.9));
+      const visuals = describeRecordTransitionVisuals(transition, enterX, enterY, exitX, exitY);
+      const incomingOpacityStart =
+        visuals.incomingOpacityStart === null || visuals.incomingOpacityStart === undefined
+          ? (hasMediaTransition ? 1 : 0.06)
+          : visuals.incomingOpacityStart;
+
+      current.style.position = "absolute";
+      current.style.inset = "0";
+      current.style.pointerEvents = "none";
+      current.style.zIndex = "1";
+      current.style.transform = visuals.currentFromTransform;
+
+      incoming.style.position = "absolute";
+      incoming.style.inset = "0";
+      incoming.style.zIndex = "2";
+      incoming.style.transform = visuals.incomingFromTransform;
+      incoming.style.opacity = String(incomingOpacityStart);
+      viewEl.appendChild(incoming);
+      refreshSceneControlState();
+
+      requestAnimationFrame(() => {
+        if (token !== state.recordTransitionToken) return;
+        current.style.transition = `transform ${transition.durationMs}ms ${easing}, opacity ${alphaDuration}ms linear`;
+        incoming.style.transition = `transform ${transition.durationMs}ms ${easing}, opacity ${alphaDuration}ms linear`;
+        current.style.transform = visuals.currentToTransform;
+        current.style.opacity = String(visuals.currentOpacityEnd);
+        incoming.style.transform = visuals.incomingToTransform;
+        incoming.style.opacity = String(visuals.incomingOpacityEnd);
+      });
+
+      window.setTimeout(() => {
+        if (token !== state.recordTransitionToken) return;
+        if (current.parentElement === viewEl) {
+          current.remove();
+        }
+        incoming.style.position = "relative";
+        incoming.style.inset = "";
+        incoming.style.zIndex = "";
+        incoming.style.transition = "";
+        incoming.style.transform = "";
+        incoming.style.opacity = "";
+        refreshSceneControlState();
+      }, transition.durationMs + 80);
+    }
+
+    function isProfileRecordView() {
+      return recordProfileViewQuery.matches;
+    }
+
+    function shouldUseSplitRecordColumns() {
+      return !isProfileRecordView();
+    }
+
+    function applyRecordViewportMode() {
+      const mode = shouldUseSplitRecordColumns() ? "landscape-desktop" : "profile-mobile";
+      if (pageEl) {
+        pageEl.dataset.recordView = mode;
+      }
+      if (state.recordViewportMode === mode) return;
+      state.recordViewportMode = mode;
+      refreshVisibleRecordLayout();
+    }
+
+    function refreshVisibleRecordLayout() {
+      const main = viewEl.querySelector(".record-frame.is-current .record-main");
+      if (!main) return;
+      const leadMedia = main.querySelector(".record-lead-media");
+      if (!leadMedia) return;
+      applyLeadMediaRecordLayout(main, leadMedia);
+    }
+
+    function applyLeadMediaRecordLayout(main, leadMedia) {
+      if (leadMedia instanceof HTMLIFrameElement && leadMedia.classList.contains("record-html-embed")) {
+        main.classList.add("record-main-split-iframe");
+        main.classList.toggle("record-main-split", shouldUseSplitRecordColumns());
+        return;
+      }
+
+      main.classList.remove("record-main-split-iframe");
+      if (leadMedia instanceof HTMLImageElement) {
+        updateRecordSplitImageLayout(main, leadMedia);
+        return;
+      }
+      main.classList.remove("record-main-split");
+    }
+
+    function buildSceneControls(recordId, scene) {
+      if (!scene) return null;
+      const controls = document.createElement("div");
+      controls.className = "scene-controls";
+      controls.dataset.sceneRecordId = recordId;
+      controls.dataset.edgeCount = String(scene.edges?.length || 0);
+
+      const playBtn = document.createElement("button");
+      playBtn.type = "button";
+      playBtn.dataset.sceneAction = "play";
+      playBtn.textContent = "Play Scene";
+      playBtn.addEventListener("click", () => {
+        startScenePlayback(recordId);
+      });
+      controls.appendChild(playBtn);
+
+      const stopBtn = document.createElement("button");
+      stopBtn.type = "button";
+      stopBtn.dataset.sceneAction = "stop";
+      stopBtn.textContent = "Stop";
+      stopBtn.addEventListener("click", () => {
+        stopScenePlayback({ stopAudio: true });
+        scheduleTour();
+      });
+      controls.appendChild(stopBtn);
+
+      const status = document.createElement("span");
+      status.className = "scene-status";
+      status.textContent = `${scene.edges?.length || 0} transitions ready.`;
+      controls.appendChild(status);
+
+      return controls;
+    }
+
+    function buildEpistemicWeightEl(ew) {
+      const el = document.createElement("div");
+      el.className = "record-ew";
+
+      const barBg = document.createElement("span");
+      barBg.className = "record-ew-conf-bar-bg";
+      const barFill = document.createElement("span");
+      barFill.className = "record-ew-conf-bar-fill";
+      barFill.style.width = `${((ew.conf / 255) * 100).toFixed(1)}%`;
+      barBg.appendChild(barFill);
+      el.appendChild(barBg);
+
+      const confLabel = document.createElement("span");
+      confLabel.textContent = `conf ${ew.conf}`;
+      el.appendChild(confLabel);
+
+      el.appendChild(document.createTextNode(" · "));
+
+      const revLabel = document.createElement("span");
+      revLabel.textContent = `rev ${ew.rev}`;
+      el.appendChild(revLabel);
+
+      el.appendChild(document.createTextNode(" · "));
+
+      const salLabel = document.createElement("span");
+      salLabel.textContent = `sal ${ew.sal}`;
+      el.appendChild(salLabel);
+
+      if (ew.sal > 0) {
+        el.appendChild(document.createTextNode(" · "));
+        const epsLabel = document.createElement("span");
+        epsLabel.style.color = "var(--accent-2)";
+        epsLabel.textContent = `eps ${ew.eps}`;
+        el.appendChild(epsLabel);
+      }
+
+      return el;
+    }
+
+    function buildRecordFrame(recordId) {
+      const record = state.records[recordId];
+      const frame = document.createElement("div");
+      frame.className = "record-frame";
+      frame.dataset.recordId = recordId;
+      const main = document.createElement("div");
+      main.className = "record-main";
+      const textColumn = document.createElement("div");
+      textColumn.className = "record-main-text";
+      const leadMediaInfo = extractLeadMedia(record.body || "");
+      if (leadMediaInfo.leadMedia) {
+        leadMediaInfo.leadMedia.classList.add("record-lead-media");
+        main.appendChild(leadMediaInfo.leadMedia);
+      }
+
+      if (record.title) {
+        const title = document.createElement("h2");
+        title.className = "record-title";
+        title.textContent = record.title;
+        textColumn.appendChild(title);
+      }
+
+      if (record.ew) {
+        textColumn.appendChild(buildEpistemicWeightEl(record.ew));
+      }
+
+      if (record.type === SCENE_RECORD_TYPE) {
+        const sceneControls = buildSceneControls(recordId, record.scene);
+        if (sceneControls) {
+          textColumn.appendChild(sceneControls);
+        } else {
+          const sceneWarning = document.createElement("p");
+          sceneWarning.className = "muted";
+          sceneWarning.textContent = "Scene record missing a valid ttdb-scene block.";
+          textColumn.appendChild(sceneWarning);
+        }
+      }
+
+      if (leadMediaInfo.body) {
+        textColumn.appendChild(renderMarkdown(leadMediaInfo.body));
+      }
+
+      if (record.edges.length) {
+        const relatedTitle = document.createElement("h3");
+        relatedTitle.textContent = "Related records";
+        textColumn.appendChild(relatedTitle);
+
+        const list = document.createElement("ul");
+        list.className = "related";
+        record.edges.forEach((edge) => {
+          const item = document.createElement("li");
+          const label = document.createElement("span");
+          label.textContent = `${edge.type} -> `;
+          item.appendChild(label);
+          if (state.records[edge.target]) {
+            const link = document.createElement("a");
+            link.href = "#";
+            link.textContent = state.records[edge.target]?.title || edge.target;
+            link.addEventListener("click", (event) => {
+              event.preventDefault();
+              selectRecord(edge.target);
+              noteInteraction();
+            });
+            item.appendChild(link);
+          } else {
+            const missing = document.createElement("span");
+            missing.className = "muted";
+            missing.textContent = edge.target;
+            item.appendChild(missing);
+          }
+          list.appendChild(item);
+        });
+        textColumn.appendChild(list);
+      }
+
+      main.appendChild(textColumn);
+      frame.appendChild(main);
+      if (leadMediaInfo.leadMedia) {
+        applyLeadMediaRecordLayout(main, leadMediaInfo.leadMedia);
+      }
+      return frame;
+    }
+
+    function parseCssPx(value) {
+      const parsed = Number.parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    function getScaledImageWidth(image, availableWidth, maxHeight) {
+      const naturalWidth = image.naturalWidth;
+      const naturalHeight = image.naturalHeight;
+      if (!naturalWidth || !naturalHeight || !availableWidth) return 0;
+
+      let width = naturalWidth;
+      let height = naturalHeight;
+      if (maxHeight > 0 && height > maxHeight) {
+        const scaleByHeight = maxHeight / height;
+        width *= scaleByHeight;
+        height = maxHeight;
+      }
+
+      if (width > availableWidth) {
+        const scaleByWidth = availableWidth / width;
+        width = availableWidth;
+        height *= scaleByWidth;
+      }
+
+      return width;
+    }
+
+    function updateRecordSplitImageLayout(main, image) {
+      const update = () => {
+        if (!main.isConnected) return;
+        if (!shouldUseSplitRecordColumns()) {
+          main.classList.remove("record-main-split");
+          return;
+        }
+
+        const availableWidth = main.clientWidth;
+        if (!availableWidth) {
+          main.classList.remove("record-main-split");
+          return;
+        }
+
+        const maxHeight = parseCssPx(getComputedStyle(image).maxHeight);
+        const scaledWidth = getScaledImageWidth(image, availableWidth, maxHeight);
+        if (!scaledWidth) {
+          main.classList.remove("record-main-split");
+          return;
+        }
+
+        const shouldSplit = scaledWidth < availableWidth * RECORD_SPLIT_IMAGE_WIDTH_RATIO;
+        main.classList.toggle("record-main-split", shouldSplit);
+      };
+
+      if (image.complete && image.naturalWidth > 0) {
+        update();
+      } else {
+        image.addEventListener("load", update, { once: true });
+      }
+      requestAnimationFrame(update);
+    }
+
+    function isHtmlEmbedSource(src) {
+      return /\.html(?:[?#].*)?$/i.test(src.trim());
+    }
+
+    function isVideoSource(src) {
+      return /\.(mp4|webm|ogg|mov)(?:[?#].*)?$/i.test(src.trim());
+    }
+
+    function createMediaNode(src, alt, title) {
+      if (isHtmlEmbedSource(src)) {
+        const iframe = document.createElement("iframe");
+        iframe.src = src;
+        iframe.className = "record-html-embed";
+        iframe.loading = "lazy";
+        iframe.title = title || alt || "Embedded HTML content";
+        return iframe;
+      }
+
+      if (isVideoSource(src)) {
+        const video = document.createElement("video");
+        video.src = src;
+        video.controls = true;
+        video.preload = "metadata";
+        video.playsInline = true;
+        if (title) video.title = title;
+        if (alt || title) {
+          video.setAttribute("aria-label", alt || title);
+        }
+        return video;
+      }
+
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = alt || "";
+      if (title) img.title = title;
+      img.loading = "eager";
+      img.decoding = "async";
+      return img;
+    }
+
+    function extractLeadMedia(text) {
+      if (!text) return { body: text, leadMedia: null };
+      const lines = text.split(/\r?\n/);
+      const references = {};
+      const refPattern = /^\s*\[([^\]]+)\]:\s*(\S+)(?:\s+"([^"]+)")?\s*$/;
+      let inRefCode = false;
+      lines.forEach((rawLine) => {
+        const trimmed = rawLine.trim();
+        if (trimmed.startsWith("```")) {
+          inRefCode = !inRefCode;
+          return;
+        }
+        if (inRefCode) return;
+        const match = rawLine.match(refPattern);
+        if (match) {
+          references[match[1].trim().toLowerCase()] = {
+            href: match[2],
+            title: match[3] || "",
+          };
+        }
+      });
+
+      const imagePattern = /!\[([^\]]*)\]\(([^)]+)\)|!\[([^\]]*)\]\[([^\]]+)\]/;
+      const output = [];
+      let leadMedia = null;
+      let inCode = false;
+
+      for (const rawLine of lines) {
+        const trimmed = rawLine.trim();
+        if (trimmed.startsWith("```")) {
+          inCode = !inCode;
+          output.push(rawLine);
+          continue;
+        }
+        if (inCode || leadMedia) {
+          output.push(rawLine);
+          continue;
+        }
+
+        const match = rawLine.match(imagePattern);
+        if (!match) {
+          output.push(rawLine);
+          continue;
+        }
+
+        if (match[1] !== undefined) {
+          const alt = match[1];
+          const src = match[2].trim();
+          if (!/^javascript:/i.test(src)) {
+            leadMedia = createMediaNode(src, alt);
+          }
+        } else if (match[3] !== undefined) {
+          const alt = match[3];
+          const refKey = match[4].trim().toLowerCase();
+          const ref = references[refKey];
+          if (ref && !/^javascript:/i.test(ref.href)) {
+            leadMedia = createMediaNode(ref.href, alt, ref.title);
+          }
+        }
+
+        const before = rawLine.slice(0, match.index);
+        const after = rawLine.slice(match.index + match[0].length);
+        const rebuilt = `${before}${after}`;
+        output.push(rebuilt);
+      }
+
+      return { body: output.join("\n"), leadMedia };
+    }
+
+    function renderMarkdown(text) {
+      const fragment = document.createDocumentFragment();
+      const lines = text.split(/\r?\n/);
+      const references = {};
+      const contentLines = [];
+      const refPattern = /^\s*\[([^\]]+)\]:\s*(\S+)(?:\s+"([^"]+)")?\s*$/;
+      const imageLinePattern = /^\s*!\[([^\]]*)\]\(([^)]+)\)\s*$|^\s*!\[([^\]]*)\]\[([^\]]+)\]\s*$/;
+      let inRefCode = false;
+      lines.forEach((rawLine) => {
+        const trimmed = rawLine.trim();
+        if (trimmed.startsWith("```")) {
+          inRefCode = !inRefCode;
+          contentLines.push(rawLine);
+          return;
+        }
+        if (inRefCode) {
+          contentLines.push(rawLine);
+          return;
+        }
+        const match = rawLine.match(refPattern);
+        if (match) {
+          references[match[1].trim().toLowerCase()] = {
+            href: match[2],
+            title: match[3] || "",
+          };
+          return;
+        }
+        contentLines.push(rawLine);
+      });
+      let inCode = false;
+      let codeBlock = null;
+      let codeBlockLang = "";
+      let list = null;
+
+      const flushList = () => {
+        if (list) {
+          fragment.appendChild(list);
+          list = null;
+        }
+      };
+
+      const appendInline = (parent, content) => {
+        const nodes = renderInlineMarkdownLinks(content, references);
+        nodes.forEach((node) => parent.appendChild(node));
+      };
+
+      for (const rawLine of contentLines) {
+        const line = rawLine.replace(/\s+$/g, "");
+
+        if (line.startsWith("```")) {
+          if (!inCode) {
+            flushList();
+            inCode = true;
+            codeBlock = document.createElement("pre");
+            codeBlockLang = line.slice(3).trim().toLowerCase();
+          } else {
+            const codeText = codeBlock?.textContent || "";
+            if (codeBlockLang === "math" || codeBlockLang === "latex") {
+              const mathHost = document.createElement("div");
+              const tex = codeText.trim();
+              if (tex) {
+                renderLatex(mathHost, tex, { displayMode: true });
+              }
+              fragment.appendChild(mathHost);
+            } else {
+              fragment.appendChild(codeBlock || document.createElement("pre"));
+            }
+            inCode = false;
+            codeBlock = null;
+            codeBlockLang = "";
+          }
+          continue;
+        }
+
+        if (inCode) {
+          codeBlock.textContent += `${line}\n`;
+          continue;
+        }
+
+        const imageLineMatch = line.match(imageLinePattern);
+        if (imageLineMatch) {
+          flushList();
+          let media = null;
+          if (imageLineMatch[1] !== undefined) {
+            const alt = imageLineMatch[1];
+            const src = imageLineMatch[2].trim();
+            if (!/^javascript:/i.test(src)) {
+              media = createMediaNode(src, alt);
+            }
+          } else if (imageLineMatch[3] !== undefined) {
+            const alt = imageLineMatch[3];
+            const refKey = imageLineMatch[4].trim().toLowerCase();
+            const ref = references[refKey];
+            if (ref && !/^javascript:/i.test(ref.href)) {
+              media = createMediaNode(ref.href, alt, ref.title);
+            }
+          }
+          if (media) {
+            fragment.appendChild(media);
+          } else {
+            const para = document.createElement("p");
+            para.textContent = line;
+            fragment.appendChild(para);
+          }
+          continue;
+        }
+
+        const headingMatch = line.match(/^(#{1,4})\s+(.*)$/);
+        if (headingMatch) {
+          flushList();
+          const level = Math.min(4, headingMatch[1].length);
+          const tag = level === 1 ? "h2" : level === 2 ? "h3" : "h4";
+          const heading = document.createElement(tag);
+          appendInline(heading, headingMatch[2]);
+          fragment.appendChild(heading);
+          continue;
+        }
+
+        if (/^\s*(-|\*|\d+\.)\s+/.test(line)) {
+          if (!list) {
+            list = document.createElement("ul");
+          }
+          const item = document.createElement("li");
+          appendInline(item, line.replace(/^\s*(-|\*|\d+\.)\s+/, ""));
+          list.appendChild(item);
+          continue;
+        }
+
+        if (/^\s*>\s+/.test(line)) {
+          flushList();
+          const quote = document.createElement("blockquote");
+          appendInline(quote, line.replace(/^\s*>\s+/, ""));
+          fragment.appendChild(quote);
+          continue;
+        }
+
+        if (/^\s*---+\s*$/.test(line)) {
+          flushList();
+          const rule = document.createElement("div");
+          rule.style.borderTop = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue("--line")}`;
+          rule.style.margin = "8px 0";
+          fragment.appendChild(rule);
+          continue;
+        }
+
+        if (!line.trim()) {
+          flushList();
+          continue;
+        }
+
+        flushList();
+        const para = document.createElement("p");
+        appendInline(para, line);
+        fragment.appendChild(para);
+      }
+
+      flushList();
+      return fragment;
+    }
+
+    function decodeURIComponentSafe(value) {
+      if (typeof value !== "string") return "";
+      try {
+        return decodeURIComponent(value);
+      } catch (err) {
+        return value;
+      }
+    }
+
+    function parseLegacyRecordLinkTarget(rawHref) {
+      if (typeof rawHref !== "string") return null;
+      const trimmed = rawHref.trim();
+      if (!trimmed.startsWith("@")) return null;
+
+      const firstWhitespace = trimmed.search(/\s/);
+      if (firstWhitespace < 0) {
+        const recordId = normalizeRecordIdToken(trimmed);
+        return recordId ? { recordId, dbPath: null } : null;
+      }
+
+      const recordId = normalizeRecordIdToken(trimmed.slice(0, firstWhitespace));
+      const dbPath = resolveDbPathToken(trimmed.slice(firstWhitespace).trim(), state.availableDbPaths);
+      if (!recordId || !dbPath) return null;
+      return { recordId, dbPath };
+    }
+
+    function parseTootPathTarget(rawPayload) {
+      if (typeof rawPayload !== "string") return null;
+      const payload = rawPayload.trim().replace(/^\/+/, "");
+      if (!payload) return null;
+
+      const [pathPart, queryPart = ""] = payload.split("?", 2);
+      const segments = pathPart.split("/").map((segment) => decodeURIComponentSafe(segment.trim())).filter(Boolean);
+      if (!segments.length && !queryPart) return null;
+
+      let queryRecordId = null;
+      let queryDbPath = null;
+      if (queryPart) {
+        try {
+          const params = new URLSearchParams(queryPart);
+          queryRecordId = normalizeRecordIdToken(getFirstSearchParam(params, TOOT_URL_PARAM_KEYS));
+          queryDbPath = resolveDbPathToken(getFirstSearchParam(params, DB_URL_PARAM_KEYS), state.availableDbPaths);
+        } catch (err) {
+          // Ignore malformed query strings and continue with path parsing.
+        }
+      }
+
+      if (!segments.length) {
+        if (!queryRecordId) return null;
+        return { recordId: queryRecordId, dbPath: queryDbPath || null };
+      }
+
+      const recordId = normalizeRecordIdToken(segments[segments.length - 1]) || queryRecordId;
+      if (!recordId) return null;
+
+      if (segments.length === 1) {
+        return { recordId, dbPath: queryDbPath || null };
+      }
+
+      const rawDbToken = segments.slice(0, -1).join("/");
+      const dbPath = resolveDbPathToken(rawDbToken, state.availableDbPaths) || queryDbPath;
+      if (!dbPath) return null;
+      return { recordId, dbPath };
+    }
+
+    function parseTootUriTarget(rawHref) {
+      if (typeof rawHref !== "string") return null;
+      const trimmed = rawHref.trim();
+      if (!/^toot:/i.test(trimmed)) return null;
+      const payload = trimmed.replace(/^toot:(\/\/)?/i, "");
+      return parseTootPathTarget(payload);
+    }
+
+    function parseRecordTokenTarget(rawToken) {
+      const legacy = parseLegacyRecordLinkTarget(rawToken);
+      if (legacy) return legacy;
+
+      const directRecordId = normalizeRecordIdToken(rawToken);
+      if (directRecordId) {
+        return { recordId: directRecordId, dbPath: null };
+      }
+
+      return parseTootUriTarget(rawToken);
+    }
+
+    function parseViewerUrlRecordTarget(rawHref) {
+      if (typeof rawHref !== "string") return null;
+      let url = null;
+      try {
+        url = new URL(rawHref, window.location.href);
+      } catch (err) {
+        return null;
+      }
+
+      if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+      if (url.origin !== window.location.origin) return null;
+
+      const rawRecordToken = getFirstSearchParam(url.searchParams, TOOT_URL_PARAM_KEYS);
+      if (!rawRecordToken) return null;
+
+      const recordTarget = parseRecordTokenTarget(rawRecordToken);
+      if (!recordTarget?.recordId) return null;
+
+      const dbPathFromQuery = resolveDbPathToken(getFirstSearchParam(url.searchParams, DB_URL_PARAM_KEYS), state.availableDbPaths);
+      return {
+        recordId: recordTarget.recordId,
+        dbPath: recordTarget.dbPath || dbPathFromQuery || null,
+      };
+    }
+
+    function parseRecordLinkTarget(rawHref) {
+      if (typeof rawHref !== "string") return null;
+      const trimmed = rawHref.trim();
+      if (!trimmed) return null;
+      return parseRecordTokenTarget(trimmed) || parseViewerUrlRecordTarget(trimmed);
+    }
+
+    function canResolveRecordLinkTarget(target) {
+      if (!target || !target.recordId) return false;
+      if (!target.dbPath) {
+        return Boolean(state.records[target.recordId]);
+      }
+      if (!isSupportedDbPath(target.dbPath)) return false;
+      if (target.dbPath === state.activeDbPath) {
+        return Boolean(state.records[target.recordId]);
+      }
+      return true;
+    }
+
+    function navigateToRecordLinkTarget(target) {
+      if (!target || !target.recordId) return false;
+      const targetDbPath = target.dbPath || state.activeDbPath;
+      if (!targetDbPath) return false;
+      if (target.dbPath && !isSupportedDbPath(target.dbPath)) return false;
+
+      if (targetDbPath !== state.activeDbPath) {
+        loadDb(targetDbPath, { force: true, resetSelection: true, preferredRecordId: target.recordId });
+        return true;
+      }
+
+      if (!state.records[target.recordId]) return false;
+      selectRecord(target.recordId);
+      return true;
+    }
+
+    function buildRecordLinkHref(target) {
+      if (!target || !target.recordId) return "#";
+      const dbPath = target.dbPath || state.activeDbPath || DEFAULT_DB_PATH;
+      const recordToken = toTootRecordToken(target.recordId);
+      if (!recordToken) return dbPath || "#";
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set(DB_URL_PARAM_PRIMARY, dbPath);
+        url.searchParams.delete(DB_URL_PARAM_FALLBACK);
+        url.searchParams.set(TOOT_URL_PARAM_PRIMARY, recordToken);
+        url.searchParams.delete(TOOT_URL_PARAM_FALLBACK);
+        url.hash = "";
+        return `${url.pathname}${url.search}`;
+      } catch (err) {
+        return dbPath || "#";
+      }
+    }
+
+    function createRecordLinkNode(label, target) {
+      const link = document.createElement("a");
+      link.href = buildRecordLinkHref(target);
+      link.textContent = label;
+      link.dataset.preview = "off";
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (navigateToRecordLinkTarget(target)) {
+          noteInteraction();
+        }
+      });
+      return link;
+    }
+
+    function appendTextWithInlineLatex(nodes, value) {
+      if (!value) return;
+      const inlineMathPattern = /\\\(([\s\S]*?)\\\)/g;
+      let lastIndex = 0;
+      let match = inlineMathPattern.exec(value);
+
+      while (match) {
+        if (match.index > lastIndex) {
+          nodes.push(document.createTextNode(value.slice(lastIndex, match.index)));
+        }
+
+        const expr = (match[1] || "").trim();
+        if (expr) {
+          const inlineMath = document.createElement("span");
+          renderLatex(inlineMath, expr, { displayMode: false });
+          nodes.push(inlineMath);
+        }
+
+        lastIndex = match.index + match[0].length;
+        match = inlineMathPattern.exec(value);
+      }
+
+      if (lastIndex < value.length) {
+        nodes.push(document.createTextNode(value.slice(lastIndex)));
+      }
+    }
+
+    function renderInlineMarkdownLinks(text, references) {
+      const nodes = [];
+      const pattern = /!\[([^\]]*)\]\(([^)]+)\)|!\[([^\]]*)\]\[([^\]]+)\]|\[([^\]]+)\]\(([^)]+)\)|\[([^\]]+)\]\[([^\]]+)\]|(https?:\/\/[^\s<]+|www\.[^\s<]+)/g;
+      let lastIndex = 0;
+      let match = pattern.exec(text);
+
+      while (match) {
+        if (match.index > lastIndex) {
+          appendTextWithInlineLatex(nodes, text.slice(lastIndex, match.index));
+        }
+
+        if (match[1] !== undefined) {
+          const alt = match[1];
+          const src = match[2].trim();
+          nodes.push(createMediaNode(src, alt));
+        } else if (match[3] !== undefined) {
+          const alt = match[3];
+          const refKey = match[4].trim().toLowerCase();
+          const ref = references[refKey];
+          if (ref && !/^javascript:/i.test(ref.href)) {
+            nodes.push(createMediaNode(ref.href, alt, ref.title));
+          } else {
+            appendTextWithInlineLatex(nodes, match[0]);
+          }
+        } else if (match[5] !== undefined) {
+          const label = match[5];
+          const href = match[6].trim();
+          const target = parseRecordLinkTarget(href);
+          if (target) {
+            if (canResolveRecordLinkTarget(target)) {
+              nodes.push(createRecordLinkNode(label, target));
+            } else {
+              const missing = document.createElement("span");
+              missing.className = "muted";
+              missing.textContent = label;
+              nodes.push(missing);
+            }
+          } else if (/^javascript:/i.test(href)) {
+            appendTextWithInlineLatex(nodes, match[0]);
+          } else {
+            const link = document.createElement("a");
+            link.href = href;
+            link.textContent = label;
+            nodes.push(link);
+          }
+        } else if (match[7] !== undefined) {
+          const label = match[7];
+          const refKey = match[8].trim().toLowerCase();
+          const ref = references[refKey];
+          const target = ref && ref.href ? parseRecordLinkTarget(ref.href.trim()) : null;
+          if (target) {
+            if (canResolveRecordLinkTarget(target)) {
+              nodes.push(createRecordLinkNode(label, target));
+            } else {
+              const missing = document.createElement("span");
+              missing.className = "muted";
+              missing.textContent = label;
+              nodes.push(missing);
+            }
+          } else if (ref && !/^javascript:/i.test(ref.href)) {
+            const link = document.createElement("a");
+            link.href = ref.href;
+            link.textContent = label;
+            if (ref.title) link.title = ref.title;
+            nodes.push(link);
+          } else {
+            appendTextWithInlineLatex(nodes, match[0]);
+          }
+        } else if (match[9] !== undefined) {
+          const raw = match[9];
+          const href = raw.startsWith("www.") ? `https://${raw}` : raw;
+          const link = document.createElement("a");
+          link.href = href;
+          link.textContent = raw;
+          nodes.push(link);
+        }
+
+        lastIndex = match.index + match[0].length;
+        match = pattern.exec(text);
+      }
+
+      if (lastIndex < text.length) {
+        appendTextWithInlineLatex(nodes, text.slice(lastIndex));
+      }
+
+      if (!nodes.length) {
+        appendTextWithInlineLatex(nodes, text);
+      }
+
+      return nodes;
+    }
+
+    function getGlobeBaseRadius(width, height) {
+      const padding = 6;
+      const baseRadius = Math.min(width, height) / 2 - padding;
+      return Math.max(10, baseRadius * GLOBE_BASE_RADIUS_SCALE);
+    }
+
+    function buildDbSideGlobes(cx, cy, mainRadius) {
+      const total = state.availableDbPaths.length;
+      const activeIndex = state.availableDbPaths.indexOf(state.activeDbPath);
+      if (total < 2 || activeIndex < 0) return [];
+
+      const sideRadius = Math.max(8, mainRadius * DB_SIDE_GLOBE_SCALE);
+      const y = cy;
+      const firstOffset = mainRadius + sideRadius * DB_SIDE_GLOBE_NEAR_OVERLAP;
+      const stepOffset = sideRadius * DB_SIDE_GLOBE_STEP;
+
+      const seen = new Set([state.activeDbPath]);
+      const ordered = [];
+      for (let rank = 1; rank < total && seen.size < total; rank += 1) {
+        const rightPath = state.availableDbPaths[(activeIndex + rank) % total];
+        if (!seen.has(rightPath)) {
+          seen.add(rightPath);
+          ordered.push({ dbPath: rightPath, side: 1, rank });
+        }
+
+        if (seen.size >= total) break;
+
+        const leftPath = state.availableDbPaths[(activeIndex - rank + total) % total];
+        if (!seen.has(leftPath)) {
+          seen.add(leftPath);
+          ordered.push({ dbPath: leftPath, side: -1, rank });
+        }
+      }
+
+      return ordered.map(({ dbPath, side, rank }) => {
+        const offset = firstOffset + (rank - 1) * stepOffset;
+        const offsetX = side * offset;
+        return {
+          dbPath,
+          side,
+          rank,
+          offsetX,
+          x: cx + offsetX,
+          y,
+          radius: sideRadius,
+          badge: getDbBadgeLabel(dbPath),
+        };
+      });
+    }
+
+    function drawDbSideGlobes(sideGlobes) {
+      state.dbGlobeHitTargets = sideGlobes.map(({ dbPath, x, y, radius, offsetX, side }) => ({
+        dbPath,
+        x,
+        y,
+        radius,
+        offsetX,
+        side,
+      }));
+      if (!sideGlobes.length) return;
+
+      const drawOrder = [...sideGlobes].sort((a, b) => b.rank - a.rank);
+      drawOrder.forEach((entry) => {
+        const depthFade = Math.max(0.28, 0.54 - (entry.rank - 1) * 0.11);
+        const haloAlpha = Math.max(0.2, 0.56 - (entry.rank - 1) * 0.1);
+        const { x, y, radius } = entry;
+
+        ctx.save();
+        ctx.fillStyle = `rgba(7, 10, 18, ${Math.min(0.95, 0.7 + depthFade * 0.2)})`;
+        ctx.strokeStyle = `rgba(124, 199, 255, ${0.4 * depthFade})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.22 * depthFade})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(x, y, radius * 0.84, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = `rgba(124, 199, 255, ${haloAlpha * 0.44})`;
+        ctx.beginPath();
+        ctx.arc(x - radius * 0.16, y - radius * 0.18, radius * 0.33, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = `rgba(233, 246, 255, ${0.82 * depthFade})`;
+        ctx.font = `700 ${Math.max(8, Math.floor(radius * 0.43))}px Trebuchet MS`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(entry.badge, x, y);
+        ctx.restore();
+      });
+    }
+
+    function easeInOutCubic(t) {
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function animateDbShift(now) {
+      const animation = state.dbShiftAnimation;
+      if (!animation) return;
+      const elapsed = now - animation.start;
+      const t = Math.max(0, Math.min(1, elapsed / animation.durationMs));
+      const eased = easeInOutCubic(t);
+      state.dbShiftPx = animation.from + (animation.to - animation.from) * eased;
+      renderGraph();
+      if (t < 1) {
+        requestAnimationFrame(animateDbShift);
+        return;
+      }
+      const nextDbPath = animation.nextDbPath;
+      state.dbShiftAnimation = null;
+      state.dbShiftPx = 0;
+      loadDb(nextDbPath, { force: true, resetSelection: true });
+    }
+
+    function startDbShiftAndLoad(target) {
+      if (!target || !target.dbPath || target.dbPath === state.activeDbPath) return false;
+      if (state.dbShiftAnimation) return false;
+      clearTour(true);
+      const from = state.dbShiftPx;
+      const to = -target.offsetX;
+      const distance = Math.abs(to - from);
+      const durationMs = Math.round(Math.max(220, Math.min(760, 260 + distance * 0.35)));
+      state.dbShiftAnimation = {
+        from,
+        to,
+        start: performance.now(),
+        durationMs,
+        nextDbPath: target.dbPath,
+      };
+      requestAnimationFrame(animateDbShift);
+      return true;
+    }
+
+    function createDbShiftFallbackTarget(dbPath, direction = 1) {
+      const parent = graphCanvas.parentElement;
+      const width = parent?.clientWidth || 0;
+      const height = parent?.clientHeight || 0;
+      const baseRadius = getGlobeBaseRadius(width, height);
+      const mainRadius = Math.max(10, baseRadius * state.globeZoom);
+      const sideRadius = Math.max(8, mainRadius * DB_SIDE_GLOBE_SCALE);
+      const offset = mainRadius + sideRadius * DB_SIDE_GLOBE_NEAR_OVERLAP;
+      const side = direction >= 0 ? 1 : -1;
+      return {
+        dbPath,
+        side,
+        rank: 1,
+        offsetX: side * offset,
+      };
+    }
+
+    function selectDbPath(dbPath, opts = {}) {
+      if (!dbPath || dbPath === state.activeDbPath) return false;
+      const target = state.dbGlobeHitTargets.find((entry) => entry.dbPath === dbPath);
+      if (!target) {
+        const direction = Number.isFinite(opts.direction) && opts.direction < 0 ? -1 : 1;
+        return startDbShiftAndLoad(createDbShiftFallbackTarget(dbPath, direction));
+      }
+      return startDbShiftAndLoad(target);
+    }
+
+    function selectDbByDirection(direction) {
+      if (state.dbShiftAnimation) return false;
+      if (state.availableDbPaths.length < 2) return false;
+      const step = direction < 0 ? -1 : 1;
+      const activeIndex = state.availableDbPaths.indexOf(state.activeDbPath);
+      if (activeIndex < 0) return false;
+      const nextIndex = (activeIndex + step + state.availableDbPaths.length) % state.availableDbPaths.length;
+      return selectDbPath(state.availableDbPaths[nextIndex], { direction: step });
+    }
+
+    function selectDbByTapSide(canvasX, canvasY) {
+      if (state.dbShiftAnimation) return false;
+      if (state.availableDbPaths.length < 2) return false;
+      const parent = graphCanvas.parentElement;
+      const width = parent?.clientWidth || graphCanvas.clientWidth || 0;
+      const height = parent?.clientHeight || graphCanvas.clientHeight || 0;
+      if (!width || !height) return false;
+
+      const radius = Math.max(10, getGlobeBaseRadius(width, height) * state.globeZoom);
+      const centerX = width / 2 + state.dbShiftPx;
+      const centerY = height / 2;
+      const dx = canvasX - centerX;
+      const dy = canvasY - centerY;
+      // Keep taps on the active globe available for record navigation.
+      if (Math.hypot(dx, dy) <= radius) return false;
+      if (Math.abs(dx) < Math.max(16, radius * 0.15)) return false;
+
+      return selectDbByDirection(dx < 0 ? -1 : 1);
+    }
+
+    function renderGraph() {
+      const parent = graphCanvas.parentElement;
+      const width = parent.clientWidth;
+      const height = parent.clientHeight;
+      graphCanvas.width = Math.max(1, Math.floor(width * devicePixelRatio));
+      graphCanvas.height = Math.max(1, Math.floor(height * devicePixelRatio));
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+
+      ctx.clearRect(0, 0, width, height);
+
+      const baseRadius = getGlobeBaseRadius(width, height);
+      const radius = Math.max(10, baseRadius * state.globeZoom);
+      state.screenPoints = {};
+      state.dbGlobeHitTargets = [];
+      if (radius <= 10) return;
+
+      const cx = width / 2 + state.dbShiftPx;
+      const cy = height / 2;
+      const sideGlobes = buildDbSideGlobes(cx, cy, radius);
+      drawDbSideGlobes(sideGlobes);
+
+      ctx.fillStyle = "#0e1117";
+      ctx.strokeStyle = "#2a2f3a";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.strokeStyle = "#141824";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius * 0.92, 0, Math.PI * 2);
+      ctx.stroke();
+
+      drawGraticule(cx, cy, radius);
+
+      const visibleOrder = getVisibleOrderForGraph();
+      const visibleSet = new Set(visibleOrder);
+      const discoveredSet = new Set(state.discoveredIds);
+      const coordsEntries = visibleOrder
+        .map((recordId) => [recordId, state.coords[recordId]])
+        .filter(([, coords]) => coords);
+      if (!coordsEntries.length) return;
+
+      const selected = state.selectedId;
+      const nodesFront = [];
+      const nodesBack = [];
+      const projections = {};
+      let selectedPoint = null;
+      coordsEntries.forEach(([recordId, [lat, lon]]) => {
+        const [x, y, z] = projectPoint(lat, lon);
+        projections[recordId] = [x, y, z];
+        if (recordId === selected) {
+          selectedPoint = [recordId, x, y, z];
+        } else if (z > 0) {
+          nodesFront.push([recordId, x, y, z]);
+        } else {
+          nodesBack.push([recordId, x, y, z]);
+        }
+      });
+
+      nodesBack.forEach(([recordId, x, y]) => {
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        ctx.fillStyle = getNodeColor(recordId, discoveredSet);
+        ctx.beginPath();
+        ctx.arc(px, py, 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      Object.entries(state.records).forEach(([sourceId, record]) => {
+        if (!visibleSet.has(sourceId)) return;
+        const edges = record.edges || [];
+        if (!edges.length) return;
+        const sourceProj = projections[sourceId];
+        if (!sourceProj) return;
+        const [sx, sy, sz] = sourceProj;
+        if (sz <= 0) return;
+        const sxp = cx + sx * radius;
+        const syp = cy - sy * radius;
+        edges.forEach((edge) => {
+          const targetId = edge.target;
+          if (!targetId) return;
+          if (!visibleSet.has(targetId)) return;
+          const targetProj = projections[targetId];
+          if (!targetProj) return;
+          const [tx, ty, tz] = targetProj;
+          if (tz <= 0) return;
+          const txp = cx + tx * radius;
+          const typ = cy - ty * radius;
+          const isSelectedEdge = sourceId === selected || targetId === selected;
+          ctx.strokeStyle = isSelectedEdge ? "#7cc7ff" : "#2a3a4d";
+          ctx.lineWidth = isSelectedEdge ? 2 : 1;
+          ctx.beginPath();
+          ctx.moveTo(sxp, syp);
+          ctx.lineTo(txp, typ);
+          ctx.stroke();
+        });
+      });
+
+      state.screenPoints = {};
+      nodesFront.forEach(([recordId, x, y]) => {
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        const isDiscovered = discoveredSet.has(recordId);
+        ctx.fillStyle = getNodeColor(recordId, discoveredSet);
+        ctx.strokeStyle = "#0b0b10";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(px, py, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        state.screenPoints[recordId] = [px, py];
+
+        const recordTitle = isDiscovered ? state.records[recordId]?.title : null;
+        if (recordTitle) {
+          const labelSize = Math.max(9, Math.min(14, 10 * state.globeZoom));
+          ctx.fillStyle = "#dfe7f2";
+          ctx.font = `600 ${labelSize}px Trebuchet MS`;
+          ctx.fillText(recordTitle, px + labelSize * 0.6, py - labelSize * 0.4);
+        }
+      });
+
+      if (selectedPoint) {
+        const [recordId, x, y] = selectedPoint;
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        const selectedColor = getNodeColor(recordId, discoveredSet);
+        const eyeRadius = Math.max(8, Math.min(15, 8 + 2.6 * Math.sqrt(state.globeZoom)));
+        const toCenterX = cx - px;
+        const toCenterY = cy - py;
+        const toCenterMag = Math.hypot(toCenterX, toCenterY) || 1;
+        const lookScale = eyeRadius * 0.22;
+        const irisCx = px + (toCenterX / toCenterMag) * lookScale;
+        const irisCy = py + (toCenterY / toCenterMag) * lookScale;
+
+        ctx.save();
+        ctx.shadowColor = "rgba(255, 255, 255, 0.28)";
+        ctx.shadowBlur = eyeRadius * 1.8;
+
+        ctx.fillStyle = "#f7f9ff";
+        ctx.strokeStyle = "#0b0b10";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(px, py, eyeRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = selectedColor;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(irisCx, irisCy, eyeRadius * 0.54, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#07090c";
+        ctx.beginPath();
+        ctx.arc(irisCx, irisCy, eyeRadius * 0.28, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.82)";
+        ctx.beginPath();
+        ctx.arc(irisCx - eyeRadius * 0.21, irisCy - eyeRadius * 0.25, eyeRadius * 0.16, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        state.screenPoints[recordId] = [px, py];
+
+        const recordTitle = state.records[recordId]?.title;
+        if (recordTitle) {
+          const labelSize = Math.max(10, Math.min(16, 11 * state.globeZoom));
+          ctx.fillStyle = "#e9e9f0";
+          ctx.font = `bold ${labelSize}px Trebuchet MS`;
+          ctx.fillText(recordTitle, px + labelSize * 0.7, py - labelSize * 0.6);
+        }
+      }
+    }
+
+    function centerOnSelected() {
+      const recordId = state.selectedId;
+      if (!recordId) return;
+      const coords = state.coords[recordId];
+      if (!coords) return;
+      const [lat, lon] = coords;
+      const latR = (lat * Math.PI) / 180;
+      const lonR = (lon * Math.PI) / 180;
+      const x = Math.cos(latR) * Math.sin(lonR);
+      const y = Math.sin(latR);
+      const z = Math.cos(latR) * Math.cos(lonR);
+      const rotLon = -Math.atan2(x, z);
+      const z1 = Math.hypot(x, z);
+      const rotLat = Math.atan2(y, z1);
+      state.globeTargetLat = rotLat;
+      state.globeTargetLon = rotLon;
+      if (!state.globeAnimating) {
+        state.globeAnimating = true;
+        requestAnimationFrame(animateGlobe);
+      }
+    }
+
+    function animateGlobe() {
+      if (!state.globeAnimating) return;
+      const deltaLat = angleDelta(state.globeTargetLat, state.globeRotLat);
+      const deltaLon = angleDelta(state.globeTargetLon, state.globeRotLon);
+
+      if (Math.abs(deltaLat) < 0.002 && Math.abs(deltaLon) < 0.002) {
+        state.globeRotLat = state.globeTargetLat;
+        state.globeRotLon = state.globeTargetLon;
+        state.globeAnimating = false;
+        renderGraph();
+        return;
+      }
+
+      state.globeRotLat += deltaLat * 0.15;
+      state.globeRotLon += deltaLon * 0.15;
+      renderGraph();
+      requestAnimationFrame(animateGlobe);
+    }
+
+    function angleDelta(target, current) {
+      let delta = target - current;
+      while (delta > Math.PI) delta -= Math.PI * 2;
+      while (delta < -Math.PI) delta += Math.PI * 2;
+      return delta;
+    }
+
+    function projectPoint(lat, lon) {
+      const latR = (lat * Math.PI) / 180;
+      const lonR = (lon * Math.PI) / 180;
+      const x = Math.cos(latR) * Math.sin(lonR);
+      const y = Math.sin(latR);
+      const z = Math.cos(latR) * Math.cos(lonR);
+
+      const cosY = Math.cos(state.globeRotLon);
+      const sinY = Math.sin(state.globeRotLon);
+      const x1 = x * cosY + z * sinY;
+      const z1 = -x * sinY + z * cosY;
+
+      const cosX = Math.cos(state.globeRotLat);
+      const sinX = Math.sin(state.globeRotLat);
+      const y1 = y * cosX - z1 * sinX;
+      const z2 = y * sinX + z1 * cosX;
+
+      return [x1, y1, z2];
+    }
+
+    function findNearestRecordToCenter() {
+      const parent = graphCanvas.parentElement;
+      const width = parent.clientWidth;
+      const height = parent.clientHeight;
+      if (!width || !height) return null;
+      const baseRadius = getGlobeBaseRadius(width, height);
+      const radius = Math.max(10, baseRadius * state.globeZoom);
+      const cx = width / 2;
+      const cy = height / 2;
+      let closest = null;
+      let closestDist = Infinity;
+      const visibleSet = new Set(getVisibleOrderForGraph());
+      Object.entries(state.coords).forEach(([recordId, [lat, lon]]) => {
+        if (!visibleSet.has(recordId)) return;
+        const [x, y, z] = projectPoint(lat, lon);
+        if (z <= 0) return;
+        const px = cx + x * radius;
+        const py = cy - y * radius;
+        const dist = Math.hypot(px - cx, py - cy);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = recordId;
+        }
+      });
+      return closest;
+    }
+
+    function drawGraticule(cx, cy, radius) {
+      ctx.strokeStyle = "#1a1f2a";
+      ctx.lineWidth = 1;
+      for (let lon = -150; lon < 180; lon += 30) {
+        const points = [];
+        for (let lat = -90; lat <= 90; lat += 6) {
+          const [x, y, z] = projectPoint(lat, lon);
+          if (z > 0) {
+            points.push([cx + x * radius, cy - y * radius, true]);
+          } else {
+            points.push([0, 0, false]);
+          }
+        }
+        drawVisibleLine(points);
+      }
+
+      for (let lat = -60; lat < 90; lat += 30) {
+        const points = [];
+        for (let lon = -180; lon <= 180; lon += 6) {
+          const [x, y, z] = projectPoint(lat, lon);
+          if (z > 0) {
+            points.push([cx + x * radius, cy - y * radius, true]);
+          } else {
+            points.push([0, 0, false]);
+          }
+        }
+        drawVisibleLine(points);
+      }
+    }
+
+    function drawVisibleLine(points) {
+      let segment = [];
+      points.forEach(([px, py, visible]) => {
+        if (visible) {
+          segment.push([px, py]);
+          return;
+        }
+        if (segment.length >= 2) {
+          ctx.beginPath();
+          ctx.moveTo(segment[0][0], segment[0][1]);
+          segment.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
+          ctx.stroke();
+        }
+        segment = [];
+      });
+      if (segment.length >= 2) {
+        ctx.beginPath();
+        ctx.moveTo(segment[0][0], segment[0][1]);
+        segment.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
+        ctx.stroke();
+      }
+    }
+
+    function clampGlobeZoom(value) {
+      return Math.min(GLOBE_ZOOM_MAX, Math.max(GLOBE_ZOOM_MIN, value));
+    }
+
+    function setGlobeZoom(value) {
+      const nextZoom = clampGlobeZoom(value);
+      if (Math.abs(nextZoom - state.globeZoom) < 0.0001) return false;
+      state.globeZoom = nextZoom;
+      renderGraph();
+      return true;
+    }
+
+    function zoomGlobeByStep(direction) {
+      const multiplier = direction > 0 ? GLOBE_ZOOM_STEP : 1 / GLOBE_ZOOM_STEP;
+      return setGlobeZoom(state.globeZoom * multiplier);
+    }
+
+    function selectRecordNearPoint(canvasX, canvasY, pointerType = "mouse") {
+      if (state.dbShiftAnimation) return false;
+      let closest = null;
+      let closestDist = Infinity;
+      Object.entries(state.screenPoints).forEach(([id, pos]) => {
+        const dx = pos[0] - canvasX;
+        const dy = pos[1] - canvasY;
+        const dist = Math.hypot(dx, dy);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = id;
+        }
+      });
+      const threshold = pointerType === "touch" ? 28 : 16;
+      if (closest && closestDist <= threshold) {
+        selectRecord(closest);
+        return true;
+      }
+      return false;
+    }
+
+    function beginGlobeDrag(clientX, clientY) {
+      if (state.dbShiftAnimation) return;
+      state.globeDragging = true;
+      state.globeDragMoved = false;
+      state.globeDragX = clientX;
+      state.globeDragY = clientY;
+      state.globeVelX = 0;
+      state.globeVelY = 0;
+      state.globeVelT = performance.now();
+      graphCanvas.classList.add("is-dragging");
+    }
+
+    function handleGlobeDragMove(clientX, clientY) {
+      if (state.dbShiftAnimation) return false;
+      if (!state.globeDragging) return false;
+      const dx = clientX - state.globeDragX;
+      const dy = clientY - state.globeDragY;
+      if (dx === 0 && dy === 0) return false;
+      const now = performance.now();
+      const dt = Math.max(1, now - state.globeVelT);
+      state.globeVelX = dx / dt;
+      state.globeVelY = dy / dt;
+      state.globeVelT = now;
+      state.globeDragX = clientX;
+      state.globeDragY = clientY;
+      state.globeDragMoved = true;
+      const sensitivity = 0.005;
+      state.globeRotLon += dx * sensitivity;
+      const invert = state.invertDragY ? 1 : -1;
+      state.globeRotLat += dy * sensitivity * invert;
+      const limit = Math.PI / 2 - 0.05;
+      state.globeRotLat = Math.max(-limit, Math.min(limit, state.globeRotLat));
+      state.globeTargetLat = state.globeRotLat;
+      state.globeTargetLon = state.globeRotLon;
+      state.globeAnimating = false;
+      renderGraph();
+      return true;
+    }
+
+    function endGlobeDrag() {
+      if (state.dbShiftAnimation) return false;
+      if (!state.globeDragging) return false;
+      const didMove = state.globeDragMoved;
+      state.globeDragging = false;
+      state.globeDragMoved = false;
+      graphCanvas.classList.remove("is-dragging");
+      if (!didMove) return false;
+      const targetId = findNearestRecordToCenter();
+      if (targetId) {
+        selectRecord(targetId);
+      }
+      return true;
+    }
+
+    graphCanvas.addEventListener(
+      "wheel",
+      (event) => {
+        event.preventDefault();
+        const direction = Math.sign(event.deltaY);
+        const changed = zoomGlobeByStep(direction > 0 ? -1 : 1);
+        if (changed) {
+          noteInteraction();
+        }
+      },
+      { passive: false },
+    );
+
+    const pointerGesture = {
+      active: new Map(),
+      primaryId: null,
+      startX: 0,
+      startY: 0,
+      startTime: 0,
+      moved: false,
+      movedOrZoomed: false,
+      pinchDistance: 0,
+      pinchStartZoom: 1,
+    };
+
+    function getPinchDistance() {
+      const points = Array.from(pointerGesture.active.values());
+      if (points.length < 2) return 0;
+      return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+    }
+
+    graphCanvas.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      pointerGesture.active.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (graphCanvas.setPointerCapture) {
+        try {
+          graphCanvas.setPointerCapture(event.pointerId);
+        } catch (err) {
+          // Ignore capture failures and continue with regular pointer tracking.
+        }
+      }
+
+      if (pointerGesture.active.size === 1) {
+        pointerGesture.primaryId = event.pointerId;
+        pointerGesture.startX = event.clientX;
+        pointerGesture.startY = event.clientY;
+        pointerGesture.startTime = performance.now();
+        pointerGesture.moved = false;
+        pointerGesture.movedOrZoomed = false;
+        beginGlobeDrag(event.clientX, event.clientY);
+      } else {
+        pointerGesture.primaryId = null;
+        pointerGesture.moved = true;
+        pointerGesture.pinchDistance = getPinchDistance();
+        pointerGesture.pinchStartZoom = state.globeZoom;
+        state.globeDragging = false;
+        graphCanvas.classList.remove("is-dragging");
+      }
+      event.preventDefault();
+    });
+
+    graphCanvas.addEventListener("pointermove", (event) => {
+      if (!pointerGesture.active.has(event.pointerId)) return;
+      pointerGesture.active.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+      if (pointerGesture.active.size >= 2) {
+        const distance = getPinchDistance();
+        if (pointerGesture.pinchDistance > 0 && distance > 0) {
+          const scale = distance / pointerGesture.pinchDistance;
+          const changed = setGlobeZoom(pointerGesture.pinchStartZoom * scale);
+          if (changed) {
+            pointerGesture.movedOrZoomed = true;
+          }
+        }
+        event.preventDefault();
+        return;
+      }
+
+      if (event.pointerId !== pointerGesture.primaryId) {
+        event.preventDefault();
+        return;
+      }
+
+      const traveled = Math.hypot(event.clientX - pointerGesture.startX, event.clientY - pointerGesture.startY);
+      if (traveled > 6) {
+        pointerGesture.moved = true;
+      }
+      const moved = handleGlobeDragMove(event.clientX, event.clientY);
+      if (moved && pointerGesture.moved) {
+        pointerGesture.movedOrZoomed = true;
+      }
+      event.preventDefault();
+    });
+
+    function handlePointerEnd(event) {
+      if (!pointerGesture.active.has(event.pointerId)) return;
+      const wasPrimary = pointerGesture.primaryId === event.pointerId;
+      const wasSinglePointer = pointerGesture.active.size === 1;
+      const wasTap =
+        wasPrimary && wasSinglePointer && !pointerGesture.moved && performance.now() - pointerGesture.startTime < 350;
+
+      pointerGesture.active.delete(event.pointerId);
+      if (graphCanvas.releasePointerCapture && graphCanvas.hasPointerCapture?.(event.pointerId)) {
+        try {
+          graphCanvas.releasePointerCapture(event.pointerId);
+        } catch (err) {
+          // Ignore capture release failures.
+        }
+      }
+
+      if (pointerGesture.active.size >= 2) {
+        pointerGesture.primaryId = null;
+        pointerGesture.pinchDistance = getPinchDistance();
+        pointerGesture.pinchStartZoom = state.globeZoom;
+        event.preventDefault();
+        return;
+      }
+
+      if (pointerGesture.active.size === 1) {
+        const entry = pointerGesture.active.entries().next().value;
+        const remainingId = entry[0];
+        const remainingPoint = entry[1];
+        pointerGesture.primaryId = remainingId;
+        pointerGesture.startX = remainingPoint.x;
+        pointerGesture.startY = remainingPoint.y;
+        pointerGesture.startTime = performance.now();
+        pointerGesture.moved = true;
+        pointerGesture.pinchDistance = 0;
+        pointerGesture.pinchStartZoom = state.globeZoom;
+        beginGlobeDrag(remainingPoint.x, remainingPoint.y);
+        event.preventDefault();
+        return;
+      }
+
+      const usedDrag = endGlobeDrag();
+      let usedTap = false;
+      if (wasTap) {
+        const rect = graphCanvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const inCanvas = x >= 0 && x <= rect.width && y >= 0 && y <= rect.height;
+        if (inCanvas) {
+          usedTap = selectRecordNearPoint(x, y, event.pointerType);
+          if (!usedTap) {
+            usedTap = selectDbByTapSide(x, y);
+          }
+        }
+      }
+
+      if (usedDrag || usedTap || pointerGesture.movedOrZoomed) {
+        noteInteraction();
+      }
+
+      pointerGesture.primaryId = null;
+      pointerGesture.moved = false;
+      pointerGesture.movedOrZoomed = false;
+      pointerGesture.pinchDistance = 0;
+      pointerGesture.pinchStartZoom = state.globeZoom;
+      event.preventDefault();
+    }
+
+    graphCanvas.addEventListener("pointerup", handlePointerEnd);
+    graphCanvas.addEventListener("pointercancel", handlePointerEnd);
+    window.addEventListener("pointerup", handlePointerEnd);
+    window.addEventListener("pointercancel", handlePointerEnd);
+
+    function getTourDelayMs() {
+      if (!state.tourSlowPace) return TOUR_DELAY_MS;
+      return Math.round(TOUR_DELAY_MS * TOUR_SLOW_DELAY_MULTIPLIER);
+    }
+
+    function setTourAudioPlaying(shouldPlay) {
+      const tourAudioPlayer = state.tourAudioPlayer;
+      if (!tourAudioPlayer) return;
+      const tourAudio = tourAudioPlayer.audio;
+      if (shouldPlay) {
+        if (!tourAudio.paused) return;
+        tourAudioPlayer.play({ restart: false });
+        return;
+      }
+      if (tourAudio.paused) return;
+      tourAudioPlayer.stop();
+    }
+
+    function scheduleTour() {
+      clearTour();
+      if (state.scenePlayback.active) {
+        setTourAudioPlaying(false);
+        tourNote.textContent = "Scene playback is active.";
+        return;
+      }
+      if (state.discoveryTourOff) {
+        setTourAudioPlaying(false);
+        return;
+      }
+      const discoveredOrder = getDiscoveredOrder();
+      const selectedRecordHasAudio = Boolean(getRecordAudioConfig(state.selectedId).path);
+      const shouldPlayTourAudio =
+        state.tourEnabled && !state.tourPaused && discoveredOrder.length >= 2 && !selectedRecordHasAudio;
+      setTourAudioPlaying(shouldPlayTourAudio);
+      if (!state.tourEnabled) return;
+      if (state.tourPaused) {
+        tourNote.textContent = "Guided tour paused. Press Space to resume.";
+        return;
+      }
+      if (discoveredOrder.length < 2) {
+        tourNote.textContent = "Discover another record to expand the guided tour.";
+        return;
+      }
+      tourNote.textContent = state.tourSlowPace
+        ? "Slow tour pace is on: transitions are slower and pauses are longer."
+        : "Default network tour will advance after a short pause.";
+      state.tourTimer = window.setTimeout(() => {
+        advanceTour();
+      }, getTourDelayMs());
+    }
+
+    function clearTour(stopAudio = false) {
+      if (state.tourTimer) {
+        clearTimeout(state.tourTimer);
+        state.tourTimer = null;
+      }
+      if (stopAudio) {
+        setTourAudioPlaying(false);
+      }
+    }
+
+    function advanceTour() {
+      const order = getDiscoveredOrder();
+      if (state.scenePlayback.active) return;
+      if (state.discoveryTourOff || !state.tourEnabled || !order.length) return;
+      let index = order.indexOf(state.selectedId);
+      if (index < 0) index = 0;
+      const nextId = order[(index + 1) % order.length];
+      selectRecord(nextId, { fromTour: true });
+      scheduleTour();
+    }
+
+    function noteInteraction() {
+      if (state.scenePlayback.active) {
+        stopScenePlayback({ stopAudio: true });
+      }
+      if (state.discoveryTourOff) return;
+      if (!state.tourEnabled) return;
+      if (state.dbShiftAnimation) return;
+      scheduleTour();
+    }
+
+    window.mountEyeball("eyeball-terminology");
+    window.mountEyeball("eyeball-foot");
+
+    applyRecordViewportMode();
+    initializeDbCatalog();
+    const initialTootTarget = getInitialTootTargetFromUrl();
+    const initialDbPath = initialTootTarget?.dbPath || getInitialDbPathFromUrl();
+    loadDb(initialDbPath, {
+      force: true,
+      resetSelection: true,
+      preferredRecordId: initialTootTarget?.recordId || null,
+    });
