@@ -505,15 +505,13 @@
   <div class="page">
     <header>
       <div class="header-left">
-        <div class="hero-row">
-          <div class="title-block">
-            <h1>Toot Toot Engineering</h1>
-            <p>Home of TTDB (semantic story data store) · TTAI (an autonomous OS stack <a href="/standards/ttai/TECHNICAL_REQUIREMENTS.md">technical requirements</a>) · And the TTE workflow engine · No dependencies or libraries*. Free Open Source plain text files . All the 'compute' is in this index.html and all the 'store' is in markdown (or LaTeX) files. *(excepting for rendering LaTeX)</p>
-          </div>
-        </div>
+
+        <h4><a href="index.html">Toot Toot Engineering</a> - <a href="index.html?ttdb=TootTootTerminologyDB.md&toot=lat35.7lon139.7">Semantic, Subjective, Scientific, Storytelling Data </a> - <a href="index.html?ttdb=TootTootTerminologyDB.md&toot=lat40.7lon-74.0">for Networked Autonomous Agents </a> - <a href="index.html">and Content Publishing (like this)</a> </h4>
+
         <div class="graph-wrap">
           <canvas id="graph"></canvas>
         </div>
+
       </div>
       <div class="header-right">
         <div class="record" id="recordView"></div>
@@ -530,7 +528,8 @@
     <details class="panel record-panel info-panel" open>
       <summary>TTDB</summary>
       <div class="title">
-        <p>TTDB (MyMentalPalaceDB) is an offline-first semantic graph format at the core of the TTAI autonomy OS stack. Records are location-anchored nodes connected by typed edges — navigable by both humans and AI agents. Discovery starts from the first record and expands as you explore.</p>
+        <p>MyMentalPalaceDB (TTDB) is a single-file, flat-text knowledge graph. Each entry is a record at a `@LATxLONy` coordinate on a semantic "globe" — a projection of the agent's umwelt into a navigable space. Entries carry typed edges to other entries, forming a semantic mesh the agent traverses during reasoning. 
+ TTDB files are plain Markdown. Any text editor can read, audit, and edit one.</p>
         <span id="status">Loading TootTootTerminologyDB.md...</span>
       </div>
       <div class="controls">
