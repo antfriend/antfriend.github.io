@@ -1,8 +1,8 @@
 # TTN-RFC-0006
 ## Minimal LoRa Packet Framing for Non-Meshtastic Nodes
-### Version 0.1
+### Version 1.0
 
-Status: Draft
+Status: Stable
 
 This RFC defines a minimal, deterministic LoRa framing format for devices that
 are not running Meshtastic but must exchange short messages with a TTN gateway.

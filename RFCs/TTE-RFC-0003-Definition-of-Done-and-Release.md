@@ -2,7 +2,7 @@
 ## Definition of Done and Release Packaging
 ### Version 1.0
 
-Status: Draft
+Status: Stable
 
 This RFC defines completion requirements and release packaging rules.
 

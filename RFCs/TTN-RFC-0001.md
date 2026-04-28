@@ -1,8 +1,8 @@
 # TTN-RFC-0001
 ## Toot Toot Network – Core Semantic Mesh Specification
-### Version 0.1
+### Version 1.0
 
-Status: Draft
+Status: Stable
 
 This RFC defines the canonical behavior, concepts, and etiquette of the Toot Toot Network (TTN).
 

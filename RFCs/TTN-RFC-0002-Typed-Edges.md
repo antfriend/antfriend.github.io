@@ -1,8 +1,8 @@
 # TTN-RFC-0002
 ## Typed Edge Taxonomy for the Toot Toot Network
-### Version 0.1
+### Version 1.0
 
-Status: Draft
+Status: Stable
 
 ---
 

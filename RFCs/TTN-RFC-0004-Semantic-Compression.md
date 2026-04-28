@@ -1,8 +1,8 @@
 # TTN-RFC-0004
 ## Semantic Compression and On-Mesh Token Dictionary
-### Version 0.1
+### Version 1.0
 
-Status: Draft
+Status: Stable
 
 This RFC defines how rich semantic events are compressed into ultra-low-bandwidth
 tokens suitable for Meshtastic and other constrained transports.

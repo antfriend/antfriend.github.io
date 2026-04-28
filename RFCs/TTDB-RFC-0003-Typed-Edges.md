@@ -1,8 +1,8 @@
 # TTDB-RFC-0003
 ## Typed Edge Semantics for TTDB
-### Version 0.2
+### Version 1.0
 
-Status: Draft
+Status: Stable
 
 This RFC defines typed edge syntax and behavior in TTDB records.
 

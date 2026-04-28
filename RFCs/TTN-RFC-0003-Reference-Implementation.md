@@ -1,8 +1,8 @@
 # TTN-RFC-0003
 ## Reference Implementation Checklist
-### Version 0.1
+### Version 1.0
 
-Status: Draft
+Status: Stable
 
 ---
 

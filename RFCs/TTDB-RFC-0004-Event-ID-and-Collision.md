@@ -1,8 +1,8 @@
 # TTDB-RFC-0004
 ## Event ID Assignment and Collision Handling
-### Version 0.2
+### Version 1.0
 
-Status: Draft
+Status: Stable
 
 This RFC defines record ID assignment and collision resolution for TTDB.
 

@@ -1,8 +1,8 @@
 # TTDB-RFC-0001
 ## My Mental Palace DB File Format and Sections
-### Version 0.2
+### Version 1.0
 
-Status: Draft
+Status: Stable
 
 This RFC defines the canonical on-disk format for MyMentalPalaceDB files.
 

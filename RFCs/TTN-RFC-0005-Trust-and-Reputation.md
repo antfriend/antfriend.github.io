@@ -1,8 +1,8 @@
 # TTN-RFC-0005
 ## Trust, Reputation, and Social Gravity
-### Version 0.1
+### Version 1.0
 
-Status: Draft
+Status: Stable
 
 This RFC defines decentralized trust modeling for TTN.
 

@@ -15,6 +15,7 @@ This index lists RFCs included in the TTE 1.0 bundle.
 - TTDB-RFC-0002-Cursor-Semantics.md: Cursor Semantics and Selection Rules
 - TTDB-RFC-0003-Typed-Edges.md: Typed Edge Semantics
 - TTDB-RFC-0004-Event-ID-and-Collision.md: Event ID Assignment and Collision Handling
+- TTDB-RFC-0005-Epistemic-Weight.md: Toot-Bit Epistemic Weight (TBEW) — optional [ew] block for confidence, revision, salience, and recency metadata
 
 ## TTE (Toot Toot Engineering)
 - TTE-RFC-0001-Workflow-and-Roles.md: Workflow and Roles

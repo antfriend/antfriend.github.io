@@ -2,7 +2,7 @@
 ## Toot Toot Engineering Workflow and Roles
 ### Version 1.0
 
-Status: Draft
+Status: Stable
 
 This RFC defines the core workflow, roles, and role discipline for TTE.
 

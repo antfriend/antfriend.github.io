@@ -2,7 +2,7 @@
 ## Plan, Log, and Checklist Requirements
 ### Version 1.0
 
-Status: Draft
+Status: Stable
 
 This RFC defines required content for `PLAN.md`, `LOG.md`, and checklists.
 
