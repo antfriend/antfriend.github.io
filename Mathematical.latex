@@ -57,9 +57,9 @@ librarian:
 
 \begin{ttdb_cursor}
 selected:
-  - @LAT0LON0
+  - @LAT65LON45
 preview:
-  @LAT0LON0: "State-space model for TTDB processing and rendering."
+  @LAT65LON45: "TTCP RFC series: normative requirements for rendering a TTDB file as an interactive web publication."
 agent_note: "When ambiguity exists, prefer deterministic tie-break rules or explicit clarification."
 \end{ttdb_cursor}
 
@@ -71,7 +71,7 @@ kind: discovery_tour_off
 \end{ttdb_record}
 
 \begin{ttdb_record}
-\ttdbheader{@LAT0LON0 | created:1771900000 | updated:1771900000 | relates:defines>@LAT18LON-120,defines>@LAT35LON-60,defines>@LAT52LON20,defines>@LAT28LON95,defines>@LAT5LON150,defines>@LAT-22LON60,defines>@LAT-42LON-30,defines>@LAT-12LON-150,defines>@LAT-62LON120}
+\ttdbheader{@LAT0LON0 | created:1771900000 | updated:1771901000 | relates:defines>@LAT18LON-120,defines>@LAT35LON-60,defines>@LAT52LON20,defines>@LAT28LON95,defines>@LAT5LON150,defines>@LAT-22LON60,defines>@LAT-42LON-30,defines>@LAT-12LON-150,defines>@LAT-62LON120,defines>@LAT65LON45}
 \subsection*{System State and Dynamics}
 Let the application state at time $t$ be
 \[
@@ -94,6 +94,8 @@ An implementation evolves by
 S_{t+1} = F(S_t, a_t, \eta_t),
 \]
 with input action $a_t$ and optional stochastic term $\eta_t$ (used for random card draws).
+
+\medskip\noindent\textbf{Normative references:} \texttt{TTCP-RFC-0001} (full pipeline); \texttt{TTCP-RFC-0002} (globe and navigation); \texttt{TTCP-RFC-0003} (link system and search).
 \end{ttdb_record}
 
 \begin{ttdb_record}
@@ -121,6 +123,8 @@ For header token list $\texttt{relates:}$,
 \mathcal{E}_i = \{(\tau, id_j)\},
 \]
 with token syntax $\tau\texttt{>}id_j$ and default $\tau=\texttt{relates}$ if omitted.
+
+\medskip\noindent\textbf{Normative references:} \texttt{TTCP-RFC-0001} Sections 2--4, 9 (file ingestion, three-zone parse, record header, LaTeX container).
 \end{ttdb_record}
 
 \begin{ttdb_record}
@@ -143,6 +147,8 @@ Duplicate edges may be canonicalized by set projection:
 \mathcal{E}_{canon} = \text{unique}(\mathcal{E}_{dir}).
 \]
 Rendering may use $\mathcal{E}_{canon}$, but stored edge headers remain authoritative.
+
+\medskip\noindent\textbf{Normative references:} \texttt{TTCP-RFC-0001} Section 12 (typed edge display); \texttt{TTCP-RFC-0002} Section 4 (edge rendering on globe).
 \end{ttdb_record}
 
 \begin{ttdb_record}
@@ -166,6 +172,8 @@ Search term $q$ yields visible order:
 \end{cases}
 \]
 If $s_t\notin \mathcal{F}(q)$ and $\mathcal{F}(q)\neq\varnothing$, select first element.
+
+\medskip\noindent\textbf{Normative references:} \texttt{TTCP-RFC-0002} Sections 6--7 (cursor selection, discovery); \texttt{TTCP-RFC-0003} Section 6 (search index and filtering).
 \end{ttdb_record}
 
 \begin{ttdb_record}
@@ -186,6 +194,8 @@ Screen projection for globe center $(c_x,c_y)$ and radius $r$:
 p_x=c_x+r x_1,\quad p_y=c_y-r y_1.
 \]
 This model is shared by TTDB globe and banjo globe rendering.
+
+\medskip\noindent\textbf{Normative references:} \texttt{TTCP-RFC-0002} Sections 2--3 (globe projection model, node rendering, front-face culling).
 \end{ttdb_record}
 
 \begin{ttdb_record}
@@ -208,6 +218,8 @@ Zoom update:
 \[
 z \leftarrow \text{clamp}(z\cdot \gamma,\;[z_{min},z_{max}]).
 \]
+
+\medskip\noindent\textbf{Normative references:} \texttt{TTCP-RFC-0002} Section 5 (drag, zoom, tap, reduced motion).
 \end{ttdb_record}
 
 \begin{ttdb_record}
@@ -234,6 +246,8 @@ T=\text{round}\!\left((160+1400(\delta')^{0.55})\cdot \kappa\right),\quad
 L=\text{round}\!\left(72+300(\delta')^{0.75}\right),
 \]
 where $\kappa$ is a pace multiplier (e.g., slow tour mode).
+
+\medskip\noindent\textbf{Normative references:} \texttt{TTCP-RFC-0002} Sections 9.1--9.2 (transition parameters, named styles: slide, bloom, twist).
 \end{ttdb_record}
 
 \begin{ttdb_record}
@@ -250,6 +264,8 @@ next(s_t)=\mathcal{D}\left[(\text{index}(s_t)+1)\bmod |\mathcal{D}|\right],
 \]
 where $\mathcal{D}$ is discovered order.
 Interaction events reset schedule (unless tour is off).
+
+\medskip\noindent\textbf{Normative references:} \texttt{TTCP-RFC-0002} Section 8 (guided tour, tour audio, slow pace, space-key pause, discovery\_tour\_off suppression).
 \end{ttdb_record}
 
 \begin{ttdb_record}
@@ -274,6 +290,8 @@ When $|\Delta\theta|,|\Delta\rho|<\varepsilon$, reveal card:
 \[
 B_{t+1}=B_t \Vert [c_t],\quad A_{t+1}=A_t\setminus\{c_t\}.
 \]
+
+\medskip\noindent\textbf{Normative references:} \texttt{TTCP-RFC-0002} Section 2 (spherical projection model applies to banjo globe identically).
 \end{ttdb_record}
 
 \begin{ttdb_record}
@@ -299,6 +317,37 @@ followed by shared rendering pipeline.
 
 \textbf{Strategy C: On-load transpile to markdown subset.}
 Map deterministic LaTeX environments to markdown-equivalent text and pass through current \texttt{parseRecords} with minimal UI changes.
+
+\medskip\noindent\textbf{Normative references:} \texttt{TTCP-RFC-0001} Sections 2, 9 (file ingestion and format detection; LaTeX container support and body conversion rules).
+\end{ttdb_record}
+
+\begin{ttdb_record}
+\ttdbheader{@LAT65LON45 | created:1771901000 | updated:1771901000 | relates:specified_by>@LAT0LON0,covers>@LAT18LON-120,covers>@LAT35LON-60,covers>@LAT52LON20,covers>@LAT28LON95,covers>@LAT5LON150,covers>@LAT-22LON60,covers>@LAT-42LON-30,covers>@LAT-62LON120}
+\subsection*{Content Publishing RFC Series (TTCP)}
+The TTCP RFC series formalizes the normative requirements for rendering a TTDB file as an interactive web publication. Three documents constitute the series:
+
+\medskip
+\noindent\texttt{TTCP-RFC-0001} --- \textbf{Record Rendering.}
+File ingestion (fetch, format detection); three-zone parse model (mmpdb, cursor, records); record header fields; Markdown and LaTeX rendering pipelines; media dispatch and lead-media extraction; split layout; \texttt{ttdb-record} audio config; special records (\texttt{tour\_sound}, \texttt{discovery\_tour\_off}); epistemic weight display; typed edge display.
+
+\medskip
+\noindent\texttt{TTCP-RFC-0002} --- \textbf{Globe and Navigation.}
+Spherical projection model; node states (undiscovered, discovered, selected eyeball); deterministic discovery colors; edge rendering; drag, zoom, and tap interaction; cursor selection and globe rotation animation; discovery system and localStorage persistence; guided tour automaton; record transition animation (slide, bloom, twist); scene record playback (\texttt{ttdb-scene}); multi-database side-globe navigation.
+
+\medskip
+\noindent\texttt{TTCP-RFC-0003} --- \textbf{Link System and Addressability.}
+\texttt{toot:} URI scheme and record token format; four supported link-target forms (toot URI, legacy \texttt{@}, path, viewer URL); DB alias resolution; URL synchronization via \texttt{history.replaceState}; search index construction and substring filtering over discovered records.
+
+\medskip
+\noindent The mapping from state-space components defined in \texttt{@LAT0LON0} to TTCP RFC sections is:
+\[
+\begin{aligned}
+M_t, C_t, R_t &\mapsto \texttt{TTCP-RFC-0001} \text{ (parse and render)}, \\
+E_t           &\mapsto \texttt{TTCP-RFC-0001 \S12},\ \texttt{TTCP-RFC-0002 \S4}, \\
+G_t, V_t      &\mapsto \texttt{TTCP-RFC-0002} \text{ (globe and navigation)}, \\
+U_t           &\mapsto \texttt{TTCP-RFC-0002 \S5--11},\ \texttt{TTCP-RFC-0003}.
+\end{aligned}
+\]
 \end{ttdb_record}
 
 \end{document}
