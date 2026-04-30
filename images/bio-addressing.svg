@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 260" role="img" aria-labelledby="bio-addressing-title">
+  <title id="bio-addressing-title">Pair 2: Authority-Free Addressing — Voltage gradient addressing resonates with coordinate-based identity</title>
+  <defs>
+    <radialGradient id="bgA" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0d1e18"/>
+      <stop offset="100%" stop-color="#060e0a"/>
+    </radialGradient>
+    <radialGradient id="fieldGrad" cx="50%" cy="60%" r="55%">
+      <stop offset="0%" stop-color="#0f8b8d" stop-opacity="0.35"/>
+      <stop offset="50%" stop-color="#0f8b8d" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#0f8b8d" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glowA">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="560" height="260" fill="url(#bgA)"/>
+  <line x1="280" y1="20" x2="280" y2="240" stroke="#b9e9c6" stroke-width="0.6" stroke-opacity="0.25"/>
+
+  <!-- === LEFT PANEL: Voltage Gradient Addressing === -->
+  <text x="140" y="38" font-family="monospace" font-size="9" fill="#4fc3f7" fill-opacity="0.8" text-anchor="middle" letter-spacing="1">VOLTAGE GRADIENT FIELD</text>
+
+  <!-- Bioelectric field (radial gradient showing voltage potential) -->
+  <ellipse cx="140" cy="145" rx="100" ry="90" fill="url(#fieldGrad)"/>
+
+  <!-- Equipotential lines (concentric ovals = voltage levels) -->
+  <ellipse cx="140" cy="145" rx="92" ry="82" fill="none" stroke="#0f8b8d" stroke-width="0.7" stroke-opacity="0.3"/>
+  <ellipse cx="140" cy="145" rx="74" ry="66" fill="none" stroke="#0f8b8d" stroke-width="0.8" stroke-opacity="0.35"/>
+  <ellipse cx="140" cy="145" rx="56" ry="50" fill="none" stroke="#0f8b8d" stroke-width="0.9" stroke-opacity="0.4"/>
+  <ellipse cx="140" cy="145" rx="38" ry="34" fill="none" stroke="#0f8b8d" stroke-width="1" stroke-opacity="0.5"/>
+  <ellipse cx="140" cy="145" rx="20" ry="18" fill="none" stroke="#4fc3f7" stroke-width="1.2" stroke-opacity="0.6"/>
+
+  <!-- Cells at various positions in the field — their position = their identity -->
+  <!-- Cell at high potential (center) -->
+  <circle cx="140" cy="145" r="9" fill="#4fc3f7" fill-opacity="0.15" stroke="#4fc3f7" stroke-width="1.5"/>
+  <text x="140" y="149" font-family="monospace" font-size="6.5" fill="#4fc3f7" fill-opacity="0.8" text-anchor="middle">head</text>
+
+  <!-- Cells at mid potential -->
+  <circle cx="115" cy="135" r="7" fill="#0f8b8d" fill-opacity="0.15" stroke="#0f8b8d" stroke-width="1.2"/>
+  <text x="115" y="139" font-family="monospace" font-size="5.5" fill="#b9e9c6" fill-opacity="0.65" text-anchor="middle">torso</text>
+  <circle cx="165" cy="152" r="7" fill="#0f8b8d" fill-opacity="0.15" stroke="#0f8b8d" stroke-width="1.2"/>
+  <text x="165" y="156" font-family="monospace" font-size="5.5" fill="#b9e9c6" fill-opacity="0.65" text-anchor="middle">torso</text>
+
+  <!-- Cells at low potential (outer) -->
+  <circle cx="90" cy="158" r="6" fill="#0f8b8d" fill-opacity="0.1" stroke="#0f8b8d" stroke-width="1"/>
+  <text x="90" y="162" font-family="monospace" font-size="5" fill="#b9e9c6" fill-opacity="0.55" text-anchor="middle">tail</text>
+  <circle cx="190" cy="140" r="6" fill="#0f8b8d" fill-opacity="0.1" stroke="#0f8b8d" stroke-width="1"/>
+  <text x="190" y="144" font-family="monospace" font-size="5" fill="#b9e9c6" fill-opacity="0.55" text-anchor="middle">tail</text>
+
+  <!-- No central authority indicator -->
+  <text x="140" y="57" font-family="monospace" font-size="7.5" fill="#b9e9c6" fill-opacity="0.5" text-anchor="middle">position in field</text>
+  <text x="140" y="68" font-family="monospace" font-size="7.5" fill="#4fc3f7" fill-opacity="0.75" text-anchor="middle">= identity</text>
+  <text x="140" y="83" font-family="monospace" font-size="6.5" fill="#b9e9c6" fill-opacity="0.35" text-anchor="middle">no central blueprint</text>
+  <text x="140" y="93" font-family="monospace" font-size="6.5" fill="#b9e9c6" fill-opacity="0.35" text-anchor="middle">no genomic decree</text>
+
+  <!-- Voltage labels -->
+  <text x="59" y="188" font-family="monospace" font-size="6.5" fill="#0f8b8d" fill-opacity="0.55">V−</text>
+  <text x="214" y="120" font-family="monospace" font-size="6.5" fill="#4fc3f7" fill-opacity="0.6">V+</text>
+
+  <!-- === CENTER: Resonance === -->
+  <text x="280" y="130" font-family="serif" font-size="20" fill="#b9e9c6" fill-opacity="0.7" text-anchor="middle">⟷</text>
+  <text x="280" y="148" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.5" text-anchor="middle">resonates_with</text>
+
+  <!-- === RIGHT PANEL: Authority-Free Addressing === -->
+  <text x="420" y="38" font-family="monospace" font-size="9" fill="#e76f51" fill-opacity="0.8" text-anchor="middle" letter-spacing="1">AUTHORITY-FREE ADDRESSING</text>
+
+  <!-- Globe outline -->
+  <circle cx="420" cy="145" r="88" fill="none" stroke="#e76f51" stroke-width="1" stroke-opacity="0.35"/>
+
+  <!-- Latitude lines -->
+  <ellipse cx="420" cy="115" rx="88" ry="16" fill="none" stroke="#e76f51" stroke-width="0.7" stroke-opacity="0.25"/>
+  <ellipse cx="420" cy="145" rx="88" ry="22" fill="none" stroke="#e76f51" stroke-width="0.9" stroke-opacity="0.35"/>
+  <ellipse cx="420" cy="175" rx="88" ry="16" fill="none" stroke="#e76f51" stroke-width="0.7" stroke-opacity="0.25"/>
+
+  <!-- Longitude lines -->
+  <path d="M420,57 Q452,101 420,145 Q388,189 420,233" fill="none" stroke="#e76f51" stroke-width="0.7" stroke-opacity="0.25"/>
+  <path d="M420,57 Q470,101 490,145 Q470,189 420,233" fill="none" stroke="#e76f51" stroke-width="0.6" stroke-opacity="0.2"/>
+  <path d="M420,57 Q370,101 350,145 Q370,189 420,233" fill="none" stroke="#e76f51" stroke-width="0.6" stroke-opacity="0.2"/>
+
+  <!-- Coordinate nodes — anyone can place, anyone can find -->
+  <circle cx="400" cy="128" r="5" fill="#e76f51" filter="url(#glowA)"/>
+  <circle cx="400" cy="128" r="3" fill="#ffffff"/>
+  <text x="400" y="120" font-family="monospace" font-size="6" fill="#e76f51" fill-opacity="0.7" text-anchor="middle">@LAT42.4</text>
+
+  <circle cx="445" cy="155" r="4" fill="#e76f51" fill-opacity="0.65"/>
+  <text x="462" y="157" font-family="monospace" font-size="6" fill="#e76f51" fill-opacity="0.7">@LAT43.6</text>
+
+  <circle cx="415" cy="172" r="3.5" fill="#e76f51" fill-opacity="0.55"/>
+
+  <!-- "No DNS" / "No registry" strikethrough icons -->
+  <rect x="313" y="60" width="52" height="22" rx="3" fill="#120808" stroke="#e76f51" stroke-width="0.7" stroke-opacity="0.4"/>
+  <text x="339" y="75" font-family="monospace" font-size="7" fill="#e76f51" fill-opacity="0.55" text-anchor="middle">no DNS</text>
+  <line x1="316" y1="61" x2="362" y2="81" stroke="#e76f51" stroke-width="1" stroke-opacity="0.6"/>
+
+  <rect x="313" y="88" width="52" height="22" rx="3" fill="#120808" stroke="#e76f51" stroke-width="0.7" stroke-opacity="0.4"/>
+  <text x="339" y="103" font-family="monospace" font-size="7" fill="#e76f51" fill-opacity="0.55" text-anchor="middle">no server</text>
+  <line x1="316" y1="89" x2="362" y2="109" stroke="#e76f51" stroke-width="1" stroke-opacity="0.6"/>
+
+  <!-- "Earth is the authority" -->
+  <text x="420" y="244" font-family="monospace" font-size="8" fill="#e76f51" fill-opacity="0.65" text-anchor="middle">the Earth is the authority</text>
+
+  <!-- Bottom resonance note -->
+  <rect x="20" y="210" width="520" height="28" rx="4" fill="#061208" stroke="#b9e9c6" stroke-width="0.5" stroke-opacity="0.2"/>
+  <text x="280" y="226" font-family="monospace" font-size="7.5" fill="#b9e9c6" fill-opacity="0.6" text-anchor="middle">locality determines identity — identity admits deterministic neighbors</text>
+</svg>

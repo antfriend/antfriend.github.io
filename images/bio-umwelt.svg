@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 260" role="img" aria-labelledby="bio-umwelt-title">
+  <title id="bio-umwelt-title">Pair 6: Umwelt — Each cell's electrical neighborhood and each TTDB node's 1-hop neighborhood are both bounded meaning-worlds</title>
+  <defs>
+    <radialGradient id="bgU" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0d1e18"/>
+      <stop offset="100%" stop-color="#060e0a"/>
+    </radialGradient>
+    <radialGradient id="cellUmwelt" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4fc3f7" stop-opacity="0.25"/>
+      <stop offset="40%" stop-color="#0f8b8d" stop-opacity="0.12"/>
+      <stop offset="75%" stop-color="#0f8b8d" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#0f8b8d" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="nodeUmwelt" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e76f51" stop-opacity="0.25"/>
+      <stop offset="40%" stop-color="#e76f51" stop-opacity="0.12"/>
+      <stop offset="75%" stop-color="#e76f51" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#e76f51" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glowU">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="560" height="260" fill="url(#bgU)"/>
+  <line x1="280" y1="20" x2="280" y2="240" stroke="#b9e9c6" stroke-width="0.6" stroke-opacity="0.25"/>
+
+  <!-- === LEFT PANEL: Cellular Umwelt === -->
+  <text x="140" y="38" font-family="monospace" font-size="9" fill="#4fc3f7" fill-opacity="0.8" text-anchor="middle" letter-spacing="0.8">CELLULAR UMWELT</text>
+
+  <!-- Umwelt glow (the accessible field) -->
+  <ellipse cx="140" cy="145" rx="95" ry="88" fill="url(#cellUmwelt)"/>
+
+  <!-- Concentric perception rings -->
+  <!-- Beyond umwelt (dark/unreachable) -->
+  <circle cx="140" cy="145" r="90" fill="none" stroke="#0f8b8d" stroke-width="0.6" stroke-opacity="0.15" stroke-dasharray="2,4"/>
+  <!-- Outer umwelt edge -->
+  <circle cx="140" cy="145" r="78" fill="none" stroke="#0f8b8d" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="3,3"/>
+  <!-- Sensing boundary -->
+  <circle cx="140" cy="145" r="62" fill="none" stroke="#4fc3f7" stroke-width="1.2" stroke-opacity="0.35"/>
+  <!-- Signal range -->
+  <circle cx="140" cy="145" r="46" fill="none" stroke="#4fc3f7" stroke-width="1.3" stroke-opacity="0.5"/>
+  <!-- Immediate neighborhood -->
+  <circle cx="140" cy="145" r="30" fill="none" stroke="#4fc3f7" stroke-width="1.5" stroke-opacity="0.65"/>
+  <!-- Core cell zone -->
+  <circle cx="140" cy="145" r="14" fill="none" stroke="#4fc3f7" stroke-width="1.8" stroke-opacity="0.8"/>
+
+  <!-- Central cell -->
+  <circle cx="140" cy="145" r="10" fill="#0f8b8d" fill-opacity="0.3" stroke="#4fc3f7" stroke-width="1.5" filter="url(#glowU)"/>
+  <circle cx="140" cy="145" r="4" fill="#4fc3f7" fill-opacity="0.6"/>
+
+  <!-- Neighbor cells within umwelt -->
+  <circle cx="117" cy="130" r="6" fill="none" stroke="#4fc3f7" stroke-width="1.1" stroke-opacity="0.7"/>
+  <line x1="130" y1="140" x2="120" y2="134" stroke="#4fc3f7" stroke-width="0.9" stroke-opacity="0.5"/>
+  <circle cx="163" cy="130" r="6" fill="none" stroke="#4fc3f7" stroke-width="1.1" stroke-opacity="0.7"/>
+  <line x1="150" y1="140" x2="157" y2="134" stroke="#4fc3f7" stroke-width="0.9" stroke-opacity="0.5"/>
+  <circle cx="118" cy="161" r="5" fill="none" stroke="#4fc3f7" stroke-width="1" stroke-opacity="0.6"/>
+  <line x1="131" y1="152" x2="122" y2="157" stroke="#4fc3f7" stroke-width="0.9" stroke-opacity="0.5"/>
+  <circle cx="162" cy="161" r="5" fill="none" stroke="#4fc3f7" stroke-width="1" stroke-opacity="0.6"/>
+  <line x1="150" y1="152" x2="157" y2="157" stroke="#4fc3f7" stroke-width="0.9" stroke-opacity="0.5"/>
+
+  <!-- Cells at edge of perception (faded) -->
+  <circle cx="97" cy="118" r="5" fill="none" stroke="#0f8b8d" stroke-width="0.8" stroke-opacity="0.4"/>
+  <circle cx="183" cy="118" r="5" fill="none" stroke="#0f8b8d" stroke-width="0.8" stroke-opacity="0.4"/>
+  <circle cx="97" cy="172" r="4" fill="none" stroke="#0f8b8d" stroke-width="0.7" stroke-opacity="0.3"/>
+
+  <!-- Cells beyond umwelt (barely visible) -->
+  <circle cx="68" cy="105" r="4" fill="none" stroke="#0f8b8d" stroke-width="0.5" stroke-opacity="0.18"/>
+  <circle cx="212" cy="145" r="4" fill="none" stroke="#0f8b8d" stroke-width="0.5" stroke-opacity="0.18"/>
+  <text x="215" y="151" font-family="monospace" font-size="6" fill="#b9e9c6" fill-opacity="0.2">?</text>
+
+  <!-- Labels -->
+  <text x="140" y="57" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.45" text-anchor="middle">electrical neighborhood</text>
+  <text x="140" y="67" font-family="monospace" font-size="7" fill="#4fc3f7" fill-opacity="0.65" text-anchor="middle">finite information field</text>
+
+  <!-- Umwelt boundary label -->
+  <text x="55" y="92" font-family="monospace" font-size="6.5" fill="#0f8b8d" fill-opacity="0.5">umwelt edge</text>
+  <line x1="83" y1="89" x2="75" y2="83" stroke="#0f8b8d" stroke-width="0.8" stroke-opacity="0.4"/>
+
+  <!-- Uexküll citation -->
+  <text x="140" y="245" font-family="monospace" font-size="6.5" fill="#4fc3f7" fill-opacity="0.4" text-anchor="middle">Uexküll — situated, bounded worldview</text>
+
+  <!-- === CENTER: Resonance === -->
+  <text x="280" y="130" font-family="serif" font-size="20" fill="#b9e9c6" fill-opacity="0.7" text-anchor="middle">⟷</text>
+  <text x="280" y="148" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.5" text-anchor="middle">resonates_with</text>
+
+  <!-- === RIGHT PANEL: Semantic Umwelt === -->
+  <text x="420" y="38" font-family="monospace" font-size="9" fill="#e76f51" fill-opacity="0.8" text-anchor="middle" letter-spacing="0.8">SEMANTIC UMWELT</text>
+
+  <!-- Umwelt glow -->
+  <ellipse cx="420" cy="145" rx="95" ry="88" fill="url(#nodeUmwelt)"/>
+
+  <!-- Concentric rings -->
+  <circle cx="420" cy="145" r="90" fill="none" stroke="#e76f51" stroke-width="0.6" stroke-opacity="0.15" stroke-dasharray="2,4"/>
+  <circle cx="420" cy="145" r="78" fill="none" stroke="#e76f51" stroke-width="0.9" stroke-opacity="0.25" stroke-dasharray="3,3"/>
+  <circle cx="420" cy="145" r="62" fill="none" stroke="#e76f51" stroke-width="1.1" stroke-opacity="0.35"/>
+  <circle cx="420" cy="145" r="46" fill="none" stroke="#e76f51" stroke-width="1.2" stroke-opacity="0.5"/>
+  <circle cx="420" cy="145" r="30" fill="none" stroke="#e76f51" stroke-width="1.5" stroke-opacity="0.6"/>
+  <circle cx="420" cy="145" r="14" fill="none" stroke="#e76f51" stroke-width="1.8" stroke-opacity="0.75"/>
+
+  <!-- Central TTDB node -->
+  <circle cx="420" cy="145" r="10" fill="#e76f51" fill-opacity="0.2" stroke="#e76f51" stroke-width="1.5" filter="url(#glowU)"/>
+  <circle cx="420" cy="145" r="4" fill="#e76f51" fill-opacity="0.7"/>
+  <text x="420" y="166" font-family="monospace" font-size="6.5" fill="#e76f51" fill-opacity="0.7" text-anchor="middle">@LAT43.6</text>
+
+  <!-- 1-hop neighbor nodes (within umwelt) -->
+  <circle cx="397" cy="130" r="6" fill="#0d2018" stroke="#e76f51" stroke-width="1.1" stroke-opacity="0.7"/>
+  <line x1="410" y1="140" x2="400" y2="134" stroke="#e76f51" stroke-width="1" stroke-opacity="0.55"/>
+  <text x="397" y="120" font-family="monospace" font-size="5.5" fill="#e76f51" fill-opacity="0.55" text-anchor="middle">@LAT42.4</text>
+
+  <circle cx="443" cy="130" r="6" fill="#0d2018" stroke="#e76f51" stroke-width="1.1" stroke-opacity="0.7"/>
+  <line x1="430" y1="140" x2="437" y2="134" stroke="#e76f51" stroke-width="1" stroke-opacity="0.55"/>
+  <text x="443" y="120" font-family="monospace" font-size="5.5" fill="#e76f51" fill-opacity="0.55" text-anchor="middle">@LAT43.61</text>
+
+  <circle cx="397" cy="161" r="5" fill="#0d2018" stroke="#e76f51" stroke-width="1" stroke-opacity="0.65"/>
+  <line x1="410" y1="151" x2="400" y2="156" stroke="#e76f51" stroke-width="0.9" stroke-opacity="0.5"/>
+  <text x="386" y="172" font-family="monospace" font-size="5.5" fill="#e76f51" fill-opacity="0.5" text-anchor="middle">@LAT42.4</text>
+
+  <circle cx="443" cy="161" r="5" fill="#0d2018" stroke="#e76f51" stroke-width="1" stroke-opacity="0.65"/>
+  <line x1="430" y1="151" x2="437" y2="156" stroke="#e76f51" stroke-width="0.9" stroke-opacity="0.5"/>
+
+  <!-- 2-hop nodes (at edge, faded) -->
+  <circle cx="377" cy="117" r="4" fill="#0d2018" stroke="#e76f51" stroke-width="0.7" stroke-opacity="0.35"/>
+  <circle cx="463" cy="117" r="4" fill="#0d2018" stroke="#e76f51" stroke-width="0.7" stroke-opacity="0.35"/>
+  <circle cx="374" cy="173" r="3.5" fill="#0d2018" stroke="#e76f51" stroke-width="0.6" stroke-opacity="0.3"/>
+
+  <!-- Beyond umwelt (nodes barely visible) -->
+  <circle cx="348" cy="105" r="3.5" fill="none" stroke="#e76f51" stroke-width="0.5" stroke-opacity="0.15"/>
+  <text x="490" y="145" font-family="monospace" font-size="6" fill="#b9e9c6" fill-opacity="0.2">?</text>
+
+  <!-- Labels -->
+  <text x="420" y="57" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.45" text-anchor="middle">1-hop neighborhood</text>
+  <text x="420" y="67" font-family="monospace" font-size="7" fill="#e76f51" fill-opacity="0.65" text-anchor="middle">accessible meaning-world</text>
+
+  <!-- Umwelt boundary label -->
+  <text x="490" y="100" font-family="monospace" font-size="6.5" fill="#e76f51" fill-opacity="0.5" text-anchor="end">umwelt</text>
+  <text x="490" y="110" font-family="monospace" font-size="6.5" fill="#e76f51" fill-opacity="0.5" text-anchor="end">boundary</text>
+
+  <text x="420" y="245" font-family="monospace" font-size="6.5" fill="#e76f51" fill-opacity="0.4" text-anchor="middle">biosemiotic layer of Mnemon</text>
+
+  <!-- Bottom note -->
+  <rect x="20" y="222" width="520" height="22" rx="4" fill="#061208" stroke="#b9e9c6" stroke-width="0.5" stroke-opacity="0.2"/>
+  <text x="280" y="237" font-family="monospace" font-size="7.5" fill="#b9e9c6" fill-opacity="0.6" text-anchor="middle">locality is not decoration — it is the condition for meaning</text>
+</svg>

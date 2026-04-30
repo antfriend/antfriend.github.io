@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 260" role="img" aria-labelledby="bio-morphostasis-title">
+  <title id="bio-morphostasis-title">Pair 3: Morphostasis — Bioelectric coherence and plain-text schema both resist entropic drift</title>
+  <defs>
+    <radialGradient id="bgMs" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0d1e18"/>
+      <stop offset="100%" stop-color="#060e0a"/>
+    </radialGradient>
+    <linearGradient id="entropyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e76f51" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#e76f51" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="orderGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f8b8d" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0f8b8d" stop-opacity="0.5"/>
+    </linearGradient>
+    <filter id="glowMs">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="560" height="260" fill="url(#bgMs)"/>
+  <line x1="280" y1="20" x2="280" y2="240" stroke="#b9e9c6" stroke-width="0.6" stroke-opacity="0.25"/>
+
+  <!-- === LEFT PANEL: Morphostatic Information (Bio) === -->
+  <text x="140" y="38" font-family="monospace" font-size="9" fill="#4fc3f7" fill-opacity="0.8" text-anchor="middle" letter-spacing="0.8">MORPHOSTATIC INFORMATION</text>
+
+  <!-- Entropy rain (top — drift) -->
+  <rect x="40" y="50" width="200" height="55" rx="4" fill="url(#entropyGrad)" fill-opacity="0.3"/>
+  <text x="140" y="68" font-family="monospace" font-size="7.5" fill="#e76f51" fill-opacity="0.6" text-anchor="middle">entropic drift</text>
+  <!-- Entropy particles -->
+  <circle cx="60" cy="62" r="2" fill="#e76f51" fill-opacity="0.5"/>
+  <circle cx="90" cy="56" r="1.5" fill="#e76f51" fill-opacity="0.4"/>
+  <circle cx="130" cy="65" r="2.5" fill="#e76f51" fill-opacity="0.45"/>
+  <circle cx="170" cy="58" r="2" fill="#e76f51" fill-opacity="0.5"/>
+  <circle cx="210" cy="64" r="1.5" fill="#e76f51" fill-opacity="0.4"/>
+  <circle cx="75" cy="75" r="1.5" fill="#e76f51" fill-opacity="0.35"/>
+  <circle cx="155" cy="73" r="2" fill="#e76f51" fill-opacity="0.4"/>
+  <circle cx="195" cy="80" r="1.5" fill="#e76f51" fill-opacity="0.35"/>
+  <!-- Drift arrows -->
+  <line x1="60" y1="62" x2="65" y2="78" stroke="#e76f51" stroke-width="0.8" stroke-opacity="0.4"/>
+  <line x1="130" y1="65" x2="118" y2="82" stroke="#e76f51" stroke-width="0.8" stroke-opacity="0.4"/>
+  <line x1="195" y1="58" x2="205" y2="76" stroke="#e76f51" stroke-width="0.8" stroke-opacity="0.4"/>
+
+  <!-- Bioelectric membrane filter (horizontal band) -->
+  <rect x="40" y="104" width="200" height="22" rx="6" fill="#0f8b8d" fill-opacity="0.18" stroke="#0f8b8d" stroke-width="1.5" stroke-opacity="0.6"/>
+  <text x="140" y="119" font-family="monospace" font-size="7.5" fill="#0f8b8d" fill-opacity="0.85" text-anchor="middle" filter="url(#glowMs)">bioelectric coherence</text>
+  <!-- Filter texture (wave pattern) -->
+  <path d="M50,115 Q62,108 74,115 Q86,122 98,115 Q110,108 122,115 Q134,122 146,115 Q158,108 170,115 Q182,122 194,115 Q206,108 218,115 Q230,122 230,115" fill="none" stroke="#4fc3f7" stroke-width="0.8" stroke-opacity="0.4"/>
+
+  <!-- Maintained morphological target (bottom) -->
+  <rect x="40" y="127" width="200" height="88" rx="4" fill="url(#orderGrad)" fill-opacity="0.35"/>
+
+  <!-- Body silhouette (simple abstract form) -->
+  <g transform="translate(140, 175)">
+    <!-- head -->
+    <circle cx="0" cy="-30" r="14" fill="none" stroke="#4fc3f7" stroke-width="1.5" stroke-opacity="0.7"/>
+    <!-- body -->
+    <path d="M-12,-16 L-16,20 L16,20 L12,-16 Z" fill="none" stroke="#4fc3f7" stroke-width="1.5" stroke-opacity="0.65"/>
+    <!-- arms -->
+    <line x1="-16" y1="-8" x2="-30" y2="8" stroke="#4fc3f7" stroke-width="1.5" stroke-opacity="0.6"/>
+    <line x1="16" y1="-8" x2="30" y2="8" stroke="#4fc3f7" stroke-width="1.5" stroke-opacity="0.6"/>
+    <!-- legs -->
+    <line x1="-10" y1="20" x2="-14" y2="38" stroke="#4fc3f7" stroke-width="1.5" stroke-opacity="0.6"/>
+    <line x1="10" y1="20" x2="14" y2="38" stroke="#4fc3f7" stroke-width="1.5" stroke-opacity="0.6"/>
+  </g>
+
+  <text x="140" y="247" font-family="monospace" font-size="7.5" fill="#4fc3f7" fill-opacity="0.6" text-anchor="middle">target form maintained</text>
+
+  <!-- === CENTER: Resonance === -->
+  <text x="280" y="130" font-family="serif" font-size="20" fill="#b9e9c6" fill-opacity="0.7" text-anchor="middle">⟷</text>
+  <text x="280" y="148" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.5" text-anchor="middle">resonates_with</text>
+
+  <!-- === RIGHT PANEL: Morphostatic Knowledge (TTDB) === -->
+  <text x="420" y="38" font-family="monospace" font-size="9" fill="#e76f51" fill-opacity="0.8" text-anchor="middle" letter-spacing="0.8">MORPHOSTATIC KNOWLEDGE</text>
+
+  <!-- Entropy threats (top) -->
+  <rect x="300" y="50" width="200" height="55" rx="4" fill="url(#entropyGrad)" fill-opacity="0.3"/>
+  <text x="400" y="63" font-family="monospace" font-size="7.5" fill="#e76f51" fill-opacity="0.6" text-anchor="middle">format obsolescence</text>
+  <text x="400" y="75" font-family="monospace" font-size="7.5" fill="#e76f51" fill-opacity="0.6" text-anchor="middle">platform decay</text>
+  <text x="400" y="87" font-family="monospace" font-size="7.5" fill="#e76f51" fill-opacity="0.55" text-anchor="middle">bit-rot</text>
+
+  <!-- Plain-text filter -->
+  <rect x="300" y="104" width="200" height="22" rx="6" fill="#e76f51" fill-opacity="0.12" stroke="#e76f51" stroke-width="1.5" stroke-opacity="0.6"/>
+  <text x="400" y="119" font-family="monospace" font-size="7.5" fill="#e76f51" fill-opacity="0.85" text-anchor="middle">plain-text + self-describing schema</text>
+
+  <!-- Maintained knowledge structure (bottom) -->
+  <rect x="300" y="127" width="200" height="88" rx="4" fill="url(#orderGrad)" fill-opacity="0.35"/>
+
+  <!-- TTDB file structure (abstract) -->
+  <rect x="335" y="138" width="130" height="68" rx="4" fill="#0a1a12" stroke="#e76f51" stroke-width="1.2" stroke-opacity="0.55"/>
+  <text x="400" y="153" font-family="monospace" font-size="7" fill="#e76f51" fill-opacity="0.7" text-anchor="middle">@LAT43.615LON-116.2</text>
+  <line x1="340" y1="158" x2="460" y2="158" stroke="#e76f51" stroke-width="0.5" stroke-opacity="0.35"/>
+  <text x="400" y="170" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.55" text-anchor="middle">## Morphostatic Knowledge</text>
+  <text x="400" y="181" font-family="monospace" font-size="6.5" fill="#b9e9c6" fill-opacity="0.45" text-anchor="middle">relates: resonates_with&gt;</text>
+  <text x="400" y="191" font-family="monospace" font-size="6.5" fill="#b9e9c6" fill-opacity="0.45" text-anchor="middle">@LAT42.4085LON-71.118</text>
+
+  <text x="400" y="247" font-family="monospace" font-size="7.5" fill="#e76f51" fill-opacity="0.6" text-anchor="middle">knowledge holds its shape</text>
+
+  <!-- Bottom note -->
+  <rect x="20" y="210" width="520" height="28" rx="4" fill="#061208" stroke="#b9e9c6" stroke-width="0.5" stroke-opacity="0.2"/>
+  <text x="280" y="222" font-family="monospace" font-size="7.5" fill="#b9e9c6" fill-opacity="0.6" text-anchor="middle">the substrate must be cheap and the schema must be its own description</text>
+  <text x="280" y="234" font-family="monospace" font-size="7.5" fill="#b9e9c6" fill-opacity="0.45" text-anchor="middle">or the form is lost — Levin &amp; Pio-Lopez (2024)</text>
+</svg>

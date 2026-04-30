@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 260" role="img" aria-labelledby="bio-memory-title">
+  <title id="bio-memory-title">Pair 1: Memory Substrate — Bioelectric pattern memory resonates with TTDB coordinate-as-identity</title>
+  <defs>
+    <radialGradient id="bgM" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0d1e18"/>
+      <stop offset="100%" stop-color="#060e0a"/>
+    </radialGradient>
+    <filter id="glowM">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="560" height="260" fill="url(#bgM)"/>
+
+  <!-- Panel divider -->
+  <line x1="280" y1="20" x2="280" y2="240" stroke="#b9e9c6" stroke-width="0.6" stroke-opacity="0.25"/>
+
+  <!-- === LEFT PANEL: Bioelectric Pattern Memory === -->
+  <!-- Panel label -->
+  <text x="140" y="38" font-family="monospace" font-size="9.5" fill="#4fc3f7" fill-opacity="0.8" text-anchor="middle" letter-spacing="1">BIOELECTRIC PATTERN MEMORY</text>
+
+  <!-- DNA double helix -->
+  <!-- Left strand -->
+  <path d="M80,55 Q100,75 80,95 Q60,115 80,135 Q100,155 80,175 Q60,195 80,215" fill="none" stroke="#4fc3f7" stroke-width="2" stroke-opacity="0.75"/>
+  <!-- Right strand -->
+  <path d="M140,55 Q120,75 140,95 Q160,115 140,135 Q120,155 140,175 Q160,195 140,215" fill="none" stroke="#4fc3f7" stroke-width="2" stroke-opacity="0.75"/>
+  <!-- Rungs -->
+  <line x1="80" y1="55" x2="140" y2="55" stroke="#b9e9c6" stroke-width="1.5" stroke-opacity="0.5"/>
+  <line x1="92" y1="68" x2="128" y2="68" stroke="#b9e9c6" stroke-width="1.2" stroke-opacity="0.4"/>
+  <line x1="80" y1="95" x2="140" y2="95" stroke="#b9e9c6" stroke-width="1.5" stroke-opacity="0.5"/>
+  <line x1="68" y1="108" x2="152" y2="108" stroke="#b9e9c6" stroke-width="1.2" stroke-opacity="0.4"/>
+  <line x1="80" y1="135" x2="140" y2="135" stroke="#b9e9c6" stroke-width="1.5" stroke-opacity="0.5"/>
+  <line x1="92" y1="148" x2="128" y2="148" stroke="#b9e9c6" stroke-width="1.2" stroke-opacity="0.4"/>
+  <line x1="80" y1="175" x2="140" y2="175" stroke="#b9e9c6" stroke-width="1.5" stroke-opacity="0.5"/>
+  <line x1="68" y1="188" x2="152" y2="188" stroke="#b9e9c6" stroke-width="1.2" stroke-opacity="0.4"/>
+  <line x1="80" y1="215" x2="140" y2="215" stroke="#b9e9c6" stroke-width="1.5" stroke-opacity="0.5"/>
+
+  <!-- Voltage overlay wave (the actual memory layer) -->
+  <path d="M55,130 Q70,110 85,130 Q100,150 115,130 Q130,110 145,130 Q160,150 175,130" fill="none" stroke="#0f8b8d" stroke-width="2.5" stroke-opacity="0.85" filter="url(#glowM)"/>
+
+  <!-- "Not DNA" label -->
+  <text x="110" y="82" font-family="monospace" font-size="7.5" fill="#b9e9c6" fill-opacity="0.45" text-anchor="middle">DNA encodes proteins</text>
+  <text x="110" y="93" font-family="monospace" font-size="7.5" fill="#4fc3f7" fill-opacity="0.75" text-anchor="middle">voltage encodes form</text>
+
+  <!-- Arrow pointing at voltage wave -->
+  <line x1="110" y1="140" x2="110" y2="128" stroke="#0f8b8d" stroke-width="1" stroke-opacity="0.6"/>
+  <polygon points="110,123 107,130 113,130" fill="#0f8b8d" fill-opacity="0.7"/>
+  <text x="110" y="155" font-family="monospace" font-size="7" fill="#0f8b8d" fill-opacity="0.8" text-anchor="middle">bioelectric layer</text>
+  <text x="110" y="165" font-family="monospace" font-size="7" fill="#0f8b8d" fill-opacity="0.75" text-anchor="middle">orthogonal to DNA</text>
+
+  <!-- Bottom label -->
+  <text x="140" y="240" font-family="monospace" font-size="8" fill="#4fc3f7" fill-opacity="0.55" text-anchor="middle">Levin et al. — planaria</text>
+
+  <!-- === CENTER: Resonance arrow === -->
+  <text x="280" y="130" font-family="serif" font-size="20" fill="#b9e9c6" fill-opacity="0.7" text-anchor="middle">⟷</text>
+  <text x="280" y="148" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.5" text-anchor="middle">resonates_with</text>
+
+  <!-- === RIGHT PANEL: Coordinate-as-Identity === -->
+  <text x="420" y="38" font-family="monospace" font-size="9.5" fill="#e76f51" fill-opacity="0.8" text-anchor="middle" letter-spacing="1">COORDINATE-AS-IDENTITY</text>
+
+  <!-- Storage substrates (interchangeable) -->
+  <!-- Filesystem icon -->
+  <rect x="315" y="55" width="40" height="50" rx="4" fill="none" stroke="#b9e9c6" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="335" y="76" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.4" text-anchor="middle">📁 fs</text>
+  <text x="335" y="89" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.4" text-anchor="middle">IPFS</text>
+  <text x="335" y="100" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.4" text-anchor="middle">paper</text>
+
+  <!-- "Substrate is fungible" label -->
+  <text x="335" y="120" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.35" text-anchor="middle">substrate is fungible</text>
+
+  <!-- The coordinate identity (the persistent layer) -->
+  <rect x="380" y="55" width="110" height="130" rx="6" fill="#0d2018" stroke="#e76f51" stroke-width="1.5" stroke-opacity="0.7"/>
+  <text x="435" y="74" font-family="monospace" font-size="7.5" fill="#e76f51" fill-opacity="0.7" text-anchor="middle">the identity layer</text>
+  <text x="435" y="92" font-family="monospace" font-size="9" fill="#e76f51" fill-opacity="0.9" text-anchor="middle" filter="url(#glowM)">@LAT43.615</text>
+  <text x="435" y="108" font-family="monospace" font-size="9" fill="#e76f51" fill-opacity="0.9" text-anchor="middle" filter="url(#glowM)">LON-116.202</text>
+  <line x1="395" y1="115" x2="475" y2="115" stroke="#e76f51" stroke-width="0.6" stroke-opacity="0.4"/>
+  <text x="435" y="128" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.55" text-anchor="middle">persists across</text>
+  <text x="435" y="139" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.55" text-anchor="middle">all substrates</text>
+  <text x="435" y="150" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.55" text-anchor="middle">no central DB</text>
+  <text x="435" y="161" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.55" text-anchor="middle">needed</text>
+  <text x="435" y="176" font-family="monospace" font-size="7" fill="#e76f51" fill-opacity="0.55" text-anchor="middle">address IS identity</text>
+
+  <!-- Arrow from substrate to coordinate -->
+  <line x1="358" y1="90" x2="376" y2="90" stroke="#b9e9c6" stroke-width="1" stroke-opacity="0.5"/>
+  <polygon points="376,90 370,87 370,93" fill="#b9e9c6" fill-opacity="0.5"/>
+  <text x="367" y="83" font-family="monospace" font-size="6" fill="#b9e9c6" fill-opacity="0.35" text-anchor="middle">←interchangeable</text>
+
+  <!-- Pattern persists line connecting DNA to coordinate -->
+  <path d="M175,130 Q228,130 280,130 Q332,130 380,100" fill="none" stroke="#b9e9c6" stroke-width="0.8" stroke-opacity="0.2" stroke-dasharray="3,4"/>
+
+  <!-- Bottom resonance note -->
+  <rect x="310" y="195" width="230" height="35" rx="4" fill="#061208" stroke="#b9e9c6" stroke-width="0.6" stroke-opacity="0.2"/>
+  <text x="425" y="211" font-family="monospace" font-size="7.5" fill="#b9e9c6" fill-opacity="0.65" text-anchor="middle">pattern outlives medium</text>
+  <text x="425" y="223" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.5" text-anchor="middle">the addressable layer carries the form</text>
+</svg>

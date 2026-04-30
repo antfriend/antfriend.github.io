@@ -1,10 +1,10 @@
 # antfriend.github.io
 
-Home of **Toot Toot Engineering** — the organization behind TTDB, TTAI, and the autonomy OS stack.
+Home of **Toot Toot Engineering** — the TTDB, TTAI(offline knowledge graph autonomy on a $5 ESP32 microcontroller), and the autonomy OS stack.
 
 ## What is this?
 
-This repo is the source for the Toot Toot Engineering website, which hosts an interactive browser-based viewer for **TTDB** (MyMentalPalaceDB) files.
+This repo is the source for the Toot Toot Engineering website, which hosts an interactive browser-based viewer for **TTDB** (MyMentalPalaceDB) files. This site is an implementation of the toot technology it describes. For example, the link-based transition dynamics are described here  
 
 ### Core systems
 
