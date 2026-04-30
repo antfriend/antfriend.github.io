@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 260" role="img" aria-labelledby="bio-glue-title">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 260" width="560" height="260" role="img" aria-labelledby="bio-glue-title">
   <title id="bio-glue-title">Pair 4: Cognitive Glue — Bioelectric networks and TTDB edge graphs both let parts solve problems as a whole</title>
   <defs>
     <radialGradient id="bgG" cx="50%" cy="50%" r="70%">

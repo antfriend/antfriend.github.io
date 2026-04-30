@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 260" role="img" aria-labelledby="bio-umwelt-title">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 260" width="560" height="260" role="img" aria-labelledby="bio-umwelt-title">
   <title id="bio-umwelt-title">Pair 6: Umwelt — Each cell's electrical neighborhood and each TTDB node's 1-hop neighborhood are both bounded meaning-worlds</title>
   <defs>
     <radialGradient id="bgU" cx="50%" cy="50%" r="70%">
