@@ -26,10 +26,11 @@
       <div class="header-left">
 
         <div class="graph-wrap">
-          <canvas id="graph"></canvas>          
+          <canvas id="graph"></canvas>
         </div>
 
       </div>
+      <div id="panelResizer" class="panel-resizer"></div>
       <div class="header-right">
         <div class="record" id="recordView"></div>
       </div>
@@ -73,6 +74,51 @@
     </footer>
   </div>
 
+  <script>
+    (function () {
+      const resizer = document.getElementById('panelResizer');
+      const page = document.querySelector('.page');
+      let startY = 0, startHeight = 0;
+
+      function currentHeight() {
+        return parseFloat(getComputedStyle(page).getPropertyValue('--globe-panel-height')) || 144;
+      }
+
+      function onMove(clientY) {
+        const h = Math.max(60, Math.min(600, startHeight + (clientY - startY)));
+        page.style.setProperty('--globe-panel-height', h + 'px');
+      }
+
+      function onMouseMove(e) { onMove(e.clientY); }
+      function onTouchMove(e) { e.preventDefault(); onMove(e.touches[0].clientY); }
+
+      function onUp() {
+        resizer.classList.remove('is-dragging');
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onUp);
+        document.removeEventListener('touchmove', onTouchMove);
+        document.removeEventListener('touchend', onUp);
+      }
+
+      resizer.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        startY = e.clientY;
+        startHeight = currentHeight();
+        resizer.classList.add('is-dragging');
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onUp);
+      });
+
+      resizer.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        startY = e.touches[0].clientY;
+        startHeight = currentHeight();
+        resizer.classList.add('is-dragging');
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', onUp);
+      }, { passive: false });
+    })();
+  </script>
   <script src="js/link-hover-preview.js"></script>
   <script src="js/eyeball.js"></script>
   <script src="js/audio-player.js"></script>
