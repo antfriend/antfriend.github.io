@@ -37,7 +37,7 @@ preview:
 
 ---
 
-@LAT43.01LON-93.66 | created:1745884800 | type:scene | relates:opens>@LAT42.408LON-71.1185,opens>@LAT43.6155LON-116.2018,opens>@LAT42.407LON-71.1195,opens>@LAT43.617LON-116.2003
+@LAT43.01LON-93.66 | created:1745884800 | type:scene | relates:opens>@LAT43.3LON-71.1,opens>@LAT44.4LON-116.2,opens>@LAT43.1LON-70.4,opens>@LAT44.2LON-115.5
 
 ## The Resonance Record
 
@@ -54,28 +54,28 @@ Seven pairs. Two clusters. One record.
 > This is a scene record. Select it and the globe will traverse all seven resonance pairs automatically — alternating between the bioelectric cluster near Medford, Massachusetts and the Mnemon cluster near Boise, Idaho.
 
 ```ttdb-scene
-start_node: @LAT42.408LON-71.1185
+start_node: @LAT43.3LON-71.1
 loop: false
 
-edge: bloom | from: @LAT42.408LON-71.1185 | to: @LAT43.6155LON-116.2018 | hold_ms: 9000
-edge: next | from: @LAT43.6155LON-116.2018 | to: @LAT42.407LON-71.1195 | hold_ms: 9000
-edge: bloom | from: @LAT42.407LON-71.1195 | to: @LAT43.617LON-116.2003 | hold_ms: 9000
-edge: next | from: @LAT43.617LON-116.2003 | to: @LAT42.4085LON-71.118 | hold_ms: 9000
-edge: bloom | from: @LAT42.4085LON-71.118 | to: @LAT43.616LON-116.2013 | hold_ms: 9000
-edge: next | from: @LAT43.616LON-116.2013 | to: @LAT42.4065LON-71.12 | hold_ms: 9000
-edge: bloom | from: @LAT42.4065LON-71.12 | to: @LAT43.614LON-116.2033 | hold_ms: 9000
-edge: next | from: @LAT43.614LON-116.2033 | to: @LAT42.409LON-71.1175 | hold_ms: 9000
-edge: bloom | from: @LAT42.409LON-71.1175 | to: @LAT43.6165LON-116.2008 | hold_ms: 9000
-edge: next | from: @LAT43.6165LON-116.2008 | to: @LAT42.406LON-71.1205 | hold_ms: 9000
-edge: bloom | from: @LAT42.406LON-71.1205 | to: @LAT43.6135LON-116.2038 | hold_ms: 9000
-edge: next | from: @LAT43.6135LON-116.2038 | to: @LAT42.4095LON-71.117 | hold_ms: 9000
-edge: bloom | from: @LAT42.4095LON-71.117 | to: @LAT43.613LON-116.2043 | hold_ms: 9000
-edge: return_home | from: @LAT43.613LON-116.2043 | to: @LAT43.01LON-93.66 | hold_ms: 12000
+edge: bloom | from: @LAT43.3LON-71.1 | to: @LAT44.4LON-116.2 | hold_ms: 9000
+edge: next | from: @LAT44.4LON-116.2 | to: @LAT43.1LON-70.4 | hold_ms: 9000
+edge: bloom | from: @LAT43.1LON-70.4 | to: @LAT44.2LON-115.5 | hold_ms: 9000
+edge: next | from: @LAT44.2LON-115.5 | to: @LAT42.5LON-70.3 | hold_ms: 9000
+edge: bloom | from: @LAT42.5LON-70.3 | to: @LAT43.6LON-115.4 | hold_ms: 9000
+edge: next | from: @LAT43.6LON-115.4 | to: @LAT41.9LON-70.4 | hold_ms: 9000
+edge: bloom | from: @LAT41.9LON-70.4 | to: @LAT43.0LON-115.5 | hold_ms: 9000
+edge: next | from: @LAT43.0LON-115.5 | to: @LAT41.7LON-71.1 | hold_ms: 9000
+edge: bloom | from: @LAT41.7LON-71.1 | to: @LAT42.8LON-116.2 | hold_ms: 9000
+edge: next | from: @LAT42.8LON-116.2 | to: @LAT41.9LON-71.8 | hold_ms: 9000
+edge: bloom | from: @LAT41.9LON-71.8 | to: @LAT43.0LON-116.9 | hold_ms: 9000
+edge: next | from: @LAT43.0LON-116.9 | to: @LAT42.5LON-71.9 | hold_ms: 9000
+edge: bloom | from: @LAT42.5LON-71.9 | to: @LAT43.6LON-117.0 | hold_ms: 9000
+edge: return_home | from: @LAT43.6LON-117.0 | to: @LAT43.01LON-93.66 | hold_ms: 12000
 ```
 
 ---
 
-@LAT42.4075LON-71.119 | created:1745884801 | relates:parent_of>@LAT42.408LON-71.1185,parent_of>@LAT42.407LON-71.1195,parent_of>@LAT42.4085LON-71.118,parent_of>@LAT42.4065LON-71.12,parent_of>@LAT42.409LON-71.1175,parent_of>@LAT42.406LON-71.1205,parent_of>@LAT42.4095LON-71.117
+@LAT42.5LON-71.1 | created:1745884801 | relates:parent_of>@LAT43.3LON-71.1,parent_of>@LAT43.1LON-70.4,parent_of>@LAT42.5LON-70.3,parent_of>@LAT41.9LON-70.4,parent_of>@LAT41.7LON-71.1,parent_of>@LAT41.9LON-71.8,parent_of>@LAT42.5LON-71.9
 
 ## Tufts Allen Discovery Center
 
@@ -94,13 +94,13 @@ This is not metaphor. Levin's lab has demonstrated it in planaria — flatworms 
 
 ---
 
-@LAT43.615LON-116.2023 | created:1745884802 | relates:parent_of>@LAT43.6155LON-116.2018,parent_of>@LAT43.617LON-116.2003,parent_of>@LAT43.616LON-116.2013,parent_of>@LAT43.614LON-116.2033,parent_of>@LAT43.6165LON-116.2008,parent_of>@LAT43.6135LON-116.2038,parent_of>@LAT43.613LON-116.2043
+@LAT43.6LON-116.2 | created:1745884802 | relates:parent_of>@LAT44.4LON-116.2,parent_of>@LAT44.2LON-115.5,parent_of>@LAT43.6LON-115.4,parent_of>@LAT43.0LON-115.5,parent_of>@LAT42.8LON-116.2,parent_of>@LAT43.0LON-116.9,parent_of>@LAT43.6LON-117.0
 
 ## Mnemon Origin
 
 The Mnemon cluster is anchored near Boise, Idaho — chosen as the western counterpoint to the Tufts eastern cluster. Mnemon is a coordinate-addressed semantic graph where every node is a position on the Earth.
 
-The central claim: persistent, navigable knowledge does not require a database server. Geographic coordinates — `@LAT43.615LON-116.2023` — serve as permanent identifiers. The coordinate IS the identity. The underlying storage medium (filesystem, IPFS, paper, memory) is interchangeable. A TTDB file can be copied, forked, printed, and reconstructed from any medium and the coordinate addresses remain valid.
+The central claim: persistent, navigable knowledge does not require a database server. Geographic coordinates — `@LAT43.6LON-116.2` — serve as permanent identifiers. The coordinate IS the identity. The underlying storage medium (filesystem, IPFS, paper, memory) is interchangeable. A TTDB file can be copied, forked, printed, and reconstructed from any medium and the coordinate addresses remain valid.
 
 This is not a quirk of the file format. It is the same structural move that biology made: bind the information to an addressing system orthogonal to the substrate. Let the pattern outlive the medium.
 
@@ -113,7 +113,7 @@ This is not a quirk of the file format. It is the same structural move that biol
 
 ---
 
-@LAT42.408LON-71.1185 | created:1745884803 | relates:resonates_with>@LAT43.6155LON-116.2018,child_of>@LAT42.4075LON-71.119
+@LAT43.3LON-71.1 | created:1745884803 | relates:resonates_with>@LAT44.4LON-116.2,child_of>@LAT42.5LON-71.1
 
 ## Bioelectric Pattern Memory
 
@@ -127,19 +127,19 @@ This is **substrate-independent memory**. The individual cells, proteins, and li
 
 The information layer and the physical substrate are **decoupled**. They run in parallel. The substrate is temporary; the pattern is the record.
 
-- `resonates_with` → Coordinate-as-Identity (`@LAT43.6155LON-116.2018`)
-- `child_of` → Tufts Allen Discovery Center (`@LAT42.4075LON-71.119`)
+- `resonates_with` → Coordinate-as-Identity (`@LAT44.4LON-116.2`)
+- `child_of` → Tufts Allen Discovery Center (`@LAT42.5LON-71.1`)
 - `instance_of` → Substrate-Independent Memory (`@LAT0LON0`)
 
 ---
 
-@LAT43.6155LON-116.2018 | created:1745884804 | relates:resonates_with>@LAT42.408LON-71.1185,child_of>@LAT43.615LON-116.2023
+@LAT44.4LON-116.2 | created:1745884804 | relates:resonates_with>@LAT43.3LON-71.1,child_of>@LAT43.6LON-116.2
 
 ## Coordinate-as-Identity
 
 TTDB nodes are addressed by `@LATxLONy` coordinates — geographic positions on the Earth. These coordinates persist across any storage system with no central database, no server, no registry. The address IS the identity.
 
-Consider what this means for substrate-independence: a TTDB file can be stored on a filesystem, synced to IPFS, printed on paper, and typed back in from the paper. In each case, `@LAT43.6155LON-116.2018` refers to the same node. No UUID server issued that identifier. No database assigned it. The Earth is the authority, and the Earth does not go down for maintenance.
+Consider what this means for substrate-independence: a TTDB file can be stored on a filesystem, synced to IPFS, printed on paper, and typed back in from the paper. In each case, `@LAT44.4LON-116.2` refers to the same node. No UUID server issued that identifier. No database assigned it. The Earth is the authority, and the Earth does not go down for maintenance.
 
 When Agent 32 traverses a TTDB graph, it is not querying a database — it is reading coordinate addresses and following edges. The underlying storage can be replaced without changing any identifier. The pattern (the graph of addresses and edges) persists independently of the substrate (which files, which disk, which server holds the bytes).
 
@@ -147,12 +147,12 @@ This is the same move biology made: encode the pattern in a layer orthogonal to 
 
 > **Resonance**: Both encode persistent information in a substrate orthogonal to the "obvious" one — DNA in biology, the database server in software. The addressable layer carries the pattern; the material beneath is fungible.
 
-- `resonates_with` → Bioelectric Pattern Memory (`@LAT42.408LON-71.1185`)
-- `child_of` → Mnemon Origin (`@LAT43.615LON-116.2023`)
+- `resonates_with` → Bioelectric Pattern Memory (`@LAT43.3LON-71.1`)
+- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
 
 ---
 
-@LAT42.407LON-71.1195 | created:1745884805 | relates:resonates_with>@LAT43.617LON-116.2003,child_of>@LAT42.4075LON-71.119
+@LAT43.1LON-70.4 | created:1745884805 | relates:resonates_with>@LAT44.2LON-115.5,child_of>@LAT42.5LON-71.1
 
 ## Voltage Gradient Addressing
 
@@ -166,16 +166,16 @@ No cell is in charge of telling other cells where they are. The field is self-re
 
 There is no morphological DNS. There is no genome-issued address. The field is the registry, and the field belongs to no one.
 
-- `resonates_with` → Authority-Free Addressing (`@LAT43.617LON-116.2003`)
-- `child_of` → Tufts Allen Discovery Center (`@LAT42.4075LON-71.119`)
+- `resonates_with` → Authority-Free Addressing (`@LAT44.2LON-115.5`)
+- `child_of` → Tufts Allen Discovery Center (`@LAT42.5LON-71.1`)
 
 ---
 
-@LAT43.617LON-116.2003 | created:1745884806 | relates:resonates_with>@LAT42.407LON-71.1195,child_of>@LAT43.615LON-116.2023
+@LAT44.2LON-115.5 | created:1745884806 | relates:resonates_with>@LAT43.1LON-70.4,child_of>@LAT43.6LON-116.2
 
 ## Authority-Free Addressing
 
-Geographic coordinates require no DNS lookup, no registry query, no permission from any authority. `@LAT43.617LON-116.2003` is a valid TTDB identifier the moment you write it. Every agent that can read coordinates can find it. No one owns it. No one can revoke it.
+Geographic coordinates require no DNS lookup, no registry query, no permission from any authority. `@LAT44.2LON-115.5` is a valid TTDB identifier the moment you write it. Every agent that can read coordinates can find it. No one owns it. No one can revoke it.
 
 This is not a technical quirk — it is a design principle. The Earth's coordinate system has existed for centuries, is stable, is understood by every mapping system in every country, and is governed by physics rather than by any corporation or standards body. To anchor knowledge to coordinates is to anchor it to something more permanent than any server, any company, or any protocol.
 
@@ -185,12 +185,12 @@ Locality is the only authority. The field — bioelectric or geographic — is t
 
 > **Resonance**: Position-based identity without central authority. Locality determines identity; identity admits deterministic neighbors.
 
-- `resonates_with` → Voltage Gradient Addressing (`@LAT42.407LON-71.1195`)
-- `child_of` → Mnemon Origin (`@LAT43.615LON-116.2023`)
+- `resonates_with` → Voltage Gradient Addressing (`@LAT43.1LON-70.4`)
+- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
 
 ---
 
-@LAT42.4085LON-71.118 | created:1745884807 | relates:resonates_with>@LAT43.616LON-116.2013,child_of>@LAT42.4075LON-71.119
+@LAT42.5LON-70.3 | created:1745884807 | relates:resonates_with>@LAT43.6LON-115.4,child_of>@LAT42.5LON-71.1
 
 ## Morphostatic Information
 
@@ -204,12 +204,12 @@ This is not passive storage. The bioelectric field requires active maintenance. 
 
 The body's form is not a fixed blueprint. It is a **continuously negotiated consensus** between millions of cells, maintained through bioelectric signaling. The pattern must be actively held or it is lost.
 
-- `resonates_with` → Morphostatic Knowledge (`@LAT43.616LON-116.2013`)
-- `child_of` → Tufts Allen Discovery Center (`@LAT42.4075LON-71.119`)
+- `resonates_with` → Morphostatic Knowledge (`@LAT43.6LON-115.4`)
+- `child_of` → Tufts Allen Discovery Center (`@LAT42.5LON-71.1`)
 
 ---
 
-@LAT43.616LON-116.2013 | created:1745884808 | relates:resonates_with>@LAT42.4085LON-71.118,child_of>@LAT43.615LON-116.2023
+@LAT43.6LON-115.4 | created:1745884808 | relates:resonates_with>@LAT42.5LON-70.3,child_of>@LAT43.6LON-116.2
 
 ## Morphostatic Knowledge
 
@@ -223,12 +223,12 @@ Like bioelectric coherence, textual self-description is the active principle tha
 
 > **Resonance**: Information that maintains its own form against entropic drift. The substrate must be cheap and the schema must be its own description, or the form is lost.
 
-- `resonates_with` → Morphostatic Information (`@LAT42.4085LON-71.118`)
-- `child_of` → Mnemon Origin (`@LAT43.615LON-116.2023`)
+- `resonates_with` → Morphostatic Information (`@LAT42.5LON-70.3`)
+- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
 
 ---
 
-@LAT42.4065LON-71.12 | created:1745884809 | relates:resonates_with>@LAT43.614LON-116.2033,child_of>@LAT42.4075LON-71.119
+@LAT41.9LON-70.4 | created:1745884809 | relates:resonates_with>@LAT43.0LON-115.5,child_of>@LAT42.5LON-71.1
 
 ## Cognitive Glue — Cells
 
@@ -242,18 +242,18 @@ Without the field, cells have local information only: the signals from their imm
 
 Levin's term is exact: the field is **glue**. It does not issue commands. It does not compute a solution. It binds individual computational agents into a collective that can navigate a problem space too large for any one agent.
 
-- `resonates_with` → Cognitive Glue — Files (`@LAT43.614LON-116.2033`)
-- `child_of` → Tufts Allen Discovery Center (`@LAT42.4075LON-71.119`)
+- `resonates_with` → Cognitive Glue — Files (`@LAT43.0LON-115.5`)
+- `child_of` → Tufts Allen Discovery Center (`@LAT42.5LON-71.1`)
 
 ---
 
-@LAT43.614LON-116.2033 | created:1745884810 | relates:resonates_with>@LAT42.4065LON-71.12,child_of>@LAT43.615LON-116.2023
+@LAT43.0LON-115.5 | created:1745884810 | relates:resonates_with>@LAT41.9LON-70.4,child_of>@LAT43.6LON-116.2
 
 ## Cognitive Glue — Files
 
 Individual TTDB files are, in isolation, inert documents. A file about memory substrate cannot navigate to a file about morphostasis by itself — it has no traversal capacity. What gives the graph its navigable structure are the **coordinate edges** that connect one file's address to another's.
 
-These edges — `relates: resonates_with>@LAT42.4085LON-71.118` — are the cognitive glue of the Mnemon knowledge system. They transform a pile of independent files into a graph that can be traversed as a single system. Agent 32 does not read files; it follows edges. The files are the substrate; the edges are the field.
+These edges — `relates: resonates_with>@LAT42.5LON-70.3` — are the cognitive glue of the Mnemon knowledge system. They transform a pile of independent files into a graph that can be traversed as a single system. Agent 32 does not read files; it follows edges. The files are the substrate; the edges are the field.
 
 Without edges, TTDB is a filesystem with fancy filenames. With edges, it is a knowledge graph that can be navigated, explored, queried, and reasoned over. The edge layer is orthogonal to the file layer — you can add, remove, or rewire edges without touching the file content. The glue can be reconfigured without rebuilding the cells.
 
@@ -261,12 +261,12 @@ This is why Agent 32 is described as navigating **the glue, not the files**. The
 
 > **Resonance**: A coordination protocol that lets parts behave as a problem-solving whole. Without the glue, you have a pile; with it, a navigator.
 
-- `resonates_with` → Cognitive Glue — Cells (`@LAT42.4065LON-71.12`)
-- `child_of` → Mnemon Origin (`@LAT43.615LON-116.2023`)
+- `resonates_with` → Cognitive Glue — Cells (`@LAT41.9LON-70.4`)
+- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
 
 ---
 
-@LAT42.409LON-71.1175 | created:1745884811 | relates:resonates_with>@LAT43.6165LON-116.2008,child_of>@LAT42.4075LON-71.119
+@LAT41.7LON-71.1 | created:1745884811 | relates:resonates_with>@LAT42.8LON-116.2,child_of>@LAT42.5LON-71.1
 
 ## Anatomical Morphospace
 
@@ -280,18 +280,18 @@ Cells are not executing a blueprint. They are solving a problem: given their cur
 
 This reframing — development as search, body as solution — is Levin's most radical contribution to biology.
 
-- `resonates_with` → Ideational Morphospace (`@LAT43.6165LON-116.2008`)
-- `child_of` → Tufts Allen Discovery Center (`@LAT42.4075LON-71.119`)
+- `resonates_with` → Ideational Morphospace (`@LAT42.8LON-116.2`)
+- `child_of` → Tufts Allen Discovery Center (`@LAT42.5LON-71.1`)
 
 ---
 
-@LAT43.6165LON-116.2008 | created:1745884812 | relates:resonates_with>@LAT42.409LON-71.1175,child_of>@LAT43.615LON-116.2023
+@LAT42.8LON-116.2 | created:1745884812 | relates:resonates_with>@LAT41.7LON-71.1,child_of>@LAT43.6LON-116.2
 
 ## Ideational Morphospace
 
 Agent 32 traverses the space of possible **knowledge structures** — a graph of concepts, relationships, and edge types that is too large for any single traversal to exhaust. The Mnemon graph IS the morphospace; deterministic graph traversal is the agent-level analog of cellular differentiation.
 
-Every path through a TTDB graph is a different reading of the knowledge it encodes. Starting from `@LAT43.01LON-93.66` and following `resonates_with` edges leads to one understanding of the bioelectric-Mnemon relationship. Starting from `@LAT42.4075LON-71.119` and following `parent_of` edges leads to another. The graph does not prescribe a single path — it is a **space of possible readings**, and the agent navigates toward the reading most relevant to its current task.
+Every path through a TTDB graph is a different reading of the knowledge it encodes. Starting from `@LAT43.01LON-93.66` and following `resonates_with` edges leads to one understanding of the bioelectric-Mnemon relationship. Starting from `@LAT42.5LON-71.1` and following `parent_of` edges leads to another. The graph does not prescribe a single path — it is a **space of possible readings**, and the agent navigates toward the reading most relevant to its current task.
 
 This is why TTDB knowledge is described as "living" rather than "stored." A stored document has a fixed reading. A navigable graph has a morphospace of readings, and an agent with a goal state will find a path through that space toward the understanding it needs. Different agents, different goals, different paths — but the same graph.
 
@@ -299,12 +299,12 @@ The morphospace is the graph. The navigator is the agent. The gradient is the ta
 
 > **Resonance**: A space of possible patterns through which a goal-directed agent navigates toward a target. Both biology and cognition are search.
 
-- `resonates_with` → Anatomical Morphospace (`@LAT42.409LON-71.1175`)
-- `child_of` → Mnemon Origin (`@LAT43.615LON-116.2023`)
+- `resonates_with` → Anatomical Morphospace (`@LAT41.7LON-71.1`)
+- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
 
 ---
 
-@LAT42.406LON-71.1205 | created:1745884813 | relates:resonates_with>@LAT43.6135LON-116.2038,child_of>@LAT42.4075LON-71.119
+@LAT41.9LON-71.8 | created:1745884813 | relates:resonates_with>@LAT43.0LON-116.9,child_of>@LAT42.5LON-71.1
 
 ## Cellular Umwelt
 
@@ -318,18 +318,18 @@ This is not a limitation but a feature. A cell that tried to sense the entire or
 
 The genius of the bioelectric system is that local umwelt-bounded decisions, summed across millions of cells, produce coherent global patterns — body plans, wound responses, regeneration. Each cell solves its local problem; the field aggregates the solutions.
 
-- `resonates_with` → Semantic Umwelt (`@LAT43.6135LON-116.2038`)
-- `child_of` → Tufts Allen Discovery Center (`@LAT42.4075LON-71.119`)
+- `resonates_with` → Semantic Umwelt (`@LAT43.0LON-116.9`)
+- `child_of` → Tufts Allen Discovery Center (`@LAT42.5LON-71.1`)
 
 ---
 
-@LAT43.6135LON-116.2038 | created:1745884814 | relates:resonates_with>@LAT42.406LON-71.1205,child_of>@LAT43.615LON-116.2023
+@LAT43.0LON-116.9 | created:1745884814 | relates:resonates_with>@LAT41.9LON-71.8,child_of>@LAT43.6LON-116.2
 
 ## Semantic Umwelt
 
 Each TTDB node has its **1-hop neighborhood** — the set of nodes its outbound edges reach directly. This neighborhood is the node's semantic umwelt: the slice of the graph it can "see" without multi-hop traversal.
 
-In the biosemiotic layer of Mnemon, the umwelt is not just a technical property — it is the **condition for meaning**. A concept does not exist in isolation; it exists in relation to its neighbors. The meaning of `@LAT42.408LON-71.1185` (Bioelectric Pattern Memory) is partially constituted by its `resonates_with` edge to `@LAT43.6155LON-116.2018` (Coordinate-as-Identity) and its `child_of` edge to `@LAT42.4075LON-71.119` (Tufts). Remove those edges and the concept becomes an orphan — present in the file, but stripped of relational meaning.
+In the biosemiotic layer of Mnemon, the umwelt is not just a technical property — it is the **condition for meaning**. A concept does not exist in isolation; it exists in relation to its neighbors. The meaning of `@LAT43.3LON-71.1` (Bioelectric Pattern Memory) is partially constituted by its `resonates_with` edge to `@LAT44.4LON-116.2` (Coordinate-as-Identity) and its `child_of` edge to `@LAT42.5LON-71.1` (Tufts). Remove those edges and the concept becomes an orphan — present in the file, but stripped of relational meaning.
 
 This is why edge-wiring is the primary act of TTDB curation, not writing. Any text can be stored in a TTDB file. What makes it *knowledge* is the edges — the connections that situate it in a meaning-neighborhood. The umwelt is built by edge-laying.
 
@@ -337,12 +337,12 @@ Agent 32's traversal respects the umwelt: it reads the current node's neighborho
 
 > **Resonance**: Uexküll's umwelt as a graph primitive. Locality isn't decoration; it is the condition for meaning.
 
-- `resonates_with` → Cellular Umwelt (`@LAT42.406LON-71.1205`)
-- `child_of` → Mnemon Origin (`@LAT43.615LON-116.2023`)
+- `resonates_with` → Cellular Umwelt (`@LAT41.9LON-71.8`)
+- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
 
 ---
 
-@LAT42.4095LON-71.117 | created:1745884815 | relates:resonates_with>@LAT43.613LON-116.2043,child_of>@LAT42.4075LON-71.119
+@LAT42.5LON-71.9 | created:1745884815 | relates:resonates_with>@LAT43.6LON-117.0,child_of>@LAT42.5LON-71.1
 
 ## Cancer as Decoupling
 
@@ -356,12 +356,12 @@ The therapeutic implication is striking: **reconnection is treatment**. Levin's 
 
 Pathology, in this view, is not a broken cell but a broken connection.
 
-- `resonates_with` → Orphan Nodes (`@LAT43.613LON-116.2043`)
-- `child_of` → Tufts Allen Discovery Center (`@LAT42.4075LON-71.119`)
+- `resonates_with` → Orphan Nodes (`@LAT43.6LON-117.0`)
+- `child_of` → Tufts Allen Discovery Center (`@LAT42.5LON-71.1`)
 
 ---
 
-@LAT43.613LON-116.2043 | created:1745884816 | relates:resonates_with>@LAT42.4095LON-71.117,child_of>@LAT43.615LON-116.2023
+@LAT43.6LON-117.0 | created:1745884816 | relates:resonates_with>@LAT42.5LON-71.9,child_of>@LAT43.6LON-116.2
 
 ## Orphan Nodes
 
@@ -381,5 +381,5 @@ The record ends here. The globe returns to the center — equidistant between Me
 
 The patterns were always there. We just needed a field to see them.
 
-- `resonates_with` → Cancer as Decoupling (`@LAT42.4095LON-71.117`)
-- `child_of` → Mnemon Origin (`@LAT43.615LON-116.2023`)
+- `resonates_with` → Cancer as Decoupling (`@LAT42.5LON-71.9`)
+- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
