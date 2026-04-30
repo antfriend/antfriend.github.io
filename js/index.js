@@ -3198,7 +3198,7 @@
       state.globeDragX = clientX;
       state.globeDragY = clientY;
       state.globeDragMoved = true;
-      const sensitivity = 0.005;
+      const sensitivity = 0.005 / state.globeZoom;
       state.globeRotLon += dx * sensitivity;
       const invert = state.invertDragY ? 1 : -1;
       state.globeRotLat += dy * sensitivity * invert;
