@@ -1,9 +1,9 @@
-# Bioelectric ⟷ Mnemon Resonance
-A TTDB graph mapping Michael Levin's developmental bioelectricity onto the Mnemon framework. Both treated as parallel substrate-independent information layers. Seven resonance pairs spanning two continental clusters.
+# Bioelectric ⟷ TTE Resonance
+A TTDB graph mapping Michael Levin's developmental bioelectricity onto the Toot Toot Engineering Database system. Both treated as parallel substrate-independent information layers. Seven resonance pairs spanning two continental clusters.
 
 ```mmpdb
 db_id: ttdb:bioelectric:resonance:v1
-db_name: "Bioelectric ⟷ Mnemon Resonance"
+db_name: "Bioelectric ⟷ TTE Resonance"
 coord_increment:
   lat: 0.001
   lon: 0.001
@@ -12,12 +12,12 @@ timestamp_kind: unix_utc
 umwelt:
   umwelt_id: umwelt:bioelectric:resonance:v1
   role: resonance_cartographer
-  perspective: "Mapping deep structural similarities between Michael Levin's developmental bioelectricity and the TTDB Mnemon framework — two fields that discovered they speak the same language."
+  perspective: "Mapping deep structural similarities between Michael Levin's developmental bioelectricity and the TTDB framework — patterns in memory, harmony, and belonging."
   scope: "Bioelectric research (Levin et al., Tufts Allen Discovery Center) and TTE RFCs for TTDB, TTN, and A32."
   globe:
     frame: "resonance_map"
-    origin: "Tufts Allen Discovery Center anchors the bioelectric cluster near Medford, MA. Boise anchors the Mnemon cluster."
-    mapping: "East cluster (lat 42.4, lon -71): bioelectric concepts. West cluster (lat 43.6, lon -116): Mnemon analogs. Cross-continental edges carry resonance."
+    origin: "Tufts Allen Discovery Center anchors the bioelectric cluster near Medford, MA. Boise anchors the TTE cluster."
+    mapping: "East cluster (lat 42.4, lon -71): bioelectric concepts. West cluster (lat 43.6, lon -116): TTE analogs. Cross-continental edges carry resonance."
     note: "Select the cover record to play all seven resonance pairs in sequence."
 cursor_policy:
   max_preview_chars: 240
@@ -32,7 +32,7 @@ typed_edges:
 selected:
   - @LAT43.01LON-93.66
 preview:
-  @LAT43.01LON-93.66: "Two fields discover they speak the same structural language. Select this record to play all seven resonance pairs — from memory substrate to decoupling and back."
+  @LAT43.01LON-93.66: "Patterns in memory, harmony, and belonging. Select this record to play all seven resonance pairs — from memory substrate to decoupling and back."
 ```
 
 ---
@@ -41,17 +41,17 @@ preview:
 
 ## The Resonance Record
 
-![Bioelectric ⟷ Mnemon Resonance — Seven Pairs](images/bio-cover.svg)
+![Bioelectric ⟷ TTE Resonance — Seven Pairs](images/bio-cover.svg)
 
-What if the deepest pattern in developmental biology was already running in your file system?
+What if the deepest pattern in developmental biology was available in your file system?
 
-Michael Levin's lab at the Tufts Allen Discovery Center studies how cells coordinate using voltage gradients — a layer of information completely orthogonal to DNA. Three thousand miles west, the Mnemon framework addresses knowledge by geographic coordinates, maintaining semantic structure in plain text files — a layer completely orthogonal to databases.
+Michael Levin's lab at the Tufts Allen Discovery Center studies how cells coordinate using voltage gradients — a layer of information completely orthogonal to DNA. Three thousand miles west, the TTE framework addresses knowledge by geographic coordinates, maintaining semantic structure in plain text files — a layer completely orthogonal to databases.
 
 Neither field set out to find the other. Yet the structural signatures are identical: substrate-independence, authority-free addressing, morphostasis, cognitive glue, morphospace navigation, umwelt-bounded perception, and decoupling as pathology.
 
 Seven pairs. Two clusters. One record.
 
-> This is a scene record. Select it and the globe will traverse all seven resonance pairs automatically — alternating between the bioelectric cluster near Medford, Massachusetts and the Mnemon cluster near Boise, Idaho.
+> This is a scene record. Select it and the globe will traverse all seven resonance pairs automatically — alternating between the bioelectric cluster near Medford, Massachusetts and the TTE cluster near Boise, Idaho.
 
 ```ttdb-scene
 start_node: @LAT43.3LON-71.1
@@ -90,24 +90,24 @@ This is not metaphor. Levin's lab has demonstrated it in planaria — flatworms 
 - **Geographic ref**: 42.4075°N, 71.119°W (Medford, MA)
 - **All child nodes**: seven paired bioelectric concepts surrounding this position
 
-> From here the globe shows seven bioelectric concepts, each `resonates_with` a Mnemon analog in the western cluster at Boise.
+> From here the globe shows seven bioelectric concepts, each `resonates_with` a TTE analog in the western cluster at Boise.
 
 ---
 
 @LAT43.6LON-116.2 | created:1745884802 | relates:parent_of>@LAT44.4LON-116.2,parent_of>@LAT44.2LON-115.5,parent_of>@LAT43.6LON-115.4,parent_of>@LAT43.0LON-115.5,parent_of>@LAT42.8LON-116.2,parent_of>@LAT43.0LON-116.9,parent_of>@LAT43.6LON-117.0
 
-## Mnemon Origin
+## TTE Origin
 
-The Mnemon cluster is anchored near Boise, Idaho — chosen as the western counterpoint to the Tufts eastern cluster. Mnemon is a coordinate-addressed semantic graph where every node is a position on the Earth.
+The TTE cluster is anchored near Boise, Idaho — chosen as the western counterpoint to the Tufts eastern cluster. TTE is a coordinate-addressed semantic graph where every node is a position on the Earth.
 
 The central claim: persistent, navigable knowledge does not require a database server. Geographic coordinates — `@LAT43.6LON-116.2` — serve as permanent identifiers. The coordinate IS the identity. The underlying storage medium (filesystem, IPFS, paper, memory) is interchangeable. A TTDB file can be copied, forked, printed, and reconstructed from any medium and the coordinate addresses remain valid.
 
 This is not a quirk of the file format. It is the same structural move that biology made: bind the information to an addressing system orthogonal to the substrate. Let the pattern outlive the medium.
 
-- **Cluster**: mnemon
+- **Cluster**: TTE
 - **Role**: origin anchor
 - **Geographic ref**: 43.615°N, 116.2023°W (Boise, ID)
-- **All child nodes**: seven Mnemon analog concepts surrounding this position
+- **All child nodes**: seven TTE analog concepts surrounding this position
 
 > From here the globe shows seven TTDB concepts, each `resonates_with` a bioelectric concept in the eastern cluster at Tufts.
 
@@ -148,7 +148,7 @@ This is the same move biology made: encode the pattern in a layer orthogonal to 
 > **Resonance**: Both encode persistent information in a substrate orthogonal to the "obvious" one — DNA in biology, the database server in software. The addressable layer carries the pattern; the material beneath is fungible.
 
 - `resonates_with` → Bioelectric Pattern Memory (`@LAT43.3LON-71.1`)
-- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
+- `child_of` → TTE Origin (`@LAT43.6LON-116.2`)
 
 ---
 
@@ -186,7 +186,7 @@ Locality is the only authority. The field — bioelectric or geographic — is t
 > **Resonance**: Position-based identity without central authority. Locality determines identity; identity admits deterministic neighbors.
 
 - `resonates_with` → Voltage Gradient Addressing (`@LAT43.1LON-70.4`)
-- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
+- `child_of` → TTE Origin (`@LAT43.6LON-116.2`)
 
 ---
 
@@ -224,7 +224,7 @@ Like bioelectric coherence, textual self-description is the active principle tha
 > **Resonance**: Information that maintains its own form against entropic drift. The substrate must be cheap and the schema must be its own description, or the form is lost.
 
 - `resonates_with` → Morphostatic Information (`@LAT42.5LON-70.3`)
-- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
+- `child_of` → TTE Origin (`@LAT43.6LON-116.2`)
 
 ---
 
@@ -253,7 +253,7 @@ Levin's term is exact: the field is **glue**. It does not issue commands. It doe
 
 Individual TTDB files are, in isolation, inert documents. A file about memory substrate cannot navigate to a file about morphostasis by itself — it has no traversal capacity. What gives the graph its navigable structure are the **coordinate edges** that connect one file's address to another's.
 
-These edges — `relates: resonates_with>@LAT42.5LON-70.3` — are the cognitive glue of the Mnemon knowledge system. They transform a pile of independent files into a graph that can be traversed as a single system. Agent 32 does not read files; it follows edges. The files are the substrate; the edges are the field.
+These edges — `relates: resonates_with>@LAT42.5LON-70.3` — are the cognitive glue of the TTE knowledge system. They transform a pile of independent files into a graph that can be traversed as a single system. Agent 32 does not read files; it follows edges. The files are the substrate; the edges are the field.
 
 Without edges, TTDB is a filesystem with fancy filenames. With edges, it is a knowledge graph that can be navigated, explored, queried, and reasoned over. The edge layer is orthogonal to the file layer — you can add, remove, or rewire edges without touching the file content. The glue can be reconfigured without rebuilding the cells.
 
@@ -262,7 +262,7 @@ This is why Agent 32 is described as navigating **the glue, not the files**. The
 > **Resonance**: A coordination protocol that lets parts behave as a problem-solving whole. Without the glue, you have a pile; with it, a navigator.
 
 - `resonates_with` → Cognitive Glue — Cells (`@LAT41.9LON-70.4`)
-- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
+- `child_of` → TTE Origin (`@LAT43.6LON-116.2`)
 
 ---
 
@@ -289,9 +289,9 @@ This reframing — development as search, body as solution — is Levin's most r
 
 ## Ideational Morphospace
 
-Agent 32 traverses the space of possible **knowledge structures** — a graph of concepts, relationships, and edge types that is too large for any single traversal to exhaust. The Mnemon graph IS the morphospace; deterministic graph traversal is the agent-level analog of cellular differentiation.
+Agent 32 traverses the space of possible **knowledge structures** — a graph of concepts, relationships, and edge types that is too large for any single traversal to exhaust. The TTE graph IS the morphospace; deterministic graph traversal is the agent-level analog of cellular differentiation.
 
-Every path through a TTDB graph is a different reading of the knowledge it encodes. Starting from `@LAT43.01LON-93.66` and following `resonates_with` edges leads to one understanding of the bioelectric-Mnemon relationship. Starting from `@LAT42.5LON-71.1` and following `parent_of` edges leads to another. The graph does not prescribe a single path — it is a **space of possible readings**, and the agent navigates toward the reading most relevant to its current task.
+Every path through a TTDB graph is a different reading of the knowledge it encodes. Starting from `@LAT43.01LON-93.66` and following `resonates_with` edges leads to one understanding of the bioelectric-TTE relationship. Starting from `@LAT42.5LON-71.1` and following `parent_of` edges leads to another. The graph does not prescribe a single path — it is a **space of possible readings**, and the agent navigates toward the reading most relevant to its current task.
 
 This is why TTDB knowledge is described as "living" rather than "stored." A stored document has a fixed reading. A navigable graph has a morphospace of readings, and an agent with a goal state will find a path through that space toward the understanding it needs. Different agents, different goals, different paths — but the same graph.
 
@@ -300,7 +300,7 @@ The morphospace is the graph. The navigator is the agent. The gradient is the ta
 > **Resonance**: A space of possible patterns through which a goal-directed agent navigates toward a target. Both biology and cognition are search.
 
 - `resonates_with` → Anatomical Morphospace (`@LAT41.7LON-71.1`)
-- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
+- `child_of` → TTE Origin (`@LAT43.6LON-116.2`)
 
 ---
 
@@ -329,7 +329,7 @@ The genius of the bioelectric system is that local umwelt-bounded decisions, sum
 
 Each TTDB node has its **1-hop neighborhood** — the set of nodes its outbound edges reach directly. This neighborhood is the node's semantic umwelt: the slice of the graph it can "see" without multi-hop traversal.
 
-In the biosemiotic layer of Mnemon, the umwelt is not just a technical property — it is the **condition for meaning**. A concept does not exist in isolation; it exists in relation to its neighbors. The meaning of `@LAT43.3LON-71.1` (Bioelectric Pattern Memory) is partially constituted by its `resonates_with` edge to `@LAT44.4LON-116.2` (Coordinate-as-Identity) and its `child_of` edge to `@LAT42.5LON-71.1` (Tufts). Remove those edges and the concept becomes an orphan — present in the file, but stripped of relational meaning.
+In the biosemiotic layer of TTE, the umwelt is not just a technical property — it is the **condition for meaning**. A concept does not exist in isolation; it exists in relation to its neighbors. The meaning of `@LAT43.3LON-71.1` (Bioelectric Pattern Memory) is partially constituted by its `resonates_with` edge to `@LAT44.4LON-116.2` (Coordinate-as-Identity) and its `child_of` edge to `@LAT42.5LON-71.1` (Tufts). Remove those edges and the concept becomes an orphan — present in the file, but stripped of relational meaning.
 
 This is why edge-wiring is the primary act of TTDB curation, not writing. Any text can be stored in a TTDB file. What makes it *knowledge* is the edges — the connections that situate it in a meaning-neighborhood. The umwelt is built by edge-laying.
 
@@ -338,7 +338,7 @@ Agent 32's traversal respects the umwelt: it reads the current node's neighborho
 > **Resonance**: Uexküll's umwelt as a graph primitive. Locality isn't decoration; it is the condition for meaning.
 
 - `resonates_with` → Cellular Umwelt (`@LAT41.9LON-71.8`)
-- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
+- `child_of` → TTE Origin (`@LAT43.6LON-116.2`)
 
 ---
 
@@ -382,4 +382,4 @@ The record ends here. The globe returns to the center — equidistant between Me
 The patterns were always there. We just needed a field to see them.
 
 - `resonates_with` → Cancer as Decoupling (`@LAT42.5LON-71.9`)
-- `child_of` → Mnemon Origin (`@LAT43.6LON-116.2`)
+- `child_of` → TTE Origin (`@LAT43.6LON-116.2`)
