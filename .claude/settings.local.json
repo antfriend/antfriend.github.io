@@ -11,7 +11,10 @@
       "WebFetch(domain:opennav.com)",
       "WebFetch(domain:resources.globalair.com)",
       "Bash(gh api *)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(ttdb-scene\\\\|^)",
+      "Bash(mmpdb\\\\|start_node\\\\|edge:\" c:/Users/antfr/Documents/GitHub/antfriend.github.io/bioelectric_resonance.md | head -60)",
+      "Bash(grep -n \"^@LAT\\\\|^```ttdb-scene\\\\|^```cursor\\\\|^```mmpdb\\\\|start_node\\\\|edge:\" c:/Users/antfr/Documents/GitHub/antfriend.github.io/bioelectric_resonance.md | head -60)"
     ]
   }
 }

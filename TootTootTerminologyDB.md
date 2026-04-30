@@ -418,7 +418,7 @@ TTE is free, open-source software. [MIT License](https://github.com/antfriend/to
 - [Agent 32 — Autonomy for ESP32 devices](https://github.com/antfriend/toot-toot-engineering/blob/main/README_A32.md)
 - [Toot Toot Networking](https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs)
 - [The Toot Toot Workflow](https://github.com/antfriend/toot-toot-engineering/blob/main/README_TTworkflow.md)
-- [TTE Content Publishing](https://github.com/antfriend/toot-toot-engineering)
+- [TTE Content Publishing](https://github.com/antfriend/toot-toot-engineering/blob/main/README_ContentPublishing.md)
 
 ### Reference
 - [GitHub: antfriend/toot-toot-engineering](https://github.com/antfriend/toot-toot-engineering/blob/main/README.md)
