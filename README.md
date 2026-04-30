@@ -4,7 +4,7 @@ Home of **Toot Toot Engineering** (free, open-source, no dependencies) — the T
 
 ## What is this?
 
-This repo is the source for the Toot Toot Engineering website, which hosts an interactive browser-based viewer for **TTDB** (MyMentalPalaceDB) files. This site is an implementation of the toot technology it describes. For example, the link-based transition dynamics are described here  
+This repo is the source for the Toot Toot Engineering website, which hosts an interactive browser-based viewer for **TTDB** (MyMentalPalaceDB) files. This site is an implementation of the toot technology it describes. For example, the [link-based transition dynamics are described here.](https://antfriend.github.io/index.html?ttdb=Mathematical.latex&toot=lat-22lon60)  
 
 ### Core systems
 
