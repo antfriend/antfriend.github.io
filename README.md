@@ -1,6 +1,6 @@
 # antfriend.github.io
 
-Home of **Toot Toot Engineering** — the TTDB, TTAI(offline knowledge graph autonomy on a $5 ESP32 microcontroller), and the autonomy OS stack.
+Home of **Toot Toot Engineering** (free, open-source, no dependencies) — the TTDB, TTAI(offline knowledge graph autonomy on a $5 ESP32 microcontroller), and the autonomy OS stack.
 
 ## What is this?
 

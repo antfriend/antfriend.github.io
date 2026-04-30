@@ -45,7 +45,7 @@ preview:
 
 What if the deepest pattern in developmental biology was available in your file system?
 
-Michael Levin's lab at the Tufts Allen Discovery Center studies how cells coordinate using voltage gradients — a layer of information completely orthogonal to DNA. Three thousand miles west, the TTE framework addresses knowledge by geographic coordinates, maintaining semantic structure in plain text files — a layer completely orthogonal to databases.
+Michael Levin's lab at the Tufts Allen Discovery Center studies how cells coordinate using voltage gradients — a layer of information completely orthogonal to DNA. Three thousand miles west, the Toot Toot (free, open-source, no dependencies) Database framework addresses knowledge by geographic coordinates, maintaining semantic structure in plain text files — a layer completely orthogonal to databases.
 
 Neither field set out to find the other. Yet the structural signatures are identical: substrate-independence, authority-free addressing, morphostasis, cognitive glue, morphospace navigation, umwelt-bounded perception, and decoupling as pathology.
 
