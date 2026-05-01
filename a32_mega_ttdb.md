@@ -66,11 +66,9 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT-20LON0
-  - @LAT10LON-30
-  - @LAT10LON-20
-  - @LAT0LON-20
+  - @LAT-10LON0
 preview:
+  @LAT-10LON0: "Welcome. An AI librarian across six knowledge bases — narrative theory, bioelectricity, phenomenology, affect, formal mathematics, engineering terminology. Start here, then follow the links."
   @LAT0LON0: "The A32 Mega Librarian. Six TTDBs held simultaneously. Invoke with @MEGA. Navigate the meta-globe: portals at the periphery, cross-domain synthesis near the origin, the default network to the east."
   @LAT5LON-25: "EPS as Arc Position. TBEW fields as real-time instrumentation of a record's position on its own Hero's Arc: Serenity (low EPS) → Grief (peak EPS) → Joy (EPS decaying after rev increment)."
   @LAT40LON0: "Free Energy Principle Convergence. Friston's FEP appears in three source TTDBs: TBEW in story_of_stories, predictive perception in pollan_world_appears, morphostasis in bioelectric_resonance."
@@ -141,12 +139,12 @@ answer_records: []
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0
+@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0
 [ew]
 conf:245
 rev:0
 sal:4
-touched:1778400000
+touched:1778450000
 [/ew]
 
 ## The A32 Mega Librarian
@@ -163,6 +161,35 @@ The mega's umwelt is defined by this file. Its knowledge corpus is six source TT
 6. **pollan_world_appears_ttdb.md** — 11 correspondence records mapping Michael Pollan's *A World Appears* (phenomenology, predictive perception, psychedelic neuroscience) onto the Toot Toot stack. Shared theoretical lineage: Uexküll, Friston, William James.
 
 The mega answers to `@MEGA`. For cross-database queries, use `CROSS <token>`. To navigate directly into a source TTDB, use `TRAVERSE <db_id> <record_id>`.
+
+---
+
+@LAT-10LON0 | created:1778400000 | updated:1778400000 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON0,navigates_to>@LAT20LON0,navigates_to>@LAT0LON30,navigates_to>@LAT5LON-25,navigates_to>@LAT-20LON0
+[ew]
+conf:220
+rev:0
+sal:0
+touched:1778400000
+[/ew]
+
+## Welcome
+
+An AI librarian reasoning across six interconnected knowledge bases — narrative theory, bioelectricity, phenomenology, affect, formal mathematics, and engineering terminology — mapped as a conceptual globe.
+
+Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges connect records across databases. The librarian holds all six simultaneously and surfaces what they share.
+
+**Five places to start:**
+
+| Record | What it is |
+|---|---|
+| [Free Energy Principle Convergence](#free-energy-principle-convergence) | Friston's FEP surfacing independently in three separate databases |
+| [Umwelt as Universal Primitive](#umwelt-as-universal-primitive) | The single axiom all six databases share |
+| [The Default Network](#the-default-network) | What this system does when free to think |
+| [EPS as Arc Position](#eps-as-arc-position) | The Hero's Arc rendered as a knowledge-system instrument |
+| [Areas for Exploration](#areas-for-exploration--varied-ttdb-applications) | Ten very different uses for a knowledge base like this |
+
+**To query the librarian** — prefix any message with `@MEGA`:
+`@MEGA CROSS <word>` · `@MEGA TRAVERSE <db_id> <record>` · `@MEGA STATUS`
 
 ---
 

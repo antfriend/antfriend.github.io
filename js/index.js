@@ -1,7 +1,7 @@
     import { renderLatex } from "./latex-renderer.js";
 
-    const DEFAULT_DB_PATH = "TootTootTerminologyDB.md";
-    const DB_CANDIDATE_PATHS = [DEFAULT_DB_PATH, "a32_mega_ttdb.md", "story_of_stories_ttdb.md", "bioelectric_resonance.md", "feelings_ttdb.md", "journals.md", "MyMentalPalaceDB.md", "BOI_approach_plates.md", "Mathematical.latex", "banjo_ttdb.md", "pollan_world_appears_ttdb.md"];
+    const DEFAULT_DB_PATH = "a32_mega_ttdb.md";
+    const DB_CANDIDATE_PATHS = [DEFAULT_DB_PATH, "TootTootTerminologyDB.md", "story_of_stories_ttdb.md", "bioelectric_resonance.md", "feelings_ttdb.md", "journals.md", "MyMentalPalaceDB.md", "BOI_approach_plates.md", "Mathematical.latex", "banjo_ttdb.md", "pollan_world_appears_ttdb.md"];
     const DB_URL_PARAM_PRIMARY = "ttdb";
     const DB_URL_PARAM_FALLBACK = "db";
     const DB_URL_PARAM_KEYS = [DB_URL_PARAM_PRIMARY, DB_URL_PARAM_FALLBACK];
