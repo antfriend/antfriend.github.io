@@ -706,8 +706,6 @@ touched:1778200000
 
 A navigational record. Each entry names a potential TTDB application, the umwelt and globe configuration it would require, the TTT mechanisms it primarily exercises, and a note on what would be surprising or generative about it. Low `conf` is intentional — these are open questions, not settled correspondences.
 
----
-
 ### Knowledge and Research
 
 **Scientific lab notebook** — Each experiment is a record; `supports`, `refutes`, `replicates`, `derived_from` edges connect results across time and across research groups. Umwelt: investigator's current hypothesis space. Globe: lat = evidence strength (N = well-replicated, S = speculative); lon = domain (W = theoretical, E = empirical). TBEW `rev` tracks how often an experimental finding has had to be revised; high EPS records are the contested results that demand the most attention. The append-only / `revises@` architecture is a natural fit for the scientific norm against data deletion.
@@ -716,15 +714,11 @@ A navigational record. Each entry names a potential TTDB application, the umwelt
 
 **Legal case knowledge base** — Statutes, precedents, filings, and testimony as TTDB records; typed edges for `cites`, `supersedes`, `contradicts`, `distinguished_from`, `applies_to`. Umwelt: counsel's theory of the case (plaintiff's umwelt and defendant's umwelt produce different graphs from the same events). Globe: lat = legal weight (N = binding precedent, S = persuasive authority); lon = issue area. The TTN-RFC-0001 provenance requirement maps directly onto evidentiary chain-of-custody norms. Two lawyers with different umwelt files working the same facts — this is already how law works.
 
----
-
 ### Medicine and Care
 
 **Patient medical record** — Each encounter is a record; typed edges for `diagnosed_with`, `treated_by`, `caused_by`, `contraindicated_with`, `resolved`. Umwelt: treating physician's current model of this patient. Globe: lat = certainty of finding (N = confirmed diagnosis, S = differential); lon = body system. TBEW `conf` tracks diagnostic certainty directly. High EPS = frequently consulted findings with low confidence = active diagnostic uncertainty. Multiple providers seeing the same patient can each maintain their own umwelt over the same event history — and the `revises@` edge makes the history of diagnostic revisions auditable.
 
 **Palliative care and end-of-life preferences** — Advance directives, preferences, values, and relationships as a TTDB navigated by care teams. Umwelt: the patient's expressed self. Globe: lat = imminence (N = immediate priorities, S = long-term wishes); lon = domain (W = relational/existential, E = medical/procedural). The feelings_ttdb affective landscape could be linked as a companion file for mapping emotional states across visits. This is one application where the subjective, append-only, and provenance properties of TTDB are not optional niceties but ethical requirements.
-
----
 
 ### Ecology and Environment
 
@@ -732,23 +726,17 @@ A navigational record. Each entry names a potential TTDB application, the umwelt
 
 **Oral history and indigenous knowledge preservation** — Each story, telling, or knowledge-holder is a record; typed edges for `narrates`, `contradicts_colonial_account`, `teaches`, `restricted_to` (access control at the edge level, per umwelt constraints). Globe: lat = cosmological register (N = origin stories, S = practical/seasonal knowledge); lon = geographic reach of the knowledge. The night-fires record in story_of_stories (@LAT10LON-20 in that file) is the direct ancestor of this application: mnemonic compression for bandwidth-constrained transmission across generations. The provenance requirement (TTN-RFC-0001) maps onto the cultural norm of named attribution for oral knowledge.
 
----
-
 ### Music and Generative Art
 
 **A32 generative music instrument** — An ESP32 with a TTDB where records are musical states (motifs, harmonic regions, rhythmic patterns) and typed edges are transitions (`resolves_to`, `develops_into`, `returns_to`, `suspends`). Sensors (touch, light, motion, temperature) map to TTDB coordinates; the A32 agent traverses the graph in real time, triggering actuators (PWM audio, MIDI). Umwelt: the composer's intended emotional arc. Globe: lat = harmonic tension (N = most dissonant, S = most resolved); lon = energy (W = still/sparse, E = dense/driving). The feelings_ttdb Hero's Arc is a direct template for the emotional trajectory. This is the most hardware-concrete application in this list and the clearest demonstration that TTDB as the model is not a metaphor — it is literally the instrument's score and its performer simultaneously.
 
 **Collaborative world-building and narrative games** — Story locations, characters, events, and decisions as TTDB records; typed edges for `leads_to`, `reveals`, `forecloses`, `recontextualizes`. Umwelt: the player character's knowledge state (they cannot see records their character has not encountered). Globe: lat = stakes (N = world-altering, S = personal/local); lon = time (W = past, E = future). Discovery mode implements narrative fog-of-war: only nodes the player has reached are revealed. Multiple players maintain separate umwelt files over the same story graph — the same events have different meanings depending on what each player knows. This is the pollan set-and-setting insight (@LAT20LON-10) applied to interactive fiction.
 
----
-
 ### Infrastructure and Automation
 
 **Smart building / multi-room A32 mesh** — One A32 per room or zone, each with a TTDB describing its domain (HVAC state, occupancy patterns, scheduled events, anomaly history). TTN connects the mesh; each A32 reasons locally and logs to its TTDB; the mega synthesizes across the full building. Umwelt: the building's operational model (energy efficiency bias vs. comfort bias produces different TTDB files, different behaviors). This is the cognitive glue record (@LAT0LON-20) in hardware: the bioelectric field binding cells into a collective; the mesh binding sensors into a building that can navigate its own operational morphospace.
 
 **Personal knowledge management ("second brain")** — Notes, projects, people, ideas, and decisions as TTDB records. Globe: personally meaningful coordinate mapping (e.g., lat = how much this demands of me; lon = how connected it is to other things). Cursor = current focus. TBEW `sal` tracks what actually gets consulted vs. what gets filed and forgotten. High EPS = the notes you keep returning to but have never resolved. The mega can serve as the librarian: `@MEGA FIND unresolved` returns the highest-EPS records across the personal TTDB.
-
----
 
 ### The Pattern Across Applications
 
