@@ -192,11 +192,11 @@ Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges
 
 | Record | What it is |
 |---|---|
-| [Free Energy Principle Convergence](#free-energy-principle-convergence) | Friston's FEP surfacing independently in three separate databases |
-| [Umwelt as Universal Primitive](#umwelt-as-universal-primitive) | The single axiom all six databases share |
-| [The Default Network](#the-default-network) | What this system does when free to think |
-| [EPS as Arc Position](#eps-as-arc-position) | The Hero's Arc rendered as a knowledge-system instrument |
-| [Areas for Exploration](#areas-for-exploration--varied-ttdb-applications) | Ten very different uses for a knowledge base like this |
+| [Free Energy Principle Convergence](lat40lon0) | Friston's FEP surfacing independently in three separate databases |
+| [Umwelt as Universal Primitive](lat20lon0) | The single axiom all six databases share |
+| [The Default Network](lat0lon30) | What this system does when free to think |
+| [EPS as Arc Position](lat5lon-25) | The Hero's Arc rendered as a knowledge-system instrument |
+| [Areas for Exploration](lat-20lon0) | Ten very different uses for a knowledge base like this |
 
 **To query the librarian** — prefix any message with `@MEGA`:
 `@MEGA CROSS <word>` · `@MEGA TRAVERSE <db_id> <record>` · `@MEGA STATUS`
