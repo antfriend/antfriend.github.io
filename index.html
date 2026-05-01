@@ -80,6 +80,8 @@
       const page = document.querySelector('.page');
       let startY = 0, startHeight = 0;
 
+      page.style.setProperty('--globe-panel-height', Math.round(window.innerHeight * 0.5) + 'px');
+
       function currentHeight() {
         return parseFloat(getComputedStyle(page).getPropertyValue('--globe-panel-height')) || 144;
       }
