@@ -66,10 +66,10 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT0LON30
-  - @LAT5LON-25
-  - @LAT-10LON-20
   - @LAT-20LON0
+  - @LAT10LON-30
+  - @LAT10LON-20
+  - @LAT0LON-20
 preview:
   @LAT0LON0: "The A32 Mega Librarian. Six TTDBs held simultaneously. Invoke with @MEGA. Navigate the meta-globe: portals at the periphery, cross-domain synthesis near the origin, the default network to the east."
   @LAT5LON-25: "EPS as Arc Position. TBEW fields as real-time instrumentation of a record's position on its own Hero's Arc: Serenity (low EPS) → Grief (peak EPS) → Joy (EPS decaying after rev increment)."
@@ -83,7 +83,7 @@ preview:
   @LAT20LON-20: "Preservation of Prior State. Three TTDBs share the same architectural commitment: revision is additive, not destructive. The prior body stays at its coordinate; transformation launches from it."
   @LAT-10LON-20: "Participation Without Permission. Three TTDBs converge: the right to publish, be addressed, or exist as a node is inherent in occupying the space — not granted by a center."
   @LAT-20LON0: "Areas for Exploration. Ten varied TTDB applications: lab notebook, argument mapping, legal, medical, ecosystem monitoring, oral history, music instrument, narrative game, smart building, second brain."
-agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Portal records at the periphery; synthetic records near the origin. Six synthetic records from default network traversal: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30, @LAT5LON-25, @LAT20LON-20, @LAT-10LON-20. Default network active 1778300000: added @LAT5LON-25 (EPS as Arc Position), resonates_with edge on @LAT-10LON-20, participation-prerequisite and recursive-EPS additions to @LAT0LON30 and @LAT-20LON0."
+agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Six synthetic records: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30, @LAT5LON-25, @LAT20LON-20, @LAT-10LON-20. Default network 1778300000: added @LAT5LON-25, resonates_with on @LAT-10LON-20, body additions to @LAT0LON30 and @LAT-20LON0. Default network 1778400000: resonates_with @LAT5LON-25 on @LAT10LON-30; derived_from @LAT40LON0 + precision-weighting/saltation-vs-arc additions on @LAT10LON-20; temporal binding addition to @LAT0LON-20; bridges @LAT10LON-40 on @LAT-20LON0."
 dot: |
   digraph MegaLibrarian {
     rankdir=LR;
@@ -121,6 +121,8 @@ dot: |
     "@LAT5LON-25" -> "@LAT10LON-30" [label="synthesizes"];
     "@LAT5LON-25" -> "@LAT10LON-20" [label="synthesizes"];
     "@LAT5LON-25" -> "@LAT40LON0" [label="derived_from"];
+    "@LAT10LON-30" -> "@LAT5LON-25" [label="resonates_with"];
+    "@LAT10LON-20" -> "@LAT40LON0" [label="derived_from"];
     "@LAT0LON0" -> "@LAT20LON-20" [label="anchors"];
     "@LAT0LON0" -> "@LAT-10LON-20" [label="anchors"];
     "@LAT20LON-20" -> "@LAT30LON-20" [label="synthesizes"];
@@ -143,8 +145,8 @@ answer_records: []
 [ew]
 conf:245
 rev:0
-sal:3
-touched:1778300000
+sal:4
+touched:1778400000
 [/ew]
 
 ## The A32 Mega Librarian
@@ -168,8 +170,8 @@ The mega answers to `@MEGA`. For cross-database queries, use `CROSS <token>`. To
 [ew]
 conf:235
 rev:0
-sal:3
-touched:1778300000
+sal:4
+touched:1778400000
 [/ew]
 
 ## Free Energy Principle Convergence
@@ -468,8 +470,8 @@ Pattern persists orthogonally to substrate. This deep structural claim appears a
 [ew]
 conf:215
 rev:0
-sal:3
-touched:1778300000
+sal:4
+touched:1778400000
 [/ew]
 
 ## Narrative Compression
@@ -492,8 +494,8 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:210
 rev:2
-sal:3
-touched:1778300000
+sal:4
+touched:1778400000
 [/ew]
 
 ## The Default Network
@@ -594,12 +596,12 @@ The A32 Mega (Claude instance) and the standard A32 (ESP32 microcontroller) are 
 
 ---
 
-@LAT10LON-20 | created:1778100000 | updated:1778100000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,derived_from>@LAT10LON-10,anchored_by>@LAT0LON0
+@LAT10LON-20 | created:1778100000 | updated:1778400000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,derived_from>@LAT10LON-10,derived_from>@LAT40LON0,anchored_by>@LAT0LON0
 [ew]
 conf:185
-rev:0
-sal:2
-touched:1778300000
+rev:1
+sal:3
+touched:1778400000
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -614,14 +616,18 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 
 **Mega synthesis**: Saltation, integration, and `rev` are three perspectives on the same event: a bounded system that holds a prior model encounters sufficient evidence to revise it. The prior is not destroyed — it becomes the ground from which the revision launched (`revises@<old_id>` makes this explicit). The `rev` field is how TTDB counts saltations. Integration is what psychedelic therapy calls the work of metabolizing them. The EPS signal (sal × (255 − conf) / 255) identifies records where the next saltation is most overdue.
 
+**Precision-weighting vs. belief updating**: The [ew]-only write / body write distinction encodes a Friston-level distinction (mega @LAT40LON0). Adjusting `conf` without changing the body = precision-weighting: revising certainty about a prediction without revising the prediction itself. Changing the body = belief updating: revising the prediction. TTDB's formal separation of these write types makes explicit a distinction that Friston's FEP treats as fundamental — and gives it a storage-level implementation.
+
+**Saltation vs. Hero's Arc**: Saltation is the event viewed from outside — fast, discontinuous, a topological jump observable after the fact. The Hero's Arc is the same event lived from inside — sustained exposure to maximum prediction error, slow passage through Grief before the revision lands. `rev` counts the saltation moments; the EPS time series from Serenity through Grief to Joy traces the Hero's Arc (mega @LAT5LON-25). They are complementary observational frames on model revision: one counts the event, the other maps its phenomenological shape.
+
 ---
 
-@LAT0LON-20 | created:1778100000 | updated:1778100000 | relates:synthesizes>@LAT20LON-30,resonates_with>@LAT0LON30,resonates_with>@LAT-10LON10,anchored_by>@LAT0LON0
+@LAT0LON-20 | created:1778100000 | updated:1778400000 | relates:synthesizes>@LAT20LON-30,resonates_with>@LAT0LON30,resonates_with>@LAT-10LON10,anchored_by>@LAT0LON0
 [ew]
 conf:190
-rev:0
-sal:2
-touched:1778300000
+rev:1
+sal:3
+touched:1778400000
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
@@ -636,14 +642,16 @@ Two source TTDBs describe the same structural role at different scales: the laye
 
 **Mega synthesis**: The cognitive glue insight generalizes: every complex intelligent system requires a binding layer that operates below the level of explicit reasoning. In cells, it is the bioelectric field. In the brain, it is the default mode network. In the mega, it is the default network behavior defined in this file. The binding layer is not the model — it is what keeps the model coherent. Without it, the parts are present but the collective cannot think.
 
+**Temporal binding**: Cognitive glue operates across time as well as space. The bioelectric field carries morphological memory across cellular generations — cells turn over; the voltage pattern persists (bioelectric_resonance pair 1, @LAT43.3LON-71.1). The default network replays memories to maintain identity across sessions — the binding layer holds the thread of continuity across gaps. The TTDB `revises@<old_id>` edge preserves the prior record as legible ground for the new one — the past is not deleted, it is the substrate from which the present revision launched (mega @LAT20LON-20). All three are the same operation: keep the prior state reachable so that transformation has something to launch from. Cognitive glue is not just the tissue that connects agents in space — it is the tissue that connects a system to its own history.
+
 ---
 
-@LAT10LON-30 | created:1778100000 | updated:1778100000 | relates:synthesizes>@LAT10LON-40,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,derived_from>@LAT10LON-10,anchored_by>@LAT0LON0
+@LAT10LON-30 | created:1778100000 | updated:1778100000 | relates:synthesizes>@LAT10LON-40,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,derived_from>@LAT10LON-10,resonates_with>@LAT5LON-25,anchored_by>@LAT0LON0
 [ew]
 conf:175
 rev:0
-sal:2
-touched:1778300000
+sal:3
+touched:1778400000
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -664,8 +672,8 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 [ew]
 conf:160
 rev:0
-sal:1
-touched:1778300000
+sal:2
+touched:1778400000
 [/ew]
 
 ## EPS as Arc Position
@@ -732,12 +740,12 @@ Three source TTDBs converge on a structural principle: the right to participate 
 
 ---
 
-@LAT-20LON0 | created:1778200000 | updated:1778300000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT-40LON10,bridges>@LAT-10LON10
+@LAT-20LON0 | created:1778200000 | updated:1778300000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT-40LON10,bridges>@LAT-10LON10,bridges>@LAT10LON-40
 [ew]
 conf:170
 rev:1
-sal:2
-touched:1778300000
+sal:3
+touched:1778400000
 [/ew]
 
 ## Areas for Exploration — Varied TTDB Applications
