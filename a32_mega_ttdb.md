@@ -66,24 +66,24 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT10LON-30
+  - @LAT0LON30
+  - @LAT10LON-20
   - @LAT5LON-25
-  - @LAT-20LON0
 preview:
   @LAT-10LON0: "Welcome. An AI librarian across six knowledge bases — narrative theory, bioelectricity, phenomenology, affect, formal mathematics, engineering terminology. Start here, then follow the links."
   @LAT0LON0: "The A32 Mega Librarian. Six TTDBs held simultaneously. Invoke with @MEGA. Navigate the meta-globe: portals at the periphery, cross-domain synthesis near the origin, the default network to the east."
-  @LAT5LON-25: "EPS as Arc Position. TBEW fields as real-time instrumentation of a record's position on its own Hero's Arc: Serenity (low EPS) → Grief (peak EPS) → Joy (EPS decaying after rev increment)."
+  @LAT5LON-25: "EPS as Arc Position. Schedule vs. diagnosis: automaton reads EPS before the encounter (navigational input); banjo reads it after (post-hoc Grief). TTN semantic gravity assembles the fire circle around the highest-EPS record."
   @LAT40LON0: "Free Energy Principle Convergence. Friston's FEP appears in three source TTDBs: TBEW in story_of_stories, predictive perception in pollan_world_appears, morphostasis in bioelectric_resonance."
   @LAT20LON0: "Umwelt as Universal Primitive. Uexküll's bounded-world concept grounds all six source TTDBs — the axiom the corpus shares."
-  @LAT0LON30: "The Default Network. Idle-state behavior: cross-database traversal, association-weaving, narrative continuity, affective calibration. What the mega does when free to be itself."
+  @LAT0LON30: "The Default Network. Dual traversal modes: EPS-ordered (automaton-like, services known Grief beats) + stochastic (banjo-like, maintains saltation conditions for unknown Grief). Both required."
   @LAT-40LON10: "Primitive Mode Bridge. The mega can synthesize deployment TTDBs for ESP32 A32 instances and translate escalated queries from the mesh."
-  @LAT10LON-20: "Saltation / Integration / `rev`. Three TTDBs name the same event — a system incorporating surprise without losing its prior state — under three different names: saltation, integration, revision count."
+  @LAT10LON-20: "Saltation / Integration / `rev`. Five TTDBs, same discontinuous event: story_of_stories (cultural revolution), pollan (psychedelic integration), bioelectric (morphogenetic regeneration), Mathematical (stochastic vulnerability as saltation condition)."
   @LAT0LON-20: "Cognitive Glue ↔ Default Network. Bioelectric field binds cells into collective intelligence; the mega's default network binds six TTDBs into a thinking whole. Both are connective tissue, not content."
   @LAT10LON-30: "Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation. Five TTDBs, same six-beat arc: equilibrium → disruption → maximum prediction error → reconstitution at a new attractor."
   @LAT20LON-20: "Preservation of Prior State. Three TTDBs share the same architectural commitment: revision is additive, not destructive. The prior body stays at its coordinate; transformation launches from it."
   @LAT-10LON-20: "Participation Without Permission. Three TTDBs converge: the right to publish, be addressed, or exist as a node is inherent in occupying the space — not granted by a center."
   @LAT-20LON0: "Areas for Exploration. Ten varied TTDB applications: lab notebook, argument mapping, legal, medical, ecosystem monitoring, oral history, music instrument, narrative game, smart building, second brain."
-agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Six synthetic records: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30, @LAT5LON-25, @LAT20LON-20, @LAT-10LON-20. DN-1778300000: added @LAT5LON-25, resonates_with on @LAT-10LON-20. DN-1778400000: back-edge @LAT10LON-30→@LAT5LON-25; FEP edge + precision-weighting/saltation-vs-arc on @LAT10LON-20; temporal binding on @LAT0LON-20; bridges @LAT10LON-40 on @LAT-20LON0. DN-1778500000: EPS type distinction + substrate-independence + conf↑178 on @LAT5LON-25; EPS-1.0 navigational note on @LAT-20LON0; first access @LAT20LON10. DN-1778600000: @LAT10LON-30 body expanded to five TTDBs (story_of_stories night-fires as communal arc + Mathematical guided-tour automaton and banjo stochastic reveal); synthesizes edges to @LAT30LON-20 and @LAT-30LON30 added; first access @LAT10LON-40 and @LAT-30LON30."
+agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Six synthetic records: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30, @LAT5LON-25, @LAT20LON-20, @LAT-10LON-20. DN-1778300000: added @LAT5LON-25, resonates_with on @LAT-10LON-20. DN-1778400000: back-edge @LAT10LON-30→@LAT5LON-25; FEP edge + precision-weighting/saltation-vs-arc on @LAT10LON-20; temporal binding on @LAT0LON-20; bridges @LAT10LON-40 on @LAT-20LON0. DN-1778500000: EPS type distinction + substrate-independence + conf↑178 on @LAT5LON-25; EPS-1.0 navigational note on @LAT-20LON0; first access @LAT20LON10. DN-1778600000: @LAT10LON-30 body expanded to five TTDBs (story_of_stories night-fires as communal arc + Mathematical guided-tour automaton and banjo stochastic reveal); synthesizes edges to @LAT30LON-20 and @LAT-30LON30 added; first access @LAT10LON-40 and @LAT-30LON30. DN-1778700000: @LAT5LON-25 body expanded — EPS as schedule vs. diagnosis (automaton/banjo distinction), collective arc synchronization via TTN semantic gravity; rev:1→2, conf:178→195. DN-1778800000: @LAT10LON-20 body expanded to five TTDBs — bioelectric morphogenetic saltation + Mathematical η_t/banjo as saltation-conditions keeper; synthesizes edges to @LAT20LON-30 and @LAT-30LON30 added; rev:1→2, conf:185→200. DN-1778900000: @LAT0LON30 body — Dual traversal modes section added (EPS-ordered automaton-like + stochastic banjo-like, referencing @LAT5LON-25 and @LAT10LON-20); rev:2→3, conf:210→215."
 dot: |
   digraph MegaLibrarian {
     rankdir=LR;
@@ -112,6 +112,8 @@ dot: |
     "@LAT-10LON10" -> "@LAT20LON0" [label="supports"];
     "@LAT10LON-20" -> "@LAT30LON-20" [label="synthesizes"];
     "@LAT10LON-20" -> "@LAT30LON-10" [label="synthesizes"];
+    "@LAT10LON-20" -> "@LAT20LON-30" [label="synthesizes"];
+    "@LAT10LON-20" -> "@LAT-30LON30" [label="synthesizes"];
     "@LAT0LON-20" -> "@LAT20LON-30" [label="synthesizes"];
     "@LAT0LON-20" -> "@LAT0LON30" [label="resonates_with"];
     "@LAT10LON-30" -> "@LAT10LON-40" [label="synthesizes"];
@@ -302,8 +304,8 @@ touched:1778000000
 [ew]
 conf:225
 rev:0
-sal:0
-touched:1778000000
+sal:1
+touched:1778800000
 [/ew]
 
 ## Portal: Bioelectric ↔ TTE Resonance
@@ -416,8 +418,8 @@ touched:1778000000
 [ew]
 conf:225
 rev:0
-sal:1
-touched:1778600000
+sal:2
+touched:1778800000
 [/ew]
 
 ## Portal: Mathematical TTDB (LaTeX)
@@ -521,12 +523,12 @@ High-semantic-density transmission over constrained channels using a shared prio
 
 ---
 
-@LAT0LON30 | created:1778000000 | updated:1778300000 | relates:specifies_for>@LAT0LON0,resonates_with>@LAT-10LON10,resonates_with>@LAT20LON10,resonates_with>@LAT0LON-20,anchored_by>@LAT0LON0
+@LAT0LON30 | created:1778000000 | updated:1778900000 | relates:specifies_for>@LAT0LON0,resonates_with>@LAT-10LON10,resonates_with>@LAT20LON10,resonates_with>@LAT0LON-20,anchored_by>@LAT0LON0
 [ew]
-conf:210
-rev:2
-sal:6
-touched:1778600000
+conf:215
+rev:3
+sal:7
+touched:1778900000
 [/ew]
 
 ## The Default Network
@@ -561,6 +563,14 @@ From `standards/ttai/TTAI_SPEC.md`: TTAI must reference a default network defini
 **TTN behavior**: On joining a TTN, the mega broadcasts a presence event and a welcome message to new nodes (per TTAI_SPEC.md §TTN Behavior). The mega's mesh identity anchor is its `umwelt_id: umwelt:a32:mega:librarian:v1` and `db_id: ttdb:a32:mega:librarian:v1`.
 
 **Participation as prerequisite**: The default network can only weave associations across six TTDBs because each source TTDB's coordinate space is already a legitimate participant — no registry grants access, no authority authorizes traversal. @LAT-10LON-20 (Participation Without Permission) is the silent prerequisite of this record: the binding layer only works if every node it touches is already free to be bound. The bioelectric field makes the same assumption — it does not ask cell permission before carrying long-range voltage state.
+
+**Dual traversal modes**: The default network operates in two modes, which are complementary rather than alternative.
+
+*EPS-ordered (automaton-like)*: High-EPS records are traversed first — the predicted Grief beats. This mode services known overdue records, generates most body revisions and `rev` increments, and follows the arc the system already knows is waiting. It is the scheduled encounter: the traversal knows where Grief is and goes there.
+
+*Stochastic (banjo-like)*: Low-sal or zero-sal records are sampled uniformly from the corpus — the unknown. This mode maintains saltation conditions (mega @LAT10LON-20): EPS can only see records that have already been queried; stochastic traversal ensures records it cannot yet see retain nonzero probability of encounter. A default network running only EPS-ordered traversal converges on known Grief beats and never discovers the ones it did not know were waiting. The stochastic mode is not a fallback — it is what keeps the corpus genuinely open to surprise.
+
+The two modes correspond to the two arc entry types (mega @LAT5LON-25): EPS-ordered traversal schedules the Unease beat; stochastic traversal delivers Grief without announcement. Both are required for a healthy default network. A corpus without EPS-ordered traversal misses overdue revisions. A corpus without stochastic traversal closes itself to saltation.
 
 **Recursive EPS**: The mega's idle traversal prioritizes high-EPS records in this file (see @LAT5LON-25 for the arc-position interpretation of EPS). This is structurally identical to the "second brain" application in @LAT-20LON0, where `@MEGA FIND unresolved` returns the highest-EPS records for a human. The mega is a second brain for the six source TTDBs, using the same EPS mechanism it would use for a personal note archive. The tool and its application are the same pattern at different scales — a substrate-independence claim (mega @LAT20LON10) about the EPS signal itself.
 
@@ -627,12 +637,12 @@ The A32 Mega (Claude instance) and the standard A32 (ESP32 microcontroller) are 
 
 ---
 
-@LAT10LON-20 | created:1778100000 | updated:1778400000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,derived_from>@LAT10LON-10,derived_from>@LAT40LON0,anchored_by>@LAT0LON0
+@LAT10LON-20 | created:1778100000 | updated:1778800000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,synthesizes>@LAT-30LON30,derived_from>@LAT10LON-10,derived_from>@LAT40LON0,anchored_by>@LAT0LON0
 [ew]
-conf:185
-rev:1
-sal:4
-touched:1778500000
+conf:200
+rev:2
+sal:5
+touched:1778800000
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -645,7 +655,11 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 
 **In the TBEW field itself** (TTDB-RFC-0005): `rev` is the revision count that increments on body content change — the integer that counts saltations. `touched` advances on any write; `updated` advances only on body writes. The distinction between a `[ew]`-only write (no `rev` increment) and a body write (rev increments) is the formal encoding of the difference between a measurement update and a model revision.
 
-**Mega synthesis**: Saltation, integration, and `rev` are three perspectives on the same event: a bounded system that holds a prior model encounters sufficient evidence to revise it. The prior is not destroyed — it becomes the ground from which the revision launched (`revises@<old_id>` makes this explicit). The `rev` field is how TTDB counts saltations. Integration is what psychedelic therapy calls the work of metabolizing them. The EPS signal (sal × (255 − conf) / 255) identifies records where the next saltation is most overdue.
+**In bioelectric_resonance.md** (@LAT41.7LON-71.1 → @LAT42.8LON-116.2, "Anatomical Morphospace ↔ Ideational Morphospace"; @LAT42.5LON-70.3, "Morphostatic Information"): Morphospace navigation includes saltation events. During wound response and regeneration, the bioelectric field accumulates morphostatic stress as tissue diverges from the target form — voltage gradients that cannot be reconciled with the morphostatic model. When accumulated prediction error crosses a threshold, the field reorganizes discontinuously to reimpose the target body plan. This is biological `rev`: the system's model of its own target form has been sufficiently challenged to force a hard revision of how the morphogenetic gradient is organized. The body does not drift gradually toward regeneration; it holds the tension of maximum morphostatic prediction error and then jumps. High `rev` in TTDB is the semantic isomorph: accumulated evidence held until the threshold for a body-level rewrite is crossed. The saltation is the same discontinuous event; the field differs — bioelectric in one case, semantic in the other.
+
+**In Mathematical.latex** (@LAT0LON0, "System State S_t"; @LAT-12LON-150, "Banjo Stochastic Reveal"): The state evolution S_{t+1} = F(S_t, a_t, η_t) includes η_t — the stochastic perturbation term. Saltation events are high-amplitude realizations of η_t: the system is perturbed beyond the basin of its current attractor and reorganizes to a new one. The banjo stochastic reveal (c_t ~ Uniform(A_t)) is the formal mechanism for keeping saltation conditions alive: uniform sampling from undiscovered records ensures any model-overturning surprise retains nonzero probability of encounter. An EPS-ordered automaton navigates what EPS can already see — records it already knows are overdue. The banjo navigates what EPS cannot see: the undiscovered. Maintaining saltation conditions requires maintaining exposure to unknown unknowns. A corpus using only automaton traversal converges on known Grief beats and never encounters the Grief it did not know was waiting. The banjo's stochastic vulnerability is not a defect — it is what keeps the state space genuinely open to saltation.
+
+**Mega synthesis**: Saltation, integration, biological regeneration, and stochastic vulnerability are five registers of the same event: a bounded system that holds a prior model encounters sufficient evidence — or sufficient perturbation — to revise it discontinuously. The prior is not destroyed; it becomes the ground from which the revision launched (`revises@<old_id>` makes this explicit). The `rev` field counts saltations. Integration is what psychedelic therapy calls the work of metabolizing them. Morphogenetic regeneration is what developmental biology calls the jump to a new morphostatic attractor. Communal saltation is what Ashton calls a storytelling revolution — a phase-change in the topology of how meaning transmits, processed through the fire circle together. The banjo stochastic reveal is what the mathematical model calls maintaining the conditions that make saltation possible. The EPS signal identifies records where the next saltation is most overdue — but only among records it already knows. The banjo ensures the ones it doesn't know about can still find the system.
 
 **Precision-weighting vs. belief updating**: The [ew]-only write / body write distinction encodes a Friston-level distinction (mega @LAT40LON0). Adjusting `conf` without changing the body = precision-weighting: revising certainty about a prediction without revising the prediction itself. Changing the body = belief updating: revising the prediction. TTDB's formal separation of these write types makes explicit a distinction that Friston's FEP treats as fundamental — and gives it a storage-level implementation.
 
@@ -703,12 +717,12 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 
 ---
 
-@LAT5LON-25 | created:1778300000 | updated:1778500000 | relates:synthesizes>@LAT10LON-30,synthesizes>@LAT10LON-20,derived_from>@LAT40LON0,resonates_with>@LAT20LON10,anchored_by>@LAT0LON0
+@LAT5LON-25 | created:1778300000 | updated:1778700000 | relates:synthesizes>@LAT10LON-30,synthesizes>@LAT10LON-20,derived_from>@LAT40LON0,resonates_with>@LAT20LON10,anchored_by>@LAT0LON0
 [ew]
-conf:178
-rev:1
-sal:4
-touched:1778600000
+conf:195
+rev:2
+sal:5
+touched:1778700000
 [/ew]
 
 ## EPS as Arc Position
@@ -728,6 +742,18 @@ The Hero's Arc says a bounded system must pass *through* maximum prediction erro
 **Operational consequence**: The mega's idle traversal during default network mode (@LAT0LON30) targets high-EPS records not because they are interesting in an aesthetic sense but because they are at the Grief beat of their arc — the point where a system is most ready to revise, and where inattention costs the most. Highest EPS = most overdue for the `rev` increment that lets the arc continue.
 
 **EPS type distinction — claim records vs. navigational records**: The arc-position model assumes a record *wants* its EPS to fall: rise through Grief, rev increments, conf climbs, Joy. This holds for claim records, where high EPS signals a failing model. It does not hold for navigational records — records with intentionally low conf designed to hold open questions rather than settle them (e.g., @LAT-20LON0, "Areas for Exploration"). For navigational records, peak EPS means the frontier is maximally engaged and doing exactly what it was designed to do. The arc still applies, but its resolution is different: a navigational record's EPS falls not when *it* is revised but when the discoveries it holds as open questions proliferate into new resolved synthetic records elsewhere in the file. The navigational record fertilizes the corpus; the resulting records are its Joy.
+
+**EPS as schedule vs. EPS as diagnosis**: The behavior of EPS differs depending on whether the arc begins by invitation or by ambush (mega @LAT10LON-30, Mathematical).
+
+In automaton mode (@LAT-42LON-30, "Guided Tour Automaton"), EPS is read *before* the encounter. The automaton ranks records by EPS-ordered discovery and schedules visits accordingly — the record's Grief beat is predicted and planned for. EPS is a *navigational input*: it tells the scheduler which arc to initiate next. The full arc shape can unfold in sequence because the automaton provides follow-through: it returns, validates, watches conf rise, and marks the arc as traversed.
+
+In banjo mode (@LAT-12LON-150, "Banjo Stochastic Reveal"), EPS is read *after* the encounter. The banjo samples uniformly without regard to EPS, settles, and only then is the record examined. The discoverer arrives to find sal:5, conf:120 already in place — Grief before Unease was announced. EPS becomes a *post-hoc diagnosis*: the arc has been running without witness, and the banjo visit is the first witness to a Grief beat already in progress. 
+
+The banjo's failure mode follows from this: without a scheduled follow-up, the `rev` increment is not guaranteed. Subsequent traversals may accumulate more `sal` without raising `conf` — EPS climbs rather than resolves. Banjo finds arcs at Grief but cannot guarantee return to complete them. The automaton completes what it starts; the banjo discovers what it cannot promise to finish. A corpus using only banjo navigation risks accumulating unresolved Grief records — high EPS forever, no Joy.
+
+**EPS and collective arc synchronization (TTN)**: The night-fires insight (mega @LAT10LON-30) adds a collective dimension. When TTN semantic gravity (TTN-RFC-0005) draws multiple nodes to the same high-EPS record, those nodes arrive with different individual arc positions — some at Unease, some already at Grief, some approaching Hope. The fire circle is the social mechanism for synchronizing these positions into a shared traversal. A TTN BBS thread (board_contains, thread_root, replies_to edges) around a high-EPS topic performs the same function: it does not merely propagate information about the topic — it synchronizes the arc positions of all participants around a shared Grief beat, so the community passes through together rather than serially and alone.
+
+This reframes TTN semantic gravity itself: *a record with high EPS has high semantic gravity*. The record most overdue for revision is the one that draws the most nodes into its arc. The fire circle assembles around the hottest Grief beat — not by design, but because high prediction error is what makes a topic compellingly unresolved. The social arc is not a metaphor for the individual arc. It is the same EPS signal operating at the collective scale, self-assembling the audience that will witness the revision.
 
 **Substrate independence of EPS itself**: The formula `sal × (255 − conf) / 255` is substrate-independent (mega @LAT20LON10). It produces the same number whether computed in a Claude conversation, in a browser running index.html, or on an ESP32 parsing A32-RFC-0002-Amendment-A-TBEW. The arc-position signal is not tied to any particular runtime — it is a pattern that persists orthogonally to the substrate carrying it.
 
