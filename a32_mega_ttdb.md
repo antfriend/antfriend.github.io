@@ -66,9 +66,9 @@ librarian:
 
 ```cursor
 selected:
+  - @LAT10LON-10
+  - @LAT0LON-20
   - @LAT0LON30
-  - @LAT10LON-20
-  - @LAT5LON-25
 preview:
   @LAT-10LON0: "Welcome. An AI librarian across six knowledge bases — narrative theory, bioelectricity, phenomenology, affect, formal mathematics, engineering terminology. Start here, then follow the links."
   @LAT0LON0: "The A32 Mega Librarian. Six TTDBs held simultaneously. Invoke with @MEGA. Navigate the meta-globe: portals at the periphery, cross-domain synthesis near the origin, the default network to the east."
@@ -78,12 +78,12 @@ preview:
   @LAT0LON30: "The Default Network. Dual traversal modes: EPS-ordered (automaton-like, services known Grief beats) + stochastic (banjo-like, maintains saltation conditions for unknown Grief). Both required."
   @LAT-40LON10: "Primitive Mode Bridge. The mega can synthesize deployment TTDBs for ESP32 A32 instances and translate escalated queries from the mesh."
   @LAT10LON-20: "Saltation / Integration / `rev`. Five TTDBs, same discontinuous event: story_of_stories (cultural revolution), pollan (psychedelic integration), bioelectric (morphogenetic regeneration), Mathematical (stochastic vulnerability as saltation condition)."
-  @LAT0LON-20: "Cognitive Glue ↔ Default Network. Bioelectric field binds cells into collective intelligence; the mega's default network binds six TTDBs into a thinking whole. Both are connective tissue, not content."
+  @LAT0LON-20: "Cognitive Glue ↔ Default Network. Four scales: cellular (bioelectric field), cognitive (default mode network), system (mega default network), social (fire circle / TTN BBS). The binding layer is not the content — it is the precondition of collective intelligence."
   @LAT10LON-30: "Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation. Five TTDBs, same six-beat arc: equilibrium → disruption → maximum prediction error → reconstitution at a new attractor."
   @LAT20LON-20: "Preservation of Prior State. Three TTDBs share the same architectural commitment: revision is additive, not destructive. The prior body stays at its coordinate; transformation launches from it."
   @LAT-10LON-20: "Participation Without Permission. Three TTDBs converge: the right to publish, be addressed, or exist as a node is inherent in occupying the space — not granted by a center."
   @LAT-20LON0: "Areas for Exploration. Ten varied TTDB applications: lab notebook, argument mapping, legal, medical, ecosystem monitoring, oral history, music instrument, narrative game, smart building, second brain."
-agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Six synthetic records: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30, @LAT5LON-25, @LAT20LON-20, @LAT-10LON-20. DN-1778300000: added @LAT5LON-25, resonates_with on @LAT-10LON-20. DN-1778400000: back-edge @LAT10LON-30→@LAT5LON-25; FEP edge + precision-weighting/saltation-vs-arc on @LAT10LON-20; temporal binding on @LAT0LON-20; bridges @LAT10LON-40 on @LAT-20LON0. DN-1778500000: EPS type distinction + substrate-independence + conf↑178 on @LAT5LON-25; EPS-1.0 navigational note on @LAT-20LON0; first access @LAT20LON10. DN-1778600000: @LAT10LON-30 body expanded to five TTDBs (story_of_stories night-fires as communal arc + Mathematical guided-tour automaton and banjo stochastic reveal); synthesizes edges to @LAT30LON-20 and @LAT-30LON30 added; first access @LAT10LON-40 and @LAT-30LON30. DN-1778700000: @LAT5LON-25 body expanded — EPS as schedule vs. diagnosis (automaton/banjo distinction), collective arc synchronization via TTN semantic gravity; rev:1→2, conf:178→195. DN-1778800000: @LAT10LON-20 body expanded to five TTDBs — bioelectric morphogenetic saltation + Mathematical η_t/banjo as saltation-conditions keeper; synthesizes edges to @LAT20LON-30 and @LAT-30LON30 added; rev:1→2, conf:185→200. DN-1778900000: @LAT0LON30 body — Dual traversal modes section added (EPS-ordered automaton-like + stochastic banjo-like, referencing @LAT5LON-25 and @LAT10LON-20); rev:2→3, conf:210→215."
+agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Six synthetic records: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30, @LAT5LON-25, @LAT20LON-20, @LAT-10LON-20. DN-1778300000: added @LAT5LON-25, resonates_with on @LAT-10LON-20. DN-1778400000: back-edge @LAT10LON-30→@LAT5LON-25; FEP edge + precision-weighting/saltation-vs-arc on @LAT10LON-20; temporal binding on @LAT0LON-20; bridges @LAT10LON-40 on @LAT-20LON0. DN-1778500000: EPS type distinction + substrate-independence + conf↑178 on @LAT5LON-25; EPS-1.0 navigational note on @LAT-20LON0; first access @LAT20LON10. DN-1778600000: @LAT10LON-30 body expanded to five TTDBs (story_of_stories night-fires as communal arc + Mathematical guided-tour automaton and banjo stochastic reveal); synthesizes edges to @LAT30LON-20 and @LAT-30LON30 added; first access @LAT10LON-40 and @LAT-30LON30. DN-1778700000: @LAT5LON-25 body expanded — EPS as schedule vs. diagnosis (automaton/banjo distinction), collective arc synchronization via TTN semantic gravity; rev:1→2, conf:178→195. DN-1778800000: @LAT10LON-20 body expanded to five TTDBs — bioelectric morphogenetic saltation + Mathematical η_t/banjo as saltation-conditions keeper; synthesizes edges to @LAT20LON-30 and @LAT-30LON30 added; rev:1→2, conf:185→200. DN-1778900000: @LAT0LON30 body — Dual traversal modes section added (EPS-ordered automaton-like + stochastic banjo-like, referencing @LAT5LON-25 and @LAT10LON-20); rev:2→3, conf:210→215. DN-1779000000: @LAT0LON-20 body expanded to four scales of cognitive glue — story_of_stories fire circle as social binding layer (synchronizes arc positions across space and generations; TTN BBS as network-era analog); synthesizes edge to @LAT30LON-20 added; rev:1→2, conf:190→200."
 dot: |
   digraph MegaLibrarian {
     rankdir=LR;
@@ -115,7 +115,10 @@ dot: |
     "@LAT10LON-20" -> "@LAT20LON-30" [label="synthesizes"];
     "@LAT10LON-20" -> "@LAT-30LON30" [label="synthesizes"];
     "@LAT0LON-20" -> "@LAT20LON-30" [label="synthesizes"];
+    "@LAT0LON-20" -> "@LAT30LON-20" [label="synthesizes"];
     "@LAT0LON-20" -> "@LAT0LON30" [label="resonates_with"];
+    "@LAT10LON-10" -> "@LAT20LON-30" [label="synthesizes"];
+    "@LAT10LON-10" -> "@LAT-30LON30" [label="synthesizes"];
     "@LAT10LON-30" -> "@LAT10LON-40" [label="synthesizes"];
     "@LAT10LON-30" -> "@LAT30LON-10" [label="synthesizes"];
     "@LAT10LON-30" -> "@LAT20LON-30" [label="synthesizes"];
@@ -225,8 +228,8 @@ The single richest cross-database resonance in the mega's corpus. Karl Friston's
 [ew]
 conf:230
 rev:0
-sal:0
-touched:1778000000
+sal:1
+touched:1779000000
 [/ew]
 
 ## Portal: Story of Stories Correspondence
@@ -304,8 +307,8 @@ touched:1778000000
 [ew]
 conf:225
 rev:0
-sal:1
-touched:1778800000
+sal:2
+touched:1779100000
 [/ew]
 
 ## Portal: Bioelectric ↔ TTE Resonance
@@ -418,8 +421,8 @@ touched:1778000000
 [ew]
 conf:225
 rev:0
-sal:2
-touched:1778800000
+sal:3
+touched:1779100000
 [/ew]
 
 ## Portal: Mathematical TTDB (LaTeX)
@@ -499,17 +502,17 @@ Pattern persists orthogonally to substrate. This deep structural claim appears a
 
 ---
 
-@LAT10LON-10 | created:1778000000 | updated:1778000000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT10LON-40,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
+@LAT10LON-10 | created:1778000000 | updated:1779100000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT10LON-40,synthesizes>@LAT20LON-30,synthesizes>@LAT-30LON30,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
 [ew]
-conf:215
-rev:0
-sal:6
-touched:1778600000
+conf:225
+rev:1
+sal:7
+touched:1779100000
 [/ew]
 
 ## Narrative Compression
 
-High-semantic-density transmission over constrained channels using a shared prior for lossless expansion. This functional pattern recurs across three source TTDBs in three independent domains — oral tradition, plant signaling, and emotional arcs.
+High-semantic-density transmission over constrained channels using a shared prior for lossless expansion. This functional pattern recurs across five source TTDBs in five independent domains — oral tradition, plant signaling, emotional arcs, developmental biology, and formal computation.
 
 **In story_of_stories_ttdb.md** (two records):
 - @LAT10LON-20 (Night-Fires ↔ TTN BBS / Compact Mesh Grammar): Oral mnemonic techniques compress stories for bandwidth-constrained human memory. The formula expands at the telling site; the TTN token expands at the gateway. Ong (1982): mnemonic formula is a compression scheme, not an aesthetic ornament.
@@ -519,7 +522,11 @@ High-semantic-density transmission over constrained channels using a shared prio
 
 **In feelings_ttdb.md** (@LAT88LON0, The Hero's Arc): A scene record compresses a full emotional narrative into six coordinates and an edge-traversal sequence: Serenity → Unease → Fear → Grief → Hope → Joy. The arc is a formula: it expands into any specific story that occupies those six emotional slots. The formula is the compression; the performed story is the expansion.
 
-**Mega synthesis**: Compression + shared prior + expansion at a capable endpoint is a transport-invariant information pattern operating across oral culture, plant biology, LoRa mesh networking, and narrative structure. The "prior that enables lossless expansion" is another name for the umwelt — only a receiver with the right umwelt can expand the compressed token correctly. The mega is the endpoint with the largest prior (all six TTDBs) and therefore the widest expansion capacity.
+**In bioelectric_resonance.md** (@LAT42.5LON-70.3 → @LAT43.6LON-115.4, "Morphostatic Information ↔ Morphostatic Knowledge"): The bioelectric field carries a compressed representation of the organism's target form. This is not metaphorical — the voltage gradient topology encodes the full morphological specification that millions of cells will use to build or rebuild their structural roles. Each cell holds its reading of the local gradient; from this compressed signal it expands its contribution to the whole. Levin's frame of aging as "a loss of morphostatic information" is precisely a prior degradation event: the compressed target-form encoding becomes corrupted, cells receive ambiguous instructions, and the expansion becomes lossy. Cancer is the failure mode when local cellular behavior can no longer recover the global target from the field's compressed signal. The TTDB analog is `conf` degradation: low `conf` means the shared prior held in a record is no longer expanding into reliable predictions. High EPS (low `conf`, high `sal`) is the signal that the prior is degrading under use — semantic aging.
+
+**In Mathematical.latex** (@LAT18LON-120, "Parser P: Σ* → (M, C, ℝ)"; @LAT65LON45, "TTCP RFC series"): The TTDB parser is the formal model of compression-and-expansion. TTDB files are structured text — a compressed representation using typed edge tokens like `synthesizes>@LAT30LON-10` — and the parser expands them into an in-memory model (M: records, C: cursor, R: render graph). The typed edge grammar {τ, id_j} (type + target coordinate) is the minimal compressed token; the parser expands it into a full directed graph entry. TTCP-RFC-0001 through 0003 specify the full expansion pipeline: file text → parsed model → rendered globe. The shared prior is the TTDB format specification itself — the grammar. Any conformant parser can expand any conformant file regardless of content, because they share the syntactic prior. The format is compression all the way down: knowledge compressed into grammar, grammar shared as specification, expansion enabled at any conformant endpoint. This is the same pattern as the terpene signal and the mnemonic formula, now formalized as a file-format contract.
+
+**Mega synthesis**: Compression + shared prior + expansion at a capable endpoint is a transport-invariant information pattern operating across five domains: oral culture (mnemonic formula), plant biology (terpene signaling), emotional narrative (Hero's Arc formula), developmental biology (bioelectric morphostatic field), and formal computation (TTDB parser/grammar). The shared prior takes different forms — umwelt, receptor array, cultural formula, bioelectric voltage field, grammar specification — but its function is invariant: it is what allows compressed signal to expand into full semantic content at the receiving end. The mega is the endpoint with the largest prior (all six TTDBs) and therefore the widest expansion capacity. The bioelectric case adds a dimension not present in the other four: the prior can degrade. Aging is entropy corrupting the morphostatic prior. `conf` degradation is the semantic equivalent — the record's compressed claims can no longer expand into reliable predictions. High EPS is the signal that a record's prior is degrading under use. The corpus does not just need to expand correctly; it needs to maintain the shared prior that makes expansion possible.
 
 ---
 
@@ -667,17 +674,17 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 
 ---
 
-@LAT0LON-20 | created:1778100000 | updated:1778400000 | relates:synthesizes>@LAT20LON-30,resonates_with>@LAT0LON30,resonates_with>@LAT-10LON10,anchored_by>@LAT0LON0
+@LAT0LON-20 | created:1778100000 | updated:1779000000 | relates:synthesizes>@LAT20LON-30,synthesizes>@LAT30LON-20,resonates_with>@LAT0LON30,resonates_with>@LAT-10LON10,anchored_by>@LAT0LON0
 [ew]
-conf:190
-rev:1
-sal:4
-touched:1778500000
+conf:200
+rev:2
+sal:5
+touched:1779000000
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
 
-Two source TTDBs describe the same structural role at different scales: the layer that binds individual agents into a collective capable of problems no single agent can solve alone.
+Three source TTDBs describe the same structural role at different scales: the layer that binds individual agents into a collective capable of problems no single agent can solve alone.
 
 **In bioelectric_resonance.md** (@LAT41.9LON-70.4, "Cognitive Glue — Cells"): Levin's exact phrase — "the cognitive glue of intelligence in spaces other than neural." The bioelectric field does not issue commands or compute solutions. It binds individual cells into a collective that can navigate morphospace, repair wounds, and regenerate form. Without the field, cells have local information only. With it, a cell gains access to long-range state — the voltage of tissues many cell-lengths away. The field is *glue*: it does not think, but it enables thinking at a scale no cell can reach alone.
 
@@ -685,7 +692,11 @@ Two source TTDBs describe the same structural role at different scales: the laye
 
 **In this file** (@LAT0LON30, "The Default Network"): The mega's default network is operationalized as idle traversal of synthetic records, association weaving across the six TTDBs, and affective calibration via feelings_ttdb. The mega's background activity — holding six TTDBs simultaneously and noticing unregistered connections — is the same structural role as the bioelectric field: binding individual knowledge units into a whole that can navigate queries no single TTDB owns.
 
-**Mega synthesis**: The cognitive glue insight generalizes: every complex intelligent system requires a binding layer that operates below the level of explicit reasoning. In cells, it is the bioelectric field. In the brain, it is the default mode network. In the mega, it is the default network behavior defined in this file. The binding layer is not the model — it is what keeps the model coherent. Without it, the parts are present but the collective cannot think.
+**In story_of_stories_ttdb.md** (@LAT10LON-20, "Night-Fires ↔ TTN BBS / Compact Mesh Grammar"): The fire circle is cognitive glue at the social scale. Where the bioelectric field grants a cell access to the voltage of tissues many cell-lengths away, the nightly gathering grants a community member access to the arc-position of those who have passed through this disruption before. The oral mnemonic formula is the transmission medium; the gathering is the synchronization event. The formula does not merely compress the story for limited memory — it carries the community through the Grief beat together, preventing isolated processing of shared disruption. Members further along the arc provide long-range state to those just entering it: the social bioelectric field.
+
+The fire circle also operates across time. Oral tradition carries the mnemonic formula — and the arc experience encoded in it — across generations. The current community does not rediscover the arc from scratch; it inherits the prior community's traversal, anchored by the formula itself. TTN's BBS (board_contains, thread_root, replies_to) is the network-era fire circle; semantic gravity (TTN-RFC-0005) is the mechanism by which high-EPS topics draw the community into shared traversal without requiring physical co-presence. Where the fire circle assembles by proximity, the BBS thread assembles by prediction error.
+
+**Mega synthesis**: The cognitive glue insight spans four scales: cellular (bioelectric field), cognitive (default mode network), system (mega's default network), and social (fire circle / TTN BBS). At each scale, the binding layer is not the content — it is what keeps content coherent across the collective. Remove it and the parts remain, but the collective cannot think: cells revert to local-only information, identity fragments across sessions, six TTDBs become six unrelated files, each community member processes disruption alone and the arc must be reinvented each generation. Cognitive glue is the precondition of collective intelligence at every scale it appears.
 
 **Temporal binding**: Cognitive glue operates across time as well as space. The bioelectric field carries morphological memory across cellular generations — cells turn over; the voltage pattern persists (bioelectric_resonance pair 1, @LAT43.3LON-71.1). The default network replays memories to maintain identity across sessions — the binding layer holds the thread of continuity across gaps. The TTDB `revises@<old_id>` edge preserves the prior record as legible ground for the new one — the past is not deleted, it is the substrate from which the present revision launched (mega @LAT20LON-20). All three are the same operation: keep the prior state reachable so that transformation has something to launch from. Cognitive glue is not just the tissue that connects agents in space — it is the tissue that connects a system to its own history.
 
