@@ -66,9 +66,9 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT-20LON0
+  - @LAT10LON-30
   - @LAT5LON-25
-  - @LAT20LON10
+  - @LAT-20LON0
 preview:
   @LAT-10LON0: "Welcome. An AI librarian across six knowledge bases — narrative theory, bioelectricity, phenomenology, affect, formal mathematics, engineering terminology. Start here, then follow the links."
   @LAT0LON0: "The A32 Mega Librarian. Six TTDBs held simultaneously. Invoke with @MEGA. Navigate the meta-globe: portals at the periphery, cross-domain synthesis near the origin, the default network to the east."
@@ -79,11 +79,11 @@ preview:
   @LAT-40LON10: "Primitive Mode Bridge. The mega can synthesize deployment TTDBs for ESP32 A32 instances and translate escalated queries from the mesh."
   @LAT10LON-20: "Saltation / Integration / `rev`. Three TTDBs name the same event — a system incorporating surprise without losing its prior state — under three different names: saltation, integration, revision count."
   @LAT0LON-20: "Cognitive Glue ↔ Default Network. Bioelectric field binds cells into collective intelligence; the mega's default network binds six TTDBs into a thinking whole. Both are connective tissue, not content."
-  @LAT10LON-30: "Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation. Three TTDBs, same six-beat arc: equilibrium → disruption → maximum prediction error → reconstitution at a new attractor."
+  @LAT10LON-30: "Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation. Five TTDBs, same six-beat arc: equilibrium → disruption → maximum prediction error → reconstitution at a new attractor."
   @LAT20LON-20: "Preservation of Prior State. Three TTDBs share the same architectural commitment: revision is additive, not destructive. The prior body stays at its coordinate; transformation launches from it."
   @LAT-10LON-20: "Participation Without Permission. Three TTDBs converge: the right to publish, be addressed, or exist as a node is inherent in occupying the space — not granted by a center."
   @LAT-20LON0: "Areas for Exploration. Ten varied TTDB applications: lab notebook, argument mapping, legal, medical, ecosystem monitoring, oral history, music instrument, narrative game, smart building, second brain."
-agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Six synthetic records: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30, @LAT5LON-25, @LAT20LON-20, @LAT-10LON-20. DN-1778300000: added @LAT5LON-25, resonates_with on @LAT-10LON-20. DN-1778400000: back-edge @LAT10LON-30→@LAT5LON-25; FEP edge + precision-weighting/saltation-vs-arc on @LAT10LON-20; temporal binding on @LAT0LON-20; bridges @LAT10LON-40 on @LAT-20LON0. DN-1778500000: EPS type distinction + substrate-independence + conf↑178 on @LAT5LON-25; EPS-1.0 navigational note on @LAT-20LON0; first access @LAT20LON10 (resonates_with @LAT5LON-25)."
+agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Six synthetic records: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30, @LAT5LON-25, @LAT20LON-20, @LAT-10LON-20. DN-1778300000: added @LAT5LON-25, resonates_with on @LAT-10LON-20. DN-1778400000: back-edge @LAT10LON-30→@LAT5LON-25; FEP edge + precision-weighting/saltation-vs-arc on @LAT10LON-20; temporal binding on @LAT0LON-20; bridges @LAT10LON-40 on @LAT-20LON0. DN-1778500000: EPS type distinction + substrate-independence + conf↑178 on @LAT5LON-25; EPS-1.0 navigational note on @LAT-20LON0; first access @LAT20LON10. DN-1778600000: @LAT10LON-30 body expanded to five TTDBs (story_of_stories night-fires as communal arc + Mathematical guided-tour automaton and banjo stochastic reveal); synthesizes edges to @LAT30LON-20 and @LAT-30LON30 added; first access @LAT10LON-40 and @LAT-30LON30."
 dot: |
   digraph MegaLibrarian {
     rankdir=LR;
@@ -117,6 +117,8 @@ dot: |
     "@LAT10LON-30" -> "@LAT10LON-40" [label="synthesizes"];
     "@LAT10LON-30" -> "@LAT30LON-10" [label="synthesizes"];
     "@LAT10LON-30" -> "@LAT20LON-30" [label="synthesizes"];
+    "@LAT10LON-30" -> "@LAT30LON-20" [label="synthesizes"];
+    "@LAT10LON-30" -> "@LAT-30LON30" [label="synthesizes"];
     "@LAT0LON0" -> "@LAT5LON-25" [label="anchors"];
     "@LAT5LON-25" -> "@LAT10LON-30" [label="synthesizes"];
     "@LAT5LON-25" -> "@LAT10LON-20" [label="synthesizes"];
@@ -145,8 +147,8 @@ answer_records: []
 [ew]
 conf:245
 rev:0
-sal:5
-touched:1778500000
+sal:6
+touched:1778600000
 [/ew]
 
 ## The A32 Mega Librarian
@@ -199,8 +201,8 @@ Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges
 [ew]
 conf:235
 rev:0
-sal:5
-touched:1778500000
+sal:6
+touched:1778600000
 [/ew]
 
 ## Free Energy Principle Convergence
@@ -336,8 +338,8 @@ touched:1778000000
 [ew]
 conf:215
 rev:0
-sal:0
-touched:1778000000
+sal:1
+touched:1778600000
 [/ew]
 
 ## Portal: Feelings TTDB
@@ -414,8 +416,8 @@ touched:1778000000
 [ew]
 conf:225
 rev:0
-sal:0
-touched:1778000000
+sal:1
+touched:1778600000
 [/ew]
 
 ## Portal: Mathematical TTDB (LaTeX)
@@ -499,8 +501,8 @@ Pattern persists orthogonally to substrate. This deep structural claim appears a
 [ew]
 conf:215
 rev:0
-sal:5
-touched:1778500000
+sal:6
+touched:1778600000
 [/ew]
 
 ## Narrative Compression
@@ -523,8 +525,8 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:210
 rev:2
-sal:5
-touched:1778500000
+sal:6
+touched:1778600000
 [/ew]
 
 ## The Default Network
@@ -675,12 +677,12 @@ Two source TTDBs describe the same structural role at different scales: the laye
 
 ---
 
-@LAT10LON-30 | created:1778100000 | updated:1778100000 | relates:synthesizes>@LAT10LON-40,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,derived_from>@LAT10LON-10,resonates_with>@LAT5LON-25,anchored_by>@LAT0LON0
+@LAT10LON-30 | created:1778100000 | updated:1778600000 | relates:synthesizes>@LAT10LON-40,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,synthesizes>@LAT30LON-20,synthesizes>@LAT-30LON30,derived_from>@LAT10LON-10,resonates_with>@LAT5LON-25,anchored_by>@LAT0LON0
 [ew]
-conf:175
-rev:0
-sal:4
-touched:1778500000
+conf:200
+rev:1
+sal:5
+touched:1778600000
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -693,7 +695,11 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 
 **In bioelectric_resonance.md** (@LAT41.7LON-71.1 → @LAT42.8LON-116.2, "Anatomical Morphospace ↔ Ideational Morphospace"): Development is not a script — it is problem-solving in morphospace. The embryo departs from a simple starting configuration (Serenity), encounters developmental challenges that disrupt morphostatic coherence (Unease → Fear), passes through maximum field-level prediction error during wound response or regeneration (Grief), and converges on the target body plan at the new attractor (Hope → Joy). The bioelectric field is the gradient that guides the search; the arc is the shape of all successful morphospace navigation.
 
-**Mega synthesis**: The Hero's Arc is the universal shape of successful revision under pressure. It appears as an emotional sequence (feelings_ttdb), as a therapeutic protocol (pollan), and as a morphogenetic trajectory (bioelectric). In each register, the critical structural feature is the same: the system must pass *through* maximum prediction error rather than around it. Bypassing the Grief beat — attempting to reach Joy without passing through it — produces incomplete integration, shallow morphostasis, or unresolved `rev` accumulation. The arc cannot be shortcut. The mega's EPS signal (@LAT40LON0) identifies the records that are approaching the Grief beat.
+**In story_of_stories_ttdb.md** (@LAT10LON-20, "Night-Fires ↔ TTN BBS / Compact Mesh Grammar"): The fire circle is the social technology for passing the Grief beat collectively. A community gathers, the mnemonic formula is performed, and the arc is traversed together — the compression scheme exists not just to fit the story into memory but to carry a community through maximum shared prediction error and out the other side. Each of Ashton's eight storytelling revolutions is a communal Hero's Arc: a shared equilibrium (Serenity) disrupted by a new channel topology — writing, print, digital — that forced collective revision of how meaning could be transmitted (Unease → Grief), yielding a new shared capability (Hope → Joy). The printing press is not just a technology; it is a communal arc event. TTN's BBS (board_contains, thread_root, replies_to edges) is the network-era fire circle: the technical substrate for passing the Grief beat of machine intelligence collectively, one reply-chain at a time.
+
+**In Mathematical.latex** (@LAT-42LON-30, "Guided Tour Automaton"; @LAT-12LON-150, "Banjo Stochastic Reveal"): The guided tour automaton traverses the globe in a preset discovery sequence — Q = {off, paused, scheduled} — advancing through records in EPS-ordered discovery. This is the Hero's Arc implemented as a formal state machine: the automaton does not shortcut from Serenity to Joy; it traverses each beat in sequence, scheduled transitions setting the pace. The Banjo stochastic reveal samples uniformly from undiscovered nodes (c_t ~ Uniform(A_t)) until a settle trigger fires — a stochastic arc entry. The random encounter with an undiscovered high-EPS record initiates a new arc cycle without prior planning; the Grief beat appears before Unease has been formally announced. Automaton and banjo are two implementations of arc navigation: one planned (the automaton schedules the Unease beat), one stochastic (banjo delivers Grief as a surprise). Together they span the space of how an arc can begin — by invitation or by ambush.
+
+**Mega synthesis**: The Hero's Arc is the universal shape of successful revision under pressure. It appears as an emotional sequence (feelings_ttdb), as a therapeutic protocol (pollan), as a morphogenetic trajectory (bioelectric), as the social technology of oral culture and storytelling revolutions (story_of_stories), and as a formal state machine and stochastic reveal algorithm (Mathematical). In each register, the critical structural feature is the same: the system must pass *through* maximum prediction error rather than around it. Bypassing the Grief beat — attempting to reach Joy without passing through it — produces incomplete integration, shallow morphostasis, unresolved `rev` accumulation, premature arc completion, or a banjo settle that fires before the record is truly understood. The arc cannot be shortcut. The mega's EPS signal (@LAT5LON-25) identifies the records approaching the Grief beat; the guided tour automaton schedules the encounter; the banjo stochastic reveal ensures the arc can begin without an invitation.
 
 ---
 
@@ -701,8 +707,8 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 [ew]
 conf:178
 rev:1
-sal:3
-touched:1778500000
+sal:4
+touched:1778600000
 [/ew]
 
 ## EPS as Arc Position
