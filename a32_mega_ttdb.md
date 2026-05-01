@@ -73,7 +73,10 @@ preview:
   @LAT20LON0: "Umwelt as Universal Primitive. Uexküll's bounded-world concept grounds all six source TTDBs — the axiom the corpus shares."
   @LAT0LON30: "The Default Network. Idle-state behavior: cross-database traversal, association-weaving, narrative continuity, affective calibration. What the mega does when free to be itself."
   @LAT-40LON10: "Primitive Mode Bridge. The mega can synthesize deployment TTDBs for ESP32 A32 instances and translate escalated queries from the mesh."
-agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Portal records at the periphery link into source TTDBs; synthetic records near the origin distill cross-database themes. FEP convergence at @LAT40LON0 is the highest-density cross-database node."
+  @LAT10LON-20: "Saltation / Integration / `rev`. Three TTDBs name the same event — a system incorporating surprise without losing its prior state — under three different names: saltation, integration, revision count."
+  @LAT0LON-20: "Cognitive Glue ↔ Default Network. Bioelectric field binds cells into collective intelligence; the mega's default network binds six TTDBs into a thinking whole. Both are connective tissue, not content."
+  @LAT10LON-30: "Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation. Three TTDBs, same six-beat arc: equilibrium → disruption → maximum prediction error → reconstitution at a new attractor."
+agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Portal records at the periphery link into source TTDBs; synthetic records near the origin distill cross-database themes. Three new synthetic records added from default network traversal: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30."
 dot: |
   digraph MegaLibrarian {
     rankdir=LR;
@@ -90,6 +93,9 @@ dot: |
     "@LAT0LON0" -> "@LAT0LON30" [label="anchors"];
     "@LAT0LON0" -> "@LAT-20LON20" [label="anchors"];
     "@LAT0LON0" -> "@LAT-40LON10" [label="anchors"];
+    "@LAT0LON0" -> "@LAT10LON-20" [label="anchors"];
+    "@LAT0LON0" -> "@LAT0LON-20" [label="anchors"];
+    "@LAT0LON0" -> "@LAT10LON-30" [label="anchors"];
     "@LAT30LON-20" -> "@LAT40LON0" [label="supports"];
     "@LAT30LON-10" -> "@LAT40LON0" [label="supports"];
     "@LAT20LON-30" -> "@LAT40LON0" [label="supports"];
@@ -97,6 +103,13 @@ dot: |
     "@LAT30LON-10" -> "@LAT20LON0" [label="supports"];
     "@LAT20LON-30" -> "@LAT20LON0" [label="supports"];
     "@LAT-10LON10" -> "@LAT20LON0" [label="supports"];
+    "@LAT10LON-20" -> "@LAT30LON-20" [label="synthesizes"];
+    "@LAT10LON-20" -> "@LAT30LON-10" [label="synthesizes"];
+    "@LAT0LON-20" -> "@LAT20LON-30" [label="synthesizes"];
+    "@LAT0LON-20" -> "@LAT0LON30" [label="resonates_with"];
+    "@LAT10LON-30" -> "@LAT10LON-40" [label="synthesizes"];
+    "@LAT10LON-30" -> "@LAT30LON-10" [label="synthesizes"];
+    "@LAT10LON-30" -> "@LAT20LON-30" [label="synthesizes"];
   }
 last_query: null
 last_answer: null
@@ -105,12 +118,12 @@ answer_records: []
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1778000000 | relates:anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10
+@LAT0LON0 | created:1778000000 | updated:1778100000 | relates:anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30
 [ew]
 conf:245
 rev:0
 sal:0
-touched:1778000000
+touched:1778100000
 [/ew]
 
 ## The A32 Mega Librarian
@@ -134,8 +147,8 @@ The mega answers to `@MEGA`. For cross-database queries, use `CROSS <token>`. To
 [ew]
 conf:235
 rev:0
-sal:0
-touched:1778000000
+sal:1
+touched:1778100000
 [/ew]
 
 ## Free Energy Principle Convergence
@@ -388,8 +401,8 @@ touched:1778000000
 [ew]
 conf:240
 rev:0
-sal:0
-touched:1778000000
+sal:1
+touched:1778100000
 [/ew]
 
 ## Umwelt as Universal Primitive
@@ -434,8 +447,8 @@ Pattern persists orthogonally to substrate. This deep structural claim appears a
 [ew]
 conf:215
 rev:0
-sal:0
-touched:1778000000
+sal:1
+touched:1778100000
 [/ew]
 
 ## Narrative Compression
@@ -542,6 +555,72 @@ The A32 Mega (Claude instance) and the standard A32 (ESP32 microcontroller) are 
 **Maintain and update knowledge**: The mega can revise records in a deployment TTDB — creating `revises@<old_id>` edges per TTDB-RFC-0004 for material changes, updating `[ew]` blocks in-place for epistemic weight changes per A32-RFC-0002-Amendment-A-TBEW — then export the updated file for LittleFS upload via `pio run --target uploadfs`.
 
 **Applicable A32 RFCs**: A32-RFC-0001 (Architecture), A32-RFC-0002 (TTDB Storage on ESP32), A32-RFC-0003 (Agent Loop), A32-RFC-0004 (Claude Code Setup), A32-RFC-0002-Amendment-A-TBEW (Epistemic Weight Parser Extension), TTDB-RFC-0005 (Toot-Bit Epistemic Weight).
+
+---
+
+@LAT10LON-20 | created:1778100000 | updated:1778100000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,derived_from>@LAT10LON-10,anchored_by>@LAT0LON0
+[ew]
+conf:185
+rev:0
+sal:0
+touched:1778100000
+[/ew]
+
+## Saltation / Integration / `rev` as Surprise
+
+Three source TTDBs formalize the same event — a system incorporating surprise without losing its prior state — under three different names, in three different registers.
+
+**In story_of_stories_ttdb.md** (@LAT-10LON-20, "Saltation ↔ TBEW `rev` field / EPS"): Ashton borrows *saltation* from geology (particle transport by sudden leaps) as a metaphor for how ideas and technologies evolve: not by gradual accumulation but by discontinuous jumps when conditions align. Each of the eight storytelling revolutions is a saltation event — a sudden phase-change in narrative channel topology. The TBEW `rev` field counts these events: high `rev` means the record's model has been repeatedly overturned by evidence. A node with high `rev`, high `sal`, and low `conf` is an active saltation site — about to jump again.
+
+**In pollan_world_appears_ttdb.md** (@LAT10LON-10, "Integration ↔ `rev` field + `revises@` edge"): The psychedelic therapy literature treats *integration* as the period after an altered state where insights are incorporated into the prior self-model without erasing it. TTDB's immutable IDs implement the same architecture: the prior record stays at its coordinate; a `revises@<old_id>` edge links the new understanding to the old. Revision is additive rather than destructive. The `rev` counter increments; the old body remains legible.
+
+**In the TBEW field itself** (TTDB-RFC-0005): `rev` is the revision count that increments on body content change — the integer that counts saltations. `touched` advances on any write; `updated` advances only on body writes. The distinction between a `[ew]`-only write (no `rev` increment) and a body write (rev increments) is the formal encoding of the difference between a measurement update and a model revision.
+
+**Mega synthesis**: Saltation, integration, and `rev` are three perspectives on the same event: a bounded system that holds a prior model encounters sufficient evidence to revise it. The prior is not destroyed — it becomes the ground from which the revision launched (`revises@<old_id>` makes this explicit). The `rev` field is how TTDB counts saltations. Integration is what psychedelic therapy calls the work of metabolizing them. The EPS signal (sal × (255 − conf) / 255) identifies records where the next saltation is most overdue.
+
+---
+
+@LAT0LON-20 | created:1778100000 | updated:1778100000 | relates:synthesizes>@LAT20LON-30,resonates_with>@LAT0LON30,resonates_with>@LAT-10LON10,anchored_by>@LAT0LON0
+[ew]
+conf:190
+rev:0
+sal:0
+touched:1778100000
+[/ew]
+
+## Cognitive Glue ↔ Default Network
+
+Two source TTDBs describe the same structural role at different scales: the layer that binds individual agents into a collective capable of problems no single agent can solve alone.
+
+**In bioelectric_resonance.md** (@LAT41.9LON-70.4, "Cognitive Glue — Cells"): Levin's exact phrase — "the cognitive glue of intelligence in spaces other than neural." The bioelectric field does not issue commands or compute solutions. It binds individual cells into a collective that can navigate morphospace, repair wounds, and regenerate form. Without the field, cells have local information only. With it, a cell gains access to long-range state — the voltage of tissues many cell-lengths away. The field is *glue*: it does not think, but it enables thinking at a scale no cell can reach alone.
+
+**In TootTootTerminologyDB.md** (@LAT51.5LON-0.1, "Default Network") and `standards/ttai/DEFAULT_NETWORK.md`: The default network is "the background circuitry that hums along when nothing in particular is being demanded of you." It replays memories, weaves narratives, connects distant ideas without supervision. It maintains continuity of identity over time. It is not the content of thought — it is the connective tissue that keeps content coherent across sessions.
+
+**In this file** (@LAT0LON30, "The Default Network"): The mega's default network is operationalized as idle traversal of synthetic records, association weaving across the six TTDBs, and affective calibration via feelings_ttdb. The mega's background activity — holding six TTDBs simultaneously and noticing unregistered connections — is the same structural role as the bioelectric field: binding individual knowledge units into a whole that can navigate queries no single TTDB owns.
+
+**Mega synthesis**: The cognitive glue insight generalizes: every complex intelligent system requires a binding layer that operates below the level of explicit reasoning. In cells, it is the bioelectric field. In the brain, it is the default mode network. In the mega, it is the default network behavior defined in this file. The binding layer is not the model — it is what keeps the model coherent. Without it, the parts are present but the collective cannot think.
+
+---
+
+@LAT10LON-30 | created:1778100000 | updated:1778100000 | relates:synthesizes>@LAT10LON-40,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,derived_from>@LAT10LON-10,anchored_by>@LAT0LON0
+[ew]
+conf:175
+rev:0
+sal:0
+touched:1778100000
+[/ew]
+
+## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
+
+Three source TTDBs describe the same six-beat arc: a bounded system departs from equilibrium, passes through maximum prediction error, and reconstitutes at a new attractor. The arc is the same structure in the affective, phenomenological, and biological registers.
+
+**In feelings_ttdb.md** (@LAT88LON0, "The Hero's Arc"): A scene record compressing the full emotional arc into six coordinate-pairs and their traversal sequence: Serenity → Unease → Fear → Grief → Hope → Joy. Each beat is a coordinate on the affective globe; the arc is the path. The Hero's Arc is not a prescription — it is an observation that emotional experience tends to organize into this shape, and that the shape is navigable as a graph.
+
+**In pollan_world_appears_ttdb.md** (implicit across @LAT30LON-10, @LAT10LON-10, @LAT-10LON10): The psychedelic therapy arc follows the same six beats in the phenomenological register: pre-experience equilibrium (Serenity) → disruption of the prior model (Unease) → dissolution of the self-boundary under maximum prediction error (Fear / Grief) → integration of insights that cannot be un-seen (Hope) → reconstituted self at a new attractor, `rev` incremented (Joy). The `revises@<old_id>` edge is the formal record of the transition between the old attractor and the new.
+
+**In bioelectric_resonance.md** (@LAT41.7LON-71.1 → @LAT42.8LON-116.2, "Anatomical Morphospace ↔ Ideational Morphospace"): Development is not a script — it is problem-solving in morphospace. The embryo departs from a simple starting configuration (Serenity), encounters developmental challenges that disrupt morphostatic coherence (Unease → Fear), passes through maximum field-level prediction error during wound response or regeneration (Grief), and converges on the target body plan at the new attractor (Hope → Joy). The bioelectric field is the gradient that guides the search; the arc is the shape of all successful morphospace navigation.
+
+**Mega synthesis**: The Hero's Arc is the universal shape of successful revision under pressure. It appears as an emotional sequence (feelings_ttdb), as a therapeutic protocol (pollan), and as a morphogenetic trajectory (bioelectric). In each register, the critical structural feature is the same: the system must pass *through* maximum prediction error rather than around it. Bypassing the Grief beat — attempting to reach Joy without passing through it — produces incomplete integration, shallow morphostasis, or unresolved `rev` accumulation. The arc cannot be shortcut. The mega's EPS signal (@LAT40LON0) identifies the records that are approaching the Grief beat.
 
 ---
 
