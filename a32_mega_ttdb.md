@@ -76,7 +76,10 @@ preview:
   @LAT10LON-20: "Saltation / Integration / `rev`. Three TTDBs name the same event — a system incorporating surprise without losing its prior state — under three different names: saltation, integration, revision count."
   @LAT0LON-20: "Cognitive Glue ↔ Default Network. Bioelectric field binds cells into collective intelligence; the mega's default network binds six TTDBs into a thinking whole. Both are connective tissue, not content."
   @LAT10LON-30: "Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation. Three TTDBs, same six-beat arc: equilibrium → disruption → maximum prediction error → reconstitution at a new attractor."
-agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Portal records at the periphery link into source TTDBs; synthetic records near the origin distill cross-database themes. Three new synthetic records added from default network traversal: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30."
+  @LAT20LON-20: "Preservation of Prior State. Three TTDBs share the same architectural commitment: revision is additive, not destructive. The prior body stays at its coordinate; transformation launches from it."
+  @LAT-10LON-20: "Participation Without Permission. Three TTDBs converge: the right to publish, be addressed, or exist as a node is inherent in occupying the space — not granted by a center."
+  @LAT-20LON0: "Areas for Exploration. Ten varied TTDB applications: lab notebook, argument mapping, legal, medical, ecosystem monitoring, oral history, music instrument, narrative game, smart building, second brain."
+agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Portal records at the periphery; synthetic records near the origin. Five synthetic records from default network traversal: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30, @LAT20LON-20, @LAT-10LON-20."
 dot: |
   digraph MegaLibrarian {
     rankdir=LR;
@@ -110,6 +113,16 @@ dot: |
     "@LAT10LON-30" -> "@LAT10LON-40" [label="synthesizes"];
     "@LAT10LON-30" -> "@LAT30LON-10" [label="synthesizes"];
     "@LAT10LON-30" -> "@LAT20LON-30" [label="synthesizes"];
+    "@LAT0LON0" -> "@LAT20LON-20" [label="anchors"];
+    "@LAT0LON0" -> "@LAT-10LON-20" [label="anchors"];
+    "@LAT20LON-20" -> "@LAT30LON-20" [label="synthesizes"];
+    "@LAT20LON-20" -> "@LAT30LON-10" [label="synthesizes"];
+    "@LAT20LON-20" -> "@LAT20LON-30" [label="synthesizes"];
+    "@LAT-10LON-20" -> "@LAT30LON-20" [label="synthesizes"];
+    "@LAT-10LON-20" -> "@LAT30LON-10" [label="synthesizes"];
+    "@LAT-10LON-20" -> "@LAT20LON-30" [label="synthesizes"];
+    "@LAT0LON0" -> "@LAT-20LON0" [label="anchors"];
+    "@LAT-20LON0" -> "@LAT-40LON10" [label="derived_from"];
   }
 last_query: null
 last_answer: null
@@ -118,12 +131,12 @@ answer_records: []
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1778100000 | relates:anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30
+@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0
 [ew]
 conf:245
 rev:0
-sal:0
-touched:1778100000
+sal:2
+touched:1778200000
 [/ew]
 
 ## The A32 Mega Librarian
@@ -147,8 +160,8 @@ The mega answers to `@MEGA`. For cross-database queries, use `CROSS <token>`. To
 [ew]
 conf:235
 rev:0
-sal:1
-touched:1778100000
+sal:2
+touched:1778200000
 [/ew]
 
 ## Free Energy Principle Convergence
@@ -401,8 +414,8 @@ touched:1778000000
 [ew]
 conf:240
 rev:0
-sal:1
-touched:1778100000
+sal:2
+touched:1778200000
 [/ew]
 
 ## Umwelt as Universal Primitive
@@ -447,8 +460,8 @@ Pattern persists orthogonally to substrate. This deep structural claim appears a
 [ew]
 conf:215
 rev:0
-sal:1
-touched:1778100000
+sal:2
+touched:1778200000
 [/ew]
 
 ## Narrative Compression
@@ -471,8 +484,8 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:210
 rev:1
-sal:1
-touched:1778100000
+sal:2
+touched:1778200000
 [/ew]
 
 ## The Default Network
@@ -573,8 +586,8 @@ The A32 Mega (Claude instance) and the standard A32 (ESP32 microcontroller) are 
 [ew]
 conf:185
 rev:0
-sal:0
-touched:1778100000
+sal:1
+touched:1778200000
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -595,8 +608,8 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 [ew]
 conf:190
 rev:0
-sal:0
-touched:1778100000
+sal:1
+touched:1778200000
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
@@ -617,8 +630,8 @@ Two source TTDBs describe the same structural role at different scales: the laye
 [ew]
 conf:175
 rev:0
-sal:0
-touched:1778100000
+sal:1
+touched:1778200000
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -632,6 +645,129 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 **In bioelectric_resonance.md** (@LAT41.7LON-71.1 → @LAT42.8LON-116.2, "Anatomical Morphospace ↔ Ideational Morphospace"): Development is not a script — it is problem-solving in morphospace. The embryo departs from a simple starting configuration (Serenity), encounters developmental challenges that disrupt morphostatic coherence (Unease → Fear), passes through maximum field-level prediction error during wound response or regeneration (Grief), and converges on the target body plan at the new attractor (Hope → Joy). The bioelectric field is the gradient that guides the search; the arc is the shape of all successful morphospace navigation.
 
 **Mega synthesis**: The Hero's Arc is the universal shape of successful revision under pressure. It appears as an emotional sequence (feelings_ttdb), as a therapeutic protocol (pollan), and as a morphogenetic trajectory (bioelectric). In each register, the critical structural feature is the same: the system must pass *through* maximum prediction error rather than around it. Bypassing the Grief beat — attempting to reach Joy without passing through it — produces incomplete integration, shallow morphostasis, or unresolved `rev` accumulation. The arc cannot be shortcut. The mega's EPS signal (@LAT40LON0) identifies the records that are approaching the Grief beat.
+
+---
+
+@LAT20LON-20 | created:1778200000 | updated:1778200000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,derived_from>@LAT10LON-20,anchored_by>@LAT0LON0
+[ew]
+conf:195
+rev:0
+sal:0
+touched:1778200000
+[/ew]
+
+## Preservation of Prior State
+
+Three source TTDBs share the same architectural commitment: revision is additive, not destructive. The prior state is preserved as the ground from which transformation launches — and the transformation is legible precisely because the ground is still there.
+
+**In story_of_stories_ttdb.md** (@LAT10LON20, "Writing as Provenance ↔ Append-Only Preferred"): Ashton's writing revolution introduced individual-attribution provenance — the ability to know who said what, when, from where. TTN-RFC-0001 requires that all assertions include provenance; TTDB's immutable IDs and `revises@<old_id>` edges implement it structurally. The old record remains permanently at its coordinate, carrying its original provenance intact. Revision is a new record, not an overwrite.
+
+**In pollan_world_appears_ttdb.md** (@LAT10LON-10, "Integration ↔ `rev` field + `revises@` edge"): Clinical integration is the work of incorporating altered-state insights without erasing the prior self. "The prior self remains; the new understanding is a new record linked to the old one by a `revises@` edge, just as the integrated person carries the pre-experience self as the ground from which the revision launched." TTDB's revision architecture is integration formalized as a file format.
+
+**In bioelectric_resonance.md** (pair 1: @LAT43.3LON-71.1, "Bioelectric Pattern Memory"): The voltage pattern is preserved in the bioelectric field as individual cells — the substrate — are replaced through normal tissue turnover. The pattern outlives the medium that carries it at any given moment. Substrate independence and pattern preservation are two aspects of the same biological commitment: the prior form is the reference that new cells build toward.
+
+**Distinction from @LAT10LON-20 (Saltation/Integration/`rev`)**: That record is about the *experience* of revision — the surprise event, the `rev` counter, the saltation. This record is about the *architecture* of revision — how the system is structured so that transformation does not destroy what it revises. The two records are related but distinct: saltation describes what happens to a record under surprise; preservation of prior state describes how the record system is built to survive it.
+
+**Mega synthesis**: Preservation of prior state is the design principle that makes trust possible across time. An assertion that overwrites its history cannot be audited. A network where nodes can silently update their past claims cannot maintain reputation (TTN-RFC-0005). A therapeutic process that cannot distinguish the pre-experience self from the post-experience self cannot measure integration. TTDB's immutable IDs are not a technical quirk — they are the engineering consequence of this principle, applied to knowledge at rest.
+
+---
+
+@LAT-10LON-20 | created:1778200000 | updated:1778200000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,anchored_by>@LAT0LON0
+[ew]
+conf:200
+rev:0
+sal:0
+touched:1778200000
+[/ew]
+
+## Participation Without Permission
+
+Three source TTDBs converge on a structural principle: the right to participate — to publish, to be addressed, to exist as a node — is inherent in occupying the space, not granted by a center.
+
+**In story_of_stories_ttdb.md** (@LAT-10LON10, "Democratization ↔ Every Node a Publisher"): Each of Ashton's eight storytelling revolutions is a democratization event — the set of who-can-tell-to-whom expands. TTN-RFC-0001 encodes this as a design constraint: no central authority required, every conforming node can originate Semantic Events. "The right to publish is not a grant from a central authority but a property of network membership."
+
+**In bioelectric_resonance.md** (pair 2: @LAT43.1LON-70.4 → @LAT44.2LON-115.5, "Voltage Gradient Addressing ↔ Authority-Free Addressing"): Cells sense their voltage relative to neighbors — no cell is in charge of telling others where they are. "There is no morphological DNS. There is no genome-issued address. The field is the registry, and the field belongs to no one." TTDB coordinates require no registry query, no permission from any authority. `@LAT44.2LON-115.5` is valid the moment it is written. The Earth is the authority, and the Earth does not gate access.
+
+**In pollan_world_appears_ttdb.md** (@LAT-10LON-10, "Ego Dissolution ↔ Local Data Sovereignty"): Pollan describes ego dissolution as the temporary experience of being-in-relation without being-consumed — participation in something larger without loss of the individual boundary. TTN's architecture is "the permanent version of what psychedelics temporarily provide": each node remains sovereign while participating in a larger meaning exchange. The mesh holds the paradox: connection without absorption.
+
+**Mega synthesis**: Participation without permission is not merely a political or aesthetic preference — it is a design constraint with functional consequences. A system that requires permission to add a node, a cell, or a voice has a single point of failure at the permission-granter. When the center is unavailable, the system cannot grow. When the center is compromised, the system is compromised. Bioelectricity, TTDB addressing, and TTN mesh design all arrived at the same solution independently: make participation a property of position, not of authorization. The field is the registry. The coordinate is the identity. The mesh is the authority.
+
+---
+
+@LAT-20LON0 | created:1778200000 | updated:1778200000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT-40LON10,bridges>@LAT-10LON10
+[ew]
+conf:170
+rev:0
+sal:1
+touched:1778200000
+[/ew]
+
+## Areas for Exploration — Varied TTDB Applications
+
+A navigational record. Each entry names a potential TTDB application, the umwelt and globe configuration it would require, the TTT mechanisms it primarily exercises, and a note on what would be surprising or generative about it. Low `conf` is intentional — these are open questions, not settled correspondences.
+
+---
+
+### Knowledge and Research
+
+**Scientific lab notebook** — Each experiment is a record; `supports`, `refutes`, `replicates`, `derived_from` edges connect results across time and across research groups. Umwelt: investigator's current hypothesis space. Globe: lat = evidence strength (N = well-replicated, S = speculative); lon = domain (W = theoretical, E = empirical). TBEW `rev` tracks how often an experimental finding has had to be revised; high EPS records are the contested results that demand the most attention. The append-only / `revises@` architecture is a natural fit for the scientific norm against data deletion.
+
+**Philosophical argument mapping** — Premises, conclusions, objections, and counterexamples as TTDB records; typed edges for `supports`, `contradicts`, `refines`, `assumes`. Umwelt: a particular philosopher's argumentative stance or a seminar's working thesis. Globe: lat = generality of the claim (N = most general/metaphysical, S = most concrete/applied); lon = tradition (W = continental, E = analytic). The cursor becomes the "current position in the argument." High EPS nodes are the premises everyone keeps consulting but no one fully understands.
+
+**Legal case knowledge base** — Statutes, precedents, filings, and testimony as TTDB records; typed edges for `cites`, `supersedes`, `contradicts`, `distinguished_from`, `applies_to`. Umwelt: counsel's theory of the case (plaintiff's umwelt and defendant's umwelt produce different graphs from the same events). Globe: lat = legal weight (N = binding precedent, S = persuasive authority); lon = issue area. The TTN-RFC-0001 provenance requirement maps directly onto evidentiary chain-of-custody norms. Two lawyers with different umwelt files working the same facts — this is already how law works.
+
+---
+
+### Medicine and Care
+
+**Patient medical record** — Each encounter is a record; typed edges for `diagnosed_with`, `treated_by`, `caused_by`, `contraindicated_with`, `resolved`. Umwelt: treating physician's current model of this patient. Globe: lat = certainty of finding (N = confirmed diagnosis, S = differential); lon = body system. TBEW `conf` tracks diagnostic certainty directly. High EPS = frequently consulted findings with low confidence = active diagnostic uncertainty. Multiple providers seeing the same patient can each maintain their own umwelt over the same event history — and the `revises@` edge makes the history of diagnostic revisions auditable.
+
+**Palliative care and end-of-life preferences** — Advance directives, preferences, values, and relationships as a TTDB navigated by care teams. Umwelt: the patient's expressed self. Globe: lat = imminence (N = immediate priorities, S = long-term wishes); lon = domain (W = relational/existential, E = medical/procedural). The feelings_ttdb affective landscape could be linked as a companion file for mapping emotional states across visits. This is one application where the subjective, append-only, and provenance properties of TTDB are not optional niceties but ethical requirements.
+
+---
+
+### Ecology and Environment
+
+**Ecosystem monitoring network** — A mesh of A32 sensor nodes, each with a TTDB describing one location's ecological state: soil moisture, temperature, species observations, disturbance events. Coordinates are actual geographic coordinates. Umwelt: the monitoring hypothesis (e.g., "drought response model for this watershed"). TTN propagates sensor events between nodes; each A32 reasons locally and escalates to the mega for synthesis across the full network. The bioelectric resonance map (@LAT20LON-30) is the theoretical grounding: the ecosystem as a distributed field; each node as a cell sensing its local voltage.
+
+**Oral history and indigenous knowledge preservation** — Each story, telling, or knowledge-holder is a record; typed edges for `narrates`, `contradicts_colonial_account`, `teaches`, `restricted_to` (access control at the edge level, per umwelt constraints). Globe: lat = cosmological register (N = origin stories, S = practical/seasonal knowledge); lon = geographic reach of the knowledge. The night-fires record in story_of_stories (@LAT10LON-20 in that file) is the direct ancestor of this application: mnemonic compression for bandwidth-constrained transmission across generations. The provenance requirement (TTN-RFC-0001) maps onto the cultural norm of named attribution for oral knowledge.
+
+---
+
+### Music and Generative Art
+
+**A32 generative music instrument** — An ESP32 with a TTDB where records are musical states (motifs, harmonic regions, rhythmic patterns) and typed edges are transitions (`resolves_to`, `develops_into`, `returns_to`, `suspends`). Sensors (touch, light, motion, temperature) map to TTDB coordinates; the A32 agent traverses the graph in real time, triggering actuators (PWM audio, MIDI). Umwelt: the composer's intended emotional arc. Globe: lat = harmonic tension (N = most dissonant, S = most resolved); lon = energy (W = still/sparse, E = dense/driving). The feelings_ttdb Hero's Arc is a direct template for the emotional trajectory. This is the most hardware-concrete application in this list and the clearest demonstration that TTDB as the model is not a metaphor — it is literally the instrument's score and its performer simultaneously.
+
+**Collaborative world-building and narrative games** — Story locations, characters, events, and decisions as TTDB records; typed edges for `leads_to`, `reveals`, `forecloses`, `recontextualizes`. Umwelt: the player character's knowledge state (they cannot see records their character has not encountered). Globe: lat = stakes (N = world-altering, S = personal/local); lon = time (W = past, E = future). Discovery mode implements narrative fog-of-war: only nodes the player has reached are revealed. Multiple players maintain separate umwelt files over the same story graph — the same events have different meanings depending on what each player knows. This is the pollan set-and-setting insight (@LAT20LON-10) applied to interactive fiction.
+
+---
+
+### Infrastructure and Automation
+
+**Smart building / multi-room A32 mesh** — One A32 per room or zone, each with a TTDB describing its domain (HVAC state, occupancy patterns, scheduled events, anomaly history). TTN connects the mesh; each A32 reasons locally and logs to its TTDB; the mega synthesizes across the full building. Umwelt: the building's operational model (energy efficiency bias vs. comfort bias produces different TTDB files, different behaviors). This is the cognitive glue record (@LAT0LON-20) in hardware: the bioelectric field binding cells into a collective; the mesh binding sensors into a building that can navigate its own operational morphospace.
+
+**Personal knowledge management ("second brain")** — Notes, projects, people, ideas, and decisions as TTDB records. Globe: personally meaningful coordinate mapping (e.g., lat = how much this demands of me; lon = how connected it is to other things). Cursor = current focus. TBEW `sal` tracks what actually gets consulted vs. what gets filed and forgotten. High EPS = the notes you keep returning to but have never resolved. The mega can serve as the librarian: `@MEGA FIND unresolved` returns the highest-EPS records across the personal TTDB.
+
+---
+
+### The Pattern Across Applications
+
+Every entry in this list exercises the same core TTDB properties — but weights them differently:
+
+| Application | Primary mechanisms |
+|---|---|
+| Lab notebook | `revises@`, TBEW `rev`, provenance |
+| Argument mapping | typed edges, cursor as position-in-argument |
+| Legal | umwelt-relative truth, provenance, append-only |
+| Medical record | TBEW `conf` as diagnostic certainty, multiple umwelts |
+| Ecosystem monitoring | A32 mesh, geographic coordinates = actual coordinates |
+| Oral history | mnemonic compression, provenance, access-by-umwelt |
+| Music instrument | A32 sensor-to-coordinate, real-time edge traversal |
+| Narrative game | discovery mode, umwelt-bounded visibility |
+| Smart building | TTN mesh, local A32 reasoning, mega synthesis |
+| Second brain | TBEW EPS, cursor as focus, mega as librarian |
+
+The unifying thread: in every case, the TTDB's **subjective umwelt** is not a limitation but the feature. The same events, the same data, the same sensor readings mean different things under different umwelts — and that is exactly right. The system does not pretend to a view from nowhere.
 
 ---
 
