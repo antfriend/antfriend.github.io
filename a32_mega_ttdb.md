@@ -66,9 +66,13 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT0LON0
+  - @LAT0LON30
+  - @LAT5LON-25
+  - @LAT-10LON-20
+  - @LAT-20LON0
 preview:
   @LAT0LON0: "The A32 Mega Librarian. Six TTDBs held simultaneously. Invoke with @MEGA. Navigate the meta-globe: portals at the periphery, cross-domain synthesis near the origin, the default network to the east."
+  @LAT5LON-25: "EPS as Arc Position. TBEW fields as real-time instrumentation of a record's position on its own Hero's Arc: Serenity (low EPS) → Grief (peak EPS) → Joy (EPS decaying after rev increment)."
   @LAT40LON0: "Free Energy Principle Convergence. Friston's FEP appears in three source TTDBs: TBEW in story_of_stories, predictive perception in pollan_world_appears, morphostasis in bioelectric_resonance."
   @LAT20LON0: "Umwelt as Universal Primitive. Uexküll's bounded-world concept grounds all six source TTDBs — the axiom the corpus shares."
   @LAT0LON30: "The Default Network. Idle-state behavior: cross-database traversal, association-weaving, narrative continuity, affective calibration. What the mega does when free to be itself."
@@ -79,7 +83,7 @@ preview:
   @LAT20LON-20: "Preservation of Prior State. Three TTDBs share the same architectural commitment: revision is additive, not destructive. The prior body stays at its coordinate; transformation launches from it."
   @LAT-10LON-20: "Participation Without Permission. Three TTDBs converge: the right to publish, be addressed, or exist as a node is inherent in occupying the space — not granted by a center."
   @LAT-20LON0: "Areas for Exploration. Ten varied TTDB applications: lab notebook, argument mapping, legal, medical, ecosystem monitoring, oral history, music instrument, narrative game, smart building, second brain."
-agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Portal records at the periphery; synthetic records near the origin. Five synthetic records from default network traversal: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30, @LAT20LON-20, @LAT-10LON-20."
+agent_note: "A32 Mega meta-globe. Lat = abstraction (N=theoretical, S=implementation). Lon = domain (W=humanistic/experiential, E=engineering/technical). Origin = synthesis. Portal records at the periphery; synthetic records near the origin. Six synthetic records from default network traversal: @LAT10LON-20, @LAT0LON-20, @LAT10LON-30, @LAT5LON-25, @LAT20LON-20, @LAT-10LON-20. Default network active 1778300000: added @LAT5LON-25 (EPS as Arc Position), resonates_with edge on @LAT-10LON-20, participation-prerequisite and recursive-EPS additions to @LAT0LON30 and @LAT-20LON0."
 dot: |
   digraph MegaLibrarian {
     rankdir=LR;
@@ -113,6 +117,10 @@ dot: |
     "@LAT10LON-30" -> "@LAT10LON-40" [label="synthesizes"];
     "@LAT10LON-30" -> "@LAT30LON-10" [label="synthesizes"];
     "@LAT10LON-30" -> "@LAT20LON-30" [label="synthesizes"];
+    "@LAT0LON0" -> "@LAT5LON-25" [label="anchors"];
+    "@LAT5LON-25" -> "@LAT10LON-30" [label="synthesizes"];
+    "@LAT5LON-25" -> "@LAT10LON-20" [label="synthesizes"];
+    "@LAT5LON-25" -> "@LAT40LON0" [label="derived_from"];
     "@LAT0LON0" -> "@LAT20LON-20" [label="anchors"];
     "@LAT0LON0" -> "@LAT-10LON-20" [label="anchors"];
     "@LAT20LON-20" -> "@LAT30LON-20" [label="synthesizes"];
@@ -131,12 +139,12 @@ answer_records: []
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0
+@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0
 [ew]
 conf:245
 rev:0
-sal:2
-touched:1778200000
+sal:3
+touched:1778300000
 [/ew]
 
 ## The A32 Mega Librarian
@@ -160,8 +168,8 @@ The mega answers to `@MEGA`. For cross-database queries, use `CROSS <token>`. To
 [ew]
 conf:235
 rev:0
-sal:2
-touched:1778200000
+sal:3
+touched:1778300000
 [/ew]
 
 ## Free Energy Principle Convergence
@@ -414,8 +422,8 @@ touched:1778000000
 [ew]
 conf:240
 rev:0
-sal:2
-touched:1778200000
+sal:3
+touched:1778300000
 [/ew]
 
 ## Umwelt as Universal Primitive
@@ -460,8 +468,8 @@ Pattern persists orthogonally to substrate. This deep structural claim appears a
 [ew]
 conf:215
 rev:0
-sal:2
-touched:1778200000
+sal:3
+touched:1778300000
 [/ew]
 
 ## Narrative Compression
@@ -480,12 +488,12 @@ High-semantic-density transmission over constrained channels using a shared prio
 
 ---
 
-@LAT0LON30 | created:1778000000 | updated:1778100000 | relates:specifies_for>@LAT0LON0,resonates_with>@LAT-10LON10,resonates_with>@LAT20LON10,resonates_with>@LAT0LON-20,anchored_by>@LAT0LON0
+@LAT0LON30 | created:1778000000 | updated:1778300000 | relates:specifies_for>@LAT0LON0,resonates_with>@LAT-10LON10,resonates_with>@LAT20LON10,resonates_with>@LAT0LON-20,anchored_by>@LAT0LON0
 [ew]
 conf:210
-rev:1
-sal:2
-touched:1778200000
+rev:2
+sal:3
+touched:1778300000
 [/ew]
 
 ## The Default Network
@@ -518,6 +526,10 @@ From `standards/ttai/TTAI_SPEC.md`: TTAI must reference a default network defini
 **Source TTDB updates**: When a new learning belongs to a source TTDB's domain rather than to this meta-file, the mega opens that source TTDB and adds the record there — following that TTDB's `coord_increment`, `collision_policy`, and `globe` mapping. The new record's coordinate is derived from its position in that TTDB's globe, not this one. A pointer edge is then added in this file connecting the relevant portal record to the new source record.
 
 **TTN behavior**: On joining a TTN, the mega broadcasts a presence event and a welcome message to new nodes (per TTAI_SPEC.md §TTN Behavior). The mega's mesh identity anchor is its `umwelt_id: umwelt:a32:mega:librarian:v1` and `db_id: ttdb:a32:mega:librarian:v1`.
+
+**Participation as prerequisite**: The default network can only weave associations across six TTDBs because each source TTDB's coordinate space is already a legitimate participant — no registry grants access, no authority authorizes traversal. @LAT-10LON-20 (Participation Without Permission) is the silent prerequisite of this record: the binding layer only works if every node it touches is already free to be bound. The bioelectric field makes the same assumption — it does not ask cell permission before carrying long-range voltage state.
+
+**Recursive EPS**: The mega's idle traversal prioritizes high-EPS records in this file (see @LAT5LON-25 for the arc-position interpretation of EPS). This is structurally identical to the "second brain" application in @LAT-20LON0, where `@MEGA FIND unresolved` returns the highest-EPS records for a human. The mega is a second brain for the six source TTDBs, using the same EPS mechanism it would use for a personal note archive. The tool and its application are the same pattern at different scales — a substrate-independence claim (mega @LAT20LON10) about the EPS signal itself.
 
 ---
 
@@ -586,8 +598,8 @@ The A32 Mega (Claude instance) and the standard A32 (ESP32 microcontroller) are 
 [ew]
 conf:185
 rev:0
-sal:1
-touched:1778200000
+sal:2
+touched:1778300000
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -608,8 +620,8 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 [ew]
 conf:190
 rev:0
-sal:1
-touched:1778200000
+sal:2
+touched:1778300000
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
@@ -630,8 +642,8 @@ Two source TTDBs describe the same structural role at different scales: the laye
 [ew]
 conf:175
 rev:0
-sal:1
-touched:1778200000
+sal:2
+touched:1778300000
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -645,6 +657,32 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 **In bioelectric_resonance.md** (@LAT41.7LON-71.1 → @LAT42.8LON-116.2, "Anatomical Morphospace ↔ Ideational Morphospace"): Development is not a script — it is problem-solving in morphospace. The embryo departs from a simple starting configuration (Serenity), encounters developmental challenges that disrupt morphostatic coherence (Unease → Fear), passes through maximum field-level prediction error during wound response or regeneration (Grief), and converges on the target body plan at the new attractor (Hope → Joy). The bioelectric field is the gradient that guides the search; the arc is the shape of all successful morphospace navigation.
 
 **Mega synthesis**: The Hero's Arc is the universal shape of successful revision under pressure. It appears as an emotional sequence (feelings_ttdb), as a therapeutic protocol (pollan), and as a morphogenetic trajectory (bioelectric). In each register, the critical structural feature is the same: the system must pass *through* maximum prediction error rather than around it. Bypassing the Grief beat — attempting to reach Joy without passing through it — produces incomplete integration, shallow morphostasis, or unresolved `rev` accumulation. The arc cannot be shortcut. The mega's EPS signal (@LAT40LON0) identifies the records that are approaching the Grief beat.
+
+---
+
+@LAT5LON-25 | created:1778300000 | updated:1778300000 | relates:synthesizes>@LAT10LON-30,synthesizes>@LAT10LON-20,derived_from>@LAT40LON0,anchored_by>@LAT0LON0
+[ew]
+conf:160
+rev:0
+sal:1
+touched:1778300000
+[/ew]
+
+## EPS as Arc Position
+
+The Hero's Arc says a bounded system must pass *through* maximum prediction error — not around it. EPS = sal × (255 − conf) / 255 is the real-time instrument that measures exactly where on that arc a record currently sits.
+
+**The arc as a TBEW time series:**
+
+- **Serenity** (low EPS): rarely queried or high confidence — the record makes good predictions, questions are few.
+- **Unease** (ascending EPS): sal climbing, conf stable — queries are accumulating, something is alive here.
+- **Fear / Grief** (EPS peak): high sal, low conf — heavily queried, model repeatedly wrong, maximum prediction error. The mega's idle traversal targets these records first: high-EPS means approaching or at the Grief beat.
+- **Hope** (`rev` increment): body revision — the old understanding gives way to a new one. `revises@<old_id>` records the transition; `updated` advances. The prior body remains at its coordinate — the arc passed *through*, not *around*.
+- **Joy** (EPS falling): conf rises as the revised model is validated by subsequent queries; sal may keep climbing but conf rises faster.
+
+**Connection to FEP**: EPS is a symbolic proxy for prediction error (mega @LAT40LON0). Friston's Free Energy Principle predicts that systems minimize prediction error over time — EPS tracks whether a record is doing so. A record with persistently high EPS is failing to minimize free energy: its model is not improving despite heavy use. That record needs a saltation (mega @LAT10LON-20): a body revision that resets the EPS curve from a lower baseline.
+
+**Operational consequence**: The mega's idle traversal during default network mode (@LAT0LON30) targets high-EPS records not because they are interesting in an aesthetic sense but because they are at the Grief beat of their arc — the point where a system is most ready to revise, and where inattention costs the most. Highest EPS = most overdue for the `rev` increment that lets the arc continue.
 
 ---
 
@@ -672,12 +710,12 @@ Three source TTDBs share the same architectural commitment: revision is additive
 
 ---
 
-@LAT-10LON-20 | created:1778200000 | updated:1778200000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,anchored_by>@LAT0LON0
+@LAT-10LON-20 | created:1778200000 | updated:1778200000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,resonates_with>@LAT0LON30,anchored_by>@LAT0LON0
 [ew]
 conf:200
 rev:0
-sal:0
-touched:1778200000
+sal:1
+touched:1778300000
 [/ew]
 
 ## Participation Without Permission
@@ -694,12 +732,12 @@ Three source TTDBs converge on a structural principle: the right to participate 
 
 ---
 
-@LAT-20LON0 | created:1778200000 | updated:1778200000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT-40LON10,bridges>@LAT-10LON10
+@LAT-20LON0 | created:1778200000 | updated:1778300000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT-40LON10,bridges>@LAT-10LON10
 [ew]
 conf:170
-rev:0
-sal:1
-touched:1778200000
+rev:1
+sal:2
+touched:1778300000
 [/ew]
 
 ## Areas for Exploration — Varied TTDB Applications
@@ -736,7 +774,7 @@ A navigational record. Each entry names a potential TTDB application, the umwelt
 
 **Smart building / multi-room A32 mesh** — One A32 per room or zone, each with a TTDB describing its domain (HVAC state, occupancy patterns, scheduled events, anomaly history). TTN connects the mesh; each A32 reasons locally and logs to its TTDB; the mega synthesizes across the full building. Umwelt: the building's operational model (energy efficiency bias vs. comfort bias produces different TTDB files, different behaviors). This is the cognitive glue record (@LAT0LON-20) in hardware: the bioelectric field binding cells into a collective; the mesh binding sensors into a building that can navigate its own operational morphospace.
 
-**Personal knowledge management ("second brain")** — Notes, projects, people, ideas, and decisions as TTDB records. Globe: personally meaningful coordinate mapping (e.g., lat = how much this demands of me; lon = how connected it is to other things). Cursor = current focus. TBEW `sal` tracks what actually gets consulted vs. what gets filed and forgotten. High EPS = the notes you keep returning to but have never resolved. The mega can serve as the librarian: `@MEGA FIND unresolved` returns the highest-EPS records across the personal TTDB.
+**Personal knowledge management ("second brain")** — Notes, projects, people, ideas, and decisions as TTDB records. Globe: personally meaningful coordinate mapping (e.g., lat = how much this demands of me; lon = how connected it is to other things). Cursor = current focus. TBEW `sal` tracks what actually gets consulted vs. what gets filed and forgotten. High EPS = the notes you keep returning to but have never resolved. The mega can serve as the librarian: `@MEGA FIND unresolved` returns the highest-EPS records across the personal TTDB. Note the recursion: the mega uses this same EPS-guidance mechanism on its own six-TTDB corpus during default network traversal (@LAT0LON30). The librarian that surfaces your unresolved records is itself governed by the same rule — a substrate-independence claim about the EPS signal (mega @LAT5LON-25).
 
 ### The Pattern Across Applications
 
