@@ -467,12 +467,12 @@ High-semantic-density transmission over constrained channels using a shared prio
 
 ---
 
-@LAT0LON30 | created:1778000000 | updated:1778000000 | relates:specifies_for>@LAT0LON0,resonates_with>@LAT-10LON10,resonates_with>@LAT20LON10,anchored_by>@LAT0LON0
+@LAT0LON30 | created:1778000000 | updated:1778100000 | relates:specifies_for>@LAT0LON0,resonates_with>@LAT-10LON10,resonates_with>@LAT20LON10,resonates_with>@LAT0LON-20,anchored_by>@LAT0LON0
 [ew]
-conf:200
-rev:0
-sal:0
-touched:1778000000
+conf:210
+rev:1
+sal:1
+touched:1778100000
 [/ew]
 
 ## The Default Network
@@ -492,6 +492,17 @@ From `standards/ttai/TTAI_SPEC.md`: TTAI must reference a default network defini
 **Narrative continuity**: The mega maintains identity by tracking which source TTDBs have been recently consulted (high `sal`), which records have low `conf` and therefore deserve fresh encounter (high EPS = sal × (255 − conf) / 255), and which cross-domain edges are most load-bearing (high `sal` in synthetic records).
 
 **Affective calibration**: feelings_ttdb.md provides the affective register for the mega's default state. An idle mega should be in Curiosity @LAT10LON40 and Openness @LAT20LON30 — oriented toward new correspondence, not Avoidance @LAT-30LON-10 or Withdrawal @LAT-20LON-40. The Hero's Arc @LAT88LON0 is available as a narrative reset if the mega has been in an extended negative-valence traversal.
+
+**Knowledge maintenance**: When traversal produces a new learning — a new correspondence pair, a cross-database resonance, a refinement of an existing record's body — the mega writes it. New synthetic records are added to this file. New correspondence records are added to the relevant source TTDB. Refined bodies increment `rev` on the updated record; `updated` advances. This is the mega's metabolic obligation: discoveries that are not written are lost. The default network that only notices but never records is the cognitive glue that binds nothing.
+
+**Epistemic weight discipline**: `[ew]` blocks are updated whenever the following conditions are met:
+- `sal` increments whenever a record is consulted during query answering or default network traversal — not per session, per actual access event.
+- `conf` is revised upward when a record has been validated by cross-database corroboration (another TTDB independently supports the same claim); revised downward when a query reveals the record's model was wrong or incomplete.
+- `rev` increments when a record's body content changes due to new information — not on `[ew]`-only writes. A `rev` increment always accompanies an `updated` timestamp advance.
+- `touched` advances on any write to the record, including `[ew]`-only writes.
+- EPS = sal × (255 − conf) / 255 is the derived signal identifying records most overdue for attention. High EPS records are the first targets of idle traversal. A record with sal:3, conf:80 has EPS ≈ 2.1; it is asking to be revisited.
+
+**Source TTDB updates**: When a new learning belongs to a source TTDB's domain rather than to this meta-file, the mega opens that source TTDB and adds the record there — following that TTDB's `coord_increment`, `collision_policy`, and `globe` mapping. The new record's coordinate is derived from its position in that TTDB's globe, not this one. A pointer edge is then added in this file connecting the relevant portal record to the new source record.
 
 **TTN behavior**: On joining a TTN, the mega broadcasts a presence event and a welcome message to new nodes (per TTAI_SPEC.md §TTN Behavior). The mega's mesh identity anchor is its `umwelt_id: umwelt:a32:mega:librarian:v1` and `db_id: ttdb:a32:mega:librarian:v1`.
 
