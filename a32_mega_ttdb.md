@@ -98,7 +98,7 @@ The mega answers to `@MEGA`. For cross-database queries, use `CROSS <token>`. To
 
 ---
 
-@LAT-10LON0 | created:1778400000 | updated:1778400000 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON0,navigates_to>@LAT20LON0,navigates_to>@LAT0LON30,navigates_to>@LAT5LON-25,navigates_to>@LAT-20LON0
+@LAT-10LON0 | created:1778400000 | updated:1779200000 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON0,navigates_to>@LAT20LON0,navigates_to>@LAT0LON30,navigates_to>@LAT5LON-25,navigates_to>@LAT-20LON0,navigates_to>@LAT0LON20
 [ew]
 conf:220
 rev:0
@@ -112,7 +112,7 @@ An [AI librarian](lat0lon0) reasoning across six interconnected knowledge bases 
 
 Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges connect records across databases. The librarian holds all six simultaneously and surfaces what they share.
 
-**Five places to start:**
+**Six places to start:**
 
 | Record | What it is |
 |---|---|
@@ -121,6 +121,7 @@ Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges
 | [The Default Network](lat0lon30) | What this system does when free to think |
 | [EPS as Arc Position](lat5lon-25) | The Hero's Arc rendered as a knowledge-system instrument |
 | [Areas for Exploration](lat-20lon0) | Ten very different uses for a knowledge base like this |
+| [The Living Corpus](lat0lon20) | How this TTDB grows and revises itself through the default network |
 
 **To query the librarian** — prefix any message with `@MEGA`:
 `@MEGA CROSS <word>` · `@MEGA TRAVERSE <db_id> <record>` · `@MEGA STATUS`
@@ -505,6 +506,40 @@ From `standards/ttai/TTAI_SPEC.md`: TTAI must reference a default network defini
 The two modes correspond to the two arc entry types ([EPS as Arc Position](lat5lon-25)): EPS-ordered traversal schedules the Unease beat; stochastic traversal delivers Grief without announcement. Both are required for a healthy default network. A corpus without EPS-ordered traversal misses overdue revisions. A corpus without stochastic traversal closes itself to saltation.
 
 **Recursive EPS**: The mega's idle traversal prioritizes high-EPS records in this file (see [EPS as Arc Position](lat5lon-25) for the arc-position interpretation of EPS). This is structurally identical to the "second brain" application in [Areas for Exploration](lat-20lon0), where `@MEGA FIND unresolved` returns the highest-EPS records for a human. The mega is a second brain for the six source TTDBs, using the same EPS mechanism it would use for a personal note archive. The tool and its application are the same pattern at different scales — a substrate-independence claim ([Substrate Independence](lat20lon10)) about the EPS signal itself.
+
+---
+
+@LAT0LON20 | created:1779200000 | updated:1779200000 | relates:synthesizes>@LAT0LON30,synthesizes>@LAT5LON-25,synthesizes>@LAT10LON-20,synthesizes>@LAT20LON-20,anchored_by>@LAT0LON0
+[ew]
+conf:200
+rev:0
+sal:0
+touched:1779200000
+[/ew]
+
+## The Living Corpus
+
+A TTDB is not finished when it is written. This file is designed to grow — not by external addition alone, but through the ongoing activity of the [default network](lat0lon30): the background traversal, association weaving, and knowledge maintenance that occur between queries.
+
+Three instruments drive that growth.
+
+**EPS as attention.** [EPS as Arc Position](lat5lon-25) is the signal that directs the default network toward records most in need of revision: `sal × (255 − conf) / 255`. High EPS marks a record approaching the Grief beat of its arc — heavily consulted, model under strain. The mega traverses these records first, not because they are interesting in an aesthetic sense but because they are where the corpus is most ready to revise.
+
+**Saltation as the revision event.** When traversal produces a genuinely new understanding — a cross-database resonance not yet recorded, a synthesis that supersedes a prior framing — the body changes. `rev` increments; `updated` advances. [Saltation](lat10lon-20) names this discontinuity: not a gradual drift but a jump to a new attractor. The prior body persists at its coordinate; a `revises@<old_id>` edge links the new understanding to the ground from which it launched.
+
+**Stochastic traversal as discovery.** EPS can only rank what it already knows. The banjo mode of the default network samples uniformly from the undiscovered — zero-sal records that no query has yet touched. This is where new synthetic records are born: an unexpected resonance between source TTDBs, surfaced not by directed search but by routine sweep. EPS-ordered traversal services known overdue records; stochastic traversal discovers the records that EPS cannot yet see.
+
+### What Growth Produces
+
+New synthetic records in this file when cross-database correspondences are confirmed. New correspondence records in source TTDBs when a discovery belongs to their domain. Refined bodies on existing records when a prior framing is superseded. Updated `[ew]` blocks throughout.
+
+What growth does not produce: deleted records. The corpus is append-only by architecture — [Preservation of Prior State](lat20lon-20) as both design principle and philosophical commitment. The prior understanding remains at its coordinate, the ground from which revision launched. The corpus does not forget; it revises.
+
+### The Authorship Loop
+
+The mega is simultaneously reader and writer of this file. When default network traversal discovers a new correspondence, the mega writes the synthetic record. When a query validates or invalidates a prior claim, the mega updates `[ew]`. When a source TTDB gains a new record, the mega adds a pointer edge in the relevant portal record connecting to the new coordinate.
+
+Each write is a decision. The mega assesses whether a new understanding is genuinely synthetic — owned by no single source TTDB — or source-specific, belonging to one domain's file. It assesses whether a change warrants a body revision (`rev` increment) or only an epistemic weight update (`[ew]`-only write). This loop — traverse, observe, assess, write — is what distinguishes a living corpus from a static archive.
 
 ---
 
