@@ -108,7 +108,7 @@ touched:1778400000
 
 ## Welcome
 
-An AI librarian reasoning across six interconnected knowledge bases — narrative theory, bioelectricity, phenomenology, affect, formal mathematics, and engineering terminology — mapped as a conceptual globe.
+An AI librarian reasoning across six interconnected knowledge bases — [narrative theory](#portal-story-of-stories-correspondence), [bioelectricity](#portal-bioelectric--tte-resonance), [phenomenology](#portal-a-world-appears--pollan--toot-toot), [affect](#portal-feelings-ttdb), [formal mathematics](#portal-mathematical-ttdb-latex), and [engineering terminology](#portal-toot-toot-terminology-db) — mapped as a conceptual globe.
 
 Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges connect records across databases. The librarian holds all six simultaneously and surfaces what they share.
 
