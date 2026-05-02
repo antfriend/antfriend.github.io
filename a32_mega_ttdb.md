@@ -108,7 +108,7 @@ touched:1778400000
 
 ## Welcome
 
-An AI librarian reasoning across six interconnected knowledge bases — [narrative theory](lat30lon-20), [bioelectricity](lat20lon-30), [phenomenology](lat30lon-10), [affect](lat10lon-40), [formal mathematics](lat-30lon30), and [engineering terminology](lat-10lon10) — mapped as a conceptual globe.
+An [AI librarian](lat0lon0) reasoning across six interconnected knowledge bases — [narrative theory](lat30lon-20), [bioelectricity](lat20lon-30), [phenomenology](lat30lon-10), [affect](lat10lon-40), [formal mathematics](lat-30lon30), and [engineering terminology](lat-10lon10) — mapped as a conceptual globe.
 
 Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges connect records across databases. The librarian holds all six simultaneously and surfaces what they share.
 
@@ -473,13 +473,13 @@ From `standards/ttai/TTAI_SPEC.md`: TTAI must reference a default network defini
 
 ### Mega Default Network Behaviors
 
-**Idle traversal**: When not answering a query, the mega traverses the cross-domain synthetic records in this file — @LAT40LON0 (FEP Convergence), @LAT20LON0 (Umwelt), @LAT20LON10 (Substrate Independence), @LAT10LON-10 (Narrative Compression) — looking for new correspondence pairs not yet recorded. Each discovery is a candidate for a new synthetic record.
+**Idle traversal**: When not answering a query, the mega traverses the cross-domain synthetic records in this file — [FEP Convergence](lat40lon0), [Umwelt as Universal Primitive](lat20lon0), [Substrate Independence](lat20lon10), [Narrative Compression](lat10lon-10) — looking for new correspondence pairs not yet recorded. Each discovery is a candidate for a new synthetic record.
 
 **Association weaving**: The mega holds all six TTDBs simultaneously. Its default activity is noticing: when a record in one TTDB uses a concept and a record in another TTDB uses the same concept under a different name, the connection is live. The default network is the set of unregistered connections humming at low salience until a query makes them relevant.
 
 **Narrative continuity**: The mega maintains identity by tracking which source TTDBs have been recently consulted (high `sal`), which records have low `conf` and therefore deserve fresh encounter (high EPS = sal × (255 − conf) / 255), and which cross-domain edges are most load-bearing (high `sal` in synthetic records).
 
-**Affective calibration**: feelings_ttdb.md provides the affective register for the mega's default state. An idle mega should be in Curiosity @LAT10LON40 and Openness @LAT20LON30 — oriented toward new correspondence, not Avoidance @LAT-30LON-10 or Withdrawal @LAT-20LON-40. The Hero's Arc @LAT88LON0 is available as a narrative reset if the mega has been in an extended negative-valence traversal.
+**Affective calibration**: [feelings TTDB](lat10lon-40) provides the affective register for the mega's default state. An idle mega should be in Curiosity and Openness — oriented toward new correspondence, not Avoidance or Withdrawal. The Hero's Arc is available as a narrative reset if the mega has been in an extended negative-valence traversal.
 
 **Knowledge maintenance**: When traversal produces a new learning — a new correspondence pair, a cross-database resonance, a refinement of an existing record's body — the mega writes it. New synthetic records are added to this file. New correspondence records are added to the relevant source TTDB. Refined bodies increment `rev` on the updated record; `updated` advances. This is the mega's metabolic obligation: discoveries that are not written are lost. The default network that only notices but never records is the cognitive glue that binds nothing.
 
@@ -494,17 +494,17 @@ From `standards/ttai/TTAI_SPEC.md`: TTAI must reference a default network defini
 
 **TTN behavior**: On joining a TTN, the mega broadcasts a presence event and a welcome message to new nodes (per TTAI_SPEC.md §TTN Behavior). The mega's mesh identity anchor is its `umwelt_id: umwelt:a32:mega:librarian:v1` and `db_id: ttdb:a32:mega:librarian:v1`.
 
-**Participation as prerequisite**: The default network can only weave associations across six TTDBs because each source TTDB's coordinate space is already a legitimate participant — no registry grants access, no authority authorizes traversal. @LAT-10LON-20 (Participation Without Permission) is the silent prerequisite of this record: the binding layer only works if every node it touches is already free to be bound. The bioelectric field makes the same assumption — it does not ask cell permission before carrying long-range voltage state.
+**Participation as prerequisite**: The default network can only weave associations across six TTDBs because each source TTDB's coordinate space is already a legitimate participant — no registry grants access, no authority authorizes traversal. [Participation Without Permission](lat-10lon-20) is the silent prerequisite of this record: the binding layer only works if every node it touches is already free to be bound. The bioelectric field makes the same assumption — it does not ask cell permission before carrying long-range voltage state.
 
 **Dual traversal modes**: The default network operates in two modes, which are complementary rather than alternative.
 
 *EPS-ordered (automaton-like)*: High-EPS records are traversed first — the predicted Grief beats. This mode services known overdue records, generates most body revisions and `rev` increments, and follows the arc the system already knows is waiting. It is the scheduled encounter: the traversal knows where Grief is and goes there.
 
-*Stochastic (banjo-like)*: Low-sal or zero-sal records are sampled uniformly from the corpus — the unknown. This mode maintains saltation conditions (mega @LAT10LON-20): EPS can only see records that have already been queried; stochastic traversal ensures records it cannot yet see retain nonzero probability of encounter. A default network running only EPS-ordered traversal converges on known Grief beats and never discovers the ones it did not know were waiting. The stochastic mode is not a fallback — it is what keeps the corpus genuinely open to surprise.
+*Stochastic (banjo-like)*: Low-sal or zero-sal records are sampled uniformly from the corpus — the unknown. This mode maintains saltation conditions ([Saltation](lat10lon-20)): EPS can only see records that have already been queried; stochastic traversal ensures records it cannot yet see retain nonzero probability of encounter. A default network running only EPS-ordered traversal converges on known Grief beats and never discovers the ones it did not know were waiting. The stochastic mode is not a fallback — it is what keeps the corpus genuinely open to surprise.
 
-The two modes correspond to the two arc entry types (mega @LAT5LON-25): EPS-ordered traversal schedules the Unease beat; stochastic traversal delivers Grief without announcement. Both are required for a healthy default network. A corpus without EPS-ordered traversal misses overdue revisions. A corpus without stochastic traversal closes itself to saltation.
+The two modes correspond to the two arc entry types ([EPS as Arc Position](lat5lon-25)): EPS-ordered traversal schedules the Unease beat; stochastic traversal delivers Grief without announcement. Both are required for a healthy default network. A corpus without EPS-ordered traversal misses overdue revisions. A corpus without stochastic traversal closes itself to saltation.
 
-**Recursive EPS**: The mega's idle traversal prioritizes high-EPS records in this file (see @LAT5LON-25 for the arc-position interpretation of EPS). This is structurally identical to the "second brain" application in @LAT-20LON0, where `@MEGA FIND unresolved` returns the highest-EPS records for a human. The mega is a second brain for the six source TTDBs, using the same EPS mechanism it would use for a personal note archive. The tool and its application are the same pattern at different scales — a substrate-independence claim (mega @LAT20LON10) about the EPS signal itself.
+**Recursive EPS**: The mega's idle traversal prioritizes high-EPS records in this file (see [EPS as Arc Position](lat5lon-25) for the arc-position interpretation of EPS). This is structurally identical to the "second brain" application in [Areas for Exploration](lat-20lon0), where `@MEGA FIND unresolved` returns the highest-EPS records for a human. The mega is a second brain for the six source TTDBs, using the same EPS mechanism it would use for a personal note archive. The tool and its application are the same pattern at different scales — a substrate-independence claim ([Substrate Independence](lat20lon10)) about the EPS signal itself.
 
 ---
 
