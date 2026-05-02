@@ -2457,6 +2457,7 @@
 
       if (!state.records[target.recordId]) return false;
       selectRecord(target.recordId);
+      history.pushState(null, "", window.location.href);
       return true;
     }
 
@@ -3485,4 +3486,19 @@
       force: true,
       resetSelection: true,
       preferredRecordId: initialTootTarget?.recordId || null,
+    });
+
+    window.addEventListener("popstate", () => {
+      const params = new URLSearchParams(window.location.search || "");
+      const rawDbToken = getFirstSearchParam(params, DB_URL_PARAM_KEYS);
+      const dbPath = resolveDbPathToken(rawDbToken, state.availableDbPaths) || DEFAULT_DB_PATH;
+      const rawToken = getFirstSearchParam(params, TOOT_URL_PARAM_KEYS);
+      const recordId = normalizeRecordIdToken(rawToken);
+      if (dbPath !== state.activeDbPath) {
+        loadDb(dbPath, { resetSelection: true, preferredRecordId: recordId });
+        return;
+      }
+      if (recordId && state.records[recordId]) {
+        selectRecord(recordId);
+      }
     });
