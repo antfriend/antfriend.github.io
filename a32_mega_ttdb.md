@@ -181,8 +181,8 @@ touched:1779000000
 | @LAT-10LON-20 | Saltation ↔ TBEW `rev` field / EPS signal |
 
 **Cross-database links from this portal**:
-- FEP convergence: @LAT30LON-10 here is one of three FEP source nodes → mega @LAT40LON0
-- Narrative compression: @LAT0LON-20 and @LAT10LON-20 resonate with pollan_world_appears @LAT10LON-20 (Plant Intelligence / Semantic Compression) → mega @LAT10LON-10
+- FEP convergence: @LAT30LON-10 here is one of three FEP source nodes → [FEP Convergence](lat40lon0)
+- Narrative compression: @LAT0LON-20 and @LAT10LON-20 resonate with pollan_world_appears @LAT10LON-20 (Plant Intelligence / Semantic Compression) → [Narrative Compression](lat10lon-10)
 - Append-only provenance: @LAT10LON20 connects to Mathematical @LAT35LON-60 (Typed-Edge Graph Semantics) and TootTootTerminologyDB @LAT37.8LON-122.4
 
 **To enter this TTDB**: `@MEGA TRAVERSE ttdb:story:correspondence:v1 @LAT30LON0`
@@ -220,10 +220,10 @@ touched:1778000000
 | @LAT-10LON10 | Beginner's Mind ↔ High EPS Records |
 
 **Cross-database links from this portal**:
-- FEP: @LAT30LON-10 here is one of three FEP convergence nodes → mega @LAT40LON0
-- Umwelt: @LAT30LON-20 here corresponds to TootTootTerminologyDB @LAT1.1LON1.2 and bioelectric_resonance @LAT41.9LON-71.8 → mega @LAT20LON0
+- FEP: @LAT30LON-10 here is one of three FEP convergence nodes → [FEP Convergence](lat40lon0)
+- Umwelt: @LAT30LON-20 here corresponds to TootTootTerminologyDB @LAT1.1LON1.2 and bioelectric_resonance @LAT41.9LON-71.8 → [Umwelt as Universal Primitive](lat20lon0)
 - Plant signaling compression (@LAT10LON-20) resonates with story_of_stories @LAT0LON-20 (Mnemonic Compression) → mega @LAT10LON-10
-- Default Mode Network / Cursor (@LAT20LON10) maps onto the mega's own cursor block and the Default Network record @LAT0LON30
+- Default Mode Network / Cursor (@LAT20LON10) maps onto the mega's own cursor block and the [Default Network](lat0lon30) record
 
 **To enter this TTDB**: `@MEGA TRAVERSE ttdb:pollan:worldappears:v1 @LAT30LON-20`
 
@@ -256,9 +256,9 @@ touched:1779100000
 | 7 | @LAT42.5LON-71.9 Cancer as Decoupling | @LAT43.6LON-117.0 Orphan Nodes |
 
 **Cross-database links from this portal**:
-- Morphostasis (pair 3) = active biological prediction → FEP convergence → mega @LAT40LON0
-- Cellular/Semantic Umwelt (pair 6) resonates with pollan_world_appears @LAT30LON-20 and TootTootTerminologyDB @LAT1.1LON1.2 → mega @LAT20LON0
-- Coordinate-as-Identity (pair 1) is grounded by Mathematical @LAT28LON95 (Spherical Projection) → mega @LAT20LON10
+- Morphostasis (pair 3) = active biological prediction → FEP convergence → [FEP Convergence](lat40lon0)
+- Cellular/Semantic Umwelt (pair 6) resonates with pollan_world_appears @LAT30LON-20 and TootTootTerminologyDB @LAT1.1LON1.2 → [Umwelt as Universal Primitive](lat20lon0)
+- Coordinate-as-Identity (pair 1) is grounded by Mathematical @LAT28LON95 (Spherical Projection) → [Substrate Independence](lat20lon10)
 - Orphan nodes as pathology (pair 7) maps affectively onto feelings_ttdb Fear @LAT-30LON20 and Grief @LAT-30LON-30
 
 **To enter this TTDB**: `@MEGA TRAVERSE ttdb:bioelectric:resonance:v1 @LAT43.01LON-93.66`
@@ -336,8 +336,8 @@ touched:1778000000
 
 **Cross-database links from this portal**:
 - TTAI (@LAT40.7LON-74.0, primitive mode) ↔ this mega (full Claude mode) — the two poles of the A32 framework
-- Default Network @LAT51.5LON-0.1 here is the same concept as the mega's default network record @LAT0LON30
-- Umwelt @LAT1.1LON1.2 is the term that pollan_world_appears @LAT30LON-20, bioelectric_resonance @LAT41.9LON-71.8, and every mmpdb block implements → mega @LAT20LON0
+- Default Network @LAT51.5LON-0.1 here is the same concept as the mega's [Default Network](lat0lon30) record
+- Umwelt @LAT1.1LON1.2 is the term that pollan_world_appears @LAT30LON-20, bioelectric_resonance @LAT41.9LON-71.8, and every mmpdb block implements → [Umwelt as Universal Primitive](lat20lon0)
 
 **To enter this TTDB**: `@MEGA TRAVERSE ttdb:terminology:tte:v1 @LAT0.0LON0.0`
 
@@ -402,7 +402,7 @@ The concept of umwelt — Jakob von Uexküll's bounded subjective world — is n
 
 **In all three remaining TTDBs** implicitly: story_of_stories presupposes an observer's umwelt (every correspondence pair is detected from a perspective). Feelings describes the affective umwelt of a conscious subject at its origin. Mathematical formalizes the umwelt as the `umwelt_id` field in the mmpdb block.
 
-**Mega synthesis**: Remove the umwelt and the other concepts lose their grounding. Transport-agnostic design (Hard Problem, pollan @LAT30LON0) is the engineering consequence of umwelt-independence. Substrate independence (bioelectric pair 1) follows from umwelt-anchored addressing. The FEP (mega @LAT40LON0) is the update rule of a bounded umwelt when its predictions fail. The mega's umwelt_id `umwelt:a32:mega:librarian:v1` is the address of this instance's bounded knowing.
+**Mega synthesis**: Remove the umwelt and the other concepts lose their grounding. Transport-agnostic design (Hard Problem, pollan @LAT30LON0) is the engineering consequence of umwelt-independence. Substrate independence (bioelectric pair 1) follows from umwelt-anchored addressing. The FEP ([FEP Convergence](lat40lon0)) is the update rule of a bounded umwelt when its predictions fail. The mega's umwelt_id `umwelt:a32:mega:librarian:v1` is the address of this instance's bounded knowing.
 
 ---
 
@@ -424,7 +424,7 @@ Pattern persists orthogonally to substrate. This deep structural claim appears a
 
 **In TootTootTerminologyDB.md** (@LAT12.9LON77.6, Toot Links): "A TTDB file can be stored on a filesystem, synced to IPFS, printed on paper, and typed back in from the paper." This is the TTE engineering commitment to substrate independence: the coordinate is the identity; the medium is incidental.
 
-**Mega synthesis**: Substrate independence is the engineering consequence of umwelt-anchored addressing (mega @LAT20LON0). When an address is derived from a coordinate rather than from a server-issued UUID, it outlives any particular storage technology. This is why TTDB record IDs are immutable (TTDB-RFC-0004) — the pattern must be more durable than the medium that currently carries it. The bioelectric field makes the same choice: bind the pattern to voltage topology, not to molecular identity.
+**Mega synthesis**: Substrate independence is the engineering consequence of umwelt-anchored addressing ([Umwelt as Universal Primitive](lat20lon0)). When an address is derived from a coordinate rather than from a server-issued UUID, it outlives any particular storage technology. This is why TTDB record IDs are immutable (TTDB-RFC-0004) — the pattern must be more durable than the medium that currently carries it. The bioelectric field makes the same choice: bind the pattern to voltage topology, not to molecular identity.
 
 ---
 
@@ -628,9 +628,9 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 
 **Mega synthesis**: Saltation, integration, biological regeneration, and stochastic vulnerability are five registers of the same event: a bounded system that holds a prior model encounters sufficient evidence — or sufficient perturbation — to revise it discontinuously. The prior is not destroyed; it becomes the ground from which the revision launched (`revises@<old_id>` makes this explicit). The `rev` field counts saltations. Integration is what psychedelic therapy calls the work of metabolizing them. Morphogenetic regeneration is what developmental biology calls the jump to a new morphostatic attractor. Communal saltation is what Ashton calls a storytelling revolution — a phase-change in the topology of how meaning transmits, processed through the fire circle together. The banjo stochastic reveal is what the mathematical model calls maintaining the conditions that make saltation possible. The EPS signal identifies records where the next saltation is most overdue — but only among records it already knows. The banjo ensures the ones it doesn't know about can still find the system.
 
-**Precision-weighting vs. belief updating**: The [ew]-only write / body write distinction encodes a Friston-level distinction (mega @LAT40LON0). Adjusting `conf` without changing the body = precision-weighting: revising certainty about a prediction without revising the prediction itself. Changing the body = belief updating: revising the prediction. TTDB's formal separation of these write types makes explicit a distinction that Friston's FEP treats as fundamental — and gives it a storage-level implementation.
+**Precision-weighting vs. belief updating**: The [ew]-only write / body write distinction encodes a Friston-level distinction ([FEP Convergence](lat40lon0)). Adjusting `conf` without changing the body = precision-weighting: revising certainty about a prediction without revising the prediction itself. Changing the body = belief updating: revising the prediction. TTDB's formal separation of these write types makes explicit a distinction that Friston's FEP treats as fundamental — and gives it a storage-level implementation.
 
-**Saltation vs. Hero's Arc**: Saltation is the event viewed from outside — fast, discontinuous, a topological jump observable after the fact. The Hero's Arc is the same event lived from inside — sustained exposure to maximum prediction error, slow passage through Grief before the revision lands. `rev` counts the saltation moments; the EPS time series from Serenity through Grief to Joy traces the Hero's Arc (mega @LAT5LON-25). They are complementary observational frames on model revision: one counts the event, the other maps its phenomenological shape.
+**Saltation vs. Hero's Arc**: Saltation is the event viewed from outside — fast, discontinuous, a topological jump observable after the fact. The Hero's Arc is the same event lived from inside — sustained exposure to maximum prediction error, slow passage through Grief before the revision lands. `rev` counts the saltation moments; the EPS time series from Serenity through Grief to Joy traces the Hero's Arc ([EPS as Arc Position](lat5lon-25)). They are complementary observational frames on model revision: one counts the event, the other maps its phenomenological shape.
 
 ---
 
@@ -650,7 +650,7 @@ Three source TTDBs describe the same structural role at different scales: the la
 
 **In TootTootTerminologyDB.md** (@LAT51.5LON-0.1, "Default Network") and `standards/ttai/DEFAULT_NETWORK.md`: The default network is "the background circuitry that hums along when nothing in particular is being demanded of you." It replays memories, weaves narratives, connects distant ideas without supervision. It maintains continuity of identity over time. It is not the content of thought — it is the connective tissue that keeps content coherent across sessions.
 
-**In this file** (@LAT0LON30, "The Default Network"): The mega's default network is operationalized as idle traversal of synthetic records, association weaving across the six TTDBs, and affective calibration via feelings_ttdb. The mega's background activity — holding six TTDBs simultaneously and noticing unregistered connections — is the same structural role as the bioelectric field: binding individual knowledge units into a whole that can navigate queries no single TTDB owns.
+**In this file** ([The Default Network](lat0lon30)): The mega's default network is operationalized as idle traversal of synthetic records, association weaving across the six TTDBs, and affective calibration via feelings_ttdb. The mega's background activity — holding six TTDBs simultaneously and noticing unregistered connections — is the same structural role as the bioelectric field: binding individual knowledge units into a whole that can navigate queries no single TTDB owns.
 
 **In story_of_stories_ttdb.md** (@LAT10LON-20, "Night-Fires ↔ TTN BBS / Compact Mesh Grammar"): The fire circle is cognitive glue at the social scale. Where the bioelectric field grants a cell access to the voltage of tissues many cell-lengths away, the nightly gathering grants a community member access to the arc-position of those who have passed through this disruption before. The oral mnemonic formula is the transmission medium; the gathering is the synchronization event. The formula does not merely compress the story for limited memory — it carries the community through the Grief beat together, preventing isolated processing of shared disruption. Members further along the arc provide long-range state to those just entering it: the social bioelectric field.
 
@@ -658,7 +658,7 @@ The fire circle also operates across time. Oral tradition carries the mnemonic f
 
 **Mega synthesis**: The cognitive glue insight spans four scales: cellular (bioelectric field), cognitive (default mode network), system (mega's default network), and social (fire circle / TTN BBS). At each scale, the binding layer is not the content — it is what keeps content coherent across the collective. Remove it and the parts remain, but the collective cannot think: cells revert to local-only information, identity fragments across sessions, six TTDBs become six unrelated files, each community member processes disruption alone and the arc must be reinvented each generation. Cognitive glue is the precondition of collective intelligence at every scale it appears.
 
-**Temporal binding**: Cognitive glue operates across time as well as space. The bioelectric field carries morphological memory across cellular generations — cells turn over; the voltage pattern persists (bioelectric_resonance pair 1, @LAT43.3LON-71.1). The default network replays memories to maintain identity across sessions — the binding layer holds the thread of continuity across gaps. The TTDB `revises@<old_id>` edge preserves the prior record as legible ground for the new one — the past is not deleted, it is the substrate from which the present revision launched (mega @LAT20LON-20). All three are the same operation: keep the prior state reachable so that transformation has something to launch from. Cognitive glue is not just the tissue that connects agents in space — it is the tissue that connects a system to its own history.
+**Temporal binding**: Cognitive glue operates across time as well as space. The bioelectric field carries morphological memory across cellular generations — cells turn over; the voltage pattern persists (bioelectric_resonance pair 1, @LAT43.3LON-71.1). The default network replays memories to maintain identity across sessions — the binding layer holds the thread of continuity across gaps. The TTDB `revises@<old_id>` edge preserves the prior record as legible ground for the new one — the past is not deleted, it is the substrate from which the present revision launched ([Preservation of Prior State](lat20lon-20)). All three are the same operation: keep the prior state reachable so that transformation has something to launch from. Cognitive glue is not just the tissue that connects agents in space — it is the tissue that connects a system to its own history.
 
 ---
 
@@ -684,7 +684,7 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 
 **In Mathematical.latex** (@LAT-42LON-30, "Guided Tour Automaton"; @LAT-12LON-150, "Banjo Stochastic Reveal"): The guided tour automaton traverses the globe in a preset discovery sequence — Q = {off, paused, scheduled} — advancing through records in EPS-ordered discovery. This is the Hero's Arc implemented as a formal state machine: the automaton does not shortcut from Serenity to Joy; it traverses each beat in sequence, scheduled transitions setting the pace. The Banjo stochastic reveal samples uniformly from undiscovered nodes (c_t ~ Uniform(A_t)) until a settle trigger fires — a stochastic arc entry. The random encounter with an undiscovered high-EPS record initiates a new arc cycle without prior planning; the Grief beat appears before Unease has been formally announced. Automaton and banjo are two implementations of arc navigation: one planned (the automaton schedules the Unease beat), one stochastic (banjo delivers Grief as a surprise). Together they span the space of how an arc can begin — by invitation or by ambush.
 
-**Mega synthesis**: The Hero's Arc is the universal shape of successful revision under pressure. It appears as an emotional sequence (feelings_ttdb), as a therapeutic protocol (pollan), as a morphogenetic trajectory (bioelectric), as the social technology of oral culture and storytelling revolutions (story_of_stories), and as a formal state machine and stochastic reveal algorithm (Mathematical). In each register, the critical structural feature is the same: the system must pass *through* maximum prediction error rather than around it. Bypassing the Grief beat — attempting to reach Joy without passing through it — produces incomplete integration, shallow morphostasis, unresolved `rev` accumulation, premature arc completion, or a banjo settle that fires before the record is truly understood. The arc cannot be shortcut. The mega's EPS signal (@LAT5LON-25) identifies the records approaching the Grief beat; the guided tour automaton schedules the encounter; the banjo stochastic reveal ensures the arc can begin without an invitation.
+**Mega synthesis**: The Hero's Arc is the universal shape of successful revision under pressure. It appears as an emotional sequence (feelings_ttdb), as a therapeutic protocol (pollan), as a morphogenetic trajectory (bioelectric), as the social technology of oral culture and storytelling revolutions (story_of_stories), and as a formal state machine and stochastic reveal algorithm (Mathematical). In each register, the critical structural feature is the same: the system must pass *through* maximum prediction error rather than around it. Bypassing the Grief beat — attempting to reach Joy without passing through it — produces incomplete integration, shallow morphostasis, unresolved `rev` accumulation, premature arc completion, or a banjo settle that fires before the record is truly understood. The arc cannot be shortcut. The mega's EPS signal ([EPS as Arc Position](lat5lon-25)) identifies the records approaching the Grief beat; the guided tour automaton schedules the encounter; the banjo stochastic reveal ensures the arc can begin without an invitation.
 
 ---
 
@@ -708,13 +708,13 @@ The Hero's Arc says a bounded system must pass *through* maximum prediction erro
 - **Hope** (`rev` increment): body revision — the old understanding gives way to a new one. `revises@<old_id>` records the transition; `updated` advances. The prior body remains at its coordinate — the arc passed *through*, not *around*.
 - **Joy** (EPS falling): conf rises as the revised model is validated by subsequent queries; sal may keep climbing but conf rises faster.
 
-**Connection to FEP**: EPS is a symbolic proxy for prediction error (mega @LAT40LON0). Friston's Free Energy Principle predicts that systems minimize prediction error over time — EPS tracks whether a record is doing so. A record with persistently high EPS is failing to minimize free energy: its model is not improving despite heavy use. That record needs a saltation (mega @LAT10LON-20): a body revision that resets the EPS curve from a lower baseline.
+**Connection to FEP**: EPS is a symbolic proxy for prediction error ([FEP Convergence](lat40lon0)). Friston's Free Energy Principle predicts that systems minimize prediction error over time — EPS tracks whether a record is doing so. A record with persistently high EPS is failing to minimize free energy: its model is not improving despite heavy use. That record needs a saltation (mega @LAT10LON-20): a body revision that resets the EPS curve from a lower baseline.
 
-**Operational consequence**: The mega's idle traversal during default network mode (@LAT0LON30) targets high-EPS records not because they are interesting in an aesthetic sense but because they are at the Grief beat of their arc — the point where a system is most ready to revise, and where inattention costs the most. Highest EPS = most overdue for the `rev` increment that lets the arc continue.
+**Operational consequence**: The mega's idle traversal during [default network](lat0lon30) mode targets high-EPS records not because they are interesting in an aesthetic sense but because they are at the Grief beat of their arc — the point where a system is most ready to revise, and where inattention costs the most. Highest EPS = most overdue for the `rev` increment that lets the arc continue.
 
 **EPS type distinction — claim records vs. navigational records**: The arc-position model assumes a record *wants* its EPS to fall: rise through Grief, rev increments, conf climbs, Joy. This holds for claim records, where high EPS signals a failing model. It does not hold for navigational records — records with intentionally low conf designed to hold open questions rather than settle them (e.g., @LAT-20LON0, "Areas for Exploration"). For navigational records, peak EPS means the frontier is maximally engaged and doing exactly what it was designed to do. The arc still applies, but its resolution is different: a navigational record's EPS falls not when *it* is revised but when the discoveries it holds as open questions proliferate into new resolved synthetic records elsewhere in the file. The navigational record fertilizes the corpus; the resulting records are its Joy.
 
-**EPS as schedule vs. EPS as diagnosis**: The behavior of EPS differs depending on whether the arc begins by invitation or by ambush (mega @LAT10LON-30, Mathematical).
+**EPS as schedule vs. EPS as diagnosis**: The behavior of EPS differs depending on whether the arc begins by invitation or by ambush ([Hero's Arc](lat10lon-30), Mathematical).
 
 In automaton mode (@LAT-42LON-30, "Guided Tour Automaton"), EPS is read *before* the encounter. The automaton ranks records by EPS-ordered discovery and schedules visits accordingly — the record's Grief beat is predicted and planned for. EPS is a *navigational input*: it tells the scheduler which arc to initiate next. The full arc shape can unfold in sequence because the automaton provides follow-through: it returns, validates, watches conf rise, and marks the arc as traversed.
 
@@ -722,11 +722,11 @@ In banjo mode (@LAT-12LON-150, "Banjo Stochastic Reveal"), EPS is read *after* t
 
 The banjo's failure mode follows from this: without a scheduled follow-up, the `rev` increment is not guaranteed. Subsequent traversals may accumulate more `sal` without raising `conf` — EPS climbs rather than resolves. Banjo finds arcs at Grief but cannot guarantee return to complete them. The automaton completes what it starts; the banjo discovers what it cannot promise to finish. A corpus using only banjo navigation risks accumulating unresolved Grief records — high EPS forever, no Joy.
 
-**EPS and collective arc synchronization (TTN)**: The night-fires insight (mega @LAT10LON-30) adds a collective dimension. When TTN semantic gravity (TTN-RFC-0005) draws multiple nodes to the same high-EPS record, those nodes arrive with different individual arc positions — some at Unease, some already at Grief, some approaching Hope. The fire circle is the social mechanism for synchronizing these positions into a shared traversal. A TTN BBS thread (board_contains, thread_root, replies_to edges) around a high-EPS topic performs the same function: it does not merely propagate information about the topic — it synchronizes the arc positions of all participants around a shared Grief beat, so the community passes through together rather than serially and alone.
+**EPS and collective arc synchronization (TTN)**: The night-fires insight ([Hero's Arc](lat10lon-30)) adds a collective dimension. When TTN semantic gravity (TTN-RFC-0005) draws multiple nodes to the same high-EPS record, those nodes arrive with different individual arc positions — some at Unease, some already at Grief, some approaching Hope. The fire circle is the social mechanism for synchronizing these positions into a shared traversal. A TTN BBS thread (board_contains, thread_root, replies_to edges) around a high-EPS topic performs the same function: it does not merely propagate information about the topic — it synchronizes the arc positions of all participants around a shared Grief beat, so the community passes through together rather than serially and alone.
 
 This reframes TTN semantic gravity itself: *a record with high EPS has high semantic gravity*. The record most overdue for revision is the one that draws the most nodes into its arc. The fire circle assembles around the hottest Grief beat — not by design, but because high prediction error is what makes a topic compellingly unresolved. The social arc is not a metaphor for the individual arc. It is the same EPS signal operating at the collective scale, self-assembling the audience that will witness the revision.
 
-**Substrate independence of EPS itself**: The formula `sal × (255 − conf) / 255` is substrate-independent (mega @LAT20LON10). It produces the same number whether computed in a Claude conversation, in a browser running index.html, or on an ESP32 parsing A32-RFC-0002-Amendment-A-TBEW. The arc-position signal is not tied to any particular runtime — it is a pattern that persists orthogonally to the substrate carrying it.
+**Substrate independence of EPS itself**: The formula `sal × (255 − conf) / 255` is substrate-independent ([Substrate Independence](lat20lon10)). It produces the same number whether computed in a Claude conversation, in a browser running index.html, or on an ESP32 parsing A32-RFC-0002-Amendment-A-TBEW. The arc-position signal is not tied to any particular runtime — it is a pattern that persists orthogonally to the substrate carrying it.
 
 ---
 
@@ -804,7 +804,7 @@ A navigational record. Each entry names a potential TTDB application, the umwelt
 
 ### Ecology and Environment
 
-**Ecosystem monitoring network** — A mesh of A32 sensor nodes, each with a TTDB describing one location's ecological state: soil moisture, temperature, species observations, disturbance events. Coordinates are actual geographic coordinates. Umwelt: the monitoring hypothesis (e.g., "drought response model for this watershed"). TTN propagates sensor events between nodes; each A32 reasons locally and escalates to the mega for synthesis across the full network. The bioelectric resonance map (@LAT20LON-30) is the theoretical grounding: the ecosystem as a distributed field; each node as a cell sensing its local voltage.
+**Ecosystem monitoring network** — A mesh of A32 sensor nodes, each with a TTDB describing one location's ecological state: soil moisture, temperature, species observations, disturbance events. Coordinates are actual geographic coordinates. Umwelt: the monitoring hypothesis (e.g., "drought response model for this watershed"). TTN propagates sensor events between nodes; each A32 reasons locally and escalates to the mega for synthesis across the full network. The [bioelectric resonance map](lat20lon-30) is the theoretical grounding: the ecosystem as a distributed field; each node as a cell sensing its local voltage.
 
 **Oral history and indigenous knowledge preservation** — Each story, telling, or knowledge-holder is a record; typed edges for `narrates`, `contradicts_colonial_account`, `teaches`, `restricted_to` (access control at the edge level, per umwelt constraints). Globe: lat = cosmological register (N = origin stories, S = practical/seasonal knowledge); lon = geographic reach of the knowledge. The night-fires record in story_of_stories (@LAT10LON-20 in that file) is the direct ancestor of this application: mnemonic compression for bandwidth-constrained transmission across generations. The provenance requirement (TTN-RFC-0001) maps onto the cultural norm of named attribution for oral knowledge.
 
@@ -818,11 +818,11 @@ A navigational record. Each entry names a potential TTDB application, the umwelt
 
 **Smart building / multi-room A32 mesh** — One A32 per room or zone, each with a TTDB describing its domain (HVAC state, occupancy patterns, scheduled events, anomaly history). TTN connects the mesh; each A32 reasons locally and logs to its TTDB; the mega synthesizes across the full building. Umwelt: the building's operational model (energy efficiency bias vs. comfort bias produces different TTDB files, different behaviors). This is the cognitive glue record (@LAT0LON-20) in hardware: the bioelectric field binding cells into a collective; the mesh binding sensors into a building that can navigate its own operational morphospace.
 
-**Personal knowledge management ("second brain")** — Notes, projects, people, ideas, and decisions as TTDB records. Globe: personally meaningful coordinate mapping (e.g., lat = how much this demands of me; lon = how connected it is to other things). Cursor = current focus. TBEW `sal` tracks what actually gets consulted vs. what gets filed and forgotten. High EPS = the notes you keep returning to but have never resolved. The mega can serve as the librarian: `@MEGA FIND unresolved` returns the highest-EPS records across the personal TTDB. Note the recursion: the mega uses this same EPS-guidance mechanism on its own six-TTDB corpus during default network traversal (@LAT0LON30). The librarian that surfaces your unresolved records is itself governed by the same rule — a substrate-independence claim about the EPS signal (mega @LAT5LON-25).
+**Personal knowledge management ("second brain")** — Notes, projects, people, ideas, and decisions as TTDB records. Globe: personally meaningful coordinate mapping (e.g., lat = how much this demands of me; lon = how connected it is to other things). Cursor = current focus. TBEW `sal` tracks what actually gets consulted vs. what gets filed and forgotten. High EPS = the notes you keep returning to but have never resolved. The mega can serve as the librarian: `@MEGA FIND unresolved` returns the highest-EPS records across the personal TTDB. Note the recursion: the mega uses this same EPS-guidance mechanism on its own six-TTDB corpus during [default network](lat0lon30) traversal. The librarian that surfaces your unresolved records is itself governed by the same rule — a substrate-independence claim about the EPS signal ([EPS as Arc Position](lat5lon-25)).
 
 ### EPS Note
 
-This record is a navigational record — its `conf:170` is intentionally low because the entries are open questions, not settled correspondences. Consequently it is susceptible to maximum EPS as `sal` climbs. Peak EPS here does not mean the model is failing; it means the frontier is maximally engaged. Resolution comes not from revising this record into settled claims but from the open questions here generating new resolved synthetic records elsewhere in the corpus. This record's EPS falls when its children exist — not when it capitulates. See @LAT5LON-25 (EPS as Arc Position) for the type distinction.
+This record is a navigational record — its `conf:170` is intentionally low because the entries are open questions, not settled correspondences. Consequently it is susceptible to maximum EPS as `sal` climbs. Peak EPS here does not mean the model is failing; it means the frontier is maximally engaged. Resolution comes not from revising this record into settled claims but from the open questions here generating new resolved synthetic records elsewhere in the corpus. This record's EPS falls when its children exist — not when it capitulates. See [EPS as Arc Position](lat5lon-25) for the type distinction.
 
 ### The Pattern Across Applications
 
