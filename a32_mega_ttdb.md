@@ -66,7 +66,7 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT10LON-10
+  - @LAT-10LON0
 preview:
   @LAT-10LON0: "Welcome. An AI librarian across six knowledge bases — narrative theory, bioelectricity, phenomenology, affect, formal mathematics, engineering terminology. Start here, then follow the links."
 ```
