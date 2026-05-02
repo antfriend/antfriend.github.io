@@ -468,7 +468,7 @@ touched:1778900000
 
 The A32 Mega's idle-state behavior definition. What this librarian does when not actively queried.
 
-From `standards/ttai/DEFAULT_NETWORK.md`: a default network is "the background circuitry that hums along when nothing in particular is being demanded of you — not empty, just unguided." It replays memories, simulates futures, weaves narratives about the self, and connects distant ideas in loose, associative ways. It is what a complex system does when it is free to be itself.
+From [`standards/ttai/DEFAULT_NETWORK.md`](./standards/ttai/DEFAULT_NETWORK.md): a default network is "the background circuitry that hums along when nothing in particular is being demanded of you — not empty, just unguided." It replays memories, simulates futures, weaves narratives about the self, and connects distant ideas in loose, associative ways. It is what a complex system does when it is free to be itself.
 
 From `standards/ttai/TTAI_SPEC.md`: TTAI must reference a default network definition that specifies idle-time behaviors and background narrative continuity.
 
