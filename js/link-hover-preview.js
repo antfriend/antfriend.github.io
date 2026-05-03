@@ -4,8 +4,8 @@
 
   const SHOW_DELAY_MS = 220;
   const HIDE_DELAY_MS = 90;
-  const PREVIEW_WIDTH_PX = 360;
-  const PREVIEW_HEIGHT_PX = 220;
+  const PREVIEW_WIDTH_PX = 720;
+  const PREVIEW_HEIGHT_PX = 440;
   const VIEWPORT_MARGIN_PX = 12;
   const PREVIEW_GAP_PX = 14;
   const SANDBOX_PERMISSIONS = "allow-same-origin allow-scripts";
