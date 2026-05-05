@@ -196,6 +196,16 @@
       box-shadow: 0 0 12px var(--glow);
     }
 
+    label.pill {
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #localFileInput {
+      display: none;
+    }
+
     .toggle {
       display: inline-flex;
       align-items: center;

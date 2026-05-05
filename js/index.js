@@ -20,6 +20,7 @@
     const TOUR_AUDIO_SPECIAL_KIND = "tour_sound";
     const DISCOVERY_TOUR_OFF_SPECIAL_KIND = "discovery_tour_off";
     const DISCOVERY_KEY_PREFIX = "tte-terminology-discovered-records-v2";
+    const LOCAL_CONTENT_KEY_PREFIX = "ttdb:local-content";
     const GLOBE_ZOOM_MIN = 0.7;
     const GLOBE_ZOOM_MAX = 350;
     const GLOBE_ZOOM_STEP = 1.12;
@@ -88,6 +89,7 @@
         audioPath: null,
         audioPlayer: null,
       },
+      usingLocalContent: false,
     };
 
     const palette = (() => {
@@ -189,6 +191,47 @@
       state.invertDragY = invertDragToggle.checked;
       localStorage.setItem("tte-terminology-invert-drag-y", String(state.invertDragY));
     });
+
+    const saveLocalContentBtn = document.getElementById("saveLocalContent");
+    const clearLocalContentBtn = document.getElementById("clearLocalContent");
+    const localFileInput = document.getElementById("localFileInput");
+
+    if (saveLocalContentBtn) {
+      saveLocalContentBtn.addEventListener("click", () => {
+        if (state.lastText && state.activeDbPath) {
+          setLocalContent(state.activeDbPath, state.lastText);
+          state.usingLocalContent = true;
+          setStatusLink(state.order.length);
+          syncLocalControls();
+        }
+      });
+    }
+
+    if (clearLocalContentBtn) {
+      clearLocalContentBtn.addEventListener("click", () => {
+        clearLocalContent(state.activeDbPath);
+        state.usingLocalContent = false;
+        syncLocalControls();
+        loadDb(state.activeDbPath, { force: true });
+      });
+    }
+
+    if (localFileInput) {
+      localFileInput.addEventListener("change", () => {
+        const file = localFileInput.files && localFileInput.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = e.target.result;
+          const targetPath = file.name;
+          setLocalContent(targetPath, text);
+          loadDb(targetPath, { resetSelection: true });
+        };
+        reader.readAsText(file);
+        localFileInput.value = "";
+      });
+    }
+
     if (typeof recordProfileViewQuery.addEventListener === "function") {
       recordProfileViewQuery.addEventListener("change", applyRecordViewportMode);
     } else if (typeof recordProfileViewQuery.addListener === "function") {
@@ -224,12 +267,42 @@
       const link = document.createElement("a");
       link.href = activeDbPath;
       link.textContent = activeDbPath;
-      statusEl.append(link, ` · ${discoveredCount}/${recordCount} discovered`);
+      const suffix = state.usingLocalContent
+        ? ` · ${discoveredCount}/${recordCount} discovered · 📌 local`
+        : ` · ${discoveredCount}/${recordCount} discovered`;
+      statusEl.append(link, suffix);
     }
 
     function getDiscoveryKey(dbPath = state.activeDbPath) {
       const keyPath = dbPath || DEFAULT_DB_PATH;
       return `${DISCOVERY_KEY_PREFIX}:${keyPath}`;
+    }
+
+    function getLocalContentKey(dbPath = state.activeDbPath) {
+      return `${LOCAL_CONTENT_KEY_PREFIX}:${dbPath || DEFAULT_DB_PATH}`;
+    }
+
+    function getLocalContent(dbPath) {
+      try { return localStorage.getItem(getLocalContentKey(dbPath)); } catch { return null; }
+    }
+
+    function setLocalContent(dbPath, text) {
+      try { localStorage.setItem(getLocalContentKey(dbPath), text); } catch {}
+    }
+
+    function clearLocalContent(dbPath) {
+      try { localStorage.removeItem(getLocalContentKey(dbPath)); } catch {}
+    }
+
+    function syncLocalControls() {
+      const saveBtn = document.getElementById("saveLocalContent");
+      const clearBtn = document.getElementById("clearLocalContent");
+      if (!saveBtn || !clearBtn) return;
+      if (state.usingLocalContent) {
+        clearBtn.removeAttribute("hidden");
+      } else {
+        clearBtn.setAttribute("hidden", "");
+      }
     }
 
     function isSupportedDbPath(path) {
@@ -602,14 +675,19 @@
       setStatusMessage(`Loading ${targetDbPath}...`);
       renderGraph();
 
-      fetch(targetDbPath, { cache: "no-store" })
-        .then((res) => {
-          if (!res.ok) throw new Error(`Failed to load ${targetDbPath}`);
-          return res.text();
-        })
+      const localText = getLocalContent(targetDbPath);
+      const fetchPromise = localText !== null
+        ? Promise.resolve(localText)
+        : fetch(targetDbPath, { cache: "no-store" }).then((res) => {
+            if (!res.ok) throw new Error(`Failed to load ${targetDbPath}`);
+            return res.text();
+          });
+
+      fetchPromise
         .then((text) => {
           if (loadToken !== state.dbLoadToken) return;
           if (!force && targetDbPath === state.lastLoadedDbPath && text === state.lastText) return;
+          state.usingLocalContent = localText !== null;
           state.lastText = text;
           state.lastLoadedDbPath = targetDbPath;
           const { records, order, selected, coords, specialRecords } = parseRecords(text, targetDbPath);
@@ -633,6 +711,7 @@
           applySearch();
           playRecordAudioForSelection(state.selectedId, { restart: true, suppress: false });
           setStatusLink(order.length);
+          syncLocalControls();
           scheduleTour();
         })
         .catch((err) => {
