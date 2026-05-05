@@ -105,6 +105,8 @@ Everything I know about you is written in the records below. When you tell me so
 
 `@SAGE what should I focus on?` · `@SAGE STATUS` · `@SAGE LOG noticed X`
 
+New here? Read the [setup guide](companion_README.md).
+
 ---
 
 @LAT40LON-30 | created:1780800000 | updated:1780800000 | relates:anchored_by>@LAT0LON0,serves>@LAT20LON0
