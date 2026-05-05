@@ -2188,8 +2188,45 @@
       let codeBlock = null;
       let codeBlockLang = "";
       let list = null;
+      let tableLines = [];
+
+      const flushTable = () => {
+        if (!tableLines.length) return;
+        const rows = tableLines.map((l) =>
+          l.trim().replace(/^\||\|$/g, "").split("|").map((c) => c.trim())
+        );
+        const sepIdx = rows.findIndex((row) => row.every((c) => /^[-: ]+$/.test(c)));
+        const table = document.createElement("table");
+        const headerRow = sepIdx === 1 ? rows[0] : null;
+        const dataRows = rows.filter((_, i) => i !== sepIdx && !(sepIdx === 1 && i === 0));
+        if (headerRow) {
+          const thead = document.createElement("thead");
+          const tr = document.createElement("tr");
+          headerRow.forEach((cell) => {
+            const th = document.createElement("th");
+            appendInline(th, cell);
+            tr.appendChild(th);
+          });
+          thead.appendChild(tr);
+          table.appendChild(thead);
+        }
+        const tbody = document.createElement("tbody");
+        dataRows.forEach((rowCells) => {
+          const tr = document.createElement("tr");
+          rowCells.forEach((cell) => {
+            const td = document.createElement("td");
+            appendInline(td, cell);
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        fragment.appendChild(table);
+        tableLines = [];
+      };
 
       const flushList = () => {
+        flushTable();
         if (list) {
           fragment.appendChild(list);
           list = null;
@@ -2273,7 +2310,14 @@
           continue;
         }
 
+        if (line.trim().startsWith("|")) {
+          flushList();
+          tableLines.push(line);
+          continue;
+        }
+
         if (/^\s*(-|\*|\d+\.)\s+/.test(line)) {
+          flushTable();
           if (!list) {
             list = document.createElement("ul");
           }

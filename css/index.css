@@ -372,6 +372,31 @@
       color: var(--muted);
     }
 
+    .record table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .record th,
+    .record td {
+      padding: 6px 10px;
+      text-align: left;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      vertical-align: top;
+    }
+
+    .record thead th {
+      background: rgba(11, 17, 18, 0.06);
+      font-weight: 600;
+    }
+
+    .record tbody tr:nth-child(even) td {
+      background: rgba(11, 17, 18, 0.03);
+    }
+
     .record-ew {
       display: flex;
       align-items: center;
