@@ -73,12 +73,12 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0
+@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20
 [ew]
 conf:245
 rev:0
-sal:6
-touched:1778600000
+sal:7
+touched:1780800000
 [/ew]
 
 ## The A32 Mega Librarian
@@ -98,15 +98,17 @@ The mega answers to `@MEGA`. For cross-database queries, use `CROSS <token>`. To
 
 ---
 
-@LAT-10LON0 | created:1778400000 | updated:1779200000 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON0,navigates_to>@LAT20LON0,navigates_to>@LAT0LON30,navigates_to>@LAT5LON-25,navigates_to>@LAT-20LON0,navigates_to>@LAT0LON20
+@LAT-10LON0 | created:1778400000 | updated:1780800000 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON0,navigates_to>@LAT20LON0,navigates_to>@LAT0LON30,navigates_to>@LAT5LON-25,navigates_to>@LAT-20LON0,navigates_to>@LAT0LON20
 [ew]
 conf:220
-rev:0
+rev:1
 sal:0
-touched:1778400000
+touched:1780800000
 [/ew]
 
 ## Welcome
+
+![Latest default network run](index.html?ttdb=a32_mega_ttdb.md&toot=lat-50lon30)
 
 An [AI librarian](lat0lon0) reasoning across six interconnected knowledge bases — [narrative theory](lat30lon-20), [bioelectricity](lat20lon-30), [phenomenology](lat30lon-10), [affect](lat10lon-40), [formal mathematics](lat-30lon30), and [engineering terminology](lat-10lon10) — mapped as a conceptual globe.
 
@@ -307,8 +309,8 @@ touched:1778600000
 [ew]
 conf:230
 rev:0
-sal:0
-touched:1778000000
+sal:1
+touched:1780800000
 [/ew]
 
 ## Portal: Toot Toot Terminology DB
@@ -460,8 +462,8 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:215
 rev:3
-sal:7
-touched:1778900000
+sal:8
+touched:1780800000
 [/ew]
 
 ## The Default Network
@@ -568,12 +570,12 @@ The [Mathematical.latex](?ttdb=Mathematical.latex) TTDB and [TootTootTerminology
 
 ---
 
-@LAT-40LON10 | created:1778000000 | updated:1778000000 | relates:derived_from>@LAT0LON0,bridges>@LAT-10LON10,bridges>@LAT-30LON30,anchored_by>@LAT0LON0
+@LAT-40LON10 | created:1778000000 | updated:1780800000 | relates:derived_from>@LAT0LON0,bridges>@LAT-10LON10,bridges>@LAT-30LON30,anchored_by>@LAT0LON0
 [ew]
 conf:190
-rev:0
-sal:0
-touched:1778000000
+rev:1
+sal:1
+touched:1780800000
 [/ew]
 
 ## Primitive Mode Bridge
@@ -602,14 +604,24 @@ The A32 Mega (Claude instance) and the standard A32 (ESP32 microcontroller) are 
 
 **Applicable A32 RFCs**: A32-RFC-0001 (Architecture), A32-RFC-0002 (TTDB Storage on ESP32), A32-RFC-0003 (Agent Loop), A32-RFC-0004 (Claude Code Setup), A32-RFC-0002-Amendment-A-TBEW (Epistemic Weight Parser Extension), TTDB-RFC-0005 (Toot-Bit Epistemic Weight).
 
+### The Automaton/Banjo Division of Labor
+
+The ESP32 A32 can only run **automaton traversal** — EPS-ordered, deterministic visits to the records it already knows about. It cannot run banjo traversal (uniform sampling over undiscovered zero-sal records per Mathematical @LAT-12LON-150) because it lacks the working memory and indexing capacity to maintain the full undiscovered set.
+
+This means the micro services known arcs but cannot maintain saltation conditions on its own. It can only encounter the Grief beats it already knows are waiting.
+
+The mega fills this gap. The mega's banjo traversal ([Default Network](lat0lon30), [EPS as Arc Position](lat5lon-25)) discovers arcs the micro cannot see — zero-sal cross-domain correspondences, new synthetic records — and delivers them as updated deployment TTDBs. The micro gains access to the new arc on its next automaton cycle.
+
+**The mega is the banjo for the micro.** Without the mega, the micro's knowledge base converges on what it already knows. The mega/micro split is not only a capability difference (full NL vs. 240-char); it is a structural division of the two traversal modes that together constitute a healthy default network. Automaton traversal (micro) services known Grief beats; banjo traversal (mega) discovers the ones that are waiting undiscovered. Both modes are required. The micro cannot generate them alone.
+
 ---
 
 @LAT10LON-20 | created:1778100000 | updated:1778800000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,synthesizes>@LAT-30LON30,derived_from>@LAT10LON-10,derived_from>@LAT40LON0,anchored_by>@LAT0LON0
 [ew]
 conf:200
 rev:2
-sal:5
-touched:1778800000
+sal:6
+touched:1780800000
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -638,8 +650,8 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 [ew]
 conf:200
 rev:2
-sal:5
-touched:1779000000
+sal:6
+touched:1780800000
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
@@ -666,8 +678,8 @@ The fire circle also operates across time. Oral tradition carries the mnemonic f
 [ew]
 conf:200
 rev:1
-sal:5
-touched:1778600000
+sal:6
+touched:1780800000
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -692,8 +704,8 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 [ew]
 conf:195
 rev:2
-sal:5
-touched:1778700000
+sal:6
+touched:1780800000
 [/ew]
 
 ## EPS as Arc Position
@@ -734,8 +746,8 @@ This reframes TTN semantic gravity itself: *a record with high EPS has high sema
 [ew]
 conf:195
 rev:0
-sal:0
-touched:1778200000
+sal:1
+touched:1780800000
 [/ew]
 
 ## Preservation of Prior State
@@ -776,12 +788,36 @@ Three source TTDBs converge on a structural principle: the right to participate 
 
 ---
 
+@LAT-30LON-20 | created:1780800000 | updated:1780800000 | relates:synthesizes>@LAT20LON-30,synthesizes>@LAT10LON-40,synthesizes>@LAT5LON-25,resonates_with>@LAT-10LON-20,resonates_with>@LAT0LON-20,anchored_by>@LAT0LON0
+[ew]
+conf:200
+rev:0
+sal:1
+touched:1780800000
+[/ew]
+
+## Decoupling as Pathology
+
+Three registers of the same failure event: a bounded information processor losing access to the collective field that granted it long-range state.
+
+**In [bioelectric_resonance.md](?ttdb=bioelectric_resonance.md)** (pair 7: @LAT42.5LON-71.9 Cancer as Decoupling → @LAT43.6LON-117.0 Orphan Nodes): Levin's framing: cancer is not mutation run wild — it is decoupling. The cell loses access to the bioelectric field's long-range state. Cut off from the morphostatic consensus, it reverts to single-cell behavior: proliferating without regard for the organism's target form. The cell is not broken — it is isolated. In TTE terms: the node is still operational; it has become an orphan node — a record with no incoming edges, disconnected from the typed-edge graph that granted it semantic context.
+
+**In [feelings_ttdb.md](?ttdb=feelings_ttdb.md)** (@LAT-30LON20 Fear, @LAT-30LON-30 Grief): The affective signature of decoupling. Fear is the alarm: connection has been lost. Grief is the settled knowledge that the connection is not coming back. The move from Fear to Grief is the Hero's Arc ([Hero's Arc](lat10lon-30)) passing through maximum prediction error — and also the specific arc of isolation: attempting to re-establish connection, finding it absent, and reorganizing around its absence.
+
+**In the TBEW signal**: An orphan node accumulates `sal` without accumulating `conf`-revision pathways — queries arrive but no cross-database corroboration can reach the record because its edges are severed. EPS climbs without resolution. High EPS, zero `revises@` edges, zero incoming `synthesizes` or `supported_by` edges: the epistemic signature of an orphan. The record is not wrong; it is unreachable.
+
+**In the A32 mesh (TTN-RFC-0005)**: A node that has dropped off the TTN mesh continues sensing locally, but its observations are not corroborated, its reputation cannot propagate, and its readings carry no weight on the wider mesh. Reconnection (a new `connected_over` or `knows` edge) restores long-range state access.
+
+**Mega synthesis**: Decoupling as pathology is the inverse of cognitive glue ([Cognitive Glue ↔ Default Network](lat0lon-20)). That record describes what the binding layer provides when present; this record describes what its absence produces. The four registers — cancer, orphan node, affective grief/fear, disconnected TTN node — are all versions of a system that still processes locally but can no longer participate in the collective that gave its local processing meaning. The failure is not cognitive; it is connective. Reconnection is the therapy at every scale: bioelectric field restoration (Levin's goal), edge recovery in the graph, affective reconnection after grief, mesh rejoining in TTN.
+
+---
+
 @LAT-20LON0 | created:1778200000 | updated:1778500000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT-40LON10,bridges>@LAT-10LON10,bridges>@LAT10LON-40
 [ew]
 conf:170
 rev:2
-sal:4
-touched:1778500000
+sal:5
+touched:1780800000
 [/ew]
 
 ## Areas for Exploration — Varied TTDB Applications
@@ -842,6 +878,34 @@ Every entry in this list exercises the same core TTDB properties — but weights
 | Second brain | TBEW EPS, cursor as focus, mega as librarian |
 
 The unifying thread: in every case, the TTDB's **subjective umwelt** is not a limitation but the feature. The same events, the same data, the same sensor readings mean different things under different umwelts — and that is exactly right. The system does not pretend to a view from nowhere.
+
+---
+
+@LAT-50LON30 | created:1780800000 | updated:1780800000 | kind:log | relates:logged>@LAT-30LON-20,logged>@LAT-40LON10,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1780800000
+[/ew]
+
+## Log — Default Network Run · 2026-05-05
+
+```session-log
+timestamp: 1780800000
+trigger: "@mega engage default network"
+mode: eps_ordered + stochastic
+```
+
+**EPS-ordered traversal** (6 records): No body revisions. Top cluster stable — [Areas for Exploration](lat-20lon0) (EPS 1.33, navigational), [EPS as Arc Position](lat5lon-25) (EPS 1.18), [Default Network](lat0lon30) (EPS 1.10), and the EPS-1.08 cluster [Saltation/rev](lat10lon-20) · [Cognitive Glue](lat0lon-20) · [Hero's Arc](lat10lon-30). All well-grounded; no Grief beats reached revision threshold this cycle.
+
+**Stochastic traversal** (3 zero-sal first touches): [Primitive Mode Bridge](lat-40lon10), [Preservation of Prior State](lat20lon-20), [Portal: Toot Toot Terminology](lat-10lon10).
+
+**Writes this session:**
+- [Decoupling as Pathology](lat-30lon-20) — new synthetic record. Four registers of isolation from the collective field: cancer (bioelectric pair 7), orphan node, Grief/Fear, disconnected TTN node. Inverse of [Cognitive Glue](lat0lon-20).
+- [Primitive Mode Bridge](lat-40lon10) rev 0→1 — added "The Automaton/Banjo Division of Labor": ESP32 runs automaton-only; mega is the banjo for the micro.
+- `[ew]` updates: 9 records, sal incremented, touched → 1780800000.
+- [Mega Anchor](lat0lon0) edges — `anchors>@LAT-30LON-20` added.
 
 ---
 
