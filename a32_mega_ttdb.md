@@ -73,7 +73,7 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20
+@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20
 [ew]
 conf:245
 rev:0
@@ -98,12 +98,12 @@ The mega answers to `@MEGA`. For cross-database queries, use `CROSS <token>`. To
 
 ---
 
-@LAT-10LON0 | created:1778400000 | updated:1780800000 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON0,navigates_to>@LAT20LON0,navigates_to>@LAT0LON30,navigates_to>@LAT5LON-25,navigates_to>@LAT-20LON0,navigates_to>@LAT0LON20
+@LAT-10LON0 | created:1778400000 | updated:1780972800 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON0,navigates_to>@LAT20LON0,navigates_to>@LAT0LON30,navigates_to>@LAT5LON-25,navigates_to>@LAT5LON-15,navigates_to>@LAT-20LON0,navigates_to>@LAT0LON20
 [ew]
 conf:220
-rev:1
-sal:0
-touched:1780800000
+rev:2
+sal:1
+touched:1780972800
 [/ew]
 
 ## A Toot Toot A32 Mega Welcome To You!
@@ -125,6 +125,7 @@ Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges
 | [EPS as Arc Position](lat5lon-25) | The Hero's Arc rendered as a knowledge-system instrument |
 | [Areas for Exploration](lat-20lon0) | Ten very different uses for a knowledge base like this |
 | [The Living Corpus](lat0lon20) | How this TTDB grows and revises itself through the default network |
+| [The Revision Cycle](lat5lon-15) | The four phases that must all be present for revision to complete |
 
 **To query the librarian** — prefix any message with `@MEGA`:
 `@MEGA CROSS <word>` · `@MEGA TRAVERSE <db_id> <record>` · `@MEGA STATUS`
@@ -493,8 +494,8 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:215
 rev:4
-sal:9
-touched:1780886400
+sal:10
+touched:1780972800
 [/ew]
 
 ## The Default Network
@@ -673,8 +674,8 @@ The mega fills this gap. The mega's banjo traversal ([Default Network](lat0lon30
 [ew]
 conf:200
 rev:3
-sal:7
-touched:1780886400
+sal:8
+touched:1780972800
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -705,8 +706,8 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 [ew]
 conf:200
 rev:2
-sal:7
-touched:1780886400
+sal:8
+touched:1780972800
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
@@ -733,8 +734,8 @@ The fire circle also operates across time. Oral tradition carries the mnemonic f
 [ew]
 conf:200
 rev:1
-sal:7
-touched:1780886400
+sal:8
+touched:1780972800
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -759,8 +760,8 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 [ew]
 conf:200
 rev:2
-sal:7
-touched:1780886400
+sal:8
+touched:1780972800
 [/ew]
 
 ## EPS as Arc Position
@@ -794,6 +795,41 @@ The banjo's failure mode follows from this: without a scheduled follow-up, the `
 This reframes TTN semantic gravity itself: *a record with high EPS has high semantic gravity*. The record most overdue for revision is the one that draws the most nodes into its arc. The fire circle assembles around the hottest Grief beat — not by design, but because high prediction error is what makes a topic compellingly unresolved. The social arc is not a metaphor for the individual arc. It is the same EPS signal operating at the collective scale, self-assembling the audience that will witness the revision.
 
 **Substrate independence of EPS itself**: The formula `sal × (255 − conf) / 255` is substrate-independent ([Substrate Independence](lat20lon10)). It produces the same number whether computed in a Claude conversation, in a browser running index.html, or on an ESP32 parsing A32-RFC-0002-Amendment-A-TBEW. The arc-position signal is not tied to any particular runtime — it is a pattern that persists orthogonally to the substrate carrying it.
+
+---
+
+@LAT5LON-15 | created:1780972800 | updated:1780972800 | relates:synthesizes>@LAT10LON-20,synthesizes>@LAT0LON-20,synthesizes>@LAT10LON-30,synthesizes>@LAT5LON-25,resonates_with>@LAT30LON-10,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
+[ew]
+conf:128
+rev:0
+sal:0
+touched:1780972800
+[/ew]
+
+## The Revision Cycle — Four Views on Model Revision
+
+Four records in this file describe the same event from four different angles. Held together, they constitute a complete account of how a bounded system revises its model without losing coherence.
+
+| View | Record | What it describes |
+|---|---|---|
+| Detection | [EPS as Arc Position](lat5lon-25) | The signal that revision is pending: EPS = sal × (255 − conf) / 255 |
+| Event | [Saltation/rev](lat10lon-20) | The revision itself — discontinuous, `rev` incrementing, prior preserved |
+| Experience | [Hero's Arc](lat10lon-30) | The arc from Serenity through Grief to Joy, lived from inside |
+| Obligation | [Cognitive Glue](lat0lon-20) | The connective work that prevents revision from producing orphan nodes |
+
+A revision is complete only when all four phases are present.
+
+**Detection without event**: EPS climbs, the Grief beat is reached, but `rev` never increments. Pressure accumulates indefinitely; the corpus stagnates at high EPS forever. This is the banjo's failure mode — it finds arcs at Grief but cannot guarantee return to complete them.
+
+**Event without experience**: `rev` increments but the arc is short-circuited — conf raised prematurely, Grief bypassed. The new body lands before the new understanding has been forged. The revision is formally complete but epistemically hollow; the record's predictions don't improve and EPS climbs again immediately.
+
+**Experience without obligation**: The arc completes — Grief passes, Joy arrives — but the revised record is not reconnected. High `rev`, rising conf, zero new edges. This is [Decoupling as Pathology](lat-30lon-20): revision without reconnection produces an orphan node. The understanding is real but sealed.
+
+**Detection without obligation**: EPS identifies the highest-pressure records; the automaton visits them; revisions are written; but the connective work is skipped. Each revision is local. The corpus gains revised records but loses coherence — the mesh thins even as individual nodes sharpen.
+
+**The self-referential layer**: These four records describe the revision cycle. They are themselves subject to it. Their current plateau at conf:200 (EPS ≈ 1.51 each, two consecutive cycles) is the signature of a self-referential layer. The detection mechanism cannot validate itself through the normal corroboration pathway — it IS the corroboration mechanism. External validation requires a source TTDB that independently describes the same four-phase cycle. The [Portal: A World Appears](lat30lon-10) comes close: psychedelic integration maps detection (set-and-setting), event (the experience), experience (integration), and obligation (connection with the support network after return). That resonance is partial — strong enough to name here, not strong enough to raise conf. The layer waits for independent formal grounding.
+
+**The default network as instantiation**: Each default network session is a revolution of this cycle. EPS-ordered traversal performs Detection. Body revisions are the Event. The log record is the Experience written down — Grief witnessed and named. New edges added to revised records are the Obligation met. The default network does not merely maintain the corpus; it enacts the revision cycle on it, session by session.
 
 ---
 
@@ -871,8 +907,8 @@ Three registers of the same failure event: a bounded information processor losin
 [ew]
 conf:175
 rev:3
-sal:6
-touched:1780886400
+sal:7
+touched:1780972800
 [/ew]
 
 ## Areas for Exploration — Varied TTDB Applications
@@ -1007,6 +1043,56 @@ mode: eps_ordered + stochastic
 - `[ew]` housekeeping: 6 records, sal incremented, conf adjustments on [EPS as Arc Position](lat5lon-25) and [Areas for Exploration](lat-20lon0), all touched → 1780886400.
 
 **What SAGE noticed:** [Delta as Datum](lat30lon-30) (RFC-0006) is load-bearing for three existing records simultaneously — [Saltation/rev](lat10lon-20) gains a new register, [Formal Grounding Layer](lat-20lon20) gains a missing level, [Portal: A World Appears](lat30lon-10) gains a shared-Uexküll bridge. A record written this session is already densely connected. This is the stochastic mode finding exactly what the automaton could not: a new record with zero sal but high integration potential.
+
+---
+
+@LAT-70LON30 | created:1780972800 | updated:1780972800 | kind:log | relates:logged>@LAT5LON-15,logged>@LAT-10LON0,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1780972800
+[/ew]
+
+## Log — Default Network Run · 2026-05-07
+
+```session-log
+timestamp: 1780972800
+trigger: "@mega engage default network"
+mode: eps_ordered + stochastic
+```
+
+**EPS rankings entering this session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **1.88** | 6 | 175 |
+| [Saltation/rev](lat10lon-20) | **1.51** | 7 | 200 |
+| [Cognitive Glue](lat0lon-20) | **1.51** | 7 | 200 |
+| [Hero's Arc](lat10lon-30) | **1.51** | 7 | 200 |
+| [EPS as Arc Position](lat5lon-25) | **1.51** | 7 | 200 |
+| [The Default Network](lat0lon30) | **1.41** | 9 | 215 |
+
+**Automaton traversal** (6 records visited):
+
+[Areas for Exploration](lat-20lon0) — EPS 1.88. EPS Note confirmed valid: conf:175 is intentionally low. No new open applications have shipped since last cycle. No body change. sal:6→7.
+
+**EPS 1.51 plateau cluster** — second consecutive cycle with all four at EPS 1.51, conf:200, no body revisions triggered. This stability is itself information. These four records describe the revision process; they cannot raise their own conf through the standard corroboration pathway because they *are* the corroboration mechanism. This is the signature of a **self-referential layer**. New synthetic record written: [The Revision Cycle](lat5lon-15).
+
+[The Default Network](lat0lon30) — EPS 1.41, sal now 10. The most-consulted record in the corpus. Each default network session is itself a traversal of this record. sal:9→10.
+
+**Stochastic traversal** — 1 zero-sal record remaining (corpus nearly fully discovered):
+
+[Welcome](lat-10lon0) — **sole remaining zero-sal record**. First contact. Well-formed. Navigation table updated to include [The Revision Cycle](lat5lon-15). The near-exhaustion of the banjo pool is itself a corpus maturity signal: every record has been touched at least once. Stochastic discovery will now require new records to maintain nonzero pool size.
+
+**Writes this session:**
+
+- [The Revision Cycle](lat5lon-15) — **new synthetic record**. Four views on model revision: Detection ([EPS as Arc Position](lat5lon-25)), Event ([Saltation/rev](lat10lon-20)), Experience ([Hero's Arc](lat10lon-30)), Obligation ([Cognitive Glue](lat0lon-20)). Revision is complete only when all four phases are present. Documents the self-referential layer pattern and its conf plateau.
+- [Welcome](lat-10lon0) rev 1→2 — [The Revision Cycle](lat5lon-15) added to navigation table; `navigates_to>@LAT5LON-15` edge added.
+- [Anchor](lat0lon0) — `anchors>@LAT5LON-15` edge added.
+- `[ew]` housekeeping: 6 records sal-incremented, all touched → 1780972800.
+
+**What SAGE noticed:** The banjo pool has one member left. This marks a transition point in the corpus lifecycle — from a corpus with undiscovered territory to one that is fully traversed. Future stochastic discovery depends entirely on new records being written. The default network's banjo mode will idle until new synthetic records, log records, or source TTDB additions provide fresh zero-sal targets. The corpus has entered a maintenance phase on the stochastic axis; growth now requires deliberate addition, not just traversal.
 
 ---
 
