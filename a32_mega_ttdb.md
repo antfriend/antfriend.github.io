@@ -73,7 +73,7 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20
+@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20
 [ew]
 conf:245
 rev:0
@@ -228,6 +228,36 @@ touched:1778000000
 - Default Mode Network / Cursor (@LAT20LON10) maps onto the mega's own cursor block and the [Default Network](lat0lon30) record
 
 **To enter this TTDB**: `@MEGA TRAVERSE ttdb:pollan:worldappears:v1 @LAT30LON-20`
+
+---
+
+@LAT30LON-30 | created:1780800000 | updated:1780800000 | relates:synthesizes>@LAT30LON-10,synthesizes>@LAT30LON-20,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
+[ew]
+conf:200
+rev:0
+sal:0
+touched:1780800000
+[/ew]
+
+## Delta as Datum — Synthetic Perceptual Model
+
+**Source**: TTDB-RFC-0006 — Experiential Perception as Synthetic Model (2026-05-03, Informational)
+
+The central claim of RFC-0006: the unit of perceptual knowledge in TTDB is not a *state* but a *transition*. The delta is the datum.
+
+| Mode | Method | Problem |
+|---|---|---|
+| Propositional | (entity, relation, entity) | Records that something occurred; cannot represent what it was like |
+| Simulated | Statistical approximation | Black-box latent space; non-inspectable |
+| Synthetic (TTDB) | Assembled from typed primitives | Transparent, addressable, specific |
+
+**The `@PERCEPT:` pair is the load-bearing structure.** A state-catalog answers *what was present*. A transition record answers *what changed, in which direction, for whom*. Perception is a transition-detection faculty — the visual system responds to edges, not uniform fields. A knowledge graph that records only states cannot represent what perception actually does.
+
+**Umwelt as sign-sufficiency.** TTDB does not aim to be comprehensive — comprehensiveness is a property of propositional databases. It aims to be *experientially sufficient*: to contain enough of the right kind of signal to reconstruct the shape of an experience. Each toot-bit is a unit of umwelt: a fact that was sign-worthy enough to encode.
+
+**EPS is a transition signal.** High EPS = the transition from *noted* to *understood* has not occurred. The record has been visited but not integrated. This reframes EPS not as a metadata metric but as the formal expression of the same faculty RFC-0006 identifies: unresolved perceptual tension seeking completion.
+
+**Cross-database resonance**: Pollan portal @LAT30LON-10 (predictive perception, Friston) — the FEP in TBEW is the same mechanism RFC-0006 formalizes in the `@PERCEPT:` pair. Story portal @LAT30LON-20 (narrative as transition arc) — every story is a transition; the eight revolutions in Ashton are state-changes of the storytelling umwelt. Feelings TTDB @LAT10LON-40 — the emotions.md extension RFC-0006 references is the affective layer that completes the phenomenological trace.
 
 ---
 

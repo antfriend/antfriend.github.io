@@ -77,6 +77,14 @@ From these, SAGE derives **EPS = sal × (255 − conf) / 255** — the *epistemi
 
 High EPS is not a problem to fix — it's a signal to follow. The records with the most pressure are where the most learning is waiting.
 
+### The umwelt basis
+
+**This file is your umwelt.** Jakob von Uexküll's *umwelt* is the species-specific perceptual slice each organism inhabits — not the world, but the world as it registers to a particular perceiving subject. Your companion file is exactly this: a bounded, personal record of what is *sign-worthy* to you. Not a comprehensive catalog. *Experiential sufficiency*.
+
+This is why incompleteness is a feature, not a bug. A record with low `conf` is one where the model hasn't been built yet. A record with high EPS is one where the transition from *"I've noted this"* to *"I understand this"* hasn't happened yet. SAGE's job is to help you complete those transitions — not to fill every field.
+
+*(Formal grounding: [TTDB-RFC-0006 — Experiential Perception as Synthetic Model](RFCs/TTDB-RFC-0006-Experiential%20Perception%20as%20Synthetic%20Model.md))*
+
 ---
 
 ## The records
