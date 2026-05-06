@@ -312,6 +312,52 @@
         max-width: 100%;
       }
     }
+
+    @keyframes link-flicker {
+      0%   { text-shadow: 0 0 7px rgba(15,139,141,0.75), 0 0 18px rgba(15,139,141,0.35); opacity: 1; }
+      4%   { text-shadow: 0 0 2px rgba(15,139,141,0.2),  0 0 5px  rgba(15,139,141,0.1);  opacity: 0.82; }
+      6%   { text-shadow: 0 0 9px rgba(15,139,141,0.85), 0 0 22px rgba(15,139,141,0.4);  opacity: 1; }
+      20%  { text-shadow: 0 0 7px rgba(15,139,141,0.75), 0 0 18px rgba(15,139,141,0.35); opacity: 1; }
+      22%  { text-shadow: 0 0 1px rgba(15,139,141,0.1),  0 0 3px  rgba(15,139,141,0.05); opacity: 0.75; }
+      23%  { text-shadow: 0 0 9px rgba(15,139,141,0.85), 0 0 22px rgba(15,139,141,0.4);  opacity: 1; }
+      55%  { text-shadow: 0 0 7px rgba(15,139,141,0.75), 0 0 18px rgba(15,139,141,0.35); opacity: 1; }
+      57%  { text-shadow: 0 0 3px rgba(15,139,141,0.25), 0 0 6px  rgba(15,139,141,0.1);  opacity: 0.88; }
+      58%  { text-shadow: 0 0 0px rgba(15,139,141,0.0),  0 0 0px  rgba(15,139,141,0.0);  opacity: 0.6; }
+      59%  { text-shadow: 0 0 9px rgba(15,139,141,0.85), 0 0 22px rgba(15,139,141,0.4);  opacity: 1; }
+      100% { text-shadow: 0 0 7px rgba(15,139,141,0.75), 0 0 18px rgba(15,139,141,0.35); opacity: 1; }
+    }
+
+    @keyframes link-flicker-hover {
+      0%   { text-shadow: 0 0 10px rgba(255,0,0,0.8), 0 0 28px rgba(255,0,0,0.4); }
+      50%  { text-shadow: 0 0 16px rgba(255,0,0,1.0), 0 0 40px rgba(255,0,0,0.6); }
+      100% { text-shadow: 0 0 10px rgba(255,0,0,0.8), 0 0 28px rgba(255,0,0,0.4); }
+    }
+
+    .share-page a:not(.cta-btn) {
+      color: rgba(120, 230, 185, 0.88);
+      text-shadow: 0 0 7px rgba(15,139,141,0.75), 0 0 18px rgba(15,139,141,0.35);
+      animation: link-flicker 5.4s ease-in-out infinite;
+    }
+
+    .share-nav a:not(.cta-btn) {
+      animation-delay: 0s;
+    }
+
+    .share-footer a:not(.cta-btn) {
+      animation-delay: 0.9s;
+    }
+
+    .doc-section a:not(.cta-btn) {
+      animation-delay: 1.7s;
+    }
+
+    .share-page a:not(.cta-btn):hover {
+      color: var(--eyeball-red);
+      text-shadow: 0 0 10px rgba(255,0,0,0.8), 0 0 28px rgba(255,0,0,0.4);
+      animation: link-flicker-hover 1.2s ease-in-out infinite;
+      transform: translateY(-2px) scale(1.03);
+      background-color: rgba(10, 40, 24, 0.2);
+    }
   </style>
 </head>
 <body>
