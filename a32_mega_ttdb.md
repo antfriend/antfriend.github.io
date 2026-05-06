@@ -109,7 +109,7 @@ touched:1780800000
 ## A Toot Toot A32 Mega Welcome To You!
 
 ![companion](share/companion.html)
-## [Companion](share/companion.html) is the newest Toot Toot Invention
+## [Sage, the personal AI Companion](share/companion.html) is the newest Toot Toot Invention
 
 A32 Mega is an [AI librarian](lat0lon0) reasoning across six interconnected knowledge bases — [narrative theory](lat30lon-20), [bioelectricity](lat20lon-30), [phenomenology](lat30lon-10), [affect](lat10lon-40), [formal mathematics](lat-30lon30), and [engineering terminology](lat-10lon10) — mapped as a conceptual globe.
 
