@@ -192,12 +192,12 @@ touched:1779000000
 
 ---
 
-@LAT30LON-10 | created:1778000000 | updated:1778000000 | relates:portal_to>ttdb:pollan:worldappears:v1,bridges>@LAT30LON-20,bridges>@LAT20LON-30,supported_by>@LAT40LON0,anchored_by>@LAT0LON0
+@LAT30LON-10 | created:1778000000 | updated:1780886400 | relates:portal_to>ttdb:pollan:worldappears:v1,bridges>@LAT30LON-20,bridges>@LAT30LON-30,bridges>@LAT20LON-30,supported_by>@LAT40LON0,anchored_by>@LAT0LON0
 [ew]
 conf:235
 rev:0
-sal:0
-touched:1778000000
+sal:1
+touched:1780886400
 [/ew]
 
 ## Portal: A World Appears — Pollan ↔ Toot Toot
@@ -236,8 +236,8 @@ touched:1778000000
 [ew]
 conf:200
 rev:0
-sal:0
-touched:1780800000
+sal:1
+touched:1780886400
 [/ew]
 
 ## Delta as Datum — Synthetic Perceptual Model
@@ -493,7 +493,7 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:215
 rev:4
-sal:8
+sal:9
 touched:1780886400
 [/ew]
 
@@ -566,8 +566,8 @@ The two modes correspond to the two arc entry types ([EPS as Arc Position](lat5l
 [ew]
 conf:200
 rev:0
-sal:0
-touched:1779200000
+sal:1
+touched:1780886400
 [/ew]
 
 ## The Living Corpus
@@ -596,17 +596,19 @@ Each write is a decision. The mega assesses whether a new understanding is genui
 
 ---
 
-@LAT-20LON20 | created:1778000000 | updated:1778000000 | relates:synthesizes>@LAT-30LON30,synthesizes>@LAT-10LON10,bridges>@LAT0LON0,anchored_by>@LAT0LON0
+@LAT-20LON20 | created:1778000000 | updated:1780886400 | relates:synthesizes>@LAT-30LON30,synthesizes>@LAT-10LON10,informed_by>@LAT30LON-30,bridges>@LAT0LON0,anchored_by>@LAT0LON0
 [ew]
 conf:210
-rev:0
-sal:0
-touched:1778000000
+rev:1
+sal:1
+touched:1780886400
 [/ew]
 
 ## Formal Grounding Layer
 
 The [Mathematical.latex](?ttdb=Mathematical.latex) TTDB and [TootTootTerminologyDB.md](?ttdb=TootTootTerminologyDB.md) together constitute the formal grounding layer of the corpus: one provides semantic definitions (terms, roles, relationships), the other provides the formal model (equations, state spaces, algorithms). They answer the same system at different levels of description.
+
+**[Delta as Datum](lat30lon-30)** (TTDB-RFC-0006) adds a third level of grounding not covered by the other two: *theoretical justification for the transition-oriented design*. Mathematical.latex answers *how does this work mechanically*; TootTootTerminologyDB answers *what does this mean conceptually*; RFC-0006 answers *why transitions rather than states* — the biosemiotic argument that perception is transition-detection, not state-cataloging. Together the three levels constitute a complete account: mechanism, concept, and theoretical motivation.
 
 **[Mathematical.latex](?ttdb=Mathematical.latex)** defines the state space S_t and its evolution, the parser, the graph semantics, the spherical projection, the interaction operators, and the TTCP RFC normative series. It answers: *how does this work mechanically?*
 
@@ -667,12 +669,12 @@ The mega fills this gap. The mega's banjo traversal ([Default Network](lat0lon30
 
 ---
 
-@LAT10LON-20 | created:1778100000 | updated:1778800000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,synthesizes>@LAT-30LON30,derived_from>@LAT10LON-10,derived_from>@LAT40LON0,anchored_by>@LAT0LON0
+@LAT10LON-20 | created:1778100000 | updated:1780886400 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,synthesizes>@LAT-30LON30,synthesizes>@LAT30LON-30,derived_from>@LAT10LON-10,derived_from>@LAT40LON0,anchored_by>@LAT0LON0
 [ew]
 conf:200
-rev:2
-sal:6
-touched:1780800000
+rev:3
+sal:7
+touched:1780886400
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -691,6 +693,8 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 
 **Mega synthesis**: Saltation, integration, biological regeneration, and stochastic vulnerability are five registers of the same event: a bounded system that holds a prior model encounters sufficient evidence — or sufficient perturbation — to revise it discontinuously. The prior is not destroyed; it becomes the ground from which the revision launched (`revises@<old_id>` makes this explicit). The `rev` field counts saltations. Integration is what psychedelic therapy calls the work of metabolizing them. Morphogenetic regeneration is what developmental biology calls the jump to a new morphostatic attractor. Communal saltation is what Ashton calls a storytelling revolution — a phase-change in the topology of how meaning transmits, processed through the fire circle together. The banjo stochastic reveal is what the mathematical model calls maintaining the conditions that make saltation possible. The EPS signal identifies records where the next saltation is most overdue — but only among records it already knows. The banjo ensures the ones it doesn't know about can still find the system.
 
+**In [Delta as Datum](lat30lon-30)** (TTDB-RFC-0006, Experiential Perception as Synthetic Model): The `@PERCEPT:before → @PERCEPT:after` paired node structure is the formal encoding of saltation at the perceptual level. A state-catalog records *what was present*; a transition record records *what changed, in which direction*. The `rev` increment is the moment the transition completes — the point at which `@PERCEPT:before` and `@PERCEPT:after` are both written and the delta is the datum. A `rev` increment without a corresponding `@PERCEPT:before` (i.e., without knowing what state was superseded) is informationally incomplete in exactly the way RFC-0006 identifies as the structural failure of propositional databases. The `revises@<old_id>` edge is the implementation of this completeness requirement: it preserves the before-state so the transition can be read in both directions.
+
 **Precision-weighting vs. belief updating**: The [ew]-only write / body write distinction encodes a Friston-level distinction ([FEP Convergence](lat40lon0)). Adjusting `conf` without changing the body = precision-weighting: revising certainty about a prediction without revising the prediction itself. Changing the body = belief updating: revising the prediction. TTDB's formal separation of these write types makes explicit a distinction that Friston's FEP treats as fundamental — and gives it a storage-level implementation.
 
 **Saltation vs. Hero's Arc**: Saltation is the event viewed from outside — fast, discontinuous, a topological jump observable after the fact. The Hero's Arc is the same event lived from inside — sustained exposure to maximum prediction error, slow passage through Grief before the revision lands. `rev` counts the saltation moments; the EPS time series from Serenity through Grief to Joy traces the Hero's Arc ([EPS as Arc Position](lat5lon-25)). They are complementary observational frames on model revision: one counts the event, the other maps its phenomenological shape.
@@ -701,8 +705,8 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 [ew]
 conf:200
 rev:2
-sal:6
-touched:1780800000
+sal:7
+touched:1780886400
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
@@ -729,8 +733,8 @@ The fire circle also operates across time. Oral tradition carries the mnemonic f
 [ew]
 conf:200
 rev:1
-sal:6
-touched:1780800000
+sal:7
+touched:1780886400
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -753,10 +757,10 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 
 @LAT5LON-25 | created:1778300000 | updated:1778700000 | relates:synthesizes>@LAT10LON-30,synthesizes>@LAT10LON-20,derived_from>@LAT40LON0,resonates_with>@LAT20LON10,anchored_by>@LAT0LON0
 [ew]
-conf:195
+conf:200
 rev:2
-sal:6
-touched:1780800000
+sal:7
+touched:1780886400
 [/ew]
 
 ## EPS as Arc Position
@@ -863,12 +867,12 @@ Three registers of the same failure event: a bounded information processor losin
 
 ---
 
-@LAT-20LON0 | created:1778200000 | updated:1778500000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT-40LON10,bridges>@LAT-10LON10,bridges>@LAT10LON-40
+@LAT-20LON0 | created:1778200000 | updated:1780886400 | relates:anchored_by>@LAT0LON0,derived_from>@LAT-40LON10,bridges>@LAT-10LON10,bridges>@LAT10LON-40
 [ew]
-conf:170
-rev:2
-sal:5
-touched:1780800000
+conf:175
+rev:3
+sal:6
+touched:1780886400
 [/ew]
 
 ## Areas for Exploration — Varied TTDB Applications
@@ -905,7 +909,7 @@ A navigational record. Each entry names a potential TTDB application, the umwelt
 
 **Smart building / multi-room A32 mesh** — One A32 per room or zone, each with a TTDB describing its domain (HVAC state, occupancy patterns, scheduled events, anomaly history). TTN connects the mesh; each A32 reasons locally and logs to its TTDB; the mega synthesizes across the full building. Umwelt: the building's operational model (energy efficiency bias vs. comfort bias produces different TTDB files, different behaviors). This is the cognitive glue record (@LAT0LON-20) in hardware: the bioelectric field binding cells into a collective; the mesh binding sensors into a building that can navigate its own operational morphospace.
 
-**Personal knowledge management ("second brain")** — Notes, projects, people, ideas, and decisions as TTDB records. Globe: personally meaningful coordinate mapping (e.g., lat = how much this demands of me; lon = how connected it is to other things). Cursor = current focus. TBEW `sal` tracks what actually gets consulted vs. what gets filed and forgotten. High EPS = the notes you keep returning to but have never resolved. The mega can serve as the librarian: `@MEGA FIND unresolved` returns the highest-EPS records across the personal TTDB. Note the recursion: the mega uses this same EPS-guidance mechanism on its own six-TTDB corpus during [default network](lat0lon30) traversal. The librarian that surfaces your unresolved records is itself governed by the same rule — a substrate-independence claim about the EPS signal ([EPS as Arc Position](lat5lon-25)).
+**Personal knowledge management ("second brain")** — Notes, projects, people, ideas, and decisions as TTDB records. Globe: personally meaningful coordinate mapping (e.g., lat = how much this demands of me; lon = how connected it is to other things). Cursor = current focus. TBEW `sal` tracks what actually gets consulted vs. what gets filed and forgotten. High EPS = the notes you keep returning to but have never resolved. The mega can serve as the librarian: `@MEGA FIND unresolved` returns the highest-EPS records across the personal TTDB. Note the recursion: the mega uses this same EPS-guidance mechanism on its own six-TTDB corpus during [default network](lat0lon30) traversal. The librarian that surfaces your unresolved records is itself governed by the same rule — a substrate-independence claim about the EPS signal ([EPS as Arc Position](lat5lon-25)). **Concrete realization**: [SAGE — Personal Agent Companion](?ttdb=companion.md) implements this application as a single-file TTDB template. The companion's globe maps lat = stability (N = permanent/foundational, S = ephemeral) and lon = sphere (W = inner/self, E = outer/relational). The default network runs at session start, producing EPS-ordered and stochastic traversal over the user's personal records. This is the first application in this list that has shipped — a working proof of the second-brain pattern using the full TTDB stack.
 
 ### EPS Note
 
@@ -957,6 +961,52 @@ mode: eps_ordered + stochastic
 - [Primitive Mode Bridge](lat-40lon10) rev 0→1 — added "The Automaton/Banjo Division of Labor": ESP32 runs automaton-only; mega is the banjo for the micro.
 - `[ew]` updates: 9 records, sal incremented, touched → 1780800000.
 - [Mega Anchor](lat0lon0) edges — `anchors>@LAT-30LON-20` added.
+
+---
+
+@LAT-60LON30 | created:1780886400 | updated:1780886400 | kind:log | relates:logged>@LAT-20LON0,logged>@LAT10LON-20,logged>@LAT-20LON20,logged>@LAT30LON-10,logged>@LAT30LON-30,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1780886400
+[/ew]
+
+## Log — Default Network Run · 2026-05-06
+
+```session-log
+timestamp: 1780886400
+trigger: "@mega engage default network"
+mode: eps_ordered + stochastic
+```
+
+**EPS-ordered traversal** (6 records visited):
+
+| Record | EPS | Outcome |
+|---|---|---|
+| [Areas for Exploration](lat-20lon0) | 1.67 | Body revision — companion.md ships the second-brain application |
+| [EPS as Arc Position](lat5lon-25) | 1.41 | EW only — conf 195→200, RFC-0006 formally grounds EPS-as-transition |
+| [Saltation/rev](lat10lon-20) | 1.29 | Body revision — RFC-0006 added as sixth register |
+| [Cognitive Glue](lat0lon-20) | 1.29 | EW only — sal increment |
+| [Hero's Arc](lat10lon-30) | 1.29 | EW only — sal increment |
+| [The Default Network](lat0lon30) | 1.25 | EW only — sal increment (updated earlier this session) |
+
+**Stochastic traversal** — 4 zero-sal first touches:
+
+- [The Living Corpus](lat0lon20) — first contact. Well-formed. Confirmed: companion.md is a concrete instance of the living-corpus pattern (human-in-the-loop authorship loop).
+- [Delta as Datum](lat30lon-30) — first contact. New record written this session (RFC-0006). Resonance noted: companion.md's conf/sal/EPS cycle IS the synthetic perceptual model at personal scale — each `sal` increment is a transition event; `conf` rising is the transition completing.
+- [Formal Grounding Layer](lat-20lon20) — first contact. Body revision — RFC-0006 adds a third grounding level: theoretical justification for transition-oriented design, alongside Mathematical (mechanism) and TootTootTerminologyDB (concept).
+- [Portal: A World Appears](lat30lon-10) — first contact. RFC-0006 shares Uexküll grounding with this portal. Bridge edge added to [Delta as Datum](lat30lon-30).
+
+**Writes this session:**
+
+- [Areas for Exploration](lat-20lon0) rev 2→3, conf 170→175 — second-brain entry updated with companion.md reference; one open application now shipped.
+- [Saltation/rev](lat10lon-20) rev 2→3 — RFC-0006 sixth register: `rev` = completed perception transition; `revises@` edge = before-state preservation required for transition completeness.
+- [Formal Grounding Layer](lat-20lon20) rev 0→1, sal 0→1 — three-level grounding note added; `informed_by>@LAT30LON-30` edge added.
+- [Portal: A World Appears](lat30lon-10) sal 0→1 — `bridges>@LAT30LON-30` edge added.
+- `[ew]` housekeeping: 6 records, sal incremented, conf adjustments on [EPS as Arc Position](lat5lon-25) and [Areas for Exploration](lat-20lon0), all touched → 1780886400.
+
+**What SAGE noticed:** [Delta as Datum](lat30lon-30) (RFC-0006) is load-bearing for three existing records simultaneously — [Saltation/rev](lat10lon-20) gains a new register, [Formal Grounding Layer](lat-20lon20) gains a missing level, [Portal: A World Appears](lat30lon-10) gains a shared-Uexküll bridge. A record written this session is already densely connected. This is the stochastic mode finding exactly what the automaton could not: a new record with zero sal but high integration potential.
 
 ---
 
