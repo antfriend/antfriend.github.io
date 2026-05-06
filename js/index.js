@@ -2126,7 +2126,7 @@
     }
 
     function isHtmlEmbedSource(src) {
-      return /\.html(?:[?#].*)?$/i.test(src.trim());
+      return /\.(html|md)(?:[?#].*)?$/i.test(src.trim());
     }
 
     function isVideoSource(src) {
@@ -2139,7 +2139,7 @@
         iframe.src = src;
         iframe.className = "record-html-embed";
         iframe.loading = "lazy";
-        iframe.title = title || alt || "Embedded HTML content";
+        iframe.title = title || alt || "Embedded content";
         return iframe;
       }
 
