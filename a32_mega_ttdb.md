@@ -106,7 +106,7 @@ sal:0
 touched:1780800000
 [/ew]
 
-## A Toot Toot Welcome To You!
+## A Toot Toot A32 Mega Welcome To You!
 
 ![companion](share/companion.html)
 
