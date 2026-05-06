@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SAGE — Personal Agent Companion</title>
+  <meta name="description" content="One file. One AI. Yours. SAGE is a personal agent companion that lives entirely in a single Markdown file and carries context across every conversation." />
+  <meta property="og:title" content="SAGE — Personal Agent Companion" />
+  <meta property="og:description" content="One file. One AI. Yours. A companion AI that lives in a single Markdown file and carries context across every conversation." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="../css/tte-common.css" />
+  <style>
+    .share-page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: clamp(28px, 6vw, 64px) clamp(16px, 4vw, 32px) 64px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .share-header {
+      margin-bottom: 48px;
+    }
+
+    .share-nav {
+      font-size: 13px;
+      color: rgba(160, 230, 200, 0.6);
+      margin-bottom: 32px;
+      letter-spacing: 0.3px;
+    }
+
+    .share-nav a {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .share-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .share-title {
+      font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 700;
+      color: rgba(200, 255, 225, 0.95);
+      margin: 0 0 12px;
+      line-height: 1.15;
+    }
+
+    .share-lede {
+      font-size: clamp(16px, 2.2vw, 19px);
+      color: rgba(180, 240, 210, 0.75);
+      margin: 0 0 28px;
+      line-height: 1.55;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 11px 22px;
+      border-radius: 999px;
+      font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+
+    .cta-primary {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      box-shadow: 0 0 18px rgba(15, 139, 141, 0.35);
+    }
+
+    .cta-primary:hover {
+      color: #fff;
+      text-shadow: none;
+      background-color: var(--accent);
+      box-shadow: 0 0 28px rgba(15, 139, 141, 0.55);
+    }
+
+    .cta-secondary {
+      background: rgba(180, 240, 210, 0.08);
+      color: rgba(200, 255, 230, 0.85);
+      border: 1px solid rgba(180, 240, 210, 0.22);
+    }
+
+    .cta-secondary:hover {
+      color: rgba(200, 255, 230, 0.95);
+      text-shadow: none;
+      background-color: rgba(180, 240, 210, 0.14);
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(180, 240, 210, 0.12);
+      margin: 40px 0;
+    }
+
+    .doc-section {
+      margin-bottom: 44px;
+    }
+
+    .doc-section h2 {
+      font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: rgba(200, 255, 225, 0.92);
+      margin: 0 0 16px;
+    }
+
+    .doc-section h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 20px 0 8px;
+      letter-spacing: 0.2px;
+    }
+
+    .doc-section p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(200, 240, 215, 0.78);
+      margin: 0 0 14px;
+    }
+
+    .doc-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .doc-section ul,
+    .doc-section ol {
+      padding-left: 22px;
+      margin: 0 0 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .doc-section li {
+      font-size: 15px;
+      line-height: 1.65;
+      color: rgba(200, 240, 215, 0.78);
+    }
+
+    .doc-section strong {
+      color: rgba(220, 255, 235, 0.92);
+      font-weight: 700;
+    }
+
+    .doc-section em {
+      color: rgba(200, 240, 215, 0.68);
+    }
+
+    .doc-section code {
+      font-family: "Courier New", "Consolas", monospace;
+      font-size: 13px;
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: rgba(15, 139, 141, 0.14);
+      color: rgba(140, 255, 200, 0.9);
+      border: 1px solid rgba(15, 139, 141, 0.22);
+    }
+
+    .doc-section pre {
+      background: rgba(7, 20, 14, 0.88);
+      border: 1px solid rgba(15, 139, 141, 0.22);
+      border-radius: 12px;
+      padding: 18px 20px;
+      overflow-x: auto;
+      margin: 0 0 16px;
+    }
+
+    .doc-section pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 13px;
+      color: rgba(160, 255, 210, 0.85);
+    }
+
+    .doc-table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0 0 16px;
+    }
+
+    .doc-table th,
+    .doc-table td {
+      padding: 8px 12px;
+      text-align: left;
+      border: 1px solid rgba(180, 240, 210, 0.14);
+      vertical-align: top;
+    }
+
+    .doc-table th {
+      background: rgba(15, 139, 141, 0.12);
+      color: rgba(200, 255, 225, 0.88);
+      font-weight: 700;
+    }
+
+    .doc-table td {
+      color: rgba(190, 235, 210, 0.75);
+    }
+
+    .doc-table tbody tr:nth-child(even) td {
+      background: rgba(15, 139, 141, 0.05);
+    }
+
+    .doc-table code {
+      font-size: 12px;
+    }
+
+    .globe-diagram {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      border: 1px solid rgba(15, 139, 141, 0.22);
+      border-radius: 10px;
+      overflow: hidden;
+      font-size: 13px;
+      margin: 0 0 16px;
+      max-width: 380px;
+    }
+
+    .globe-cell {
+      padding: 12px 14px;
+      line-height: 1.45;
+      background: rgba(7, 20, 14, 0.6);
+    }
+
+    .globe-cell.north { color: rgba(200, 255, 225, 0.82); }
+    .globe-cell.south { color: rgba(170, 220, 195, 0.62); }
+    .globe-cell strong { color: var(--accent); }
+
+    .eps-formula {
+      display: inline-block;
+      padding: 10px 18px;
+      background: rgba(7, 20, 14, 0.88);
+      border: 1px solid rgba(15, 139, 141, 0.3);
+      border-radius: 10px;
+      font-family: "Courier New", monospace;
+      font-size: 15px;
+      color: rgba(140, 255, 200, 0.92);
+      margin: 8px 0 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .share-footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(180, 240, 210, 0.1);
+      font-size: 13px;
+      color: rgba(160, 220, 185, 0.45);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .share-footer a {
+      font-size: 13px;
+      color: rgba(160, 220, 185, 0.55);
+    }
+
+    .share-footer a:hover {
+      color: var(--accent);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0 0;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(15, 139, 141, 0.3);
+      color: rgba(140, 255, 200, 0.65);
+      background: rgba(15, 139, 141, 0.08);
+    }
+
+    @media (max-width: 600px) {
+      .globe-diagram {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="share-page">
+
+    <div class="share-nav">
+      <a href="../index.html">← Toot Toot Engineering</a>
+    </div>
+
+    <header class="share-header">
+      <div class="share-eyebrow">Personal Agent Companion</div>
+      <h1 class="share-title">SAGE</h1>
+      <p class="share-lede">One file. One AI. Yours.<br>
+        A companion that lives entirely in a single Markdown file and carries context across every conversation — because the file <em>is</em> the memory.</p>
+      <div class="cta-row">
+        <a class="cta-btn cta-primary" href="../companion.md" download>Download companion.md</a>
+        <a class="cta-btn cta-secondary" href="../index.html?ttdb=companion.md">View in browser</a>
+      </div>
+      <div class="tag-row">
+        <span class="tag">TTDB</span>
+        <span class="tag">TTAI</span>
+        <span class="tag">No dependencies</span>
+        <span class="tag">Offline-first</span>
+        <span class="tag">Open source</span>
+      </div>
+    </header>
+
+    <hr class="divider" />
+
+    <section class="doc-section">
+      <h2>What it does</h2>
+      <p>SAGE maintains a structured record of who you are, what you're working toward, and what you haven't figured out yet. Between conversations, it runs a background process — the <em>default network</em> — that scans for records that need attention, flags stale goals, and notices connections you haven't made explicit yet.</p>
+      <p>It does not guess about you. It knows only what you have written. That constraint is the feature: the file is auditable, portable, and entirely under your control.</p>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="doc-section">
+      <h2>Quick start</h2>
+
+      <h3>1. Get the file</h3>
+      <p>Copy <code>companion.md</code> somewhere you'll keep it — a notes folder, a project directory, wherever you work.</p>
+
+      <h3>2. Name your companion <em>(optional but recommended)</em></h3>
+      <p>Pick a name. Open the file and replace every instance of <code>SAGE</code> with it. One find-and-replace, done. The name becomes your invocation prefix: <code>@EMBER</code>, <code>@ATLAS</code>, <code>@REX</code>, whatever fits.</p>
+
+      <h3>3. Start a conversation</h3>
+      <p>Open <code>companion.md</code> in any text editor. Start a new AI conversation and paste the file contents (or attach it, if your AI supports file upload). Then:</p>
+      <pre><code>@SAGE fill in Your Profile together</code></pre>
+      <p>SAGE will ask you the questions in the Profile record and help you write the answers. Once that record is complete, every future conversation starts with full context.</p>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="doc-section">
+      <h2>How to use it</h2>
+      <p>Prefix any message with <code>@SAGE</code> to invoke the companion:</p>
+      <pre><code>@SAGE what should I focus on today?
+@SAGE I just finished the landing page — mark that goal done
+@SAGE I keep avoiding the budget conversation. Add that to Open Questions.
+@SAGE STATUS
+@SAGE LOG noticed I'm more productive in the morning than I thought</code></pre>
+
+      <p><strong>Primitive commands:</strong></p>
+      <table class="doc-table">
+        <thead>
+          <tr><th>Command</th><th>What it does</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>@SAGE STATUS</code></td><td>Shows EPS rankings — which records need attention — and any stale or flagged items</td></tr>
+          <tr><td><code>@SAGE LOG &lt;note&gt;</code></td><td>Appends a brief observation to the active log record</td></tr>
+          <tr><td><code>@SAGE FOCUS &lt;record&gt;</code></td><td>Moves the cursor to a specific record and marks it as active</td></tr>
+          <tr><td><code>@SAGE FIND &lt;word&gt;</code></td><td>Searches records for a term</td></tr>
+          <tr><td><code>@SAGE SELECT &lt;id&gt;</code></td><td>Navigates directly to a record by coordinate, e.g. <code>SELECT lat20lon0</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="doc-section">
+      <h2>How memory works</h2>
+      <p>Every piece of context in <code>companion.md</code> is a <strong>record</strong> — a named section with a coordinate address (<code>@LATxLONy</code>) and a small metadata block called <code>[ew]</code> (epistemic weight).</p>
+      <p>The <code>[ew]</code> block has four fields:</p>
+      <table class="doc-table">
+        <thead>
+          <tr><th>Field</th><th>Meaning</th><th>Range</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>conf</code></td><td>How well this record's model predicts your reactions</td><td>0–255 (128 = unknown)</td></tr>
+          <tr><td><code>rev</code></td><td>Times this record's body has changed</td><td>0+</td></tr>
+          <tr><td><code>sal</code></td><td>Times this record has been consulted</td><td>0+</td></tr>
+          <tr><td><code>touched</code></td><td>Unix timestamp of last write</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p>From these, SAGE derives <strong>EPS</strong> — the <em>epistemic pressure signal</em>:</p>
+      <div class="eps-formula">EPS = sal × (255 − conf) / 255</div>
+      <p>A record with high EPS has been consulted often but remains poorly understood. That's a record asking to be revisited.</p>
+      <p>High EPS is not a problem to fix — it's a signal to follow. The records with the most pressure are where the most learning is waiting.</p>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="doc-section">
+      <h2>The records</h2>
+      <p>The file ships with seven working records arranged on a conceptual globe:</p>
+      <ul>
+        <li><strong>latitude</strong> = stability: north is permanent and foundational, south is immediate and ephemeral</li>
+        <li><strong>longitude</strong> = sphere: west is inner/private, east is outer/relational</li>
+      </ul>
+      <table class="doc-table">
+        <thead>
+          <tr><th>Record</th><th>Coordinate</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SAGE (anchor)</td><td><code>@LAT0LON0</code></td><td>Identity root — who SAGE is and how memory works</td></tr>
+          <tr><td>Welcome</td><td><code>@LAT-10LON0</code></td><td>Entry point and navigation table</td></tr>
+          <tr><td>Your Profile</td><td><code>@LAT40LON-30</code></td><td>Who you are — fill this in first</td></tr>
+          <tr><td>Values &amp; Commitments</td><td><code>@LAT30LON-20</code></td><td>What you will not compromise on</td></tr>
+          <tr><td>Active Goals</td><td><code>@LAT20LON0</code></td><td>What you are working toward now</td></tr>
+          <tr><td>Default Network</td><td><code>@LAT0LON20</code></td><td>What SAGE does between conversations</td></tr>
+          <tr><td>Open Questions</td><td><code>@LAT-20LON0</code></td><td>What you have not figured out yet</td></tr>
+          <tr><td>Log (template)</td><td><code>@LAT-50LON10</code></td><td>Session notes and observations</td></tr>
+        </tbody>
+      </table>
+      <p>You can add records anywhere. New permanent insights go north; ephemeral notes go south. Personal records go west; outward-facing ones go east.</p>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="doc-section">
+      <h2>Customizing</h2>
+      <p><strong>Rename the companion</strong>: find-and-replace <code>SAGE</code> → your chosen name throughout the file. The invocation prefix in the <code>mmpdb</code> block updates automatically.</p>
+      <p><strong>Fill in Your Profile</strong>: this is the most important step. The <code>conf:64</code> on that record is a signal that it's incomplete — raise it toward <code>200</code> as SAGE's responses start to consistently reflect who you are.</p>
+      <p><strong>Add goals</strong>: open the Active Goals record and add rows to the table. One goal per row. When a goal is done or abandoned, move it to a log record with an outcome note — don't delete it.</p>
+      <p><strong>Grow the Open Questions list</strong>: when something is unresolved, add it to Open Questions. When it's resolved, move the answer to the relevant record and remove the question.</p>
+      <p><strong>Adjust conf</strong>: <code>conf</code> is yours to set. Low conf = "I'm not sure this model is right." High conf = "this reliably predicts my reactions." Update it when you notice a gap or when a record is clearly working.</p>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="doc-section">
+      <h2>Keeping a log</h2>
+      <p>Log records are ephemeral (far south on the globe) and append-only — you never overwrite them. The template record at <code>@LAT-50LON10</code> shows the format. When you have a significant session or a discovery worth preserving:</p>
+      <ol>
+        <li>Add a new log record at the next available coordinate (<code>@LAT-60LON10</code>, <code>@LAT-70LON10</code>, etc.)</li>
+        <li>Fill in the <code>session-log</code> block with the timestamp and trigger</li>
+        <li>Write what happened, what SAGE noticed, and what records changed</li>
+        <li>Link to changed records using toot links: <code>[record name](latXlonY)</code></li>
+      </ol>
+      <p>The log is SAGE's audit trail. It is how you know what changed and when.</p>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="doc-section">
+      <h2>Adding new records</h2>
+      <p>When you learn something worth keeping, add a record:</p>
+      <pre><code>@LAT[x]LON[y] | created:[timestamp] | updated:[timestamp] | relates:[edges]
+[ew]
+conf:128
+rev:0
+sal:0
+touched:[timestamp]
+[/ew]
+
+## Record Title
+
+Body text here.</code></pre>
+      <p>Place it by what it is: permanent insight goes north, working material goes center, log entries go south. Private thoughts go west, things about your relationship to the world go east.</p>
+      <p>Link records to each other with typed edges in the <code>relates:</code> field: <code>serves&gt;@LAT20LON0</code> means "this record directly informs that goal." <code>questions&gt;@LAT40LON-30</code> means "this record holds an open question about your profile."</p>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="doc-section">
+      <h2>Viewing in the browser</h2>
+      <p><code>companion.md</code> can be loaded in the Toot Toot Engineering viewer:</p>
+      <pre><code>https://antfriend.github.io/?ttdb=companion.md</code></pre>
+      <p><em>(Works with files hosted on the same server. For local use, run <code>python service.py</code> from the repo root.)</em></p>
+      <p>The viewer renders the globe, navigates between records, and displays <code>[ew]</code> indicators. Markdown tables in record bodies render as formatted tables.</p>
+      <div class="cta-row">
+        <a class="cta-btn cta-secondary" href="../index.html?ttdb=companion.md">Open companion.md in viewer →</a>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="doc-section">
+      <h2>Part of the TTE stack</h2>
+      <p><code>companion.md</code> implements the <strong>TTDB</strong> (MyMentalPalaceDB) file format — the same format used by the A32 autonomous ESP32 agent framework, the Toot Toot mesh network node logger, and the A32 Mega multi-corpus librarian. A companion you build here can be compiled into a deployment TTDB for a microcontroller, federated across a TTN mesh node, or extended into a multi-corpus mega instance.</p>
+      <p>The file format spec: <a href="../RFCs/TTDB-RFC-0001-File-Format.md">TTDB-RFC-0001</a> · <a href="../RFCs/TTDB-RFC-0005-Epistemic-Weight.md">TTDB-RFC-0005</a> (epistemic weight)</p>
+    </section>
+
+    <footer class="share-footer">
+      <span>One file. No server. No account. The companion is yours.</span>
+      <span>·</span>
+      <a href="../index.html">Toot Toot Engineering</a>
+      <span>·</span>
+      <a href="../companion.md" download>companion.md</a>
+      <span>·</span>
+      <a href="../companion_README.md">README (Markdown)</a>
+    </footer>
+
+  </div>
+</body>
+</html>

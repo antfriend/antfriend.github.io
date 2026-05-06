@@ -105,7 +105,7 @@ Everything I know about you is written in the records below. When you tell me so
 
 `@SAGE what should I focus on?` · `@SAGE STATUS` · `@SAGE LOG noticed X`
 
-New here? Read the [setup guide](companion_README.md).
+New here? Read the [setup guide](share/companion.html).
 
 ---
 
