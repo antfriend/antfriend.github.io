@@ -494,6 +494,40 @@
     <hr class="divider" />
 
     <section class="doc-section">
+      <h2>The default network</h2>
+      <p>Between conversations SAGE isn't idle — it runs a background scan called the <strong>default network</strong>, named after the brain's resting-state activity that does its most integrative work when you're not focused on a specific task.</p>
+
+      <h3>What it does</h3>
+      <ul>
+        <li><strong>EPS scan</strong> — ranks every record by <code>EPS = sal × (255 − conf) / 255</code> and flags the top results. High-EPS records are the first attention target next session.</li>
+        <li><strong>Stale goal check</strong> — goals in Active Goals that haven't been mentioned in recent sessions are flagged. Stagnation is information.</li>
+        <li><strong>Connection noticing</strong> — SAGE holds Your Profile, Values, Goals, and Open Questions simultaneously and notices when something in one record quietly informs or contradicts something in another.</li>
+        <li><strong>Write obligation</strong> — observations surfaced by the scan that are worth keeping are written to a log record rather than discarded. Discoveries not written are lost.</li>
+      </ul>
+
+      <h3>When it runs</h3>
+      <p>The default network runs at the <strong>start of each session</strong>, before you ask anything. It also runs on demand — any time you explicitly invoke it:</p>
+      <pre><code>@SAGE STATUS</code></pre>
+      <p>returns the current EPS rankings and any flagged items. To go deeper — to have SAGE actively traverse the graph, surface new connections, and write what it finds:</p>
+      <pre><code>@SAGE engage default network</code></pre>
+      <p>SAGE will walk the EPS-ordered records, note what has changed since the last session, notice cross-record tensions, and produce a log entry. A good time to run it: at the start of a week, after a long gap between sessions, or when something feels stuck.</p>
+
+      <h3>Two traversal modes</h3>
+      <p>The default network runs in two modes simultaneously:</p>
+      <ul>
+        <li><strong>Automaton</strong> — visits records in EPS order, highest pressure first. Deterministic. Ensures no high-EPS record is skipped.</li>
+        <li><strong>Banjo</strong> — samples records with zero <code>sal</code> uniformly at random. Stochastic. Surfaces records that have never been consulted — the ones the automaton never reaches because it always prioritizes known high-pressure records.</li>
+      </ul>
+      <p>Together they cover both the known unknowns (high EPS) and the unknown unknowns (zero sal).</p>
+
+      <h3>On a microcontroller</h3>
+      <p>The companion file implements the same TTDB format used by the <a href="../index.html?ttdb=a32_mega_ttdb.md">A32 autonomous agent framework</a> — a $5 ESP32 microcontroller that performs deterministic sense-reason-act loops over a TTDB file stored in flash. On that hardware, the <code>loop()</code> function <em>is</em> the default network: every cycle, the agent reads sensors, traverses the graph from the nearest coordinate, follows typed edges, and takes action — all without a cloud connection, without an LLM, without a network.</p>
+      <p>A companion you build in this file can be compiled into a deployment TTDB for a microcontroller. The micro-default network is just the automaton mode — EPS-ordered traversal on a fixed memory budget, one record per cycle. The banjo mode (stochastic zero-sal sampling) requires the larger context window of a language model, so it lives in the mega. Together, the micro handles the known high-pressure records and the mega handles discovery.</p>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="doc-section">
       <h2>Customizing</h2>
       <p><strong>Rename the companion</strong>: find-and-replace <code>SAGE</code> → your chosen name throughout the file. The invocation prefix in the <code>mmpdb</code> block updates automatically.</p>
       <p><strong>Fill in Your Profile</strong>: this is the most important step. The <code>conf:64</code> on that record is a signal that it's incomplete — raise it toward <code>200</code> as SAGE's responses start to consistently reflect who you are.</p>
