@@ -46,7 +46,7 @@ librarian:
 
 ```cursor
 selected:
-  - @LAT88LON0
+  - @LAT0LON0
 preview:
   @LAT0LON0: "The experiencer at the origin. Dispositions and intents radiate outward from here; feelings and emotions flow inward toward here."
   @LAT10LON-10: "Serenity — a mild, quiet ease. A positive feeling, near."
