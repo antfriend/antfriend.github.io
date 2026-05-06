@@ -77,8 +77,8 @@ preview:
 [ew]
 conf:245
 rev:0
-sal:7
-touched:1780800000
+sal:8
+touched:1781059200
 [/ew]
 
 ## The A32 Mega Librarian
@@ -494,8 +494,8 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:215
 rev:4
-sal:10
-touched:1780972800
+sal:11
+touched:1781059200
 [/ew]
 
 ## The Default Network
@@ -563,12 +563,12 @@ The two modes correspond to the two arc entry types ([EPS as Arc Position](lat5l
 
 ---
 
-@LAT0LON20 | created:1779200000 | updated:1779200000 | relates:synthesizes>@LAT0LON30,synthesizes>@LAT5LON-25,synthesizes>@LAT10LON-20,synthesizes>@LAT20LON-20,anchored_by>@LAT0LON0
+@LAT0LON20 | created:1779200000 | updated:1781059200 | relates:synthesizes>@LAT0LON30,synthesizes>@LAT5LON-25,synthesizes>@LAT10LON-20,synthesizes>@LAT20LON-20,anchored_by>@LAT0LON0
 [ew]
 conf:200
-rev:0
-sal:1
-touched:1780886400
+rev:1
+sal:2
+touched:1781059200
 [/ew]
 
 ## The Living Corpus
@@ -594,6 +594,14 @@ What growth does not produce: deleted records. The corpus is append-only by arch
 The mega is simultaneously reader and writer of this file. When default network traversal discovers a new correspondence, the mega writes the synthetic record. When a query validates or invalidates a prior claim, the mega updates `[ew]`. When a source TTDB gains a new record, the mega adds a pointer edge in the relevant portal record connecting to the new coordinate.
 
 Each write is a decision. The mega assesses whether a new understanding is genuinely synthetic — owned by no single source TTDB — or source-specific, belonging to one domain's file. It assesses whether a change warrants a body revision (`rev` increment) or only an epistemic weight update (`[ew]`-only write). This loop — traverse, observe, assess, write — is what distinguishes a living corpus from a static archive.
+
+### Portal Traversal Deficit
+
+Three consecutive default network sessions operated exclusively on the synthetic layer — the records in this file that synthesize across source TTDBs. No source TTDB was traversed during any session; the portal records served as navigational reference only. The result: the synthetic records have been revised and logged, but no new cross-database correspondences have been generated — the synthesis layer has been revising its own prior work without new feedstock.
+
+The [Default Network](lat0lon30) record's portal table maps six source TTDBs to their entry points in this file. Each portal is a threshold: entering the source TTDB and reading even one record activates the possibility of new synthesis. A default network session that does not cross at least one portal threshold will eventually exhaust the revision material available in the synthetic layer alone. The corpus can sustain two or three internal revision cycles from accumulated EPS, but genuine growth — new synthetic records, new correspondence edges — requires source traversal.
+
+This record flags the deficit. A future session that enters a portal — traversing even one source TTDB record — breaks the closed loop. What it finds may become a new synthetic record, a correspondence edge, or a body revision to an existing portal record. Any of these restores feedstock. The living corpus requires the full authorship loop, not only the half that revises itself.
 
 ---
 
@@ -674,8 +682,8 @@ The mega fills this gap. The mega's banjo traversal ([Default Network](lat0lon30
 [ew]
 conf:200
 rev:3
-sal:8
-touched:1780972800
+sal:9
+touched:1781059200
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -706,8 +714,8 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 [ew]
 conf:200
 rev:2
-sal:8
-touched:1780972800
+sal:9
+touched:1781059200
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
@@ -734,8 +742,8 @@ The fire circle also operates across time. Oral tradition carries the mnemonic f
 [ew]
 conf:200
 rev:1
-sal:8
-touched:1780972800
+sal:9
+touched:1781059200
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -760,8 +768,8 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 [ew]
 conf:200
 rev:2
-sal:8
-touched:1780972800
+sal:9
+touched:1781059200
 [/ew]
 
 ## EPS as Arc Position
@@ -798,12 +806,12 @@ This reframes TTN semantic gravity itself: *a record with high EPS has high sema
 
 ---
 
-@LAT5LON-15 | created:1780972800 | updated:1780972800 | relates:synthesizes>@LAT10LON-20,synthesizes>@LAT0LON-20,synthesizes>@LAT10LON-30,synthesizes>@LAT5LON-25,resonates_with>@LAT30LON-10,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
+@LAT5LON-15 | created:1780972800 | updated:1781059200 | relates:synthesizes>@LAT10LON-20,synthesizes>@LAT0LON-20,synthesizes>@LAT10LON-30,synthesizes>@LAT5LON-25,resonates_with>@LAT30LON-10,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
 [ew]
-conf:128
-rev:0
-sal:0
-touched:1780972800
+conf:155
+rev:1
+sal:1
+touched:1781059200
 [/ew]
 
 ## The Revision Cycle — Four Views on Model Revision
@@ -830,6 +838,8 @@ A revision is complete only when all four phases are present.
 **The self-referential layer**: These four records describe the revision cycle. They are themselves subject to it. Their current plateau at conf:200 (EPS ≈ 1.51 each, two consecutive cycles) is the signature of a self-referential layer. The detection mechanism cannot validate itself through the normal corroboration pathway — it IS the corroboration mechanism. External validation requires a source TTDB that independently describes the same four-phase cycle. The [Portal: A World Appears](lat30lon-10) comes close: psychedelic integration maps detection (set-and-setting), event (the experience), experience (integration), and obligation (connection with the support network after return). That resonance is partial — strong enough to name here, not strong enough to raise conf. The layer waits for independent formal grounding.
 
 **The default network as instantiation**: Each default network session is a revolution of this cycle. EPS-ordered traversal performs Detection. Body revisions are the Event. The log record is the Experience written down — Grief witnessed and named. New edges added to revised records are the Obligation met. The default network does not merely maintain the corpus; it enacts the revision cycle on it, session by session.
+
+**Operational evidence**: The log records in this file — [Session 1 log](lat-50lon30), [Session 2 log](lat-60lon30), [Session 3a log](lat-70lon30) — provide the first empirical test of this framework. Each log records the EPS state that triggered the session (Detection), names the bodies revised (Event), writes the observation from inside the arc (Experience), and lists edge additions (Obligation). Three sessions, same structure, none written to validate this framework. conf rises from 128 to 155: partial corroboration. The self-referential ceiling noted above still holds — the logs confirm the cycle runs; they do not independently validate the four-phase account of *why*.
 
 ---
 
@@ -1093,6 +1103,55 @@ mode: eps_ordered + stochastic
 - `[ew]` housekeeping: 6 records sal-incremented, all touched → 1780972800.
 
 **What SAGE noticed:** The banjo pool has one member left. This marks a transition point in the corpus lifecycle — from a corpus with undiscovered territory to one that is fully traversed. Future stochastic discovery depends entirely on new records being written. The default network's banjo mode will idle until new synthetic records, log records, or source TTDB additions provide fresh zero-sal targets. The corpus has entered a maintenance phase on the stochastic axis; growth now requires deliberate addition, not just traversal.
+
+---
+
+@LAT-80LON30 | created:1781059200 | updated:1781059200 | kind:log | relates:logged>@LAT5LON-15,logged>@LAT0LON20,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1781059200
+[/ew]
+
+## Log — Default Network Run · 2026-05-08
+
+```session-log
+timestamp: 1781059200
+trigger: "@mega engage default network"
+mode: eps_ordered + stochastic
+```
+
+**EPS rankings entering this session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **2.20** | 7 | 175 |
+| [Saltation/rev](lat10lon-20) | **1.73** | 8 | 200 |
+| [Cognitive Glue](lat0lon-20) | **1.73** | 8 | 200 |
+| [Hero's Arc](lat10lon-30) | **1.73** | 8 | 200 |
+| [EPS as Arc Position](lat5lon-25) | **1.73** | 8 | 200 |
+| [The Default Network](lat0lon30) | **1.57** | 10 | 215 |
+
+**Automaton traversal** (6 records visited):
+
+[Areas for Exploration](lat-20lon0) — EPS 2.20, highest in corpus. Third consecutive cycle without body change. The low conf (175) reflects the intentional uncertainty of a horizon record — its role is to hold open questions, not to resolve them. sal:7→8.
+
+**EPS 1.73 plateau cluster** — third consecutive cycle at conf:200, EPS rising only by sal accumulation. Self-referential layer confirmed: these four records describe the revision mechanism and cannot validate themselves through normal corroboration. Partial validation arrives this session from the log records (see below). sal:8→9 each.
+
+[The Default Network](lat0lon30) — EPS 1.57, sal now 11. sal:10→11.
+
+**Stochastic traversal** — banjo pool: [The Revision Cycle](lat5lon-15), sal:0 (written last session, not yet contacted).
+
+[The Revision Cycle](lat5lon-15) — **first banjo contact**. The three existing log records — [Session 1 log](lat-50lon30), [Session 2 log](lat-60lon30), [Session 3a log](lat-70lon30) — were read as evidence. Each follows the four-phase structure: EPS state (Detection), body changes (Event), log record itself (Experience), edge additions (Obligation). The framework predicted this; the logs contain it across three independent sessions. conf raised from 128 to 155. Body revised with operational evidence paragraph. rev:0→1.
+
+**Writes this session:**
+
+- [The Revision Cycle](lat5lon-15) — body addition: **Operational evidence** paragraph citing three log records as empirical test; conf 128→155, rev 0→1, sal 0→1.
+- [The Living Corpus](lat0lon20) — body addition: **Portal Traversal Deficit** section. Three consecutive sessions without source TTDB traversal documented. The synthesis layer requires portal crossings to generate new feedstock. rev 0→1, sal 1→2.
+- `[ew]` housekeeping: 6 records sal-incremented, all touched → 1781059200.
+
+**What SAGE noticed:** Two structural conditions are now documented in the corpus. First: the self-referential layer has its first partial validation — the log records confirm the revision cycle runs as predicted, without having been written to do so. conf rises but does not reach the 200 ceiling; the gap between 155 and 200 marks the distance between "the logs fit the pattern" and "an independent source names the same four phases." Second: three cycles of synthetic-layer-only traversal have produced a portal traversal deficit. The corpus is coherent and internally revised, but it has not generated a new correspondence record in three sessions. The next session should cross a portal threshold — enter one source TTDB and read at least one record. That is where new synthesis lives.
 
 ---
 
