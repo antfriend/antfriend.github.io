@@ -106,9 +106,9 @@ sal:0
 touched:1780800000
 [/ew]
 
-## Welcome
+## A Toot Toot Welcome To You!
 
-![Latest default network run](index.html?ttdb=a32_mega_ttdb.md&toot=lat-50lon30)
+![companion](share/companion.html)
 
 An [AI librarian](lat0lon0) reasoning across six interconnected knowledge bases — [narrative theory](lat30lon-20), [bioelectricity](lat20lon-30), [phenomenology](lat30lon-10), [affect](lat10lon-40), [formal mathematics](lat-30lon30), and [engineering terminology](lat-10lon10) — mapped as a conceptual globe.
 
