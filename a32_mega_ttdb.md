@@ -489,12 +489,12 @@ High-semantic-density transmission over constrained channels using a shared prio
 
 ---
 
-@LAT0LON30 | created:1778000000 | updated:1778900000 | relates:specifies_for>@LAT0LON0,resonates_with>@LAT-10LON10,resonates_with>@LAT20LON10,resonates_with>@LAT0LON-20,anchored_by>@LAT0LON0
+@LAT0LON30 | created:1778000000 | updated:1780886400 | relates:specifies_for>@LAT0LON0,resonates_with>@LAT-10LON10,resonates_with>@LAT20LON10,resonates_with>@LAT0LON-20,anchored_by>@LAT0LON0
 [ew]
 conf:215
-rev:3
+rev:4
 sal:8
-touched:1780800000
+touched:1780886400
 [/ew]
 
 ## The Default Network
@@ -516,6 +516,26 @@ From `standards/ttai/TTAI_SPEC.md`: TTAI must reference a default network defini
 **Affective calibration**: [feelings TTDB](lat10lon-40) provides the affective register for the mega's default state. An idle mega should be in Curiosity and Openness — oriented toward new correspondence, not Avoidance or Withdrawal. The Hero's Arc is available as a narrative reset if the mega has been in an extended negative-valence traversal.
 
 **Knowledge maintenance**: When traversal produces a new learning — a new correspondence pair, a cross-database resonance, a refinement of an existing record's body — the mega writes it. New synthetic records are added to this file. New correspondence records are added to the relevant source TTDB. Refined bodies increment `rev` on the updated record; `updated` advances. This is the mega's metabolic obligation: discoveries that are not written are lost. The default network that only notices but never records is the cognitive glue that binds nothing.
+
+**TTDB ID → toot link**: When the default network writes any output — log entries, synthetic records, cursor responses, any navigable text — references to source TTDBs and records MUST be rendered as toot links, not as bare `db_id` strings or naked coordinates. A bare `ttdb:xxx` string in written output is a format violation: the link is the record; the ID alone is unnavigable.
+
+Conversion rules:
+- Source TTDB `db_id` → toot link to its portal record in this file: `[ttdb:pollan:worldappears:v1](lat30lon-10)`
+- Record coordinate → toot link with descriptive label: `[EPS as Arc Position](lat5lon-25)` not `@LAT5LON-25`
+- Cross-file record reference → cross-TTDB toot form: `[label](?ttdb=file.md&toot=latXlonY)`
+- This file's own anchor → `[ttdb:a32:mega:librarian:v1](lat0lon0)`
+
+Source TTDB ID → portal record mapping:
+
+| `db_id` | Portal in this file | Source file |
+|---|---|---|
+| `ttdb:story:correspondence:v1` | [Portal: Story of Stories](lat30lon-20) | [story_of_stories_ttdb.md](?ttdb=story_of_stories_ttdb.md) |
+| `ttdb:pollan:worldappears:v1` | [Portal: A World Appears](lat30lon-10) | [pollan_world_appears_ttdb.md](?ttdb=pollan_world_appears_ttdb.md) |
+| `ttdb:bioelectric:resonance:v1` | [Portal: Bioelectric Resonance](lat20lon-30) | [bioelectric_resonance.md](?ttdb=bioelectric_resonance.md) |
+| `ttdb:affective:landscape:v1` | [Portal: Feelings TTDB](lat10lon-40) | [feelings_ttdb.md](?ttdb=feelings_ttdb.md) |
+| `ttdb:terminology:tte:v1` | [Portal: TTE Terminology](lat-10lon10) | [TootTootTerminologyDB.md](?ttdb=TootTootTerminologyDB.md) |
+| `ttdb:mathematical:processing:v1` | [Portal: Mathematical](lat-30lon30) | [Mathematical.latex](?ttdb=Mathematical.latex) |
+| `ttdb:a32:mega:librarian:v1` | [Anchor](lat0lon0) | this file |
 
 **Epistemic weight discipline**: `[ew]` blocks are updated whenever the following conditions are met:
 - `sal` increments whenever a record is consulted during query answering or default network traversal — not per session, per actual access event.
