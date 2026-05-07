@@ -384,9 +384,11 @@
 
     .record table {
       border-collapse: collapse;
-      width: 100%;
+      width: auto;
+      max-width: 100%;
       font-size: 14px;
       line-height: 1.5;
+      justify-self: start;
     }
 
     .record th,
