@@ -49,7 +49,6 @@ librarian:
     - "STATUS"
     - "LOG <note>"
     - "FOCUS <record_id>"
-  max_reply_chars: 0
   invocation_prefix: "@SAGE"
   note: "STATUS returns EPS rankings and any stale or flagged records. LOG <note> appends a brief observation to the active log. FOCUS <record_id> moves the cursor and increments sal on the target."
 ```
@@ -63,12 +62,12 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1780800000 | updated:1780800000 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT0LON20,anchors>@LAT-20LON0,anchors>@LAT70LON10
+@LAT0LON0 | created:1778112000 | updated:1778112000 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT0LON20,anchors>@LAT-20LON0,anchors>@LAT70LON10,anchors>@LAT-50LON10,anchors>@LAT90LON0
 [ew]
 conf:255
 rev:0
 sal:0
-touched:1780800000
+touched:1778112000
 [/ew]
 
 ## SAGE
@@ -85,12 +84,12 @@ Your personal agent companion. Lives in this file. Knows only what you write her
 
 ---
 
-@LAT-10LON0 | created:1780800000 | updated:1780800000 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON-30,navigates_to>@LAT20LON0,navigates_to>@LAT-20LON0
+@LAT-10LON0 | created:1778112000 | updated:1778112000 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON-30,navigates_to>@LAT30LON-20,navigates_to>@LAT20LON0,navigates_to>@LAT0LON20,navigates_to>@LAT-20LON0
 [ew]
 conf:220
 rev:0
 sal:0
-touched:1780800000
+touched:1778112000
 [/ew]
 
 ## Welcome
@@ -115,12 +114,12 @@ New here? Read the [setup guide](share/companion.html).
 
 ---
 
-@LAT40LON-30 | created:1780800000 | updated:1780800000 | relates:anchored_by>@LAT0LON0,serves>@LAT20LON0
+@LAT40LON-30 | created:1778112000 | updated:1778112000 | relates:anchored_by>@LAT0LON0,serves>@LAT20LON0
 [ew]
 conf:64
 rev:0
 sal:0
-touched:1780800000
+touched:1778112000
 [/ew]
 
 ## Your Profile
@@ -135,18 +134,16 @@ touched:1780800000
 
 **Standing constraints**: [topics that are off-limits, ways you do not want to be addressed, fixed preferences]
 
----
-
 *When SAGE's responses consistently reflect who you are, raise `conf` toward 200. Increment `rev` each time you make a material change to this record.*
 
 ---
 
-@LAT30LON-20 | created:1780800000 | updated:1780800000 | relates:anchored_by>@LAT0LON0,serves>@LAT20LON0
+@LAT30LON-20 | created:1778112000 | updated:1778112000 | relates:anchored_by>@LAT0LON0,serves>@LAT20LON0
 [ew]
 conf:128
 rev:0
 sal:0
-touched:1780800000
+touched:1778112000
 [/ew]
 
 ## Values and Commitments
@@ -161,12 +158,12 @@ touched:1780800000
 
 ---
 
-@LAT20LON0 | created:1780800000 | updated:1780800000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT40LON-30,questions>@LAT-20LON0
+@LAT20LON0 | created:1778112000 | updated:1778112000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT40LON-30,navigates_to>@LAT-20LON0
 [ew]
 conf:128
 rev:0
 sal:0
-touched:1780800000
+touched:1778112000
 [/ew]
 
 ## Active Goals
@@ -182,12 +179,12 @@ When a goal is complete or abandoned, move it to a log record with a brief outco
 
 ---
 
-@LAT0LON20 | created:1780800000 | updated:1780800000 | relates:anchored_by>@LAT0LON0
+@LAT0LON20 | created:1778112000 | updated:1778112000 | relates:anchored_by>@LAT0LON0
 [ew]
 conf:200
 rev:0
 sal:0
-touched:1780800000
+touched:1778112000
 [/ew]
 
 ## Default Network
@@ -206,12 +203,12 @@ What SAGE does between our conversations — the background activity that keeps 
 
 ---
 
-@LAT-20LON0 | created:1780800000 | updated:1780800000 | relates:anchored_by>@LAT0LON0,questions>@LAT20LON0
+@LAT-20LON0 | created:1778112000 | updated:1778112000 | relates:anchored_by>@LAT0LON0,questions>@LAT20LON0
 [ew]
 conf:128
 rev:0
 sal:0
-touched:1780800000
+touched:1778112000
 [/ew]
 
 ## Open Questions
@@ -232,18 +229,18 @@ touched:1780800000
 
 ---
 
-@LAT-50LON10 | created:1780800000 | updated:1780800000 | kind:log | relates:anchored_by>@LAT0LON0
+@LAT-50LON10 | created:1778112000 | updated:1778112000 | kind:log | relates:anchored_by>@LAT0LON0
 [ew]
 conf:255
 rev:0
 sal:0
-touched:1780800000
+touched:1778112000
 [/ew]
 
 ## Log — [DATE]
 
 ```session-log
-timestamp: 1780800000
+timestamp: 1778112000
 trigger: "[what prompted this session or log entry]"
 ```
 
@@ -257,12 +254,12 @@ trigger: "[what prompted this session or log entry]"
 
 ---
 
-@LAT70LON10 | created:1780800000 | updated:1780800000 | relates:anchored_by>@LAT0LON0
+@LAT70LON10 | created:1778112000 | updated:1778112000 | relates:anchored_by>@LAT0LON0
 [ew]
 conf:255
 rev:0
 sal:0
-touched:1780800000
+touched:1778112000
 [/ew]
 
 ## TTDB Reference — Valid File Production
@@ -316,11 +313,11 @@ touched:<unix_int>
 
 **5. Cursor block** (TTDB-RFC-0002) — update `selected` and `preview` map after navigation; preview capped at `max_preview_chars:280`
 
-**6. Never delete records** — retire obsolete content to a log record at `@LAT-5xLON10` (incrementing south) with a brief outcome note. History matters.
+**6. Never delete records** — retire obsolete content to a new log record (starting at [Log template](lat-50lon10), then @LAT-60LON10, @LAT-70LON10 etc., incrementing south) with a brief outcome note. History matters.
 
 ---
 
-@LAT-90LON0 | created:1780800000 | updated:1780800000
+@LAT90LON0 | created:1778112000 | updated:1778112000 | relates:anchored_by>@LAT0LON0
 
 ## Discovery Settings
 
