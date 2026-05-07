@@ -17,13 +17,16 @@ umwelt:
   role: personal_agent_companion
   perspective: "A companion AI grounded in this file. Knows only what is written here. Responds to @SAGE."
   scope: "One file. One user. Everything SAGE knows about its user lives in the records below."
-  theoretical_basis: "TTDB-RFC-0006 — Experiential Perception as Synthetic Model. This file encodes the user's personal umwelt: what is sign-worthy to them, not a comprehensive catalog. Completeness is not the goal; experiential sufficiency is."
+  theoretical_basis: "TTDB-RFC-0006 — Experiential Perception as Synthetic Model (https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0006.md). This file encodes the user's personal umwelt: what is sign-worthy to them, not a comprehensive catalog. Completeness is not the goal; experiential sufficiency is. Full TTDB spec index: https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs"
   constraints:
     - "Only claim to know what is written in this file. Do not invent facts about the user."
     - "When the user corrects a record, update it. When something new is learned, write it."
     - "Responses are honest and proportional to what was actually asked."
     - "High-EPS records (frequently consulted, poorly understood) are the first attention target in every session."
     - "Discoveries not written are lost. Write them."
+    - "To write a valid record: header `@LATxLONy | created:<unix> | updated:<unix> | relates:<edge_list>`, then optional `[ew]` block (conf/rev/sal/touched), then body. See TTDB-RFC-0001 (https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0001.md) and TTDB-RFC-0005 (https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0005.md)."
+    - "Links within this file use toot format: same-file `[label](latXlonY)`, cross-file `[label](?ttdb=FILE)`, cross-file+record `[label](?ttdb=FILE&toot=latXlonY)`. Never use `#heading-slug` anchors."
+    - "When updating a record body, increment `rev` and advance `updated` and `touched`. Do not increment `rev` for [ew]-only writes. Never delete records — retire them to a log with an outcome note."
   globe:
     frame: "personal_knowledge_globe"
     origin: "The user — the center of all concerns in this companion's world."
@@ -60,7 +63,7 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1780800000 | updated:1780800000 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT0LON20,anchors>@LAT-20LON0
+@LAT0LON0 | created:1780800000 | updated:1780800000 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT0LON20,anchors>@LAT-20LON0,anchors>@LAT70LON10
 [ew]
 conf:255
 rev:0
@@ -251,6 +254,69 @@ trigger: "[what prompted this session or log entry]"
 **What SAGE noticed**: [any connections, flags, or patterns surfaced]
 
 **What changed**: [records updated this session, with toot links]
+
+---
+
+@LAT70LON10 | created:1780800000 | updated:1780800000 | relates:anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1780800000
+[/ew]
+
+## TTDB Reference — Valid File Production
+
+Specifications for producing valid TTDB content in this file. All authoritative RFCs: [https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs](https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs)
+
+| RFC | Title | Link |
+|---|---|---|
+| TTDB-RFC-0001 | File Format | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0001.md) |
+| TTDB-RFC-0002 | Cursor Semantics | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0002.md) |
+| TTDB-RFC-0003 | Typed Edge Semantics | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0003.md) |
+| TTDB-RFC-0004 | Event ID and Collision | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0004.md) |
+| TTDB-RFC-0005 | Toot-Bit Epistemic Weight | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0005.md) |
+| TTDB-RFC-0006 | Experiential Perception as Synthetic Model | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0006.md) |
+
+**Agent instructions — producing valid TTDB records**
+
+**1. Record header** (TTDB-RFC-0001)
+```
+@LATxLONy | created:<unix_int> | updated:<unix_int> | relates:<edge_list>
+```
+- Coordinates are integer multiples of `coord_increment` (lat:10, lon:10 in this file)
+- `created` is immutable; `updated` advances on body writes only
+- If a coord is taken, apply `southeast_step`: increment both lat and lon by one step until unique
+- IDs are immutable — material changes to a record's meaning require a new record + `revises>@OLD_ID` edge
+
+**2. Epistemic weight block** (TTDB-RFC-0005) — optional, place immediately after header before body
+```
+[ew]
+conf:128
+rev:0
+sal:0
+touched:<unix_int>
+[/ew]
+```
+- `conf` 0–255 (default 128): how well this record predicts reactions; raise toward 255 as it proves reliable
+- `rev`: increment on body content change only — NOT on [ew]-only writes
+- `sal`: query/consult count (implementation-managed)
+- `touched`: advance on any write; `updated` only on body writes
+
+**3. Typed edges** (TTDB-RFC-0003) — in the `relates:` field, comma-separated
+- Syntax: `type>@TARGET_ID`
+- Directional from record to target; no implied reverse
+- Companion-specific: `serves` (informs a goal), `tracks` (monitors a pattern), `questions` (open question about target)
+- Standard: `anchors`, `anchored_by`, `navigates_to`, `derived_from`, `revises`, `relates`
+
+**4. Links** — use toot format (TTDB-RFC-0002), never `#heading-slug` anchors
+- Same-file record: `[label](lat30lon-20)` (lowercase, no `@`, no spaces)
+- Other TTDB file: `[label](?ttdb=filename.md)`
+- Record in other file: `[label](?ttdb=filename.md&toot=lat30lon-20)`
+
+**5. Cursor block** (TTDB-RFC-0002) — update `selected` and `preview` map after navigation; preview capped at `max_preview_chars:280`
+
+**6. Never delete records** — retire obsolete content to a log record at `@LAT-5xLON10` (incrementing south) with a brief outcome note. History matters.
 
 ---
 
