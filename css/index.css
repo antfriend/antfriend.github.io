@@ -401,8 +401,13 @@
     }
 
     .record thead th {
-      background: rgba(11, 17, 18, 0.06);
-      font-weight: 600;
+      background: var(--teal);
+      color: #e6fff0;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-color: var(--teal);
     }
 
     .record tbody tr:nth-child(even) td {
