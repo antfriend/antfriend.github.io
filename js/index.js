@@ -2390,7 +2390,10 @@
         }
 
         if (line.trim().startsWith("|")) {
-          flushList();
+          if (list) {
+            fragment.appendChild(list);
+            list = null;
+          }
           tableLines.push(line);
           continue;
         }
