@@ -111,7 +111,7 @@ touched:1780972800
 ![RFC](RFCs/TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md)
 ## [Sage, the personal AI Companion](share/companion.html) is the newest Toot Toot Invention
 
-A32 Mega is an [AI librarian](lat0lon0) reasoning across six interconnected knowledge bases — [narrative theory](lat30lon-20), [bioelectricity](lat20lon-30), [phenomenology](lat30lon-10), [affect](lat10lon-40), [formal mathematics](lat-30lon30), and [engineering terminology](lat-10lon10) — mapped as a conceptual globe.
+A32 Mega is, like Sage, an instance of a Toot Toot database, but A32 Mega takes the Umwelt of an [AI librarian](lat0lon0) reasoning across six other interconnected ttdb knowledge bases — [narrative theory](lat30lon-20), [bioelectricity](lat20lon-30), [phenomenology](lat30lon-10), [affect](lat10lon-40), [formal mathematics](lat-30lon30), and [engineering terminology](lat-10lon10) — mapped as a conceptual globe.
 
 Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges connect records across databases. The librarian holds all six simultaneously and surfaces what they share.
 
