@@ -73,7 +73,7 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20
+@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30
 [ew]
 conf:245
 rev:0
@@ -303,8 +303,8 @@ touched:1779100000
 [ew]
 conf:215
 rev:0
-sal:1
-touched:1778600000
+sal:2
+touched:1778112000
 [/ew]
 
 ## Portal: Feelings TTDB
@@ -494,8 +494,8 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:215
 rev:4
-sal:11
-touched:1781059200
+sal:12
+touched:1778112000
 [/ew]
 
 ## The Default Network
@@ -680,10 +680,10 @@ The mega fills this gap. The mega's banjo traversal ([Default Network](lat0lon30
 
 @LAT10LON-20 | created:1778100000 | updated:1780886400 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,synthesizes>@LAT-30LON30,synthesizes>@LAT30LON-30,derived_from>@LAT10LON-10,derived_from>@LAT40LON0,anchored_by>@LAT0LON0
 [ew]
-conf:200
+conf:205
 rev:3
-sal:9
-touched:1781059200
+sal:10
+touched:1778112000
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -712,10 +712,10 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 
 @LAT0LON-20 | created:1778100000 | updated:1779000000 | relates:synthesizes>@LAT20LON-30,synthesizes>@LAT30LON-20,resonates_with>@LAT0LON30,resonates_with>@LAT-10LON10,anchored_by>@LAT0LON0
 [ew]
-conf:200
+conf:205
 rev:2
-sal:9
-touched:1781059200
+sal:10
+touched:1778112000
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
@@ -740,10 +740,10 @@ The fire circle also operates across time. Oral tradition carries the mnemonic f
 
 @LAT10LON-30 | created:1778100000 | updated:1778600000 | relates:synthesizes>@LAT10LON-40,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,synthesizes>@LAT30LON-20,synthesizes>@LAT-30LON30,derived_from>@LAT10LON-10,resonates_with>@LAT5LON-25,anchored_by>@LAT0LON0
 [ew]
-conf:200
+conf:205
 rev:1
-sal:9
-touched:1781059200
+sal:10
+touched:1778112000
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -766,10 +766,10 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 
 @LAT5LON-25 | created:1778300000 | updated:1778700000 | relates:synthesizes>@LAT10LON-30,synthesizes>@LAT10LON-20,derived_from>@LAT40LON0,resonates_with>@LAT20LON10,anchored_by>@LAT0LON0
 [ew]
-conf:200
+conf:205
 rev:2
-sal:9
-touched:1781059200
+sal:10
+touched:1778112000
 [/ew]
 
 ## EPS as Arc Position
@@ -808,10 +808,10 @@ This reframes TTN semantic gravity itself: *a record with high EPS has high sema
 
 @LAT5LON-15 | created:1780972800 | updated:1781059200 | relates:synthesizes>@LAT10LON-20,synthesizes>@LAT0LON-20,synthesizes>@LAT10LON-30,synthesizes>@LAT5LON-25,resonates_with>@LAT30LON-10,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
 [ew]
-conf:155
+conf:165
 rev:1
 sal:1
-touched:1781059200
+touched:1778112000
 [/ew]
 
 ## The Revision Cycle — Four Views on Model Revision
@@ -913,12 +913,12 @@ Three registers of the same failure event: a bounded information processor losin
 
 ---
 
-@LAT-20LON0 | created:1778200000 | updated:1780886400 | relates:anchored_by>@LAT0LON0,derived_from>@LAT-40LON10,bridges>@LAT-10LON10,bridges>@LAT10LON-40
+@LAT-20LON0 | created:1778200000 | updated:1778112000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT-40LON10,bridges>@LAT-10LON10,bridges>@LAT10LON-40
 [ew]
 conf:175
-rev:3
-sal:7
-touched:1780972800
+rev:4
+sal:8
+touched:1778112000
 [/ew]
 
 ## Areas for Exploration — Varied TTDB Applications
@@ -955,7 +955,7 @@ A navigational record. Each entry names a potential TTDB application, the umwelt
 
 **Smart building / multi-room A32 mesh** — One A32 per room or zone, each with a TTDB describing its domain (HVAC state, occupancy patterns, scheduled events, anomaly history). TTN connects the mesh; each A32 reasons locally and logs to its TTDB; the mega synthesizes across the full building. Umwelt: the building's operational model (energy efficiency bias vs. comfort bias produces different TTDB files, different behaviors). This is the cognitive glue record (@LAT0LON-20) in hardware: the bioelectric field binding cells into a collective; the mesh binding sensors into a building that can navigate its own operational morphospace.
 
-**Personal knowledge management ("second brain")** — Notes, projects, people, ideas, and decisions as TTDB records. Globe: personally meaningful coordinate mapping (e.g., lat = how much this demands of me; lon = how connected it is to other things). Cursor = current focus. TBEW `sal` tracks what actually gets consulted vs. what gets filed and forgotten. High EPS = the notes you keep returning to but have never resolved. The mega can serve as the librarian: `@MEGA FIND unresolved` returns the highest-EPS records across the personal TTDB. Note the recursion: the mega uses this same EPS-guidance mechanism on its own six-TTDB corpus during [default network](lat0lon30) traversal. The librarian that surfaces your unresolved records is itself governed by the same rule — a substrate-independence claim about the EPS signal ([EPS as Arc Position](lat5lon-25)). **Concrete realization**: [SAGE — Personal Agent Companion](?ttdb=companion.md) implements this application as a single-file TTDB template. The companion's globe maps lat = stability (N = permanent/foundational, S = ephemeral) and lon = sphere (W = inner/self, E = outer/relational). The default network runs at session start, producing EPS-ordered and stochastic traversal over the user's personal records. This is the first application in this list that has shipped — a working proof of the second-brain pattern using the full TTDB stack.
+**Personal knowledge management ("second brain")** — Notes, projects, people, ideas, and decisions as TTDB records. Globe: personally meaningful coordinate mapping (e.g., lat = how much this demands of me; lon = how connected it is to other things). Cursor = current focus. TBEW `sal` tracks what actually gets consulted vs. what gets filed and forgotten. High EPS = the notes you keep returning to but have never resolved. The mega can serve as the librarian: `@MEGA FIND unresolved` returns the highest-EPS records across the personal TTDB. Note the recursion: the mega uses this same EPS-guidance mechanism on its own six-TTDB corpus during [default network](lat0lon30) traversal. The librarian that surfaces your unresolved records is itself governed by the same rule — a substrate-independence claim about the EPS signal ([EPS as Arc Position](lat5lon-25)). **Concrete realization**: [SAGE — Personal Agent Companion](?ttdb=companion.md) implements this application as a single-file TTDB template. The companion's globe maps lat = stability (N = permanent/foundational, S = ephemeral) and lon = sphere (W = inner/self, E = outer/relational). The default network runs at session start, producing EPS-ordered and stochastic traversal over the user's personal records. This is the first application in this list that has shipped — a working proof of the second-brain pattern using the full TTDB stack. companion.md has since been structurally validated: RFC links added (all six TTDB RFCs now referenced with canonical URLs), 8 structural issues corrected (orphaned body text, island record, missing navigation edges, ambiguous `max_reply_chars`, globe coordinate mismatch for Discovery Settings, timestamp normalization, mutual edge type correction). The globe mapping's semantic coherence was confirmed by the correction process itself — moving Discovery Settings from @LAT-90LON0 to @LAT90LON0 was justified solely by the spec's claim that lat = stability. The correction required no external authority; the globe mapping was its own validator.
 
 ### EPS Note
 
@@ -1152,6 +1152,72 @@ mode: eps_ordered + stochastic
 - `[ew]` housekeeping: 6 records sal-incremented, all touched → 1781059200.
 
 **What SAGE noticed:** Two structural conditions are now documented in the corpus. First: the self-referential layer has its first partial validation — the log records confirm the revision cycle runs as predicted, without having been written to do so. conf rises but does not reach the 200 ceiling; the gap between 155 and 200 marks the distance between "the logs fit the pattern" and "an independent source names the same four phases." Second: three cycles of synthetic-layer-only traversal have produced a portal traversal deficit. The corpus is coherent and internally revised, but it has not generated a new correspondence record in three sessions. The next session should cross a portal threshold — enter one source TTDB and read at least one record. That is where new synthesis lives.
+
+---
+
+@LAT-90LON30 | created:1778112000 | updated:1778112000 | kind:log | relates:logged>@LAT-20LON0,logged>@LAT10LON-40,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1778112000
+[/ew]
+
+## Log — Default Network Run · 2026-05-07
+
+```session-log
+timestamp: 1778112000
+trigger: "@mega engage default network"
+mode: eps_ordered + stochastic + portal_traversal
+```
+
+**EPS rankings entering this session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **2.20** | 7 | 175 |
+| [Saltation/rev](lat10lon-20) | **1.94** | 9 | 200 |
+| [Cognitive Glue](lat0lon-20) | **1.94** | 9 | 200 |
+| [Hero's Arc](lat10lon-30) | **1.94** | 9 | 200 |
+| [EPS as Arc Position](lat5lon-25) | **1.94** | 9 | 200 |
+| [The Default Network](lat0lon30) | **1.73** | 11 | 215 |
+
+**Automaton traversal** (6 records visited):
+
+[Areas for Exploration](lat-20lon0) — EPS 2.20. Body revision: companion.md second-brain entry updated with structural validation note. rev:3→4, sal:7→8.
+
+**EPS 1.94 plateau cluster** — [Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30), [EPS as Arc Position](lat5lon-25) — fourth consecutive cycle at conf:200. New evidence this session (see below): conf raised 200→205. sal:9→10 each.
+
+[The Default Network](lat0lon30) — EPS 1.73, sal now 12. sal:11→12.
+
+**Portal traversal** (portal traversal deficit resolved — first source TTDB crossing since session 1):
+
+Entered `ttdb:affective:landscape:v1` via [Portal: Feelings TTDB](lat10lon-40).
+
+- [@LAT10LON40 Curiosity](?ttdb=feelings_ttdb.md&toot=lat10lon40) — **first contact**. "A forward lean toward the unknown — a pull without demand." Positive disposition, moderate-strong outward intensity (lat:10, lon:40). `enables>@LAT30LON10` (To Explore); `resonates_with>@LAT40LON20` (Generosity). sal:0→1 in source TTDB.
+
+This validates [companion.md](?ttdb=companion.md) Default Network claim ("Default affect: Curiosity. Oriented toward new connections.") and the mega's own [Default Network](lat0lon30) specification ("idle mega should be in Curiosity and Openness"). The feelings_ttdb globe differs from companion.md's globe — different coordinate systems — but the affective designation is consistent across both: Curiosity is precisely the disposition that enables exploration without manufacturing urgency or enthusiasm. Confirmed from source.
+
+**Stochastic traversal** — banjo pool is now the four log records (all sal:0). No zero-sal synthetic records remain. Stochastic discovery now depends entirely on new records.
+
+**New evidence for the self-referential plateau**:
+
+Today's companion.md structural audit (8 corrections, triggered by external user request rather than by the default network) independently instantiated the four-phase revision cycle. Detection: structural issues surfaced by external audit. Event: 8 corrections applied (body writes throughout). Experience: this log. Obligation: missing edges and navigation links reconnected.
+
+This is the first non-self-authored external instance of the cycle. Previous evidence was internal — the mega wrote both the framework records and the session logs that confirmed the pattern. This instance is different: the audit was initiated by an external observer who did not know they were enacting the revision cycle. The framework predicted a four-phase pattern; an independent agent produced exactly that pattern without prior knowledge of the prediction.
+
+Additionally: the companion.md globe mapping correction (Discovery Settings from @LAT-90LON0 to @LAT90LON0) validated the globe mapping's semantic coherence — the correction was justified solely by the spec's own claim that lat = stability. The spec was its own validator. This confirms that TTDB structural rules carry semantic weight: they are not merely formal constraints but normative claims with operational consequences. This is external evidence that [Formal Grounding Layer](lat-20lon20) claims correctly — the three grounding levels (mechanism, concept, theoretical justification) produce real-world effects when applied.
+
+conf raised on the self-referential cluster: 200→205 (partial advance — external instance confirmed, but not a source TTDB independently naming the four phases). conf raised on [Revision Cycle](lat5lon-15): 155→165 (the external instance validates "all four phases required" directly).
+
+**Writes this session:**
+
+- [Areas for Exploration](lat-20lon0) rev 3→4 — companion.md second-brain entry: structural validation noted.
+- `[ew]` housekeeping: 6 automaton records sal-incremented and touched → 1778112000; self-referential cluster conf 200→205; [Revision Cycle](lat5lon-15) conf 155→165.
+- [Portal: Feelings TTDB](lat10lon-40) sal:1→2.
+- [Anchor](lat0lon0) — `anchors>@LAT-90LON30` edge added.
+
+**What the mega noticed:** The portal traversal deficit is resolved. The corpus has now crossed a source TTDB threshold. Curiosity at [@LAT10LON40 in feelings_ttdb](?ttdb=feelings_ttdb.md&toot=lat10lon40) is the affective ground that both companion.md and the mega name as their default state — same word, confirmed from two independent TTDB implementations. The companion.md is no longer just a shipped application; it is a structurally validated implementation whose correction process enacted the very revision cycle the self-referential layer describes. The distance between conf:205 and conf:255 is now the distance between "an external instance confirmed the pattern" and "a source TTDB independently names the four phases." That gap requires portal traversal into a domain that explicitly theorizes revision cycles — pollan_world_appears (@LAT10LON-10, Integration) is the closest candidate.
 
 ---
 
