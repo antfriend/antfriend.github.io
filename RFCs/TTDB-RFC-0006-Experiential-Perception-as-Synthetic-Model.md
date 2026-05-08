@@ -10,23 +10,25 @@
 
 ## Abstract
 
-The Toot-Toot Database (TTDB) is a typed, offline knowledge graph designed to represent experiential knowledge at the edge. This RFC establishes the theoretical foundations of TTDB as a *synthetic model of experiential perception* — distinct from both propositional knowledge graphs and statistical embedding approaches. The central claim is that perception is best represented not as a catalog of states but as a graph of transitions between states, grounded in the biosemiotic concept of the umwelt. The `@PERCEPT:` before/after paired node structure is the formal realization of this claim.
+The Toot-Toot Database (TTDB) is a typed, offline knowledge graph designed to represent experiential knowledge at the edge. This RFC establishes the theoretical foundations of TTDB as a *synthetic model of experiential perception* rooted in the **Locus framework** — distinct from both propositional knowledge graphs and statistical embedding approaches. The central claim is that perception is best represented not as a catalog of states but as a graph of transitions between states, grounded in the biosemiotic concept of the umwelt. The `@PERCEPT:` before/after paired node structure is the formal, normative realization of this claim and is non-negotiable in any conforming Locus implementation.
 
 ---
 
 ## 1. Motivation
 
-Standard medical ontologies — UMLS, SNOMED CT, ICD — are propositional. They encode the form `(entity, relation, entity)`: a drug treats a condition; a symptom implies a diagnosis. This is adequate for indexing facts. It is inadequate for representing *what it is like* to move through an illness.
+Locus is a framework for modeling experiential knowledge — what it is like to perceive, to live, to move through a state and into a different state. At its foundation is the requirement to represent not facts about an experience, but the structure of the experience itself.
 
-TTDB was designed to represent what it is like to be something. It requires a principled account of what kind of thing experiential knowledge is — and that account must be rigorous enough to constrain the data model, not merely motivate it rhetorically.
+Standard propositional ontologies (e.g., UMLS, SNOMED CT, ICD) are inadequate for this task. They encode `(entity, relation, entity)`: a drug treats a condition; a symptom implies a diagnosis. This is adequate for indexing facts about a domain. It is inadequate for representing *what the transition feels like* — the nausea in week one, the clarity in week six, the embodied difference between knowing your glucose is controlled and feeling that control in your body.
 
-This RFC provides that account.
+TTDB was designed to represent what it is like to move through a state. It requires a principled account of what kind of thing experiential knowledge is — and that account must be rigorous enough to constrain the data model, not merely motivate it rhetorically.
+
+This RFC provides that account and establishes the `@PERCEPT:` definition as the binding contract of the Locus framework.
 
 ---
 
 ## 2. The Propositional Problem
 
-Propositional knowledge graphs can represent *that* a transition occurred:
+Propositional knowledge graphs (like UMLS) can represent *that* a transition occurred:
 
 ```
 (metformin) --[treats]--> (type 2 diabetes)
@@ -34,29 +36,32 @@ Propositional knowledge graphs can represent *that* a transition occurred:
 
 They cannot represent *what the transition felt like* to the person inside it. The nausea in week one. The clarity in week six. The difference between knowing your glucose is controlled and feeling that control in your body.
 
-This is not a gap that richer ontologies can close by adding more nodes or more relation types. It is a structural limitation. Propositions are: 
-- atemporal
-- agent-free
-- phenomenologically empty
+This is not a gap that richer propositional ontologies can close by adding more nodes or more relation types. It is a structural limitation. Propositions are: 
+- atemporal (they have no lived duration)
+- agent-free (they do not anchor to a perceiving subject)
+- phenomenologically empty (they do not capture the shape of the perceptual experience itself)
    
-Experience is none of those things!
+Experience is none of those things. Experience is:
+- temporally embedded (it has a before and after)
+- agent-bound (it happens *to* someone)
+- phenomenologically thick (the structure of the change matters as much as the change itself)
 
 ---
 
-## 3. TTDB as Synthetic Perceptual Model
+## 3. Locus: Synthetic Perceptual Modeling
 
-TTDB takes a different approach: rather than simulating perception statistically or approximating it with dense embeddings, it *synthesizes* perception from typed, grounded primitives.
+The Locus framework takes a different approach: rather than simulating perception statistically or approximating it with dense embeddings, it *synthesizes* perception from typed, grounded primitives.
 
 The distinction matters:
 
 | Mode | Method | Epistemology |
 |---|---|---|
-| Simulated | Statistical approximation | Black-box latent space |
-| Synthetic | Assembled from primitives | Transparent, inspectable |
+| Simulated | Statistical approximation | Black-box latent space; what you learn is invisible |
+| Synthetic | Assembled from primitives | Transparent, inspectable, auditable |
 
 A synthetic model builds experience-shapes from known components — the way organic chemistry builds molecules from elements with known valences. Each component is interpretable. Each bond is typed. The resulting structure is not a probability distribution over possible experiences; it is a specific, addressable claim about a specific experiential arc.
 
-This is what TTDB does. The six conceptual nodes — symptom, condition, molecule, medicine, percept, outcome — are not categories in a taxonomy. They are the **primitive elements** from which illness experience is assembled.
+This is what Locus does. It models experiential transitions using a small set of **primitive node types** — organized around the `@PERCEPT:` pairing as the central load-bearing structure. (Medical illustrations use symptom, condition, molecule, medicine, and outcome nodes; but Locus is domain-agnostic and can model any experiential transition in any domain.)
 
 ---
 
@@ -72,34 +77,54 @@ This is why TTDB does not aim to be comprehensive. Comprehensiveness is a proper
 
 ---
 
-## 5. The Paired Node as Formal Claim
+## 5. The @PERCEPT: Paired Node — Formal Definition
 
-The `@PERCEPT:` before/after node pair is the load-bearing structure of TTDB's claim to be a perceptual model.
+The `@PERCEPT:before` → `@PERCEPT:after` paired node structure is the **formal and non-negotiable** center of the Locus framework. This pairing is not optional. It is not a design choice among alternatives. It is the binding contract of any system claiming conformance to Locus.
 
-Most medical ontologies record states:
+### 5.0 Definition
+
+A Locus `@PERCEPT:` pair encodes a single directed transition:
+
+```
+@PERCEPT:before  → [state_0, state_1, ...]
+@PERCEPT:after   → [state_0', state_1', ...]
+```
+
+where each state is a typed, addressable node (e.g., a symptom, condition, sensation, or more abstractly, any aspect of the experiential field before and after an intervention or event).
+
+The edge connecting them is the datum — not the nodes themselves. The unit of perceptual knowledge in Locus is the **transition**: the typed, directed claim that this agent moved from this perceptual configuration to that one, under the influence of this intervention or event.
+
+### 5.1 Why Paired Nodes Are Non-Negotiable
+
+Most knowledge systems (including medical ontologies) record states:
 
 ```
 patient.state = "nausea"
+patient.state = "fatigue"
 ```
 
-TTDB records transitions:
+Locus records transitions:
 
 ```
 @PERCEPT:before → [nausea, fatigue, brain-fog]
 @PERCEPT:after  → [reduced-nausea, energy-restored, mental-clarity]
 ```
 
-This is not merely more expressive. It is structurally different. A state-catalog answers the question *what was present*. A transition record answers the question *what changed, and in which direction, for whom*.
+This is not merely more expressive notation. It is structurally different and reflects the biology of perception itself.
 
-Perception is fundamentally a transition-detection faculty. The visual system responds to edges, not uniform fields. Pain attenuates under constant stimulus. What we notice is *change*. A knowledge graph that records only states is a knowledge graph that cannot represent the thing perception actually does.
+Perception is fundamentally a *transition-detection* faculty. The visual system responds to edges, not uniform fields. Proprioception detects acceleration, not position. Pain attenuates under constant stimulus; novelty captures attention. What we *notice* is *change*. A knowledge graph that records only states is a knowledge graph that cannot represent the thing perception actually does.
 
-The `@PERCEPT:` pair makes TTDB's perceptual model explicit and normative. An implementation that records only post-state percepts without pre-state context is not a conforming TTDB implementation.
+Locus commits to this: an implementation that records post-state percepts without a paired pre-state context is **not a conforming Locus implementation**. The pair is the minimum unit. Implementations may extend it (adding intervention info, timestamps, agent context, etc.), but they must never drop either element of the pair.
 
-### 5.1 The Delta as the Datum
+### 5.2 The Delta as the Datum
 
-Formally: the unit of perceptual knowledge in TTDB is not a node but an **edge** — specifically the typed edge connecting a `@PERCEPT:before` node to a `@PERCEPT:after` node. The nodes are addressed; the edge is the claim.
+Formally: the unit of perceptual knowledge in Locus is not a node but an **edge** — specifically the typed edge connecting a `@PERCEPT:before` node to a `@PERCEPT:after` node. The nodes are addressed; the edge is the claim.
 
-This has implications for querying. A query against TTDB's perceptual layer is not "what was this patient's experience?" but "what perceptual transition did this patient traverse, under what intervention, from what prior state?"
+This has immediate implications for querying and storage:
+
+- A query against Locus's perceptual layer is not "what states did this agent pass through?" but "what perceptual transitions did this agent traverse, under what intervention, from what prior state, to what outcome?"
+- Storage and indexing strategies SHOULD optimize for edge traversal and delta computation, not isolated node lookup.
+- Implementations that record only the "after" state without grounding it in a "before" state are not modeling perception; they are modeling isolated facts.
 
 ---
 
@@ -113,17 +138,17 @@ The `emotions.md` RFC (hippocampal-prefrontal emotional embedding graph) extends
 
 ---
 
-## 7. Normative Implications
+## 7. Normative Implications for Locus Implementations
 
-The theoretical commitments in this RFC have direct implications for conforming TTDB implementations:
+The theoretical commitments in this RFC have direct, binding implications for any system claiming conformance to the Locus framework:
 
-1. **Paired percepts are required.** A `@PERCEPT:after` node without a corresponding `@PERCEPT:before` node is incomplete. Implementations SHOULD enforce this pairing at write time.
+1. **Paired percepts are mandatory.** A `@PERCEPT:after` node without a corresponding `@PERCEPT:before` node is not a valid Locus record. Implementations MUST enforce this pairing at write time. Partial or orphaned percepts are errors, not valid data.
 
-2. **Transitions, not states, are the primary datum.** Storage and indexing strategies SHOULD optimize for edge traversal, not node lookup.
+2. **Transitions, not isolated states, are the primary datum.** Storage and indexing strategies MUST optimize for edge traversal and delta computation. A system that can only tell you "the state is X" but not "the state changed from Y to X" is not a Locus implementation.
 
-3. **Agent context is non-optional.** A perceptual transition without a patient/agent context is propositional, not experiential. The agent anchor (patient identifier or anonymous cohort) MUST be preserved.
+3. **Agent context is mandatory.** A perceptual transition without an agent anchor (patient identifier, user ID, device ID, cohort) is propositional, not experiential. The perceiving subject must be present. This context MUST be preserved throughout storage and querying.
 
-4. **CUI addressing supports umwelt grounding.** UMLS CUIs provide the deterministic addressing that makes toot-bits portable and interoperable while remaining grounded in established medical vocabulary.
+4. **Domain grounding varies by use case.** Medical implementations may use UMLS CUIs (which provide deterministic addressing and portability). Other domains use their own identifier schemes. But whatever addressing scheme is chosen MUST be consistent, typed, and resolvable within the implementation. (UMLS is an example, not a requirement.)
 
 ---
 

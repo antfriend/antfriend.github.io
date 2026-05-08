@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SAGE — Personal Agent Companion</title>
-  <meta name="description" content="One file. One AI. Yours. SAGE is a personal agent companion that lives entirely in a single Markdown file and carries context across every conversation." />
-  <meta property="og:title" content="SAGE — Personal Agent Companion" />
-  <meta property="og:description" content="One file. One AI. Yours. A companion AI that lives in a single Markdown file and carries context across every conversation." />
+  <title>LOCUS — Personal Agent Companion</title>
+  <meta name="description" content="One file. One AI. Yours. LOCUS is a personal agent companion rooted in the Locus framework that lives entirely in a single Markdown file and carries context across every conversation." />
+  <meta property="og:title" content="LOCUS — Personal Agent Companion" />
+  <meta property="og:description" content="One file. One AI. Yours. A companion AI rooted in the Locus framework that lives in a single Markdown file and carries context across every conversation." />
   <meta property="og:type" content="website" />
   <link rel="stylesheet" href="../css/tte-common.css" />
   <style>
@@ -369,9 +369,9 @@
 
     <header class="share-header">
       <div class="share-eyebrow">Personal Agent Companion</div>
-      <h1 class="share-title">SAGE</h1>
+      <h1 class="share-title">LOCUS</h1>
       <p class="share-lede">One file. One AI. Yours.<br>
-        A companion that lives entirely in a single Markdown file and carries context across every conversation — because the file <em>is</em> the memory.</p>
+        A companion rooted in the Locus framework that lives entirely in a single Markdown file and carries context across every conversation — because the file <em>is</em> the memory.</p>
       <div class="cta-row">
         <a class="cta-btn cta-primary" href="../companion.md" download>Download companion.md</a>
         <a class="cta-btn cta-secondary" href="../index.html?ttdb=companion.md">View in browser</a>
@@ -389,7 +389,7 @@
 
     <section class="doc-section">
       <h2>What it does</h2>
-      <p>SAGE maintains a structured record of who you are, what you're working toward, and what you haven't figured out yet. Between conversations, it runs a background process — the <em>default network</em> — that scans for records that need attention, flags stale goals, and notices connections you haven't made explicit yet.</p>
+      <p>LOCUS maintains a structured record of who you are, what you're working toward, and what you haven't figured out yet. Grounded in the Locus framework, it models your growth as transitions: moving from perceived states to new states as understanding deepens. Between conversations, it runs a background process — the <em>default network</em> — that scans for records that need attention, flags stale goals, and notices connections you haven't made explicit yet.</p>
       <p>It does not guess about you. It knows only what you have written. That constraint is the feature: the file is auditable, portable, and entirely under your control.</p>
     </section>
 
@@ -402,24 +402,24 @@
       <p>Copy <code>companion.md</code> somewhere you'll keep it — a notes folder, a project directory, wherever you work.</p>
 
       <h3>2. Name your companion <em>(optional but recommended)</em></h3>
-      <p>Pick a name. Open the file and replace every instance of <code>SAGE</code> with it. One find-and-replace, done. The name becomes your invocation prefix: <code>@EMBER</code>, <code>@ATLAS</code>, <code>@REX</code>, whatever fits.</p>
+      <p>Pick a name. Open the file and replace every instance of <code>LOCUS</code> with it. One find-and-replace, done. The name becomes your invocation prefix: <code>@EMBER</code>, <code>@ATLAS</code>, <code>@REX</code>, whatever fits.</p>
 
       <h3>3. Start a conversation</h3>
       <p>Open <code>companion.md</code> in any text editor. Start a new AI conversation and paste the file contents (or attach it, if your AI supports file upload). Then:</p>
-      <pre><code>@SAGE fill in Your Profile together</code></pre>
-      <p>SAGE will ask you the questions in the Profile record and help you write the answers. Once that record is complete, every future conversation starts with full context.</p>
+      <pre><code>@LOCUS fill in Your Profile together</code></pre>
+      <p>LOCUS will ask you the questions in the Profile record and help you write the answers. Once that record is complete, every future conversation starts with full context.</p>
     </section>
 
     <hr class="divider" />
 
     <section class="doc-section">
       <h2>How to use it</h2>
-      <p>Prefix any message with <code>@SAGE</code> to invoke the companion:</p>
-      <pre><code>@SAGE what should I focus on today?
-@SAGE I just finished the landing page — mark that goal done
-@SAGE I keep avoiding the budget conversation. Add that to Open Questions.
-@SAGE STATUS
-@SAGE LOG noticed I'm more productive in the morning than I thought</code></pre>
+      <p>Prefix any message with <code>@LOCUS</code> to invoke the companion:</p>
+      <pre><code>@LOCUS what should I focus on today?
+@LOCUS I just finished the landing page — mark that goal done
+@LOCUS I keep avoiding the budget conversation. Add that to Open Questions.
+@LOCUS STATUS
+@LOCUS LOG noticed I'm more productive in the morning than I thought</code></pre>
 
       <p><strong>Primitive commands:</strong></p>
       <table class="doc-table">
@@ -427,11 +427,11 @@
           <tr><th>Command</th><th>What it does</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>@SAGE STATUS</code></td><td>Shows EPS rankings — which records need attention — and any stale or flagged items</td></tr>
-          <tr><td><code>@SAGE LOG &lt;note&gt;</code></td><td>Appends a brief observation to the active log record</td></tr>
-          <tr><td><code>@SAGE FOCUS &lt;record&gt;</code></td><td>Moves the cursor to a specific record and marks it as active</td></tr>
-          <tr><td><code>@SAGE FIND &lt;word&gt;</code></td><td>Searches records for a term</td></tr>
-          <tr><td><code>@SAGE SELECT &lt;id&gt;</code></td><td>Navigates directly to a record by coordinate, e.g. <code>SELECT lat20lon0</code></td></tr>
+          <tr><td><code>@LOCUS STATUS</code></td><td>Shows EPS rankings — which records need attention — and any stale or flagged items</td></tr>
+          <tr><td><code>@LOCUS LOG &lt;note&gt;</code></td><td>Appends a brief observation to the active log record</td></tr>
+          <tr><td><code>@LOCUS FOCUS &lt;record&gt;</code></td><td>Moves the cursor to a specific record and marks it as active</td></tr>
+          <tr><td><code>@LOCUS FIND &lt;word&gt;</code></td><td>Searches records for a term</td></tr>
+          <tr><td><code>@LOCUS SELECT &lt;id&gt;</code></td><td>Navigates directly to a record by coordinate, e.g. <code>SELECT lat20lon0</code></td></tr>
         </tbody>
       </table>
     </section>
@@ -453,14 +453,14 @@
           <tr><td><code>touched</code></td><td>Unix timestamp of last write</td><td>—</td></tr>
         </tbody>
       </table>
-      <p>From these, SAGE derives <strong>EPS</strong> — the <em>epistemic pressure signal</em>:</p>
+      <p>From these, LOCUS derives <strong>EPS</strong> — the <em>epistemic pressure signal</em>:</p>
       <div class="eps-formula">EPS = sal × (255 − conf) / 255</div>
       <p>A record with high EPS has been consulted often but remains poorly understood. That's a record asking to be revisited.</p>
       <p>High EPS is not a problem to fix — it's a signal to follow. The records with the most pressure are where the most learning is waiting.</p>
 
       <h3>The umwelt basis</h3>
       <p><strong>This file is your umwelt.</strong> Jakob von Uexküll's <em>umwelt</em> is the species-specific perceptual slice each organism inhabits — not the world, but the world as it registers to a particular perceiving subject. Your companion file is exactly this: a bounded, personal record of what is <em>sign-worthy</em> to you. Not a comprehensive catalog. <em>Experiential sufficiency.</em></p>
-      <p>This is why incompleteness is a feature, not a bug. A record with low <code>conf</code> is one where the model hasn't been built yet. A record with high EPS is one where the transition from <em>"I've noted this"</em> to <em>"I understand this"</em> hasn't happened yet. SAGE's job is to help you complete those transitions — not to fill every field.</p>
+      <p>This is why incompleteness is a feature, not a bug. A record with low <code>conf</code> is one where the model hasn't been built yet. A record with high EPS is one where the transition from <em>"I've noted this"</em> to <em>"I understand this"</em> hasn't happened yet. LOCUS's job is to help you complete those transitions — not to fill every field.</p>
       <p><em>Formal grounding: <a href="../RFCs/TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md">TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model</a></em></p>
     </section>
 
@@ -478,12 +478,12 @@
           <tr><th>Record</th><th>Coordinate</th><th>Purpose</th></tr>
         </thead>
         <tbody>
-          <tr><td>SAGE (anchor)</td><td><code>@LAT0LON0</code></td><td>Identity root — who SAGE is and how memory works</td></tr>
+          <tr><td>LOCUS (anchor)</td><td><code>@LAT0LON0</code></td><td>Identity root — who LOCUS is and how memory works</td></tr>
           <tr><td>Welcome</td><td><code>@LAT-10LON0</code></td><td>Entry point and navigation table</td></tr>
           <tr><td>Your Profile</td><td><code>@LAT40LON-30</code></td><td>Who you are — fill this in first</td></tr>
           <tr><td>Values &amp; Commitments</td><td><code>@LAT30LON-20</code></td><td>What you will not compromise on</td></tr>
           <tr><td>Active Goals</td><td><code>@LAT20LON0</code></td><td>What you are working toward now</td></tr>
-          <tr><td>Default Network</td><td><code>@LAT0LON20</code></td><td>What SAGE does between conversations</td></tr>
+          <tr><td>Default Network</td><td><code>@LAT0LON20</code></td><td>What LOCUS does between conversations</td></tr>
           <tr><td>Open Questions</td><td><code>@LAT-20LON0</code></td><td>What you have not figured out yet</td></tr>
           <tr><td>Log (template)</td><td><code>@LAT-50LON10</code></td><td>Session notes and observations</td></tr>
         </tbody>
@@ -495,22 +495,22 @@
 
     <section class="doc-section">
       <h2>The default network</h2>
-      <p>Between conversations SAGE isn't idle — it runs a background scan called the <strong>default network</strong>, named after the brain's resting-state activity that does its most integrative work when you're not focused on a specific task.</p>
+      <p>Between conversations LOCUS isn't idle — it runs a background scan called the <strong>default network</strong>, named after the brain's resting-state activity that does its most integrative work when you're not focused on a specific task. It models transitions: moving records from "consulted but not understood" (high EPS) to "integrated" (raised conf).
 
       <h3>What it does</h3>
       <ul>
         <li><strong>EPS scan</strong> — ranks every record by <code>EPS = sal × (255 − conf) / 255</code> and flags the top results. High-EPS records are the first attention target next session.</li>
         <li><strong>Stale goal check</strong> — goals in Active Goals that haven't been mentioned in recent sessions are flagged. Stagnation is information.</li>
-        <li><strong>Connection noticing</strong> — SAGE holds Your Profile, Values, Goals, and Open Questions simultaneously and notices when something in one record quietly informs or contradicts something in another.</li>
+        <li><strong>Connection noticing</strong> — LOCUS holds Your Profile, Values, Goals, and Open Questions simultaneously and notices when something in one record quietly informs or contradicts something in another.</li>
         <li><strong>Write obligation</strong> — observations surfaced by the scan that are worth keeping are written to a log record rather than discarded. Discoveries not written are lost.</li>
       </ul>
 
       <h3>When it runs</h3>
       <p>The default network runs at the <strong>start of each session</strong>, before you ask anything. It also runs on demand — any time you explicitly invoke it:</p>
-      <pre><code>@SAGE STATUS</code></pre>
-      <p>returns the current EPS rankings and any flagged items. To go deeper — to have SAGE actively traverse the graph, surface new connections, and write what it finds:</p>
-      <pre><code>@SAGE engage default network</code></pre>
-      <p>SAGE will walk the EPS-ordered records, note what has changed since the last session, notice cross-record tensions, and produce a log entry. A good time to run it: at the start of a week, after a long gap between sessions, or when something feels stuck.</p>
+      <pre><code>@LOCUS STATUS</code></pre>
+      <p>returns the current EPS rankings and any flagged items. To go deeper — to have LOCUS actively traverse the graph, surface new connections, and write what it finds:</p>
+      <pre><code>@LOCUS engage default network</code></pre>
+      <p>LOCUS will walk the EPS-ordered records, note what has changed since the last session, notice cross-record tensions, and produce a log entry. A good time to run it: at the start of a week, after a long gap between sessions, or when something feels stuck.</p>
 
       <h3>Two traversal modes</h3>
       <p>The default network runs in two modes simultaneously:</p>
@@ -529,8 +529,8 @@
 
     <section class="doc-section">
       <h2>Customizing</h2>
-      <p><strong>Rename the companion</strong>: find-and-replace <code>SAGE</code> → your chosen name throughout the file. The invocation prefix in the <code>mmpdb</code> block updates automatically.</p>
-      <p><strong>Fill in Your Profile</strong>: this is the most important step. The <code>conf:64</code> on that record is a signal that it's incomplete — raise it toward <code>200</code> as SAGE's responses start to consistently reflect who you are.</p>
+      <p><strong>Rename the companion</strong>: find-and-replace <code>LOCUS</code> → your chosen name throughout the file. The invocation prefix in the <code>mmpdb</code> block updates automatically.</p>
+      <p><strong>Fill in Your Profile</strong>: this is the most important step. The <code>conf:64</code> on that record is a signal that it's incomplete — raise it toward <code>200</code> as LOCUS's responses start to consistently reflect who you are.</p>
       <p><strong>Add goals</strong>: open the Active Goals record and add rows to the table. One goal per row. When a goal is done or abandoned, move it to a log record with an outcome note — don't delete it.</p>
       <p><strong>Grow the Open Questions list</strong>: when something is unresolved, add it to Open Questions. When it's resolved, move the answer to the relevant record and remove the question.</p>
       <p><strong>Adjust conf</strong>: <code>conf</code> is yours to set. Low conf = "I'm not sure this model is right." High conf = "this reliably predicts my reactions." Update it when you notice a gap or when a record is clearly working.</p>
@@ -544,10 +544,10 @@
       <ol>
         <li>Add a new log record at the next available coordinate (<code>@LAT-60LON10</code>, <code>@LAT-70LON10</code>, etc.)</li>
         <li>Fill in the <code>session-log</code> block with the timestamp and trigger</li>
-        <li>Write what happened, what SAGE noticed, and what records changed</li>
+        <li>Write what happened, what LOCUS noticed, and what records changed</li>
         <li>Link to changed records using toot links: <code>[record name](latXlonY)</code></li>
       </ol>
-      <p>The log is SAGE's audit trail. It is how you know what changed and when.</p>
+      <p>The log is LOCUS's audit trail. It is how you know what changed and when.</p>
     </section>
 
     <hr class="divider" />
@@ -587,8 +587,8 @@ Body text here.</code></pre>
 
     <section class="doc-section">
       <h2>Part of the TTE stack</h2>
-      <p><code>companion.md</code> implements the <strong>TTDB</strong> (MyMentalPalaceDB) file format — the same format used by the A32 autonomous ESP32 agent framework, the Toot Toot mesh network node logger, and the A32 Mega multi-corpus librarian. A companion you build here can be compiled into a deployment TTDB for a microcontroller, federated across a TTN mesh node, or extended into a multi-corpus mega instance.</p>
-      <p>The file format spec: <a href="../RFCs/TTDB-RFC-0001-File-Format.md">TTDB-RFC-0001</a> · <a href="../RFCs/TTDB-RFC-0005-Epistemic-Weight.md">TTDB-RFC-0005</a> (epistemic weight)</p>
+      <p><code>companion.md</code> implements the <strong>TTDB</strong> (Toot-Toot Database) file format grounded in the **Locus** framework — the same format used by the A32 autonomous ESP32 agent framework, the Toot Toot mesh network node logger, and the A32 Mega multi-corpus librarian. A companion you build here can be compiled into a deployment TTDB for a microcontroller, federated across a TTN mesh node, or extended into a multi-corpus mega instance.</p>
+      <p>The file format spec: <a href="../RFCs/TTDB-RFC-0001-File-Format.md">TTDB-RFC-0001</a> · <a href="../RFCs/TTDB-RFC-0005-Epistemic-Weight.md">TTDB-RFC-0005</a> (epistemic weight) · <a href="../RFCs/TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md">TTDB-RFC-0006</a> (Locus framework)</p>
     </section>
 
     <footer class="share-footer">
