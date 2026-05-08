@@ -10,13 +10,13 @@ This index lists RFCs included in the TTE 1.0 bundle.
 - TTN-RFC-0005-Trust-and-Reputation.md: Trust and Reputation Signals
 - TTN-RFC-0006-LoRa-Packet-Framing.md: Minimal LoRa Packet Framing
 
-## TTDB (My Mental Palace DB)
+## TTDB (Toot-Toot Database)
 - TTDB-RFC-0001-File-Format.md: File Format and Sections
 - TTDB-RFC-0002-Cursor-Semantics.md: Cursor Semantics and Selection Rules
 - TTDB-RFC-0003-Typed-Edges.md: Typed Edge Semantics
 - TTDB-RFC-0004-Event-ID-and-Collision.md: Event ID Assignment and Collision Handling
 - TTDB-RFC-0005-Epistemic-Weight.md: Toot-Bit Epistemic Weight (TBEW) — optional [ew] block for confidence, revision, salience, and recency metadata
-- TTDB-RFC-0006-Experiential Perception as Synthetic Model
+- TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md: Experiential Perception as Synthetic Model (Locus framework foundation)
 
 ## TTE (Toot Toot Engineering)
 - TTE-RFC-0001-Workflow-and-Roles.md: Workflow and Roles
