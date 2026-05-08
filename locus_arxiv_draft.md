@@ -1,6 +1,6 @@
 # arXiv Preprint Draft — Locus Framework
 
-**File:** `mnemon_arxiv_draft.md`  
+**File:** `locus_arxiv_draft.md`  
 **Parent plan:** `locus_publication_plan.md`  
 **Target:** arXiv cs.ET (primary), cs.AI + cs.IR (cross-list)  
 **Format note:** Draft is in Markdown. Convert to LaTeX (`article` class) before arXiv submission.  
@@ -54,9 +54,7 @@ The **@LATxLON** scheme assigns every knowledge record a coordinate-pair identif
 
 5. **Multi-RFC specification suite** — Formal specifications covering TTN (semantic mesh network protocol with trust, compression, and LoRa framing), TTDB (file format, cursor, typed edges, event IDs, TBEW, experiential perception), TTE (engineering workflow), and A32 (ESP32 firmware architecture, TTDB parsing, agent loop, hardware abstraction, Claude Code project setup). Enables reproducibility and community fork/extend workflows.
 
-6. **Affective knowledge graph** — A 21-node TTDB instance mapping feelings, emotions, dispositions, and intents on a valence/arousal coordinate space. Grounded in Ma & Kragel (2025) hippocampal-prefrontal emotional embedding research (*Nature Communications*). Deployable to ESP32 as a standalone affective reasoning module.
-
-7. **Medical knowledge graph** — A six-node TTDB storyline template for clinical knowledge representation: symptom → condition → molecule → medicine → perceptual experience → outcome. Integrates UMLS Concept Unique Identifiers as a grounding layer for node identity. Designed for offline-first clinical decision support in low-resource settings.
+6. **Affective knowledge graph** — A 21-node TTDB instance mapping feelings, emotions, dispositions, and intents on a valence/arousal coordinate space. Grounded in Ma & Kragel (2026) map-like representations of emotion knowledge in hippocampal-prefrontal systems (*Nature Communications*, 17, 1518). Deployable to ESP32 as a standalone affective reasoning module.
 
 ---
 
@@ -98,7 +96,7 @@ All specifications, reference firmware, and TTDB collections are available under
 ## References
 
 - Uexküll, J. von (1909). *Umwelt und Innenwelt der Tiere*. Gustav Fischer.
-- Ma, Y. & Kragel, P.A. (2025). Hippocampal-prefrontal emotional embedding. *Nature Communications*. [Verify full citation before submission]
+- Ma, Y. & Kragel, P.A. (2026). Map-like representations of emotion knowledge in hippocampal-prefrontal systems. *Nature Communications*, 17, 1518. https://doi.org/10.1038/s41467-025-68240-z
 - Friston, K. (2010). The free-energy principle: a unified brain theory? *Nature Reviews Neuroscience*, 11(2), 127–138.
 - Bodenreider, O. (2004). The Unified Medical Language System (UMLS): integrating biomedical terminology. *Nucleic Acids Research*, 32(suppl_1), D267–D270.
 
@@ -106,13 +104,13 @@ All specifications, reference firmware, and TTDB collections are available under
 
 ## Submission Checklist
 
-- [ ] Verify Ma & Kragel 2025 full citation (journal, volume, pages, DOI)
+- [x] Verify Ma & Kragel citation — Ma & Kragel (2026), *Nature Communications* 17:1518, doi:10.1038/s41467-025-68240-z
 - [ ] Confirm RFC count — currently stated as "multi-RFC suite"; consider citing specific RFC numbers
-- [ ] Replace "[Your name]" with real author metadata
+- [x] Author metadata — Daniel Ray, antfriend@gmail.com, github.com/antfriend
 - [ ] Add Zenodo DOI after deposit (Action 2)
 - [ ] Add arXiv ID to all cross-references once submitted
-- [ ] Convert to LaTeX `article` class for arXiv upload
-- [ ] Generate PDF and verify formatting
+- [x] Convert to LaTeX — see `locus_arxiv.tex`
+- [ ] Compile PDF and verify formatting
 - [ ] Set arXiv category: cs.ET primary; cross-list cs.AI, cs.IR
 - [ ] Submit and record arXiv ID in `locus_immediate_next_actions.md` Action 1
 
