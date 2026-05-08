@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 320" width="560" height="320" role="img" aria-labelledby="bio-cover-title bio-cover-desc">
-  <title id="bio-cover-title">Bioelectric ⟷ Mnemon Resonance — Album Cover</title>
-  <desc id="bio-cover-desc">A vinyl record with two cluster origins — bioelectric (Tufts) and Mnemon (Boise) — connected by resonance arcs. The record grooves contain seven paired concepts.</desc>
+  <title id="bio-cover-title">Bioelectric ⟷ Locus Resonance — Album Cover</title>
+  <desc id="bio-cover-desc">A vinyl record with two cluster origins — bioelectric (Tufts) and Locus (Boise) — connected by resonance arcs. The record grooves contain seven paired concepts.</desc>
 
   <defs>
     <radialGradient id="bgGrad" cx="50%" cy="50%" r="70%">
@@ -41,7 +41,7 @@
   <!-- Left cluster glow (bioelectric) -->
   <ellipse cx="100" cy="160" rx="90" ry="90" fill="url(#glowLeft)"/>
 
-  <!-- Right cluster glow (mnemon) -->
+  <!-- Right cluster glow (locus) -->
   <ellipse cx="460" cy="160" rx="90" ry="90" fill="url(#glowRight)"/>
 
   <!-- Vinyl record body -->
@@ -64,7 +64,7 @@
   <circle cx="280" cy="160" r="72" fill="url(#labelGrad)"/>
   <circle cx="280" cy="160" r="72" fill="none" stroke="#0f8b8d" stroke-width="1" stroke-opacity="0.6"/>
 
-  <!-- Label: split into bioelectric left / mnemon right -->
+  <!-- Label: split into bioelectric left / locus right -->
   <!-- Left half label cell pattern -->
   <clipPath id="leftHalf">
     <rect x="208" y="88" width="72" height="144"/>
@@ -120,7 +120,7 @@
   <!-- Left arc to bioelectric -->
   <path d="M134,145 Q200,110 210,145" fill="none" stroke="#4fc3f7" stroke-width="1.2" stroke-opacity="0.5" stroke-dasharray="4,3"/>
   <path d="M134,175 Q200,210 210,175" fill="none" stroke="#4fc3f7" stroke-width="1.2" stroke-opacity="0.5" stroke-dasharray="4,3"/>
-  <!-- Right arc to mnemon -->
+  <!-- Right arc to locus -->
   <path d="M350,145 Q400,110 426,145" fill="none" stroke="#e76f51" stroke-width="1.2" stroke-opacity="0.5" stroke-dasharray="4,3"/>
   <path d="M350,175 Q400,210 426,175" fill="none" stroke="#e76f51" stroke-width="1.2" stroke-opacity="0.5" stroke-dasharray="4,3"/>
 
@@ -140,7 +140,7 @@
   <text x="60" y="215" font-family="monospace" font-size="8" fill="#4fc3f7" fill-opacity="0.85" text-anchor="middle">BIOELECTRIC</text>
   <text x="60" y="225" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.6" text-anchor="middle">Tufts / Levin</text>
 
-  <!-- Right cluster: mnemon (Boise) -->
+  <!-- Right cluster: locus (Boise) -->
   <circle cx="460" cy="160" r="44" fill="#1a0e08" stroke="#e76f51" stroke-width="1.5" stroke-opacity="0.6"/>
   <!-- Coordinate grid in right cluster -->
   <line x1="428" y1="148" x2="492" y2="148" stroke="#e76f51" stroke-width="0.8" stroke-opacity="0.5"/>
@@ -157,13 +157,13 @@
   <!-- Edge lines between nodes -->
   <line x1="448" y1="148" x2="460" y2="160" stroke="#e76f51" stroke-width="1.2" stroke-opacity="0.55"/>
   <line x1="460" y1="160" x2="472" y2="172" stroke="#e76f51" stroke-width="1.2" stroke-opacity="0.55"/>
-  <text x="500" y="215" font-family="monospace" font-size="8" fill="#e76f51" fill-opacity="0.85" text-anchor="middle">MNEMON</text>
+  <text x="500" y="215" font-family="monospace" font-size="8" fill="#e76f51" fill-opacity="0.85" text-anchor="middle">LOCUS</text>
   <text x="500" y="225" font-family="monospace" font-size="7" fill="#b9e9c6" fill-opacity="0.6" text-anchor="middle">TTDB / Boise</text>
 
   <!-- Central resonance symbol (⟷) in record center area above -->
   <text x="280" y="82" font-family="serif" font-size="22" fill="#b9e9c6" fill-opacity="0.55" text-anchor="middle">⟷</text>
 
   <!-- Title text below record -->
-  <text x="280" y="296" font-family="monospace" font-size="11" fill="#b9e9c6" fill-opacity="0.75" text-anchor="middle" letter-spacing="2">BIOELECTRIC  ⟷  MNEMON  RESONANCE</text>
+  <text x="280" y="296" font-family="monospace" font-size="11" fill="#b9e9c6" fill-opacity="0.75" text-anchor="middle" letter-spacing="2">BIOELECTRIC  ⟷  LOCUS  RESONANCE</text>
   <text x="280" y="311" font-family="monospace" font-size="8.5" fill="#0f8b8d" fill-opacity="0.7" text-anchor="middle" letter-spacing="1.5">SEVEN PAIRS — RFC-007</text>
 </svg>

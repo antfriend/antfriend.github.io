@@ -139,7 +139,7 @@ The theoretical commitments in this RFC have direct implications for conforming 
 
 ## 9. Open Questions
 
-- **`@PERCEPT:` vs `@TTP:`** — Should the namespace be renamed `@TTP:` (Toot-Toot Percept) for consistency with the broader Mnemon naming convention? This RFC uses `@PERCEPT:` but does not resolve the question.
+- **`@PERCEPT:` vs `@TTP:`** — Should the namespace be renamed `@TTP:` (Toot-Toot Percept) for consistency with the broader Locus naming convention? This RFC uses `@PERCEPT:` but does not resolve the question.
 
 - **Numeric evidence payloads on outcome nodes** — If outcome nodes carry queryable numeric evidence weights, the transition model in §5 extends to `(before, intervention, after, evidence-weight)`. This has implications for query semantics and should be addressed in a follow-on RFC.
 
