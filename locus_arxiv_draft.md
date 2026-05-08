@@ -17,7 +17,7 @@
 
 ## Authors
 
-[Your name / handle]  
+Daniel Ray  
 Independent researcher  
 `antfriend@gmail.com`  
 GitHub: `github.com/antfriend`
@@ -28,7 +28,7 @@ GitHub: `github.com/antfriend`
 
 > **Target:** 150–200 words. This is the version to submit to arXiv. Every sentence must stand alone — reviewers decide in 30 seconds.
 
-We present **Locus**, an offline-first embedded knowledge agent framework for resource-constrained microcontrollers (ESP32-class, ~$5 USD). Locus introduces **@LATxLON** geographic coordinate addressing — an authority-free scheme in which every knowledge node is identified by a deterministic latitude/longitude pair requiring no registry, no network round-trip, and no external authority. Knowledge is stored as **toot-bits**, the minimal unit of semantic meaning, organized in **TTDB** (MyMentalPalaceDB): a flat Markdown or LaTeX knowledge graph traversable with no database engine. Each TTDB instance is bound to an **umwelt** — a formally specified subjective worldview that gives a device its identity and reasoning perspective. The framework is governed by a multi-RFC specification suite covering the mesh network protocol (TTN), the TTDB file format including cursor semantics, typed edges, and epistemic weight tracking (TBEW), engineering workflow (TTE), and the ESP32 autonomous device framework (A32). Agents operate via deterministic sense-reason-act loops over TTDB graph traversal — no cloud LLM inference required. We provide a 21-node affective knowledge graph grounded in hippocampal-prefrontal emotional embedding research, a six-node medical knowledge graph integrating UMLS Concept Unique Identifiers, and a complete open-source reference implementation. All specifications, artifacts, and firmware are publicly available.
+We present **Locus**, an offline-first embedded knowledge agent framework for resource-constrained microcontrollers (ESP32-class) and up. Locus introduces **@LATxLON** geographic coordinate addressing — an authority-free scheme in which every knowledge node is identified by a deterministic latitude/longitude pair requiring no registry, no network round-trip, and no external authority. Knowledge is stored as **toot-bits**, the minimal unit of semantic meaning, organized in **TTDB** (MyMentalPalaceDB): a flat Markdown or LaTeX knowledge graph traversable with no database engine. Each TTDB instance is bound to an **umwelt** — a formally specified subjective worldview that gives a device its identity and reasoning perspective. The framework is governed by a multi-RFC specification suite covering the mesh network protocol (TTN), the TTDB file format including cursor semantics, typed edges, and epistemic weight tracking (TBEW), engineering workflow (TTE), and the ESP32 autonomous device framework (A32). Agents operate via deterministic sense-reason-act loops over TTDB graph traversal — no cloud LLM inference required. We provide a 21-node affective knowledge graph grounded in hippocampal-prefrontal emotional embedding research, a six-node medical knowledge graph integrating UMLS Concept Unique Identifiers, and a complete open-source reference implementation. All specifications, artifacts, and firmware are publicly available.
 
 ---
 
