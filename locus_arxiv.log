@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.5.8)  9 MAY 2026 07:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.5.8)  9 MAY 2026 11:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -559,50 +559,86 @@ Package microtype Info: Loading generic protrusion settings for font family
 
 {C:/Users/antfr/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/antf
 r/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 73.
- [2{C:/Users/antfr/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.e
-nc}]
-Overfull \hbox (73.82492pt too wide) in paragraph at lines 99--100
-\T1/lmr/m/n/10.95 (-20) ment TTN-RFC-0006 packet fram-ing (SOF/VER/FLAGS/SRC/DS
-T/TYPE/SEQ/LEN/PAYLOAD/CRC16/EOF).
+Overfull \hbox (6.06836pt too wide) in paragraph at lines 56--57
+\T1/lmr/m/n/10.95 (-20) RFC-0001](RFCs/TTCP-RFC-0001-Record-Rendering.md) throu
+gh [TTCP-RFC-0003](RFCs/TTCP-
  []
 
-[3]
+
+Overfull \hbox (8.77133pt too wide) in paragraph at lines 68--70
+[]\T1/lmr/bx/n/10.95 (-20) Synthetic per-cep-tual model (@PER-CEPT paired nodes
+). \T1/lmr/m/n/10.95 (-20) [TTDB-RFC-0006](RFCs/TTDB-
+ []
+
+
+Overfull \hbox (53.35767pt too wide) in paragraph at lines 68--70
+\T1/lmr/m/n/10.95 (-20) RFC-0006-Experiential-Perception-as-Synthetic-Model.md)
+ de-fines the \T1/lmtt/m/n/10.95 @PERCEPT:before \T1/lmr/m/n/10.95 (-20) / \T1/
+lmtt/m/n/10.95 @PERCEPT:after
+ []
+
+[2]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10.95> on input line 75.
+ [3{C:/Users/antfr/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.e
+nc}]
+Overfull \hbox (146.53078pt too wide) in paragraph at lines 95--96
+\T1/lmtt/m/n/10.95 @LAT10LON-10 | created:1775260800 | updated:1775260800 | rel
+ates:feels>@LAT0LON0,resonates_with>@LAT10LON20\T1/lmr/m/n/10.95 (-20) ,
+ []
+
+
+Overfull \hbox (88.72864pt too wide) in paragraph at lines 101--102
+\T1/lmtt/m/n/10.95 [SOF=0xA5][VER=0x01][FLAGS][SRC_ID:2][DST_ID:2][TYPE][SEQ][L
+EN][PAYLOAD:0^^U240][CRC16:2][EOF=0x5A]\T1/lmr/m/n/10.95 (-20) .
+ []
+
+[4]
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
-12.
+11.
  (C:\Users\antfr\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Overfull \hbox (4.5183pt too wide) in paragraph at lines 130--131
-[]\T1/lmr/m/n/10.95 (-20) Zenodo: [DOI to be added af-ter de-posit --- see Ac-t
-ion 2 in \T1/lmtt/m/n/10.95 locus_immediate_next_actions.md\T1/lmr/m/n/10.95 (-
-20) ] 
+Overfull \hbox (13.32057pt too wide) in paragraph at lines 111--112
+\T1/lmr/bx/n/10.95 (-20) Knowledge graphs on em-bed-ded hard-ware. \T1/lmr/m/n/
+10.95 (-20) Sym-bolic knowl-edge rep-re-sen-ta-tion on microcontroller-
+ []
+
+[5{C:/Users/antfr/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}]
+
+Overfull \hbox (96.13277pt too wide) in paragraph at lines 129--130
+\T1/lmr/m/n/10.95 (-20) ism and out-come node schema (Ac-tions 3--4 in [lo-cus_
+immediate_next_actions.md](locus_immediate_next_actions.md))
+ []
+
+[6]
+Overfull \hbox (9.88467pt too wide) in paragraph at lines 142--143
+[]\T1/lmr/bx/n/10.95 (-20) Affective knowl-edge graph (21 nodes): [][]$\T1/lmtt
+/m/n/10.95 https : / / antfriend . github . io / ?ttdb = feelings _
  []
 
 
-Underfull \hbox (badness 2189) in paragraph at lines 141--142
+Underfull \hbox (badness 2189) in paragraph at lines 156--157
 []\T1/lmr/m/n/10.95 (+20) Ma, Y. & Kragel, P.A. (2026). Map-like rep-re-sen-ta-
 tions of emo-tion knowl-edge in
  []
 
-[4{C:/Users/antfr/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}]
-(locus_arxiv.aux)
+[7] (locus_arxiv.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `locus_arxiv.out' has not changed.
-(rerunfilecheck)             Checksum: 03821B4014D622A82A6B40DCEB2AB7A5;564.
+(rerunfilecheck)             Checksum: B26B3139B8C177493A290665BCFD175E;657.
  ) 
 Here is how much of TeX's memory you used:
- 13989 strings out of 467871
- 219448 string characters out of 5418377
- 686041 words of memory out of 5000000
- 42536 multiletter control sequences out of 15000+600000
- 683866 words of font info for 145 fonts, out of 8000000 for 9000
+ 14013 strings out of 467871
+ 219709 string characters out of 5418377
+ 687111 words of memory out of 5000000
+ 42540 multiletter control sequences out of 15000+600000
+ 684501 words of font info for 152 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,6n,79p,2062b,635s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,7n,79p,2062b,643s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/antfr/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pf
 b><C:/Users/antfr/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pf
 b><C:/Users/antfr/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb
@@ -612,9 +648,9 @@ C:/Users/antfr/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri10.pfb><
 C:/Users/antfr/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><
 C:/Users/antfr/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt10.pfb><
 C:/Users/antfr/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
-Output written on locus_arxiv.pdf (4 pages, 257557 bytes).
+Output written on locus_arxiv.pdf (7 pages, 281051 bytes).
 PDF statistics:
- 117 PDF objects out of 1000 (max. 8388607)
- 25 named destinations out of 1000 (max. 500000)
- 31785 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 160 PDF objects out of 1000 (max. 8388607)
+ 31 named destinations out of 1000 (max. 500000)
+ 31793 words of extra memory for PDF output out of 35830 (max. 10000000)
 
