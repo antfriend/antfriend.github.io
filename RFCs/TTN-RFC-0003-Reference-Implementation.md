@@ -1,8 +1,13 @@
-# TTN-RFC-0003
-## Reference Implementation Checklist
-### Version 1.0
+# TTN-RFC-0003: Reference Implementation Checklist
 
-Status: Stable
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0003
+**Project:** toot-toot-engineering
+**Component:** Toot Toot Network (TTN)
+**Depends on:** TTN-RFC-0001 (Core Mesh Specification), TTN-RFC-0002 (Typed Edges)
+**Author:** antfriend
+**Created:** 2026-04-10
 
 ---
 
@@ -17,7 +22,7 @@ Status: Stable
 ---
 
 ## Windows Node
-- Full MyMentalPalaceDB.md
+- Full Toot-Toot Database implementation
 - MQTT gateway
 - monitor.html
 - Optional local AI librarian
@@ -45,5 +50,3 @@ Status: Stable
 - BBS thread propagation
 - AI summary on request
 - Graph rendered in monitor.html
-
-End RFC-0003

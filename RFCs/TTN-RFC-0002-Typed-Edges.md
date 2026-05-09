@@ -1,8 +1,13 @@
-# TTN-RFC-0002
-## Typed Edge Taxonomy for the Toot Toot Network
-### Version 1.0
+# TTN-RFC-0002: Typed Edge Taxonomy
 
-Status: Stable
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0002
+**Project:** toot-toot-engineering
+**Component:** Toot Toot Network (TTN)
+**Depends on:** TTN-RFC-0001 (Core Mesh Specification), TTDB-RFC-0003 (Typed Edges)
+**Author:** antfriend
+**Created:** 2026-04-05
 
 ---
 
@@ -48,5 +53,3 @@ Status: Stable
 - blocked_by
 - flagged_as_spam
 - quarantined
-
-End RFC-0002

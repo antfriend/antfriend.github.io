@@ -1,14 +1,15 @@
-# A32-RFC-0004
+# A32-RFC-0004: Claude Code Project Setup for Agent 32
 
-## Claude Code Project Setup for Agent 32
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0004
+**Project:** toot-toot-engineering
+**Component:** A32 (ESP32 Autonomous Device Framework)
+**Depends on:** A32-RFC-0001 (Architecture), TTE-RFC-0001 (Workflow and Roles), TTE-RFC-0003 (Definition of Done and Release)
+**Author:** antfriend
+**Created:** 2026-04-24
 
-### Version 1.0
-
-Status: Stable
-
-This RFC defines how to structure an Agent 32 project for development with
-Claude Code, including the CLAUDE.md file, project layout, PlatformIO
-configuration, and integration with the Toot Toot Engineering workflow.
+This RFC defines how to structure an Agent 32 project for development with Claude Code, including the CLAUDE.md file, project layout, PlatformIO configuration, and integration with the Toot Toot Engineering workflow.
 
 ---
 
@@ -72,7 +73,7 @@ universally applicable instructions.
 ## What This Is
 
 This is an Agent 32 project: an autonomous ESP32 device that reasons using
-a TTDB (MyMentalPalaceDB) file, not a cloud LLM. The TTDB file in `data/`
+a TTDB (Toot-Toot Database) file, not a cloud LLM. The TTDB file in `data/`
 is the device's entire knowledge base.
 
 ## Architecture

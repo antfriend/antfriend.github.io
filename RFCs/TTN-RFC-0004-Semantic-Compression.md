@@ -1,11 +1,15 @@
-# TTN-RFC-0004
-## Semantic Compression and On-Mesh Token Dictionary
-### Version 1.0
+# TTN-RFC-0004: Semantic Compression and Token Dictionary
 
-Status: Stable
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0004
+**Project:** toot-toot-engineering
+**Component:** Toot Toot Network (TTN)
+**Depends on:** TTN-RFC-0001 (Core Mesh Specification), TTN-RFC-0002 (Typed Edges)
+**Author:** antfriend
+**Created:** 2026-04-12
 
-This RFC defines how rich semantic events are compressed into ultra-low-bandwidth
-tokens suitable for Meshtastic and other constrained transports.
+This RFC defines how rich semantic events are compressed into ultra-low-bandwidth tokens suitable for Meshtastic and other constrained transports.
 
 ---
 

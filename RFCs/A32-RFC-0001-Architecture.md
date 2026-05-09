@@ -1,14 +1,15 @@
-# A32-RFC-0001
+# A32-RFC-0001: Agent 32 Architecture Overview
 
-## Agent 32 Architecture Overview
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0001
+**Project:** toot-toot-engineering
+**Component:** A32 (ESP32 Autonomous Device Framework)
+**Depends on:** TTDB-RFC-0001 (File Format), TTDB-RFC-0002 (Cursor Semantics), TTDB-RFC-0003 (Typed Edges)
+**Author:** antfriend
+**Created:** 2026-04-18
 
-### Version 1.0
-
-Status: Stable
-
-This RFC defines the architecture of an Agent 32 application: an autonomous
-device built on ESP32 hardware using the Arduino framework, with a
-MyMentalPalaceDB (TTDB) file as its onboard knowledge base and decision engine.
+This RFC defines the architecture of an Agent 32 application: an autonomous device built on ESP32 hardware using the Arduino framework, with a Toot-Toot Database (TTDB) file as its onboard knowledge base and decision engine.
 
 ---
 

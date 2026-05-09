@@ -1,13 +1,15 @@
-# A32-RFC-0003
+# A32-RFC-0003: Agent Loop and Hardware Abstraction
 
-## Agent Loop and Hardware Abstraction
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0003
+**Project:** toot-toot-engineering
+**Component:** A32 (ESP32 Autonomous Device Framework)
+**Depends on:** A32-RFC-0001 (Architecture), A32-RFC-0002 (TTDB Storage), TTDB-RFC-0003 (Typed Edges)
+**Author:** antfriend
+**Created:** 2026-04-22
 
-### Version 1.0
-
-Status: Stable
-
-This RFC defines the Agent Loop (sense-reason-act cycle) and the Hardware
-Abstraction Layer for Agent 32 applications running on ESP32 with Arduino.
+This RFC defines the Agent Loop (sense-reason-act cycle) and the Hardware Abstraction Layer for Agent 32 applications running on ESP32 with Arduino.
 
 ---
 

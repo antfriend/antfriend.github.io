@@ -1,8 +1,13 @@
-# TTN-RFC-0005
-## Trust, Reputation, and Social Gravity
-### Version 1.0
+# TTN-RFC-0005: Trust, Reputation, and Social Gravity
 
-Status: Stable
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0005
+**Project:** toot-toot-engineering
+**Component:** Toot Toot Network (TTN)
+**Depends on:** TTN-RFC-0001 (Core Mesh Specification), TTN-RFC-0002 (Typed Edges)
+**Author:** antfriend
+**Created:** 2026-04-14
 
 This RFC defines decentralized trust modeling for TTN.
 

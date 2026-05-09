@@ -5,7 +5,7 @@
 **Status:** Stable
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
-**Component:** TTDB (MyMentalPalaceDB)
+**Component:** Toot-Toot Database (TTDB)
 **Depends on:** TTDB-RFC-0001 (File Format), TTDB-RFC-0002 (Cursor Semantics), TTDB-RFC-0003 (Typed Edges)
 **Author:** antfriend
 **Created:** 2026-04-23

@@ -3,20 +3,20 @@
 This index lists RFCs included in the TTE 1.0 bundle.
 
 ## TTN (Toot Toot Network)
-- TTN-RFC-0001.md: Core Semantic Mesh Specification
-- TTN-RFC-0002-Typed-Edges.md: Typed Edge Taxonomy
-- TTN-RFC-0003-Reference-Implementation.md: Reference Implementation Checklist
-- TTN-RFC-0004-Semantic-Compression.md: Semantic Compression and Token Dictionary
-- TTN-RFC-0005-Trust-and-Reputation.md: Trust and Reputation Signals
-- TTN-RFC-0006-LoRa-Packet-Framing.md: Minimal LoRa Packet Framing
+- [TTN-RFC-0001.md](TTN-RFC-0001.md): Core Semantic Mesh Specification
+- [TTN-RFC-0002-Typed-Edges.md](TTN-RFC-0002-Typed-Edges.md): Typed Edge Taxonomy
+- [TTN-RFC-0003-Reference-Implementation.md](TTN-RFC-0003-Reference-Implementation.md): Reference Implementation Checklist
+- [TTN-RFC-0004-Semantic-Compression.md](TTN-RFC-0004-Semantic-Compression.md): Semantic Compression and Token Dictionary
+- [TTN-RFC-0005-Trust-and-Reputation.md](TTN-RFC-0005-Trust-and-Reputation.md): Trust and Reputation Signals
+- [TTN-RFC-0006-LoRa-Packet-Framing.md](TTN-RFC-0006-LoRa-Packet-Framing.md): Minimal LoRa Packet Framing
 
 ## TTDB (Toot-Toot Database)
-- TTDB-RFC-0001-File-Format.md: File Format and Sections
-- TTDB-RFC-0002-Cursor-Semantics.md: Cursor Semantics and Selection Rules
-- TTDB-RFC-0003-Typed-Edges.md: Typed Edge Semantics
-- TTDB-RFC-0004-Event-ID-and-Collision.md: Event ID Assignment and Collision Handling
-- TTDB-RFC-0005-Epistemic-Weight.md: Toot-Bit Epistemic Weight (TBEW) — optional [ew] block for confidence, revision, salience, and recency metadata
-- TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md: Experiential Perception as Synthetic Model (Locus framework foundation)
+- [TTDB-RFC-0001-File-Format.md](TTDB-RFC-0001-File-Format.md): File Format and Sections
+- [TTDB-RFC-0002-Cursor-Semantics.md](TTDB-RFC-0002-Cursor-Semantics.md): Cursor Semantics and Selection Rules
+- [TTDB-RFC-0003-Typed-Edges.md](TTDB-RFC-0003-Typed-Edges.md): Typed Edge Semantics
+- [TTDB-RFC-0004-Event-ID-and-Collision.md](TTDB-RFC-0004-Event-ID-and-Collision.md): Event ID Assignment and Collision Handling
+- [TTDB-RFC-0005-Epistemic-Weight.md](TTDB-RFC-0005-Epistemic-Weight.md): Toot-Bit Epistemic Weight (TBEW) — optional [ew] block for confidence, revision, salience, and recency metadata
+- [TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md](TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md): Experiential Perception as Synthetic Model (Locus framework foundation)
 
 ## TTE (Toot Toot Engineering)
 - TTE-RFC-0001-Workflow-and-Roles.md: Workflow and Roles
@@ -24,6 +24,6 @@ This index lists RFCs included in the TTE 1.0 bundle.
 - TTE-RFC-0003-Definition-of-Done-and-Release.md: Definition of Done and Release Packaging
 
 ## TTCP (Toot Toot Content Publishing)
-- TTCP-RFC-0001-Record-Rendering.md: File Ingestion, Record Parsing, and HTML Rendering
-- TTCP-RFC-0002-Globe-and-Navigation.md: Knowledge Globe, Cursor Selection, Discovery, Tour, and Scene Playback
-- TTCP-RFC-0003-Link-System-and-Addressability.md: Toot URI Scheme, URL Synchronization, and Search
+- [TTCP-RFC-0001-Record-Rendering.md](TTCP-RFC-0001-Record-Rendering.md): File Ingestion, Record Parsing, and HTML Rendering
+- [TTCP-RFC-0002-Globe-and-Navigation.md](TTCP-RFC-0002-Globe-and-Navigation.md): Knowledge Globe, Cursor Selection, Discovery, Tour, and Scene Playback
+- [TTCP-RFC-0003-Link-System-and-Addressability.md](TTCP-RFC-0003-Link-System-and-Addressability.md): Toot URI Scheme, URL Synchronization, and Search

@@ -1,13 +1,15 @@
-# A32-RFC-0002
+# A32-RFC-0002: TTDB Storage and Parsing on ESP32
 
-## TTDB Storage and Parsing on ESP32
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0002
+**Project:** toot-toot-engineering
+**Component:** A32 (ESP32 Autonomous Device Framework)
+**Depends on:** A32-RFC-0001 (Architecture), TTDB-RFC-0001 (File Format), TTDB-RFC-0002 (Cursor Semantics)
+**Author:** antfriend
+**Created:** 2026-04-20
 
-### Version 1.0
-
-Status: Stable
-
-This RFC defines how TTDB files (per TTDB-RFC-0001) are stored, loaded, and
-queried on ESP32 hardware within the Arduino framework.
+This RFC defines how TTDB files (per TTDB-RFC-0001) are stored, loaded, and queried on ESP32 hardware within the Arduino framework.
 
 ---
 

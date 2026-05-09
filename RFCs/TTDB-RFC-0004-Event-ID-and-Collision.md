@@ -1,8 +1,13 @@
-# TTDB-RFC-0004
-## Event ID Assignment and Collision Handling
-### Version 1.0
+# TTDB-RFC-0004: Event ID Assignment and Collision Handling
 
-Status: Stable
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0004
+**Project:** toot-toot-engineering
+**Component:** Toot-Toot Database (TTDB)
+**Depends on:** TTDB-RFC-0001 (File Format), TTDB-RFC-0003 (Typed Edges)
+**Author:** antfriend
+**Created:** 2026-03-30
 
 This RFC defines record ID assignment and collision resolution for TTDB.
 

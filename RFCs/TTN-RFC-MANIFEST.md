@@ -1,5 +1,7 @@
 # Toot Toot Network RFC Bundle Manifest
 
+**Note:** This is a metadata file (SHA256 checksums), not an RFC specification. It documents the integrity hashes of the TTN RFC collection.
+
 - TTN-RFC-0001.md: sha256=4687b040b2515ca2d48bafe99c26e323f5ab5cef480c30b339611471ccd5c1ca
 - TTN-RFC-0002-Typed-Edges.md: sha256=751ee732ed4b9a5759b01af409423d88f117e29bbb8de8684e4307d37b319f84
 - TTN-RFC-0003-Reference-Implementation.md: sha256=e219c29d923413ee298379d9a333b94a1e897b9a92a9441765473cfc069e0664

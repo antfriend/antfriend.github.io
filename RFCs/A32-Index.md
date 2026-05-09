@@ -1,19 +1,16 @@
 # Agent 32 — RFC Index
 
-Agent 32 is a framework for building autonomous ESP32 devices using
-MyMentalPalaceDB (TTDB) as an onboard, static knowledge base. No cloud
-LLMs. No neural inference. Just deterministic graph-based reasoning on
-a $5 microcontroller.
+Agent 32 is a framework for building autonomous ESP32 devices using the Toot-Toot Database (TTDB) as an onboard, static knowledge base. No cloud LLMs. No neural inference. Just deterministic graph-based reasoning on a $5 microcontroller.
 
 ## RFCs
 
 | RFC | Title | Status | Summary |
 |-----|-------|--------|---------|
-| A32-RFC-0001 | Architecture Overview | Draft | System layers, design principles, hardware requirements, umwelt mapping |
-| A32-RFC-0002 | TTDB Storage and Parsing | Draft | LittleFS/SD storage, streaming parser, index structure, librarian queries |
-| A32-RFC-0003 | Agent Loop and Hardware Abstraction | Draft | Sense-reason-act cycle, sensor/actuator registries, edge-based reasoning |
-| A32-RFC-0004 | Claude Code Project Setup | Draft | Project layout, CLAUDE.md reference, PlatformIO config, TTE integration |
-| A32-RFC-0002-Amendment-A-TBEW | TBEW Parser Extension | Draft | C++ structs, state machine extension, field parse helpers, writer for [ew] blocks |
+| A32-RFC-0001 | Architecture Overview | Stable | System layers, design principles, hardware requirements, umwelt mapping |
+| A32-RFC-0002 | TTDB Storage and Parsing | Stable | LittleFS/SD storage, streaming parser, index structure, librarian queries |
+| A32-RFC-0003 | Agent Loop and Hardware Abstraction | Stable | Sense-reason-act cycle, sensor/actuator registries, edge-based reasoning |
+| A32-RFC-0004 | Claude Code Project Setup | Stable | Project layout, CLAUDE.md reference, PlatformIO config, TTE integration |
+| A32-RFC-0002-Amendment-A-TBEW | TBEW Parser Extension | Stable | C++ structs, state machine extension, field parse helpers, writer for [ew] blocks |
 
 ## Dependencies
 

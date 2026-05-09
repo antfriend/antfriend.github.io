@@ -1,12 +1,15 @@
-# TTN-RFC-0006
-## Minimal LoRa Packet Framing for Non-Meshtastic Nodes
-### Version 1.0
+# TTN-RFC-0006: Minimal LoRa Packet Framing
 
-Status: Stable
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0006
+**Project:** toot-toot-engineering
+**Component:** Toot Toot Network (TTN)
+**Depends on:** TTN-RFC-0001 (Core Mesh Specification), TTN-RFC-0004 (Semantic Compression)
+**Author:** antfriend
+**Created:** 2026-04-16
 
-This RFC defines a minimal, deterministic LoRa framing format for devices that
-are not running Meshtastic but must exchange short messages with a TTN gateway.
-It is intended for low-power nodes and constrained firmware.
+This RFC defines a minimal, deterministic LoRa framing format for devices that are not running Meshtastic but must exchange short messages with a TTN gateway. It is intended for low-power nodes and constrained firmware.
 
 ---
 

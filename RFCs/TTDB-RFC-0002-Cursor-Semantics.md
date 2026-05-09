@@ -1,8 +1,13 @@
-# TTDB-RFC-0002
-## Cursor Semantics and Selection Rules
-### Version 1.0
+# TTDB-RFC-0002: Cursor Semantics and Selection Rules
 
-Status: Stable
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0002
+**Project:** toot-toot-engineering
+**Component:** Toot-Toot Database (TTDB)
+**Depends on:** TTDB-RFC-0001 (File Format)
+**Author:** antfriend
+**Created:** 2026-03-20
 
 This RFC defines the `cursor` block schema and its deterministic update rules.
 

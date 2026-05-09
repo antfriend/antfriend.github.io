@@ -1,10 +1,15 @@
-# TTDB-RFC-0001
-## My Mental Palace DB File Format and Sections
-### Version 1.0
+# TTDB-RFC-0001: File Format and Sections
 
-Status: Stable
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0001
+**Project:** toot-toot-engineering
+**Component:** Toot-Toot Database (TTDB)
+**Depends on:** None
+**Author:** antfriend
+**Created:** 2026-03-15
 
-This RFC defines the canonical on-disk format for MyMentalPalaceDB files.
+This RFC defines the canonical on-disk format for Toot-Toot Database (TTDB) files.
 
 ---
 

@@ -1,8 +1,13 @@
-# TTDB-RFC-0003
-## Typed Edge Semantics for TTDB
-### Version 1.0
+# TTDB-RFC-0003: Typed Edge Semantics
 
-Status: Stable
+**Version:** 1.0
+**Status:** Stable
+**RFC Number:** 0003
+**Project:** toot-toot-engineering
+**Component:** Toot-Toot Database (TTDB)
+**Depends on:** TTDB-RFC-0001 (File Format), TTDB-RFC-0002 (Cursor Semantics)
+**Author:** antfriend
+**Created:** 2026-03-25
 
 This RFC defines typed edge syntax and behavior in TTDB records.
 

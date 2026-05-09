@@ -1,10 +1,15 @@
 # TTDB-RFC-0006: Experiential Perception as Synthetic Model
-## Conceptual Foundations of the Toot-Toot Database
 
-**Status:** Informational  
-**Series:** TTDB Conceptual Foundation  
-**Author:** toot-toot-engineering  
-**Date:** 2026-05-03
+**Version:** 1.0
+**Status:** Informational
+**RFC Number:** 0006
+**Project:** toot-toot-engineering
+**Component:** Toot-Toot Database (TTDB) Conceptual Foundation
+**Depends on:** TTDB-RFC-0001 (File Format), TTDB-RFC-0002 (Cursor Semantics), TTDB-RFC-0003 (Typed Edges), TTDB-RFC-0005 (Epistemic Weight)
+**Author:** toot-toot-engineering
+**Created:** 2026-05-03
+
+Conceptual Foundations of the Toot-Toot Database
 
 ---
 
