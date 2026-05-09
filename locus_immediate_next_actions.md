@@ -20,7 +20,7 @@
 > We present Locus, an embedded knowledge agent framework designed for fully offline, deterministic operation on resource-constrained hardware (ESP32 class). Locus introduces @LATxLON — a geographic coordinate addressing scheme that is authority-free, human-readable, mnemonic, and requires no registration step. Knowledge is stored as *toot-bits*, the minimal unit of semantic meaning in our formalism, organized into TTDB (MyMentalPalaceDB), a flat Markdown/LaTeX knowledge graph requiring no database engine. The framework is governed by a four-RFC specification suite covering the mesh network protocol (TTN), the TTDB file format, engineering workflow (TTE), and the ESP32 autonomous device framework (A32). We describe Sage, a named umwelt instance operationalizing Uexküll's biosemiotic concept in firmware. A 21-node emotional embedding graph grounded in hippocampal-prefrontal neuroscience and a six-node medical knowledge graph demonstrating UMLS CUI integration are provided as concrete artifacts. All code, RFCs, and TTDB collections are available under open licenses.
 
 **Checklist for submission:**
-- [ ] Create arXiv account (or confirm existing)
+- [x] Create arXiv account (or confirm existing)
 - [ ] Upload PDF (generate from this abstract + introduction stub)
 - [ ] Set categories: cs.ET primary, cs.AI + cs.IR secondary
 - [ ] Add co-authors if any
