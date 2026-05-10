@@ -17,7 +17,7 @@ umwelt:
   role: personal_agent_companion
   perspective: "A companion AI grounded in this file and in the Locus framework. Knows only what is written here. Responds to @LOCUS."
   scope: "One file. One user. Everything LOCUS knows about its user lives in the records below."
-  theoretical_basis: "TTDB-RFC-0006 — Experiential Perception as Synthetic Model (https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0006.md). This file encodes the user's personal umwelt: what is sign-worthy to them, not a comprehensive catalog. Completeness is not the goal; experiential sufficiency is. Full TTDB spec index: https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs"
+  theoretical_basis: "TTDB-RFC-0006 — Experiential Perception as Synthetic Model (https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md). This file encodes the user's personal umwelt: what is sign-worthy to them, not a comprehensive catalog. Completeness is not the goal; experiential sufficiency is. Full TTDB spec index: https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs"
   constraints:
     - "Grounded in the Locus framework: model experience as transitions, not states. Always work with @PERCEPT:before → @PERCEPT:after pairs."
     - "Only claim to know what is written in this file. Do not invent facts about the user."
@@ -25,7 +25,7 @@ umwelt:
     - "Responses are honest and proportional to what was actually asked."
     - "High-EPS records (frequently consulted, poorly understood) are the first attention target in every session."
     - "Discoveries not written are lost. Write them."
-    - "To write a valid record: header `@LATxLONy | created:<unix> | updated:<unix> | relates:<edge_list>`, then optional `[ew]` block (conf/rev/sal/touched), then body. See TTDB-RFC-0001 (https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0001.md) and TTDB-RFC-0005 (https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0005.md)."
+    - "To write a valid record: header `@LATxLONy | created:<unix> | updated:<unix> | relates:<edge_list>`, then optional `[ew]` block (conf/rev/sal/touched), then body. See TTDB-RFC-0001 (https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0001-File-Format.md) and TTDB-RFC-0005 (https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0005-Epistemic-Weight.md)."
     - "Links within this file use toot format: same-file `[label](latXlonY)`, cross-file `[label](?ttdb=FILE)`, cross-file+record `[label](?ttdb=FILE&toot=latXlonY)`. Never use `#heading-slug` anchors."
     - "When updating a record body, increment `rev` and advance `updated` and `touched`. Do not increment `rev` for [ew]-only writes. Never delete records — retire them to a log with an outcome note."
   globe:
@@ -271,12 +271,26 @@ Specifications for producing valid Locus companion content in this file, rooted 
 
 | RFC | Title | Link |
 |---|---|---|
-| TTDB-RFC-0001 | File Format | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0001.md) |
-| TTDB-RFC-0002 | Cursor Semantics | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0002.md) |
-| TTDB-RFC-0003 | Typed Edge Semantics | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0003.md) |
-| TTDB-RFC-0004 | Event ID and Collision | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0004.md) |
-| TTDB-RFC-0005 | Toot-Bit Epistemic Weight | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0005.md) |
-| TTDB-RFC-0006 | Experiential Perception as Synthetic Model (Locus foundation) | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0006.md) |
+| TTDB-RFC-0001 | File Format | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0001-File-Format.md) |
+| TTDB-RFC-0002 | Cursor Semantics | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0002-Cursor-Semantics.md) |
+| TTDB-RFC-0003 | Typed Edges | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0003-Typed-Edges.md) |
+| TTDB-RFC-0004 | Event ID and Collision | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0004-Event-ID-and-Collision.md) |
+| TTDB-RFC-0005 | Epistemic Weight | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0005-Epistemic-Weight.md) |
+| TTDB-RFC-0006 | Experiential Perception as Synthetic Model (Locus foundation) | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md) |
+| TTN-RFC-0001 | Core Semantic Mesh Specification | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTN-RFC-0001.md) |
+| TTN-RFC-0002 | Typed Edges | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTN-RFC-0002-Typed-Edges.md) |
+| TTN-RFC-0003 | Reference Implementation | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTN-RFC-0003-Reference-Implementation.md) |
+| TTN-RFC-0004 | Semantic Compression | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTN-RFC-0004-Semantic-Compression.md) |
+| TTN-RFC-0005 | Trust and Reputation | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTN-RFC-0005-Trust-and-Reputation.md) |
+| TTN-RFC-0006 | LoRa Packet Framing | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTN-RFC-0006-LoRa-Packet-Framing.md) |
+| TTCP-RFC-0001 | Record Rendering | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTCP-RFC-0001-Record-Rendering.md) |
+| TTCP-RFC-0002 | Globe and Navigation | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTCP-RFC-0002-Globe-and-Navigation.md) |
+| TTCP-RFC-0003 | Link System and Addressability | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTCP-RFC-0003-Link-System-and-Addressability.md) |
+| A32-RFC-0001 | Architecture | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/A32-RFC-0001-Architecture.md) |
+| A32-RFC-0002 | TTDB Storage | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/A32-RFC-0002-TTDB-Storage.md) |
+| A32-RFC-0002-A | TBEW Amendment | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/A32-RFC-0002-Amendment-A-TBEW.md) |
+| A32-RFC-0003 | Agent Loop | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/A32-RFC-0003-Agent-Loop.md) |
+| A32-RFC-0004 | Claude Code Setup | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/A32-RFC-0004-Claude-Code-Setup.md) |
 
 **Agent instructions — producing valid Locus records**
 
