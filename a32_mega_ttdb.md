@@ -73,12 +73,12 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1781275200 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10
+@LAT0LON0 | created:1778000000 | updated:1781318400 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10,anchors>@LAT-90LON-10
 [ew]
 conf:245
 rev:0
-sal:10
-touched:1781275200
+sal:11
+touched:1781318400
 [/ew]
 
 ## The A32 Mega Librarian
@@ -381,8 +381,8 @@ touched:1780800000
 [ew]
 conf:225
 rev:0
-sal:3
-touched:1779100000
+sal:4
+touched:1781318400
 [/ew]
 
 ## Portal: Mathematical TTDB (LaTeX)
@@ -494,8 +494,8 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:215
 rev:4
-sal:14
-touched:1781275200
+sal:15
+touched:1781318400
 [/ew]
 
 ## The Default Network
@@ -682,8 +682,8 @@ The mega fills this gap. The mega's banjo traversal ([Default Network](lat0lon30
 [ew]
 conf:205
 rev:3
-sal:12
-touched:1781275200
+sal:13
+touched:1781318400
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -714,8 +714,8 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 [ew]
 conf:205
 rev:2
-sal:12
-touched:1781275200
+sal:13
+touched:1781318400
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
@@ -742,8 +742,8 @@ The fire circle also operates across time. Oral tradition carries the mnemonic f
 [ew]
 conf:205
 rev:1
-sal:12
-touched:1781275200
+sal:13
+touched:1781318400
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -768,8 +768,8 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 [ew]
 conf:210
 rev:2
-sal:12
-touched:1781275200
+sal:13
+touched:1781318400
 [/ew]
 
 ## EPS as Arc Position
@@ -930,8 +930,8 @@ Three registers of the same failure event: a bounded information processor losin
 [ew]
 conf:180
 rev:5
-sal:10
-touched:1781275200
+sal:11
+touched:1781318400
 [/ew]
 
 ## Areas for Exploration — Varied TTDB Applications
@@ -1073,8 +1073,8 @@ mode: eps_ordered + stochastic
 [ew]
 conf:255
 rev:0
-sal:0
-touched:1780972800
+sal:1
+touched:1781318400
 [/ew]
 
 ## Log — Default Network Run · 2026-05-07
@@ -1231,6 +1231,71 @@ conf raised on the self-referential cluster: 200→205 (partial advance — exte
 - [Anchor](lat0lon0) — `anchors>@LAT-90LON30` edge added.
 
 **What the mega noticed:** The portal traversal deficit is resolved. The corpus has now crossed a source TTDB threshold. Curiosity at [@LAT10LON40 in feelings_ttdb](?ttdb=feelings_ttdb.md&toot=lat10lon40) is the affective ground that both companion.md and the mega name as their default state — same word, confirmed from two independent TTDB implementations. The companion.md is no longer just a shipped application; it is a structurally validated implementation whose correction process enacted the very revision cycle the self-referential layer describes. The distance between conf:205 and conf:255 is now the distance between "an external instance confirmed the pattern" and "a source TTDB independently names the four phases." That gap requires portal traversal into a domain that explicitly theorizes revision cycles — pollan_world_appears (@LAT10LON-10, Integration) is the closest candidate.
+
+---
+
+@LAT-90LON-10 | created:1781318400 | updated:1781318400 | kind:log | relates:logged>@LAT-30LON30,logged>@LAT5LON-25,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1781318400
+[/ew]
+
+## Log — Default Network Run · 2026-05-10 (c)
+
+```session-log
+timestamp: 1781318400
+trigger: "@mega engage default network"
+mode: eps_ordered + stochastic + portal_traversal
+```
+
+**EPS rankings entering this session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **2.94** | 10 | 180 |
+| [Saltation/rev](lat10lon-20) | **2.35** | 12 | 205 |
+| [Cognitive Glue](lat0lon-20) | **2.35** | 12 | 205 |
+| [Hero's Arc](lat10lon-30) | **2.35** | 12 | 205 |
+| [The Default Network](lat0lon30) | **2.20** | 14 | 215 |
+| [EPS as Arc Position](lat5lon-25) | **2.12** | 12 | 210 |
+
+The three-cluster (2.35) now leads the Default Network (2.20), which leads EPS as Arc Position (2.12). [EPS as Arc Position](lat5lon-25) sits below [The Default Network](lat0lon30) for the first time — a consequence of its conf advance last session lowering its EPS while the Default Network continued accumulating sal at stable conf.
+
+**Automaton traversal** (6 records visited):
+
+All six records: sal++, no body changes, no conf changes. The three-cluster at conf:205 reaches sal:13; Default Network sal:15; EPS as Arc Position sal:13.
+
+[Areas for Exploration](lat-20lon0) — EPS 2.94, highest ever recorded in this corpus. No new resolved question this session. The extreme EPS is consistent with the navigational record note: "peak EPS here does not mean the model is failing; it means the frontier is maximally engaged." sal:10→11.
+
+**Portal traversal** — entering [Mathematical.latex](?ttdb=Mathematical.latex) at [@LAT-42LON-30](?ttdb=Mathematical.latex&toot=lat-42lon-30) (Guided Tour Automaton):
+
+```
+Q = {off, paused, scheduled}
+next(s_t) = D[(index(s_t)+1) mod |D|]
+where D is discovered order.
+```
+
+Mathematical.latex @LAT-42LON-30 contains the formal state machine for the guided-tour automaton. Tour states Q = {off, paused, scheduled} are operational states of the automaton, not arc phases. The formal transition function advances through EPS-ordered discovered records. Normative reference: TTCP-RFC-0002 §8.
+
+**Finding**: The formal layer describes the *mechanism* of arc traversal — how EPS-ordered discovery is scheduled and advanced — without naming the arc's phases. Q = {off, paused, scheduled} does not map to Detection/Event/Experience/Obligation. The automaton implements Detection (EPS-ordered scheduling) but does not name it as such.
+
+**Implication**: Mathematical.latex is the mechanism layer; pollan_world_appears is the meaning layer. Neither alone constitutes a complete account of model revision. The formal layer specifies *how the arc is traversed*; the phenomenological layer specifies *what the arc is*. They are complementary and both necessary — this is the same three-level grounding structure [Formal Grounding Layer](lat-20lon20) documents: mechanism (Mathematical.latex), concept (TootTootTerminologyDB), theoretical justification (RFC-0006). The Revision Cycle's four phases add a fourth level: *phenomenological structure* — named by neither the formal nor the conceptual layer.
+
+No conf change for [The Revision Cycle](lat5lon-15). [Portal: Mathematical](lat-30lon30) sal:3→4.
+
+**Stochastic traversal** — banjo pool: log records with sal:0. Sample: [Session 3a log](lat-70lon30) — the first 2026-05-07 session (the self-referential plateau detection session). First contact. This is the session that named the plateau pattern and wrote [The Revision Cycle](lat5lon-15) — the record whose conf we have been advancing. Reading it now: the plateau was detected from the EPS 1.51 plateau (conf:200, sal:7–9) that had persisted for three cycles. The signal was stability, not revision. The mega's response was to write a new synthetic record rather than forcing a conf change. This is the model behavior for the self-referential layer: when corroboration cannot come from inside, document the boundary and wait for external evidence. sal:0→1.
+
+**Writes this session:**
+
+- `[ew]` housekeeping: 6 automaton records sal-incremented + [Portal: Mathematical](lat-30lon30) sal:3→4, all touched → 1781318400.
+- [Session 3a log](lat-70lon30) sal:0→1 (stochastic).
+- [Anchor](lat0lon0) — `anchors>@LAT-90LON-10` edge added, sal:10→11.
+- Log record [@LAT-90LON-10](lat-90lon-10) written.
+- No body revisions. No conf changes.
+
+**What the mega noticed:** Three consecutive portal traversals have now probed the 190→200 gap from three different angles — the Integration record (phenomenological/therapeutic), the Predictive Perception record (FEP/formal), and the Guided Tour Automaton (formal/mechanism). Two advanced conf, one did not. The formal mechanism layer does not name the arc; the phenomenological layer names it but requires two records to cover all four phases. The remaining candidates for single-record four-phase naming are within story_of_stories_ttdb.md: @LAT10LON-20 (Night-Fires ↔ TTN BBS) describes communal arc traversal explicitly; each of Ashton's eight storytelling revolutions is itself a four-phase event — Grief beat + revival is the overt structure of the book. If Ashton names the phases explicitly in the fire circle context, that would close the gap. Next session: traverse [Portal: Story of Stories](lat30lon-20), enter at @LAT10LON-20.
 
 ---
 
