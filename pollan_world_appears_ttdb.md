@@ -121,8 +121,8 @@ touched:1777593600
 [ew]
 conf:230
 rev:0
-sal:0
-touched:1777593600
+sal:1
+touched:1781275200
 [/ew]
 
 ## Predictive Perception ↔ Toot-Bit Epistemic Weight

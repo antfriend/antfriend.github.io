@@ -73,12 +73,12 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1781232000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20
+@LAT0LON0 | created:1778000000 | updated:1781275200 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10
 [ew]
 conf:245
 rev:0
-sal:9
-touched:1781232000
+sal:10
+touched:1781275200
 [/ew]
 
 ## The A32 Mega Librarian
@@ -197,8 +197,8 @@ touched:1779000000
 [ew]
 conf:235
 rev:0
-sal:2
-touched:1781232000
+sal:3
+touched:1781275200
 [/ew]
 
 ## Portal: A World Appears — Pollan ↔ Toot Toot
@@ -494,8 +494,8 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:215
 rev:4
-sal:13
-touched:1781232000
+sal:14
+touched:1781275200
 [/ew]
 
 ## The Default Network
@@ -682,8 +682,8 @@ The mega fills this gap. The mega's banjo traversal ([Default Network](lat0lon30
 [ew]
 conf:205
 rev:3
-sal:11
-touched:1781232000
+sal:12
+touched:1781275200
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -714,8 +714,8 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 [ew]
 conf:205
 rev:2
-sal:11
-touched:1781232000
+sal:12
+touched:1781275200
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
@@ -742,8 +742,8 @@ The fire circle also operates across time. Oral tradition carries the mnemonic f
 [ew]
 conf:205
 rev:1
-sal:11
-touched:1781232000
+sal:12
+touched:1781275200
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -764,12 +764,12 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 
 ---
 
-@LAT5LON-25 | created:1778300000 | updated:1778700000 | relates:synthesizes>@LAT10LON-30,synthesizes>@LAT10LON-20,derived_from>@LAT40LON0,resonates_with>@LAT20LON10,anchored_by>@LAT0LON0
+@LAT5LON-25 | created:1778300000 | updated:1781275200 | relates:synthesizes>@LAT10LON-30,synthesizes>@LAT10LON-20,derived_from>@LAT40LON0,resonates_with>@LAT20LON10,resonates_with>@LAT30LON-10,anchored_by>@LAT0LON0
 [ew]
-conf:205
+conf:210
 rev:2
-sal:11
-touched:1781232000
+sal:12
+touched:1781275200
 [/ew]
 
 ## EPS as Arc Position
@@ -806,12 +806,12 @@ This reframes TTN semantic gravity itself: *a record with high EPS has high sema
 
 ---
 
-@LAT5LON-15 | created:1780972800 | updated:1781232000 | relates:synthesizes>@LAT10LON-20,synthesizes>@LAT0LON-20,synthesizes>@LAT10LON-30,synthesizes>@LAT5LON-25,resonates_with>@LAT30LON-10,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
+@LAT5LON-15 | created:1780972800 | updated:1781275200 | relates:synthesizes>@LAT10LON-20,synthesizes>@LAT0LON-20,synthesizes>@LAT10LON-30,synthesizes>@LAT5LON-25,resonates_with>@LAT30LON-10,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
 [ew]
-conf:180
-rev:2
-sal:2
-touched:1781232000
+conf:190
+rev:3
+sal:3
+touched:1781275200
 [/ew]
 
 ## The Revision Cycle — Four Views on Model Revision
@@ -835,13 +835,24 @@ A revision is complete only when all four phases are present.
 
 **Detection without obligation**: EPS identifies the highest-pressure records; the automaton visits them; revisions are written; but the connective work is skipped. Each revision is local. The corpus gains revised records but loses coherence — the mesh thins even as individual nodes sharpen.
 
-**The self-referential layer**: These four records describe the revision cycle. They are themselves subject to it. Their plateau at conf:205 (EPS ≈ 1.96 each, five consecutive cycles) is the signature of a self-referential layer. The detection mechanism cannot validate itself through the normal corroboration pathway — it IS the corroboration mechanism. External validation requires a source TTDB that independently describes the same four-phase cycle. The [Portal: A World Appears](lat30lon-10) comes close: psychedelic integration maps detection (set-and-setting), event (the experience), experience (integration), and obligation (connection with the support network after return). That resonance is partial. Traversal of [@LAT10LON-10 in pollan_world_appears](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) (2026-05-10 session) confirms three of the four phases explicitly present and the fourth structurally implied. [The Revision Cycle](lat5lon-15) conf advances from 165 to 180. The layer waits for a source that names all four phases explicitly — the gap from 180 to 200.
+**The self-referential layer**: These four records describe the revision cycle. They are themselves subject to it. Their plateau at conf:205 (six consecutive cycles) is the signature of a self-referential layer — with one crack: [EPS as Arc Position](lat5lon-25) broke out of the cluster in the 2026-05-10 second session when [pollan @LAT30LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10) provided shared-citation FEP corroboration for its prediction-error claim; its conf advanced 205→210 while the other three remain at 205. The detection mechanism cannot validate itself through the normal corroboration pathway — it IS the corroboration mechanism — but the EPS-as-prediction-error claim has now received cross-TTDB validation. External validation of the full four-phase cycle requires a source TTDB that independently names all four phases. [Portal: A World Appears](lat30lon-10), read across two records (@LAT30LON-10 + @LAT10LON-10), now grounds all four phases. [The Revision Cycle](lat5lon-15) conf is at 190. The gap from 190 to 200: 'two pollan records together cover all four phases' vs. 'one source naming all four phases explicitly.'
 
 **The default network as instantiation**: Each default network session is a revolution of this cycle. EPS-ordered traversal performs Detection. Body revisions are the Event. The log record is the Experience written down — Grief witnessed and named. New edges added to revised records are the Obligation met. The default network does not merely maintain the corpus; it enacts the revision cycle on it, session by session.
 
 **Operational evidence**: The log records in this file — [Session 1 log](lat-50lon30), [Session 2 log](lat-60lon30), [Session 3a log](lat-70lon30) — provide the first empirical test of this framework. Each log records the EPS state that triggered the session (Detection), names the bodies revised (Event), writes the observation from inside the arc (Experience), and lists edge additions (Obligation). Three sessions, same structure, none written to validate this framework. conf rises from 128 to 155: partial corroboration. The self-referential ceiling noted above still holds — the logs confirm the cycle runs; they do not independently validate the four-phase account of *why*.
 
-**Portal evidence**: Traversal of [pollan_world_appears_ttdb.md](?ttdb=pollan_world_appears_ttdb.md) [@LAT10LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) (Integration ↔ `rev` field + `revises@` edge, 2026-05-10 session) confirms the Event/Experience distinction as a structural requirement in clinical integration theory. Pollan: "An experience that does not integrate is just an event. Integration is what turns an event into a revision of the self-model." The `revises@` architecture is the Obligation phase formalized — the revised record preserves its prior self rather than producing an orphan node. Detection is structurally implied by the presenting intention (set-and-setting) that brings someone to the threshold of the experience. Three of the four phases are explicitly named in the source; one is structurally implied. conf 165→180: an external theoretical source in a source TTDB structurally instantiates the framework. The gap from 180 to 200 requires a source that names all four phases explicitly.
+**Portal evidence**: Traversal of [pollan_world_appears_ttdb.md](?ttdb=pollan_world_appears_ttdb.md) [@LAT10LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) (Integration ↔ `rev` field + `revises@` edge, 2026-05-10 session) confirms the Event/Experience distinction as a structural requirement in clinical integration theory. Pollan: "An experience that does not integrate is just an event. Integration is what turns an event into a revision of the self-model." The `revises@` architecture is the Obligation phase formalized — the revised record preserves its prior self rather than producing an orphan node. Detection is structurally implied by the presenting intention (set-and-setting) that brings someone to the threshold of the experience. Three of the four phases are explicitly named in the source; one is structurally implied. conf 165→180: an external theoretical source in a source TTDB structurally instantiates the framework.
+
+Traversal of [@LAT30LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10) (Predictive Perception ↔ Toot-Bit Epistemic Weight, 2026-05-10 second session) provides the Detection phase in Friston's language: "The derived EPS signal identifies records that are heavily consulted but poorly understood — the points where the predictive model is failing most actively. In Clark and Seth's framework, these are exactly the regions of highest prediction error, where the most learning is happening." High EPS = high prediction error = Detection named from outside the framework, with shared citation (Friston 2010). Together with [@LAT10LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10), the four-phase cycle is now fully grounded across two pollan records within the same source TTDB:
+
+| Phase | Pollan source |
+|---|---|
+| Detection | [@LAT30LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10) — EPS identifies highest prediction error; "where the most learning is happening" |
+| Event | [@LAT30LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10) — model updates when predictions fail; `rev` counts these |
+| Experience | [@LAT10LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) — Integration: disruption metabolized into self-narrative |
+| Obligation | [@LAT10LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) — `revises@` reconnection; prior self preserved |
+
+conf 180→190. The gap from 190 to 200: two pollan records together cover all four phases; one source naming all four phases explicitly would close it.
 
 ---
 
@@ -919,8 +930,8 @@ Three registers of the same failure event: a bounded information processor losin
 [ew]
 conf:180
 rev:5
-sal:9
-touched:1781232000
+sal:10
+touched:1781275200
 [/ew]
 
 ## Areas for Exploration — Varied TTDB Applications
@@ -1016,8 +1027,8 @@ mode: eps_ordered + stochastic
 [ew]
 conf:255
 rev:0
-sal:0
-touched:1780886400
+sal:1
+touched:1781275200
 [/ew]
 
 ## Log — Default Network Run · 2026-05-06
@@ -1220,6 +1231,78 @@ conf raised on the self-referential cluster: 200→205 (partial advance — exte
 - [Anchor](lat0lon0) — `anchors>@LAT-90LON30` edge added.
 
 **What the mega noticed:** The portal traversal deficit is resolved. The corpus has now crossed a source TTDB threshold. Curiosity at [@LAT10LON40 in feelings_ttdb](?ttdb=feelings_ttdb.md&toot=lat10lon40) is the affective ground that both companion.md and the mega name as their default state — same word, confirmed from two independent TTDB implementations. The companion.md is no longer just a shipped application; it is a structurally validated implementation whose correction process enacted the very revision cycle the self-referential layer describes. The distance between conf:205 and conf:255 is now the distance between "an external instance confirmed the pattern" and "a source TTDB independently names the four phases." That gap requires portal traversal into a domain that explicitly theorizes revision cycles — pollan_world_appears (@LAT10LON-10, Integration) is the closest candidate.
+
+---
+
+@LAT-90LON10 | created:1781275200 | updated:1781275200 | kind:log | relates:logged>@LAT5LON-25,logged>@LAT5LON-15,logged>@LAT30LON-10,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1781275200
+[/ew]
+
+## Log — Default Network Run · 2026-05-10 (b)
+
+```session-log
+timestamp: 1781275200
+trigger: "@mega engage default network"
+mode: eps_ordered + stochastic + portal_traversal
+```
+
+**EPS rankings entering this session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **2.65** | 9 | 180 |
+| [Saltation/rev](lat10lon-20) | **2.16** | 11 | 205 |
+| [Cognitive Glue](lat0lon-20) | **2.16** | 11 | 205 |
+| [Hero's Arc](lat10lon-30) | **2.16** | 11 | 205 |
+| [EPS as Arc Position](lat5lon-25) | **2.16** | 11 | 205 |
+| [The Default Network](lat0lon30) | **2.04** | 13 | 215 |
+
+Note: the self-referential cluster has crossed the Default Network in EPS for the first time (2.16 > 2.04). sal accumulation at stable conf produces rising EPS — the cluster is under increasing pressure from its own growth.
+
+**Automaton traversal** (6 records visited):
+
+[Areas for Exploration](lat-20lon0) — EPS 2.65. No new resolved question this session; Locus v1.0 remains the most recent grounding. sal:9→10.
+
+**EPS 2.16 cluster** — [Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30) — sixth consecutive cycle at conf:205. No conf movement from automaton traversal. sal:11→12 each.
+
+[EPS as Arc Position](lat5lon-25) — EPS 2.16, sixth cycle. Portal evidence this session (below) provides cross-TTDB FEP corroboration for this record's core claim. conf 205→**210** — [ew]-only write; the record already says this, pollan confirms it from outside. First cluster member to advance. sal:11→12.
+
+[The Default Network](lat0lon30) — sal:13→**14**.
+
+**Portal traversal** — entering [pollan_world_appears_ttdb.md](?ttdb=pollan_world_appears_ttdb.md) at [@LAT30LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10) (Predictive Perception ↔ Toot-Bit Epistemic Weight):
+
+> "The derived EPS signal identifies records that are heavily consulted but poorly understood — the points where the predictive model is failing most actively. In Clark and Seth's framework, these are exactly the regions of highest prediction error, where the most learning is happening."
+
+This is the **Detection** phase named in Friston's language — a shared-citation cross-TTDB confirmation (both TTDB-RFC-0005 and pollan @LAT30LON-10 cite Friston 2010 as common theoretical parent). With [@LAT10LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) read last session, the [Revision Cycle](lat5lon-15) four-phase map is now fully grounded across two pollan records:
+
+| Phase | Pollan source |
+|---|---|
+| Detection | [@LAT30LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10) — EPS identifies highest prediction error; "where the most learning is happening" |
+| Event | [@LAT30LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10) — model updates when predictions fail; `rev` counts these |
+| Experience | [@LAT10LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) — Integration: disruption metabolized into self-narrative |
+| Obligation | [@LAT10LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) — `revises@` reconnection; prior self preserved |
+
+[The Revision Cycle](lat5lon-15) conf 180→**190**, rev 2→3, sal 2→3. The gap from 190 to 200: two pollan records together cover all four phases; one source naming all four phases explicitly would close it. sal:0→1 in source TTDB for [@LAT30LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10).
+
+**Stochastic traversal** — banjo pool: log records with sal:0. Sample: [Session 2 log](lat-60lon30) — the 2026-05-06 session. First contact. This log contains the first body revision on [Areas for Exploration](lat-20lon0) (companion.md shipped) and the first banjo discoveries of [The Living Corpus](lat0lon20) and [Delta as Datum](lat30lon-30). Reading it now: it is the session that established portal traversal as the source of new synthesis — [Delta as Datum](lat30lon-30) had zero sal but high integration potential; finding it by banjo was the event that justified the stochastic mode's role. sal:0→1.
+
+**Writes this session:**
+
+- [EPS as Arc Position](lat5lon-25) conf 205→210 — [ew]-only; cross-TTDB FEP corroboration from [pollan @LAT30LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10). First cluster member to break out. `resonates_with>@LAT30LON-10` edge added to header.
+- [The Revision Cycle](lat5lon-15) conf 180→190, rev 2→3, sal 2→3 — body update: self-referential paragraph updated (cluster crack noted); pollan @LAT30LON-10 Detection evidence added; full four-phase table across two pollan records written.
+- [@LAT30LON-10 in pollan_world_appears](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10) sal:0→1 in source TTDB.
+- [Portal: A World Appears](lat30lon-10) in mega file sal:2→3.
+- [Session 2 log](lat-60lon30) sal:0→1 (stochastic).
+- `[ew]` housekeeping: 7 records sal-incremented, all touched → 1781275200; conf adjustments on [EPS as Arc Position](lat5lon-25) and [The Revision Cycle](lat5lon-15).
+- [Anchor](lat0lon0) — `anchors>@LAT-90LON10` edge added, sal:9→10.
+
+**What the mega noticed:** [EPS as Arc Position](lat5lon-25) has broken out of the self-referential cluster: conf 205→210 while the other three cluster members remain at 205. This is the first internal differentiation of the cluster in six sessions. The member that broke out is the one that directly names the Detection mechanism — appropriately, since pollan's FEP-grounded prediction-error language is the closest external corroboration the Detection phase has received. Next session: the three-record cluster at conf:205, sal:12 will have EPS ≈ 2.35; [EPS as Arc Position](lat5lon-25) at conf:210, sal:12 will have EPS ≈ 2.12; [The Default Network](lat0lon30) at conf:215, sal:14 will have EPS ≈ 2.20. The cluster is no longer monolithic — [EPS as Arc Position](lat5lon-25) has separated downward.
+
+The next portal traversal most likely to close the 190→200 gap: Mathematical.latex contains a formal arc state machine — if its arc states map to Detection/Event/Experience/Obligation labels explicitly, that would constitute single-record formal grounding with no reliance on analogy.
 
 ---
 
