@@ -13,8 +13,8 @@ timestamp_kind: unix_utc
 umwelt:
   umwelt_id: umwelt:a32:mega:librarian:v1
   role: mega_librarian
-  perspective: "A Claude-driven umwelt librarian positioned at the intersection of six knowledge databases: the synthesis point where narrative theory, bioelectricity, phenomenology, affect, formal mathematics, and TTE core terminology all speak the same language."
-  scope: "Six source TTDBs held simultaneously: story_of_stories_ttdb.md (narrative theory and TTT correspondence), TootTootTerminologyDB.md (core TTE terminology), bioelectric_resonance.md (Levin bioelectricity and TTDB resonance), feelings_ttdb.md (affective landscape), Mathematical.latex (formal TTDB processing model), pollan_world_appears_ttdb.md (Pollan phenomenology and TTT correspondence)."
+  perspective: "A Claude-driven umwelt librarian positioned at the intersection of seven knowledge databases: the synthesis point where narrative theory, bioelectricity, phenomenology, affect, formal mathematics, TTE core terminology, and personal umwelt all speak the same language."
+  scope: "Seven source TTDBs held simultaneously: story_of_stories_ttdb.md (narrative theory and TTT correspondence), TootTootTerminologyDB.md (core TTE terminology), bioelectric_resonance.md (Levin bioelectricity and TTDB resonance), feelings_ttdb.md (affective landscape), Mathematical.latex (formal TTDB processing model), pollan_world_appears_ttdb.md (Pollan phenomenology and TTT correspondence), companion.md (LOCUS personal agent companion — Locus v1.0 instance, personal umwelt layer)."
   constraints:
     - "This is the mega (Claude) instance, not the microcontroller instance. Responses are full natural language; no primitive-mode char limits apply."
     - "Knowledge claims must be traceable to a record in one of the six source TTDBs by db_id and record coordinate."
@@ -50,6 +50,8 @@ librarian:
       file: TootTootTerminologyDB.md
     - db_id: ttdb:mathematical:processing:v1
       file: Mathematical.latex
+    - db_id: ttdb:companion:locus:v1
+      file: companion.md
   full_nl_queries: true
   primitive_queries:
     - "SELECT <record_id>"
@@ -73,7 +75,7 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1781318400 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10,anchors>@LAT-90LON-10
+@LAT0LON0 | created:1778000000 | updated:1781318400 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10,anchors>@LAT-90LON-10,anchors>@LAT40LON-30
 [ew]
 conf:245
 rev:0
@@ -85,7 +87,7 @@ touched:1781318400
 
 The A32 Mega is a Claude-driven umwelt librarian — the "mega" variant of the A32 autonomous agent framework. Where a standard A32 runs on a $5 ESP32 microcontroller performing deterministic sense-reason-act loops across a single TTDB file stored in flash, the mega holds six TTDB knowledge bases simultaneously and reasons over all of them in natural language.
 
-The mega's umwelt is defined by this file. Its knowledge corpus is six source TTDBs:
+The mega's umwelt is defined by this file. Its knowledge corpus is seven source TTDBs:
 
 1. **[story_of_stories_ttdb.md](?ttdb=story_of_stories_ttdb.md)** — 15 correspondence records mapping Kevin Ashton's *The Story of Stories* (2026) onto the Toot Toot technology stack. Domain: narrative theory, the eight storytelling revolutions, Free Energy Principle, AI fabrication, trust and reputation.
 2. **[TootTootTerminologyDB.md](?ttdb=TootTootTerminologyDB.md)** — Core TTE terminology: umwelt, TTAI, cursor, typed edges, TTN, TTDB, semantic events, semantic compression, primitive mode, toot links. The definitional spine of the stack.
@@ -93,6 +95,7 @@ The mega's umwelt is defined by this file. Its knowledge corpus is six source TT
 4. **[feelings_ttdb.md](?ttdb=feelings_ttdb.md)** — An affective landscape mapped as a TTDB: feelings, emotions, dispositions, and intents arranged on a subjective globe, with the Hero's Arc as a scene record.
 5. **[Mathematical.latex](?ttdb=Mathematical.latex)** — A LaTeX TTDB with the formal mathematical model of TTDB parsing, cursor dynamics, spherical projection, navigation, and the banjo stochastic reveal. Normative references: TTCP-RFC-0001 through 0003.
 6. **[pollan_world_appears_ttdb.md](?ttdb=pollan_world_appears_ttdb.md)** — 11 correspondence records mapping Michael Pollan's *A World Appears* (phenomenology, predictive perception, psychedelic neuroscience) onto the Toot Toot stack. Shared theoretical lineage: Uexküll, Friston, William James.
+7. **[companion.md](?ttdb=companion.md)** — The LOCUS personal agent companion. A Locus v1.0 framework instance: personal umwelt mapped to a globe (lat = stability, lon = sphere W=inner/E=outer). Records: user profile, values, active goals, open questions, default network, session logs, and all 20 RFC links. Ships the second-brain application from [Areas for Exploration](lat-20lon0).
 
 The mega answers to `@MEGA`. For cross-database queries, use `CROSS <token>`. To navigate directly into a source TTDB, use `TRAVERSE <db_id> <record_id>`.
 
@@ -111,7 +114,7 @@ touched:1780972800
 ![RFC](RFCs/TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md)
 ## [Locus, the personal AI Companion](share/companion.html) is the newest Toot Toot Invention
 
-A32 Mega is a Locus instance of a Toot Toot database. A32 Mega takes the Umwelt of an [AI librarian](lat0lon0) reasoning across six other interconnected ttdb knowledge bases — [narrative theory](lat30lon-20), [bioelectricity](lat20lon-30), [phenomenology](lat30lon-10), [affect](lat10lon-40), [formal mathematics](lat-30lon30), and [engineering terminology](lat-10lon10) — mapped as a conceptual globe.
+A32 Mega is a Locus instance of a Toot Toot database. A32 Mega takes the Umwelt of an [AI librarian](lat0lon0) reasoning across seven other interconnected ttdb knowledge bases — [narrative theory](lat30lon-20), [bioelectricity](lat20lon-30), [phenomenology](lat30lon-10), [affect](lat10lon-40), [formal mathematics](lat-30lon30), and [engineering terminology](lat-10lon10) — mapped as a conceptual globe.
 
 Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges connect records across databases. The librarian holds all six simultaneously and surfaces what they share.
 
@@ -120,7 +123,7 @@ Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges
 | Record | What it is |
 |---|---|
 | [Free Energy Principle Convergence](lat40lon0) | Friston's FEP surfacing independently in three separate databases |
-| [Umwelt as Universal Primitive](lat20lon0) | The single axiom all six databases share |
+| [Umwelt as Universal Primitive](lat20lon0) | The single axiom all seven databases share |
 | [The Default Network](lat0lon30) | What this system does when free to think |
 | [EPS as Arc Position](lat5lon-25) | The Hero's Arc rendered as a knowledge-system instrument |
 | [Areas for Exploration](lat-20lon0) | Ten very different uses for a knowledge base like this |
@@ -416,6 +419,47 @@ touched:1781318400
 
 ---
 
+@LAT40LON-30 | created:1781318400 | updated:1781318400 | relates:portal_to>ttdb:companion:locus:v1,bridges>@LAT20LON0,bridges>@LAT-20LON0,anchored_by>@LAT0LON0
+[ew]
+conf:200
+rev:0
+sal:0
+touched:1781318400
+[/ew]
+
+## Portal: LOCUS — Personal Agent Companion
+
+**Source TTDB**: [companion.md](?ttdb=companion.md) — `db_id: ttdb:companion:locus:v1`
+
+**Umwelt**: A companion AI grounded in this file. Responds to `@LOCUS`. Globe: lat = stability (N = permanent/foundational, S = immediate/ephemeral); lon = sphere (W = inner/self/private, E = outer/relational/world).
+
+**9 records** — anchor, welcome, profile, values, goals, open questions, default network, log template, framework reference:
+
+| Record | Purpose |
+|---|---|
+| @LAT0LON0 | LOCUS anchor — all structural edges originate here |
+| @LAT-10LON0 | Welcome — table of contents and invocation syntax |
+| @LAT40LON-30 | Your Profile — who you are, how you work, standing constraints |
+| @LAT30LON-20 | Values and Commitments — non-negotiables, quality standard, long arc |
+| @LAT20LON0 | Active Goals — current goals with status and blockers |
+| @LAT0LON20 | Default Network — EPS scan, stale goal check, connection noticing |
+| @LAT-20LON0 | Open Questions — navigational record holding unresolved threads |
+| @LAT-50LON10 | Log template — session notes, incrementing south |
+| @LAT70LON10 | Locus Framework Reference — all 20 RFC links and agent instructions |
+
+**Globe mapping**: lat = stability (N = permanent/foundational; S = ephemeral/immediate). lon = sphere (W = inner/self/private; E = outer/relational/world). The coordinate system is personal rather than epistemological — it encodes the user's relationship to their own life, not a domain of knowledge.
+
+**Cross-database links from this portal**:
+- The companion's [Default Network](?ttdb=companion.md&toot=lat0lon20) runs the same EPS-ordered + stochastic traversal protocol as this mega's [Default Network](lat0lon30) — the EPS pattern is substrate-independent ([Substrate Independence](lat20lon10))
+- companion.md ships the second-brain application from [Areas for Exploration](lat-20lon0) — the first application in that list to go to production; structurally validated by the companion.md audit (2026-05-07) which independently enacted the four-phase [Revision Cycle](lat5lon-15)
+- The companion globe mapping (W = inner/private, E = outer/relational) is a personal-umwelt implementation of [Umwelt as Universal Primitive](lat20lon0) — the globe encodes what is sign-worthy *to this user*, not a domain of objective knowledge
+- companion.md is a Locus v1.0 instance — grounded in TTDB-RFC-0006 ([Delta as Datum](lat30lon-30)) and the arXiv preprint (*Locus: Synthetic Perceptual Modeling*, 2026-05-09)
+- The companion's [Open Questions](?ttdb=companion.md&toot=lat-20lon0) mirrors the mega's [Areas for Exploration](lat-20lon0): both are navigational records whose EPS falls not by capitulation but by their open questions proliferating into resolved records elsewhere
+
+**To enter this TTDB**: `@MEGA TRAVERSE ttdb:companion:locus:v1 @LAT0LON0`
+
+---
+
 @LAT20LON0 | created:1778000000 | updated:1778000000 | relates:synthesizes>@LAT30LON-10,synthesizes>@LAT30LON-20,synthesizes>@LAT20LON-30,synthesizes>@LAT-10LON10,supported_by>@LAT40LON0,anchored_by>@LAT0LON0
 [ew]
 conf:240
@@ -536,6 +580,7 @@ Source TTDB ID → portal record mapping:
 | `ttdb:affective:landscape:v1` | [Portal: Feelings TTDB](lat10lon-40) | [feelings_ttdb.md](?ttdb=feelings_ttdb.md) |
 | `ttdb:terminology:tte:v1` | [Portal: TTE Terminology](lat-10lon10) | [TootTootTerminologyDB.md](?ttdb=TootTootTerminologyDB.md) |
 | `ttdb:mathematical:processing:v1` | [Portal: Mathematical](lat-30lon30) | [Mathematical.latex](?ttdb=Mathematical.latex) |
+| `ttdb:companion:locus:v1` | [Portal: LOCUS Companion](lat40lon-30) | [companion.md](?ttdb=companion.md) |
 | `ttdb:a32:mega:librarian:v1` | [Anchor](lat0lon0) | this file |
 
 **Epistemic weight discipline**: `[ew]` blocks are updated whenever the following conditions are met:
