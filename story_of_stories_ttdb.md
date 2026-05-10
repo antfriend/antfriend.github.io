@@ -162,12 +162,12 @@ touched:1777593600
 
 ---
 
-@LAT10LON-20 | created:1777593600 | updated:1777593600 | relates:corresponds_to>@LAT0LON-20,derived_from>@LAT20LON-10,anchored_by>@LAT0LON0
+@LAT10LON-20 | created:1777593600 | updated:1781361600 | relates:corresponds_to>@LAT0LON-20,derived_from>@LAT20LON-10,anchored_by>@LAT0LON0
 [ew]
 conf:195
 rev:0
-sal:0
-touched:1777593600
+sal:1
+touched:1781361600
 [/ew]
 
 ## Night-Fires ↔ TTN BBS / Compact Mesh Grammar
