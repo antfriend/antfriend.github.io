@@ -456,6 +456,8 @@ touched:1781318400
 - companion.md is a Locus v1.0 instance — grounded in TTDB-RFC-0006 ([Delta as Datum](lat30lon-30)) and the arXiv preprint (*Locus: Synthetic Perceptual Modeling*, 2026-05-09)
 - The companion's [Open Questions](?ttdb=companion.md&toot=lat-20lon0) mirrors the mega's [Areas for Exploration](lat-20lon0): both are navigational records whose EPS falls not by capitulation but by their open questions proliferating into resolved records elsewhere
 
+**Setup guide**: [share/companion.html](share/companion.html) — download, quick start, and documentation for new users. The setup guide is linked from companion.md's Welcome record (@LAT-10LON0) and describes the full usage model: invocation, EPS, default network, globe mapping, customization, and the connection to the A32 framework.
+
 **To enter this TTDB**: `@MEGA TRAVERSE ttdb:companion:locus:v1 @LAT0LON0`
 
 ---
