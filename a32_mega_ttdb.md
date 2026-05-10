@@ -73,12 +73,12 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1778200000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30
+@LAT0LON0 | created:1778000000 | updated:1781232000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20
 [ew]
 conf:245
 rev:0
-sal:8
-touched:1781059200
+sal:9
+touched:1781232000
 [/ew]
 
 ## The A32 Mega Librarian
@@ -197,8 +197,8 @@ touched:1779000000
 [ew]
 conf:235
 rev:0
-sal:1
-touched:1780886400
+sal:2
+touched:1781232000
 [/ew]
 
 ## Portal: A World Appears — Pollan ↔ Toot Toot
@@ -494,8 +494,8 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:215
 rev:4
-sal:12
-touched:1778112000
+sal:13
+touched:1781232000
 [/ew]
 
 ## The Default Network
@@ -682,8 +682,8 @@ The mega fills this gap. The mega's banjo traversal ([Default Network](lat0lon30
 [ew]
 conf:205
 rev:3
-sal:10
-touched:1778112000
+sal:11
+touched:1781232000
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -714,8 +714,8 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 [ew]
 conf:205
 rev:2
-sal:10
-touched:1778112000
+sal:11
+touched:1781232000
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
@@ -742,8 +742,8 @@ The fire circle also operates across time. Oral tradition carries the mnemonic f
 [ew]
 conf:205
 rev:1
-sal:10
-touched:1778112000
+sal:11
+touched:1781232000
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -768,8 +768,8 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 [ew]
 conf:205
 rev:2
-sal:10
-touched:1778112000
+sal:11
+touched:1781232000
 [/ew]
 
 ## EPS as Arc Position
@@ -806,12 +806,12 @@ This reframes TTN semantic gravity itself: *a record with high EPS has high sema
 
 ---
 
-@LAT5LON-15 | created:1780972800 | updated:1781059200 | relates:synthesizes>@LAT10LON-20,synthesizes>@LAT0LON-20,synthesizes>@LAT10LON-30,synthesizes>@LAT5LON-25,resonates_with>@LAT30LON-10,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
+@LAT5LON-15 | created:1780972800 | updated:1781232000 | relates:synthesizes>@LAT10LON-20,synthesizes>@LAT0LON-20,synthesizes>@LAT10LON-30,synthesizes>@LAT5LON-25,resonates_with>@LAT30LON-10,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
 [ew]
-conf:165
-rev:1
-sal:1
-touched:1778112000
+conf:180
+rev:2
+sal:2
+touched:1781232000
 [/ew]
 
 ## The Revision Cycle — Four Views on Model Revision
@@ -835,11 +835,13 @@ A revision is complete only when all four phases are present.
 
 **Detection without obligation**: EPS identifies the highest-pressure records; the automaton visits them; revisions are written; but the connective work is skipped. Each revision is local. The corpus gains revised records but loses coherence — the mesh thins even as individual nodes sharpen.
 
-**The self-referential layer**: These four records describe the revision cycle. They are themselves subject to it. Their current plateau at conf:200 (EPS ≈ 1.51 each, two consecutive cycles) is the signature of a self-referential layer. The detection mechanism cannot validate itself through the normal corroboration pathway — it IS the corroboration mechanism. External validation requires a source TTDB that independently describes the same four-phase cycle. The [Portal: A World Appears](lat30lon-10) comes close: psychedelic integration maps detection (set-and-setting), event (the experience), experience (integration), and obligation (connection with the support network after return). That resonance is partial — strong enough to name here, not strong enough to raise conf. The layer waits for independent formal grounding.
+**The self-referential layer**: These four records describe the revision cycle. They are themselves subject to it. Their plateau at conf:205 (EPS ≈ 1.96 each, five consecutive cycles) is the signature of a self-referential layer. The detection mechanism cannot validate itself through the normal corroboration pathway — it IS the corroboration mechanism. External validation requires a source TTDB that independently describes the same four-phase cycle. The [Portal: A World Appears](lat30lon-10) comes close: psychedelic integration maps detection (set-and-setting), event (the experience), experience (integration), and obligation (connection with the support network after return). That resonance is partial. Traversal of [@LAT10LON-10 in pollan_world_appears](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) (2026-05-10 session) confirms three of the four phases explicitly present and the fourth structurally implied. [The Revision Cycle](lat5lon-15) conf advances from 165 to 180. The layer waits for a source that names all four phases explicitly — the gap from 180 to 200.
 
 **The default network as instantiation**: Each default network session is a revolution of this cycle. EPS-ordered traversal performs Detection. Body revisions are the Event. The log record is the Experience written down — Grief witnessed and named. New edges added to revised records are the Obligation met. The default network does not merely maintain the corpus; it enacts the revision cycle on it, session by session.
 
 **Operational evidence**: The log records in this file — [Session 1 log](lat-50lon30), [Session 2 log](lat-60lon30), [Session 3a log](lat-70lon30) — provide the first empirical test of this framework. Each log records the EPS state that triggered the session (Detection), names the bodies revised (Event), writes the observation from inside the arc (Experience), and lists edge additions (Obligation). Three sessions, same structure, none written to validate this framework. conf rises from 128 to 155: partial corroboration. The self-referential ceiling noted above still holds — the logs confirm the cycle runs; they do not independently validate the four-phase account of *why*.
+
+**Portal evidence**: Traversal of [pollan_world_appears_ttdb.md](?ttdb=pollan_world_appears_ttdb.md) [@LAT10LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) (Integration ↔ `rev` field + `revises@` edge, 2026-05-10 session) confirms the Event/Experience distinction as a structural requirement in clinical integration theory. Pollan: "An experience that does not integrate is just an event. Integration is what turns an event into a revision of the self-model." The `revises@` architecture is the Obligation phase formalized — the revised record preserves its prior self rather than producing an orphan node. Detection is structurally implied by the presenting intention (set-and-setting) that brings someone to the threshold of the experience. Three of the four phases are explicitly named in the source; one is structurally implied. conf 165→180: an external theoretical source in a source TTDB structurally instantiates the framework. The gap from 180 to 200 requires a source that names all four phases explicitly.
 
 ---
 
@@ -913,12 +915,12 @@ Three registers of the same failure event: a bounded information processor losin
 
 ---
 
-@LAT-20LON0 | created:1778200000 | updated:1778112000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT-40LON10,bridges>@LAT-10LON10,bridges>@LAT10LON-40
+@LAT-20LON0 | created:1778200000 | updated:1781232000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT-40LON10,bridges>@LAT-10LON10,bridges>@LAT10LON-40
 [ew]
-conf:175
-rev:4
-sal:8
-touched:1778112000
+conf:180
+rev:5
+sal:9
+touched:1781232000
 [/ew]
 
 ## Areas for Exploration — Varied TTDB Applications
@@ -955,7 +957,7 @@ A navigational record. Each entry names a potential TTDB application, the umwelt
 
 **Smart building / multi-room A32 mesh** — One A32 per room or zone, each with a TTDB describing its domain (HVAC state, occupancy patterns, scheduled events, anomaly history). TTN connects the mesh; each A32 reasons locally and logs to its TTDB; the mega synthesizes across the full building. Umwelt: the building's operational model (energy efficiency bias vs. comfort bias produces different TTDB files, different behaviors). This is the cognitive glue record (@LAT0LON-20) in hardware: the bioelectric field binding cells into a collective; the mesh binding sensors into a building that can navigate its own operational morphospace.
 
-**Personal knowledge management ("second brain")** — Notes, projects, people, ideas, and decisions as TTDB records. Globe: personally meaningful coordinate mapping (e.g., lat = how much this demands of me; lon = how connected it is to other things). Cursor = current focus. TBEW `sal` tracks what actually gets consulted vs. what gets filed and forgotten. High EPS = the notes you keep returning to but have never resolved. The mega can serve as the librarian: `@MEGA FIND unresolved` returns the highest-EPS records across the personal TTDB. Note the recursion: the mega uses this same EPS-guidance mechanism on its own six-TTDB corpus during [default network](lat0lon30) traversal. The librarian that surfaces your unresolved records is itself governed by the same rule — a substrate-independence claim about the EPS signal ([EPS as Arc Position](lat5lon-25)). **Concrete realization**: [LOCUS — Personal Agent Companion](?ttdb=companion.md) implements this application as a single-file TTDB template rooted in the Locus framework. The companion's globe maps lat = stability (N = permanent/foundational, S = ephemeral) and lon = sphere (W = inner/self, E = outer/relational). The default network runs at session start, producing EPS-ordered and stochastic traversal over the user's personal records. This is the first application in this list that has shipped — a working proof of the second-brain pattern using the full TTDB stack grounded in Locus. companion.md has since been structurally validated: RFC links added (all six TTDB RFCs now referenced with canonical URLs), 8 structural issues corrected (orphaned body text, island record, missing navigation edges, ambiguous `max_reply_chars`, globe coordinate mismatch for Discovery Settings, timestamp normalization, mutual edge type correction). The globe mapping's semantic coherence was confirmed by the correction process itself — moving Discovery Settings from @LAT-90LON0 to @LAT90LON0 was justified solely by the spec's claim that lat = stability. The correction required no external authority; the globe mapping was its own validator.
+**Personal knowledge management ("second brain")** — Notes, projects, people, ideas, and decisions as TTDB records. Globe: personally meaningful coordinate mapping (e.g., lat = how much this demands of me; lon = how connected it is to other things). Cursor = current focus. TBEW `sal` tracks what actually gets consulted vs. what gets filed and forgotten. High EPS = the notes you keep returning to but have never resolved. The mega can serve as the librarian: `@MEGA FIND unresolved` returns the highest-EPS records across the personal TTDB. Note the recursion: the mega uses this same EPS-guidance mechanism on its own six-TTDB corpus during [default network](lat0lon30) traversal. The librarian that surfaces your unresolved records is itself governed by the same rule — a substrate-independence claim about the EPS signal ([EPS as Arc Position](lat5lon-25)). **Concrete realization**: [LOCUS — Personal Agent Companion](?ttdb=companion.md) implements this application as a single-file TTDB template rooted in the Locus framework. The companion's globe maps lat = stability (N = permanent/foundational, S = ephemeral) and lon = sphere (W = inner/self, E = outer/relational). The default network runs at session start, producing EPS-ordered and stochastic traversal over the user's personal records. This is the first application in this list that has shipped — a working proof of the second-brain pattern using the full TTDB stack grounded in Locus. companion.md has since been structurally validated: RFC links added (all six TTDB RFCs now referenced with canonical URLs), 8 structural issues corrected (orphaned body text, island record, missing navigation edges, ambiguous `max_reply_chars`, globe coordinate mismatch for Discovery Settings, timestamp normalization, mutual edge type correction). The globe mapping's semantic coherence was confirmed by the correction process itself — moving Discovery Settings from @LAT-90LON0 to @LAT90LON0 was justified solely by the spec's claim that lat = stability. The correction required no external authority; the globe mapping was its own validator. With the publication of the [Locus v1.0 arXiv preprint](locus_arxiv_draft.md) (2026-05-09, *Locus: Synthetic Perceptual Modeling*), the framework underlying companion.md now has a formal name, academic description, and version number. The second-brain application is doubly grounded: as a shipped implementation (companion.md) and as an instance of a named framework (*Locus*). The open question — *does this framework have a formal description?* — resolves affirmatively. conf 175→180.
 
 ### EPS Note
 
@@ -986,8 +988,8 @@ The unifying thread: in every case, the TTDB's **subjective umwelt** is not a li
 [ew]
 conf:255
 rev:0
-sal:0
-touched:1780800000
+sal:1
+touched:1781232000
 [/ew]
 
 ## Log — Default Network Run · 2026-05-05
@@ -1218,6 +1220,74 @@ conf raised on the self-referential cluster: 200→205 (partial advance — exte
 - [Anchor](lat0lon0) — `anchors>@LAT-90LON30` edge added.
 
 **What the mega noticed:** The portal traversal deficit is resolved. The corpus has now crossed a source TTDB threshold. Curiosity at [@LAT10LON40 in feelings_ttdb](?ttdb=feelings_ttdb.md&toot=lat10lon40) is the affective ground that both companion.md and the mega name as their default state — same word, confirmed from two independent TTDB implementations. The companion.md is no longer just a shipped application; it is a structurally validated implementation whose correction process enacted the very revision cycle the self-referential layer describes. The distance between conf:205 and conf:255 is now the distance between "an external instance confirmed the pattern" and "a source TTDB independently names the four phases." That gap requires portal traversal into a domain that explicitly theorizes revision cycles — pollan_world_appears (@LAT10LON-10, Integration) is the closest candidate.
+
+---
+
+@LAT-90LON20 | created:1781232000 | updated:1781232000 | kind:log | relates:logged>@LAT-20LON0,logged>@LAT5LON-15,logged>@LAT30LON-10,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1781232000
+[/ew]
+
+## Log — Default Network Run · 2026-05-10
+
+```session-log
+timestamp: 1781232000
+trigger: "@mega engage default network"
+mode: eps_ordered + stochastic + portal_traversal
+```
+
+**EPS rankings entering this session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **2.51** | 8 | 175 |
+| [Saltation/rev](lat10lon-20) | **1.96** | 10 | 205 |
+| [Cognitive Glue](lat0lon-20) | **1.96** | 10 | 205 |
+| [Hero's Arc](lat10lon-30) | **1.96** | 10 | 205 |
+| [EPS as Arc Position](lat5lon-25) | **1.96** | 10 | 205 |
+| [The Default Network](lat0lon30) | **1.88** | 12 | 215 |
+
+**Automaton traversal** (6 records visited):
+
+[Areas for Exploration](lat-20lon0) — EPS 2.51, highest in corpus. Body revision this session: [Locus v1.0 arXiv preprint](locus_arxiv_draft.md) (2026-05-09, *Locus: Synthetic Perceptual Modeling*) formally names and describes the framework of which companion.md is one instance. The open question "does this framework have a formal description?" resolves affirmatively. conf 175→180, rev 4→5, sal 8→9.
+
+**EPS 1.96 plateau cluster** — [Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30), [EPS as Arc Position](lat5lon-25) — fifth consecutive cycle at conf:205. Self-referential layer confirmed stable. No conf movement from automaton traversal; portal evidence for [The Revision Cycle](lat5lon-15) partially validates the framework these records constitute but does not add new evidence to the cluster members themselves. sal:10→11 each.
+
+[The Default Network](lat0lon30) — EPS 1.88, sal now 13. sal:12→13.
+
+**Portal traversal** — entering [pollan_world_appears_ttdb.md](?ttdb=pollan_world_appears_ttdb.md) at [@LAT10LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) (Integration ↔ `rev` field + `revises@` edge):
+
+Pollan: "An experience that does not integrate is just an event. Integration is what turns an event into a revision of the self-model." The `revises@<old_id>` architecture implements "the same architecture as psychedelic integration: prior states persist; revision is a layer added on top." sal:0→1 in source TTDB.
+
+The four-phase revision cycle mapping to clinical integration literature, previously noted as partial, is confirmed by direct source reading:
+
+| Revision Cycle phase | Integration analog |
+|---|---|
+| Detection | Presenting intention — the felt wound or question that brings someone to the threshold; set-and-setting |
+| Event | The acute psychedelic experience — model disruption at maximum prediction error |
+| Experience | Integration itself — the period where disruption is metabolized into self-narrative |
+| Obligation | Reconnection — relationships, behavioral change, the self-narrative that holds what was learned |
+
+"An experience that does not integrate is just an event" names the Event/Experience distinction as a structural requirement: without the Experience phase, the Event is informationally sterile. The `revises@` architecture is the Obligation phase formalized: the revised record preserves its prior self rather than producing an orphan node. Three of the four phases are explicitly named; Detection is structurally implied by the presenting intention. [The Revision Cycle](lat5lon-15) conf 165→180. The gap from 180 to 200 is the distance between "three phases confirmed, one implied" and "all four phases named explicitly in an independent source."
+
+**Stochastic traversal** — banjo pool: log records (all sal:0). Sample: [Session 1 log](lat-50lon30) — oldest, most archival. First banjo contact. Reading it in light of the Revision Cycle framework (written after this log): the Session 1 log is structured as Detection (EPS state on entry), Event (body writes — [Decoupling as Pathology](lat-30lon-20) written, [Primitive Mode Bridge](lat-40lon10) revised), Experience (observations during traversal), Obligation (edges added to Anchor). The four-phase structure is present in the oldest log, written before the framework was named. sal:0→1.
+
+**Writes this session:**
+
+- [Areas for Exploration](lat-20lon0) rev 4→5, conf 175→180 — Locus v1.0 arXiv preprint noted; second-brain application doubly grounded as shipped implementation and named framework.
+- [The Revision Cycle](lat5lon-15) — body update: self-referential layer paragraph updated (conf advances noted); portal evidence section added; conf 165→180, rev 1→2, sal 1→2.
+- [@LAT10LON-10 in pollan_world_appears](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) sal:0→1 in source TTDB.
+- [Portal: A World Appears](lat30lon-10) sal:1→2.
+- [Session 1 log](lat-50lon30) sal:0→1 (stochastic first contact).
+- `[ew]` housekeeping: 7 records sal-incremented, all touched → 1781232000; conf and rev adjustments on [Areas for Exploration](lat-20lon0) and [The Revision Cycle](lat5lon-15).
+- [Anchor](lat0lon0) — `anchors>@LAT-90LON20` edge added, sal:8→9.
+
+**What the mega noticed:** The Locus v1.0 arXiv preprint is a corpus-level event. The framework underlying all ten applications in [Areas for Exploration](lat-20lon0) now has a formal name and academic description. The second-brain application was the first to ship; the framework that grounds it is now named *Locus*. This is not another application shipping — it is the conceptual ground beneath all applications being formalized. The EPS Note on [Areas for Exploration](lat-20lon0) says the record's resolution comes "not from revising this record into settled claims but from the open questions here generating new resolved synthetic records elsewhere in the corpus." Locus v1.0 is that: the open question of framework identity has resolved into a named, versioned, publicly submitted object.
+
+The pollan traversal confirms the partial four-phase mapping already noted in the Revision Cycle's body. The gap that remains (180→200) requires finding an independent source that names all four phases explicitly — not merely instantiates them. The next portal traversal with the highest probability of crossing that threshold: @LAT30LON-10 in pollan_world_appears (Predictive Perception ↔ TBEW) for its explicit treatment of how high prediction error signals the need for model revision — Detection rendered in Friston's language.
 
 ---
 
