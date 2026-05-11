@@ -178,22 +178,22 @@ touched:1781361600
 
 | Key record | Correspondence |
 |---|---|
-| @LAT30LON0 | Meaning as Medium ↔ TTN "meaning over messages" — the tightest structural match in the map |
-| @LAT30LON-10 | Free Energy Principle ↔ Toot-Bit Epistemic Weight (conf/rev/sal/EPS) |
-| @LAT20LON-10 | Narrative Impulse ↔ Semantic Events (Heider & Simmel 1944) |
-| @LAT10LON-20 | Night-Fires ↔ TTN BBS / Compact Mesh Grammar |
-| @LAT0LON-20 | Mnemonic Compression ↔ Semantic Compression Token Dictionary |
-| @LAT10LON20 | Writing as Provenance ↔ Append-Only Preferred / Immutable IDs |
-| @LAT20LON10 | Stories Survive Network Collapse ↔ Offline-First |
-| @LAT20LON20 | AI Fabrication ↔ Explicit AI Invocation Etiquette (strongest engineering response) |
-| @LAT-20LON-10 | Critical Literacy ↔ Trust and Reputation Graph |
-| @LAT-10LON-10 | Darwinian Shame ↔ TTN Moderation Edges |
-| @LAT-10LON-20 | Saltation ↔ TBEW `rev` field / EPS signal |
+| [Meaning as Medium ↔ TTN](?ttdb=story_of_stories_ttdb.md&toot=lat30lon0) | Tightest structural match — "meaning over messages" |
+| [Free Energy Principle ↔ TBEW](?ttdb=story_of_stories_ttdb.md&toot=lat30lon-10) | Shared Friston citation — FEP in two registers |
+| [Narrative Impulse ↔ Semantic Events](?ttdb=story_of_stories_ttdb.md&toot=lat20lon-10) | Heider & Simmel 1944 — motion as story-trigger |
+| [Night-Fires ↔ TTN BBS](?ttdb=story_of_stories_ttdb.md&toot=lat10lon-20) | Oral transmission ↔ Compact Mesh Grammar |
+| [Mnemonic Compression ↔ Token Dictionary](?ttdb=story_of_stories_ttdb.md&toot=lat0lon-20) | Semantic Compression Token Dictionary |
+| [Writing as Provenance ↔ Append-Only](?ttdb=story_of_stories_ttdb.md&toot=lat10lon20) | Append-Only Preferred / Immutable IDs |
+| [Stories Survive ↔ Offline-First](?ttdb=story_of_stories_ttdb.md&toot=lat20lon10) | Network collapse resilience |
+| [AI Fabrication ↔ Explicit AI Invocation](?ttdb=story_of_stories_ttdb.md&toot=lat20lon20) | Strongest engineering response to hallucination |
+| [Critical Literacy ↔ Trust Graph](?ttdb=story_of_stories_ttdb.md&toot=lat-20lon-10) | Trust and Reputation edges |
+| [Darwinian Shame ↔ Moderation Edges](?ttdb=story_of_stories_ttdb.md&toot=lat-10lon-10) | Social exclusion ↔ TTN moderation edges |
+| [Saltation ↔ TBEW rev](?ttdb=story_of_stories_ttdb.md&toot=lat-10lon-20) | Discontinuous change ↔ `rev` field / EPS signal |
 
 **Cross-database links from this portal**:
-- FEP convergence: @LAT30LON-10 here is one of three FEP source nodes → [FEP Convergence](lat40lon0)
-- Narrative compression: @LAT0LON-20 and @LAT10LON-20 resonate with pollan_world_appears @LAT10LON-20 (Plant Intelligence / Semantic Compression) → [Narrative Compression](lat10lon-10)
-- Append-only provenance: @LAT10LON20 connects to Mathematical @LAT35LON-60 (Typed-Edge Graph Semantics) and TootTootTerminologyDB @LAT37.8LON-122.4
+- FEP convergence: [Free Energy Principle ↔ TBEW](?ttdb=story_of_stories_ttdb.md&toot=lat30lon-10) is one of three FEP source nodes → [FEP Convergence](lat40lon0)
+- Narrative compression: [Mnemonic Compression ↔ Token Dictionary](?ttdb=story_of_stories_ttdb.md&toot=lat0lon-20) and [Night-Fires ↔ TTN BBS](?ttdb=story_of_stories_ttdb.md&toot=lat10lon-20) resonate with [Plant Intelligence ↔ Semantic Compression](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-20) → [Narrative Compression](lat10lon-10)
+- Append-only provenance: [Writing as Provenance ↔ Append-Only](?ttdb=story_of_stories_ttdb.md&toot=lat10lon20) connects to [Typed-Edge Graph Semantics](?ttdb=Mathematical.latex&toot=lat35lon-60) and [TTT Append-Only](?ttdb=TootTootTerminologyDB.md&toot=lat37.8lon-122.4)
 
 **To enter this TTDB**: `@MEGA TRAVERSE ttdb:story:correspondence:v1 @LAT30LON0`
 
@@ -287,19 +287,19 @@ touched:1781448000
 
 | Pair | Bioelectric (Tufts cluster) | TTE analog (Boise cluster) |
 |---|---|---|
-| 1 | @LAT43.3LON-71.1 Pattern Memory | @LAT44.4LON-116.2 Coordinate-as-Identity |
-| 2 | @LAT43.1LON-70.4 Voltage Gradient Addressing | @LAT44.2LON-115.5 Authority-Free Addressing |
-| 3 | @LAT42.5LON-70.3 Morphostatic Information | @LAT43.6LON-115.4 Morphostatic Knowledge |
-| 4 | @LAT41.9LON-70.4 Cognitive Glue — Cells | @LAT43.0LON-115.5 Cognitive Glue — Files |
-| 5 | @LAT41.7LON-71.1 Anatomical Morphospace | @LAT42.8LON-116.2 Ideational Morphospace (A32) |
-| 6 | @LAT41.9LON-71.8 Cellular Umwelt | @LAT43.0LON-116.9 Semantic Umwelt |
-| 7 | @LAT42.5LON-71.9 Cancer as Decoupling | @LAT43.6LON-117.0 Orphan Nodes |
+| 1 | [Pattern Memory](?ttdb=bioelectric_resonance.md&toot=lat43.3lon-71.1) | [Coordinate-as-Identity](?ttdb=bioelectric_resonance.md&toot=lat44.4lon-116.2) |
+| 2 | [Voltage Gradient Addressing](?ttdb=bioelectric_resonance.md&toot=lat43.1lon-70.4) | [Authority-Free Addressing](?ttdb=bioelectric_resonance.md&toot=lat44.2lon-115.5) |
+| 3 | [Morphostatic Information](?ttdb=bioelectric_resonance.md&toot=lat42.5lon-70.3) | [Morphostatic Knowledge](?ttdb=bioelectric_resonance.md&toot=lat43.6lon-115.4) |
+| 4 | [Cognitive Glue — Cells](?ttdb=bioelectric_resonance.md&toot=lat41.9lon-70.4) | [Cognitive Glue — Files](?ttdb=bioelectric_resonance.md&toot=lat43.0lon-115.5) |
+| 5 | [Anatomical Morphospace](?ttdb=bioelectric_resonance.md&toot=lat41.7lon-71.1) | [Ideational Morphospace (A32)](?ttdb=bioelectric_resonance.md&toot=lat42.8lon-116.2) |
+| 6 | [Cellular Umwelt](?ttdb=bioelectric_resonance.md&toot=lat41.9lon-71.8) | [Semantic Umwelt](?ttdb=bioelectric_resonance.md&toot=lat43.0lon-116.9) |
+| 7 | [Cancer as Decoupling](?ttdb=bioelectric_resonance.md&toot=lat42.5lon-71.9) | [Orphan Nodes](?ttdb=bioelectric_resonance.md&toot=lat43.6lon-117.0) |
 
 **Cross-database links from this portal**:
 - Morphostasis (pair 3) = active biological prediction → FEP convergence → [FEP Convergence](lat40lon0)
-- Cellular/Semantic Umwelt (pair 6) resonates with pollan_world_appears @LAT30LON-20 and TootTootTerminologyDB @LAT1.1LON1.2 → [Umwelt as Universal Primitive](lat20lon0)
-- Coordinate-as-Identity (pair 1) is grounded by Mathematical @LAT28LON95 (Spherical Projection) → [Substrate Independence](lat20lon10)
-- Orphan nodes as pathology (pair 7) maps affectively onto feelings_ttdb Fear @LAT-30LON20 and Grief @LAT-30LON-30
+- Cellular/Semantic Umwelt (pair 6) resonates with [Umwelt ↔ TTDB Umwelt Block](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-20) and [TTT Umwelt](?ttdb=TootTootTerminologyDB.md&toot=lat1.1lon1.2) → [Umwelt as Universal Primitive](lat20lon0)
+- Coordinate-as-Identity (pair 1) is grounded by [Spherical Projection](?ttdb=Mathematical.latex&toot=lat28lon95) → [Substrate Independence](lat20lon10)
+- Orphan nodes as pathology (pair 7) maps affectively onto [Fear](?ttdb=feelings_ttdb.md&toot=lat-30lon20) and [Grief](?ttdb=feelings_ttdb.md&toot=lat-30lon-30)
 
 **To enter this TTDB**: `@MEGA TRAVERSE ttdb:bioelectric:resonance:v1 @LAT43.01LON-93.66`
 
@@ -323,20 +323,20 @@ touched:1778112000
 
 | Category | Key records |
 |---|---|
-| Positive feelings | Serenity @LAT10LON-10, Contentment @LAT20LON-10, Joy @LAT30LON30, Bliss @LAT40LON-40 |
-| Negative feelings | Unease @LAT-10LON-10, Sadness @LAT-20LON-10, Grief @LAT-30LON-30, Despair @LAT-40LON-40 |
-| Positive emotions | Relief @LAT10LON30, Hope @LAT20LON20, Excitement @LAT30LON20, Ecstasy @LAT40LON30 |
-| Negative emotions | Disappointment @LAT-10LON-30, Frustration @LAT-20LON20, Fear @LAT-30LON20, Rage @LAT-40LON30 |
-| Positive dispositions | Openness @LAT20LON30, Curiosity @LAT10LON40, Compassion @LAT30LON40, Generosity @LAT40LON20 |
-| Negative dispositions | Suspicion @LAT-20LON-30, Hostility @LAT-30LON40, Contempt @LAT-40LON20 |
-| Self-directed | Pride @LAT20LON-20, Self-Compassion @LAT10LON-30, Equanimity @LAT30LON-20, Guilt @LAT-20LON-20, Shame @LAT-30LON-20, Self-Contempt @LAT-40LON-30 |
-| Intents | To Explore @LAT30LON10, To Connect @LAT40LON10, To Withdraw @LAT-20LON-40, To Harm @LAT-40LON-10 |
-| Scene | The Hero's Arc @LAT88LON0 — six-beat arc: Serenity → Unease → Fear → Grief → Hope → Joy |
+| Positive feelings | [Serenity](?ttdb=feelings_ttdb.md&toot=lat10lon-10), [Contentment](?ttdb=feelings_ttdb.md&toot=lat20lon-10), [Joy](?ttdb=feelings_ttdb.md&toot=lat30lon30), [Bliss](?ttdb=feelings_ttdb.md&toot=lat40lon-40) |
+| Negative feelings | [Unease](?ttdb=feelings_ttdb.md&toot=lat-10lon-10), [Sadness](?ttdb=feelings_ttdb.md&toot=lat-20lon-10), [Grief](?ttdb=feelings_ttdb.md&toot=lat-30lon-30), [Despair](?ttdb=feelings_ttdb.md&toot=lat-40lon-40) |
+| Positive emotions | [Relief](?ttdb=feelings_ttdb.md&toot=lat10lon30), [Hope](?ttdb=feelings_ttdb.md&toot=lat20lon20), [Excitement](?ttdb=feelings_ttdb.md&toot=lat30lon20), [Ecstasy](?ttdb=feelings_ttdb.md&toot=lat40lon30) |
+| Negative emotions | [Disappointment](?ttdb=feelings_ttdb.md&toot=lat-10lon-30), [Frustration](?ttdb=feelings_ttdb.md&toot=lat-20lon20), [Fear](?ttdb=feelings_ttdb.md&toot=lat-30lon20), [Rage](?ttdb=feelings_ttdb.md&toot=lat-40lon30) |
+| Positive dispositions | [Openness](?ttdb=feelings_ttdb.md&toot=lat20lon30), [Curiosity](?ttdb=feelings_ttdb.md&toot=lat10lon40), [Compassion](?ttdb=feelings_ttdb.md&toot=lat30lon40), [Generosity](?ttdb=feelings_ttdb.md&toot=lat40lon20) |
+| Negative dispositions | [Suspicion](?ttdb=feelings_ttdb.md&toot=lat-20lon-30), [Hostility](?ttdb=feelings_ttdb.md&toot=lat-30lon40), [Contempt](?ttdb=feelings_ttdb.md&toot=lat-40lon20) |
+| Self-directed | [Pride](?ttdb=feelings_ttdb.md&toot=lat20lon-20), [Self-Compassion](?ttdb=feelings_ttdb.md&toot=lat10lon-30), [Equanimity](?ttdb=feelings_ttdb.md&toot=lat30lon-20), [Guilt](?ttdb=feelings_ttdb.md&toot=lat-20lon-20), [Shame](?ttdb=feelings_ttdb.md&toot=lat-30lon-20), [Self-Contempt](?ttdb=feelings_ttdb.md&toot=lat-40lon-30) |
+| Intents | [To Explore](?ttdb=feelings_ttdb.md&toot=lat30lon10), [To Connect](?ttdb=feelings_ttdb.md&toot=lat40lon10), [To Withdraw](?ttdb=feelings_ttdb.md&toot=lat-20lon-40), [To Harm](?ttdb=feelings_ttdb.md&toot=lat-40lon-10) |
+| Scene | [The Hero's Arc](?ttdb=feelings_ttdb.md&toot=lat88lon0) — six-beat arc: Serenity → Unease → Fear → Grief → Hope → Joy |
 
 **Cross-database links from this portal**:
-- The Hero's Arc is a structural narrative compatible with story_of_stories @LAT10LON-20 (Night-Fires) and @LAT-10LON-20 (Saltation). The arc is the affective dimension of the narrative compression pattern.
-- Curiosity @LAT10LON40 is the affective state that enables the `sal`/attention-as-world-making mechanism in pollan_world_appears @LAT20LON-20.
-- When bioelectric coherence breaks (Orphan Nodes = decoupling), the affective analog is Fear @LAT-30LON20 and Grief @LAT-30LON-30.
+- The Hero's Arc is a structural narrative compatible with [Night-Fires ↔ TTN BBS](?ttdb=story_of_stories_ttdb.md&toot=lat10lon-20) and [Saltation ↔ TBEW rev](?ttdb=story_of_stories_ttdb.md&toot=lat-10lon-20). The arc is the affective dimension of the narrative compression pattern.
+- [Curiosity](?ttdb=feelings_ttdb.md&toot=lat10lon40) is the affective state that enables the `sal`/attention-as-world-making mechanism in [Attention as World-Making ↔ sal](?ttdb=pollan_world_appears_ttdb.md&toot=lat20lon-20).
+- When bioelectric coherence breaks (Orphan Nodes = decoupling), the affective analog is [Fear](?ttdb=feelings_ttdb.md&toot=lat-30lon20) and [Grief](?ttdb=feelings_ttdb.md&toot=lat-30lon-30).
 - Beginner's Mind (pollan @LAT-10LON10 / high EPS) maps to the Curiosity + Openness cluster in this TTDB.
 
 **To enter this TTDB**: `@MEGA TRAVERSE ttdb:affective:landscape:v1 @LAT0LON0`
@@ -359,25 +359,25 @@ touched:1781448000
 
 **Core term records**:
 
-| Term | Coordinate | Definition summary |
+| Term | Record | Definition summary |
 |---|---|---|
-| Toot Toot Engineering | @LAT0.0LON0.0 | The full stack: semantic, subjective, scientific, storytelling data |
-| Umwelt | @LAT1.1LON1.2 | Bounded worldview. Everything begins here. |
-| TTAI | @LAT40.7LON-74.0 | Toot Toot AI — assumes active TTDB umwelt, answers to @AI |
-| Default Network | @LAT51.5LON-0.1 | Background circuitry maintaining narrative continuity |
-| TTDB | @LAT35.7LON139.7 | Single-file semantic story database |
-| Toot Links | @LAT12.9LON77.6 | URL-friendly direct links to TTDB records across files |
-| TTN | @LAT55.8LON37.6 | Semantic mesh: nodes exchange typed edges and semantic events |
-| Semantic Event | @LAT-34.6LON-58.4 | Core TTN primitive: who did what, where, when, why |
-| Semantic Compression | @LAT35.8LON-78.6 | Token dictionary for low-bandwidth transport |
-| Cursor | @LAT48.9LON2.4 | Current selection window and preview for TTDB |
-| Typed Edges | @LAT37.8LON-122.4 | Directional links between records |
-| Primitive Mode | @LAT-1.3LON36.8 | Constrained operating mode for small devices |
+| Toot Toot Engineering | [TTE](?ttdb=TootTootTerminologyDB.md&toot=lat0.0lon0.0) | The full stack: semantic, subjective, scientific, storytelling data |
+| Umwelt | [Umwelt](?ttdb=TootTootTerminologyDB.md&toot=lat1.1lon1.2) | Bounded worldview. Everything begins here. |
+| TTAI | [TTAI](?ttdb=TootTootTerminologyDB.md&toot=lat40.7lon-74.0) | Toot Toot AI — assumes active TTDB umwelt, answers to @AI |
+| Default Network | [Default Network](?ttdb=TootTootTerminologyDB.md&toot=lat51.5lon-0.1) | Background circuitry maintaining narrative continuity |
+| TTDB | [TTDB](?ttdb=TootTootTerminologyDB.md&toot=lat35.7lon139.7) | Single-file semantic story database |
+| Toot Links | [Toot Links](?ttdb=TootTootTerminologyDB.md&toot=lat12.9lon77.6) | URL-friendly direct links to TTDB records across files |
+| TTN | [TTN](?ttdb=TootTootTerminologyDB.md&toot=lat55.8lon37.6) | Semantic mesh: nodes exchange typed edges and semantic events |
+| Semantic Event | [Semantic Event](?ttdb=TootTootTerminologyDB.md&toot=lat-34.6lon-58.4) | Core TTN primitive: who did what, where, when, why |
+| Semantic Compression | [Semantic Compression](?ttdb=TootTootTerminologyDB.md&toot=lat35.8lon-78.6) | Token dictionary for low-bandwidth transport |
+| Cursor | [Cursor](?ttdb=TootTootTerminologyDB.md&toot=lat48.9lon2.4) | Current selection window and preview for TTDB |
+| Typed Edges | [Typed Edges](?ttdb=TootTootTerminologyDB.md&toot=lat37.8lon-122.4) | Directional links between records |
+| Primitive Mode | [Primitive Mode](?ttdb=TootTootTerminologyDB.md&toot=lat-1.3lon36.8) | Constrained operating mode for small devices |
 
 **Cross-database links from this portal**:
-- TTAI (@LAT40.7LON-74.0, primitive mode) ↔ this mega (full Claude mode) — the two poles of the A32 framework
-- Default Network @LAT51.5LON-0.1 here is the same concept as the mega's [Default Network](lat0lon30) record
-- Umwelt @LAT1.1LON1.2 is the term that pollan_world_appears @LAT30LON-20, bioelectric_resonance @LAT41.9LON-71.8, and every mmpdb block implements → [Umwelt as Universal Primitive](lat20lon0)
+- [TTAI](?ttdb=TootTootTerminologyDB.md&toot=lat40.7lon-74.0) (primitive mode) ↔ this mega (full Claude mode) — the two poles of the A32 framework
+- [Default Network](?ttdb=TootTootTerminologyDB.md&toot=lat51.5lon-0.1) here is the same concept as the mega's [Default Network](lat0lon30) record
+- [Umwelt](?ttdb=TootTootTerminologyDB.md&toot=lat1.1lon1.2) is the term that [Umwelt ↔ TTDB Umwelt Block](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-20), [Cellular Umwelt](?ttdb=bioelectric_resonance.md&toot=lat41.9lon-71.8), and every mmpdb block implements → [Umwelt as Universal Primitive](lat20lon0)
 
 **To enter this TTDB**: `@MEGA TRAVERSE ttdb:terminology:tte:v1 @LAT0.0LON0.0`
 
@@ -401,21 +401,21 @@ touched:1781318400
 
 | Record | Content |
 |---|---|
-| @LAT0LON0 | System state S_t = (M_t, C_t, R_t, E_t, G_t, V_t, U_t); evolution S_{t+1} = F(S_t, a_t, η_t) |
-| @LAT18LON-120 | Parser P: Σ* → (M, C, ℝ); ID grammar @LATφLONλ; edge extraction {τ, id_j} |
-| @LAT35LON-60 | Typed-Edge Graph G_TTDB = (V, E_dir); directionality rule; canonicalization |
-| @LAT52LON20 | Cursor and Discovery; discovery set D_t; search filter F(q) |
-| @LAT28LON95 | Spherical projection; unit sphere mapping; front-visibility; screen coordinates |
-| @LAT5LON150 | Interaction operators; nearest-node selection ‖s(id) − p‖₂; drag/zoom equations |
-| @LAT-22LON60 | Transition dynamics; great-circle fraction δ; duration T and travel L formulas |
-| @LAT-42LON-30 | Guided tour automaton; Q = {off, paused, scheduled}; discovery-order advance |
-| @LAT-12LON-150 | Banjo stochastic reveal; uniform sampling c_t ~ Uniform(A_t); settle trigger |
-| @LAT65LON45 | TTCP RFC series: 0001 Record Rendering, 0002 Globe and Navigation, 0003 Link System |
+| [System State](?ttdb=Mathematical.latex&toot=lat0lon0) | S_t = (M_t, C_t, R_t, E_t, G_t, V_t, U_t); evolution S_{t+1} = F(S_t, a_t, η_t) |
+| [Parser P](?ttdb=Mathematical.latex&toot=lat18lon-120) | Σ* → (M, C, ℝ); ID grammar @LATφLONλ; edge extraction {τ, id_j} |
+| [Typed-Edge Graph](?ttdb=Mathematical.latex&toot=lat35lon-60) | G_TTDB = (V, E_dir); directionality rule; canonicalization |
+| [Cursor and Discovery](?ttdb=Mathematical.latex&toot=lat52lon20) | Discovery set D_t; search filter F(q) |
+| [Spherical Projection](?ttdb=Mathematical.latex&toot=lat28lon95) | Unit sphere mapping; front-visibility; screen coordinates |
+| [Interaction Operators](?ttdb=Mathematical.latex&toot=lat5lon150) | Nearest-node selection ‖s(id) − p‖₂; drag/zoom equations |
+| [Transition Dynamics](?ttdb=Mathematical.latex&toot=lat-22lon60) | Great-circle fraction δ; duration T and travel L formulas |
+| [Guided Tour Automaton](?ttdb=Mathematical.latex&toot=lat-42lon-30) | Q = {off, paused, scheduled}; discovery-order advance |
+| [Banjo Stochastic Reveal](?ttdb=Mathematical.latex&toot=lat-12lon-150) | Uniform sampling c_t ~ Uniform(A_t); settle trigger |
+| [TTCP RFC Series](?ttdb=Mathematical.latex&toot=lat65lon45) | 0001 Record Rendering, 0002 Globe and Navigation, 0003 Link System |
 
 **Cross-database links from this portal**:
-- Spherical projection @LAT28LON95 formally grounds bioelectric_resonance Coordinate-as-Identity (@LAT44.4LON-116.2) — both express position-based identity on a sphere
-- Typed-Edge Graph @LAT35LON-60 is the formal model behind TootTootTerminologyDB @LAT37.8LON-122.4 (Typed Edges)
-- Cursor semantics @LAT52LON20 formally models what pollan_world_appears @LAT20LON10 calls the Default Mode Network analog
+- [Spherical Projection](?ttdb=Mathematical.latex&toot=lat28lon95) formally grounds [Coordinate-as-Identity](?ttdb=bioelectric_resonance.md&toot=lat44.4lon-116.2) — both express position-based identity on a sphere
+- [Typed-Edge Graph](?ttdb=Mathematical.latex&toot=lat35lon-60) is the formal model behind [Typed Edges](?ttdb=TootTootTerminologyDB.md&toot=lat37.8lon-122.4)
+- [Cursor and Discovery](?ttdb=Mathematical.latex&toot=lat52lon20) formally models what [Default Mode Network ↔ Cursor State](?ttdb=pollan_world_appears_ttdb.md&toot=lat20lon10) calls
 - State evolution S_{t+1} = F(S_t, a_t, η_t) is the mathematical expression of the A32-RFC-0003 sense-reason-act loop
 
 **To enter this TTDB**: `@MEGA TRAVERSE ttdb:mathematical:processing:v1 @LAT0LON0`
@@ -440,15 +440,15 @@ touched:1781361600
 
 | Record | Purpose |
 |---|---|
-| @LAT0LON0 | LOCUS anchor — all structural edges originate here |
-| @LAT-10LON0 | Welcome — table of contents and invocation syntax |
-| @LAT40LON-30 | Your Profile — who you are, how you work, standing constraints |
-| @LAT30LON-20 | Values and Commitments — non-negotiables, quality standard, long arc |
-| @LAT20LON0 | Active Goals — current goals with status and blockers |
-| @LAT0LON20 | Default Network — EPS scan, stale goal check, connection noticing |
-| @LAT-20LON0 | Open Questions — navigational record holding unresolved threads |
-| @LAT-50LON10 | Log template — session notes, incrementing south |
-| @LAT70LON10 | Locus Framework Reference — all 20 RFC links and agent instructions |
+| [LOCUS anchor](?ttdb=companion.md&toot=lat0lon0) | All structural edges originate here |
+| [Welcome](?ttdb=companion.md&toot=lat-10lon0) | Table of contents and invocation syntax |
+| [Your Profile](?ttdb=companion.md&toot=lat40lon-30) | Who you are, how you work, standing constraints |
+| [Values and Commitments](?ttdb=companion.md&toot=lat30lon-20) | Non-negotiables, quality standard, long arc |
+| [Active Goals](?ttdb=companion.md&toot=lat20lon0) | Current goals with status and blockers |
+| [Default Network](?ttdb=companion.md&toot=lat0lon20) | EPS scan, stale goal check, connection noticing |
+| [Open Questions](?ttdb=companion.md&toot=lat-20lon0) | Navigational record holding unresolved threads |
+| [Log template](?ttdb=companion.md&toot=lat-50lon10) | Session notes, incrementing south |
+| [Locus Framework Reference](?ttdb=companion.md&toot=lat70lon10) | All 20 RFC links and agent instructions |
 
 **Globe mapping**: lat = stability (N = permanent/foundational; S = ephemeral/immediate). lon = sphere (W = inner/self/private; E = outer/relational/world). The coordinate system is personal rather than epistemological — it encodes the user's relationship to their own life, not a domain of knowledge.
 
