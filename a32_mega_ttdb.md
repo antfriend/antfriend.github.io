@@ -217,23 +217,23 @@ touched:1781275200
 
 | Key record | Correspondence |
 |---|---|
-| @LAT30LON-20 | Umwelt ↔ TTDB Umwelt Block — most direct; RFC names Uexküll explicitly |
-| @LAT30LON-10 | Predictive Perception ↔ Toot-Bit Epistemic Weight (shared Friston citation) |
-| @LAT30LON0 | The Hard Problem ↔ Transport-Agnostic Semantic Layer |
-| @LAT20LON-20 | Attention as World-Making ↔ `sal` field + Semantic Gravity |
-| @LAT20LON-10 | Set and Setting ↔ Globe Configuration |
-| @LAT20LON10 | Default Mode Network ↔ Cursor State |
-| @LAT10LON-20 | Plant Intelligence / Chemical Signaling ↔ Semantic Compression |
-| @LAT10LON-10 | Integration ↔ `rev` field + `revises@` edge |
-| @LAT10LON10 | Psychedelic Neuroplasticity ↔ A32 Edge Structure Reconfiguration |
-| @LAT-10LON-10 | Ego Dissolution ↔ Local Data Sovereignty |
-| @LAT-10LON10 | Beginner's Mind ↔ High EPS Records |
+| [Umwelt ↔ TTDB Umwelt Block](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-20) | Most direct; RFC names Uexküll explicitly |
+| [Predictive Perception ↔ Toot-Bit Epistemic Weight](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10) | Shared Friston citation — FEP in two registers |
+| [The Hard Problem ↔ Transport-Agnostic Semantic Layer](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon0) | Qualia / substrate independence |
+| [Attention as World-Making ↔ `sal` + Semantic Gravity](?ttdb=pollan_world_appears_ttdb.md&toot=lat20lon-20) | Salience as perceptual selection |
+| [Set and Setting ↔ Globe Configuration](?ttdb=pollan_world_appears_ttdb.md&toot=lat20lon-10) | Context as umwelt parameter |
+| [Default Mode Network ↔ Cursor State](?ttdb=pollan_world_appears_ttdb.md&toot=lat20lon10) | Idle narrative = cursor selection |
+| [Plant Intelligence ↔ Semantic Compression](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-20) | Chemical signaling ↔ token dictionary |
+| [Integration ↔ `rev` + `revises@`](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) | Psychedelic integration theory grounds the Event phase |
+| [Psychedelic Neuroplasticity ↔ A32 Edge Reconfiguration](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon10) | Structural plasticity ↔ edge rewiring |
+| [Ego Dissolution ↔ Local Data Sovereignty](?ttdb=pollan_world_appears_ttdb.md&toot=lat-10lon-10) | Self-boundary dissolution ↔ no central authority |
+| [Beginner's Mind ↔ High EPS Records](?ttdb=pollan_world_appears_ttdb.md&toot=lat-10lon10) | Openness to surprise ↔ unresolved-but-salient |
 
 **Cross-database links from this portal**:
-- FEP: @LAT30LON-10 here is one of three FEP convergence nodes → [FEP Convergence](lat40lon0)
-- Umwelt: @LAT30LON-20 here corresponds to TootTootTerminologyDB @LAT1.1LON1.2 and bioelectric_resonance @LAT41.9LON-71.8 → [Umwelt as Universal Primitive](lat20lon0)
-- Plant signaling compression (@LAT10LON-20) resonates with story_of_stories @LAT0LON-20 (Mnemonic Compression) → mega @LAT10LON-10
-- Default Mode Network / Cursor (@LAT20LON10) maps onto the mega's own cursor block and the [Default Network](lat0lon30) record
+- FEP: [Predictive Perception ↔ TBEW](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10) is one of three FEP convergence nodes → [FEP Convergence](lat40lon0)
+- Umwelt: [Umwelt ↔ TTDB Umwelt Block](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-20) corresponds to [TootTootTerminologyDB @LAT1.1LON1.2](?ttdb=TootTootTerminologyDB.md&toot=lat1.1lon1.2) and [bioelectric_resonance @LAT41.9LON-71.8](?ttdb=bioelectric_resonance.md&toot=lat41.9lon-71.8) → [Umwelt as Universal Primitive](lat20lon0)
+- Plant signaling compression ([Plant Intelligence ↔ Semantic Compression](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-20)) resonates with [Mnemonic Compression](?ttdb=story_of_stories_ttdb.md&toot=lat0lon-20) → [Narrative Compression](lat10lon-10)
+- Default Mode Network / Cursor ([Default Mode Network ↔ Cursor State](?ttdb=pollan_world_appears_ttdb.md&toot=lat20lon10)) maps onto the mega's own cursor block and the [Default Network](lat0lon30) record
 
 **To enter this TTDB**: `@MEGA TRAVERSE ttdb:pollan:worldappears:v1 @LAT30LON-20`
 
