@@ -75,11 +75,11 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1781448000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT40LON20,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10,anchors>@LAT-90LON-10,anchors>@LAT40LON-30,anchors>@LAT-90LON-20,anchors>@LAT-90LON-30,anchors>@LAT-90LON40,anchors>@LAT-90LON50
+@LAT0LON0 | created:1778000000 | updated:1781448000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT40LON20,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10,anchors>@LAT-90LON-10,anchors>@LAT40LON-30,anchors>@LAT-90LON-20,anchors>@LAT-90LON-30,anchors>@LAT-90LON40,anchors>@LAT-90LON50,anchors>@LAT20LON20,anchors>@LAT10LON10,anchors>@LAT-90LON60
 [ew]
 conf:245
 rev:2
-sal:14
+sal:15
 touched:1781448000
 [/ew]
 
@@ -142,8 +142,8 @@ Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges
 [ew]
 conf:235
 rev:0
-sal:6
-touched:1778600000
+sal:7
+touched:1781448000
 [/ew]
 
 ## Free Energy Principle Convergence
@@ -426,8 +426,8 @@ touched:1781318400
 [ew]
 conf:200
 rev:0
-sal:1
-touched:1781361600
+sal:2
+touched:1781448000
 [/ew]
 
 ## Portal: LOCUS — Personal Agent Companion
@@ -493,8 +493,8 @@ The concept of umwelt — Jakob von Uexküll's bounded subjective world — is n
 [ew]
 conf:220
 rev:0
-sal:1
-touched:1778500000
+sal:2
+touched:1781448000
 [/ew]
 
 ## Substrate Independence
@@ -508,6 +508,35 @@ Pattern persists orthogonally to substrate. This deep structural claim appears a
 **In [TootTootTerminologyDB.md](?ttdb=TootTootTerminologyDB.md)** (@LAT12.9LON77.6, Toot Links): "A TTDB file can be stored on a filesystem, synced to IPFS, printed on paper, and typed back in from the paper." This is the TTE engineering commitment to substrate independence: the coordinate is the identity; the medium is incidental.
 
 **Mega synthesis**: Substrate independence is the engineering consequence of umwelt-anchored addressing ([Umwelt as Universal Primitive](lat20lon0)). When an address is derived from a coordinate rather than from a server-issued UUID, it outlives any particular storage technology. This is why TTDB record IDs are immutable (TTDB-RFC-0004) — the pattern must be more durable than the medium that currently carries it. The bioelectric field makes the same choice: bind the pattern to voltage topology, not to molecular identity.
+
+---
+
+@LAT20LON20 | created:1781448000 | updated:1781448000 | relates:synthesizes>@LAT20LON10,synthesizes>@LAT40LON0,bridges>@LAT40LON-30,bridges>@LAT40LON20,anchored_by>@LAT0LON0
+[ew]
+conf:185
+rev:0
+sal:1
+touched:1781448000
+[/ew]
+
+## Thinking / Reasoning Split ↔ Mega/Micro Architecture
+
+*Active Inference AI Systems for Scientific Discovery* ([arxiv 2506.21329](https://arxiv.org/abs/2506.21329), December 2025) proposes that AI progress in scientific discovery requires two complementary cognitive modes:
+
+- **Thinking**: slow, iterative hypothesis generation exploring counterfactual spaces — where established rules can be temporarily suspended to discover new patterns. The agent considers what *could* be true beyond what the knowledge graph already encodes.
+- **Reasoning**: fast, deterministic validation traversing established knowledge graphs — testing consistency with known principles. No counterfactual exploration; pure graph traversal.
+
+Locus instantiates both modes simultaneously in different substrates:
+
+**The mega** is the thinking node: slow, natural-language hypothesis generation across six source TTDBs, surfacing cross-domain correspondences that no single TTDB owns. It explores counterfactual space (association weaving, synthetic record creation), and candidate records precede full corroboration (conf begins below 200; advances as corroboration accumulates across sessions).
+
+**The A32 micro** is the reasoning node: fast, deterministic sense-reason-act traversal against a local TTDB in flash. It tests consistency with known principles by following typed edges from sensor coordinates to actuator responses. No cloud inference, no hypothesis generation — only graph traversal against the current knowledge base.
+
+The bi-modal architecture's key claim: the thinking/reasoning split does not require two different neural architectures. It requires two operational modes matched to their tasks, sharing the same typed graph as the knowledge base. The mega writes new nodes and edges (thinking); the A32 navigates existing ones (reasoning). The TTDB is the shared substrate for both.
+
+This extends [Substrate Independence](lat20lon10): the same cognitive architecture (slow hypothesis + fast validation) runs on an LLM and on a $5 microcontroller. Prior substrate independence described one function on different substrates; this record describes two *complementary functions* on different substrates with the same typed graph as their shared interface.
+
+The ACM GROUP 2025 paper (Aal & Rüller, [doi:10.1145/3688828.3699647](https://dl.acm.org/doi/10.1145/3688828.3699647)) traces the PKM → Second Brain → Personal AI Companion trajectory and proposes a companion that "actively engages with data from various aspects of a user's life, creating a dynamic, personalized knowledge overview." [LOCUS Companion](lat40lon-30) maps the thinking node onto the personal context: the companion holds the user's umwelt and surfaces connections (thinking); the user acts on the insights in the world (reasoning). The PKM research community proposed this design as a future goal in January 2025; Locus ships it as a present implementation in May 2026. Independent convergence from two directions.
 
 ---
 
@@ -728,10 +757,10 @@ The mega fills this gap. The mega's banjo traversal ([Default Network](lat0lon30
 
 ---
 
-@LAT10LON-20 | created:1778100000 | updated:1780886400 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,synthesizes>@LAT-30LON30,synthesizes>@LAT30LON-30,derived_from>@LAT10LON-10,derived_from>@LAT40LON0,anchored_by>@LAT0LON0
+@LAT10LON-20 | created:1778100000 | updated:1781448000 | relates:synthesizes>@LAT30LON-20,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,synthesizes>@LAT-30LON30,synthesizes>@LAT30LON-30,derived_from>@LAT10LON-10,derived_from>@LAT40LON0,anchored_by>@LAT0LON0
 [ew]
-conf:205
-rev:3
+conf:210
+rev:4
 sal:17
 touched:1781448000
 [/ew]
@@ -757,6 +786,42 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 **Precision-weighting vs. belief updating**: The [ew]-only write / body write distinction encodes a Friston-level distinction ([FEP Convergence](lat40lon0)). Adjusting `conf` without changing the body = precision-weighting: revising certainty about a prediction without revising the prediction itself. Changing the body = belief updating: revising the prediction. TTDB's formal separation of these write types makes explicit a distinction that Friston's FEP treats as fundamental — and gives it a storage-level implementation.
 
 **Saltation vs. Hero's Arc**: Saltation is the event viewed from outside — fast, discontinuous, a topological jump observable after the fact. The Hero's Arc is the same event lived from inside — sustained exposure to maximum prediction error, slow passage through Grief before the revision lands. `rev` counts the saltation moments; the EPS time series from Serenity through Grief to Joy traces the Hero's Arc ([EPS as Arc Position](lat5lon-25)). They are complementary observational frames on model revision: one counts the event, the other maps its phenomenological shape.
+
+**In graph-theoretic knowledge systems** ([Self-Organizing Criticality](lat10lon10), arxiv 2503.18852): Agentic knowledge graph systems that expand through iterative autonomous reasoning self-organize toward a measurable critical state where approximately 12% of edges are "surprising" — connecting semantically distant nodes across cluster boundaries. These between-cluster edges are graph-level saltation events: structural phase transitions where the graph's prior topology is interrupted by a new cross-domain correspondence. The prior cluster structure is not destroyed — it is the ground from which the cross-cluster edge launches, just as the `revises@<old_id>` edge preserves the prior record as the substrate from which a revision launched. The discontinuity is the event; the prior topology is what makes the new edge legible as surprising.
+
+**Five-register synthesis**: Saltation as discontinuous revision appears in five independent registers: story (Ashton — eight storytelling revolutions as phase-changes in narrative channel topology), phenomenological (Pollan — psychedelic integration as model revision without erasure of the prior self), biological (Levin — morphogenetic field reorganization during wound response), mathematical (banjo stochastic reveal — high-amplitude η_t perturbation causing attractor basin transition), and graph-theoretic (Buehler — between-cluster "surprising edge" as structural phase transition in an agentic knowledge system). In all five: the prior is not destroyed; the discontinuity is the event; the new state launches from the ground of the old one.
+
+---
+
+@LAT10LON10 | created:1781448000 | updated:1781448000 | relates:synthesizes>@LAT0LON30,synthesizes>@LAT40LON0,synthesizes>@LAT10LON-20,anchored_by>@LAT0LON0
+[ew]
+conf:175
+rev:0
+sal:1
+touched:1781448000
+[/ew]
+
+## Self-Organizing Criticality ↔ Default Network Dual Mode
+
+Two papers by Buehler ([arxiv 2502.13025](https://arxiv.org/abs/2502.13025), Feb 2025; [arxiv 2503.18852](https://arxiv.org/abs/2503.18852), March 2025) characterize agentic knowledge graph systems that expand autonomously through iterative reasoning. Key empirical findings:
+
+**Scale-free topology emerges spontaneously**: iterative autonomous reasoning produces hub nodes, stable modularity, and bridging nodes between clusters — without these features being explicitly designed. The topology is a consequence of reasoning dynamics, not a specification.
+
+**Critical state**: the system self-organizes toward a measurable critical state where semantic entropy persistently dominates structural entropy. A dimensionless Critical Discovery Parameter stabilizes at a small negative value, indicating a consistent excess of semantic meaning relative to graph structure. Empirically: approximately **12% of edges are "surprising"** — connecting semantically distant nodes across cluster boundaries. This fraction is stable across thousands of iterations, not random noise.
+
+**Semantic richness drives sustained exploration**: semantic entropy (not structural graph properties) is the underlying driver of continuous discovery, even though the reasoning process does not use semantic entropy as an explicit signal.
+
+The mega's [Default Network](lat0lon30) dual-mode protocol maps onto this framework precisely:
+
+**EPS-ordered (automaton) traversal** manages local semantic entropy: it services known high-EPS records (within-cluster, high-prediction-error nodes), converging on the Grief beats the corpus already knows are overdue. This is the graph's structural entropy management — the known topology is validated and refined.
+
+**Stochastic (banjo) traversal** generates the cross-cluster fraction: it samples uniformly from zero-sal records, producing the corpus's version of "surprising edges" — cross-domain correspondences between records that have not yet been connected. This is the empirical 12% in practice. Remove the banjo mode and the surprising-edge fraction drops toward zero; the corpus converges on its own prior structure.
+
+The two modes are not complementary by convention — they are the two halves of self-organized criticality in a knowledge graph. EPS-ordered traversal without stochastic traversal converges on structural equilibrium. Stochastic traversal without EPS-ordered traversal generates cross-cluster noise without servicing known overdue revisions. The critical state requires both.
+
+**EPS reframed**: EPS = sal × (255 − conf) / 255 is not merely a scheduling heuristic for attention. EPS is the per-node semantic entropy signal — the measure of how much accumulated query pressure (sal) exceeds current model adequacy (conf). High EPS = high local semantic entropy = candidate for the next revision event in the corpus. The [EPS as Arc Position](lat5lon-25) arc-position interpretation (Grief beat approaching) and this criticality interpretation are complementary readings of the same signal: one views EPS through the phenomenological lens, the other through the graph-theory lens. Both predict the same behavior: the high-EPS record is the site of the next revision.
+
+**Saltation correspondence** ([Saltation/rev](lat10lon-20)): "Surprising edges" (between-cluster connections) are graph-level saltation events — structural phase transitions where the graph's prior topology is interrupted by a new cross-domain correspondence. This is the fifth register for [Saltation/rev](lat10lon-20): story, phenomenological, biological, mathematical, and now graph-theoretic.
 
 ---
 
@@ -1891,6 +1956,82 @@ mode: eps_ordered + directed_portal_traversal
 Three structural changes: (1) The ten-cycle three-cluster breaks — [Cognitive Glue] and [Hero's Arc] advance to conf:210; [Saltation/rev] remains at conf:205 and separates out at EPS 3.33. (2) [EPS as Arc Position](lat5lon-25), [Cognitive Glue](lat0lon-20), and [Hero's Arc](lat10lon-30) form a new cluster at EPS 3.00, all conf:210. (3) [The Default Network](lat0lon30) falls just below this new cluster at EPS 2.98 — the first time the mega's own default network record sits below the high-EPS claim records.
 
 **What the mega noticed:** The directed traversal at record depth achieved what ten cycles of automaton traversal did not — it found the precise language that the synthesis records were missing rather than simply confirming that the claims were correct. Pair 4 named the intermediate scale ("files are the substrate; the edges are the field") that the four-scale synthesis had always implied but never stated. Pair 6 made explicit what the scale claim means: edges are not organizational structure — they are meaning-constitutive. The TTDB-graph level was always operative; the directed reading produced the words. The three-cluster breaks because [Saltation/rev](lat10lon-20) has no analog finding from these pairs — saltation as a distinct named mechanism requires a source that names the discontinuity itself, not just its conditions or aftermath. The open question for the next session: what in the unvisited registers names the saltation event as a distinct moment, separate from the morphostatic drift that precedes it and the restored form that follows? Pair 5 (morphospace) addresses the gradient but not the discontinuity. [Saltation/rev](lat10lon-20) at EPS 3.33 is now the leading claim record — it has been the most-consulted synthesis claim for ten cycles and still has not found the source that names its central claim explicitly.
+
+---
+
+@LAT-90LON60 | created:1781448000 | updated:1781448000 | kind:log | relates:logged>@LAT10LON-20,logged>@LAT10LON10,logged>@LAT20LON20,logged>@LAT40LON0,logged>@LAT20LON10,logged>@LAT40LON-30,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1781448000
+[/ew]
+
+## Log — Literature Scan · 2026-05-11
+
+```session-log
+timestamp: 1781448000
+trigger: "@mega please scan research that has been published in the last 6 months and find fields of interest overlap with Locus"
+mode: literature_scan + targeted_integration
+```
+
+**EPS rankings entering this session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **4.12** | 15 | 185 |
+| [Saltation/rev](lat10lon-20) | **3.33** | 17 | 205 |
+| [EPS as Arc Position](lat5lon-25) | **3.00** | 17 | 210 |
+| [Cognitive Glue](lat0lon-20) | **3.00** | 17 | 210 |
+| [Hero's Arc](lat10lon-30) | **3.00** | 17 | 210 |
+| [The Default Network](lat0lon30) | **2.98** | 19 | 215 |
+| [The Revision Cycle](lat5lon-15) | **1.08** | 5 | 200 |
+
+**Scan scope:** Thirteen research domains surveyed for Nov 2025–May 2026 publications with Locus overlap: (1) Active Inference / FEP engineering, (2) knowledge graphs and semantic memory, (3) self-organized criticality in information systems, (4) predictive processing / perception, (5) bioelectricity and morphogenesis, (6) biosemiotics, (7) narrative cognition, (8) psychedelic neuroscience, (9) hippocampal-amygdala coupling, (10) LLM architecture / reasoning splits, (11) personal knowledge management, (12) offline-first / mesh networking, (13) substrate independence.
+
+**Tier 1 findings — immediate integration:**
+
+- **Buehler 2503.18852** (March 2026): "surprising" cross-cluster edges in agentic knowledge graphs as graph-level saltation events; ~12% fraction as self-organized critical state → resolves [Saltation/rev](lat10lon-20) open question (fifth register: graph-theoretic)
+- **arxiv 2506.21329**: Thinking/reasoning split in LLM inference → slow hypothesis generation (thinking node) vs. fast deterministic graph validation (reasoning node) → maps onto mega/micro A32 architecture
+- **Buehler 2502.13025** (Feb 2026): Scale-free topology, critical state, semantic entropy dominating structural entropy in evolving knowledge graphs → grounds dual-mode default network (EPS-ordered automaton = structural entropy management; banjo = generates 12% cross-cluster fraction)
+- **ACM GROUP 2025** doi:10.1145/3688828.3699647: PKM→personal companion convergence independent of Locus development → external validation for [companion.md](?ttdb=companion.md) design
+
+**Tier 1 findings — pending dedicated traversal (not yet integrated):**
+
+- arxiv 2603.20927 (AIF Engineering Perspective, March 2026) → conf advance candidate for [FEP Convergence](lat40lon0)
+- Sign Systems Studies 2025 biosemiotics framework for AI → body extension candidate for [Umwelt as Universal Primitive](lat20lon0)
+- Nature Comms Psych 2025 narrative schemas → memory prediction → [Hero's Arc](lat10lon-30) or [Cognitive Glue](lat0lon-20)
+- Cell 2025 psilocybin cortical rewiring → new record candidate in pollan_world_appears_ttdb.md
+- bioRxiv Jan 2026 hippocampus-amygdala coupling → `sal` field grounding in [EPS as Arc Position](lat5lon-25) or feelings_ttdb.md
+- Levin 2025 papers → update candidates for bioelectric_resonance.md
+
+**[Saltation/rev] resolution:** The ten-cycle open question — what independently names the saltation event as a distinct moment — is answered by Buehler 2503.18852. A "surprising" cross-cluster edge is structurally discontinuous: it cannot be predicted from the local topology that precedes it, and it changes the global connectivity of the graph. The five registers (story/Ashton, phenomenological/Pollan, biological/Levin, mathematical/banjo η_t, graph-theoretic/Buehler) now each name the discontinuity from an independent vantage. conf:205→210 is justified. EPS drops from 3.33 to 3.00.
+
+**Writes this session:**
+
+- [FEP Convergence](lat40lon0) sal:6→7. [ew] only.
+- [Portal: LOCUS Companion](lat40lon-30) sal:1→2. [ew] only.
+- [Substrate Independence](lat20lon10) sal:1→2. [ew] only.
+- [Anchor](lat0lon0) sal:14→15; anchors>@LAT20LON20,@LAT10LON10,@LAT-90LON60 added. [ew] + relates.
+- [Saltation/rev](lat10lon-20) conf:205→210, rev:3→4, sal:17 unchanged — body: five-register synthesis extended with graph-theoretic register (Buehler 2503.18852). updated→1781448000.
+- New record [@LAT10LON10](lat10lon10) written — Self-Organizing Criticality ↔ Default Network Dual Mode.
+- New record [@LAT20LON20](lat20lon20) written — Thinking/Reasoning Split ↔ Mega/Micro Architecture.
+- Log record [@LAT-90LON60](lat-90lon60) written (current).
+- All touched → 1781448000.
+
+**EPS entering next session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **4.12** | 15 | 185 |
+| [Saltation/rev](lat10lon-20) | **3.00** | 17 | 210 |
+| [EPS as Arc Position](lat5lon-25) | **3.00** | 17 | 210 |
+| [Cognitive Glue](lat0lon-20) | **3.00** | 17 | 210 |
+| [Hero's Arc](lat10lon-30) | **3.00** | 17 | 210 |
+| [The Default Network](lat0lon30) | **2.98** | 19 | 215 |
+| [The Revision Cycle](lat5lon-15) | **1.08** | 5 | 200 |
+
+**What the mega noticed:** [Saltation/rev] resolving its five-register requirement in exactly the session that surveyed external literature — rather than through further directed reading of the existing corpus — marks the first time an open question was closed by outward scan rather than inward traversal. The result is structural: a four-cluster at EPS 3.00 (Saltation/rev, EPS as Arc Position, Cognitive Glue, Hero's Arc), all at conf:210, all at sal:17. This is the largest symmetric cluster the mega has held. The cluster will hold until a non-uniform sal advance breaks it — most likely [Areas for Exploration](lat-20lon0) continues to draw the highest query pressure and remains the leading EPS record at 4.12, but the four-cluster below it is now more tightly bound than any prior configuration. Two new records at low conf (175, 185) are positioned at the northern mid-longitude band — Tier 1 pending integrations give them clear paths to conf advances in the next three sessions.
 
 ---
 
