@@ -50,7 +50,8 @@ The remainder of this paper is organized as follows. Section 2 enumerates the ke
 1. **Synthetic perceptual model (@PERCEPT paired nodes)** — [TTDB-RFC-0006](RFCs/TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md) defines the   
 ```
 `@PERCEPT:before` / `@PERCEPT:after` 
-```
+```   
+
 paired node as the fundamental unit of perceptual knowledge. The unit of representation is the *transition* (edge between states), not the isolated node. Agent context is mandatory: every percept is bound to a specific perceiving agent, making the knowledge graph phenomenologically thick and auditable. Distinguishes Locus from both propositional and latent-space approaches: the perceptual trace is assembled from typed primitives, human-readable, and domain-agnostic.
 
 2. **@LATxLON addressing** — An authority-free, deterministic, human-readable namespace for knowledge nodes ([TTDB-RFC-0004](RFCs/TTDB-RFC-0004-Event-ID-and-Collision.md)). Functions offline with no registration step. Scales from single-device to mesh-networked deployments. The same ID scheme operates across TTDB files, A32 firmware, and TTCP web applications with no translation layer.
@@ -73,20 +74,26 @@ paired node as the fundamental unit of perceptual knowledge. The unit of represe
 
 The Locus stack has four tiers. Figure descriptions are provided inline; rendered globe views are available at https://antfriend.github.io/.
 
-**Storage tier (TTDB):** A flat text file (Markdown or LaTeX) with three structural zones: a `mmpdb` YAML block (database properties including `db_id`, `db_name`, `coord_increment`, `umwelt` definition, `typed_edges` configuration, and optional `librarian` settings); a `cursor` YAML block (selection state, preview, agent note, Graphviz dot fragment, and librarian query history); and a sequence of record sections separated by `---` delimiters. Each record opens with a header line of the form
+**Storage tier (TTDB):** A flat text file (Markdown or LaTeX) with three structural zones: a `mmpdb` YAML block (database properties including `db_id`, `db_name`, `coord_increment`, `umwelt` definition, `typed_edges` configuration, and optional `librarian` settings); a `cursor` YAML block (selection state, preview, agent note, Graphviz dot fragment, and librarian query history); and a sequence of record sections separated by `---` delimiters. Each record opens with a header line of the form   
+
 ```
  @LAT10LON-10 | created:1775260800 | updated:1775260800 | relates:feels>@LAT0LON0,resonates_with>@LAT10LON20
- ```
+ ```   
+
  followed by an optional `[ew]` epistemic weight block, and then a free-text Markdown or LaTeX body. Perceptual knowledge is encoded as `@PERCEPT:before` / `@PERCEPT:after` paired nodes — the before/after pair is mandatory and must be agent-bound; orphaned percept nodes are specification errors ([TTDB-RFC-0006](RFCs/TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md)).
 
 Coordinate IDs are assigned deterministically: a record conceptually positioned at valence +10, arousal −10 (mild positive, self-oriented) in the affective umwelt receives ID `@LAT10LON-10`. Collision is resolved by a configurable policy (e.g., `southeast_step`: increment both axes by one step and retry). Once assigned, IDs are permanent; superseded records link to successors via a `revises>` typed edge ([TTDB-RFC-0004](RFCs/TTDB-RFC-0004-Event-ID-and-Collision.md)). The affective knowledge graph ([feelings_ttdb.md](https://antfriend.github.io/?ttdb=feelings_ttdb.md)) uses `coord_increment: {lat: 10, lon: 10}` with 21 nodes spanning `@LAT-50LON-40` (deep grief) to `@LAT40LON30` (elation), with the umwelt at `@LAT0LON0`.
 
 **Agent tier (A32):** Firmware for ESP32-class hardware ([A32-RFC-0001](RFCs/A32-RFC-0001-Architecture.md) through [A32-RFC-0004](RFCs/A32-RFC-0004-Claude-Code-Setup.md)). At boot, a two-pass streaming parser ([A32-RFC-0002](RFCs/A32-RFC-0002-TTDB-Storage.md)) builds an in-memory index: Pass 1 scans the file recording each record's coordinate ID and byte offset (12 bytes per index entry, stored in PSRAM); Pass 2 reads record bodies on demand by seeking to the stored offset. Memory budget: approximately 3 KB fixed overhead plus 12 bytes per record; a 1,000-node TTDB occupies roughly 15 KB of PSRAM index. The agent loop ([A32-RFC-0003](RFCs/A32-RFC-0003-Agent-Loop.md)) executes sense → reason → act → wait at a configurable interval (default 1 second). Sense reads registered sensors and quantizes their values to TTDB coordinates using the `coord_increment` grid. Reason finds the nearest record in the index, reads its typed edges, and selects action edges (`triggers`, `navigates_to`, `inhibits`, `requires`, `logs`). Act dispatches each action through the registered actuator. Observation logs are written append-only to a separate CSV file; the TTDB file itself is never modified at runtime.
 
-**Network tier (TTN):** An optional LoRa mesh network layer for multi-device deployments ([TTN-RFC-0001](RFCs/TTN-RFC-0001.md) through [TTN-RFC-0006](RFCs/TTN-RFC-0006-LoRa-Packet-Framing.md)). Nodes communicate via semantic events rather than raw messages, following five core principles: meaning over messages, offline-first and partition-tolerant, local data sovereignty, transport agnosticism, and explicit AI invocation only. The minimal LoRa packet frame ([TTN-RFC-0006](RFCs/TTN-RFC-0006-LoRa-Packet-Framing.md)) is 253 bytes maximum:
+**Network tier (TTN):** An optional LoRa mesh network layer for multi-device deployments ([TTN-RFC-0001](RFCs/TTN-RFC-0001.md) through [TTN-RFC-0006](RFCs/TTN-RFC-0006-LoRa-Packet-Framing.md)). Nodes communicate via semantic events rather than raw messages, following five core principles: meaning over messages, offline-first and partition-tolerant, local data sovereignty, transport agnosticism, and explicit AI invocation only. The minimal LoRa packet frame   
+ ([TTN-RFC-0006](RFCs/TTN-RFC-0006-LoRa-Packet-Framing.md))   
+ is 253 bytes maximum:   
+
 ```
  [SOF=0xA5][VER=0x01][FLAGS][SRC_ID:2][DST_ID:2][TYPE][SEQ][LEN][PAYLOAD:0–240][CRC16:2][EOF=0x5A]
- ```
+ ```   
+
  Ultra-low-bandwidth semantic compression ([TTN-RFC-0004](RFCs/TTN-RFC-0004-Semantic-Compression.md)) represents common events as single-byte tokens: `P` (presence), `S?` (status request), `OK`, `ERR`, `SOS`, `T:x` (temperature), `H:x` (humidity), `B:x` (battery); gateways expand tokens to full semantic events. Trust is modeled locally per device via signed edge corroboration ([TTN-RFC-0005](RFCs/TTN-RFC-0005-Trust-and-Reputation.md)); no global ledger or central trust authority is required.
 
 **Publishing tier (TTCP):** A browser-based layer that renders any TTDB file as an interactive 3D knowledge globe at https://antfriend.github.io/. The three-zone parse model ([TTCP-RFC-0001](RFCs/TTCP-RFC-0001-Record-Rendering.md)) ingests `mmpdb`, `cursor`, and record zones, producing per-record HTML with Markdown or KaTeX rendering, epistemic weight display, and media handling (video, iframe, images). The globe ([TTCP-RFC-0002](RFCs/TTCP-RFC-0002-Globe-and-Navigation.md)) projects each record to its @LATxLONy sphere coordinates; node color is deterministic per record ID (hash-based HSL); edges are arcs connecting related nodes; a discovery system tracks visited records in local storage; a guided tour auto-advances on a configurable timer; scene records define playback sequences with transition animations. The `toot:` URI scheme ([TTCP-RFC-0003](RFCs/TTCP-RFC-0003-Link-System-and-Addressability.md)) provides cross-database deep linking: `toot://db_alias/lat10lon-10` addresses a specific record in a named database; URL parameters `?ttdb=feelings_ttdb.md&toot=lat10lon-10` encode the same selection, enabling bookmarkable, shareable links to individual knowledge nodes. No server is required; TTCP implementations run as static web applications reading TTDB files directly from the same origin.
@@ -111,7 +118,7 @@ Coordinate IDs are assigned deterministically: a record conceptually positioned 
 
 Locus establishes a novel class of embedded knowledge agent: fully offline, deterministic, inspectable, and grounded in a formal biosemiotic theory of perception. The @PERCEPT paired node addresses a representational gap that propositional knowledge graphs cannot fill — encoding not merely that a perceptual transition occurred but what it was like for a specific perceiving agent. The @LATxLON addressing scheme eliminates the authority bottleneck without sacrificing human readability or offline operation. The 20-RFC specification suite ensures that every design decision is documented, reproducible, and community-extendable. The TTCP publishing tier closes the loop between embedded agent reasoning and human knowledge exploration: the same TTDB file that drives a sensor-actuator loop on a $5 microcontroller is viewable as an interactive 3D knowledge globe at https://antfriend.github.io/.
 
-Future work includes formal evaluation of agent reasoning quality on benchmark knowledge graphs, multi-device TTN mesh deployments with trust gradient experiments, and clinical informatics applications using UMLS CUI grounding in the medical knowledge graph. The @PERCEPT formalism and outcome node schema (Actions 3–4 in [locus_immediate_next_actions.md](locus_immediate_next_actions.md)) require resolution before Paper D (AMIA) submission. A JOSS software paper is planned following Zenodo deposit.
+Future work includes formal evaluation of agent reasoning quality on benchmark knowledge graphs, multi-device TTN mesh deployments with trust gradient experiments, and clinical informatics applications using UMLS CUI grounding in the medical knowledge graph. 
 
 ---
 
