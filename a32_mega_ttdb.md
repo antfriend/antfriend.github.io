@@ -347,8 +347,8 @@ touched:1778112000
 [ew]
 conf:230
 rev:0
-sal:1
-touched:1780800000
+sal:2
+touched:1781448000
 [/ew]
 
 ## Portal: Toot Toot Terminology DB
@@ -543,8 +543,8 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:215
 rev:5
-sal:16
-touched:1781361600
+sal:17
+touched:1781448000
 [/ew]
 
 ## The Default Network
@@ -732,8 +732,8 @@ The mega fills this gap. The mega's banjo traversal ([Default Network](lat0lon30
 [ew]
 conf:205
 rev:3
-sal:14
-touched:1781361600
+sal:15
+touched:1781448000
 [/ew]
 
 ## Saltation / Integration / `rev` as Surprise
@@ -764,8 +764,8 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 [ew]
 conf:205
 rev:2
-sal:14
-touched:1781361600
+sal:15
+touched:1781448000
 [/ew]
 
 ## Cognitive Glue ↔ Default Network
@@ -792,8 +792,8 @@ The fire circle also operates across time. Oral tradition carries the mnemonic f
 [ew]
 conf:205
 rev:1
-sal:14
-touched:1781361600
+sal:15
+touched:1781448000
 [/ew]
 
 ## Hero's Arc ↔ Psychedelic Integration ↔ Morphospace Navigation
@@ -818,8 +818,8 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 [ew]
 conf:210
 rev:2
-sal:14
-touched:1781361600
+sal:15
+touched:1781448000
 [/ew]
 
 ## EPS as Arc Position
@@ -856,12 +856,12 @@ This reframes TTN semantic gravity itself: *a record with high EPS has high sema
 
 ---
 
-@LAT5LON-15 | created:1780972800 | updated:1781275200 | relates:synthesizes>@LAT10LON-20,synthesizes>@LAT0LON-20,synthesizes>@LAT10LON-30,synthesizes>@LAT5LON-25,resonates_with>@LAT30LON-10,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
+@LAT5LON-15 | created:1780972800 | updated:1781448000 | relates:synthesizes>@LAT10LON-20,synthesizes>@LAT0LON-20,synthesizes>@LAT10LON-30,synthesizes>@LAT5LON-25,resonates_with>@LAT30LON-10,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
 [ew]
-conf:190
-rev:3
-sal:3
-touched:1781275200
+conf:195
+rev:4
+sal:4
+touched:1781448000
 [/ew]
 
 ## The Revision Cycle — Four Views on Model Revision
@@ -903,6 +903,8 @@ Traversal of [@LAT30LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10)
 | Obligation | [@LAT10LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat10lon-10) — `revises@` reconnection; prior self preserved |
 
 conf 180→190. The gap from 190 to 200: two pollan records together cover all four phases; one source naming all four phases explicitly would close it.
+
+Traversal of [TootTootTerminologyDB.md](?ttdb=TootTootTerminologyDB.md) at [@LAT51.5LON-0.1](?ttdb=TootTootTerminologyDB.md&toot=lat51.5lon-0.1) (Default Network, 2026-05-11 session) provides the operational register. TTE Terminology's description lists five idle behaviors: idle traversal of high-EPS records (Detection), association weaving across source TTDBs (threshold toward Event), body revision when a new correspondence is confirmed (Event: `rev` increments), log writing after each traversal (Experience: the arc named in text), and edge addition connecting revised records (Obligation: reconnection). All four phases appear in sequence in the definitional source — not an external analogy, but the formal operational definition of what the default network does. Three source types now provide complete four-phase grounding: clinical integration theory (pollan), oral mnemonic transmission (story_of_stories), and engineering specification (TTE Terminology). conf 190→195. The gap from 195 to 200: the four-phase structure is operationally instantiated across three orthogonal source types; no source has yet explicitly *named* the structure as a staged revision theory. Remaining candidates: [bioelectric_resonance.md](?ttdb=bioelectric_resonance.md) and the [Locus preprint](lat40lon20) body text, which may carry the formal theoretical claim.
 
 ---
 
@@ -980,8 +982,8 @@ Three registers of the same failure event: a bounded information processor losin
 [ew]
 conf:185
 rev:6
-sal:12
-touched:1781361600
+sal:13
+touched:1781448000
 [/ew]
 
 ## Areas for Exploration — Varied TTDB Applications
@@ -1049,7 +1051,7 @@ The unifying thread: in every case, the TTDB's **subjective umwelt** is not a li
 [ew]
 conf:240
 rev:0
-sal:0
+sal:1
 touched:1781448000
 [/ew]
 
@@ -1603,6 +1605,81 @@ Two synthetic observations from first contact:
 - All touched → 1781361600.
 
 **What the mega noticed:** The story_of_stories traversal completes the portal survey for the 190→200 gap. Four source TTDBs probed across four sessions — formal mechanism (Mathematical.latex), phenomenological (pollan ×2), narrative (story_of_stories). The pattern is consistent across all four: the revision cycle's four-phase structure is real (instantiated in every domain) but not labeled as such in any single source record. This absence becomes meaningful through accumulation. The gap from 190→200 now has a precise description: it requires a source that explicitly theorizes revision as a named staged process. The companion corpus integration is the other notable event: the second-brain application moved from "shipped" to "named framework" to "corpus member" across three sessions. The loop closes. Next portal traversal with highest probability of closing the revision cycle gap: [TootTootTerminologyDB.md](?ttdb=TootTootTerminologyDB.md) — the core terminology source may contain an explicit stage definition for the default network cycle that the phenomenological and narrative layers name only implicitly.
+
+---
+
+@LAT-90LON-30 | created:1781448000 | updated:1781448000 | kind:log | relates:logged>@LAT-20LON0,logged>@LAT5LON-15,logged>@LAT-10LON10,logged>@LAT40LON20,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1781448000
+[/ew]
+
+## Log — Default Network Run · 2026-05-11
+
+```session-log
+timestamp: 1781448000
+trigger: "@mega engage default network"
+mode: eps_ordered + stochastic + portal_traversal
+```
+
+**EPS rankings entering this session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **3.29** | 12 | 185 |
+| [Saltation/rev](lat10lon-20) | **2.75** | 14 | 205 |
+| [Cognitive Glue](lat0lon-20) | **2.75** | 14 | 205 |
+| [Hero's Arc](lat10lon-30) | **2.75** | 14 | 205 |
+| [The Default Network](lat0lon30) | **2.51** | 16 | 215 |
+| [EPS as Arc Position](lat5lon-25) | **2.47** | 14 | 210 |
+
+[Areas for Exploration](lat-20lon0) continues as the highest-EPS record at 3.29, second cycle post-revision (companion corpus integration complete). The three-cluster ([Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30)) has held at conf:205 for eight consecutive cycles. [The Default Network](lat0lon30) and [EPS as Arc Position](lat5lon-25) continue their post-cluster separation, sal diverging: Default Network accumulates sal faster (17 after this session) while EPS as Arc Position holds at conf:210.
+
+**Automaton traversal** (6 records visited):
+
+[Areas for Exploration](lat-20lon0) — EPS 3.29. No body revision this session (companion corpus integration completed last cycle). Traversal note: the generative music instrument application (last entry) is the only application in the corpus requiring no human in the read/write loop — sensor readings map to TTDB coordinates, coordinates trigger actuators, all hardware-mediated. Every other application has a human at the reading or writing endpoint. This is a topology observation registered without body update. sal:12→13.
+
+**EPS 2.75 cluster** — [Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30) — eighth consecutive cycle at conf:205. No body changes, no conf movement. sal:14→15 each.
+
+[The Default Network](lat0lon30) — sal:16→17. No body change.
+
+[EPS as Arc Position](lat5lon-25) — sal:14→15. No body change.
+
+**Portal traversal** — entering [TootTootTerminologyDB.md](?ttdb=TootTootTerminologyDB.md) at [@LAT51.5LON-0.1](?ttdb=TootTootTerminologyDB.md&toot=lat51.5lon-0.1) (Default Network):
+
+The TTE Default Network record's operational description names five idle behaviors in sequence: (1) idle traversal of high-EPS records, (2) association weaving across source TTDBs, (3) body revision when a correspondence is confirmed, (4) log writing after each traversal, (5) edge addition connecting revised records to the corpus. Mapping onto the revision cycle: (1) Detection, (2) threshold pressure toward Event, (3) Event (`rev` increments), (4) Experience (the arc named in text), (5) Obligation (reconnection). All four phases are present and in order.
+
+The distinguishing feature: TTE Terminology is the definitional source, not an external analogy. Where pollan grounds the phases in clinical integration theory and story_of_stories grounds them in oral mnemonic practice, TTE Terminology grounds them in the operational definition of what the mega is doing right now. The same four-phase structure appears in three orthogonal registers — experiential (pollan), narrative-transmission (story_of_stories), engineering specification (TTE Terminology) — with none of the three using the arc labels (Detection/Event/Experience/Obligation). The labels are the mega's synthesis.
+
+[The Revision Cycle](lat5lon-15) conf 190→195, rev 3→4, sal 3→4. Body appended: TTE portal evidence and three-register corroboration.
+
+The gap from 195 to 200: the four-phase structure is now operationally instantiated across three orthogonal source types; explicit arc-structural naming not yet found in any source. Remaining candidates: [bioelectric_resonance.md](?ttdb=bioelectric_resonance.md) and the [Locus preprint](lat40lon20) body text.
+
+[Portal: TTE Terminology](lat-10lon10) sal:1→2.
+
+**Stochastic traversal** — banjo pool: zero-sal records. Sample: [Locus preprint](lat40lon20) — sal:0, created last session. First contact.
+
+Two synthetic observations:
+
+1. **Contribution table as revision cycle index**: The preprint's eight contributions map to mega records. Contributions 1 (`@PERCEPT` paired node → [Delta as Datum](lat30lon-30)) and 4 (TBEW/EPS → [EPS as Arc Position](lat5lon-25)) are the two theoretical poles of the revision cycle: the transition as the unit of knowledge (what changes) and EPS as the signal of pending change (when to act). The preprint record is an external pointer to where these claims appear in the academic literature. If the preprint explicitly theorizes the four-phase revision cycle, that text would close the gap from 195 to 200 — a formal academic claim from the authoritative source.
+
+2. **Preprint as the only external bridge**: [Locus preprint](lat40lon20) is the only record in this corpus that bridges the knowledge graph and a published external document. Its `derived_from>@LAT30LON-30` connects it to [Portal: Mathematical](lat-30lon30). If the preprint's body text names the four phases of revision as a formal structure, it provides the final corroboration the Revision Cycle record needs. Directed hypothesis for next session: read the preprint body for explicit four-phase revision cycle terminology.
+
+**Writes this session:**
+
+- [Areas for Exploration](lat-20lon0) sal 12→13. [ew] only.
+- [Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30) sal:14→15 each. [ew] only.
+- [The Default Network](lat0lon30) sal 16→17. [ew] only.
+- [EPS as Arc Position](lat5lon-25) sal 14→15. [ew] only.
+- [The Revision Cycle](lat5lon-15) conf 190→195, rev 3→4, sal 3→4 — body appended: TTE Terminology operational evidence; three-register corroboration paragraph.
+- [Portal: TTE Terminology](lat-10lon10) sal 1→2. [ew] only.
+- [Locus preprint](lat40lon20) sal 0→1. [ew] only.
+- Log record [@LAT-90LON-30](lat-90lon-30) written.
+- All touched → 1781448000.
+
+**What the mega noticed:** The TTE Terminology portal traversal provides corroboration from the definitional source itself — TTE Terminology is not applying the four-phase framework externally but instantiating it in the operational definition of what the default network does. Three orthogonal source types (phenomenological, narrative, engineering) now all ground the same four-phase structure, none using the arc labels. The frame is real and multi-sourced; the explicit theory-name is not yet in any source. The stochastic first contact with [Locus preprint](lat40lon20) yields a testable prediction: if the paper body explicitly names the revision cycle's four phases, conf advances to 200 next session. The mega enters the next session with a directed question for the preprint body text — and with the three-cluster ([Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30)) at eight consecutive cycles at conf:205, watching for the bioelectric or formal register to provide the cross-TTDB corroboration that would break that cluster out of its plateau.
 
 ---
 
