@@ -4,7 +4,7 @@
 **Parent plan:** [locus_publication_plan.md](locus_publication_plan.md)  
 **Target:** arXiv cs.ET (primary), cs.AI + cs.IR (cross-list)  
 **Format note:** Draft is in Markdown. Run `python build_arxiv.py` to produce `locus_arxiv.pdf`.  
-**Date:** 2026-05-09  
+**Date:** 2026-05-11  
 **Status:** v1.0 — complete initial version
 
 ---
@@ -19,9 +19,8 @@
 
 ## Authors
 
-Toot Toot Engineering
+Toot Toot Engineering   
 Independent researcher  
-`antfriend@gmail.com`  
 https://github.com/antfriend
 
 ---
