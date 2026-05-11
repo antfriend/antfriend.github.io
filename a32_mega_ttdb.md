@@ -75,12 +75,12 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1781361600 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10,anchors>@LAT-90LON-10,anchors>@LAT40LON-30,anchors>@LAT-90LON-20
+@LAT0LON0 | created:1778000000 | updated:1781448000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT40LON20,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10,anchors>@LAT-90LON-10,anchors>@LAT40LON-30,anchors>@LAT-90LON-20
 [ew]
 conf:245
-rev:1
-sal:12
-touched:1781361600
+rev:2
+sal:13
+touched:1781448000
 [/ew]
 
 ## The A32 Mega Librarian
@@ -101,17 +101,19 @@ The mega answers to `@MEGA`. For cross-database queries, use `CROSS <token>`. To
 
 ---
 
-@LAT-10LON0 | created:1778400000 | updated:1781361600 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON0,navigates_to>@LAT20LON0,navigates_to>@LAT0LON30,navigates_to>@LAT5LON-25,navigates_to>@LAT5LON-15,navigates_to>@LAT-20LON0,navigates_to>@LAT0LON20
+@LAT-10LON0 | created:1778400000 | updated:1781448000 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON0,navigates_to>@LAT20LON0,navigates_to>@LAT0LON30,navigates_to>@LAT5LON-25,navigates_to>@LAT5LON-15,navigates_to>@LAT-20LON0,navigates_to>@LAT0LON20,navigates_to>@LAT40LON20
 [ew]
 conf:220
-rev:3
-sal:1
-touched:1781361600
+rev:4
+sal:2
+touched:1781448000
 [/ew]
 
 ## A Toot Toot A32 Mega Welcome To You!
 
 ![Locus](https://antfriend.github.io/locus_arxiv.pdf)
+
+[Locus: Synthetic Perceptual Modeling — Preprint](lat40lon20)
 
 ## [Locus, the personal AI Companion](share/companion.html) is the newest Toot Toot Invention
 
@@ -1040,6 +1042,43 @@ Every entry in this list exercises the same core TTDB properties — but weights
 | Second brain | TBEW EPS, cursor as focus, mega as librarian |
 
 The unifying thread: in every case, the TTDB's **subjective umwelt** is not a limitation but the feature. The same events, the same data, the same sensor readings mean different things under different umwelts — and that is exactly right. The system does not pretend to a view from nowhere.
+
+---
+
+@LAT40LON20 | created:1781448000 | updated:1781448000 | relates:anchored_by>@LAT0LON0,derived_from>@LAT30LON-30,supported_by>@LAT40LON0,bridges>@LAT20LON0,bridges>@LAT-40LON10
+[ew]
+conf:240
+rev:0
+sal:0
+touched:1781448000
+[/ew]
+
+## Locus: Synthetic Perceptual Modeling — Preprint
+
+**[Locus preprint (PDF)](https://antfriend.github.io/locus_arxiv.pdf)** — v1.0, submitted 2026-05-11. Authors: Toot Toot Engineering / independent researcher. Source draft: [locus_arxiv_draft.md](locus_arxiv_draft.md).
+
+The formal academic specification of the Locus framework — the paper that names, versions, and grounds the full four-tier stack (TTDB, A32, TTN, TTCP) in biosemiotics, active inference, and information theory. Every source TTDB in this corpus is cited or described within it. This record is the mega's pointer to that external document and a summary of its contributions.
+
+**Core claim (abstract condensed)**: Locus is a framework for *synthetic perceptual modeling* — representing experiential knowledge as a typed graph of perceptual transitions, each anchored to a perceiving agent's umwelt. The foundational primitive is the `@PERCEPT` paired node: a before/after transition record encoding what a perceptual shift was *like* for a specific agent — not merely that it occurred. Records carry TBEW blocks (conf, rev, sal, touched) from which EPS = sal × (255 − conf) / 255 identifies high-uncertainty, high-salience nodes as primary attention targets, providing a lightweight symbolic approximation of free-energy minimization. Specification: 20 RFCs across TTDB×6, TTN×6, TTCP×3, A32×4 + Amendment-A. Agents on ESP32-class hardware execute deterministic sense-reason-act loops from local TTDB storage — no cloud inference required.
+
+**Eight key contributions:**
+
+| # | Contribution | Mega record |
+|---|---|---|
+| 1 | `@PERCEPT` paired node — transition as unit of perceptual knowledge; agent context mandatory | [Delta as Datum](lat30lon-30) |
+| 2 | `@LATxLON` addressing — authority-free, deterministic, human-readable; offline, zero registration | [Participation Without Permission](lat-10lon-20) |
+| 3 | TTDB file format — flat Markdown/LaTeX KG; cursor, typed edges, event IDs, TBEW; ~3 KB RAM | [Portal: Mathematical](lat-30lon30) |
+| 4 | TBEW / EPS — symbolic epistemic weight; EPS priority signal; unsigned integer, bare-metal ESP32 | [EPS as Arc Position](lat5lon-25) |
+| 5 | Umwelt formalism — umwelt as firmware-level design-time device identity, not a runtime property | [Umwelt as Universal Primitive](lat20lon0) |
+| 6 | TTCP web publishing suite — interactive 3D globe, record rendering, `toot:` URI cross-database links | [Substrate Independence](lat20lon10) |
+| 7 | 20-RFC specification suite — TTN×6, TTDB×6, TTCP×3, A32×4 + Amendment-A; [full index](RFCs/INDEX.md) | [Primitive Mode Bridge](lat-40lon10) |
+| 8 | Affective knowledge graph — 21-node TTDB grounded in Ma & Kragel (2026) (*Nat Comms* 17:1518) | [Portal: Feelings TTDB](lat10lon-40) |
+
+**Theoretical grounding**: Biosemiotics (von Uexküll 1909); active inference / FEP (Friston 2010); neurophenomenology (Varela, Thompson & Rosch 1991); abductive semiotics (Peirce 1903). Every inference step is inspectable from the plain-text TTDB file; no latent space. Related work addressed: µRDF-Store (too large for ESP32), W3C DIDs (require resolver), TinyML / TFLite Micro (opacity + float requirements), IPFS CIDs (opaque, not deterministic pre-write).
+
+**Relationship to this corpus**: The paper describes the framework from outside; the mega corpus demonstrates it from inside. [FEP Convergence](lat40lon0) documents the cross-database resonance that contribution 4 (TBEW/EPS) predicts. [Umwelt as Universal Primitive](lat20lon0) is the empirical claim that contribution 5 formalizes. [The Revision Cycle](lat5lon-15) enacts the EPS → attention mechanism the paper describes. [Delta as Datum](lat30lon-30) is contribution 1 rendered as a cross-TTDB correspondence. The paper is the argument; the corpus is the demonstration.
+
+**Corpus status at submission (2026-05-09)**: Seven source TTDBs active; companion.md portal at [Portal: LOCUS Companion](lat40lon-30); [The Revision Cycle](lat5lon-15) conf at 190; [Areas for Exploration](lat-20lon0) EPS at 3.24.
 
 ---
 
