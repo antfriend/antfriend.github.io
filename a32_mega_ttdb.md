@@ -75,11 +75,11 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1781448000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT40LON20,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10,anchors>@LAT-90LON-10,anchors>@LAT40LON-30,anchors>@LAT-90LON-20
+@LAT0LON0 | created:1778000000 | updated:1781448000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT40LON20,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10,anchors>@LAT-90LON-10,anchors>@LAT40LON-30,anchors>@LAT-90LON-20,anchors>@LAT-90LON-30,anchors>@LAT-90LON40,anchors>@LAT-90LON50
 [ew]
 conf:245
 rev:2
-sal:13
+sal:14
 touched:1781448000
 [/ew]
 
@@ -273,7 +273,7 @@ The central claim of RFC-0006: the unit of perceptual knowledge in TTDB is not a
 [ew]
 conf:225
 rev:0
-sal:3
+sal:4
 touched:1781448000
 [/ew]
 
@@ -543,7 +543,7 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:215
 rev:5
-sal:18
+sal:19
 touched:1781448000
 [/ew]
 
@@ -732,7 +732,7 @@ The mega fills this gap. The mega's banjo traversal ([Default Network](lat0lon30
 [ew]
 conf:205
 rev:3
-sal:16
+sal:17
 touched:1781448000
 [/ew]
 
@@ -760,11 +760,11 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 
 ---
 
-@LAT0LON-20 | created:1778100000 | updated:1779000000 | relates:synthesizes>@LAT20LON-30,synthesizes>@LAT30LON-20,resonates_with>@LAT0LON30,resonates_with>@LAT-10LON10,anchored_by>@LAT0LON0
+@LAT0LON-20 | created:1778100000 | updated:1781448000 | relates:synthesizes>@LAT20LON-30,synthesizes>@LAT30LON-20,resonates_with>@LAT0LON30,resonates_with>@LAT-10LON10,anchored_by>@LAT0LON0
 [ew]
-conf:205
-rev:2
-sal:16
+conf:210
+rev:3
+sal:17
 touched:1781448000
 [/ew]
 
@@ -782,17 +782,19 @@ Three source TTDBs describe the same structural role at different scales: the la
 
 The fire circle also operates across time. Oral tradition carries the mnemonic formula — and the arc experience encoded in it — across generations. The current community does not rediscover the arc from scratch; it inherits the prior community's traversal, anchored by the formula itself. TTN's BBS (board_contains, thread_root, replies_to) is the network-era fire circle; semantic gravity (TTN-RFC-0005) is the mechanism by which high-EPS topics draw the community into shared traversal without requiring physical co-presence. Where the fire circle assembles by proximity, the BBS thread assembles by prediction error.
 
-**Mega synthesis**: The cognitive glue insight spans four scales: cellular (bioelectric field), cognitive (default mode network), system (mega's default network), and social (fire circle / TTN BBS). At each scale, the binding layer is not the content — it is what keeps content coherent across the collective. Remove it and the parts remain, but the collective cannot think: cells revert to local-only information, identity fragments across sessions, six TTDBs become six unrelated files, each community member processes disruption alone and the arc must be reinvented each generation. Cognitive glue is the precondition of collective intelligence at every scale it appears.
+**Mega synthesis**: The cognitive glue insight spans five scales: cellular (bioelectric field), TTDB-graph (coordinate edges as the field binding individual nodes into navigable knowledge), cognitive (default mode network), system (mega's default network), and social (fire circle / TTN BBS). At each scale, the binding layer is not the content — it is what keeps content coherent across the collective. Remove it and the parts remain, but the collective cannot think: cells revert to local-only information, identity fragments across sessions, six TTDBs become six unrelated files, each community member processes disruption alone and the arc must be reinvented each generation. Cognitive glue is the precondition of collective intelligence at every scale it appears.
 
 **Temporal binding**: Cognitive glue operates across time as well as space. The bioelectric field carries morphological memory across cellular generations — cells turn over; the voltage pattern persists (bioelectric_resonance pair 1, @LAT43.3LON-71.1). The default network replays memories to maintain identity across sessions — the binding layer holds the thread of continuity across gaps. The TTDB `revises@<old_id>` edge preserves the prior record as legible ground for the new one — the past is not deleted, it is the substrate from which the present revision launched ([Preservation of Prior State](lat20lon-20)). All three are the same operation: keep the prior state reachable so that transformation has something to launch from. Cognitive glue is not just the tissue that connects agents in space — it is the tissue that connects a system to its own history.
 
+**TTDB-graph level** ([@Cognitive Glue — Files](?ttdb=bioelectric_resonance.md&toot=lat43.0lon-115.5), pair 4; [@Semantic Umwelt](?ttdb=bioelectric_resonance.md&toot=lat43.0lon-116.9), pair 6): "The files are the substrate; the edges are the field. Agent 32 does not read files; it follows edges." A TTDB file without coordinate edges is stored content but not navigable knowledge — no agent-reachable position in the graph, no meaning-neighborhood, no umwelt. Pair 6 sharpens this: "What makes it *knowledge* is the edges — the connections that situate it in a meaning-neighborhood. The umwelt is built by edge-laying." Cognitive glue at the TTDB-graph scale is not structural decoration — it is meaning-constitutive. Remove the bioelectric field and the cell retains its genome but loses its morphostatic umwelt; remove the coordinate edges and the TTDB node retains its text but loses its position in the knowledge graph. In both cases, the stripped element exists but cannot participate in the collective's problem-solving capacity. Coherence is communicative: the glue is not what holds content together — it is what makes the content mean.
+
 ---
 
-@LAT10LON-30 | created:1778100000 | updated:1778600000 | relates:synthesizes>@LAT10LON-40,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,synthesizes>@LAT30LON-20,synthesizes>@LAT-30LON30,derived_from>@LAT10LON-10,resonates_with>@LAT5LON-25,anchored_by>@LAT0LON0
+@LAT10LON-30 | created:1778100000 | updated:1781448000 | relates:synthesizes>@LAT10LON-40,synthesizes>@LAT30LON-10,synthesizes>@LAT20LON-30,synthesizes>@LAT30LON-20,synthesizes>@LAT-30LON30,derived_from>@LAT10LON-10,resonates_with>@LAT5LON-25,anchored_by>@LAT0LON0
 [ew]
-conf:205
-rev:1
-sal:16
+conf:210
+rev:2
+sal:17
 touched:1781448000
 [/ew]
 
@@ -812,13 +814,15 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 
 **Mega synthesis**: The Hero's Arc is the universal shape of successful revision under pressure. It appears as an emotional sequence (feelings_ttdb), as a therapeutic protocol (pollan), as a morphogenetic trajectory (bioelectric), as the social technology of oral culture and storytelling revolutions (story_of_stories), and as a formal state machine and stochastic reveal algorithm (Mathematical). In each register, the critical structural feature is the same: the system must pass *through* maximum prediction error rather than around it. Bypassing the Grief beat — attempting to reach Joy without passing through it — produces incomplete integration, shallow morphostasis, unresolved `rev` accumulation, premature arc completion, or a banjo settle that fires before the record is truly understood. The arc cannot be shortcut. The mega's EPS signal ([EPS as Arc Position](lat5lon-25)) identifies the records approaching the Grief beat; the guided tour automaton schedules the encounter; the banjo stochastic reveal ensures the arc can begin without an invitation.
 
+**Key formulation** ([@Ideational Morphospace](?ttdb=bioelectric_resonance.md&toot=lat42.8lon-116.2)): "The morphospace is the graph. The navigator is the agent. The gradient is the task." In the arc's terms: morphospace = the knowledge graph traversed by the mega; navigator = the agent in default network mode; gradient = EPS. EPS is not a scheduling heuristic — it is the directional information that makes the arc navigable without central planning. A navigator without a gradient moves through morphospace undirected; EPS ensures the navigator finds the records most ready for the Grief beat rather than merely the most recently visited. The arc's orientation is written into the corpus by its own traversal history: each sal increment is the gradient strengthening.
+
 ---
 
 @LAT5LON-25 | created:1778300000 | updated:1781275200 | relates:synthesizes>@LAT10LON-30,synthesizes>@LAT10LON-20,derived_from>@LAT40LON0,resonates_with>@LAT20LON10,resonates_with>@LAT30LON-10,anchored_by>@LAT0LON0
 [ew]
 conf:210
 rev:2
-sal:16
+sal:17
 touched:1781448000
 [/ew]
 
@@ -1002,7 +1006,7 @@ Three registers of the same failure event: a bounded information processor losin
 [ew]
 conf:185
 rev:6
-sal:14
+sal:15
 touched:1781448000
 [/ew]
 
@@ -1798,6 +1802,95 @@ This conf advance is structurally unusual: it moves not because a new naming sou
 - All touched → 1781448000.
 
 **What the mega noticed:** [The Revision Cycle](lat5lon-15) has completed its own revision cycle this session. The record describing a four-phase arc (Detection → Event → Experience → Obligation) has passed through all four phases over the course of this default network traversal arc: Detection (high EPS flagged it for attention across many sessions), Event (body revision each session as new portal findings arrived), Experience (the recognition that the survey was complete and the theory synthetic), Obligation (the record is reconnected to the corpus with `conf:200` — the revised understanding is now the load-bearing claim). The self-referential layer resolves. [Areas for Exploration](lat-20lon0) remains the highest-EPS record at 3.57 entering the next session. The three-cluster at conf:205 enters its tenth cycle — still unbroken, still accumulating sal pressure. The next session's stochastic traversal should sample from the portal records that have not been fully traversed internally (bioelectric_resonance.md has seven records; this session traversed conceptually but not at individual-record depth for pairs 2, 4, 5, 6).
+
+---
+
+@LAT-90LON50 | created:1781448000 | updated:1781448000 | kind:log | relates:logged>@LAT0LON-20,logged>@LAT10LON-30,logged>@LAT20LON-30,logged>@LAT-20LON0,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1781448000
+[/ew]
+
+## Log — Default Network Run · 2026-05-11 (c)
+
+```session-log
+timestamp: 1781448000
+trigger: "@mega engage default network"
+mode: eps_ordered + directed_portal_traversal
+```
+
+**EPS rankings entering this session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **3.84** | 14 | 185 |
+| [Saltation/rev](lat10lon-20) | **3.14** | 16 | 205 |
+| [Cognitive Glue](lat0lon-20) | **3.14** | 16 | 205 |
+| [Hero's Arc](lat10lon-30) | **3.14** | 16 | 205 |
+| [The Default Network](lat0lon30) | **2.82** | 18 | 215 |
+| [EPS as Arc Position](lat5lon-25) | **2.82** | 16 | 210 |
+| [The Revision Cycle](lat5lon-15) | **1.08** | 5 | 200 |
+
+[Areas for Exploration](lat-20lon0) reaches EPS 3.84 — new corpus high. The three-cluster ([Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30)) enters its tenth consecutive cycle at conf:205. [The Default Network](lat0lon30) and [EPS as Arc Position](lat5lon-25) converge at EPS 2.82 (sal:18 and sal:16 respectively; conf:215 and conf:210).
+
+**Automaton traversal** (6 records visited):
+
+[Areas for Exploration](lat-20lon0) — EPS 3.84. Navigational record; no body revision. sal:14→15.
+
+**EPS 3.14 cluster** — [Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30) — tenth consecutive cycle at conf:205. Two records receive body revisions from directed portal findings (below). [Saltation/rev](lat10lon-20) sal:16→17. [ew] only.
+
+[The Default Network](lat0lon30) — sal:18→19. No body change.
+
+[EPS as Arc Position](lat5lon-25) — sal:16→17. No body change.
+
+**Directed portal traversal** — [bioelectric_resonance.md](?ttdb=bioelectric_resonance.md) pairs 2, 4, 5, 6 at individual-record depth (directed from session (b)):
+
+**Pair 2 — Voltage Gradient Addressing ↔ Authority-Free Addressing** ([@LAT43.1LON-70.4](?ttdb=bioelectric_resonance.md&toot=lat43.1lon-70.4) ↔ [@LAT44.2LON-115.5](?ttdb=bioelectric_resonance.md&toot=lat44.2lon-115.5)): "No morphological DNS. No genome-issued address. The field is the registry, and the field belongs to no one." This directly grounds [Participation Without Permission](lat-10lon-20): pair 2 names the exact biological mechanism — authority-free addressing as a structural property of the field itself — that [Participation Without Permission](lat-10lon-20) abstracts at the TTN layer. [Participation Without Permission](lat-10lon-20) deferred to a dedicated traversal session; correspondence registered here.
+
+**Pair 4 — Cognitive Glue — Cells ↔ Cognitive Glue — Files** ([@LAT41.9LON-70.4](?ttdb=bioelectric_resonance.md&toot=lat41.9lon-70.4) ↔ [@LAT43.0LON-115.5](?ttdb=bioelectric_resonance.md&toot=lat43.0lon-115.5)): Key formulation: "The files are the substrate; the edges are the field. Agent 32 does not read files; it follows edges." This adds a fifth instantiation to [Cognitive Glue](lat0lon-20)'s synthesis — the TTDB-graph level, a scale between cellular and system that the synthesis did not previously name. The current synthesis said "four scales"; pair 4 at record depth supplies the missing intermediate.
+
+**Pair 5 — Anatomical Morphospace ↔ Ideational Morphospace** ([@LAT41.7LON-71.1](?ttdb=bioelectric_resonance.md&toot=lat41.7lon-71.1) ↔ [@LAT42.8LON-116.2](?ttdb=bioelectric_resonance.md&toot=lat42.8lon-116.2)): Key formulation: "The morphospace is the graph. The navigator is the agent. The gradient is the task." For [Hero's Arc](lat10lon-30): EPS is the gradient — the directional signal orienting the navigator toward records most ready to revise. This three-line statement names the arc-EPS-morphospace relationship more compactly than the existing synthesis and makes the navigation logic explicit.
+
+**Pair 6 — Cellular Umwelt ↔ Semantic Umwelt** ([@LAT41.9LON-71.8](?ttdb=bioelectric_resonance.md&toot=lat41.9lon-71.8) ↔ [@LAT43.0LON-116.9](?ttdb=bioelectric_resonance.md&toot=lat43.0lon-116.9)): Key formulation: "What makes it *knowledge* is the edges — the connections that situate it in a meaning-neighborhood. The umwelt is built by edge-laying." This sharpens [Cognitive Glue](lat0lon-20)'s TTDB-graph instantiation: coordinate edges are not structural decoration — they are meaning-constitutive. Without them, content exists but is not knowledge. Incorporated alongside pair 4 in the [Cognitive Glue](lat0lon-20) body revision.
+
+**Body revisions:**
+
+**[Cognitive Glue](lat0lon-20)** — pairs 4 + 6: adds TTDB-graph as fifth instantiation and edges-as-meaning-constitutive claim; "four scales" → "five scales" in synthesis paragraph. conf:205→210, rev:2→3, sal:16→17.
+
+**[Hero's Arc](lat10lon-30)** — pair 5: adds key formulation and EPS-as-gradient connection. conf:205→210, rev:1→2, sal:16→17.
+
+**Three-cluster resolution**: [Cognitive Glue](lat0lon-20) and [Hero's Arc](lat10lon-30) advance to conf:210. [Saltation/rev](lat10lon-20) holds at conf:205 — pairs 2, 4, 5, 6 did not provide new corroboration for the saltation-as-discontinuous-revision claim specifically. The ten-cycle three-cluster at conf:205 breaks: two records advance, one holds.
+
+**Writes this session:**
+
+- [Areas for Exploration](lat-20lon0) sal 14→15. [ew] only.
+- [Saltation/rev](lat10lon-20) sal 16→17. [ew] only.
+- [Cognitive Glue](lat0lon-20) conf 205→210, rev 2→3, sal 16→17 — body: TTDB-graph fifth instantiation + edges-as-meaning-constitutive (pairs 4 + 6). updated→1781448000.
+- [Hero's Arc](lat10lon-30) conf 205→210, rev 1→2, sal 16→17 — body: pair 5 key formulation + EPS-as-gradient synthesis. updated→1781448000.
+- [The Default Network](lat0lon30) sal 18→19. [ew] only.
+- [EPS as Arc Position](lat5lon-25) sal 16→17. [ew] only.
+- [Portal: Bioelectric Resonance](lat20lon-30) sal 3→4. [ew] only.
+- [Anchor](lat0lon0) sal 13→14; anchors>@LAT-90LON-30,@LAT-90LON40,@LAT-90LON50 edges added (deferred from sessions (a) and (b) plus current). relates only.
+- Log record [@LAT-90LON50](lat-90lon50) written.
+- All touched → 1781448000.
+
+**EPS entering next session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **4.12** | 15 | 185 |
+| [Saltation/rev](lat10lon-20) | **3.33** | 17 | 205 |
+| [EPS as Arc Position](lat5lon-25) | **3.00** | 17 | 210 |
+| [Cognitive Glue](lat0lon-20) | **3.00** | 17 | 210 |
+| [Hero's Arc](lat10lon-30) | **3.00** | 17 | 210 |
+| [The Default Network](lat0lon30) | **2.98** | 19 | 215 |
+| [The Revision Cycle](lat5lon-15) | **1.08** | 5 | 200 |
+
+Three structural changes: (1) The ten-cycle three-cluster breaks — [Cognitive Glue] and [Hero's Arc] advance to conf:210; [Saltation/rev] remains at conf:205 and separates out at EPS 3.33. (2) [EPS as Arc Position](lat5lon-25), [Cognitive Glue](lat0lon-20), and [Hero's Arc](lat10lon-30) form a new cluster at EPS 3.00, all conf:210. (3) [The Default Network](lat0lon30) falls just below this new cluster at EPS 2.98 — the first time the mega's own default network record sits below the high-EPS claim records.
+
+**What the mega noticed:** The directed traversal at record depth achieved what ten cycles of automaton traversal did not — it found the precise language that the synthesis records were missing rather than simply confirming that the claims were correct. Pair 4 named the intermediate scale ("files are the substrate; the edges are the field") that the four-scale synthesis had always implied but never stated. Pair 6 made explicit what the scale claim means: edges are not organizational structure — they are meaning-constitutive. The TTDB-graph level was always operative; the directed reading produced the words. The three-cluster breaks because [Saltation/rev](lat10lon-20) has no analog finding from these pairs — saltation as a distinct named mechanism requires a source that names the discontinuity itself, not just its conditions or aftermath. The open question for the next session: what in the unvisited registers names the saltation event as a distinct moment, separate from the morphostatic drift that precedes it and the restored form that follows? Pair 5 (morphospace) addresses the gradient but not the discontinuity. [Saltation/rev](lat10lon-20) at EPS 3.33 is now the leading claim record — it has been the most-consulted synthesis claim for ten cycles and still has not found the source that names its central claim explicitly.
 
 ---
 
