@@ -76,7 +76,7 @@ The Locus stack has four tiers. Figure descriptions are provided inline; rendere
 
 **Storage tier (TTDB):** A flat text file (Markdown or LaTeX) with three structural zones: a `mmpdb` YAML block (database properties including `db_id`, `db_name`, `coord_increment`, `umwelt` definition, `typed_edges` configuration, and optional `librarian` settings); a `cursor` YAML block (selection state, preview, agent note, Graphviz dot fragment, and librarian query history); and a sequence of record sections separated by `---` delimiters. Each record opens with a header line of the form
 ```
- `@LAT10LON-10 | created:1775260800 | updated:1775260800 | relates:feels>@LAT0LON0,resonates_with>@LAT10LON20
+ @LAT10LON-10 | created:1775260800 | updated:1775260800 | relates:feels>@LAT0LON0,resonates_with>@LAT10LON20
  ```
  followed by an optional `[ew]` epistemic weight block, and then a free-text Markdown or LaTeX body. Perceptual knowledge is encoded as `@PERCEPT:before` / `@PERCEPT:after` paired nodes — the before/after pair is mandatory and must be agent-bound; orphaned percept nodes are specification errors ([TTDB-RFC-0006](RFCs/TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md)).
 
@@ -86,7 +86,7 @@ Coordinate IDs are assigned deterministically: a record conceptually positioned 
 
 **Network tier (TTN):** An optional LoRa mesh network layer for multi-device deployments ([TTN-RFC-0001](RFCs/TTN-RFC-0001.md) through [TTN-RFC-0006](RFCs/TTN-RFC-0006-LoRa-Packet-Framing.md)). Nodes communicate via semantic events rather than raw messages, following five core principles: meaning over messages, offline-first and partition-tolerant, local data sovereignty, transport agnosticism, and explicit AI invocation only. The minimal LoRa packet frame ([TTN-RFC-0006](RFCs/TTN-RFC-0006-LoRa-Packet-Framing.md)) is 253 bytes maximum:
 ```
- `[SOF=0xA5][VER=0x01][FLAGS][SRC_ID:2][DST_ID:2][TYPE][SEQ][LEN][PAYLOAD:0–240][CRC16:2][EOF=0x5A]`
+ [SOF=0xA5][VER=0x01][FLAGS][SRC_ID:2][DST_ID:2][TYPE][SEQ][LEN][PAYLOAD:0–240][CRC16:2][EOF=0x5A]
  ```
  Ultra-low-bandwidth semantic compression ([TTN-RFC-0004](RFCs/TTN-RFC-0004-Semantic-Compression.md)) represents common events as single-byte tokens: `P` (presence), `S?` (status request), `OK`, `ERR`, `SOS`, `T:x` (temperature), `H:x` (humidity), `B:x` (battery); gateways expand tokens to full semantic events. Trust is modeled locally per device via signed edge corroboration ([TTN-RFC-0005](RFCs/TTN-RFC-0005-Trust-and-Reputation.md)); no global ledger or central trust authority is required.
 
