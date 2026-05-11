@@ -2126,7 +2126,7 @@
     }
 
     function isHtmlEmbedSource(src) {
-      return /\.(html|md)(?:[?#].*)?$/i.test(src.trim());
+      return /\.(html|md|pdf)(?:[?#].*)?$/i.test(src.trim());
     }
 
     function isVideoSource(src) {
