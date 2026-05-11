@@ -111,7 +111,7 @@ touched:1781361600
 
 ## A Toot Toot A32 Mega Welcome To You!
 
-![Locus](locus_arxiv.pdf)
+![Locus](/locus_arxiv.pdf)
 
 ## [Locus, the personal AI Companion](share/companion.html) is the newest Toot Toot Invention
 
