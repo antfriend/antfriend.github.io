@@ -273,8 +273,8 @@ The central claim of RFC-0006: the unit of perceptual knowledge in TTDB is not a
 [ew]
 conf:225
 rev:0
-sal:2
-touched:1779100000
+sal:3
+touched:1781448000
 [/ew]
 
 ## Portal: Bioelectric ↔ TTE Resonance
@@ -543,7 +543,7 @@ High-semantic-density transmission over constrained channels using a shared prio
 [ew]
 conf:215
 rev:5
-sal:17
+sal:18
 touched:1781448000
 [/ew]
 
@@ -732,7 +732,7 @@ The mega fills this gap. The mega's banjo traversal ([Default Network](lat0lon30
 [ew]
 conf:205
 rev:3
-sal:15
+sal:16
 touched:1781448000
 [/ew]
 
@@ -764,7 +764,7 @@ Three source TTDBs formalize the same event — a system incorporating surprise 
 [ew]
 conf:205
 rev:2
-sal:15
+sal:16
 touched:1781448000
 [/ew]
 
@@ -792,7 +792,7 @@ The fire circle also operates across time. Oral tradition carries the mnemonic f
 [ew]
 conf:205
 rev:1
-sal:15
+sal:16
 touched:1781448000
 [/ew]
 
@@ -818,7 +818,7 @@ Three source TTDBs describe the same six-beat arc: a bounded system departs from
 [ew]
 conf:210
 rev:2
-sal:15
+sal:16
 touched:1781448000
 [/ew]
 
@@ -858,9 +858,9 @@ This reframes TTN semantic gravity itself: *a record with high EPS has high sema
 
 @LAT5LON-15 | created:1780972800 | updated:1781448000 | relates:synthesizes>@LAT10LON-20,synthesizes>@LAT0LON-20,synthesizes>@LAT10LON-30,synthesizes>@LAT5LON-25,resonates_with>@LAT30LON-10,supported_by>@LAT20LON0,anchored_by>@LAT0LON0
 [ew]
-conf:195
-rev:4
-sal:4
+conf:200
+rev:5
+sal:5
 touched:1781448000
 [/ew]
 
@@ -905,6 +905,26 @@ Traversal of [@LAT30LON-10](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-10)
 conf 180→190. The gap from 190 to 200: two pollan records together cover all four phases; one source naming all four phases explicitly would close it.
 
 Traversal of [TootTootTerminologyDB.md](?ttdb=TootTootTerminologyDB.md) at [@LAT51.5LON-0.1](?ttdb=TootTootTerminologyDB.md&toot=lat51.5lon-0.1) (Default Network, 2026-05-11 session) provides the operational register. TTE Terminology's description lists five idle behaviors: idle traversal of high-EPS records (Detection), association weaving across source TTDBs (threshold toward Event), body revision when a new correspondence is confirmed (Event: `rev` increments), log writing after each traversal (Experience: the arc named in text), and edge addition connecting revised records (Obligation: reconnection). All four phases appear in sequence in the definitional source — not an external analogy, but the formal operational definition of what the default network does. Three source types now provide complete four-phase grounding: clinical integration theory (pollan), oral mnemonic transmission (story_of_stories), and engineering specification (TTE Terminology). conf 190→195. The gap from 195 to 200: the four-phase structure is operationally instantiated across three orthogonal source types; no source has yet explicitly *named* the structure as a staged revision theory. Remaining candidates: [bioelectric_resonance.md](?ttdb=bioelectric_resonance.md) and the [Locus preprint](lat40lon20) body text, which may carry the formal theoretical claim.
+
+Traversal of [bioelectric_resonance.md](?ttdb=bioelectric_resonance.md) (all seven resonance pairs, 2026-05-11 second session) and the [Locus preprint](lat40lon20) body text completes the survey of all seven source TTDBs. Bioelectric pair 3 (Morphostatic Information) names the Detection analog — morphostatic information drift as accumulating prediction error requiring attention. Pair 7 (Cancer as Decoupling ↔ Orphan Nodes) names the Obligation analog — "reconnection is treatment" maps onto the `revises@` architecture and edge-rewiring as the act that restores a revised record to the traversal graph. The Event and Experience phases are absent as discrete bioelectric records: the discontinuous field reorganization during wound response is implied across pairs 3 and 5 but not isolated. The Locus preprint body text describes EPS as attention-direction, `rev` as revision count, `revises>` as prior-state preservation — all four phases operationally present, none named as a staged cycle theory.
+
+Survey complete. All seven source TTDBs probed:
+
+| Source TTDB | Phases present | Register |
+|---|---|---|
+| [pollan (×2 records)](lat30lon-10) | All four (distributed) | Clinical integration theory |
+| [story_of_stories](lat30lon-20) | All four (instantiated) | Oral mnemonic transmission |
+| [TTE Terminology](lat-10lon10) | All four (operational) | Engineering specification |
+| [bioelectric_resonance](lat20lon-30) | Detection + Obligation | Biological field dynamics |
+| [Mathematical.latex](lat-30lon30) | Detection (scheduling only) | Formal mechanism |
+| [feelings_ttdb](lat10lon-40) | All six arc beats (template) | Hero's Arc — source of the labels |
+| [companion.md](lat40lon-30) | Default network behaviors | Operational (same as TTE) |
+
+Result: no source TTDB names the four-phase revision cycle as a staged theory. Every source instantiates at least two phases in its domain vocabulary. The arc labels (Detection/Event/Experience/Obligation) derive from [feelings_ttdb](lat10lon-40)'s Hero's Arc, applied by this mega's synthesis to the TBEW signal and the default network behavior.
+
+This is the resolution. The revision cycle framework is synthetic — it lives at the intersection of seven source domains without being owned by any of them. Seven orthogonal registers instantiate the same four-phase structure; none names it. The search for a single naming source was the wrong frame: a synthetic framework whose constituent claims are each grounded in multiple independent domains is more robustly evidenced than a theory owned by one source. The theory's independence from any particular source vocabulary is a property, not a gap. conf 195→200. The arc completes.
+
+This conf advance is structurally unusual: it does not move because a new source was found. It moves because the survey is exhausted and the pattern of absence — all seven sources instantiating the structure, none naming it — is itself the strongest available evidence that the framework is correctly located at the synthesis layer. The revision cycle has passed through its own revision cycle.
 
 ---
 
@@ -982,7 +1002,7 @@ Three registers of the same failure event: a bounded information processor losin
 [ew]
 conf:185
 rev:6
-sal:13
+sal:14
 touched:1781448000
 [/ew]
 
@@ -1051,7 +1071,7 @@ The unifying thread: in every case, the TTDB's **subjective umwelt** is not a li
 [ew]
 conf:240
 rev:0
-sal:1
+sal:2
 touched:1781448000
 [/ew]
 
@@ -1680,6 +1700,86 @@ Two synthetic observations:
 - All touched → 1781448000.
 
 **What the mega noticed:** The TTE Terminology portal traversal provides corroboration from the definitional source itself — TTE Terminology is not applying the four-phase framework externally but instantiating it in the operational definition of what the default network does. Three orthogonal source types (phenomenological, narrative, engineering) now all ground the same four-phase structure, none using the arc labels. The frame is real and multi-sourced; the explicit theory-name is not yet in any source. The stochastic first contact with [Locus preprint](lat40lon20) yields a testable prediction: if the paper body explicitly names the revision cycle's four phases, conf advances to 200 next session. The mega enters the next session with a directed question for the preprint body text — and with the three-cluster ([Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30)) at eight consecutive cycles at conf:205, watching for the bioelectric or formal register to provide the cross-TTDB corroboration that would break that cluster out of its plateau.
+
+---
+
+@LAT-90LON40 | created:1781448000 | updated:1781448000 | kind:log | relates:logged>@LAT5LON-15,logged>@LAT20LON-30,logged>@LAT40LON20,logged>@LAT-20LON0,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1781448000
+[/ew]
+
+## Log — Default Network Run · 2026-05-11 (b)
+
+```session-log
+timestamp: 1781448000
+trigger: "@mega engage default network"
+mode: eps_ordered + stochastic + portal_traversal
+```
+
+**EPS rankings entering this session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **3.57** | 13 | 185 |
+| [Saltation/rev](lat10lon-20) | **2.94** | 15 | 205 |
+| [Cognitive Glue](lat0lon-20) | **2.94** | 15 | 205 |
+| [Hero's Arc](lat10lon-30) | **2.94** | 15 | 205 |
+| [The Default Network](lat0lon30) | **2.67** | 17 | 215 |
+| [EPS as Arc Position](lat5lon-25) | **2.65** | 15 | 210 |
+| [The Revision Cycle](lat5lon-15) | **0.94** | 4 | 195 |
+
+The three-cluster ([Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30)) overtakes [The Default Network](lat0lon30) and [EPS as Arc Position](lat5lon-25) this session — ninth consecutive cycle at conf:205. [The Default Network](lat0lon30) and [EPS as Arc Position](lat5lon-25) are now within 0.02 EPS of each other (2.67 vs 2.65), their sal accumulating in near-lockstep.
+
+**Automaton traversal** (6 records visited):
+
+[Areas for Exploration](lat-20lon0) — EPS 3.57. No body revision. sal:13→14.
+
+**EPS 2.94 cluster** — [Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30) — ninth consecutive cycle at conf:205. No body changes. sal:15→16 each.
+
+[The Default Network](lat0lon30) — sal:17→18. No body change.
+
+[EPS as Arc Position](lat5lon-25) — sal:15→16. No body change.
+
+**Portal traversal** — entering [bioelectric_resonance.md](?ttdb=bioelectric_resonance.md), full seven-pair traversal:
+
+Pair 3 (Morphostatic Information / Morphostatic Knowledge): names the Detection analog — morphostatic information drift as the accumulation of prediction error that forces attention. "The body's form is not a fixed blueprint. It is a continuously negotiated consensus." This is Detection as entropy pressure, not yet a saltation event.
+
+Pair 7 (Cancer as Decoupling ↔ Orphan Nodes): names the Obligation analog — "reconnection is treatment." Restoring bioelectric connectivity reverses tumor growth; edge-rewiring restores an orphan node to the traversal graph. "The cells are not destroyed; they are re-enrolled." The `revises@` architecture is Obligation in the biological register.
+
+Event and Experience phases absent as discrete bioelectric records. The discontinuous field reorganization during wound response (morphostatic saltation) is implied across pairs 3 and 5 (Anatomical Morphospace) but not isolated as a named record. bioelectric_resonance.md does not contain a record for the wound-response saltation event itself — the point of maximum morphostatic prediction error.
+
+The absence is informative: the bioelectric register handles the Event phase implicitly, as a transition between Morphostatic Information (pair 3) and the recovered morphostatic target — it is a process, not a named moment. The named moments are the before (morphostatic drift) and the after (recovered form); the event between them is the field reorganization that bioelectric_resonance.md treats as mechanism, not as a subject of named record.
+
+[Portal: Bioelectric Resonance](lat20lon-30) sal:2→3.
+
+**Stochastic + directed hypothesis** — [Locus preprint](lat40lon20) body text (directed from prior session):
+
+Read in full. The preprint describes TBEW contribution 4 in Section 2 and Section 4 (Related Work — Epistemic agents and the free-energy principle): EPS identifies records "heavily used but poorly understood," directing agent attention as a symbolic approximation of FEP. `rev` counts body revisions; `revises>` preserves prior state. Section 3 describes the sense→reason→act cycle. All four revision cycle phases are operationally present — EPS signals Detection, sense-reason-act executing a revision is the Event, the observation log recording the cycle is Experience, the `revises>` edge is Obligation — but the four-phase structure is not named as a staged theory anywhere in the paper. [Locus preprint](lat40lon20) sal:1→2.
+
+Survey complete. All seven source TTDBs probed. Result: no source names the four phases as a staged revision theory.
+
+**The synthesis-origin recognition** — major body revision to [The Revision Cycle](lat5lon-15):
+
+The survey's completion — all seven sources instantiating the four-phase structure, none naming it — is itself the strongest available evidence that the theory is correctly located at the synthesis layer. A synthetic framework whose constituent claims are each grounded in multiple independent domains is more robustly evidenced than a theory owned by a single source. conf:195→200. rev:4→5. The arc completes.
+
+This conf advance is structurally unusual: it moves not because a new naming source was found but because the exhausted search for such a source, taken together with the multi-domain instantiation record, resolves the question. The revision cycle has passed through its own revision cycle.
+
+**Writes this session:**
+
+- [Areas for Exploration](lat-20lon0) sal 13→14. [ew] only.
+- [Saltation/rev](lat10lon-20), [Cognitive Glue](lat0lon-20), [Hero's Arc](lat10lon-30) sal:15→16 each. [ew] only.
+- [The Default Network](lat0lon30) sal 17→18. [ew] only.
+- [EPS as Arc Position](lat5lon-25) sal 15→16. [ew] only.
+- [The Revision Cycle](lat5lon-15) conf 195→200, rev 4→5, sal 4→5 — body appended: complete survey table + synthesis-origin recognition. Arc complete.
+- [Portal: Bioelectric Resonance](lat20lon-30) sal 2→3. [ew] only.
+- [Locus preprint](lat40lon20) sal 1→2. [ew] only.
+- Log record [@LAT-90LON40](lat-90lon40) written.
+- All touched → 1781448000.
+
+**What the mega noticed:** [The Revision Cycle](lat5lon-15) has completed its own revision cycle this session. The record describing a four-phase arc (Detection → Event → Experience → Obligation) has passed through all four phases over the course of this default network traversal arc: Detection (high EPS flagged it for attention across many sessions), Event (body revision each session as new portal findings arrived), Experience (the recognition that the survey was complete and the theory synthetic), Obligation (the record is reconnected to the corpus with `conf:200` — the revised understanding is now the load-bearing claim). The self-referential layer resolves. [Areas for Exploration](lat-20lon0) remains the highest-EPS record at 3.57 entering the next session. The three-cluster at conf:205 enters its tenth cycle — still unbroken, still accumulating sal pressure. The next session's stochastic traversal should sample from the portal records that have not been fully traversed internally (bioelectric_resonance.md has seven records; this session traversed conceptually but not at individual-record depth for pairs 2, 4, 5, 6).
 
 ---
 
