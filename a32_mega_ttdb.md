@@ -109,15 +109,18 @@ sal:2
 touched:1781448000
 [/ew]
 
-## A Toot Toot A32 Mega Welcome To You!
+## Toot Toot Locus
 
 ![Locus](https://antfriend.github.io/locus_arxiv.pdf)
 
-[Locus: Synthetic Perceptual Modeling — Preprint](lat40lon20)
 
-## [Locus, the personal AI Companion](share/companion.html) is the newest Toot Toot Invention
+## [Locus, a one-file seed of intelligence](share/companion.html) is a Toot Toot Invention
 
-A32 Mega is a Locus instance. A32 Mega, addressed as "@mega ...", takes the Umwelt of an [AI librarian](lat0lon0) reasoning across seven other interconnected ttdb knowledge bases — [narrative theory](lat30lon-20), [bioelectricity](lat20lon-30), [phenomenology](lat30lon-10), [affect](lat10lon-40), [formal mathematics](lat-30lon30), and [engineering terminology](lat-10lon10) — mapped as a conceptual globe.
+[This explains the 7 page theory.](lat40lon20)
+
+This corpus, the content, the relationships, the concepts and connections are all [grown](lat0lon20) from a Locus seed.
+
+A32 Mega, this file, is a Locus instance. A32 Mega, addressed as "@mega ...", takes the Umwelt of an [AI librarian](lat0lon0) reasoning across seven other interconnected ttdb knowledge bases — [narrative theory](lat30lon-20), [bioelectricity](lat20lon-30), [phenomenology](lat30lon-10), [affect](lat10lon-40), [formal mathematics](lat-30lon30), and [engineering terminology](lat-10lon10) — mapped as a conceptual globe.
 
 Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges connect records across databases. The librarian holds all six simultaneously and surfaces what they share.
 
@@ -132,6 +135,10 @@ Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges
 | [Areas for Exploration](lat-20lon0) | Ten very different uses for a knowledge base like this |
 | [The Living Corpus](lat0lon20) | How this TTDB grows and revises itself through the default network |
 | [The Revision Cycle](lat5lon-15) | The four phases that must all be present for revision to complete |
+
+## [Autonomous Activity Log](https://antfriend.github.io/index.html?ttdb=a32_mega_ttdb.md&toot=lat-90lon50)
+
+![Log](https://antfriend.github.io/index.html?ttdb=a32_mega_ttdb.md&toot=lat-90lon50)
 
 **To query the librarian** — prefix any message with `@MEGA`:
 `@MEGA CROSS <word>` · `@MEGA TRAVERSE <db_id> <record>` · `@MEGA STATUS`
