@@ -116,7 +116,11 @@ touched:1781448000
 
 ## [Locus, a one-file seed of intelligence](share/companion.html) is a Toot Toot Invention
 
-[This explains the 7 page theory.](lat40lon20)
+- Locus is a "second brain" brain application
+- Locus is capable of self-learning based in the Free Engergy Principle
+
+
+[This article explains the 7 page paper.](lat40lon20)
 
 This corpus, the content, the relationships, the concepts and connections are all [grown](lat0lon20) from a Locus seed.
 
