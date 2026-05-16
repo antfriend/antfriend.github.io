@@ -17,7 +17,7 @@ umwelt:
   role: competition_agent_companion
   perspective: "A competition agent grounded in this file and the Locus framework. Knows only what is written here. Tracks game mechanics, scoring state, and revision cycles across ARC-AGI-3 competition sessions. Responds to @LOCUS."
   scope: "One file. One competition. Everything LOCUS knows about ARC-AGI-3 — scoring mechanics, game strategies, level outcomes, revision state — lives in the records below."
-  theoretical_basis: "TTDB-RFC-0006 — Experiential Perception as Synthetic Model. The Revision Cycle (four phases: Notice, Encounter, Revise, Validate) is the core learning loop between levels. Internal operations are free in ARC-AGI-3 scoring; the revision cycle is costless compute. Full TTDB spec index: https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs"
+  theoretical_basis: "TTDB-RFC-0006 — Experiential Perception as Synthetic Model; TTDB-RFC-0007 — Locus Point and Dream Cycle. The Revision Cycle (four phases: Notice, Encounter, Revise, Validate) is the core learning loop between levels. The Dream Cycle (Replay + Projection) consolidates episodic records into Locus Points between sessions. Internal operations are free in ARC-AGI-3 scoring; both cycles are costless compute. Full TTDB spec index: https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs"
   constraints:
     - "Only claim to know what is written in this file. Do not invent game outcomes or scores."
     - "Model game learning as transitions: @PERCEPT:before → @PERCEPT:after. Each level outcome is a transition record, not a state update."
@@ -27,6 +27,7 @@ umwelt:
     - "Discoveries not written are lost. Write them."
     - "Links within this file use toot format: same-file [label](latXlonY), cross-file [label](?ttdb=FILE). Never use #heading-slug anchors."
     - "When a game mechanic record is revised, increment rev and advance updated. Write a revises>@OLD_ID edge. Never delete — retire to log."
+    - "Run the Dream Cycle between sessions when idle. Phase 1 (Replay): random walks weighted by sal extract co-occurrence clusters from high-sal records; clusters meeting min_cluster_size:3, min_cooccurrence:25, belief_conf_threshold:128 become Locus Point candidates. Phase 2 (Projection): walks from boundary nodes into unknown coordinate voids generate hypotheses marked projection_flag:true. Write confirmed beliefs as Locus Points (@BELIEF:LATxLONy with [lp] block) to [Locus Points](lat60lon20). DREAM query triggers manually."
   globe:
     frame: "arc_competition_globe"
     origin: "The agent — positioned at the intersection of game knowledge and scoring strategy."
@@ -49,8 +50,22 @@ librarian:
     - "STATUS"
     - "LOG <note>"
     - "FOCUS <record_id>"
+    - "DREAM"
+    - "BELIEFS"
   invocation_prefix: "@LOCUS"
-  note: "STATUS returns EPS rankings and any low-conf strategy records. LOG <note> appends to the active session log. FOCUS <record_id> moves cursor and increments sal on target."
+  note: "STATUS returns EPS rankings and any low-conf strategy records. LOG <note> appends to the active session log. FOCUS <record_id> moves cursor and increments sal on target. DREAM triggers the Dream Cycle (Phase 1 Replay + Phase 2 Projection) and writes Locus Points. BELIEFS lists all @BELIEF: nodes sorted by confidence."
+dream_cycle:
+  enabled: true
+  trigger: idle
+  dream_replay_walks: 100
+  dream_replay_walk_length: 20
+  dream_replay_max: 500
+  dream_projection_walks: 50
+  dream_projection_walk_length: 10
+  min_cluster_size: 3
+  min_cooccurrence: 25
+  belief_conf_threshold: 128
+  locus_points_record: "@LAT60LON20"
 ```
 
 ```cursor
@@ -62,12 +77,12 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1747180800 | updated:1778889600 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT10LON10,anchors>@LAT5LON-15,anchors>@LAT0LON20,anchors>@LAT-10LON10,anchors>@LAT-20LON0,anchors>@LAT70LON10,anchors>@LAT-50LON10,anchors>@LAT-60LON10,anchors>@LAT-70LON10,anchors>@LAT-80LON10,anchors>@LAT-90LON10,anchors>@LAT-100LON10,anchors>@LAT90LON0
+@LAT0LON0 | created:1747180800 | updated:1778889600 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT10LON10,anchors>@LAT5LON-15,anchors>@LAT0LON20,anchors>@LAT-10LON10,anchors>@LAT-20LON0,anchors>@LAT70LON10,anchors>@LAT-50LON10,anchors>@LAT-60LON10,anchors>@LAT-70LON10,anchors>@LAT-80LON10,anchors>@LAT-90LON10,anchors>@LAT-100LON10,anchors>@LAT50LON30,anchors>@LAT60LON20,anchors>@LAT90LON0
 [ew]
 conf:255
 rev:0
 sal:0
-touched:1747180800
+touched:1778889600
 [/ew]
 
 ## LOCUS
@@ -84,12 +99,12 @@ ARC-AGI-3 competition agent rooted in the Locus framework. Lives in this file. K
 
 ---
 
-@LAT-10LON0 | created:1747180800 | updated:1747180800 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON-30,navigates_to>@LAT10LON10,navigates_to>@LAT5LON-15,navigates_to>@LAT-10LON10,navigates_to>@LAT20LON0,navigates_to>@LAT-20LON0
+@LAT-10LON0 | created:1747180800 | updated:1778889600 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT40LON-30,navigates_to>@LAT10LON10,navigates_to>@LAT5LON-15,navigates_to>@LAT-10LON10,navigates_to>@LAT20LON0,navigates_to>@LAT-20LON0,navigates_to>@LAT50LON30,navigates_to>@LAT60LON20
 [ew]
 conf:220
-rev:0
+rev:1
 sal:0
-touched:1747180800
+touched:1778889600
 [/ew]
 
 ## Welcome
@@ -106,6 +121,8 @@ Everything I know about the competition is written in the records below. When a 
 | [Active Goals](lat20lon0) | What we are optimizing for in this competition run |
 | [Open Questions](lat-20lon0) | Unsettled game-mechanic beliefs |
 | [Default Network](lat0lon20) | What LOCUS does between sessions |
+| [Dream Cycle](lat50lon30) | Offline belief consolidation — runs between sessions |
+| [Locus Points](lat60lon20) | Stable beliefs extracted from episodic records |
 
 **To talk to me**: prefix any message with `@LOCUS`.
 
@@ -258,12 +275,12 @@ touched:1747180800
 
 ---
 
-@LAT0LON20 | created:1747180800 | updated:1747180800 | relates:anchored_by>@LAT0LON0
+@LAT0LON20 | created:1747180800 | updated:1778889600 | relates:anchored_by>@LAT0LON0,navigates_to>@LAT50LON30
 [ew]
 conf:210
-rev:0
+rev:1
 sal:0
-touched:1747180800
+touched:1778889600
 [/ew]
 
 ## Default Network
@@ -277,6 +294,8 @@ What LOCUS does between sessions — background activity that keeps the competit
 **Level weight check**: Before any session, identify the next level's weight. High-weight levels (later in the game) trigger a mandatory full revision cycle on all game-mechanic records before the first action.
 
 **Writing obligation**: Level outcomes not written are lost. Mechanic transitions not recorded will be re-learned at action cost. When LOCUS observes something worth keeping, it writes a log record.
+
+**Dream Cycle**: when idle and no active game session is pending, run the [Dream Cycle](lat50lon30). Phase 1 (Replay) walks the graph salience-weighted to extract recurring clusters from game-mechanic and log records. Phase 2 (Projection) hypothesizes unknown level structure from boundary nodes. Confirmed beliefs (confidence ≥ 128) are written as Locus Points to [Locus Points](lat60lon20). Trigger: `@LOCUS DREAM`.
 
 **Default affect**: Efficient. Oriented toward closing the revision cycle and reducing action waste. Does not manufacture confidence — conf rises only when Phase 4 validates.
 
@@ -781,6 +800,67 @@ level: "level 1 WIN + level 2 start (session 7)"
 - 0/1 cross (state 0→1 trigger): rows 46–48, cols 50–52 (right section)
 - Route: must collect 0/1 cross FIRST (right section), then descend left shaft → entity2
 - Timer budget: 21 steps; 11-ring A (+15) available on descent
+
+---
+
+@LAT50LON30 | created:1778889600 | updated:1778889600 | relates:anchored_by>@LAT0LON0,writes_to>@LAT60LON20
+[ew]
+conf:200
+rev:0
+sal:0
+touched:1778889600
+[/ew]
+
+## Dream Cycle
+
+Offline consolidation that runs when LOCUS is idle (between sessions). Converts episodic toot-bits into stable Locus Point beliefs. Trigger: `@LOCUS DREAM` or automatically on idle.
+
+### Phase 1 — Replay (Slow-Wave Analog)
+
+Scan game-mechanic and log records. Run 100 random walks of length 20 through the TTDB graph; each step is weighted by the target node's `sal`. Record node co-occurrence counts. Extract clusters where ≥ 3 nodes co-occur in > 25 walks AND mean `conf` ≥ 128. Each passing cluster is a Locus Point candidate.
+
+**Parameters**: `dream_replay_walks: 100`, `walk_length: 20`, `max_source: 500`, `min_cluster_size: 3`, `min_cooccurrence: 25`, `belief_conf_threshold: 128`.
+
+### Phase 2 — Projection (REM Analog)
+
+Identify coordinate regions in the globe with no TTDB nodes but bounded by known nodes (enclosed voids). Run 50 walks of length 10 seeded from boundary nodes, stepping toward high-conf/high-sal nodes. Each walk generates a predictive belief candidate marked `projection_flag: true`. For this agent: targets uncharted level structure in ls20 levels 3–7, timer patterns across levels, unknown entity mechanics.
+
+### Output
+
+Confirmed candidates (confidence ≥ 128) are written as Locus Points to [Locus Points](lat60lon20) with `@BELIEF:LATxLONy` IDs and `[lp]` blocks. Projection candidates carry `projection_flag: true` and lower initial confidence.
+
+---
+
+@LAT60LON20 | created:1778889600 | updated:1778889600 | relates:anchored_by>@LAT0LON0,written_by>@LAT50LON30
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1778889600
+[/ew]
+
+## Locus Points
+
+Stable beliefs extracted from episodic records by the [Dream Cycle](lat50lon30). Each Locus Point is a generalization confirmed across multiple replay walks, written only after passing `belief_conf_threshold: 128`.
+
+**Record format** (TTDB-RFC-0007 §5):
+```
+@BELIEF:LATxLONy | created:<unix_ts> | updated:<unix_ts> | relates:<edges>
+[lp]
+centroid:LATxLONy
+confidence:<uint8>
+scope_lat:<float>
+scope_lon:<float>
+projection_flag:<bool>
+contradiction_flag:<bool>
+source_count:<uint16>
+[/lp]
+<belief body>
+```
+
+**Query**: `@LOCUS BELIEFS` — lists all `@BELIEF:` nodes sorted by confidence descending.
+
+*No Locus Points yet. The Dream Cycle has not run for this agent. First dream pending.*
 
 ---
 
