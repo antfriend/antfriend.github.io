@@ -131,6 +131,12 @@ This has immediate implications for querying and storage:
 - Storage and indexing strategies SHOULD optimize for edge traversal and delta computation, not isolated node lookup.
 - Implementations that record only the "after" state without grounding it in a "before" state are not modeling perception; they are modeling isolated facts.
 
+### 5.3 Homological Interpretation
+
+The `@PERCEPT:before` / `@PERCEPT:after` pair is a **1-simplex** [v₀, v₁] in the algebraic topology sense. The boundary operator ∂[v₀, v₁] = v₁ − v₀ is the formal expression of the claim already made in §5.2: the edge is the datum; the nodes are its boundary. The TTDB graph is therefore naturally a simplicial complex, with toot-bits as generators of H₁.
+
+This structure is the foundation for **Alexander duality** applied to the agent's umwelt. Given a TTDB complex *K* embedded in the coordinate sphere *S²* (per TTDB-RFC-0001 §4), Alexander duality states H̃ᵢ(S² \ K) ≅ H̃^(1−i)(K): the topology of what the agent has not perceived is the dual of the topology of what it has. The shape of the agent's ignorance is formally determined by the shape of its knowledge — not metaphorically, but as a computable invariant. Implementations that plan to use topological analysis for exploration policy or belief formation SHOULD treat the 1-simplex structure of toot-bits as the load-bearing primitive.
+
 ---
 
 ## 6. Phenomenological Trace

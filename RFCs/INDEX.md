@@ -10,6 +10,7 @@ This index lists RFCs included in the TTE 1.0 bundle.
 - [TTDB-RFC-0004-Event-ID-and-Collision.md](TTDB-RFC-0004-Event-ID-and-Collision.md): Event ID Assignment and Collision Handling
 - [TTDB-RFC-0005-Epistemic-Weight.md](TTDB-RFC-0005-Epistemic-Weight.md): Toot-Bit Epistemic Weight (TBEW) — optional [ew] block for confidence, revision, salience, and recency metadata
 - [TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md](TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md): Experiential Perception as Synthetic Model (Locus framework foundation)
+- [TTDB-RFC-0007-Locus-Point-and-Dream-Cycle.md](TTDB-RFC-0007-Locus-Point-and-Dream-Cycle.md): Locus Point and Dream Cycle — episodic-to-semantic memory consolidation via two-phase offline graph traversal; `@BELIEF:` namespace; graph compression; multi-agent belief propagation
 
 ## TTN (Toot Toot Network)
 - [TTN-RFC-0001.md](TTN-RFC-0001.md): Core Semantic Mesh Specification
