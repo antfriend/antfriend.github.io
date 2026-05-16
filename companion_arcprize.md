@@ -804,6 +804,7 @@ Specifications for producing valid Locus records in this file. Core RFCs relevan
 | TTDB-RFC-0004 | Event ID and Collision | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0004-Event-ID-and-Collision.md) |
 | TTDB-RFC-0005 | Epistemic Weight | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0005-Epistemic-Weight.md) |
 | TTDB-RFC-0006 | Experiential Perception as Synthetic Model | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md) |
+| TTDB-RFC-0007 | TTDB-RFC-0007-Locus-Point-and-Dream-Cycle | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/TTDB-RFC-0007-Locus-Point-and-Dream-Cycle.md) |
 | A32-RFC-0001 | Architecture | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/A32-RFC-0001-Architecture.md) |
 | A32-RFC-0003 | Agent Loop | [spec](https://github.com/antfriend/toot-toot-engineering/blob/main/RFCs/A32-RFC-0003-Agent-Loop.md) |
 
