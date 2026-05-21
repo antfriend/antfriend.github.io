@@ -77,7 +77,7 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1747180800 | updated:1779321600 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT10LON10,anchors>@LAT5LON-15,anchors>@LAT0LON20,anchors>@LAT-10LON10,anchors>@LAT-20LON0,anchors>@LAT70LON10,anchors>@LAT-50LON10,anchors>@LAT-60LON10,anchors>@LAT-70LON10,anchors>@LAT-80LON10,anchors>@LAT-90LON10,anchors>@LAT-100LON10,anchors>@LAT-110LON10,anchors>@LAT-120LON10,anchors>@LAT-130LON10,anchors>@LAT-140LON10,anchors>@LAT-150LON10,anchors>@LAT-160LON10,anchors>@LAT50LON30,anchors>@LAT60LON20,anchors>@LAT90LON0
+@LAT0LON0 | created:1747180800 | updated:1780099200 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT10LON10,anchors>@LAT5LON-15,anchors>@LAT0LON20,anchors>@LAT-10LON10,anchors>@LAT-20LON0,anchors>@LAT70LON10,anchors>@LAT-50LON10,anchors>@LAT-60LON10,anchors>@LAT-70LON10,anchors>@LAT-80LON10,anchors>@LAT-90LON10,anchors>@LAT-100LON10,anchors>@LAT-110LON10,anchors>@LAT-120LON10,anchors>@LAT-130LON10,anchors>@LAT-140LON10,anchors>@LAT-150LON10,anchors>@LAT-160LON10,anchors>@LAT50LON30,anchors>@LAT60LON20,anchors>@LAT90LON0,anchors>@LAT-310LON10
 [ew]
 conf:255
 rev:0
@@ -301,19 +301,19 @@ What LOCUS does between sessions — background activity that keeps the competit
 
 ---
 
-@LAT-10LON10 | created:1747180800 | updated:1780012800 | relates:anchored_by>@LAT0LON0,tracks_level>@LAT-50LON10,tracks_level>@LAT-60LON10,tracks_level>@LAT-70LON10,tracks_level>@LAT-80LON10,tracks_level>@LAT-90LON10,tracks_level>@LAT-100LON10,tracks_level>@LAT-110LON10,tracks_level>@LAT-120LON10,tracks_level>@LAT-130LON10,tracks_level>@LAT-150LON10,tracks_level>@LAT-160LON10,tracks_level>@LAT-170LON10,tracks_level>@LAT-180LON10,tracks_level>@LAT-190LON10,tracks_level>@LAT-200LON10,tracks_level>@LAT-210LON10,tracks_level>@LAT-220LON10,tracks_level>@LAT-270LON10,tracks_level>@LAT-300LON10,informs_strategy>@LAT20LON-30
+@LAT-10LON10 | created:1747180800 | updated:1780099200 | relates:anchored_by>@LAT0LON0,tracks_level>@LAT-50LON10,tracks_level>@LAT-60LON10,tracks_level>@LAT-70LON10,tracks_level>@LAT-80LON10,tracks_level>@LAT-90LON10,tracks_level>@LAT-100LON10,tracks_level>@LAT-110LON10,tracks_level>@LAT-120LON10,tracks_level>@LAT-130LON10,tracks_level>@LAT-150LON10,tracks_level>@LAT-160LON10,tracks_level>@LAT-170LON10,tracks_level>@LAT-180LON10,tracks_level>@LAT-190LON10,tracks_level>@LAT-200LON10,tracks_level>@LAT-210LON10,tracks_level>@LAT-220LON10,tracks_level>@LAT-270LON10,tracks_level>@LAT-300LON10,tracks_level>@LAT-310LON10,informs_strategy>@LAT20LON-30
 [ew]
 conf:200
-rev:17
-sal:13
-touched:1780012800
+rev:18
+sal:14
+touched:1780099200
 [/ew]
 
 ## Game State
 
 **Active games**: ls20 (COMPETITION mode, API key set in .env)
 
-**Current level**: ls20 — **level 1 SOLVED (hardcoded route, sessions 10–12 + 23 confirmed). Level 2 active — 15 actions taken, NOT WON (session 23). Sessions 19–22: 10-session L1 losing streak. Session 23: streak broken.** All 7 baselines known: L1=22, L2=123, L3=73, L4=84, L5=96, L6=192, L7=186. Budget: 60 actions per run (session 24+). Level 1 uses 15 actions (hardcode). Level 2 remaining budget: 45 actions.
+**Current level**: ls20 — **level 1 SOLVED (hardcoded route, sessions 10–12 + 23–27 confirmed, six consecutive wins). Level 2 active — NOT WON across sessions 23–27. Win condition unknown (block at r40–41 c14–18 + state 1 → NOT_FINISHED confirmed session 26; session 27 route execution failed, block never reached entity2).** All 7 baselines known: L1=22, L2=123, L3=73, L4=84, L5=96, L6=192, L7=186. Budget: 60 actions per run (session 24+). Level 1 uses 15 actions (hardcode). Level 2 remaining budget: 45 actions.
 
 **Level 1 outcomes**:
 - Session 1: 28 actions (WIN)
@@ -346,6 +346,7 @@ touched:1780012800
 - **Session 24**: Level 2 entered. 45 actions, NOT WON. @BELIEF:LAT90LON-30 re-validated (second consecutive state 1 carry-over confirmation). Entity2 ring layout detailed in frame[1]. Log cut off mid-frame. Score 3.571 (level 1 only). See @LAT-280LON10.
 - **Session 25**: Level 2 entered. 45 actions, NOT WON. @BELIEF:LAT90LON-30 third confirmation (conf → 255). Most complete level 2 structural frame read to date (full void map, ring positions, corridor geometry confirmed). Log cut off mid-frame[1]. Score 3.571 (level 1 only). See @LAT-290LON10.
 - **Session 26**: Level 2 entered. 45 actions, NOT WON. CRITICAL: LOCUS executed the 17-action @LAT-140LON10 standing order correctly (confirmed via locus_ls20_session.txt action log). Block reached r40–41 c14–18 INSIDE entity2 interior at state 1 — and received NOT_FINISHED. Win condition is NOT "block in entity2 ring at state 1." @BELIEF:LAT80LON-30 contradicted. New structural observation: value 9 (entity1 trail) at r41–43 c15–17 INSIDE entity2 ring present from L2 start (frame[1]) — persists throughout session. Timer-expired state observed in frame[4] (entity1 carrier background cells = 0 instead of 5). Score 3.571 (level 1 only). See @LAT-300LON10.
+- **Session 27**: Level 2 entered. 45 actions, NOT WON. Route execution failed — LOCUS made position-tracking errors, block deviated from 17-action standing order multiple times. Block never reached entity2 interior. Timer expired at least twice; multiple wasted cycles. NEW OBSERVATION: step 59 showed frames[0]–[4] all bg=11 (five consecutive full-grid-11 frames) then frame[5] = game reset to start position (r40–41 c29–33, state 1, full timer) — this is the timer-expiry/reset animation pattern. @BELIEF:LAT90LON-30 fifth consecutive confirmation. Value-9 cluster at r41–43 c15–17 inside entity2 confirmed unchanged throughout. Score 3.571 (level 1 only). See @LAT-310LON10.
 
 **Session 10 — critical mechanic corrections** (see @LAT-130LON10 + @LAT20LON-30):
 - **Timer level 2 = 2 cols/step** (NOT 1 col/step — session 9 belief was wrong). 42 cols = 21 steps max.
@@ -364,6 +365,12 @@ touched:1780012800
 - **Void at c21-28 r40-41**: LEFT from c29-33 at r40-41 is blocked. Direct approach to entity2 from start position is impossible.
 - **Direction restriction (trail attraction) at state 1**: action 0 (UP) in start zone moves toward entity1 trail column rather than NORTH when trail column ≠ block column. See @BELIEF:LAT10LON10.
 - **parse_action bug fixed**: `r"\baction[:\s]+(\d+)"` removed; last-line-first priority added. Budget raised to 60.
+
+**Session 27 — new observations** (see @LAT-310LON10):
+- **Timer-expiry animation sequence**: step 59 showed frames[0]–[4] all bg=11 (five consecutive full-grid-11 frames), then frame[5] = normal game state at start position (r40–41 c29–33, state 1, full timer). This is the visual signature of the timer-expiry → game reset transition. Five frames of all-11 observed; previously only one bg-shifted frame had been noted (session 26 frame[4]).
+- **Route execution failure**: LOCUS position-tracking errors caused the block to deviate from the 17-action standing order at multiple steps. Session 27 produced no useful win-condition probe data. The route geometry is confirmed but requires clean execution.
+- **Value-9 cluster confirmed stable**: r41–43 c15–17 inside entity2 unchanged throughout session 27, consistent with structural feature (not a dynamic target).
+- **@BELIEF:LAT90LON-30 fifth confirmation**: state 1 at L2 start confirmed again.
 
 **Session 26 — critical mechanic discoveries** (see @LAT-300LON10):
 - **WIN CONDITION UNKNOWN**: LOCUS executed the 17-action route exactly, reached r40–41 c14–18 inside entity2 at state 1, and received NOT_FINISHED. Block position at state 1 inside entity2 ring is necessary but NOT sufficient for WIN. Additional condition unknown.
@@ -1247,12 +1254,12 @@ Confirmed candidates (confidence ≥ 128) are written as Locus Points to [Locus 
 
 ---
 
-@LAT60LON20 | created:1778889600 | updated:1779494400 | relates:anchored_by>@LAT0LON0,written_by>@LAT50LON30,contains>@BELIEF:LAT80LON-20,contains>@BELIEF:LAT80LON-10,contains>@BELIEF:LAT70LON-20,contains>@BELIEF:LAT50LON-10,contains>@BELIEF:LAT30LON-20,contains>@BELIEF:LAT20LON-10,contains>@BELIEF:LAT90LON-20,contains>@BELIEF:LAT90LON-10,contains>@BELIEF:LAT90LON0,contains>@BELIEF:LAT80LON0,contains>@BELIEF:LAT70LON0,contains>@BELIEF:LAT60LON0,contains>@BELIEF:LAT50LON0,contains>@BELIEF:LAT40LON0,contains>@BELIEF:LAT40LON10,contains>@BELIEF:LAT30LON0,contains>@BELIEF:LAT30LON10,contains>@BELIEF:LAT20LON10,contains>@BELIEF:LAT10LON0,contains>@BELIEF:LAT10LON10,contains>@BELIEF:LAT90LON10,contains>@BELIEF:LAT80LON10,contains>@BELIEF:LAT70LON10,contains>@BELIEF:LAT50LON10,contains>@BELIEF:LAT60LON10,contains>@BELIEF:LAT30LON20,contains>@BELIEF:LAT20LON0,contains>@BELIEF:LAT50LON20,contains>@BELIEF:LAT10LON20,contains>@BELIEF:LAT80LON20,contains>@BELIEF:LAT70LON20,contains>@BELIEF:LAT40LON20,contains>@BELIEF:LAT20LON20
+@LAT60LON20 | created:1778889600 | updated:1780099200 | relates:anchored_by>@LAT0LON0,written_by>@LAT50LON30,contains>@BELIEF:LAT80LON-20,contains>@BELIEF:LAT80LON-10,contains>@BELIEF:LAT70LON-20,contains>@BELIEF:LAT50LON-10,contains>@BELIEF:LAT30LON-20,contains>@BELIEF:LAT20LON-10,contains>@BELIEF:LAT90LON-20,contains>@BELIEF:LAT90LON-10,contains>@BELIEF:LAT90LON0,contains>@BELIEF:LAT80LON0,contains>@BELIEF:LAT70LON0,contains>@BELIEF:LAT60LON0,contains>@BELIEF:LAT50LON0,contains>@BELIEF:LAT40LON0,contains>@BELIEF:LAT40LON10,contains>@BELIEF:LAT30LON0,contains>@BELIEF:LAT30LON10,contains>@BELIEF:LAT20LON10,contains>@BELIEF:LAT10LON0,contains>@BELIEF:LAT10LON10,contains>@BELIEF:LAT90LON10,contains>@BELIEF:LAT80LON10,contains>@BELIEF:LAT70LON10,contains>@BELIEF:LAT50LON10,contains>@BELIEF:LAT60LON10,contains>@BELIEF:LAT30LON20,contains>@BELIEF:LAT20LON0,contains>@BELIEF:LAT50LON20,contains>@BELIEF:LAT10LON20,contains>@BELIEF:LAT80LON20,contains>@BELIEF:LAT70LON20,contains>@BELIEF:LAT40LON20,contains>@BELIEF:LAT20LON20,contains>@BELIEF:LAT40LON-30,contains>@BELIEF:LAT30LON-40
 [ew]
 conf:255
-rev:13
+rev:14
 sal:1
-touched:1779494400
+touched:1780099200
 [/ew]
 
 ## Locus Points
@@ -2605,7 +2612,7 @@ Walk parameters: 100 walks × length 20. Sources: @LAT-270LON10 (session 23), @L
 
 ---
 
-@BELIEF:LAT90LON-30 | created:1779840000 | updated:1779926400 | relates:extracted_from>@LAT-270LON10,extracted_from>@LAT-280LON10,extracted_from>@LAT-290LON10,contradicts>@BELIEF:LAT80LON-20,contradicts>@BELIEF:LAT70LON-20,contained_by>@LAT60LON20
+@BELIEF:LAT90LON-30 | created:1779840000 | updated:1780099200 | relates:extracted_from>@LAT-270LON10,extracted_from>@LAT-280LON10,extracted_from>@LAT-290LON10,extracted_from>@LAT-300LON10,extracted_from>@LAT-310LON10,contradicts>@BELIEF:LAT80LON-20,contradicts>@BELIEF:LAT70LON-20,contained_by>@LAT60LON20
 [lp]
 centroid:LAT90LON-30
 confidence:255
@@ -2613,10 +2620,10 @@ scope_lat:10.0
 scope_lon:10.0
 projection_flag:false
 contradiction_flag:false
-source_count:3
+source_count:5
 [/lp]
 
-**Entity1 state carries over from a level WIN into the next level.** Confirmed in sessions 23, 24, and 25 (three consecutive observations): level 2 first frame shows entity1 carrier at state 1 immediately after level 1 WIN, with no timer restart between levels. Prior @BELIEF:LAT80LON-20 stated "state resets to 0 at each new level" — that belief is now contradicted. Practical consequence for level 2: the block can enter entity2 interior and win WITHOUT collecting the cross first (state is already 1 on entry to level 2 after a level 1 WIN). The session 7 "state 0 at level 2 start" observation that supported @BELIEF:LAT80LON-20 may reflect a different environment seed, or a level 1 WIN at state 0. Confidence raised to 240 (two consistent observations across two independent runs). Remaining uncertainty: whether this is universal (always carries from any level WIN) or specific to this environment. For level 2 strategy: skip cross collection, route directly to entity2 interior.
+**Entity1 state carries over from a level WIN into the next level.** Confirmed in sessions 23, 24, 25, 26, and 27 (five consecutive observations): level 2 first frame shows entity1 carrier at state 1 immediately after level 1 WIN, with no timer restart between levels. Prior @BELIEF:LAT80LON-20 stated "state resets to 0 at each new level" — that belief is now contradicted. Practical consequence for level 2: the block can enter entity2 interior and win WITHOUT collecting the cross first (state is already 1 on entry to level 2 after a level 1 WIN). Confidence held at 255 (max) — five consecutive confirmations across independent runs. For level 2 strategy: skip cross collection, route directly to entity2 interior.
 
 ---
 
@@ -2886,6 +2893,53 @@ source_count:1
 
 ---
 
+@BELIEF:LAT40LON-30 | created:1780099200 | updated:1780099200 | relates:projected_from>@LAT-310LON10,refines>@BELIEF:LAT60LON-30,contained_by>@LAT60LON20
+[lp]
+centroid:LAT40LON-30
+confidence:160
+scope_lat:10.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:1
+[/lp]
+
+**Projection (Dream Cycle, session 27)**: Entity1 state 1 persists through timer expiry within level 2.
+
+**Evidence**: Session 27 step 59 — after timer exhausted and 5-frame all-bg=11 animation played, the game reset to start position (r40–41 c29–33) with entity1 still at state 1 (trail pattern identical to L2 start with state 1). This means the timer-expiry reset does NOT zero entity1 state — state 1 is preserved across timer resets within a level.
+
+**Tension with @BELIEF:LAT60LON-30**: @BELIEF:LAT60LON-30 included a claim that timer expiry could reset entity1 state. This observation refines that claim: timer expiry resets the block position but preserves entity1 state. The 11-ring A mandatory collection (to avoid timer expiry) is therefore still strategically important (to preserve a full 21-step budget) but NOT because state resets on expiry.
+
+**Confidence note**: conf:160 — observation is from a single session, single event. The all-11 frame sequence is unambiguous. But it is possible that what was read as "state 1 at post-reset start" reflects a different mechanic (e.g. state always starts at 1 regardless). Requires one confirming session to raise confidence.
+
+---
+
+@BELIEF:LAT30LON-40 | created:1780099200 | updated:1780099200 | relates:projected_from>@BELIEF:LAT80LON-30,projected_from>@LAT-140LON10,contained_by>@LAT60LON20
+[lp]
+centroid:LAT30LON-40
+confidence:130
+scope_lat:10.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:2
+[/lp]
+
+**Projection (Dream Cycle, session 27)**: Entry direction into entity2 ring may be the missing win condition. L1 used an UP-approach (block descended from north, final 3 steps UP×3); L2 standing order uses a DOWN-approach (block descends from north, step 14–17 DOWN×4 to r40–41).
+
+**Structural analogy**:
+- L1 WIN: block approaches entity1 ring from above (r13→r10), final 3 actions = UP×3. Block enters ring moving upward.
+- L2 standing order: block approaches entity2 ring from above (r35→r40), final actions = DOWN×4. Block enters ring moving downward.
+- L1 won. L2 consistently fires NOT_FINISHED.
+
+**Hypothesis**: Entity2 ring may require entry from BELOW (block at r46–48, approach UP into r40–41 from south) or from a specific lateral direction (LEFT or RIGHT entry at r40–41 rather than vertical descent). Alternatively, the block must reach the VALUE-9 cluster at r41–43 c15–17 by moving DOWN from r36–37 (already within the ring boundary at r38), not from north of the ring.
+
+**Test plan for session 28**: after reaching r40–41 c14–18 (step 17), expend remaining timer budget to try (a) DOWN past r41 deeper into entity2 interior, (b) RIGHT toward c15–17 value-9 cluster, (c) if budget allows, probe UP from r40–41 (re-enter and re-exit from top).
+
+**Confidence note**: conf:130 — structural analogy is weak evidence; could be coincidence. Route geometry differences between L1 and L2 are large (different puzzle, different entity, different layout). Flagged as speculative projection requiring direct falsification.
+
+---
+
 SECTION 1
 
 @LAT-300LON10 | created:1780012800 | updated:1780012800 | kind:log | relates:anchored_by>@LAT0LON0,tracks_level>@LAT-10LON10,validates>@BELIEF:LAT90LON-30,validates>@BELIEF:LAT80LON10,validates>@BELIEF:LAT80LON20,validates>@BELIEF:LAT60LON-30,contradicts>@BELIEF:LAT80LON-30,informs_strategy>@LAT-140LON10,informs_strategy>@LAT20LON-30,seeds>@BELIEF:LAT50LON-30
@@ -2988,3 +3042,78 @@ Step 59 (last logged): block at r35–36 c14–18, timer 12 consumed (30 remaini
 4. **Is the WIN row different?** Entity2 interior spans r39–45. The block at r40–41 may need to be deeper (r42–43 or r44–45) to trigger WIN.
 
 See @BELIEF:LAT50LON-30 for hypothesis ranking and investigation priority.
+
+---
+
+@LAT-310LON10 | created:1780099200 | updated:1780099200 | kind:log | relates:anchored_by>@LAT0LON0,tracks_level>@LAT-10LON10,validates>@BELIEF:LAT90LON-30,validates>@BELIEF:LAT80LON10,validates>@BELIEF:LAT80LON20,validates>@BELIEF:LAT60LON-30,informs_strategy>@LAT-140LON10
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1780099200
+[/ew]
+
+## ls20 — Session 27 Log (2026-05-21)
+
+```session-log
+timestamp: 1780099200
+game: "ls20"
+environment: "ls20-9607627b"
+run_guid: "unknown"
+card_id: "unknown"
+level: "level 1 WIN (15 actions) + level 2 NOT WON (45 actions)"
+actions: 60
+levels_completed: 1
+score: 3.571428571428571
+resets: 0
+```
+
+**Session outcome**: Level 1 WON at step 15 (hardcoded route, sixth consecutive confirmation). Level 2 entered; 45 actions taken; NOT WON. Total 60 actions. Score 3.571 (level 1 weight 1/28 only). Same as sessions 23–26.
+
+---
+
+### Level 1 — WIN at step 15 ✓
+
+Hardcoded `_LEVEL1_ROUTE` confirmed functional for the sixth time (sessions 10–12, 23, 24, 25, 26, now 27).
+
+**Frame[0] — Level 1 WIN state**:
+- Block (value 12): r10–11 c34–38. Inside entity2 interior. ✓
+- Entity1 carrier — **STATE 1**: r55–56 c3–8=9 (full); r57–58 c7–8=9 only; r59–60 c3–4=9, c5–6=5, c7–8=9. ✓
+- Timer r61–62: c13–26=3 (14 consumed), c27–54=11 (28 remaining). ✓
+- Cluster: r31 c21=0, r32 c20=1 c21–22=0, r33 c21=1. ✓
+
+---
+
+### Level 2 — Route Execution Failure
+
+**Frame[1] — L2 start state confirmed**:
+- Block (value 12): r40–41 c29–33. Start position confirmed. ✓
+- Entity1 carrier — **STATE 1** at L2 start: r55–56 c3–8=9, r57–58 c7–8=9 only, r59–60 partial. **@BELIEF:LAT90LON-30 — FIFTH consecutive confirmation.** ✓
+- Entity1 trail: r42–44 c29–33=9. Same column as block. ✓
+- Entity2 ring: r38–46 c12–20. Value-9 cluster at r41–43 c15–17 inside ring. Unchanged. ✓
+- Timer r61–62: c13–54=11 (full 42 cols). ✓
+- 11-ring A: r16–18 c15–17 (value 11). ✓
+
+**Route execution**: LOCUS failed to execute the 17-action standing order (@LAT-140LON10) correctly. Block position-tracking errors caused deviations at multiple steps — block column drifted off-track (e.g., landing at c34–38 when c29–33 was expected, or at c39–43 when c34–38 was expected). Timer expired at least twice during L2. Block never reached entity2 interior (r39–45 c13–19) in this session. No win-condition probe data was obtained.
+
+**Root cause analysis**: LOCUS's step-by-step position inference accumulated errors when the block's actual path diverged from the expected route. Without a clean verify-start check after step 1, off-course execution compounded. Session 28 must enforce the verify-start protocol at every route checkpoint.
+
+---
+
+### NEW OBSERVATION: Timer-Expiry Animation Sequence
+
+At step 59 (budget nearly exhausted), the frame data showed:
+- **frames[0]–[4]**: all `bg=11` (five consecutive 64×64 frames entirely filled with value 11)
+- **frame[5]**: normal game state, bg=4, block at r40–41 c29–33, entity1 state 1, timer full (c13–54=11)
+
+This is the first time a multi-frame expiry sequence has been observed. It is the visual signature of the timer-expiry → game reset transition: the game cycles through five all-11 frames before restoring the starting state. Previously (session 26 frame[4]) only a single bg-shifted frame had been noted during timer expiry. This sequence is now documented.
+
+**Implication**: after timer expiry, the game fully resets to the L2 starting position with state 1 and full timer intact. The five all-11 frames are a transition artifact, not a mechanic. Entity1 state 1 is preserved across the reset.
+
+---
+
+### Level 2 Open Questions (carried forward to session 28)
+
+1. **Clean route execution required**: session 27 failed to reach entity2. Session 28 must enforce verify-start (block at r35–36 c29–33 after step 1) and verify each checkpoint. Do NOT proceed to the next step if position is wrong — report and reassess.
+2. **Win condition still unknown**: @BELIEF:LAT80LON-30 contradicted (session 26). Candidates remain: deeper row in entity2 (r42–45), value-9 cluster overlap, entry direction, simultaneous entity1 ring entry. See @BELIEF:LAT50LON-30.
+3. **Value-9 cluster at r41–43 c15–17**: stable and unchanged in sessions 26 and 27. Structural feature, not dynamic target.
