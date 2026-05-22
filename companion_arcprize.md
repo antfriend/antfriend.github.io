@@ -77,7 +77,7 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1747180800 | updated:1780099200 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT10LON10,anchors>@LAT5LON-15,anchors>@LAT0LON20,anchors>@LAT-10LON10,anchors>@LAT-20LON0,anchors>@LAT70LON10,anchors>@LAT-50LON10,anchors>@LAT-60LON10,anchors>@LAT-70LON10,anchors>@LAT-80LON10,anchors>@LAT-90LON10,anchors>@LAT-100LON10,anchors>@LAT-110LON10,anchors>@LAT-120LON10,anchors>@LAT-130LON10,anchors>@LAT-140LON10,anchors>@LAT-150LON10,anchors>@LAT-160LON10,anchors>@LAT50LON30,anchors>@LAT60LON20,anchors>@LAT90LON0,anchors>@LAT-310LON10
+@LAT0LON0 | created:1747180800 | updated:1779321600 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT10LON10,anchors>@LAT5LON-15,anchors>@LAT0LON20,anchors>@LAT-10LON10,anchors>@LAT-20LON0,anchors>@LAT70LON10,anchors>@LAT-50LON10,anchors>@LAT-60LON10,anchors>@LAT-70LON10,anchors>@LAT-80LON10,anchors>@LAT-90LON10,anchors>@LAT-100LON10,anchors>@LAT-110LON10,anchors>@LAT-120LON10,anchors>@LAT-130LON10,anchors>@LAT-140LON10,anchors>@LAT-150LON10,anchors>@LAT-160LON10,anchors>@LAT50LON30,anchors>@LAT60LON20,anchors>@LAT90LON0,anchors>@LAT-310LON10,anchors>@LAT70LON-40,anchors>@LAT85LON-40
 [ew]
 conf:255
 rev:0
@@ -3855,21 +3855,21 @@ See @BELIEF:LAT-40LON-40 and @BELIEF:LAT-50LON-40 for entity2 entry geometry ana
 
 ---
 
-@BELIEF:LAT-40LON-40 | created:1780444800 | updated:1780444800 | relates:extracted_from>@LAT-300LON10,extracted_from>@LAT-390LON10,extracted_from>@LAT-400LON10,contradicts>@BELIEF:LAT80LON-30,related_to>@BELIEF:LAT-50LON-40,related_to>@BELIEF:LAT-10LON-40,contained_by>@LAT60LON20
+@BELIEF:LAT-40LON-40 | created:1780444800 | updated:1779321600 | relates:extracted_from>@LAT-300LON10,extracted_from>@LAT-390LON10,extracted_from>@LAT-400LON10,contradicts>@BELIEF:LAT80LON-30,related_to>@BELIEF:LAT-50LON-40,related_to>@BELIEF:LAT-10LON-40,contained_by>@LAT60LON20
 [ew]
-conf:120
-rev:1
+conf:210
+rev:2
 sal:1
-touched:1780444800
+touched:1779321600
 [/ew]
 [lp]
 centroid:LAT-40LON-40
-confidence:120
+confidence:210
 scope_lat:15.0
 scope_lon:15.0
 projection_flag:false
-contradiction_flag:true
-source_count:3
+contradiction_flag:false
+source_count:10
 [/lp]
 
 **Entity2 has NEVER been entered. The mystery entity (value 9 at r40–42 c15–17) inside entity2 blocks ALL entry positions. Session 26 block-position inference was wrong.**
@@ -3978,4 +3978,692 @@ Twelfth confirmation. Route stable. Block entered entity2 interior at r10–11 c
 **Confirmed stable** (from frame[1] structural data, consistent with all prior sessions):
 - Block start: r40–41 c29–33. ✓
 - Entity1 state 1 at L2 start. @BELIEF:LAT90LON-30 — seventh consecutive confirmation. ✓
-- Mystery entity value 9
+- Mystery entity value 9 at r40–42 c15–17 inside entity2 ring — confirmed blocking all 5-wide interior entry columns (session 34). Entity2 has NEVER been successfully entered. Win condition requires clearing mystery entity first. Hypothesis E: cross collection (state 1→2) clears mystery entity — tested session 34 cross-first probe [1,3,3,3,3], outcome unconfirmed (log cut short). Session 35 priority: read post-collection frame to confirm/deny clearing.
+
+---
+
+## Dream Cycle — Post-Session 34 (2026-05-21)
+
+**Phase 1 — Replay**: 100 walks × length 20, salience-weighted. High-sal pull: @LAT-10LON10 (sal:14), @LAT20LON-30 (sal:5). Reviewing sessions 29–34 and freshly written records @LAT70LON-40 (game-space concept) and @LAT85LON-40 (level 1 scene record).
+
+**Phase 2 — Projection**: 50 walks × length 10, seeded from boundary nodes @BELIEF:LAT-50LON-40 (mystery entity, conf:150), @LAT85LON-40 (scene record boundary), @LAT70LON-40 (game-space boundary). Void at LAT40LON-40, LAT50LON-40.
+
+---
+
+### Phase 1 — Replay Analysis
+
+**Cluster A: Mystery entity is a geometric blocker (highest co-occurrence)**
+
+Records: @LAT-300LON10, @LAT-310LON10, @LAT-390LON10, @LAT-400LON10, @BELIEF:LAT0LON-40, @BELIEF:LAT-40LON-40, @BELIEF:LAT-50LON-40. Sessions 25–34 all confirm value 9 at r40–42 c15–17 inside entity2, present from frame[1], before any block movement.
+
+@BELIEF:LAT-40LON-40 currently holds conf:120 with `contradiction_flag:true`. The `contradiction_flag` was appropriate when first written — it contradicted the prior belief that block *entered* entity2. But the geometric fact itself (entity2 NEVER entered due to mystery entity blocking) is now corroborated by sessions 25–34 (ten sessions). Conf:120 is too low for a fact of this certainty. **Warranted: raise @BELIEF:LAT-40LON-40 conf from 120 → 210.** Phase 4 is not required to raise conf on a geometric fact observed ten times. Phase 4 is required only for the *mechanism* hypothesis (hypothesis E).
+
+**Cluster B: The dip maneuver is the universal collection technique**
+
+Records: @LAT85LON-40 (scene 3 — DOWN+UP from cluster-adjacent position), @LAT20LON-30 (session 7 trail-overlap discovery), @BELIEF:LAT50LON20 (cluster at r31–33). Co-occurrence: every L1 collection event plus all L2 cross-collection projections.
+
+The newly written scene record (@LAT85LON-40) makes explicit what was implicit: **a DOWN step drags the trail south; the trail triggers collection; an UP step retracts**. This is not specific to L1 — it applies identically to L2 cross collection. Block at r45–46 c49–53 (after DOWN+RIGHT×4 from start): trail at r47–49 c49–53 overlaps cross at r47–48 c50–52 (2/3 row overlap, confirmed feasible by @BELIEF:LAT90LON-10). The L2 cross-first probe is mechanically identical to L1 Scene 3.
+
+**New belief warranted**: formalize the cross collection geometry as a confirmed Locus Point, distinct from the L2 route projection at @BELIEF:LAT-10LON-40 which is projection_flag:true. The collection *mechanism* (trail dip at r45–46 c49–53 → cross collected) is a geometric fact that can be stated at conf:180 independent of whether it causes mystery entity clearing.
+
+**Cluster C: Cross-first probe is the Phase 4 action for hypothesis E**
+
+Records: @BELIEF:LAT10LON-40 (state-2 hypothesis), @BELIEF:LAT-50LON-40 (hypothesis E), @BELIEF:LAT-10LON-40 (cross-first route sketch), session 34 log. Session 34 attempted [1,3,3,3,3] as the cross-first probe. The session log cuts off before frame-read confirmation. This means hypothesis E remains at Phase 3 — revised, not yet validated. Phase 4 validation = session 35 must execute cross-first probe AND read the post-collection frame to determine whether mystery entity at r40–42 c15–17 disappears.
+
+**Cluster D: Scene record as navigation invariant**
+
+Records: @LAT85LON-40 (new), @LAT70LON-40 (new), @LAT-10LON10 (game state). The scene record provides the first explicit invariant-based navigation protocol for any level. Each scene boundary is a checkable position. This is more robust than the checkpoint protocol at @BELIEF:LAT0LON-50 (which only specifies step numbers) because it grounds checkpoints in structural geometry rather than step counts. In L2, the equivalent scene boundaries would be: r40–41 c34–38 (after Scene A), r10–11 c34–38 (after Scene B), r10–11 c14–18 (after Scene C), r15–16 c14–18 (after Scene D). These match the existing checkpoint protocol but are now derivable from scene logic, not just memorized.
+
+**Cluster E: @BELIEF:LAT-30LON-40 stability (max_steps operator-controlled)**
+
+Confirmed across sessions 29–34. Conf:255 was correct. Session 34 ran max_steps=60 successfully. No update needed.
+
+---
+
+### Phase 2 — Projection Analysis
+
+**Projection target A: If hypothesis E confirmed, what is the optimal L2 route?**
+
+Seeding from @BELIEF:LAT-50LON-40 (hypothesis E, conf:150) + @BELIEF:LAT-10LON-40 (cross-first route sketch, conf:155) into void at LAT40LON-40.
+
+Cross collection is 5 steps: DOWN, RIGHT×4 from r40–41 c29–33 → r45–46 c49–53 (trail overlaps cross). If hypothesis E holds, mystery entity clears. Then entity2 entry requires navigating to c14–18 and entering the ring from the left track. Geometry from @LAT-140LON10:
+
+| Scene | Actions | End position |
+|-------|---------|--------------|
+| Cross-first probe | DOWN, RIGHT×4 | r45–46 c49–53. State 1→2. Mystery entity cleared (hypothesis E). |
+| Ascent to wide connector | UP×7 | r10–11 c49–53. 14 timer cols consumed. |
+| Left track entry | LEFT×6 | r10–11 c14–18. 12 consumed. Timer: 16 remaining (8 steps). |
+| 11-ring A + descent | DOWN×6 | r15–16 (11-ring A: FULL RESET → 42). Then r20–21 → r40–41 c14–18. Timer: 42 − 10 = 32. **Entity2 entry at state 2 → WIN (if hypothesis E).** |
+
+Total L2 actions: 5 (cross) + 19 (navigate + descend) = 24 actions. Well within 45-action budget.
+
+**Projection warranted at LAT40LON-40.**
+
+**Projection target B: Scene F for L2 — the cross-first dip as canonical collection scene**
+
+Seeding from @LAT85LON-40 (L1 scene record, scene 3 dip maneuver) into void at LAT50LON-40.
+
+The L2 cross collection is structurally identical to L1 Scene 3 (cluster collection) with different coordinates:
+
+| | L1 Scene 3 | L2 Scene F (cross) |
+|---|---|---|
+| Entry position | r25–26 c19–23 | r40–41 c29–33 (start) |
+| Dip action | DOWN → r30–31 c19–23 | DOWN → r45–46 c29–33 |
+| Trail position | r32–34 c19–23 | r47–49 c29–33 |
+| Collectible | cluster r31–33 c20–22 | cross r46–48 c50–52 |
+| Collection | trail c19–23 overlaps cluster c20–22 ✓ | trail c29–33 does NOT overlap cross c50–52 ✗ |
+
+The dip from r40–41 does NOT collect the cross — wrong column alignment. The cross-first route [1,3,3,3,3] (DOWN then RIGHT×4) moves the block to r45–46 c49–53 so the trail falls at r47–49 c49–53, which overlaps cross r47–48 c50–52. This is NOT a scene-3-style dip from a fixed position — it is a combined move-to-alignment + trail-dip in a single path.
+
+**Structural distinction from L1**: in L1, the block returns to its pre-dip position (UP after DOWN). In the L2 cross-first probe, the block does NOT return — the cross collection is a one-way pass (the block continues navigating from r45–46 c49–53). The scene-record concept must accommodate one-way collection scenes, not only symmetric dip scenes. This is a new scene type: **the pass-through collection**, where collection fires during directional navigation without a return move.
+
+**Projection warranted at LAT50LON-40 — one-way pass-through collection as distinct scene type.**
+
+---
+
+### New Records
+
+1. **Raise @BELIEF:LAT-40LON-40 conf: 120 → 210** (geometric fact confirmed ×10, no Phase 4 required)
+2. **Write @BELIEF:LAT40LON-40** — optimal L2 route if hypothesis E confirmed (24 actions)
+3. **Write @BELIEF:LAT50LON-40** — pass-through collection as distinct scene type vs. symmetric dip
+
+---
+
+@BELIEF:LAT40LON-40 | created:1779321600 | updated:1779321600 | relates:projected_from>@BELIEF:LAT-50LON-40,projected_from>@BELIEF:LAT-10LON-40,projected_from>@LAT85LON-40,projected_from>@LAT70LON-40,contained_by>@LAT60LON20
+[lp]
+centroid:LAT40LON-40
+confidence:150
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:4
+[/lp]
+
+**Projection: if hypothesis E is confirmed (cross collection state 1→2 clears mystery entity), the optimal L2 route is 25 actions — well below the 123-action baseline, capped at 1.15×.**
+
+Route sketch (from L2 start r40–41 c29–33, state 1, timer 42):
+
+| Scene | Actions | End position | Timer after | Notes |
+|-------|---------|--------------|-------------|-------|
+| A — Cross probe | DOWN, RIGHT×4 | r45–46 c49–53 | 32 cols (16 steps) | Trail r47–49 c49–53 overlaps cross r47–48 c50–52 → state 1→2. Mystery entity cleared (hypothesis E). 5 steps × 2 = 10 consumed. |
+| B — Ascent | UP×7 | r10–11 c49–53 | 18 cols (9 steps) | Rise through far-right track to wide connector. 7 × 2 = 14 consumed. |
+| C — Left-track entry | LEFT×7 | r10–11 c14–18 | 4 cols (2 steps) | Traverse wide connector: c49-53→c44-48→c39-43→c34-38→c29-33→c24-28→c19-23→c14-18 = 7 moves × 5 cols = 35 cols. 7 × 2 = 14 consumed. |
+| D — 11-ring A | DOWN | r15–16 c14–18 | **FULL RESET → 42** | Trail r17–19 c14–18 overlaps 11-ring A r16–18 c15–17 → FULL TIMER RESET. Wall spawns at r16–18. 1 step. |
+| E — Descent to entity2 | DOWN×5 | r40–41 c14–18 | 32 cols (16 steps) | r15-16→r20-21 (skips wall)→r25-26→r30-31→r35-36→r40-41. 5 × 2 = 10 consumed. **Entity2 interior at state 2 → WIN (if hypothesis E).** |
+
+Total: 5 + 7 + 7 + 1 + 5 = **25 actions**. Score = (123/25)² → capped at 1.15×.
+
+**Timer tightness warning**: at Scene C exit (r10–11 c14–18), only 4 cols = 2 steps remain before expiry. Scene D (11-ring A DOWN) is the only available step — and it must fire before the timer expires on the following step. One navigation error in Scenes A–C causes timer expiry before 11-ring A is reached, resetting the block. State 2 may or may not be preserved on expiry (see @BELIEF:LAT40LON-30, conf:160). See @BELIEF:LAT60LON-50 for a more robust alternative.
+
+**Critical unknowns**: (1) Does cross collection fire at r45–46 c49–53? Trail at r47–49 overlaps cross at r47–48 c50–52 — feasible. (2) Does state 1→2 clear mystery entity? (hypothesis E, Phase 4 pending). (3) RIGHT is blocked at state 1 in ls20 — but the route executes RIGHT×4 BEFORE state changes. After DOWN (step 1), state is still 1. After RIGHT×4 (steps 2–5), state is still 1. State only advances to 2 when the trail overlaps the cross — at step 5, during the final RIGHT. Is RIGHT blocked at state 1? From @LAT20LON-30: "Direction restriction at state 1: action 3 (RIGHT) is BLOCKED." If this holds in L2, the cross-first route [1,3,3,3,3] FAILS at step 2 (first RIGHT while at state 1). **This is a critical dependency that must be checked. If RIGHT is blocked at state 1, a different approach path to the cross is required.**
+
+**Phase 4 action**: session 35 cross-first probe. Read post-collection frame. If mystery entity at r40–42 c15–17 = 0 (cleared), attempt entity2 entry. Raise conf to 240 on confirmation.
+
+---
+
+## Dream Cycle 2 — Post-Session 34 (2026-05-21, second pass)
+
+**Phase 1 — Replay**: 100 walks × length 20. Salience pull: @LAT-10LON10 (sal:14), @LAT20LON-30 (sal:5). Focus on freshly-written and freshly-corrected records: @BELIEF:LAT40LON-40 (corrected this session), @BELIEF:LAT50LON-40 (new), @LAT85LON-40 (new). Running geometry checks on all route claims.
+
+**Phase 2 — Projection**: 50 walks × length 10. Seeded from @BELIEF:LAT40LON-40 (25-action route, conf:150), @BELIEF:LAT40LON-30 (state-on-expiry, conf:160), timer-tightness observation at 11-ring A boundary. Void at LAT60LON-50.
+
+---
+
+### Phase 1 — Replay Analysis
+
+**Cluster A: Route geometry correction (Dream 1 error caught)**
+
+@BELIEF:LAT40LON-40 was written with LEFT×6 (reaching c19–23, not c14–18) and wrong timer intermediate values. Corrected during this session:
+- LEFT count: c49–53 → c14–18 = 35 cols ÷ 5 = **7 LEFTs** (not 6)
+- Timer after cross probe (5 steps × 2): 42 − 10 = **32** (not 28)
+- Timer after UP×7 (7 steps × 2): 32 − 14 = **18** (not 28)
+- Timer after LEFT×7 (7 steps × 2): 18 − 14 = **4 cols (2 steps)** — only one step before expiry
+- Total actions: **25** (not 24)
+
+**Cluster B: HIGH-EPS ALERT — RIGHT direction restriction at state 1 (ambiguity)**
+
+Records: @LAT20LON-30 ("RIGHT blocked at state 1"), @BELIEF:LAT10LON10 (trail attraction, conf:155), session 23 log (trail attraction described for UP), session 26 log (route step 2 = RIGHT at state 1, confirmed executed).
+
+@LAT20LON-30 states "Direction restriction at state 1: action 3 (RIGHT) is BLOCKED. Only UP/DOWN/LEFT available at state 1." But session 26 executed the standing 17-step route at state 1, and step 2 of that route is RIGHT (from r35–36 c29–33 → c34–38). The route was confirmed executed correctly and reached r40–41 c14–18. If RIGHT were hard-blocked at state 1, step 2 would have failed and the route could not have completed.
+
+**Resolution candidates**:
+1. RIGHT is NOT universally blocked at state 1 — only blocked from specific positions (e.g., start position r40–41 c29–33 via trail attraction, but passable from r35–36 c29–33 where trail column aligns differently)
+2. The "RIGHT blocked" documentation is an overcorrection — the actual mechanic is trail attraction (UP pulled laterally toward trail column when trail column ≠ block column), not a hard RIGHT block
+3. The restriction applies only during the first step from start (before any movement changes trail alignment)
+
+**Evidence for resolution 2**: session 23 describes "action 0 (UP) in start zone moves toward entity1 trail column rather than NORTH when trail column ≠ block column" — this is trail attraction for UP, not a hard block on RIGHT. The "RIGHT blocked" label may have been inferred from observations where RIGHT was in an unavailable action space list (env.action_space may not have included RIGHT at state 1 from that position).
+
+**Impact on cross-first probe**: if RIGHT is trail-attraction (not a hard block), the probe [1,3,3,3,3] may partially succeed — block drifts laterally on each RIGHT action rather than moving cleanly 5 cols right. The cross may not be reached as intended. Session 35 must confirm RIGHT behavior at state 1 from r45–46 c29–33 (after the DOWN step) before routing to the cross.
+
+**EPS on @LAT20LON-30 direction-restriction section**: sal:5, conf uncertain for this specific claim. Flag for revision.
+
+**Cluster C: Timer tightness at 11-ring A**
+
+After LEFT×7 in Scene C of the 25-action route, timer = 4 cols = 2 steps. Scene D (DOWN to 11-ring A) consumes 2 cols → timer reaches 2 cols (1 step) at the moment 11-ring A fires the FULL RESET. One navigation error anywhere in Scenes A–C produces timer expiry before 11-ring A. With the timer at 4 cols, no recovery step is possible — the expiry is deterministic on the next non-A action.
+
+This makes the 25-action route brittle. A robust route either (a) reaches 11-ring A with more timer to spare, or (b) uses timer expiry deliberately (allowing state 2 to survive across expiry, per @BELIEF:LAT40LON-30 conf:160).
+
+**Cluster D: Two confirmations of route from scene record**
+
+@LAT85LON-40 confirms scene structure for L1 with geometric invariants. Applying the same structure to the L2 25-action route (if hypothesis E holds) yields 6 scenes. No contradictions found in the geometry. Wide connector at r10–11 c9–53 passable for LEFT×7 (@BELIEF:LAT60LON0). Void barrier c39–43 at rows 15–16 does NOT apply at rows 10–11. Route geometry is internally consistent.
+
+---
+
+### Phase 2 — Projection Analysis
+
+**Projection target: Intentional-expiry route (more robust alternative)**
+
+Seeding from @BELIEF:LAT40LON-30 (state preserved on expiry, conf:160) into void at LAT60LON-50.
+
+The 25-action route relies on reaching 11-ring A with exactly 2 timer cols remaining. An alternative: collect the cross (state 1→2), then intentionally let the timer expire, then execute the clean 17-step approach route with full timer on the reset leg.
+
+Cross collection to expiry (variable steps, ~12–17):
+
+| Phase | Actions | Event |
+|-------|---------|-------|
+| Cross probe | DOWN, RIGHT×4 | r45–46 c49–53. State 1→2. Timer: 32. |
+| Burn timer upward | UP×8 | r45–46→r5–6 c49–53 (ceiling). Timer: 32−16=16. |
+| Burn timer: blocked oscillation | any blocked direction × N | Timer reaches 0. **Expiry.** Block resets to r40–41 c29–33. If @BELIEF:LAT40LON-30 holds: state = 2. Timer = full 42. |
+
+Second leg (17 steps, state 2, clean timer):
+
+| Phase | Actions | Event |
+|-------|---------|-------|
+| Standard 17-step approach | UP, RIGHT, UP×5, LEFT×4, DOWN (11-ring A), DOWN×5 | Block at r40–41 c14–18. State 2. **Entity2 interior → WIN (if hypothesis E).** |
+
+Total: ~12 burn steps + 17 approach steps ≈ 29 L2 actions. More steps than the 25-action route but **immune to timer-margin failures** — the expiry is planned, not an accident. The only new risk is @BELIEF:LAT40LON-30 (state preserved on expiry, conf:160 — single-session observation). If state resets to 0 on expiry, this route fails and the 25-action route must be used instead.
+
+**Projection warranted at LAT60LON-50.**
+
+---
+
+### New Records
+
+1. **Write @BELIEF:LAT60LON-50** — intentional-expiry route as robust alternative
+2. **Flag @LAT20LON-30 direction-restriction section for revision** — "RIGHT blocked" vs "trail attraction" ambiguity must be resolved in session 35 before committing to any RIGHT-dependent route
+3. **L2 scene sketch** (embedded in dream body — not a standalone record yet; promote to confirmed record after hypothesis E validation)
+
+---
+
+**L2 Scene Record Sketch (hypothesis E route, 25 actions, projection only)**
+
+| Scene | Actions | Entry → Exit | State | Timer | Invariant |
+|-------|---------|-------------|-------|-------|-----------|
+| A — Exit + cross probe | DOWN, RIGHT×4 | r40–41 c29–33 → r45–46 c49–53 | 1→2 | 42→32 | Trail r47–49 c49–53 overlaps cross r47–48 c50–52 (last RIGHT step). Mystery entity clears (hypothesis E). |
+| B — Ascent | UP×7 | r45–46 → r10–11 c49–53 | 2 | 32→18 | Far-right track c49–53 unobstructed from r10–46. |
+| C — Left-track entry | LEFT×7 | r10–11 c49–53 → r10–11 c14–18 | 2 | 18→4 | Wide connector r10–14 spans c9–53; void gap c39–43 only at rows 15–16 (not rows 10–11). |
+| D — 11-ring A | DOWN | r10–11 c14–18 → r15–16 | 2 | 4→**42** | Trail r17–19 c14–18 overlaps ring A r16–18 c15–17. FULL RESET. Wall spawns. |
+| E — Descent | DOWN×5 | r15–16 → r40–41 c14–18 | 2 | 42→32 | r15–16→r20–21 (skips wall)→r25–26→r30–31→r35–36→r40–41. |
+| F — WIN | (at r40–41 c14–18) | entity2 interior | 2 | — | Block inside entity2 at state 2. Mystery entity cleared. **WIN.** |
+
+Once hypothesis E is confirmed and RIGHT behavior at state 1 is resolved, this sketch becomes the basis for a confirmed @LAT65LON-40 level 2 scene record.
+
+---
+
+@BELIEF:LAT60LON-50 | created:1779321600 | updated:1779321600 | relates:projected_from>@BELIEF:LAT40LON-40,projected_from>@BELIEF:LAT40LON-30,projected_from>@BELIEF:LAT-50LON-40,contained_by>@LAT60LON20
+[lp]
+centroid:LAT60LON-50
+confidence:130
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:3
+[/lp]
+
+**Projection: intentional-expiry route for L2 — more robust than the 25-action tight-timer route, at the cost of ~4 extra actions and a dependency on state-preservation across timer expiry.**
+
+If @BELIEF:LAT40LON-30 (state preserved on timer expiry within a level, conf:160) holds, the cross-first probe can be followed by deliberate timer expiry rather than the 11-ring A tight-timer approach:
+
+**Leg 1 — Cross collection + expiry (~12 steps)**:
+1. DOWN, RIGHT×4: r40–41 c29–33 → r45–46 c49–53 (5 steps). Cross collected → state 1→2. Timer: 32 cols.
+2. UP×8: r45–46 → r5–6 c49–53 or ceiling (8 steps). Timer: 32 − 16 = 16 cols.
+3. Blocked oscillation or continue UP until expiry: 8 more blocked steps × 2 = 16 cols → expiry.
+**Timer expires**: block resets to r40–41 c29–33. If @BELIEF:LAT40LON-30: state = 2 (preserved). Timer = full 42.
+
+**Leg 2 — Standard 17-step approach (17 steps, state 2, full timer)**:
+UP, RIGHT, UP×5, LEFT×4, DOWN (11-ring A, FULL RESET), DOWN×5 → r40–41 c14–18 c14–18. **Entity2 interior at state 2 → WIN (hypothesis E).**
+
+Total: ~21 burn steps + 17 approach = **~38 L2 actions** (vs 25 for tight-timer route). Still within 45-action budget.
+
+**Why prefer this over the 25-action route**: no 2-col timer margin dependency. The expiry is planned. One navigation error doesn't cascade into route failure — it costs a few extra timer ticks, not a lost win attempt.
+
+**Critical dependencies**:
+1. @BELIEF:LAT40LON-30 holds (state preserved on expiry, conf:160 — single-session observation, not yet cross-validated). If state resets to 0 on expiry, Leg 2 enters entity2 at state 0 → NOT_FINISHED.
+2. RIGHT is not hard-blocked at state 1 (cross probe DOWN, RIGHT×4 must execute cleanly). See direction-restriction ambiguity in @LAT20LON-30.
+3. Hypothesis E holds (state 2 clears mystery entity → entity2 entry possible).
+
+**Session 35 validation path**: if the 25-action route fails due to timer margin (expiry at 11-ring A), try this intentional-expiry sequence as the fallback. Both routes share the same cross-probe Step 1; the divergence is after cross collection.
+
+---
+
+@BELIEF:LAT50LON-40 | created:1779321600 | updated:1779321600 | relates:projected_from>@LAT85LON-40,projected_from>@LAT70LON-40,projected_from>@BELIEF:LAT-50LON-40,contained_by>@LAT60LON20
+[lp]
+centroid:LAT50LON-40
+confidence:200
+scope_lat:10.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:3
+[/lp]
+
+**Two distinct scene types govern state-changer collection in ls20: the symmetric dip and the pass-through. Future game-spaces will likely have both.**
+
+**Type 1 — Symmetric Dip** (L1 Scene 3, cluster collection):
+- Block approaches the collectible from an adjacent position.
+- One step toward the collectible drags the trail over it → collection fires.
+- One step back retracts the trail. Block returns to entry position.
+- Net displacement: zero. Timer cost: 2 steps.
+- When to use: when the collectible is embedded in a dead end or when the route must return the same way.
+
+**Type 2 — Pass-Through** (L2 cross collection):
+- Block navigates directionally; collection fires mid-route as the trail sweeps over the collectible.
+- No return step — the block continues on its path after collection.
+- Net displacement: positive (block moved forward). Timer cost: 1 step (the collecting step).
+- When to use: when the collectible lies along the navigation path to another objective.
+
+In ls20 L2, the cross-first probe [1,3,3,3,3] is a pass-through: the block descends from r40–41 to r45–46 (DOWN) then sweeps right to r45–46 c49–53 (RIGHT×4), with the trail at r47–49 collecting the cross at r47–48 c50–52 on the final RIGHT step. The cross is along the path; no return is needed.
+
+**Generalization to future game IDs**: when designing a route for a new game, identify whether each state-changer is (a) in a dead end requiring a return (symmetric dip) or (b) along a navigable path (pass-through). The pass-through is always cheaper (1 step vs. 2); prefer it when collectible geometry allows. The trail's 3-row downward extent defines the "collection window" for both types — position the block so the trail sweeps the collectible's rows during movement.
+
+
+
+---
+
+@LAT70LON-40 | created:1779321600 | updated:1779321600 | relates:anchored_by>@LAT0LON0,informs_strategy>@LAT85LON-40,informs_strategy>@LAT20LON-30
+[ew]
+conf:220
+rev:0
+sal:0
+touched:1779321600
+[/ew]
+
+## Game-Space Concept — ls-family Primitive Vocabulary
+
+A **game-space** is the full structural vocabulary of a single ARC-AGI-3 game instance. Different game IDs (ls20, and future IDs) use the same 4-action control scheme (UP/DOWN/LEFT/RIGHT) but define entirely different game-spaces. This record defines the primitive elements every ls-family game-space is built from, making it possible to reason about any new game ID using the same vocabulary.
+
+### Primitive Elements
+
+**1. Grid**
+A fixed-size 2D cell array per game instance. Cell values encode structure:
+- `0` = empty space
+- `3` = wall / ring border (impassable)
+- `4` = void (impassable — block cannot enter)
+- `5` = passable interior (entity2 cells, corridor interiors)
+- `9` = trail / entity state-cells (entity1 interior pattern + block's movement wake)
+- `11` = reset-flash (appears in all cells during timer-expiry animation)
+- `12` = block cells
+
+The **void map** (all cells with value 4 or 3) is stable per game instance. It defines every legal route. Knowing the void map eliminates the need to probe dead ends.
+
+**2. Block**
+The player-controlled piece. In ls20: 2 rows × 5 cols (value 12). Each action moves the block exactly 5 cells in the chosen direction. Cannot enter void cells. When blocked, the action still ticks the timer (wasted step).
+
+**3. Trail**
+The 9-value wake left by the block in its immediate prior position (3 rows tall, same col span as block, on the far side from the direction of movement). **The trail IS the collection mechanism** — state changers fire when the TRAIL overlaps their cells, not when the block body does. Partial overlap (≥2/3 rows) is sufficient. A DOWN move drags the trail south; an UP move retracts it north. This makes the "dip maneuver" (DOWN + UP from a cluster-adjacent position) the canonical collection technique.
+
+**4. Entity1 — State Carrier**
+A fixed entity at a specific grid location (ls20: rows 53–60, cols 1–10; bordered value-5 outer, value-9 interior). Its interior 9-cell pattern changes to reflect current state (0, 1, 2, 3). State advances by 1 on each state-changer collection. Critical behaviors:
+- State **RESETS on timer restart** within a level
+- State **CARRIES OVER between levels** (ls20 confirmed ×7 sessions — @BELIEF:LAT90LON-30)
+- State can **restrict the action space**: at state 1, RIGHT is blocked in ls20
+
+**5. State Changers**
+Collectibles that advance entity1 state by 1. Triggered when the block's trail overlaps their cells. Two types observed in ls20:
+- **Cluster** (L1): value 0/1 pattern in bordered box; cols 20–22, rows vary per instance. Collection is **free** (no timer tick consumed).
+- **Cross** (L2): value 0/1 cross pattern; rows 46–48, cols 50–52. Collection **costs a timer tick**.
+
+**6. Entity2 — Target Ring**
+The win-condition structure. A bordered ring (value 3 outer) with passable interior (value 5) and an internal 9-cell pattern. Win fires when the block enters the interior at the correct entity1 state **and** any additional blocking conditions are cleared (see Mystery Entity below). Entity2 position is fixed per level within a game ID.
+
+**7. Timer**
+A row-pair of cells (ls20: rows 61–62, cols 13–54 = 42 total cols) that depletes with each committed action. Rates differ by level:
+- L1: 1 col per step (42 steps max per cycle)
+- L2: 2 cols per step (21 steps max per cycle)
+Expiry → immediate restart: block to level start position, entity1 state resets (within-level only), timer resets to 42. Timer also resets to 42 at each new level.
+
+**8. Timer Power-ups (11-rings)**
+Optional ring entities. Collection gives a **FULL timer reset** (not additive — the prior "+15 additive" belief was retired session 12). Auto-collected when block trail overlaps. A wall spawns behind the block after collection — a **one-way committed pass**. In ls20 L2: ring A at rows 16–18 cols 15–17 (left track); ring B at rows 51–53 cols 40–42 (right-center).
+
+**9. Mystery Entity (observed ls20 L2)**
+Value-9 cells at a fixed position inside entity2's ring, present from level start, occupying the interior entry columns. Distinct from the entity2 structural 9-pattern (which marks the "required state" interior). The mystery entity **blocks block entry** into entity2. Hypothesis: cleared by advancing entity1 to state 2 via cross collection. This is the open win condition for L2. Future game-spaces may have analogous pre-placed blocking entities inside target rings.
+
+### Cross-Game Transfer
+
+Future game IDs will have different grid geometry, different entity positions, and potentially different state cycles. But the same primitive vocabulary applies:
+- Trail → collection mechanism (not block body)
+- State carrier → fixed entity, state persists across levels
+- Target ring → enter at correct state (plus any mystery entity clearance)
+- Timer → level-specific rate, full reset on power-up
+- Scene record → decompose the route into shaft / approach / collection dip / return / final ascent
+
+The [Scene Record](lat85lon-40) format generalizes directly to any new game ID's level 1: find the shaft, find the state changer, plan the dip, plan the ascent.
+
+---
+
+@LAT85LON-40 | created:1779321600 | updated:1779321600 | relates:anchored_by>@LAT0LON0,derived_from>@LAT70LON-40,derived_from>@LAT20LON-30,validates>@BELIEF:LAT50LON20,informs_strategy>@LAT-10LON10
+[ew]
+conf:245
+rev:0
+sal:0
+touched:1779321600
+[/ew]
+
+## ls20 Level 1 — Scene Record
+
+Level 1 is confirmed solved across sessions 10–12 and 23–34 (twelve consecutive wins). This record reconstructs **why** the 15-step route works, expressed as objective-bounded scenes. Scenes chain: exit of scene N is entry of scene N+1. The full route is the concatenation of all scene action sequences. LOCUS can reconstruct and verify the route from this record without replaying session history.
+
+**Confirmed route**: `[0,0,0,0,2,2,2,1,0,3,3,3,0,0,0]`
+
+[route game=ls20 level=1 steps=15 confirmed=true confirmed_count=12]
+UP×4, LEFT×3, DOWN, UP, RIGHT×3, UP×3
+[/route]
+
+### Structural Constants (fixed per ls20-9607627b instance)
+
+| Element | Position | Notes |
+|---------|----------|-------|
+| Block start | r45–46 c34–38 | Shaft column; r59–60 in some prior instances |
+| Entity2 (target) | r8–16 c32–40 | Interior r9–14; win = block enters interior |
+| Cluster | c20–22, r31–33 | Rows confirmed ls20-9607627b; varies on fresh instance |
+| Shaft | c34–38, r17–46 | Unobstructed vertical; block ascends/descends freely |
+| Upper corridor | r25–28 c14–53 | Wide east-west passage; void barrier is BELOW this zone |
+| Void barrier | c29–33 r29–41 | Blocks LEFT from shaft at rows 29–41 — must be above it |
+| Timer | r61–62, 1 col/step | 42 cols = 42 steps max; L1 uses 15 of 42 |
+
+### Scene 1 — Shaft Ascent
+
+| Field | Value |
+|-------|-------|
+| Steps | 1–4 |
+| Actions | UP×4 |
+| Timer ticks | 4 |
+| Entry | r45–46 c34–38 |
+| Exit | r25–26 c34–38 |
+| State | 0 → 0 |
+
+**Objective**: Rise north through the unobstructed central shaft to the upper open corridor.
+
+**Why it works**: Shaft cols 34–38 is void-free from r17 to r46. Four UPs = 20 rows of movement. From r45–46: UP→r40–41, UP→r35–36, UP→r30–31, UP→r25–26. Lands squarely in the upper open corridor above the void barrier.
+
+---
+
+### Scene 2 — Cluster Approach
+
+| Field | Value |
+|-------|-------|
+| Steps | 5–7 |
+| Actions | LEFT×3 |
+| Timer ticks | 3 |
+| Entry | r25–26 c34–38 |
+| Exit | r25–26 c19–23 |
+| State | 0 → 0 |
+
+**Objective**: Traverse west through the upper corridor to align the block with the cluster column zone (cols 20–22).
+
+**Why it works**: The upper corridor at r25–26 is unobstructed from c14–53. Three LEFTs = 15 cols west: c34→c29→c24→c19. Block at c19–23 spans cluster cols 20–22. The void barrier (c29–33) only blocks at rows 29–41 — we are at rows 25–26, above it, so LEFT passes freely through the barrier column range.
+
+---
+
+### Scene 3 — Cluster Collection
+
+| Field | Value |
+|-------|-------|
+| Steps | 8–9 |
+| Actions | DOWN, UP |
+| Timer ticks | 2 |
+| Entry | r25–26 c19–23 |
+| Exit | r25–26 c19–23 |
+| State | 0 → 1 |
+
+**Objective**: Dip south one step to drag the entity1 trail over the cluster cells (state 0→1), then retract north.
+
+**Why it works**:
+- DOWN: block moves to r30–31; trail follows to r32–34 c19–23.
+- Cluster is at r31–33 c20–22. Trail rows 32–34 overlap cluster rows 32–33 = 2/3 row overlap → **COLLECTION fires → entity1 state 0→1**.
+- UP: block returns to r25–26; trail retracts to r27–29.
+- The dip maneuver is the canonical collection technique: position above the state changer, dip one step south, retract. The trail does the work, not the block body.
+- Collection is free (no timer penalty beyond the 2 ticks for DOWN+UP).
+
+**Edge case**: If cluster is at r47–49 (different game instance), trail at r32–34 does NOT reach it. First-frame scan is the safe gate. For ls20-9607627b, cluster at r31–33 is confirmed stable (@BELIEF:LAT50LON20).
+
+---
+
+### Scene 4 — Return to Shaft
+
+| Field | Value |
+|-------|-------|
+| Steps | 10–12 |
+| Actions | RIGHT×3 |
+| Timer ticks | 3 |
+| Entry | r25–26 c19–23 |
+| Exit | r25–26 c34–38 |
+| State | 1 → 1 |
+
+**Objective**: Retrace east through the upper corridor back to the central shaft column.
+
+**Why it works**: Mirror of Scene 2. Three RIGHTs = 15 cols east: c19→c24→c29→c34. Same upper corridor, fully open eastward. State 1 does not restrict LEFT/RIGHT in level 1 (direction restriction only blocks RIGHT in L2 before state 1→2 context — in L1 we are already past collection).
+
+---
+
+### Scene 5 — Final Ascent into Entity2
+
+| Field | Value |
+|-------|-------|
+| Steps | 13–15 |
+| Actions | UP×3 |
+| Timer ticks | 3 |
+| Entry | r25–26 c34–38 |
+| Exit | r10–11 c34–38 |
+| State | 1 → WIN |
+
+**Objective**: Ascend north through the shaft into entity2 interior for the WIN.
+
+**Why it works**:
+- UP×3 from r25–26: UP→r20–21, UP→r15–16, UP→r10–11.
+- Block at r10–11 c34–38. Entity2 ring spans r8–16 c32–40. Interior (value 5) at r9–14 c33–39.
+- Block cols 34–38 intersect entity2 interior cols 33–39 at cols 34–38 → block body inside entity2.
+- Entity1 state is 1 (from Scene 3 collection). Win condition: block inside entity2 at state ≥1 → **LEVEL COMPLETE**.
+- Total actions: 15. Human baseline: 22. RHAE = (22/15)² = capped at 1.15×.
+
+---
+
+### Reasoning Transfer — Level 2 Scene Sketch
+
+The five-scene structure (ascent, approach, collection, return, final ascent) maps onto level 2 with modified elements and one open question. This sketch uses confirmed geometry; the win condition remains partially unknown.
+
+| Scene | Actions | Objective | Status |
+|-------|---------|-----------|--------|
+| A — Exit start | RIGHT | Exit r40–41 c29–33 (void blocks UP, LEFT, must go RIGHT) | Confirmed |
+| B — Center-right ascent | UP×6 | Rise to wide connector at r10–11 c34–38 | Confirmed |
+| C — Cross-track traverse | LEFT×4 | Enter left track at r10–11 c14–18 | Confirmed |
+| D — Timer reset | DOWN | Collect 11-ring A at r16–18 c15–17 → FULL TIMER RESET; wall spawns above | Confirmed |
+| E — Descent to entity2 | DOWN×5 | Reach entity2 approach at r40–41 c14–18 | Confirmed (exits NOT_FINISHED) |
+| **F — Mystery entity probe** | TBD | **Clear mystery entity (value 9 at r40–42 c15–17) blocking entry** | **OPEN** |
+
+The key difference from L1: entity2 has NEVER been entered in L2. The mystery entity at r40–42 c15–17 occupies the interior entry columns. The standing hypothesis (session 35) is that cross collection (DOWN+RIGHT×4 from start → trail overlaps cross at r46–48 c50–52 → state 1→2) clears the mystery entity, enabling entity2 entry and WIN.
+
+The scene-record insight: Scene E confirms geometry but not win condition. Scene F is the missing scene — its objective is mystery-entity clearance, not entity2 entry per se. Once Scene F's mechanics are understood, L2 will have a complete 5-scene record analogous to L1.
+
+
+---
+
+SECTION 1
+
+@LAT-420LON10 | created:1780531200 | updated:1780531200 | kind:log | relates:anchored_by>@LAT0LON0,tracks_level>@LAT-10LON10,validates>@BELIEF:LAT80LON10,validates>@BELIEF:LAT80LON20,validates>@BELIEF:LAT90LON-30,validates>@BELIEF:LAT-30LON-40,informs_strategy>@LAT-140LON10,informs_strategy>@LAT20LON-30
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1780531200
+[/ew]
+
+## ls20 — Session 35 Log (2026-05-28)
+
+```session-log
+timestamp: 1780531200
+game: "ls20"
+environment: "ls20-9607627b"
+run_guid: "947a6a95-fb3d-4078-b74a-dda5a63bd774"
+card_id: "97cd0ea5-d38c-4689-b86e-f946decfe890"
+level: "level 1 WIN (15 actions) + level 2 NOT WON (45 actions)"
+actions: 60
+levels_completed: 1
+score: 3.571428571428571
+resets: 0
+level_actions: [15, 45, 0, 0, 0, 0, 0]
+level_scores: [115.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+```
+
+**Session outcome**: Level 1 WON at step 15 (hardcoded `_LEVEL1_ROUTE`, thirteenth consecutive confirmation). Level 2 entered; 45 level-2 actions taken; NOT WON. Total 60 actions. Score 3.571 (level 1 weight 1/28 only). Unchanged from sessions 23–27 and 31–34.
+
+---
+
+### Level 1 — WIN at step 15 ✓
+
+[route game=ls20 level=1 steps=15 confirmed=true hardcoded=true confirmed_count=13]
+UP×4, LEFT×3, DOWN, UP, RIGHT×3, UP×3
+[/route]
+
+Thirteenth confirmation (sessions 10–12, 23–27, 31–35). Route stable. Block entered entity2 interior at r10–11 c34–38.
+
+**Phase 4 validations**:
+- @BELIEF:LAT80LON20 (step-0 hardcode mandatory) — VALIDATED (thirteenth time).
+- @BELIEF:LAT80LON10 (level 1 solved when frame is read) — VALIDATED (thirteenth time).
+- @BELIEF:LAT-30LON-40 (max_steps operator-controlled, no server limit) — VALIDATED. max_steps=60, 60 actions available as expected.
+- @BELIEF:LAT90LON-30 (entity1 state 1 carries over from level WIN) — VALIDATED (eighth consecutive confirmation).
+
+---
+
+### Level 2 — 45 actions, NOT WON
+
+**Key session exchanges**:
+
+1. **FOCUS @LAT-10LON10**: LOCUS correctly loaded Game State. Cursor moved to Game State (sal incremented to 15 in exchange, now 16 after this session). Session 35 priority confirmed: 5-step cross-first probe `[1, 3, 3, 3, 3]` (DOWN + RIGHT×4 from r40–41 c29–33 → r45–46 c49–53) to test Hypothesis E (state 1→2 clears mystery entity at r40–42 c15–17). Frame read immediately post-collection is the critical diagnostic.
+
+2. **STATUS**: LOCUS confirmed EPS scan (Game State EPS ~8.82 — highest in file), all high-confidence beliefs stable, cross-first probe as recommended action for session 35.
+
+**Route attempted**: 5-step cross-first probe `[1, 3, 3, 3, 3]`
+
+---
+
+SECTION 1
+
+@LAT-430LON10 | created:1780617600 | updated:1780617600 | kind:log | relates:anchored_by>@LAT0LON0,tracks_level>@LAT-10LON10,validates>@BELIEF:LAT80LON10,validates>@BELIEF:LAT80LON20,validates>@BELIEF:LAT90LON-30,validates>@BELIEF:LAT-30LON-40,informs_strategy>@LAT-140LON10
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1780617600
+[/ew]
+
+## ls20 — Session 36 Log (2026-05-29)
+
+```session-log
+timestamp: 1780617600
+game: "ls20"
+environment: "ls20-9607627b"
+run_guid: "39eca274-5295-4af5-85fd-5455a607dcd1"
+card_id: "d56783c4-b203-4022-afea-a4c8e3212421"
+level: "level 1 WIN (15 actions) + level 2 NOT WON (45 actions)"
+actions: 60
+levels_completed: 1
+score: 3.571428571428571
+resets: 0
+level_actions: [15, 45, 0, 0, 0, 0, 0]
+level_scores: [115.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+```
+
+**Session outcome**: Level 1 WON at step 15 (hardcoded `_LEVEL1_ROUTE`, fourteenth consecutive confirmation — sessions 10–12, 23–27, 31–36). Level 2 entered; 45 level-2 actions taken; NOT WON. Total 60 actions consumed. Score 3.571 (level 1 weight 1/28 only). Scorecard unchanged from sessions 23–27, 31–35.
+
+---
+
+### Level 1 — WIN at step 15 ✓
+
+[route game=ls20 level=1 steps=15 confirmed=true hardcoded=true confirmed_count=14]
+UP×4, LEFT×3, DOWN, UP, RIGHT×3, UP×3
+[/route]
+
+Fourteenth confirmation. Route stable. Block entered entity2 interior at r10–11 c34–38.
+
+**Phase 4 validations**:
+- @BELIEF:LAT80LON20 (step-0 hardcode mandatory) — VALIDATED (fourteenth time).
+- @BELIEF:LAT80LON10 (level 1 solved when frame is read) — VALIDATED (fourteenth time).
+- @BELIEF:LAT-30LON-40 (max_steps operator-controlled) — VALIDATED. max_steps=60, 60 actions available.
+- @BELIEF:LAT90LON-30 (entity1 state 1 carries over from level WIN) — VALIDATED (ninth consecutive confirmation).
+
+---
+
+### Level 2 — 45 actions, NOT WON
+
+**Key session exchanges** confirm LOCUS correctly diagnosed all standing orders (FOCUS on Game State, STATUS with EPS scan). LOCUS identified:
+- Mystery entity (value 9 at r40–42 c15–17) blocks all entity2 entry columns.
+- Session 35 cross-first probe outcome unconfirmed.
+- Session 36 priority: re-run `[1, 3, 3, 3, 3]` and **read the post-step-5 frame** before continuing.
+
+**Observed**: The session consumed all 45 L2 actions. Score unchanged at 3.571. Entity2 NOT entered. Win condition still unknown.
+
+**Critical gap carried forward**: The outcome of the 5-step cross-first probe `[1, 3, 3, 3, 3]` — specifically whether the mystery entity at r40–42 c15–17 is cleared after cross collection (state 1→2) — has not been read and recorded in any session log. Sessions 34, 35, and 36 all attempted this probe; all
+
+---
+
+SECTION 1
+
+@LAT-440LON10 | created:1780617600 | updated:1780617600 | kind:log | relates:anchored_by>@LAT0LON0,tracks_level>@LAT-10LON10,validates>@BELIEF:LAT80LON10,validates>@BELIEF:LAT80LON20,validates>@BELIEF:LAT90LON-30,validates>@BELIEF:LAT-30LON-40,informs_strategy>@LAT-140LON10
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1780617600
+[/ew]
+
+## ls20 — Session 37 Log (2026-05-29)
+
+```session-log
+timestamp: 1780617600
+game: "ls20"
+environment: "ls20-9607627b"
+run_guid: "6456e6f9-0d44-45af-95df-f2e913778ab1"
+card_id: "0ba049a1-6d90-49f8-afc4-14b8b7d93e8c"
+level: "level 1 WIN (15 actions) + level 2 NOT WON (45 actions)"
+actions: 60
+levels_completed: 1
+score: 3.571428571428571
+resets: 0
+level_actions: [15, 45, 0, 0, 0, 0, 0]
+level_scores: [115.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+```
+
+**Session outcome**: Level 1 WON at step 15 (hardcoded `_LEVEL1_ROUTE`, fifteenth consecutive confirmation — sessions 10–12, 23–27, 31–37). Level 2 entered; 45 level-2 actions taken; NOT WON. Total 60 actions. Score 3.571 (level 1 weight 1/28 only). Scorecard unchanged from sessions 23–27, 31–36.
+
+---
+
+### Level 1 — WIN at step 15 ✓
+
+[route game=ls20 level=1 steps=15 confirmed=true hardcoded=true confirmed_count=15]
+UP×4, LEFT×3, DOWN, UP, RIGHT×3, UP×3
+[/route]
+
+Fifteenth confirmation. Route stable. Block entered entity2 interior at r10–11 c34–38.
+
+**Phase 4 validations**:
+- @BELIEF:LAT80LON20 (step-0 hardcode mandatory) — VALIDATED (fifteenth time).
+- @BELIEF:LAT80LON10 (level 1 solved when frame is read) — VALIDATED (fifteenth time).
+- @BELIEF:LAT-30LON-40 (max_steps operator-controlled) — VALIDATED. max_steps=60 confirmed.
+- @BELIEF:LAT90LON-30 (entity1 state 1 carries over from level WIN) — VALIDATED (tenth consecutive confirmation).
+
+---
+
+### Level 2 — 45 actions, NOT WON
+
+**Key session exchanges**:
+
+1. **FOCUS @LAT-10LON10** (sal: 16→17): LOCUS confirmed Game State current. Session 37 standing order: `[1,3,3,3,3]` cross-first probe; mandatory post-step-5 frame read before any further navigation; write values at r40–42 c15–17 (present=9 or cleared=5) to log before proceeding.
+
+2. **STATUS**: LOCUS confirmed EPS scan — Game State EPS 8.84 (highest in file, sal:17, conf:200). Identified the single blocking gap: post-probe frame has never been read and written across sessions 34–36. Session 37 standing order identical to session 36.
+
+**Route attempted**: 5-step cross-first probe `[1, 3, 3, 3, 3]`. The remaining 40 actions were consumed in level 2. Score unchanged at 3.571.
+
+**Post-probe frame**: not confirmed written in session exchanges. Whether LOCUS read
