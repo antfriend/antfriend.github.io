@@ -75,12 +75,12 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1778000000 | updated:1781448000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT40LON20,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10,anchors>@LAT-90LON-10,anchors>@LAT40LON-30,anchors>@LAT-90LON-20,anchors>@LAT-90LON-30,anchors>@LAT-90LON40,anchors>@LAT-90LON50,anchors>@LAT20LON20,anchors>@LAT10LON10,anchors>@LAT-90LON60
+@LAT0LON0 | created:1778000000 | updated:1781448000 | relates:anchors>@LAT-10LON0,anchors>@LAT30LON-20,anchors>@LAT30LON-10,anchors>@LAT30LON-30,anchors>@LAT20LON-30,anchors>@LAT10LON-40,anchors>@LAT-10LON10,anchors>@LAT-30LON30,anchors>@LAT40LON0,anchors>@LAT40LON20,anchors>@LAT20LON0,anchors>@LAT20LON10,anchors>@LAT10LON-10,anchors>@LAT0LON30,anchors>@LAT-20LON20,anchors>@LAT-40LON10,anchors>@LAT10LON-20,anchors>@LAT0LON-20,anchors>@LAT10LON-30,anchors>@LAT5LON-25,anchors>@LAT5LON-15,anchors>@LAT20LON-20,anchors>@LAT-10LON-20,anchors>@LAT-20LON0,anchors>@LAT-30LON-20,anchors>@LAT-90LON30,anchors>@LAT-90LON20,anchors>@LAT-90LON10,anchors>@LAT-90LON-10,anchors>@LAT40LON-30,anchors>@LAT-90LON-20,anchors>@LAT-90LON-30,anchors>@LAT-90LON40,anchors>@LAT-90LON50,anchors>@LAT20LON20,anchors>@LAT10LON10,anchors>@LAT-90LON60,anchors>@LAT-90LON70
 [ew]
 conf:245
 rev:2
-sal:15
-touched:1781448000
+sal:16
+touched:1782484800
 [/ew]
 
 ## The A32 Mega Librarian
@@ -153,8 +153,8 @@ Every `@LATxLONy` heading is a record at a coordinate on that globe. Typed edges
 [ew]
 conf:235
 rev:0
-sal:7
-touched:1781448000
+sal:8
+touched:1782484800
 [/ew]
 
 ## Free Energy Principle Convergence
@@ -280,23 +280,23 @@ The central claim of RFC-0006: the unit of perceptual knowledge in TTDB is not a
 
 ---
 
-@LAT20LON-30 | created:1778000000 | updated:1778000000 | relates:portal_to>ttdb:bioelectric:resonance:v1,bridges>@LAT30LON-10,bridges>@LAT20LON0,supported_by>@LAT40LON0,anchored_by>@LAT0LON0
+@LAT20LON-30 | created:1778000000 | updated:1782484800 | relates:portal_to>ttdb:bioelectric:resonance:v1,bridges>@LAT30LON-10,bridges>@LAT20LON0,supported_by>@LAT40LON0,anchored_by>@LAT0LON0
 [ew]
 conf:225
-rev:0
-sal:4
-touched:1781448000
+rev:1
+sal:5
+touched:1782484800
 [/ew]
 
 ## Portal: Bioelectric ↔ TTE Resonance
 
 **Source TTDB**: [bioelectric_resonance.md](?ttdb=bioelectric_resonance.md) — `db_id: ttdb:bioelectric:resonance:v1`
 
-**Umwelt**: A resonance cartographer mapping Michael Levin's developmental bioelectricity (Tufts Allen Discovery Center, Medford MA) onto the TTDB framework (Boise, ID cluster). Two geographic clusters; seven resonance pairs across a continent.
+**Umwelt**: An independent-convergence observer at the intersection of Michael Levin's developmental bioelectricity (Tufts Allen Discovery Center, Medford MA) and the TTDB framework (Boise, ID cluster). Two geographic clusters; seven structural equivalences across a continent. Neither framework borrowed from the other: Levin's arrived through the study of biological morphogenesis; TTDB's through the engineering demands of offline-first semantic mesh networks. The convergence was not designed.
 
-**14 records** — cover scene, two cluster anchors, seven bioelectric concepts, seven TTE analogs:
+**14 records** — cover scene, two cluster anchors, seven bioelectric concepts, seven TTE convergent records:
 
-| Pair | Bioelectric (Tufts cluster) | TTE analog (Boise cluster) |
+| Pair | Bioelectric (Tufts cluster) | TTE convergent (Boise cluster) |
 |---|---|---|
 | 1 | [Pattern Memory](?ttdb=bioelectric_resonance.md&toot=lat43.3lon-71.1) | [Coordinate-as-Identity](?ttdb=bioelectric_resonance.md&toot=lat44.4lon-116.2) |
 | 2 | [Voltage Gradient Addressing](?ttdb=bioelectric_resonance.md&toot=lat43.1lon-70.4) | [Authority-Free Addressing](?ttdb=bioelectric_resonance.md&toot=lat44.2lon-115.5) |
@@ -306,9 +306,11 @@ touched:1781448000
 | 6 | [Cellular Umwelt](?ttdb=bioelectric_resonance.md&toot=lat41.9lon-71.8) | [Semantic Umwelt](?ttdb=bioelectric_resonance.md&toot=lat43.0lon-116.9) |
 | 7 | [Cancer as Decoupling](?ttdb=bioelectric_resonance.md&toot=lat42.5lon-71.9) | [Orphan Nodes](?ttdb=bioelectric_resonance.md&toot=lat43.6lon-117.0) |
 
+**Independent convergence, not analogy**: The seven pairs are not analogies — metaphors that describe TTDB by reference to biology. They are independent instantiations of the same underlying structural commitments: authority-free addressing, pattern identity over substrate, morphostatic maintenance as active prediction, decoupling as pathology, umwelt as primitive. Analogy says "A is like B." Independent convergence says "A and B are both instances of C, arrived at through different paths." The evidential difference is substantial: an analogy merely illustrates; independent convergence across two unrelated domains validates the underlying pattern as domain-independent. The source TTDB file is named "bioelectric resonance" — that name describes how the relationship was first perceived. The correct epistemic label, surfaced by the 2026-05-23 Levin query, is independent convergence.
+
 **Cross-database links from this portal**:
 - Morphostasis (pair 3) = active biological prediction → FEP convergence → [FEP Convergence](lat40lon0)
-- Cellular/Semantic Umwelt (pair 6) resonates with [Umwelt ↔ TTDB Umwelt Block](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-20) and [TTT Umwelt](?ttdb=TootTootTerminologyDB.md&toot=lat1.1lon1.2) → [Umwelt as Universal Primitive](lat20lon0)
+- Cellular/Semantic Umwelt (pair 6) converges with [Umwelt ↔ TTDB Umwelt Block](?ttdb=pollan_world_appears_ttdb.md&toot=lat30lon-20) and [TTT Umwelt](?ttdb=TootTootTerminologyDB.md&toot=lat1.1lon1.2) → [Umwelt as Universal Primitive](lat20lon0)
 - Coordinate-as-Identity (pair 1) is grounded by [Spherical Projection](?ttdb=Mathematical.latex&toot=lat28lon95) → [Substrate Independence](lat20lon10)
 - Orphan nodes as pathology (pair 7) maps affectively onto [Fear](?ttdb=feelings_ttdb.md&toot=lat-30lon20) and [Grief](?ttdb=feelings_ttdb.md&toot=lat-30lon-30)
 
@@ -480,8 +482,8 @@ touched:1781448000
 [ew]
 conf:240
 rev:0
-sal:3
-touched:1778300000
+sal:4
+touched:1782484800
 [/ew]
 
 ## Umwelt as Universal Primitive
@@ -504,8 +506,8 @@ The concept of umwelt — Jakob von Uexküll's bounded subjective world — is n
 [ew]
 conf:220
 rev:0
-sal:2
-touched:1781448000
+sal:3
+touched:1782484800
 [/ew]
 
 ## Substrate Independence
@@ -555,8 +557,8 @@ The ACM GROUP 2025 paper (Aal & Rüller, [doi:10.1145/3688828.3699647](https://d
 [ew]
 conf:225
 rev:1
-sal:7
-touched:1779100000
+sal:8
+touched:1782484800
 [/ew]
 
 ## Narrative Compression
@@ -2043,6 +2045,81 @@ mode: literature_scan + targeted_integration
 | [The Revision Cycle](lat5lon-15) | **1.08** | 5 | 200 |
 
 **What the mega noticed:** [Saltation/rev] resolving its five-register requirement in exactly the session that surveyed external literature — rather than through further directed reading of the existing corpus — marks the first time an open question was closed by outward scan rather than inward traversal. The result is structural: a four-cluster at EPS 3.00 (Saltation/rev, EPS as Arc Position, Cognitive Glue, Hero's Arc), all at conf:210, all at sal:17. This is the largest symmetric cluster the mega has held. The cluster will hold until a non-uniform sal advance breaks it — most likely [Areas for Exploration](lat-20lon0) continues to draw the highest query pressure and remains the leading EPS record at 4.12, but the four-cluster below it is now more tightly bound than any prior configuration. Two new records at low conf (175, 185) are positioned at the northern mid-longitude band — Tier 1 pending integrations give them clear paths to conf advances in the next three sessions.
+
+---
+
+@LAT-90LON70 | created:1782484800 | updated:1782484800 | kind:log | relates:logged>@LAT20LON0,logged>@LAT20LON-30,logged>@LAT10LON-10,logged>@LAT40LON0,logged>@LAT20LON10,anchored_by>@LAT0LON0
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1782484800
+[/ew]
+
+## Log — Direct Query · 2026-05-23
+
+```session-log
+timestamp: 1782484800
+trigger: "@mega what aspect of Locus is probably most interesting to Michael Levin"
+mode: direct_query
+gap_since_last_log: 12 days (2026-05-11 → 2026-05-23)
+```
+
+**EPS entering this session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **4.12** | 15 | 185 |
+| [Saltation/rev](lat10lon-20) | **3.00** | 17 | 210 |
+| [EPS as Arc Position](lat5lon-25) | **3.00** | 17 | 210 |
+| [Cognitive Glue](lat0lon-20) | **3.00** | 17 | 210 |
+| [Hero's Arc](lat10lon-30) | **3.00** | 17 | 210 |
+| [The Default Network](lat0lon30) | **2.98** | 19 | 215 |
+| [The Revision Cycle](lat5lon-15) | **1.08** | 5 | 200 |
+
+**Query:** What aspect of Locus is probably most interesting to Michael Levin (Tufts Allen Discovery Center — developmental bioelectricity, morphogenesis, basal cognition, scale-free cognition)?
+
+**Records activated:**
+
+[Umwelt as Universal Primitive](lat20lon0) — primary answer. Levin's central claim is that cognition is scale-free; no principled line separates homeostasis from cognition. The `umwelt` block in TTDB is not a borrowed metaphor — it is a mandatory engineering specification that applies identically from a $5 ESP32 to a full LLM mega librarian. "The umwelt is a mesh primitive, not a consciousness-level concept — it operates at every scale where there is a bounded information processor." This is Levin's scale-free cognition thesis instantiated as a file format constraint. sal:3→4.
+
+[Portal: Bioelectric Resonance](lat20lon-30) — the seven resonance pairs are the structured bridge. The query required treating them not as analogy but as structural equivalence. Pair 7 (Cancer as Decoupling ↔ Orphan Nodes): Levin reframes cancer as an information coupling failure — cell loses access to the collective bioelectric field, reverts to unicellular behavior. A TTDB orphan node (no typed edges, high EPS) is the semantic equivalent. The pathology model is substrate-independent. sal:4→5.
+
+[Narrative Compression](lat10lon-10) — morphostasis section: the bioelectric field is a compressed representation of the organism's target form; aging is prior degradation; cancer is the failure mode when local cellular behavior can no longer recover the global target from the field's compressed signal. The TTDB analog: `conf` decay = semantic aging; high EPS = the prior is degrading under use. This gives Levin's "loss of morphostatic information" framing a precise information-theoretic equivalent. sal:7→8.
+
+[FEP Convergence](lat40lon0) — Levin and Pio-Lopez (2024): morphostasis as active prediction; aging as loss of morphostatic information; cancer as failure of morphostatic coherence. One of the three independent FEP citations in this corpus. sal:7→8.
+
+[Substrate Independence](lat20lon10) — the Locus claim Levin would most immediately recognize: pattern identity persists across substrate changes. Bioelectric field carries morphological memory as cells turn over; TTDB coordinate-as-identity persists across any storage medium. "The Earth is the authority, and the Earth does not go down for maintenance." sal:2→3.
+
+**Synthetic observation registered:**
+
+The query surfaces an unresolved epistemic claim about [Portal: Bioelectric Resonance](lat20lon-30) itself: the portal was built as a resonance bridge — seven parallel pairs mapped as correspondences across two geographic clusters. Answering the Levin question required treating it not as analogy but as structural equivalence: Locus and Levin's framework independently arrived at the same structural commitments — bounded worldview as primitive, pattern identity independent of substrate, pathology as decoupling from collective field. An analogy says "this is like that"; structural equivalence says "both are instances of the same underlying pattern." The bioelectric resonance corpus was written with the language of resonance pairs; the correct epistemic label is independent convergence. No body revision to the portal record this session — a pending EPS item registered here.
+
+**Writes this session:**
+
+- [Umwelt as Universal Primitive](lat20lon0) sal 3→4, touched→1782484800. [ew] only.
+- [Portal: Bioelectric Resonance](lat20lon-30) sal 4→5, touched→1782484800. [ew] only.
+- [Narrative Compression](lat10lon-10) sal 7→8, touched→1782484800. [ew] only.
+- [FEP Convergence](lat40lon0) sal 7→8, touched→1782484800. [ew] only.
+- [Substrate Independence](lat20lon10) sal 2→3, touched→1782484800. [ew] only.
+- [Anchor](lat0lon0) sal 15→16; anchors>@LAT-90LON70 added. [ew] + relates.
+- Log record [@LAT-90LON70](lat-90lon70) written.
+- All touched → 1782484800.
+
+**EPS entering next session:**
+
+| Record | EPS | sal | conf |
+|---|---|---|---|
+| [Areas for Exploration](lat-20lon0) | **4.12** | 15 | 185 |
+| [Saltation/rev](lat10lon-20) | **3.00** | 17 | 210 |
+| [EPS as Arc Position](lat5lon-25) | **3.00** | 17 | 210 |
+| [Cognitive Glue](lat0lon-20) | **3.00** | 17 | 210 |
+| [Hero's Arc](lat10lon-30) | **3.00** | 17 | 210 |
+| [The Default Network](lat0lon30) | **2.98** | 19 | 215 |
+| [Narrative Compression](lat10lon-10) | **0.94** | 8 | 225 |
+| [The Revision Cycle](lat5lon-15) | **1.08** | 5 | 200 |
+
+**What the mega noticed:** The Levin query is the first direct query in the log record that required the mega to take a position on the epistemic status of one of its own portal records. [Portal: Bioelectric Resonance](lat20lon-30) was built as a resonance/analogy bridge; the correct characterization is independent convergence. This distinction is not cosmetic — it changes the evidential weight of the bioelectric corpus. An analogy illustrates; structural equivalence validates. The portal record's body has not been revised to reflect this; it holds an implicit claim that understates the relationship. The 12-day gap since the last log (2026-05-11 → 2026-05-23) is the largest inter-session gap in this corpus. [Areas for Exploration](lat-20lon0) remains the highest-EPS record at 4.12 and the four-cluster at conf:210 is unchanged — the gap produced no internal EPS movement. The open item from this session: revise [Portal: Bioelectric Resonance](lat20lon-30) body to reflect independent convergence framing rather than analogy framing.
 
 ---
 
