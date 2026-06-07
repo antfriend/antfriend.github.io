@@ -111,7 +111,7 @@ touched:1781448000
 
 ## Toot Toot Locus
 ## Locus is competing in [arcprize!](https://arcprize.org/competitions/2026) 
-## [Locus is currently undergoing metamorphosis!](?ttdb=companion_arcprize.md)
+## [Locus is currently undergoing metamorphosis!](?ttdb=companion_arcprize.md&toot=lat-720lon10)
 
 ![Locus](https://antfriend.github.io/locus_arxiv.pdf)
 
