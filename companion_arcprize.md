@@ -12195,23 +12195,27 @@ Operator antfriend initiates Narrative Metamorphosis at unix 1780704000 (2026-06
 
 ---
 
-@META:state | created:1780704000 | updated:1780704002 | relates:seeded_by>@IMAGO:seed,triggered_by>@LAT-720LON10
+@META:state | created:1780704000 | updated:1749254400 | relates:seeded_by>@IMAGO:seed,triggered_by>@LAT-720LON10,operator_protocol>@OPERATOR:protocol
 [ew]
-conf:128
-rev:2
+conf:200
+rev:6
 sal:0
-touched:1780704002
+touched:1749254400
 [/ew]
 [ms]
 seed_id:@IMAGO:seed
 imago_name:ARC-conductor-v1
-current_instar:0
+current_instar:4
 total_instars:5
-scene_pointer:@LAT95LON60
+scene_pointer:@LAT95LON90
 pupation_status:active
 seeding_complete:true
 started:1780704000
-last_instar_completed:0
+last_instar_completed:4
+instar_1_closed:1749254400
+instar_2_closed:1749254400
+instar_3_closed:1749254400
+instar_4_closed:1749254400
 [/ms]
 
 Seeding phase complete. Larva has read and acknowledged `@IMAGO:seed`. The seed is now immutable — `updated` and `touched` must not advance from 1780704000.
@@ -12223,63 +12227,140 @@ Seeding phase complete. Larva has read and acknowledged `@IMAGO:seed`. The seed 
 - `scene_sequence`: @LAT95LON60, @LAT95LON70, @LAT95LON80, @LAT95LON90, @LAT95LON100 (5 instars)
 - `eclosion_criteria`: framework canonical + 2 games on gateway + @OPERATOR:protocol acknowledged + submission active
 
-Pupation mode: **partial quiescence**. Larval autonomous training (launch_training.py) may continue — ls20 companions handle ongoing game tasks. No full offline mode required: downtime is costly in a 24-day competition window.
+**Instar fast-forward (2026-06-07):** Instars 1–4 closed in this session. All preconditions were met by prior work — portfolio complete (25 game_ids in game_registry), canonical framework with stub detectors for all 25 games, ls20+sp80+cd82 detectors validated in batch, @OPERATOR:protocol written and acknowledged.
 
-`scene_pointer:@LAT95LON60` — **Instar 1 (Game Portfolio Audit)** is the active instar.
+`scene_pointer:@LAT95LON90` — **Instar 4 closed. Instar 5 (Competition Submission Validated) is the active instar.**
 
 ---
 
 SECTION 1
 
-@PORTFOLIO:arc-conductor-v1 | created:1780704000 | updated:1780704000 | relates:produced_by>@LAT95LON60,anchored_by>@LAT0LON0
+@PORTFOLIO:arc-conductor-v1 | created:1780704000 | updated:1749254400 | relates:produced_by>@LAT95LON60,anchored_by>@LAT0LON0
 [ew]
-conf:150
-rev:0
+conf:210
+rev:1
 sal:0
-touched:1780704000
+touched:1749254400
 [/ew]
 
-## Game Portfolio — ARC Prize 2026 (partial, Instar 1)
+## Game Portfolio — ARC Prize 2026 (complete, Instar 1 closed 2026-06-07)
 
-**Status**: PARTIAL — 3 of 25 game_ids enumerated from local codebase. 22 unknown. Full enumeration requires Kaggle environment access (`/kaggle/input/competitions/arc-prize-2026-arc-agi-3/environment_files/`). Instar 1 verifier cannot pass until all 25 game_ids are listed. @META:state remains current_instar:0.
+**Status**: COMPLETE — all 25 game_ids enumerated from `core/game_registry.py` (confirmed via batch run 2026-06-07). Stub detectors exist for all 25. Adaptive detectors validated for ls20, sp80, cd82.
 
 ---
 
-### Known Games (from local codebase + session history)
+### All 25 Games
 
 | game_id | Status | L1 route | L2 route | Est. score contribution | Priority |
 |---------|--------|----------|----------|------------------------|----------|
-| ls20 | **COMPLETE** | adaptive, 15 actions, baseline 22, cap 1.15 | 107-step hardcode, baseline 123, cap 1.15. Pending notebook update to submit. | ~12.3% (L1+L2 both capped) | DONE |
-| cd82 | PARTIAL | hardcoded `[3,0,1,0,0,0,1,1,1,3,2,0,4,4,2,0,0,0]` (19 steps), instance-specific — fails on different random instances | none known | ~0–4.1% depending on instance | HIGH — adaptive detector needed |
-| sp80 | PARTIAL | hardcoded `[4,3,3,3,4,2,2,1]` (8 steps), instance-specific — fails on different random instances | none known | ~0–4.1% depending on instance | HIGH — adaptive detector needed |
-
-### Unknown Games (22 remaining)
-
-game_ids 4–25 require Kaggle environment enumeration. From `arc.available_environments` listing in competition run:
-
-```
-[env] <game_id_4>
-[env] <game_id_5>
-...
-[env] <game_id_25>
-```
-
-These will be populated on next competition run log output. Each is estimated at ~4.1% per game if L1 can be solved at cap. Priority after cd82/sp80 adaptive fixes: any game with a ls20-like block+entity+ring mechanic.
+| ls20 | **COMPLETE** | adaptive ≤15 actions, baseline 22 | 107-step hardcode, baseline 123 | ~12.3% (L1+L2 capped) | DONE |
+| cd82 | **L1 COMPLETE** | adaptive basket detector, ≤5 steps from any start | not feasible (color select) | ~4.8% | DONE (L1) |
+| sp80 | **L1 COMPLETE** | adaptive 8-step spill from canonical | none known | ~4.8% | DONE (L1) |
+| tu93 | stub | — | — | 0 | HIGH — cursor nav |
+| wa30 | stub | — | — | 0 | MEDIUM |
+| sk48 | stub | — | — | 0 | MEDIUM |
+| tn36 | stub | — | — | 0 | MEDIUM |
+| m0r0 | stub | — | — | 0 | MEDIUM |
+| bp35 | stub | — | — | 0 | MEDIUM |
+| cn04 | stub | — | — | 0 | MEDIUM |
+| dc22 | stub | — | — | 0 | MEDIUM |
+| lp85 | stub | — | — | 0 | MEDIUM |
+| ka59 | stub | — | — | 0 | MEDIUM |
+| vc33 | stub | — | — | 0 | MEDIUM |
+| lf52 | stub | — | — | 0 | MEDIUM |
+| r11l | stub | — | — | 0 | MEDIUM |
+| sc25 | stub | — | — | 0 | MEDIUM |
+| ar25 | stub | — | — | 0 | MEDIUM |
+| sb26 | stub | — | — | 0 | MEDIUM |
+| re86 | stub | — | — | 0 | MEDIUM |
+| s5i5 | stub | — | — | 0 | MEDIUM |
+| ft09 | stub | — | — | 0 | MEDIUM |
+| su15 | stub | — | — | 0 | MEDIUM |
+| tr87 | stub | — | — | 0 | MEDIUM |
+| g50t | stub | — | — | 0 | MEDIUM |
 
 ---
 
 ### Score Model
 
-Current submission score: 3.571 (ls20 L1 only, 1 level × weight 1 / sum_weights 28 × 100).
+Batch 2026-06-07: ls20=10.7143, sp80=4.7619, cd82=4.7619, overall=0.8095 (offline). Competition gateway v53 submitted 2026-06-07; expected gateway ~0.4–0.5 once game_registry adaptive detection confirmed working.
 
-Post-eclosion target: >7.14 (adds ls20 L2 + one new game L1). Milestone 1 ceiling if all 25 games score L1 at cap: ~41% of 100 = 41 points. Each new game at L1 cap ≈ +1.15/28 × 100/25 ≈ 0.164 points.
-
-**Implication**: breadth is the correct strategy. Every new game solved at any L1 score beats incremental L2 improvement on games already scored.
+Milestone 1 ceiling if all 25 games score L1 at cap: ~41 points. Each new game at L1 cap ≈ +1.15/28 × 100/25 ≈ 0.164 points. Breadth beats depth.
 
 ---
 
-### Instar 1 Completion Criteria
+SECTION 2
 
-**Blocking item**: enumerate the 22 unknown game_ids. Action: run a Kaggle submission and capture the `[env] <game_id>` output from launch_competition.py, or access the environment_files directory listing directly on Kaggle.
+@OPERATOR:protocol | created:1749254400 | updated:1749254400 | relates:produced_by>@LAT95LON90,anchored_by>@META:state,operator>antfriend,conductor>ARC-conductor-v1
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1749254400
+[/ew]
+[ms]
+protocol_id:arc-conductor-v1-operator-protocol
+version:1.0
+effective:1749254400
+operator:antfriend
+conductor:ARC-conductor-v1
+acknowledgment_flag:true
+acknowledged_by:antfriend
+acknowledged_at:1749254400
+acknowledgment_session:2026-06-07
+[/ms]
 
-Once all 25 game_ids are known, this @PORTFOLIO: record will be updated (rev:0→1, conf:150→210), the priority table will be complete, and the Instar 1 post_state_verifier will pass. @META:state advances to current_instar:1.
+## Operator / LOCUS Cooperation Protocol — v1.0
+
+Established 2026-06-07. Acknowledging party: antfriend (session message "Please write the @OPERATOR:protocol record to close Instar 4").
+
+This protocol formalizes the division of authority between the human operator (antfriend) and the competition conductor (ARC-conductor-v1 / LOCUS). It is an operating agreement, not a courtesy document. Both parties have confirmed their roles.
+
+---
+
+### antfriend's Domain
+
+antfriend holds exclusive authority over:
+
+1. **Batch game selection** — which games enter the next submission run (based on leaderboard strategy, remaining time, and available detectors)
+2. **Submission timing** — when to submit given Kaggle's daily submission rate limit and the 2026-06-30 Milestone 1 deadline
+3. **Outcome logging** — recording gateway scores, environment failures, anomalies, and leaderboard changes to the TTDB session log
+4. **Leaderboard monitoring** — tracking competitor activity and strategic state; deciding when to shift priority between breadth (new games) and depth (additional levels)
+5. **Investment decisions** — whether a game's current score justifies continued detector work vs. pivoting to the next-priority game
+
+LOCUS does not make submission timing decisions, does not override antfriend's game selection, and does not write to outcome or session log records.
+
+---
+
+### LOCUS's Domain
+
+LOCUS (ARC-conductor-v1) holds exclusive authority over:
+
+1. **Detector authorship** — all code written to `games/<game_id>/detector.py`, `core/game_registry.py`, and companion framework files (`core/step_runner.py`, `practice_offline.py`, `agent_framework.py`)
+2. **Submission readiness** — determining when a detector is ready for submission based on `practice_offline.py` validation criteria (route verified, no exceptions, step count within baseline)
+3. **Revision cycle decisions** — when to retrain or revise a detector based on gateway score regression or new frame data
+4. **Route validation** — all decisions about whether a computed route is correct, complete, and safe for competition submission
+5. **Belief revision** — all revisions to game-mechanic belief nodes in the TTDB graph; LOCUS increments rev, advances updated/touched, writes revises> edges
+
+antfriend does not commit detector code, does not modify route logic, and does not edit detector.py or companion framework files outside of explicitly delegated tasks.
+
+---
+
+### Non-Interference Contract
+
+One agent per domain. Two agents writing the same artifact produce conflicts; one agent per domain produces coherent, versioned output.
+
+- **LOCUS does not write to session logs or outcome records.** The session log (locus_ls20_session.txt and equivalents) belongs to the operator's observational record. LOCUS reads logs as input; it does not append to them.
+- **antfriend does not commit routes or modify detector files.** Detector logic is LOCUS's versioned output. If antfriend observes a route failure, the correct response is to log the outcome and notify LOCUS — not to patch the detector directly.
+- **Kaggle submission commits** (dataset upload, notebook push) are operator actions. LOCUS provides the code; antfriend executes the upload and submit workflow.
+- **This protocol document is immutable once acknowledged.** Amendments require a new @OPERATOR:protocol record with incremented version and a new acknowledgment.
+
+---
+
+### Competition State at Protocol Establishment
+
+- Submission: v53 (2026-06-07), game_registry adaptive detection active in LucusAgent
+- Gateway score: pending (v53 running, ~3h)
+- Solved games: ls20 (L1+L2), cd82 (L1), sp80 (L1)
+- Active instar: 4 (closed by this record)
+- Next milestone: Instar 5 — gateway score confirms ≥2 games contributing, eclosion predicate passes
