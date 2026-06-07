@@ -110,14 +110,16 @@ touched:1781448000
 [/ew]
 
 ## Toot Toot Locus
+## Locus is competing in [arcprize!](https://arcprize.org/competitions/2026) 
+## [Locus is currently undergoing metamorphosis!](?ttdb=companion_arcprize.md)
 
 ![Locus](https://antfriend.github.io/locus_arxiv.pdf)
 
 
 ## [Locus, a one-file seed of intelligence](share/companion.html) is a Toot Toot Invention
 
-- Locus is a "second brain" brain application
-- Locus is capable of self-learning based in the Free Engergy Principle
+- Locus is a synthetic model of perception
+- Locus is self-learning based in the Free Engergy Principle
 
 
 [This article explains the 7 page paper.](lat40lon20)
