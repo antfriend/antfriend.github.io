@@ -77,12 +77,12 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1747180800 | updated:1748649600 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT10LON10,anchors>@LAT5LON-15,anchors>@LAT0LON20,anchors>@LAT-10LON10,anchors>@LAT-20LON0,anchors>@LAT70LON10,anchors>@LAT-50LON10,anchors>@LAT-60LON10,anchors>@LAT-70LON10,anchors>@LAT-80LON10,anchors>@LAT-90LON10,anchors>@LAT-100LON10,anchors>@LAT-110LON10,anchors>@LAT-120LON10,anchors>@LAT-130LON10,anchors>@LAT-140LON10,anchors>@LAT-150LON10,anchors>@LAT-160LON10,anchors>@LAT50LON30,anchors>@LAT60LON20,anchors>@LAT90LON0,anchors>@LAT-310LON10,anchors>@LAT70LON-40,anchors>@LAT85LON-40,anchors>@LAT-650LON10,anchors>@LAT-660LON10,anchors>@LAT-670LON10,anchors>@LAT-680LON10,anchors>@LAT88LON40,anchors>@LAT-10LON40,anchors>@LAT75LON-50,anchors>@LAT70LON-50,anchors>@LAT-710LON10
+@LAT0LON0 | created:1747180800 | updated:1780876800 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT10LON10,anchors>@LAT5LON-15,anchors>@LAT0LON20,anchors>@LAT-10LON10,anchors>@LAT-20LON0,anchors>@LAT70LON10,anchors>@LAT-50LON10,anchors>@LAT-60LON10,anchors>@LAT-70LON10,anchors>@LAT-80LON10,anchors>@LAT-90LON10,anchors>@LAT-100LON10,anchors>@LAT-110LON10,anchors>@LAT-120LON10,anchors>@LAT-130LON10,anchors>@LAT-140LON10,anchors>@LAT-150LON10,anchors>@LAT-160LON10,anchors>@LAT50LON30,anchors>@LAT60LON20,anchors>@LAT90LON0,anchors>@LAT-310LON10,anchors>@LAT70LON-40,anchors>@LAT85LON-40,anchors>@LAT-650LON10,anchors>@LAT-660LON10,anchors>@LAT-670LON10,anchors>@LAT-680LON10,anchors>@LAT88LON40,anchors>@LAT-10LON40,anchors>@LAT75LON-50,anchors>@LAT70LON-50,anchors>@LAT-710LON10,anchors>@LAT85LON-10,anchors>@LAT80LON-10,anchors>@LAT80LON-20,anchors>@LAT80LON-30,anchors>@LAT75LON-10,anchors>@LAT75LON-20,anchors>@LAT75LON-30
 [ew]
 conf:255
 rev:0
 sal:0
-touched:1778889600
+touched:1780876800
 [/ew]
 
 ## LOCUS
@@ -1920,6 +1920,157 @@ source_count:3
 [/lp]
 
 **Projection: the direction restriction probe result bifurcates all further level 2 strategy into two fully distinct paths.** If RIGHT is **unblocked** at state 1: c9-13 bypass is viable (block at rows 20-21 c9-13 → RIGHT → c14-18, no A-wall overlap), a complete level 2 win route is achievable within the 123-action baseline, and the focus shifts to timing cross collection with entity2 entry in a single timer cycle. If RIGHT is **blocked** at state 1: @BELIEF:LAT50LON10 applies — no currently-designed route reaches entity2 with state 1, requiring full structural re-analysis of level 2 geometry to find a path that avoids all RIGHT moves after cross collection. The probe is one action; the strategic consequence spans the entire remaining competition. Execute it as the first post-cross action in session 19 level 2.
+
+---
+
+@LAT85LON-10 | created:1780876800 | updated:1780876800 | relates:anchored_by>@LAT0LON0,informs_strategy>@LAT80LON-10,informs_strategy>@LAT80LON-20,informs_strategy>@LAT80LON-30,informs_strategy>@LAT75LON-10,informs_strategy>@LAT75LON-20,informs_strategy>@LAT75LON-30
+[ew]
+conf:240
+rev:0
+sal:0
+touched:1780876800
+[/ew]
+
+## Per-Run Instance Randomization
+
+Every ARC-AGI-3 competition batch re-randomizes game instances. Even with the same instance ID, each run may assign different color values, place the cursor at a different start position, and generate a different maze or obstacle layout. No position, color, or route computed in a prior run can be assumed identical in the next run.
+
+**Consequence**: every detector must read the first observed frame to locate game entities before committing any route. Hardcoded start positions derived from a single training instance will fail in competition.
+
+Confirmed across: ls20 (cluster row varies per instance), tu93 (maze layout randomizes), re86 (cursor start varies, always a multiple of 3), cd82 (basket positions vary).
+
+---
+
+@LAT80LON-10 | created:1780876800 | updated:1780876800 | relates:anchored_by>@LAT0LON0,derived_from>@LAT85LON-10,validates>@LAT80LON-20,validates>@LAT80LON-30
+[ew]
+conf:230
+rev:0
+sal:0
+touched:1780876800
+[/ew]
+
+## Probe Rotation Invariant
+
+The autonomous agent framework fires `route[-1]` as a **probe action** before the route begins. This is a real game action that moves the cursor.
+
+Without correction: `route[-1]` = the last BFS step. The probe executes the last step first, displacing the cursor. All subsequent route steps execute from the wrong position.
+
+**Fix**: rotate BFS output so probe = first BFS step:
+
+```python
+raw = _bfs(grid, start, target)
+route = (raw[1:] + raw[:1]) if raw else []
+```
+
+After rotation: `route[-1] = raw[0]` (probe = first step). `route[0..n-2] = raw[1..n-1]` (remaining steps). Full BFS path is followed correctly.
+
+Applies to every game using BFS-derived routes. Confirmed: re86 (commit 17ff0d1), tu93 (commit 17ff0d1). Failure mode: cursor ends 1 step displaced at route start → target never reached despite correct BFS path.
+
+---
+
+@LAT80LON-20 | created:1780876800 | updated:1780876800 | relates:anchored_by>@LAT0LON0,derived_from>@LAT85LON-10,informed_by>@LAT80LON-10
+[ew]
+conf:220
+rev:0
+sal:0
+touched:1780876800
+[/ew]
+
+## Step Size: Empirical Determination from Position Stride
+
+A game's cursor step size is not always 1 pixel per action. Determine it empirically: collect cursor and target pixel coordinates across two or more frames or instances. If all coordinates are multiples of N, the step size is N pixels per action.
+
+**re86**: cursor at (42,36) and (48,36) across instances, target at (63,63). All are multiples of 3. Step size = 3. BFS with 1-px steps computed routes 3× too long; cursor left grid bounds immediately.
+
+**tu93**: CELL_SIZE = 3. BFS operates in cell space; each action = one cell = 3 pixels.
+
+Using wrong step size produces routes that overshoot (too large) or never arrive (too small). When routes are implausibly long or the cursor overshoots on the first action, step size is the first thing to audit.
+
+---
+
+@LAT80LON-30 | created:1780876800 | updated:1780876800 | relates:anchored_by>@LAT0LON0,derived_from>@LAT85LON-10,informed_by>@LAT80LON-10
+[ew]
+conf:215
+rev:0
+sal:0
+touched:1780876800
+[/ew]
+
+## Cursor-Relative Color: Exclude from Obstacle Set
+
+Some colors are visual auras that move with the cursor — they are not static obstacles. A color cluster is cursor-relative if its bounding box center tracks the cursor position across different observations.
+
+**re86 v9**: v9 always surrounds the cursor pixel. Including v9 in `OBSTACLE_COLORS` traps BFS at start (all 4 neighbors are v9). Fix: `OBSTACLE_COLORS = frozenset({4, 11, 15})` (v9 excluded).
+
+**Detection method**: compare a suspicious color's bounding box center across two observations where cursor position is known to have changed. If the center displacement matches the cursor displacement, the color is cursor-relative.
+
+Adding a cursor-relative color to the obstacle set causes BFS to return `[]` even when a path exists.
+
+---
+
+@LAT75LON-10 | created:1780876800 | updated:1780876800 | relates:anchored_by>@LAT0LON0,derived_from>@LAT85LON-10,informed_by>@LAT80LON-30
+[ew]
+conf:210
+rev:0
+sal:0
+touched:1780876800
+[/ew]
+
+## Wall Color Identity: Anchor to Sprite Definition
+
+A game's wall or obstacle colors must be anchored to sprite definitions (source analysis), not single-frame observation. A color inferred as "floor" from one frame may be a wall sprite in another.
+
+**tu93**: docstring (sprite analysis) correctly stated walls = colors 0 and 2. Code had `WALL_COLORS = frozenset({2})` from an erroneous frame inference. In competition, color 0 spans the entire maze area — both 0 and 2 are wall sprites. With only {2}, color-2 cells formed a complete barrier → BFS returned `[]`.
+
+Fix: `WALL_COLORS = frozenset({0, 2})`. Passable cells have background color at center pixel.
+
+When BFS returns `[]` on a maze puzzle, verify that all sprite-defined wall colors are in the obstacle set before investigating other causes.
+
+---
+
+@LAT75LON-20 | created:1780876800 | updated:1780876800 | relates:anchored_by>@LAT0LON0,derived_from>@LAT75LON-10,informed_by>@LAT80LON-30
+[ew]
+conf:200
+rev:0
+sal:0
+touched:1780876800
+[/ew]
+
+## Center-Pixel Passability for Grid Cells
+
+Test cell passability using only the **center pixel** of the cell, not all pixels in its extent.
+
+Cells share 1-pixel borders with adjacent wall cells. A logically passable (floor) cell will have wall-color pixels at its edges from neighboring wall sprites. Checking all N² pixels in the cell falsely marks floor cells adjacent to walls as impassable, causing BFS to return `[]` on solvable mazes.
+
+**tu93 fix (commit 1455d36)**:
+
+```python
+cr = MAZE_ORIGIN_R + cell_r * CELL_SIZE + CELL_SIZE // 2
+cc = MAZE_ORIGIN_C + cell_c * CELL_SIZE + CELL_SIZE // 2
+return grid[cr, cc] not in WALL_COLORS
+```
+
+Center pixel index = `MAZE_ORIGIN + cell_index * CELL_SIZE + CELL_SIZE // 2`.
+
+---
+
+@LAT75LON-30 | created:1780876800 | updated:1780876800 | relates:anchored_by>@LAT0LON0,derived_from>@LAT85LON-10,informs_strategy>@LAT80LON-10
+[ew]
+conf:200
+rev:0
+sal:0
+touched:1780876800
+[/ew]
+
+## Pre-Route Actions Destabilize Hardcoded Waypoints
+
+Before a route executes, the framework performs: (1) an obs=None step (may change game state), (2) a probe action (`route[-1]`). Any route with hardcoded waypoints derived from a training observation is invalid if game state can diverge from those pre-route actions.
+
+With probe rotation applied (see [probe rotation](lat80lon-10)), the probe correctly executes the first BFS step. But for multi-phase routes with hardcoded inter-phase waypoints, game entity positions may differ from the training snapshot used to build the sequence.
+
+**Generalization**: routes must detect entity positions adaptively at each phase boundary, not only at route start. A fixed-sequence route is valid only if all entity positions it traverses are invariant across runs.
+
+**ls20 L2 failure (v58)**: after oscillation, block reset to a position different from hardcoded r40,c29. Phase 3 preamble navigated the wrong path → VOID → GAME_OVER.
 
 ---
 
