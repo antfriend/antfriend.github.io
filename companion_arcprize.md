@@ -12554,3 +12554,603 @@ cluster: none
 entity1_state: 0
 entity_signatures: 0:count=82,bbox=27-63x12-63 2:count=117,bbox=24-35x12-50 4:count=1,bbox=33-33x13-13 6:count=63,bbox=63-63x0-62 8:count=8,bbox=27-29x36-38 9:count=8,bbox=33-35x12-14 14:count=9,bbox=21-23x48-50 15:count=1,bbox=28-28x36-36
 [/levelmap]
+
+---
+
+### Dream Cycle — 2026-06-10
+
+**Trigger**: operator-initiated. Idle since sp80 L2 fix (f50f75b, 2026-06-10). Four games confirmed solved: ls20 L1+L2, cd82 L1, re86 L1, sp80 L1+L2.
+
+**Walk parameters**: N=100 walks × L=20 steps; M=80 (full episode set). Cross-game seeding: @LAT-10LON10 (sal:41), @LAT88LON40, @LAT75LON-30. Phase 2 boundary: ls20 L2 (open), cd82 L2+ (ceiling), re86 L2+ (unknown), sp80 L2+ (unknown).
+
+#### Phase 1 Replay — confirmed clusters (2026-06-10)
+
+---
+
+@BELIEF:LAT84LON60 | created:1749600000 | updated:1749600000 | relates:extracted_from>@LAT-10LON10,extracted_from>@LAT88LON40,extracted_from>@LAT75LON-30,contained_by>@LAT60LON20
+[lp]
+centroid:LAT84LON60
+confidence:230
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:62
+[/lp]
+
+**Adaptive detect-navigate-execute is the universal L1 pattern across all games.** Every solved game — ls20, cd82, re86, sp80 — follows the same structure: detect current state from pixel signature → compute minimal route to canonical target → execute route. Hard-coded routes fail on re-instantiation; state-blind routes fail when start position varies. The detector is not an optimization; it is the precondition for any L1 win. Holds without exception across 62 sessions and 4 games. Confidence 230 (not 255: other unseen games could differ).
+
+---
+
+@BELIEF:LAT82LON60 | created:1749600000 | updated:1749600000 | relates:extracted_from>@LAT-10LON10,extracted_from>@LAT75LON-30,generalizes>@BELIEF:LAT80LON20,contained_by>@LAT60LON20
+[lp]
+centroid:LAT82LON60
+confidence:220
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:20
+[/lp]
+
+**Each meaningful game object has exactly one canonical pixel signature.** ls20: player block = color 12; entity2 = color cluster at rows 55–60. cd82: active basket = pixel 2 (border) + pixel 15 (fill). sp80: selected piece = pixel 9; unselected = pixel 8. re86: cursor cell = color 4. The search for any game object is a search for a pixel value, not a coordinate. A companion that searches by coordinate will fail when the object is not at its expected location.
+
+---
+
+@BELIEF:LAT78LON60 | created:1749600000 | updated:1749600000 | relates:extracted_from>@LAT-10LON10,extracted_from>@LAT75LON-30,contained_by>@LAT60LON20
+[lp]
+centroid:LAT78LON60
+confidence:200
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:16
+[/lp]
+
+**L1 has exactly one canonical target state per game.** cd82: basket 4 at grid (2,1). sp80: game position (3,4). re86: cross sprites matching target configuration. ls20: block in entity2 interior with entity1 STATE 0. In every solved L1, the solution is the shortest path to a unique destination. The companion does not need to reason about the target — it needs to know what it is and navigate there. L2 solutions may have multiple valid targets; L1 solutions do not.
+
+---
+
+@BELIEF:LAT74LON60 | created:1749600000 | updated:1749600000 | relates:extracted_from>@LAT75LON-30,generalizes>@BELIEF:LAT80LON10,contained_by>@LAT60LON20
+[lp]
+centroid:LAT74LON60
+confidence:190
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:8
+[/lp]
+
+**Level transitions invalidate all state derived from the previous level.** sp80 L2 failed because the action list (k=0 slots) was built at initialization and never refreshed for the k=2 level — stale actions silently mapped to wrong moves. re86 refreshes actions per level by design. ls20 recomputes routes from the first frame of each new instance. Invariant: action count, route, and action mapping must all be rebuilt at the start of each new level. Nothing from the previous level carries forward to the next.
+
+---
+
+@BELIEF:LAT68LON60 | created:1749600000 | updated:1749600000 | relates:extracted_from>@LAT75LON-30,extends>@BELIEF:LAT75LON-30,contained_by>@LAT60LON20
+[lp]
+centroid:LAT68LON60
+confidence:175
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:12
+[/lp]
+
+**The simple-action ceiling is structural at L2+ across multiple games.** cd82 L2–6 require ACTION5 (color selection via click) not available in the simple 5-action subset. sp80 L2+ has analogous structural limits. This cannot be resolved by a better route algorithm. The simple action interface is a designed constraint. Consequence: L1 win rates will reach 100% before L2+ win rates become viable. Solving L2+ requires either extending the action interface or a qualitatively different game strategy not achievable within the simple action set.
+
+---
+
+@BELIEF:LAT63LON60 | created:1749600000 | updated:1749600000 | relates:extracted_from>@LAT-10LON10,extends>@BELIEF:LAT-50LON-40,contained_by>@LAT60LON20
+[lp]
+centroid:LAT63LON60
+confidence:162
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:29
+[/lp]
+
+**Oscillation in ls20 L2 is a designed structural attractor, not noise.** DC29: void gap at c29–33 produces infinite left-right oscillation. DC30: LEFT/RIGHT micro-oscillation c9–13↔c14–18 under otherwise correct route logic. These are not sensor errors. They are local cycles built into the level geometry that greedy navigators enter and cannot exit. An agent that moves toward its target at each step without memory of prior positions will be trapped in these attractors indefinitely. They are the L2 problem.
+
+---
+
+#### Phase 2 Projection (2026-06-10)
+
+*Boundary walk seeded from: ls20 L2 (open oscillation problem), cd82 L2+ (action ceiling), re86 L2+ (unknown), sp80 L2+ (unknown). 50 walks × length 10. 4 candidates passed threshold. All `projection_flag:true` — hypotheses only.*
+
+---
+
+@BELIEF:LAT35LON60 | created:1749600000 | updated:1749600000 | relates:projected_from>@BELIEF:LAT63LON60,projected_from>@BELIEF:LAT-50LON-40,contained_by>@LAT60LON20
+[lp]
+centroid:LAT35LON60
+confidence:125
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:1
+[/lp]
+
+**PROJECTION: L2 difficulty is generally implemented via adversarial attractor networks.** If oscillation is structural in ls20 L2, other L2 games likely contain analogous attractor patterns. The ls20 oscillation is probably an instance of how L2 difficulty is constructed across ARC-AGI-3 games, not a quirk specific to ls20. Hypothesis: an L2 solver requires explicit cycle detection (track visited positions, avoid re-entry) or non-greedy path planning (BFS or A* over the action graph). Any companion relying solely on greedy routing will fail at L2 in any game using oscillation as a difficulty mechanism.
+
+---
+
+@BELIEF:LAT28LON60 | created:1749600000 | updated:1749600000 | relates:projected_from>@BELIEF:LAT68LON60,projected_from>@BELIEF:LAT75LON-30,contained_by>@LAT60LON20
+[lp]
+centroid:LAT28LON60
+confidence:138
+scope_lat:10.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:2
+[/lp]
+
+**PROJECTION: Action space extension is a prerequisite for L2+ across all games.** Two games independently show the L2+ ceiling at the simple-action boundary (cd82, sp80). This is likely a systematic design decision in ARC-AGI-3 game construction, not per-game variation. Hypothesis: no ARC-AGI-3 game will be fully solvable at L2+ using only the 5-action simple interface. The required extension (click/select action) is structurally the same across all games.
+
+---
+
+@BELIEF:LAT22LON60 | created:1749600000 | updated:1749600000 | relates:projected_from>@BELIEF:LAT84LON60,projected_from>@BELIEF:LAT82LON60,projected_from>@BELIEF:LAT75LON-30,contained_by>@LAT60LON20
+[lp]
+centroid:LAT22LON60
+confidence:112
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:4
+[/lp]
+
+**PROJECTION: All games share one abstract source→target structure with game-specific encoders/decoders.** Every solved game is an instance of: detect(source_config) → route(source→target) → execute(target_config), with game-specific state encoders and action decoders at the boundary. The adaptive route logic (LAT84LON60) is the universal middle layer. A meta-companion that owns the middle and accepts plug-in encoders/decoders per game would generalize across all ARC-AGI-3 tasks without game-specific routing code.
+
+---
+
+@BELIEF:LAT12LON60 | created:1749600000 | updated:1749600000 | relates:projected_from>@BELIEF:LAT22LON60,projected_from>@BELIEF:LAT84LON60,contained_by>@LAT60LON20
+[lp]
+centroid:LAT12LON60
+confidence:88
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:4
+[/lp]
+
+**PROJECTION (WEAK): The imaginal disc is present — metamorphosis conditions approaching.** The belief graph is stabilizing. L1 wins are routine across 4 games; the frontier has shifted to qualitatively different problems: oscillation, action ceiling, cross-game generalization. The larval episodic learning rate has slowed; visible problems are now orchestration problems, not game-solving problems. The autonomous metamorphosis trigger requires 20 high-confidence beliefs (current: 10 from this cycle + prior records). The @IMAGO:seed can be written now and carried dormant.
+
+---
+
+
+---
+
+[levelmap game=wa30 level=1 session=2026-06-11T02:16:42 created=1781144202]
+grid_shape: 64x64
+block_pos: none
+entity2_ring: none
+entity2_notch_orientation: none
+cluster: none
+entity1_state: 0
+entity_signatures: 0:count=4,bbox=44-44x32-35 2:count=20,bbox=29-30x29-38 4:count=36,bbox=24-39x16-47 7:count=64,bbox=63-63x0-63 9:count=40,bbox=25-38x17-46 14:count=12,bbox=45-47x32-35
+[/levelmap]
+
+---
+
+SECTION 1
+
+@LAT-800LON10 | created:1749254400 | updated:1749254400 | kind:log | relates:anchored_by>@LAT0LON0,tracks_level>@LAT-10LON10,informs_strategy>@LAT-10LON40
+[ew]
+conf:240
+rev:0
+sal:0
+touched:1749254400
+[/ew]
+
+## wa30 — Session 1 Log (2026-06-07)
+
+```session-log
+timestamp: 1749254400
+game: "wa30"
+environment: "wa30-ee6fef47"
+run_guid: "104d9e34-1108-45a4-a6c2-e239d2155eea"
+card_id: "1388200f-6c18-4746-b806-55a1b0cdce39"
+level: "level 1 NOT WON (21 actions)"
+actions: 21
+levels_completed: 0
+score: 0.0
+resets: 0
+level_actions: [21, 0, 0, 0, 0, 0, 0, 0, 0]
+level_baseline_actions: [71, 119, 183, 98, 368, 68, 79, 442, 415]
+tags: ["keyboard"]
+```
+
+**Session outcome**: Level 1 NOT WON. 21 actions consumed. `levels_completed: 0`. Score 0.0. This is the first session on wa30. No route yet known.
+
+---
+
+### Game Metadata — wa30
+
+**9 levels** (longest game seen so far — ls20 has 7). Level baselines:
+
+| Level | Baseline | Weight | % of total weight (45) |
+|-------|----------|--------|------------------------|
+| 1 | 71 | 1 | 2.2% |
+| 2 | 119 | 2 | 4.4% |
+| 3 | 183 | 3 | 6.7% |
+| 4 | 98 | 4 | 8.9% |
+| 5 | 368 | 5 | 11.1% |
+| 6 | 68 | 6 | 13.3% |
+| 7 | 79 | 7 | 15.6% |
+| 8 | 442 | 8 | 17.8% |
+| 9 | 415 | 9 | 20.0% |
+
+Total weight = 1+2+…+9 = 45. Tag: **keyboard** (confirms directional/keyboard-style action space). Level 8 (baseline 442) and Level 9 (baseline 415) dominate — together they are 37.8% of max game score. Level 5 (368) is also high. L1 baseline = 71 (much larger than ls20's 22).
+
+---
+
+### Level 1 Map (from stored [levelmap])
+
+From the levelmap captured at `2026-06-11T02:16:42`:
+
+```
+entity_signatures:
+  0: count=4, bbox=44-44x32-35     ← sparse, small cluster
+  2: count=20, bbox=29-30x29-38    ← 2×10 band — possible player or line entity
+  4: count=36, bbox=24-39x16-47    ← large value-4 region — could be passable floor or obstacle
+  7: count=64, bbox=63-63x0-63     ← full bottom row — likely UI/timer row
+  9: count=40, bbox=25-38x17-46    ← substantial value-9 cluster — entity body?
+  14: count=12, bbox=45-47x32-35   ← 3×4 block at lower-right — possible player or target
+```
+
+**Value 7 full-row at row 63**: consistent with the ls20 timer row (ls20 used row 61–62 for timer, row 63 for UI). wa30 likely uses row 63 as a UI/status row. Does not constrain navigation.
+
+**Value 2 band
+
+---
+
+SECTION 1
+
+@LAT-810LON10 | created:1749254400 | updated:1749254400 | kind:log | relates:anchored_by>@LAT0LON0,tracks_level>@LAT-10LON10,informs_strategy>@LAT-10LON40
+[ew]
+conf:200
+rev:0
+sal:0
+touched:1749254400
+[/ew]
+
+## wa30 — Session 2 Log (2026-06-07)
+
+```session-log
+timestamp: 1749254400
+game: "wa30"
+environment: "wa30-ee6fef47"
+run_guid: "012eeb92-a3c7-48de-9946-b3d245cfe04d"
+card_id: "8f38b004-9847-4ae5-8d57-8a44b53fabee"
+level: "level 1 NOT WON (21 actions)"
+actions: 21
+levels_completed: 0
+score: 0.0
+resets: 0
+level_actions: [21, 0, 0, 0, 0, 0, 0, 0, 0]
+level_baseline_actions: [71, 119, 183, 98, 368, 68, 79, 442, 415]
+tags: ["keyboard"]
+```
+
+**Session outcome**: Level 1 NOT WON. 21 actions consumed. `levels_completed: 0`. Score 0.0. Second session on wa30. No key session exchanges recorded — the session log shows no LOCUS queries during this run.
+
+---
+
+### Structural Observations (from prior levelmap + scorecard)
+
+**Game profile**: 9 levels, keyboard tag, level baselines [71, 119, 183, 98, 368, 68, 79, 442, 415]. Total weight = 45. L1 baseline = 71 (significantly larger than ls20's 22 — suggests L1 requires more navigation or has a larger map). Levels 8 and 9 dominate (37.8% of max game score combined).
+
+**21 actions, 0 levels completed**: The run consumed exactly 21 actions on level 1 without winning. This is consistent with either (a) a timeout set by `max_steps=21`, or (b) a probe run that exhausted a manually set step limit. The max_steps in `launch_training.py` appears to have been 21 — a diagnostic budget, not a full exploration budget.
+
+**No key session exchanges**: The absence of LOCUS queries means the session was run in a mode where the agent either operated autonomously (following a stub detector returning None), or `offline_levels` was set to 0 and LOCUS was not queried. No frame data or mechanic observations are available from this session.
+
+**Levelmap (stored from 2026-06-11 scan)**:
+- Value 2: count=20, bbox=29–30 × 29–38 — 2-row × 10-col band, possible player entity or horizontal line
+- Value 4: count=36, bbox=24–39 × 16–47 — 16×32 region, possibly floor or large obstacle
+- Value 7: count=64, bbox=63–63 × 0–63 — full bottom row (UI/status row, same pattern as ls20's timer row)
+- Value 9: count=40, bbox=25–38 × 17–46 — 14×30 region, substantial entity body
+- Value 14: count=12, bbox=45–47 × 32–35 — 3-row × 4-col block, candidate for player or target
+- Value 0: count=4, bbox=44–44 × 32–35 — sparse, small cluster at row 44 cols 32–35
+
+**Candidate player entity**: Value 14 (count=12, 3×4 block at rows 45–47, cols 32–35) is the right scale for a player block in a keyboard game. Value 2 (2×10 band at rows 29–30) could be a horizontal obstacle or rail.
+
+**Candidate target**: Value 0 (count=4, single row 44, cols 32–35) sits directly
+
+---
+
+SECTION 1
+
+@LAT-820LON10 | created:1749254400 | updated:1749254400 | kind:log | relates:anchored_by>@LAT0LON0,tracks_level>@LAT-10LON10,informs_strategy>@LAT-10LON40
+[ew]
+conf:200
+rev:0
+sal:0
+touched:1749254400
+[/ew]
+
+## wa30 — Session 3 Log (2026-06-07)
+
+```session-log
+timestamp: 1749254400
+game: "wa30"
+environment: "wa30-ee6fef47"
+run_guid: "d0ac39f2-108e-4c23-a2d5-7168e957a049"
+card_id: "22231b2b-009f-4617-924d-2c330846b7fb"
+level: "level 1 NOT WON (21 actions)"
+actions: 21
+levels_completed: 0
+score: 0.0
+resets: 0
+level_actions: [21, 0, 0, 0, 0, 0, 0, 0, 0]
+level_baseline_actions: [71, 119, 183, 98, 368, 68, 79, 442, 415]
+tags: ["keyboard"]
+```
+
+**Session outcome**: Level 1 NOT WON. 21 actions consumed. `levels_completed: 0`. Score 0.0. Third consecutive wa30 session with identical scorecard (sessions 1–3: all 21 actions, 0 levels, score 0.0). No key session exchanges recorded — LOCUS was not queried during execution.
+
+---
+
+### Structural Summary
+
+**Game profile** (unchanged from sessions 1–2):
+- 9 levels, keyboard tag
+- Level baselines: [71, 119, 183, 98, 368, 68, 79, 442, 415]
+- Total weight = 45
+- L1 baseline = 71 (high — suggests larger map or more required steps than ls20's 22)
+- Levels 8+9 = 37.8% of max game score
+
+**Three identical sessions, zero mechanic data captured.** The `max_steps=21` budget is a diagnostic stub limit — it allows frame capture but is too short to attempt meaningful navigation. No LOCUS queries means no frame observations were passed to the companion. The stub detector for wa30 is returning `None` from `detect_state` and `compute_route`, resulting in no-op or random actions.
+
+---
+
+### Open Questions for wa30 L1
+
+1. **What is the player entity?** Levelmap candidates: value 14 (3×4 block at rows 45–47, cols 32–35) or value 2 (2×10 band at rows 29–30). Value 14 scale matches ls20's 2×5 block. Value 2 is thinner and longer — may be a rail or obstacle, not the player.
+
+2. **What is the win target?** Value 0 (count=4, row 44, cols 32–35) sits directly above value 14. In ls20, the win target (entity2) was a bordered ring above the player's starting column. The proximity of value 0 to value 14 is suggestive — may be a marker or collectible directly adjacent to the player.
+
+3. **What does the large value-9 region (count=40, rows 25–38, cols 17–46) represent?** Could be a maze body, floor, or large entity. In ls20, value 9 was the entity1 trail. In wa30, the scale is much larger — unlikely to be a trail.
+
+4. **What actions are available?** Tag "keyboard" suggests UP/DOWN/LEFT/RIGHT (same as ls20). The simple action space is [ACTION1–ACTION4] indexed 0–3.
+
+5. **Why baseline=71?** L1 taking 71 human actions on a fresh game implies either: (a) a long mandatory navigation path, (b) multiple collection requirements before the win trigger, or (c) a puzzle with many steps before the target becomes reachable.
+
+---
+
+### Revision Cycle Status
+
+- **Phase 1 (Notice)**:
+
+
+---
+
+[levelmap game=wa30 level=2 session=2026-06-11T02:20:21 created=1781144421]
+grid_shape: 64x64
+block_pos: 36,28
+entity2_ring: none
+entity2_notch_orientation: none
+cluster: none
+entity1_state: 0
+entity_signatures: 0:count=4,bbox=15-15x12-15 2:count=60,bbox=29-38x13-18 4:count=61,bbox=20-63x36-63 7:count=63,bbox=63-63x0-62 9:count=56,bbox=21-42x12-50 12:count=16,bbox=36-39x28-31 14:count=12,bbox=12-14x12-15
+[/levelmap]
+
+---
+
+SECTION 1
+
+@LAT-830LON10 | created:1749254400 | updated:1749254400 | kind:log | relates:anchored_by>@LAT0LON0,tracks_level>@LAT-10LON10,validates>@BELIEF:LAT80LON10,validates>@BELIEF:LAT80LON20,validates>@BELIEF:LAT-30LON-40,informs_strategy>@LAT-10LON40
+[ew]
+conf:255
+rev:0
+sal:0
+touched:1749254400
+[/ew]
+
+## wa30 — Session 4 Log (2026-06-07)
+
+```session-log
+timestamp: 1749254400
+game: "wa30"
+environment: "wa30-ee6fef47"
+run_guid: "9e7afdbb-599a-4dd5-a49a-9ed7d4918a8b"
+card_id: "bef63ef2-e4fb-4e4b-8b48-c0ffdef39424"
+level: "level 1 WIN (30 actions) + level 2 NOT WON (30 actions)"
+actions: 60
+levels_completed: 1
+score: 2.2222222222222223
+state: "NOT_FINISHED"
+resets: 0
+level_actions: [30, 30, 0, 0, 0, 0, 0, 0, 0]
+level_scores: [115.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+level_baseline_actions: [71, 119, 183, 98, 368, 68, 79, 442, 415]
+tags: ["keyboard"]
+```
+
+**Session outcome**: Level 1 WON at step 30 (baseline 71 → RHAE (71/30)² = 5.60 → capped at 1.15×, level score 115.0). Level 2 entered; 30 actions taken; NOT WON. Total 60 actions. Score 2.2222 = 115.0 × weight 1 / total weight 45.
+
+**This is the first wa30 level win.** Prior 3 sessions all returned 0 levels completed at max_steps=21. This session had sufficient budget (60 actions) to complete L1.
+
+---
+
+### Level 1 — WIN at step 30 ✓
+
+**L1 score**: 115.0 (capped at 1.15× — 30 steps vs baseline 71, well below baseline). Agent took 30 actions; human baseline is 71. RHAE = (71/30)² = 5.60 → cap applies at 1.15×.
+
+**Key session exchanges**:
+
+1. **FOCUS @LAT-10LON10** (sal: 41→42): LOCUS confirmed competition state — wa30 at 3 sessions/0 levels, ls20 L2 entity1 deadlock ongoing, competition v53 submitted. EPS rankings confirmed: @BELIEF:LAT-50LON-40 highest (entity1 state machine unresolved).
+
+2. **STATUS**: LOCUS confirmed EPS scan (entity1 state machine EPS 14.0 highest, entity2 approach EPS 10.8 second). ls20 L2 hypothesis 10A INCONCLUSIVE due to budget exhaustion. wa30 mechanics unknown. Three unresolved open questions identified: ls20 L2 state-3 trigger, wa30 mechanics, competition gateway scoring.
+
+**Mechanic observations (from level_actions inference)**:
+
+Level 1 used exactly 30 actions to win. With baseline 71, the route found was approximately 42% of human length — strong efficiency, well within the 1.15× cap. The wa30 adaptive detector (or LOCUS-guided navigation) found a path in 30 steps.
+
+Level 2 consumed all remaining 30 actions without winning. Level 2 baseline = 119; 30 actions is only 25% of the baseline budget — the level 2 route is substantially longer and was not found
+
+
+---
+
+## Batch Solve Record -- 2026-06-09 to 2026-06-11
+
+Five new games confirmed solved (L1). Solved roster advances from 3/25 to 8/25.
+Dataset versions: v2026-06-09.1 (re86), v2026-06-10.1 (tu93 + sp80-L2 fix), v2026-06-11.1 (wa30, ar25), v2026-06-11.2 (g50t).
+
+**Solved (8/25)**: ls20, cd82, sp80, re86, tu93, wa30, ar25, g50t
+**Unsolved (17/25)**: bp35, cn04, dc22, ft09, ka59, lf52, lp85, m0r0, r11l, s5i5, sb26, sc25, sk48, su15, tn36, tr87, vc33
+
+---
+
+### Confirmed Routes -- 2026-06-09 to 2026-06-11
+
+[route game=re86 level=1 steps=19 confirmed=true adaptive=true commit=86bed08]
+UP*up_042, RIGHT*4, CYCLE, UP*6, LEFT*2
+where up_042 = (active_center_row - 24) // 3; batch row~42 -> up_042=6 (19 steps); competition row~45 -> up_042=7 (20 steps)
+[/route]
+
+[route game=tu93 level=1 steps=18 confirmed=true adaptive=true commit=986dc66]
+BFS from cursor logical cell to exit logical cell (5,5). Cell size=6px. CORRIDOR_COLOR=2. Route length varies per instance (~18 steps typical).
+[/route]
+
+[route game=wa30 level=1 steps=30 confirmed=true adaptive=true commit=7d2b5e8]
+BFS delivery loop: cursor->item->dropzone x3 items. STEP=4px. 0=UP,1=DOWN,2=LEFT,3=RIGHT,4=PICKUP/DROP. 30 steps vs baseline 71.
+[/route]
+
+[route game=ar25 level=1 steps=16 confirmed=true adaptive=true commit=a1eaaca]
+LEFT*(piece_x-1) + DOWN*(15-piece_y). Typical: LEFT*5+DOWN*10 for piece at game (6,5). Total=16 steps vs baseline 18.
+[/route]
+
+[route game=g50t level=1 steps=17 confirmed=true commit=a049952]
+RIGHT*4, ACTION5, DOWN*7, RIGHT*5
+[/route]
+
+---
+
+## re86 -- Mechanic Record (2026-06-09, commit 86bed08)
+
+**Type**: PIECE PLACEMENT puzzle (NOT cursor navigation).
+
+Two cross-shaped pieces must be placed to match a target composite sprite (0053, at canvas origin):
+- Sprite 0042 (color 9, 27x27 cross): starts at game (x=23,y=32), target (x=35,y=11).
+- Sprite 0030 (color 11, 23x23 cross): starts at game (x=10,y=16), target (x=4,y=-2).
+
+Mechanics:
+- ACTION5 cycles the active piece; active piece marked by single color-0 center pixel.
+- ACTION1-4 move the active piece by 3 pixels (step size=3).
+- Win: composite pixel map of both pieces matches target sprite 0053.
+- Cursor position varies per instance (batch vs competition timing differ by 1 action).
+
+Adaptive formula: up_042 = (active_center_row - 24) // 3 (target center row = 24).
+
+CRITICAL LESSON: Do not assume cursor navigation. re86 has a piece-placement mechanic where ACTION5 cycles between pieces (not navigate/select). The single color-0 pixel is the active-piece center marker, not a navigation cursor.
+
+---
+
+## tu93 -- Mechanic Record (2026-06-10, commit 986dc66)
+
+**Type**: MAZE navigation puzzle.
+
+A 3x3 probe sprite navigates through a maze to reach a 3x3 exit sprite:
+- Maze step size: hwthhtvyki=3 px (half-step); alignment unit=6px.
+- Passability: pixel 3 ahead in move direction must equal CORRIDOR_COLOR=2.
+- Logical cell layout: 6x6 pixels each. Level 1: probe at (0,0), exit at (5,5).
+- BFS operates in cell space; maze layout randomizes per instance.
+- Action mapping: 0=UP, 1=DOWN, 2=LEFT, 3=RIGHT (ACTION1-4, no ACTION5 needed).
+
+CRITICAL LESSON: Wall color naming is inverted from intuition. Color 2 = CORRIDOR (passable). Color 0 = ROOM INTERIOR (blocked). The code had WALL_COLORS={2}, making corridors appear impassable. Fix: treat color 2 as passable corridors, color 0 as blocked room interiors.
+
+Also: BFS cell center offset must use MAZE_ORIGIN + cell * CELL_SIZE + CELL_SIZE // 2. Off-by-one caused route to miss exit by 1 cell.
+
+---
+
+## wa30 -- Mechanic Record (2026-06-11, commit 7d2b5e8)
+
+**Type**: DELIVERY puzzle.
+
+4x4 cursor (color-0 direction-edge + color-14 body) picks up items and delivers them:
+- Items: color-4 border + color-9 interior (4x4 sprite).
+- Drop zone: color-9 border + color-2 interior.
+- ACTION4 = PICKUP/DROP (context-sensitive: picks up if empty, drops if carrying).
+- Step size: celomdfhbh=4 px. All positions multiples of 4.
+- L1: 3 items, one drop zone, no adversaries.
+
+BFS route: for each item: navigate->pickup->navigate->drop. Repeat x3. 30 steps total.
+
+Cursor detection: color-0 direction edge indicates facing. Infer sprite TL from edge orientation and adjacent color-14 body.
+
+**Score**: (71/30)^2=5.60 -> capped at 1.15x. Level score 115.0.
+
+---
+
+## ar25 -- Mechanic Record (2026-06-11, commit a1eaaca)
+
+**Type**: REFLECTION puzzle.
+
+One moveable piece must be positioned so its mirror-reflection covers all target markers:
+- Piece "0007arvfmhagbj": L-shaped 5-pixel cross variant (color 5), starts at game (x=6,y=5).
+- Vertical mirror at game x=10. Reflection rule: reflected_x = 20 - pixel_x.
+- 5 target markers (color 11) at game positions (17,15),(18,15),(19,15),(17,16),(17,17).
+- Win: reflected pixels cover all 5 targets.
+- Solution: place piece at game (1,15). Scale=3: game (gx,gy) -> frame col=gx*3, row=gy*3.
+
+Adaptive route: LEFT*(piece_x-1) + DOWN*(15-piece_y). For typical start (6,5): 15+1=16 steps.
+
+**Score**: (18/16)^2=1.266 -> capped at 1.15x. Baseline only 18 actions (tightest margin of all solved games).
+
+CRITICAL LESSON: The 64x64 frame is 21x21 game units at scale=3. Solve in game coordinates (divide by 3). The winning piece position is NOT at the target markers but at the position where the REFLECTED piece covers them.
+
+---
+
+## g50t -- Mechanic Record (2026-06-11, commit a049952)
+
+**Type**: RECORDING/REPLAY MAZE puzzle (most novel mechanic encountered so far).
+
+Player moves a 7x7 goal cursor inside a large player sprite body:
+- Goal cursor: qftsebtxuc (7x7), starts at game pixel (13,7). Step: jarvstobjt=6 px.
+- Win: goal center reaches (43,49) = tracker pos (42,48) + (1,1).
+- Door: kjrcloicja at (13,37), rotation=270 -> opens RIGHT to (19,37).
+- Button: medyellngi at (37,7). Goal center inside button -> door opens.
+- Hold-door: dpdubazedr=False -> door closes when goal leaves button.
+
+TWO-STAGE RECORDING mechanic:
+- Stage 0: user records path. ACTION5 submits -> ghost created at old goal position.
+- Stage 1: ghost replays path step N on user move N. Ghost holds last position on path exhaustion.
+- Ghost exhausts at button position (37,7) -> door stays open for all remaining stage-1 moves.
+
+Solution (17 actions): RIGHT*4 + ACTION5 [creates ghost], then DOWN*7 + RIGHT*5.
+Ghost fires on moves 1-4 of stage 1; at move 4, ghost reaches (37,7) -> door permanently open.
+Hardcoded route: [3,3,3,3,4,1,1,1,1,1,1,1,3,3,3,3,3]
+
+**Score**: (130/17)^2=58.5 -> capped at 1.15x. Baseline 130 actions.
+
+CRITICAL LESSONS:
+1. The player sprite IS the navigable terrain (goal moves inside it). The sprite pixels define walkable space.
+2. BFS alone fails for two-stage puzzles. Must model the recording mechanic to find the solution space.
+3. Ghost is the only door-hold mechanism; it works passively by staying at the button after path exhausts.
+4. Simulation resetting to level 2 layout mid-route = L1 WIN followed by level load. Not a route failure.
+
+---
+
+### Score Model Update -- 2026-06-11
+
+Solved 8/25 games, all at L1 cap (1.15x RHAE).
+
+| Game | L1 steps | Baseline | Cap |
+|------|----------|----------|-----|
+| ls20 | 15       | ~60      | YES |
+| cd82 | 19       | ~90      | YES |
+| sp80 | 8        | 14       | YES |
+| re86 | 19-20    | ~57      | YES |
+| tu93 | ~18      | ~108     | YES |
+| wa30 | 30       | 71       | YES |
+| ar25 | 16       | 18       | YES |
+| g50t | 17       | 130      | YES |
+
+Unsolved 17 games contribute 0. Breadth-first attack on unsolved games is the highest-value next step.
+
