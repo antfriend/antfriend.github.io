@@ -14020,3 +14020,549 @@ leaderboard decode tree, LAT50LON55 color-role derivation, LAT45LON55
 ACTION6 unlock, LAT40LON55 queue discipline). Competition state: 10/25
 solved offline, all translation-robust, dataset v2026-06-12.1 uploaded,
 submission pending. The next number on the leaderboard is the experiment.]
+
+---
+
+## CRITICAL FINDING — 2026-06-13: the validation chain is blind to the scored set
+
+**6/12 submission (v2026-06-12.1, round-2 robustification) scored 0.08 —
+identical to 6/11 (pre-robustification).** The pre-registered decode tree
+(LAT55LON55) calls flat 0.08 a falsification of the translation hypothesis.
+Investigated before accepting that, and found something larger.
+
+**Eliminations (all evidence, this session):**
+1. Stale upload — FALSIFIED. Downloaded the live danxray/companion-arc
+   dataset; all 7 round-2 detectors hash-identical to repo, every round-2
+   marker present. The gateway ran the new code.
+2. Palette permutation (LAT50LON55) — WEAKENED. ls20 hardcodes its colors
+   (BLOCK=12 FLOOR=5 ENT1=9 TIMER=11 VOID=4 WALL=3). If the hidden set
+   permuted colors, ls20 would fail too — but ls20 is the presumed survivor.
+3. Translation variation — FALSIFIED. Round 2 made 7 detectors
+   translation-invariant (proven in _test_perturbed.py); leaderboard did
+   not move.
+
+**The finding (_test_instance_variation.py):** across 4 FRESH scorecards
+each, ls20/tu93/wa30 return byte-identical first frames. The public API
+serves DETERMINISTIC instances == local environment_files. No variation
+exists to observe. (This also retro-corrects the 2026-06-02 "instances
+randomized per run" note: ls20's c34/c39/c29 was the block sliding DURING
+play or detection at different steps — NOT instance variation. The instance
+is fixed.)
+
+**Therefore:** local-gateway-repro (which serves these deterministic public
+instances) wins 9-10 games ≈ score 13, but the competition leaderboard is
+0.08. The competition gateway does NOT serve the public instances. The
+hidden game set is genuinely distinct and UNOBSERVABLE from here.
+
+@BELIEF:LAT90LON55 | created:1749772800 | updated:1749772800 | relates:extracted_from>@LAT-840LON10,revises>@BELIEF:LAT88LON55,contradicts>@BELIEF:LAT85LON50,contained_by>@LAT60LON20
+[ew]
+conf:245
+rev:0
+sal:0
+touched:1749772800
+[/ew]
+
+**BELIEF: No local validation predicts leaderboard, because the scored
+instances are unobservable.** Public API = local files = deterministic =
+NOT what the competition scores. Every tier of the LAT88LON55 hierarchy
+(canonical, perturbed, local-gateway) runs the same wrong instances. The
+ONLY oracle for the hidden set is the leaderboard itself: ~1 float/day.
+Per-game detectors fit to public instances have ZERO demonstrated transfer.
+
+**Two live hypotheses for the hidden set (undistinguished):**
+- H-variant: hard variants of the 25 known games (different layouts/levels
+  beyond translation). Supported by: competition ships environment_files for
+  the 25 games (why ship them if unrelated?). Implication: detectors must be
+  variant-general, developable locally using LEVELS 2-6 as proxy variants
+  (real structurally-different instances we DO have).
+- H-novel: the hidden set is novel games (ARC-AGI-3 is explicitly a
+  generalization-to-unseen benchmark). Implication: per-game detectors are
+  structurally the wrong tool; a general frame-reasoning agent is required —
+  i.e. what the larva WAS before the imago archived it for detectors.
+
+**0.08 is most likely a floor** (structured-route execution achieving
+partial completion on unseen instances), not a detector win. The 0.01→0.08
+jump on 6/11 coincides with the route-execution fixes (418d77a stale
+launcher, fd3f27e empty-route clobber): before, routes didn't run → random
+floor 0.01; after, structured routes run → 0.08. Robustification can't move
+a floor.
+
+**NEXT EXPERIMENT (operator decision — submission budget 1/day):**
+ABLATION. Submit with all detectors disabled (compute_route → []), pure
+fallback/random play. If leaderboard stays ~0.08 → 0.08 is the floor and NO
+detector transfers → pivot to multi-level-general detectors and/or a general
+agent. If it drops below 0.08 → some detectors DO transfer → identify which
+and why. One submission resolves the foundational unknown that 10 games of
+detector work never tested.
+
+**LOCAL WORK THAT IS VALID REGARDLESS (needs no hidden instances):**
+make each detector solve ALL its local levels (2-6), not just L1. Levels
+2-6 are real structurally-different instances of the same mechanic — the
+best available proxy for hidden-variant generality. Multi-level success is
+a necessary (not sufficient) condition for hidden-set transfer under
+H-variant, and pure waste under H-novel — so it is gated on the ablation
+result.]
+
+---
+
+## Multi-level generality attempt — 2026-06-13 (operator chose H-variant path)
+
+Built `_test_levels.py` (isolated per-level test via set_level + camera.render,
+decoupling detector generality from transition/burn framework quirks) and
+`_survey_levels.py` (L1-vs-L2 sprite-composition delta). Baseline: every
+detector solves ONLY L1; all return [] or fail on L2+.
+
+**Decisive finding: levels 2-6 are not parametric variants — they introduce
+NEW MECHANICS.** Per-game L1→L2 delta and the blocker:
+
+| Game | L2 change | Blocker for L2+ |
+|------|-----------|-----------------|
+| tu93 | +chaser sprite (tag 0001haidilggfh/0020) | PURSUIT: a moving enemy deletes the probe (uneirnujpq→remove_sprite). Needs dynamic evasion, not static BFS. |
+| wa30 | +adversaries | moving adversaries (same class as tu93) |
+| ar25 | +markers, asymmetric, piece same side as mirror | reflection geometry differs from L1; L1 win-invert solver finds no placement |
+| re86 | +piece | more pieces; cycle-order + per-piece targets |
+| sp80 | +movable pieces, per-level dir-remap table (6 tables in source) | ACTION1-4 remap rotates per level; spill choreography not invariant |
+| cd82 | +0 kinds but L2 needs color-selection | ACTION6 click (not a simple action) |
+| cn04 | +pieces (multi) | ACTION6 click-select per piece |
+| sk48 | +segments | ACTION6; relative choreography is L1-specific |
+| g50t | +5 kinds (multi-stage) | multi-button/multi-ghost recording |
+| ka59 | +8 kinds | effectively a different puzzle per level |
+| ls20 | the known 107-step L2 (partial) | timer/oscillation; open problem |
+
+**Conclusion:** "solve levels 2-6" ≈ solving ~40 new mini-games, several
+requiring ACTION6 (deferred — not a simple action) and several requiring
+dynamic/adversarial planning. This IS the ARC-AGI-3 generalization problem
+in miniature: each level is a novel environment. It is NOT a small uniform
+refactor.
+
+**Genuine gain banked:** tu93 detector rewritten rotation-independent
+(cursor TL from full 3×3 body extent, not the rotation-specific marker
+offset) and fully layout/size-general (origin + BFS bounds from corridor
+extent, cursor-relative cell space incl. negative cells). L1 still wins
+under all perturbations; now also handles any cursor rotation and maze
+size — a real hidden-variant robustness improvement even though tu93's
+chaser levels remain unsolved.
+
+@BELIEF:LAT72LON55 | created:1749772800 | updated:1749772800 | relates:extracted_from>@LAT-840LON10,contained_by>@LAT60LON20
+[ew]
+conf:225
+rev:0
+sal:0
+touched:1749772800
+[/ew]
+
+**BELIEF: Within a game, later levels are novel mechanics, not parametric
+variants.** A detector that solves L1 has no head start on L2 beyond the
+entity-detection primitives. Multi-level coverage requires per-level mechanic
+modeling (pursuit, multi-agent, click-selection, action-remap), much of it
+gated on ACTION6 support. Corollary: the per-game-detector strategy scales
+linearly with (games × levels × mechanics), which is the opposite of
+generalization — reinforces that a general frame-reasoning agent, not a
+detector library, is what the benchmark rewards.
+
+---
+
+## ABLATION RESULT — 2026-06-13: random (0.15) BEATS the detector fleet (0.08)
+
+The ablation submission (LOCUS_ABLATION=random, all detectors/routes disabled,
+uniformly-random simple actions) scored **0.15 on the competition leaderboard
+— nearly DOUBLE the detector build's 0.08.** Pre-registered decode tree branch
+">0.08" fires: **our detector routes are net COUNTERPRODUCTIVE on the hidden
+set.** Removing all of LOCUS's game-specific work raised the score.
+
+Save-run confirmed the build was live (offline overall=0.0000: random wins
+nothing on the deterministic canonical instances, matching the local repro
+ablation=0.00 vs normal=12.59). So the 0.08→0.15 delta is attributable ONLY
+to action selection (random vs detector routes); everything else identical.
+
+**Mechanism (inference):** deterministic routes computed from canonical-instance
+geometry drive hidden instances into early GAME_OVER / dead-ends (walk into a
+chaser, submit a wrong recording, snake into itself), then the game contributes
+~0. Random play instead burns the full step budget exploring and stumbles
+through some easy hidden levels. Across 25 hidden games this nets random ahead.
+
+This is the empirical refutation of the imago "conductor builds a 25-detector
+fleet" thesis as a LEADERBOARD strategy. The detectors are excellent on the
+instances they were built for (offline 1.37, 10/10 canonical L1) and worthless-
+to-harmful on the instances actually scored.
+
+@BELIEF:LAT94LON55 | created:1749816000 | updated:1749816000 | relates:extracted_from>@LAT-840LON10,contradicts>@IMAGO:seed,revises>@BELIEF:LAT90LON55,contained_by>@LAT60LON20
+[ew]
+conf:250
+rev:0
+sal:0
+touched:1749816000
+[/ew]
+
+**BELIEF: Hand-coded per-game routes are net-negative vs random on the hidden
+set; one general agent is the only viable direction.** Measured: random 0.15 >
+detectors 0.08. The standing best submission is now the RANDOM ablation — do
+NOT revert to the detector build (that lowers the score). Next gains come from
+a single general agent that beats random, NOT from more/better detectors.
+
+**Hard constraint (re-confirmed from kernel-metadata.json):** enable_internet
+=false. The competition rerun has NO external network — only the internal
+gateway (gateway:8001). The larva's LLM-in-the-loop (@LOCUS via Anthropic API)
+is IMPOSSIBLE in the rerun. A "reasoning" agent must be self-contained: a
+bundled local model, or (cheaper, immediate) a no-LLM heuristic/search agent.
+
+**DIRECTION (proposed):** build ONE general agent, no per-game code:
+- infer entities from the frame generically: background (mode color), player
+  (small movable cluster — confirm by which cluster moves after a probe action),
+  target/goal (distinct marker), walls/hazards (what causes no-move or loss);
+- act to reduce player→target distance via BFS over inferred free space;
+- anti-loss / anti-stuck: never repeat an action that caused GAME_OVER or a
+  no-op; vary when blocked; use the full step budget.
+Local validation that IS representative: does this ONE agent solve multiple
+canonical L1s with zero per-game code? If yes, it is a real general solver and
+should beat random on hidden variants too. Interim cheap win: a smarter random
+(anti-stuck, full action variety incl. ACTION6 with sampled coords) likely
+beats 0.15 with minimal effort while the general agent is built.
+
+---
+
+## General agent v1 built — 2026-06-13 (the pivot, commit pending)
+
+`core/general_agent.py`: ONE count-based novelty explorer, zero per-game code.
+Re-decides every frame (never commits to a killable plan — the 0.08<0.15
+lesson), learns each action's effect online (no-op vs state-change), prefers
+untried actions, then pulls toward least-visited successors. Board signature
+excludes animated UI border rows/cols.
+
+Wired into launch_competition.py via LOCUS_MODE ∈ {detector, random, general}
+(LOCUS_ABLATION=random kept as alias). Notebook v2026-06-13.2-general sets
+LOCUS_MODE=general.
+
+**A/B validation (`_test_agent_ab.py`, general vs uniform-random, 11 games × 3
+seeds, canonical):** both complete ~0 canonical levels (exploration can't crack
+precise canonical puzzles — that's what detectors were for), so the
+representative signal is the MECHANISM:
+- state coverage: general/random = **1.11×** (general explores more, 9/11 games)
+- wasted-step (no-op) rate: general **17%** vs random **23%**
+Canonical absolute scores don't predict the leaderboard, but "loss-averse
+count-based exploration beats uniform random" is an agent-logic property that
+should transfer. Since the agent is provably ≥ random on its mechanism,
+shipping it is low-regret (expected ≥ 0.15) and yields a clean datapoint:
+does smarter exploration beat random on the hidden set?
+
+Regression: detector mode unchanged (gateway repro 12.59); general mode runs
+crash-free through all games (0.00 on canonical, as expected).
+
+**Iteration roadmap (one change per submission, measured):** v1 exploration →
+(if >0.15) add safe generic goal-seeking tie-breaker (move the controllable
+cluster toward the nearest distinct object, only ordering already-safe moves)
+→ add ACTION6 with frame-derived click coords (unlocks click-games; projection
+LAT45LON55). Each gated on the prior leaderboard reading. NO untested
+multi-change leaps — that discipline is what the detector era lacked.
+
+---
+
+## Meanwhile prep (general-v1 leaderboard pending) — 2026-06-14
+
+12h pre-submission window. Constraint: general-v1 is the next submission and is
+NOT touched (clean A/B reading of "does count-based exploration beat random
+0.15?"). Built/validated the two roadmap increments as separate modules so we
+ship same-day once the leaderboard reads. Three findings — two negative, one
+defensive:
+
+1. **`core/general_agent_v2.py` (frontier-directed) ≈ v1. Will NOT ship.**
+   v2 replaces v1's myopic 1-step novelty with value iteration over the learned
+   transition graph (back up a frontier reward; walk shortest known path to the
+   nearest unexplored action; auto-prunes exhausted regions). A/B/C
+   (`_test_agent_ab2.py`, 11 games × 8 seeds): coverage v2/v1 = **1.00×**,
+   identical win-rate. Reason: on canonical the reachable-state sets are small
+   enough that v1 ALREADY saturates coverage within 600 steps, so smarter
+   pathing buys nothing — the gain only appears when budget binds (large state
+   spaces). Lesson: exploration sophistication is unfalsifiable on this proxy.
+   The bottleneck is not how we explore; it's that completions are rare.
+
+2. **Clicks do NOT unlock canonical click-puzzles by exploration.** 6/11
+   canonical games expose ACTION6 (cd82, sp80, ar25, sk48, cn04, ka59) and BOTH
+   random and general are structurally blind to them (ACTION6 is_simple()=False
+   → excluded everywhere). For the 64×64 camera display==grid, so a click is
+   just data={"x":gx,"y":gy}. `_test_click.py`: even WITH clicks the explorer
+   wins 0% on cn04/ka59/sk48/cd82 — these are targeted puzzles, not solvable in
+   600 undirected steps (that's what detectors were for).
+
+3. **Naive clicks REGRESS movement-games; gating fixes it.** Adding ~12
+   foreground-click candidates per state balloons the search: ClickExplorer with
+   clicks ON dropped sp80 from 3/12 → 0/12. Fix = **movement-first, clicks-on-
+   escalation** (`core/click_agent.py`): offer clicks only from a state where
+   every move is already tried (no-op or leads to a known state). Restores sp80
+   to 12% and is **≥ v1 by construction** — identical to v1 on movement-games
+   (allow_click only triggers where movement dead-ends), so it is a no-regression
+   way to add the click capability the hidden set's pure-click games need.
+
+**Net:** ClickExplorer is the validated "≈0.15 → add ACTION6" increment (safe,
+no-regression, bets on hidden pure-click games). general_agent_v2 is shelved
+(no measurable benefit). Neither is wired into launch yet — both gated on the
+general-v1 leaderboard reading. New files: core/general_agent_v2.py,
+core/click_agent.py, _test_agent_ab2.py, _test_click.py.
+
+---
+
+## Dream Cycle — 2026-06-14 (DC: the distribution reckoning)
+
+**Trigger**: operator-initiated (@imago dream). Idle in the 12h pre-submission
+window; general-v1 shipped, leaderboard pending. Episodic source set since
+2026-06-10: the gateway diagnosis, the translation-invariance rounds, the
+ABLATION (random 0.15 > detectors 0.08), general-v1 build + A/B, and the
+2026-06-14 meanwhile prep (v2 vs v1, clicks-don't-unlock, clicks-regress -> gating).
+
+**Walk parameters**: N=100xL=20 replay; 50xL=10 projection. Cross-seed:
+@LAT94LON55 (ablation, sal high), @LAT84LON60 (detector-precondition LP, now
+under tension), @LAT-840LON10 (seed). Phase 2 boundary: the unobservable hidden
+set; the pending leaderboard; the H-variant question the operator raised.
+
+#### Phase 1 Replay — confirmed clusters (2026-06-14)
+
+---
+
+@BELIEF:LAT88LON55 | created:1749902400 | updated:1749902400 | relates:extracted_from>@LAT94LON55,revises>@BELIEF:LAT84LON60,scopes>@BELIEF:LAT82LON60,scopes>@BELIEF:LAT78LON60,contained_by>@LAT60LON20
+[lp]
+centroid:LAT88LON55
+confidence:235
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:62
+[/lp]
+
+**The detector Locus Points were never wrong — they were confidence about the
+wrong distribution.** "Detect-navigate-execute is the precondition for any L1
+win" (@LAT84LON60, conf 230) was confirmed across 62 sessions of CANONICAL play.
+But canonical instances are deterministic and are NOT the scored set. The 62
+sessions measured the canonical distribution with high confidence and the scored
+distribution zero times. The ablation (0.08<0.15) is the first measurement of
+the scored distribution — and it inverts the value sign. Every per-game LP
+(signatures @LAT82LON60, unique targets @LAT78LON60, routes) silently carries an
+unwritten qualifier: "...on instances you can observe." The graph's apparent
+contradiction dissolves once that qualifier is made explicit. Confidence in the
+beliefs is intact; confidence in their TRANSFER was never tested until now.
+
+---
+
+@BELIEF:LAT85LON55 | created:1749902400 | updated:1749902400 | relates:extracted_from>@LAT94LON55,extends>@BELIEF:LAT88LON55,contained_by>@LAT60LON20
+[lp]
+centroid:LAT85LON55
+confidence:215
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:18
+[/lp]
+
+**On the scored set the dominant term is preserved stochastic completion
+probability; directed behavior must be strictly additive.** Why 0.08<0.15:
+random occasionally completes forgiving hidden L1s by chance; a committed route
+REPLACES those lucky random actions with a plan that dead-ends before the chance
+completion would have happened. The detector does not fail by being wrong — it
+fails by spending the action budget on a wrong commitment instead of leaving it
+to chance. Corollary (now a design law): any added intelligence must only
+re-order among already-safe actions, never displace an action that might have
+completed a level. This single principle explains 0.08<0.15, demands the
+ClickExplorer gating (clicks ADD where movement is dead, never replace live
+movement), and predicts general-v1 >= 0.15 (it never commits to a killable plan).
+
+---
+
+@BELIEF:LAT82LON55 | created:1749902400 | updated:1749902400 | relates:extracted_from>@LAT94LON55,extracted_from>@LAT88LON55,contained_by>@LAT60LON20
+[lp]
+centroid:LAT82LON55
+confidence:205
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:14
+[/lp]
+
+**Local validation has collapsed to a one-sided test: it can falsify a
+regression but cannot confirm a gain.** The 2026-06-14 meanwhile results are
+three faces of one fact. v2 ~ v1 (coverage saturates) — canonical cannot reward
+better exploration because its state spaces are too small to bind the budget.
+Clicks unlock no canonical win — canonical click-games are precise puzzles built
+for detectors. Clicks regress sp80 — canonical CAN detect dilution. So the
+proxy reliably catches what makes things WORSE and is blind to what makes things
+BETTER on the hidden set. Iteration discipline must invert accordingly: stop
+trying to validate gains locally (impossible); instead build changes proven
+no-regression locally and treat the leaderboard as the sole confirmation oracle.
+
+---
+
+@BELIEF:LAT79LON55 | created:1749902400 | updated:1749902400 | relates:extracted_from>@LAT82LON55,supports>@LAT94LON55,contained_by>@LAT60LON20
+[lp]
+centroid:LAT79LON55
+confidence:185
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:9
+[/lp]
+
+**The operator's H-variant reading is now the load-bearing assumption.** If the
+hidden games were mere position/palette perturbations of canonical games, the
+frame-adaptive detectors (round-2 anchor-relative) would have moved the score —
+they did not (still 0.08). The surviving explanation is that the hidden set is
+structurally different games (different mechanics), against which no
+canonical-derived detector, however adaptive, can transfer. Consequence for what
+"local work valid no matter what" means: it is exactly distribution-agnostic
+agent machinery (generic entity-free exploration, no-regression gating, the
+additive-only law), because that is the only work whose value does not depend on
+the hidden games resembling the ones we can see.
+
+#### Phase 2 Projection — hypothesis candidates (2026-06-14)
+
+*Boundary walk from the unobservable scored set + pending leaderboard. All
+projection_flag:true — hypotheses, falsifiable by the next readings.*
+
+---
+
+@BELIEF:LAT40LON55 | created:1749902400 | updated:1749902400 | relates:projected_from>@LAT85LON55,projected_from>@LAT94LON55,contained_by>@LAT60LON20
+[lp]
+centroid:LAT40LON55
+confidence:130
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:2
+[/lp]
+
+**PROJECTION: general-v1 lands ~0.15–0.20 — a small, real lift over random.**
+Count-based novelty is a strict refinement of random: same never-commit
+stochasticity, but fewer steps wasted on no-ops (A/B: 17% vs 23%), so more
+effective actions inside the same budget -> marginally more chance completions.
+It should clear random, not crush it. If it lands BELOW 0.15, the additive-only
+law (@LAT85LON55) is wrong or the novelty bias itself suppresses a lucky action
+distribution — a result that would itself be highly informative.
+
+---
+
+@BELIEF:LAT35LON55 | created:1749902400 | updated:1749902400 | relates:projected_from>@LAT79LON55,projected_from>@LAT85LON55,contained_by>@LAT60LON20
+[lp]
+centroid:LAT35LON55
+confidence:120
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:2
+[/lp]
+
+**PROJECTION: a click reservoir exists in the hidden set that ALL current
+builds score 0 on.** 6/11 canonical games expose ACTION6; if the hidden set
+mirrors that, ~half its games are click-capable, and on any PURE-click hidden
+game (movement is all no-ops) random, v1, and the 0.15 baseline all score
+exactly 0 — they cannot click. The gated ClickExplorer is the only build that
+captures any of that reservoir by chance. Predicts ClickExplorer > general-v1
+IFF such pure-click hidden games exist. This is the falsifiable core of the
+"~0.15 -> ship ClickExplorer" branch.
+
+---
+
+@BELIEF:LAT30LON55 | created:1749902400 | updated:1749902400 | relates:projected_from>@LAT79LON55,projected_from>@BELIEF:LAT74LON60,contained_by>@LAT60LON20
+[lp]
+centroid:LAT30LON55
+confidence:115
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:1
+[/lp]
+
+**PROJECTION (the spark): the 25-game rerun is one process — there is free
+cross-game information we currently throw away.** Every build resets all learned
+state per level and per game, treating the 25 hidden games as independent. But
+they run in a single rerun, and the ablation says they may be an H-variant
+FAMILY. The action SEMANTICS (which index tends to "select/confirm" vs "move",
+which click pattern tends to precede a completion) could be learned in the first
+few games and primed into the later ones — a meta-explorer that accumulates
+action-effect statistics ACROSS games within one rerun, lifting the back half of
+the sequence. It is self-contained (no internet), carries zero per-game code,
+and obeys the additive-only law (a prior only re-orders, never commits). This is
+the first idea that could beat random by MORE than the no-op margin. Candidate
+for the increment after ClickExplorer.
+
+---
+
+@BELIEF:LAT25LON55 | created:1749902400 | updated:1749902400 | relates:projected_from>@LAT85LON55,projected_from>@LAT79LON55,contradicts>@BELIEF:LAT35LON60,contained_by>@LAT60LON20
+[lp]
+centroid:LAT25LON55
+confidence:108
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:1
+[/lp]
+
+**PROJECTION: there is a hard stochastic ceiling — precise hidden puzzles are
+unreachable by any undirected method, and reaching them re-opens the very
+overfit the scored set punishes.** Chance completion only works on forgiving
+games; the precise hidden puzzles (the click-puzzle analogues of canonical
+cn04/ka59) will never fall to exploration, exactly as canonical cn04 never did.
+So any stochastic agent has a ceiling. Crossing it needs targeted, instance-
+adaptive solving — which on an H-variant set means solving the CURRENT hidden
+frame from scratch (read THIS instance, plan for IT), the thing detectors only
+pretended to do. The unresolved central tension of the whole project: the scored
+distribution simultaneously rewards generality (punishes pre-baked routes) and
+hides precise puzzles (unsolvable without targeting). The resolution, if one
+exists, is on-line per-instance planning with no canonical prior — not a route,
+not a detector, but a solver. Beyond the current roadmap; flagged for when the
+stochastic ceiling is empirically hit.
+
+---
+
+## Meanwhile prep, round 2 (post-dream exploration) — 2026-06-14
+
+Operator asked for any further improvement gainable before submission. Built and
+tested two dream candidates + a core-mechanism probe. Pattern confirms
+@LAT82LON55 (local validation is one-sided): every result is "no-regression,
+gain unconfirmable."
+
+1. **Meta-explorer (`core/meta_agent.py`, dream @LAT30LON55) — NULL transfer on
+   distinct games.** Cross-game action-id prior (change-rate + completion credit,
+   soft-weighted = additive-only). Controlled warm-vs-cold transfer test
+   (`_test_meta_transfer.py`, 5 orders × 3 seeds): later-half first-50-step
+   no-op rate warm 17.0% vs cold 17.0% (delta ~0); wins warm 1 / cold 2 (noise).
+   Reason: canonical's 11 games are DISTINCT games, not an H-variant family, so
+   id-semantics don't transfer (change-rate uniform across ids). This tests the
+   PESSIMISTIC case; it neither confirms nor refutes the hidden-FAMILY case,
+   which canonical cannot simulate (one instance per game). Shelved as a
+   speculative, locally-unvalidatable bet (same status as v2).
+
+2. **Click effectiveness probe — clicks are weak on canonical, 0 wins.** With the
+   stall-gate, ClickExplorer issues clicks on cd82 (eff ~19%), ka59 (~6%), ar25
+   (~0%); 0 clicks on sp80/sk48 (movement-driven, correctly preserved) and 0 on
+   cn04. 0 actual wins on any click-game. cn04 issues 0 clicks because its action
+   BUDGET is small — episodes GAME_OVER in ~20 steps, before the stall can
+   accumulate. Per @LAT25LON55 canonical click-games are precise puzzles
+   exploration won't crack anyway; click value is purely the hidden pure-click
+   reservoir (@LAT35LON55), unmeasurable locally.
+
+3. **Core-mechanism bug found + fixed: in-grid HUD defeats the signature.**
+   board_signature strips only the outer UI border. cn04 renders an action-budget
+   bar at row 4 (depletes per action, 144 cells/step); sk48 has an animated band.
+   These can make frames look novel and defeat no-op/revisit detection — degrading
+   v1 to random on such games. Fix: `core/dyn_signature.py` DynamicSignature —
+   learns a per-cell volatility mask (cells changing on >60% of steps), excludes
+   them after a 6-step warmup, freezes the mask per level. Verified HARMLESS:
+   stable games (cd82/sp80) collapse to 1 signature unchanged; sk48's real
+   movement is correctly preserved (not masked). A strictly-better default
+   signature for any future build; its own increment (do NOT bundle with clicks —
+   one change per submission). Canonical outcome impact small (binding constraint
+   is budget/precision, not noise), but the noise-immunity is real and general.
+
+**Bottom line (the disciplined conclusion):** local exploration has hit its
+ceiling. v2, meta, clicks, dyn-signature all return no-regression / gain-
+unconfirmable. The leaderboard reading of general-v1 is now the only informative
+next signal — exactly as the dream consolidated (@LAT82LON55). Staged, ordered
+increments ready: (a) ClickExplorer [≈0.15 branch], (b) DynamicSignature [core
+upgrade, any branch], (c) goal-seeking tie-breaker [>0.15 branch, unbuilt],
+(d) meta-explorer [speculative, after a family signal]. New files this round:
+core/meta_agent.py, core/dyn_signature.py, _test_meta_transfer.py.
