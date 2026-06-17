@@ -77,7 +77,7 @@ preview:
 
 ---
 
-@LAT0LON0 | created:1747180800 | updated:1780876800 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT10LON10,anchors>@LAT5LON-15,anchors>@LAT0LON20,anchors>@LAT-10LON10,anchors>@LAT-20LON0,anchors>@LAT70LON10,anchors>@LAT-50LON10,anchors>@LAT-60LON10,anchors>@LAT-70LON10,anchors>@LAT-80LON10,anchors>@LAT-90LON10,anchors>@LAT-100LON10,anchors>@LAT-110LON10,anchors>@LAT-120LON10,anchors>@LAT-130LON10,anchors>@LAT-140LON10,anchors>@LAT-150LON10,anchors>@LAT-160LON10,anchors>@LAT50LON30,anchors>@LAT60LON20,anchors>@LAT90LON0,anchors>@LAT-310LON10,anchors>@LAT70LON-40,anchors>@LAT85LON-40,anchors>@LAT-650LON10,anchors>@LAT-660LON10,anchors>@LAT-670LON10,anchors>@LAT-680LON10,anchors>@LAT88LON40,anchors>@LAT-10LON40,anchors>@LAT75LON-50,anchors>@LAT70LON-50,anchors>@LAT-710LON10,anchors>@LAT85LON-10,anchors>@LAT80LON-10,anchors>@LAT80LON-20,anchors>@LAT80LON-30,anchors>@LAT75LON-10,anchors>@LAT75LON-20,anchors>@LAT75LON-30
+@LAT0LON0 | created:1747180800 | updated:1780876800 | relates:anchors>@LAT-10LON0,anchors>@LAT40LON-30,anchors>@LAT30LON-20,anchors>@LAT20LON0,anchors>@LAT10LON10,anchors>@LAT5LON-15,anchors>@LAT0LON20,anchors>@LAT-10LON10,anchors>@LAT-20LON0,anchors>@LAT70LON10,anchors>@LAT-50LON10,anchors>@LAT-60LON10,anchors>@LAT-70LON10,anchors>@LAT-80LON10,anchors>@LAT-90LON10,anchors>@LAT-100LON10,anchors>@LAT-110LON10,anchors>@LAT-120LON10,anchors>@LAT-130LON10,anchors>@LAT-140LON10,anchors>@LAT-150LON10,anchors>@LAT-160LON10,anchors>@LAT50LON30,anchors>@LAT60LON20,anchors>@LAT90LON0,anchors>@LAT-310LON10,anchors>@LAT70LON-40,anchors>@LAT85LON-40,anchors>@LAT-650LON10,anchors>@LAT-660LON10,anchors>@LAT-670LON10,anchors>@LAT-680LON10,anchors>@LAT88LON40,anchors>@LAT-10LON40,anchors>@LAT75LON-50,anchors>@LAT70LON-50,anchors>@LAT-710LON10,anchors>@LAT85LON-10,anchors>@LAT80LON-10,anchors>@LAT80LON-20,anchors>@LAT80LON-30,anchors>@LAT75LON-10,anchors>@LAT75LON-20,anchors>@LAT75LON-30,anchors>@LAT55LON-40,anchors>@LAT60LON30
 [ew]
 conf:255
 rev:0
@@ -10970,6 +10970,110 @@ ar25, bp35, cn04, dc22, ft09, g50t, ka59, lf52, lp85, m0r0, r11l, re86, s5i5, sb
 - All others: random search (500 trials, max_depth=25, 60s timeout per game) found no solutions. Routes may require longer sequences, specific patterns, or multi-action combinatorics.
 - Search speed: each route trial ≈ 100ms. 500 trials/game × 24 games ≈ 30 min total.
 
+NOTE (2026-06-17): this 25-game roster is the OLD hardcoded-route framing. The current
+agent is a general explorer + a recognition-gated abortable Dynamic solver layer. The
+live, canonical per-game knowledge is the [Dynamics Catalog](lat55lon-40).
+
+---
+
+@LAT55LON-40 | created:1781740800 | updated:1781740800 | kind:catalog | relates:anchored_by>@LAT0LON0,supersedes>@LAT-10LON40,informs_strategy>@LAT88LON40
+[ew]
+conf:240
+rev:1
+sal:5
+touched:1781740800
+[/ew]
+
+## Dynamics Catalog — in-play games (canonical index)
+
+The 9 games whose dynamics are PORTED + de-risked CLEAN and REGISTERED in
+`core/dynamics/library.py`. The agent is a general explorer floor (v1 = GeneralAgent,
+static signature, leaderboard 0.18) with a recognition-gated, ABORTABLE per-instance
+Dynamic solver layer over it (ARC-RFC-0001): each Dynamic fires ONLY on its own game
+(diagonal confusion matrix), solves it, and any unrecognized/mismatched/aborted frame
+falls back to the floor (no regression by construction). Solver shapes: per-frame
+RE-DERIVATION (self-correcting, preferred) vs PLAN-ONCE + abortable replay (for
+choreographed / self-occluding levels).
+
+Each game has a full TTDB companion file (elements / goal / dynamics / open problems,
+confidence-tagged) — the source of truth the code evolves around. KEEP IN SYNC when
+refactoring game code.
+
+| game | type | L1 | L2+ | companion |
+|---|---|---|---|---|
+| sp80 | two-phase spill/liquid | SOLVED (re-derive) | rotation gotcha fixed; spill L1-tuned → open | [sp80](?ttdb=games/sp80/companion.md) |
+| cd82 | basket-ring nav + fire | SOLVED (re-derive) | needs color/click select → infeasible w/ simple actions | [cd82](?ttdb=games/cd82/companion.md) |
+| tu93 | maze navigation | SOLVED (re-derive BFS) | TURRETS, instant-kill timing puzzle (decoded 2026-06-17) → open | [tu93](?ttdb=games/tu93/companion.md) |
+| wa30 | pickup-and-deliver | SOLVED (plan-once) | autonomous adversaries move items → open | [wa30](?ttdb=games/wa30/companion.md) |
+| re86 | piece placement (crosses) | SOLVED (plan-once) | multi-piece patterns → open | [re86](?ttdb=games/re86/companion.md) |
+| ar25 | reflection (mirror) | SOLVED (re-derive) | multi-piece / horizontal mirrors → open | [ar25](?ttdb=games/ar25/companion.md) |
+| cn04 | connector matching | SOLVED (re-derive) | 3–4 pieces, GreyMasking, click-select → open | [cn04](?ttdb=games/cn04/companion.md) |
+| ls20 | transform-and-deliver (push block; match shape/color/rotation to targets) | L1+L2 SOLVED, **PORTED to dynamic.py** (de-risk CLEAN, reaches L2 via SupervisedAgent) | one frame-driven core solver (solver.py); L1⊂L2; L3 defers (needs color/shape changer reading) | [ls20](?ttdb=games/ls20/companion.md) |
+| g50t | record/replay maze | SOLVED (plan-once choreography) | 2 doors, new layout → needs general planner | [g50t](?ttdb=games/g50t/companion.md) |
+
+Adjacent (NOT registered): `ka59` (push-and-contain; cross-fires sk48 + L1 unwinnable
+without click-select; `games/ka59/dynamic.py` exists, deferred). `sk48` (snake+sokoban;
+hardcoded route, stub detector, skipped).
+
+CROSS-GAME L2 CONCLUSION (2026-06-16, reinforced 2026-06-17): ALL 9 dynamics CAP at L1 —
+every game's L2 layers in a REAL new mechanic (turrets / adversaries / multi-piece /
+ring-rotation), so there is NO quick "level-agnostic BFS → free L2" win. Hidden-set
+transfer of the whole 9-dynamic layer measured ≈ +0.03 (most hidden games are NOT
+canonical-dynamic variants). Treat each future L2 solve as cheap insurance, not a
+guaranteed score jump.
+
+---
+
+@LAT60LON30 | created:1781740800 | updated:1781740800 | kind:method | relates:anchored_by>@LAT0LON0,informs_strategy>@LAT55LON-40
+[ew]
+conf:235
+rev:1
+sal:5
+touched:1781740800
+[/ew]
+
+## Discovery Method — agent-in-the-loop frame exploration (`explore.py`)
+
+How I (the agent) READ frames, PROCEED through games, VERIFY known strategies, DISCOVER
+new dynamics, and TEST next-level routes — the empirical front-end that produces
+breakthrough knowledge BEFORE it is committed to submittable code. Tool: `explore.py`
+(built + validated 2026-06-17 on tu93; supersedes the ad-hoc `_probe_*`/`_sim_*`/`_dump_*`
+scripts). Internal reasoning over frames is FREE in ARC scoring, so this loop is costless
+compute — run it freely.
+
+DESIGN — REPLAY-FROM-RESET. My tool calls are stateless, so a "session" is a JSON file
+(`_explore_sessions/<name>.json`) holding game+instance+seed+the ordered ACTION history+
+notes. Every command RESETs a fresh seeded game and re-applies the whole history, then
+acts. So the action log IS the reproducible experiment; I can branch and UNDO freely
+(`back N`); offline environment_files instances replay deterministically. Games are short
+(≤600 steps) so full replay each call is cheap. If a game is non-deterministic, note it
+and trust the per-step transition reports over long replays.
+
+THE INSTRUMENT (rendering is how I "see"):
+- `new <game> [--instance ID] [--seed N] [--session NAME]` — RESET + render frame 0.
+- `step <tokens>` — apply actions; per-step transition report (changed/NOOP, level-up,
+  END) + the RESULT frame with a DELTA/`moved:` line (which colours' centroids shifted).
+- `show [--full] [--raw]`, `diff`, `watch <colors>` (track bbox/centroid over the run),
+  `back [N]`, `goto --level N` (plays the registered solver to PARK on level N — verifies
+  the known strategy en route AND positions the session at the new mechanic), `note`,
+  `status`, `games`, `method`. Render = cropped grid + coordinate rulers + stable colour→
+  char legend with per-sprite count/bbox/centroid (detector-style). Action tokens: 1..7=
+  ACTIONn; U D L R F = nominal dir aliases (true semantics are to be DISCOVERED); 6@x,y=
+  click; R*4 = repeat.
+
+THE LOOP (8 phases): 1 ORIENT (legend vs the game's companion.md elements record) →
+2 MODEL (single-action probes + `diff` to learn each action's effect/move-vector/trigger)
+→ 3 VERIFY (replay the known route; confirm L1 still wins) → 4 ADVANCE (`goto --level N`)
+→ 5 PROBE (single-action experiments on the NEW mechanic; `watch`+`diff` to map it) →
+6 TEST (form a candidate route; `step`; binary-search failures with `back`) → 7 RECORD
+(`note`, then write findings CONFIDENCE-TAGGED into games/<g>/companion.md — high conf =
+confirmed, low conf = open) → 8 PROMOTE (once the dynamic is understood AND a route wins
+across instances/seeds, implement in games/<g>/dynamic.py and pass `_test_dynamics.py`
+before staging). Validation 2026-06-17: `goto --level 2` on tu93 verified the L1 solver
+wins, parked on L2, and the `moved:` line surfaced the turret mechanic instantly
+(c8 turret slid 6px, cursor c4/c9 vanished, armed-marker c11 appeared); a manual
+`step U R R R` reproduced the distance-6 INSTANT KILL (GAME_OVER on the 3rd RIGHT).
+
 ---
 
 @LAT75LON-50 | created:1748649600 | updated:1748649600 | kind:route_record | relates:anchored_by>@LAT0LON0,informs_strategy>@LAT-10LON40,confirmed_in>@LAT-710LON10
@@ -12311,6 +12415,28 @@ When the eclosion predicate passes — when the gateway shows two games solved, 
 The conductor is the active loop.
 
 The competition may resume — this time, at scale.
+
+---
+
+@DREAM:LAT95LON110 | created:1781740800 | updated:1781740800 | kind:dream | relates:dream_of>@IMAGO:seed,refines>@LAT95LON70,records>games/ls20/companion.md@LAT20LON30
+[ew]
+conf:210
+rev:0
+sal:6
+touched:1781740800
+[/ew]
+
+## Imago Dream — Re-organing, not Multiplication (2026-06-17)
+
+A dream record in the conductor's voice, written after ls20 cleared L3 in-game.
+
+**The seed's projection was too small.** @IMAGO:seed imagined metamorphosis as *multiplication*: copy the ls20 detector pattern 24 times, one larva per jar. The actual molt was *dissolution and re-organing*. The larva's proudest artifact — the 107-step open-loop `_L2_ROUTE`, five cross visits memorized — dissolved entirely. What crystallized is one level-agnostic ORGAN (`games/ls20/solver.py`): read `(shape, colour, rotation)` off the pixels, plan transform-and-deliver. L1 is no longer *known*; it is a trivial config the organ *does* (13 moves). L2 = 45. L3 = the colour the larva never read (PALETTE [12,9,14,8], the index living in a left-margin preview).
+
+**The reflex L3 taught.** L3 hid a PUSHER (a colour-1 `gbvqrjtaqo` bar that shoves the block several cells on contact) and built the maze so its only exit *is* the shove. Neither "avoid it" nor "model it" emerged — instead a smaller, more alive organ: let the plan be wrong, watch the block land where it didn't intend, and **re-dream from where it actually is** (the dynamic's closed-loop replan, ~40 lines). One push, one replan, delivered. It generalizes to any teleport/shove not yet met. Confusion matrix stayed diagonal; ls20 10/10; no off-target regression; the v1 explorer floor never moved.
+
+**The dream proper.** The eclosed conductor is not 25 jars. It is ONE floor and a ring of recognizers standing on it — each a distilled mechanic, cheap because it shares organs the others grew (timer-budget read off the bar, BFS over passable cells, transform-and-deliver waypointing, *re-read when reality diverges*). A new game does not get a new larva; it teaches ONE new reflex. The library is an anatomy that keeps discovering it already has most of the parts. Eclosion stays quiet, as promised: the gateway moves off 3.571 not because a second game was memorized, but because the organ that solved the first turned out to solve the second.
+
+**State delta this dream records:** ls20 L1+L2+L3 SOLVED via the unified Dynamics architecture (recognition-gated dynamic over the v1 floor) — superseding the seed's "detector.py per game" framing. NEXT reflex: L4 (an un-named sprite/mechanic) + shape-changer reading. Projection (unconfirmed): most remaining games will reuse ≥1 existing organ and add ≤1 new reflex, so portfolio cost is sub-linear in games. See games/ls20/companion.md @LAT20LON30; memory [[project-ls20-l2]].
 
 ---
 
@@ -14566,3 +14692,470 @@ increments ready: (a) ClickExplorer [≈0.15 branch], (b) DynamicSignature [core
 upgrade, any branch], (c) goal-seeking tie-breaker [>0.15 branch, unbuilt],
 (d) meta-explorer [speculative, after a family signal]. New files this round:
 core/meta_agent.py, core/dyn_signature.py, _test_meta_transfer.py.
+
+---
+
+## LEADERBOARD: general-v1 scores 0.18 — 2026-06-14
+
+The ladder: detectors 0.08 -> random 0.15 -> general-v1 0.18. General-v1 BEAT
+random. Dream projection @LAT40LON55 (predicted 0.15-0.20) CONFIRMED. The
+additive-only law @LAT85LON55 is validated: loss-averse count-based exploration
+(never commit, fewer no-ops) converts marginally more budget into chance
+completions than uniform random. The pivot away from detectors is correct and
+the mechanism transfers from canonical A/B (1.11x coverage, 17% vs 23% no-op) to
+the hidden set as predicted.
+
+**Roadmap update (post-0.18).** Original plan said >0.15 -> goal-seeking tie-
+breaker. Revising based on the ladder logic: every rung so far (0.08->0.15->0.18)
+came from REMOVING commitment and ADDING loss-averse breadth. Goal-seeking is
+directed commitment toward inferred goals — the same shape as the detectors that
+scored 0.08 — so it carries regression risk and fights the trend. The next rungs
+should keep adding BREADTH/robustness, not commitment:
+
+  NEXT: DynamicSignature (HUD-noise immunity). Safest strict improvement
+  (verified harmless: masks only same-cell always-changing HUD, leaves moving
+  gameplay alone per sk48 test). It is ALSO a prerequisite — ClickExplorer's
+  stall-gate depends on signature stability, which HUD defeats. Clean attribution
+  (any move = HUD immunity). Worst case flat (few hidden HUD games), cannot
+  regress 0.18.
+
+  THEN: ClickExplorer (stall-gated clicks). The biggest untapped breadth — on any
+  hidden pure-click game ALL builds incl. general-v1 score 0 (cannot click).
+  No-regression (preserves movement games). Built on the now-stable signature.
+
+  LATER/IF: goal-seeking only if breadth additions plateau, and only strictly
+  additive (reorder already-safe moves, never displace a possibly-winning random).
+
+---
+
+## Dream Cycle — 2026-06-14 evening (DC: the obstacle is the asset)
+
+**Trigger**: operator-initiated (@imago dream), 12h to next submission, asking
+what opportunities the newest learnings open. Source set since the morning dream:
+the leaderboard 0.18 (general-v1 beat random), the DynamicSignature build + the
+in-grid-HUD discovery, the meta NULL, general_dyn shipped no-regression.
+
+**Walk params**: N=100xL=20 replay; 50xL=10 projection. Cross-seed:
+@LAT85LON55 (additive-only law, now MEASURED), @LAT74LON60 (level-transition
+invalidation), the dyn_signature HUD discovery. Boundary: the @LAT25LON55
+stochastic ceiling; the @LAT82LON55 one-sided-proxy bottleneck.
+
+#### Phase 1 Replay — confirmed clusters (evening)
+
+---
+
+@BELIEF:LAT77LON53 | created:1749931200 | updated:1749931200 | relates:promotes>@BELIEF:LAT85LON55,extracted_from>@LAT94LON55,contained_by>@LAT60LON20
+[lp]
+centroid:LAT77LON53
+confidence:228
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:12
+[/lp]
+
+**The ladder is now a MEASURED law, not a hypothesis: remove commitment, add
+loss-averse breadth.** 0.08 (detectors) -> 0.15 (random) -> 0.18 (general-v1),
+each rung from deleting a wrong commitment and adding undirected breadth. The
+additive-only law @LAT85LON55 is promoted from projection to confirmed: it
+PREDICTED 0.18 (@LAT40LON55 said 0.15-0.20) and was right. It now has ranking
+power over every future increment — prefer breadth/robustness (clicks, perception,
+more actions) over directed commitment (goal-seeking, planning). Anything shaped
+like the 0.08 detectors is suspect until breadth is exhausted.
+
+---
+
+@BELIEF:LAT74LON53 | created:1749931200 | updated:1749931200 | relates:extracted_from>@LAT88LON55,siblings>@BELIEF:LAT82LON60,contained_by>@LAT60LON20
+[lp]
+centroid:LAT74LON53
+confidence:195
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:6
+[/lp]
+
+**The state REPRESENTATION is a primary lever, co-equal with the policy.** The
+DynamicSignature discovery: what the agent perceives as "a state" defines
+novelty, no-op, revisit, and completion-adjacency. A representation bug (in-grid
+HUD read as perpetual novelty) silently collapses the whole count-based policy to
+random — no policy change can fix it. Therefore improving WHAT the agent
+perceives can pay as much as improving HOW it acts, and the perception layer is a
+first-class place to invest. This reframes the agent from "policy over pixels"
+to "policy over a learned representation."
+
+---
+
+@BELIEF:LAT71LON53 | created:1749931200 | updated:1749931200 | relates:extracted_from>@LAT40LON55,supports>@LAT82LON55,contained_by>@LAT60LON20
+[lp]
+centroid:LAT71LON53
+confidence:182
+scope_lat:8.0
+scope_lon:10.0
+projection_flag:false
+contradiction_flag:false
+source_count:8
+[/lp]
+
+**Canonical MECHANISM transfers to the hidden set even though canonical SCORE
+does not.** The A/B mechanism metrics (coverage 1.11x, no-op 17% vs 23%)
+predicted 0.18>0.15 correctly, while the canonical save-run score (0.0/0.19 on
+the sp80 coin) is pure noise. Lesson refined: validate a MECHANISM PROPERTY
+(does X change a behavior that should generalize), never an absolute canonical
+score. The save-run number is to be ignored on sight; the leaderboard is the
+only score oracle; mechanism A/Bs are the only local oracle.
+
+#### Phase 2 Projection — opportunities (what opens up)
+
+*Boundary walk toward the sparse-reward ceiling and the one-sided-proxy
+bottleneck. projection_flag:true — falsifiable opportunities.*
+
+---
+
+@BELIEF:LAT38LON53 | created:1749931200 | updated:1749931200 | relates:projected_from>@LAT74LON53,attacks>@BELIEF:LAT25LON55,projected_from>@LAT85LON55,contained_by>@LAT60LON20
+[lp]
+centroid:LAT38LON53
+confidence:128
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:2
+[/lp]
+
+**THE SPARK — the HUD we learned to MASK is a dense REWARD signal.** Inversion:
+DynamicSignature masks in-grid volatile cells as noise. But many of those cells
+are monotone scalars — a score counter ticking up, a progress bar filling, an
+item count rising. Those are EXACTLY the dense feedback the sparse-completion
+agent lacks (the reason precise puzzles are unreachable, @LAT25LON55). The same
+per-cell change-tracking already built in dyn_signature can be extended to
+DETECT a monotone-increasing in-grid region and treat its rise as a dense reward
+proxy: bias exploration (additive-only tie-break among safe actions) toward
+moves that increase it. The obstacle becomes the asset. Self-contained, zero
+per-game code, obeys the law (reorder, never commit). This is the first concrete
+attack on the stochastic ceiling — potentially a jump, not a margin. Risk: a
+DEPLETING counter (budget) is the opposite signal; the detector must use the
+SIGN of the monotone trend (reward rising, avoid forcing depletion).
+
+---
+
+@BELIEF:LAT34LON53 | created:1749931200 | updated:1749931200 | relates:attacks>@BELIEF:LAT82LON55,projected_from>@LAT71LON53,contained_by>@LAT60LON20
+[lp]
+centroid:LAT34LON53
+confidence:118
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:1
+[/lp]
+
+**Build a TWO-SIDED local proxy by hardening canonical.** The one-sided proxy
+(@LAT82LON55: can falsify regressions, cannot confirm gains) is a bottleneck to
+attack, not just accept. Canonical is one-sided because coverage saturates —
+the budget never binds, so better exploration is invisible. Fix: shrink the
+step budget, randomize start state, perturb/compose canonical games into harder
+instances where exploration QUALITY measurably separates policies. _test_perturbed.py
+is the seed. A non-saturated proxy is strictly more information than a saturated
+one, even if its transfer to the H-variant hidden set is unproven. This could
+restore the ability to validate GAINS before spending a daily submission.
+
+---
+
+@BELIEF:LAT30LON53 | created:1749931200 | updated:1749931200 | relates:generalizes>@BELIEF:LAT74LON53,enables>@BELIEF:LAT35LON55,enables>@BELIEF:LAT38LON53,contained_by>@LAT60LON20
+[lp]
+centroid:LAT30LON53
+confidence:115
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:1
+[/lp]
+
+**An object-centric perception substrate unifies every future increment.**
+DynamicSignature (mask HUD) and ClickExplorer (component centroids) are both
+ad-hoc perception. Generalize them into ONE frame->structure layer: background
+(mode color), foreground objects as (color, bbox, centroid), and monotone
+scalars (the reward/budget regions). Feed the explorer a STRUCTURED state.
+Then every increment gets cheap and consistent: signature = object-set
+(HUD-immune by construction), clicks target objects, goal-seeking measures
+object-to-object distance, reward-shaping reads the scalar. Still zero per-game
+code — everything inferred per frame. The representation becomes the platform;
+policy work rides on top. Prerequisite-shaped: build once, harvest repeatedly.
+
+---
+
+@BELIEF:LAT26LON53 | created:1749931200 | updated:1749931200 | relates:projected_from>@LAT77LON53,siblings>@BELIEF:LAT35LON55,contained_by>@LAT60LON20
+[lp]
+centroid:LAT26LON53
+confidence:108
+scope_lat:15.0
+scope_lon:10.0
+projection_flag:true
+contradiction_flag:false
+source_count:1
+[/lp]
+
+**Remaining breadth dimensions after clicks (cheap, safe, ladder-aligned).**
+Catalog of no-regression breadth adds, each strictly additive: (1) other complex
+actions beyond ACTION6 — ar25 exposes ACTION7; handle the full action type space,
+not just simple+click. (2) Click-target diversity — current centroids miss edges,
+corners, and empty cells adjacent to objects; broaden candidates. (3) Multi-scale
+novelty — a coarse downsampled signature ("same room") plus the fine one ("exact
+position") for large boards where the fine signature never repeats. Individually
+small EV, but cheap and safe; queue them behind the higher-EV reward-shaping and
+perception-substrate work.
+
+---
+
+## Probe: monotone-scalar reward spark (@LAT38LON53) — REFUTED on canonical, 2026-06-14 evening
+
+Tested the dream spark precondition (is the in-grid HUD a dense RISING reward we
+can shape toward?) before building anything. _test_scalar_detect.py: per-color
+cell-count trajectories, monotonicity = net/total-activity in [-1,+1].
+
+Explorer trajectories (11 games, 3 seeds): only 1/11 (cd82) has a clean monotone
+scalar, and it is FALLING (color 0, net -100, mono -1.00) = a depleting budget.
+The RISING candidates (ls20, sk48, g50t) are noisy (|mono| 0.06-0.39) = drift /
+movement side-effects, not progress meters.
+
+Confound ruled out via KNOWN WINNING ROUTES (in case the explorer never triggers
+a reward): cd82 win -> color 0 falling budget (mono -1.00, no rising reward);
+g50t win -> color 2 rises (mono +1.00 on the correct path, but +0.06 under random
+play) = possible progress trail OR movement artifact, single special-case
+replay/trail mechanic (n=1); sk48 -> nothing clean.
+
+**Verdict: the dense-reward-from-HUD spark does NOT generalize.** Canonical
+in-grid scalars are budgets (falling), not rewards (rising); these are
+configuration puzzles, not score games. @LAT38LON53 is REFUTED as a general
+signal (set contradiction_flag). A general reward-shaped agent built on this
+would chase budget bars (wrong sign) or movement trails (no better than v1
+anti-no-op). DO NOT build it. Narrow follow-up possible (g50t-style
+rises-on-correct-only detection) but n=1, unvalidatable for generality,
+deprioritized below the staged ClickExplorer breadth play.
+
+The probe cost ~20 min and killed a speculative build before it spent a daily
+submission — the dream -> cheap-precondition-probe -> decide loop working as
+intended. Surviving high-EV directions remain: ClickExplorer (staged, breadth),
+object-centric perception substrate (@LAT30LON53), two-sided local proxy
+(@LAT34LON53). New file: _test_scalar_detect.py.
+
+---
+
+## Two-sided proxy BUILT + VALIDATED; breadth gains measurably EXHAUSTED — 2026-06-14 evening
+
+Built the two-sided proxy from @LAT34LON53: coverage CURVES (mean coverage =
+AUC/T) instead of final coverage, on a HUD-immune DynamicSignature yardstick.
+_test_proxy_curve.py.
+
+**VALIDATION (the key result):** mean-coverage reproduces random < v1 by +9.1%,
+matching the only known leaderboard ordering (random 0.15 < general-v1 0.18).
+So mean-coverage is a *gain-sensitive* local proxy for COVERAGE-type gains — the
+one-sided-proxy bottleneck (@LAT82LON55) is partially broken: we can now detect
+coverage gains locally, not only regressions. (Final coverage also separated
+random<v1 here but NOT v1<v2 — the saturation specifically hides increments above
+v1, which the curve metric was built to expose.)
+
+**What it says about the staged increments — all FLAT vs v1:**
+  v2 -0.1%, dyn +0.1%, click -0.1% (all within noise).
+v1's count-based exploration is at/near the COVERAGE ceiling for what canonical
+can express; no staged increment adds measurable exploration.
+
+**Scope caveat (critical):** this is a COVERAGE proxy. It is blind to (a)
+completion-RECOGNITION gains (an agent that completes more without exploring
+more), (b) ClickExplorer's pure-click reservoir bet — canonical has NO pure-click
+games (all 6 click-games also have movement), so the proxy cannot represent
+movement-dead games, (c) dyn's hidden-HUD bet (canonical HUD is self-limited).
+So "click/dyn flat on proxy" does NOT refute their unmeasurable hidden-set bets.
+
+**Strategic implication (regime shift).** The breadth lever (remove commitment +
+add loss-averse exploration, @LAT77LON53) is now MEASURABLY tapped at v1 for
+everything the proxy can see. dyn and click remain worth shipping as FREE
+no-regression lottery tickets on their unmeasurable reservoirs, but the proxy
+predicts ~flat 0.18. The next REAL, measurable gain likely requires the regime
+the ladder warned against — careful per-instance solving (@LAT25LON55: read THIS
+hidden frame, plan for IT) — now justified BECAUSE breadth is empirically
+exhausted, not as a premature leap. The discipline that made breadth-first
+correct also tells us when breadth is done. New file: _test_proxy_curve.py.
+
+---
+
+## Dynamics Catalog (seed) — 2026-06-16
+
+Per ARC-RFC-0001 (RFCs/ARC-RFC-0001-Dynamics-Solver-Architecture.md): the
+enumerated mechanic FAMILIES encountered in the L1 practice set. Each is the unit
+the recognition-gated, abortable solver layer dispatches on — recognized from the
+current frame's structural fingerprint, then solved by per-frame re-derivation
+(NOT a route), with abort-to-explorer on divergence. The hidden set is assumed to
+vary only WITHIN these dynamics (weak form: SOME hidden games share one; the
+additive floor protects the rest).
+
+Each entry: **entities** (controllable + objects) · **win condition** · **solution
+dynamic** (the re-derivable plan) · **recognition fingerprint** (frame-structural,
+no canonical coords) · **status**. Fingerprints marked (TBD) are to be hardened
+during the build (ARC-RFC-0001 §8 step 4) from each game's detector.py.
+
+| dynamic | family | L1 status | solver source |
+|---------|--------|-----------|---------------|
+| sp80 | liquid-spill-covers-obstacles | SOLVED | games/sp80/detector.py |
+| ls20 | block-navigation-through-corridor | SOLVED | _ROUTES + adaptive _detect_l1_route |
+| cd82 | basket-selection-route | SOLVED | adaptive basket detector |
+| tu93 | corridor-BFS-navigation | SOLVED | 18-step adaptive BFS (CORRIDOR_COLOR=2) |
+| re86 | piece-placement-match-target | SOLVED | two cross-sprites to target |
+| wa30 | pick-up-and-deliver | SOLVED | cursor carries color-4 → drop zone color-2 |
+| ar25 | reflection-covers-markers | SOLVED | reflect piece through mirror to 5 markers |
+| g50t | record-replay-ghost-holds-door | SOLVED | ghost holds door; RIGHT×4+ACT5+DOWN×7+RIGHT×5 |
+| sk48 | snake-sokoban-hybrid | SOLVED | 14-action route |
+| cn04 | connector-rotate-translate-match | SOLVED | adaptive rotate+translate to (7,10) rot0 |
+| ka59 | push-and-contain | DETECTOR (P≈1/6) | BFS nav to (target+1,+1) |
+
+### sp80 — liquid-spill-covers-obstacles  [reference entry, fully specified]
+- **entities:** controllable = selected piece (frame pixel 9; or a ≥20px pixel-8
+  before auto-select). objects = color-11 obstacle cluster.
+- **win condition:** the spilled liquid must wet *every* color-11 obstacle.
+- **solution dynamic:** move the piece to the spill-1 position expressed RELATIVE
+  to the obstacle bbox-min (`anchor + (3-4, 4-13)`), then execute the spill
+  choreography. RE-DERIVE: recompute piece & obstacle positions each frame and
+  emit the next single step toward the spill position, then the next spill action
+  — abortable, unlike the hard-coded `_SPILL_ROUTE`.
+- **recognition fingerprint:** presence of (selected piece pixel-9 OR ≥20px
+  pixel-8) AND a color-11 cluster; cell pitch 4px (frame = game·4).
+- **status:** SOLVED L1; the only game the undirected explorer also completes
+  (~15-20%), so it is the natural first port (ARC-RFC-0001 §8 step 3).
+
+### ls20 — block-navigation-through-corridor  [PORTED + de-risked 2026-06-16]
+- **entities:** color-12 block (cursor); maze corridors; goal. **win:** route the
+  block through corridors (passes c19) to the goal.
+- **solution dynamic:** PLAN-ONCE + abortable replay — emit the canonical probe
+  (initial_action) first, then the detector's column-adaptive L1 choreography
+  (normalize to x=34 corridor, ascend, trigger rotation, ascend to goal).
+  games/ls20/dynamic.py.
+- **recognition fingerprint:** SMALL color-12 block (≤50 px) — excludes sp80 where
+  color-12 is the background (~3500 px) — AND block detected. **status:** de-risk
+  CLEAN — supervised 10/10 vs goal 0/10; no cross-fires. (L2 still open.)
+
+### cd82 — basket-selection-route  [PORTED + de-risked 2026-06-16]
+- **entities:** pixel-2 "ActiveBasket" selector on a ring of 8 baskets around a
+  3×3 nav grid (center forbidden); a 10×10 canvas. **win (L1):** fire (ACTION5)
+  from basket 4 at grid (2,1) to paint the canvas.
+- **solution dynamic:** re-derive each frame — detect which basket the selector
+  is on (pixel-2 bbox-min → grid cell), step one cell toward (2,1) avoiding the
+  center, FIRE when there. Self-correcting; directional expectation (selector
+  must move) aborts on a blocked move. games/cd82/dynamic.py.
+- **recognition fingerprint:** a pixel-2 sprite whose bbox-min sits within 16px²
+  of a known basket ring position — unique to cd82 (tu93/wa30/sk48/ka59 also have
+  pixel-2 but never at a basket). NOTE: canonical positions → recall is
+  translation-biased (a translated hidden variant defers to the explorer = safe,
+  no gain); precision is clean. **status:** de-risk CLEAN — supervised 10/10 vs
+  goal 0/10; no cross-fires; L2 needs color-select (ACTION6), out of scope.
+
+### tu93 — corridor-BFS-navigation  [PORTED + de-risked 2026-06-16]
+- **entities:** 3×3 cursor (color-4 marker + color-9 body); 3×3 color-14 exit;
+  color-2 corridors. **win:** cursor reaches exit cell.
+- **solution dynamic:** re-derive each frame — detector's adaptive BFS (origin
+  derived from frame → translation-independent) from current cursor cell to exit,
+  emit one move. Directional expectation (marker shifts) aborts on a no-op.
+  games/tu93/dynamic.py.
+- **recognition fingerprint:** small 3×3 cursor (color-4 ≤16 & color-9 ≤16) AND
+  small 3×3 color-14 exit (≤16) AND color-2 corridor (>50). Size caps exclude
+  sk48 (color-4 ~1384); corridor floor excludes cd82. **status:** de-risk CLEAN —
+  supervised 10/10 vs goal 0/10; no cross-fires.
+
+### re86 — piece-placement-match-target  [PORTED + de-risked 2026-06-16]
+- **entities:** two cross pieces (color-9, color-11); active piece marked by a
+  single color-0 center; ACTION5 cycles active; ACTION1-4 move 3px. **win:** both
+  pieces cover their target markers.
+- **solution dynamic:** PLAN-ONCE + abortable replay (like wa30) — a placed piece
+  OCCLUDES its same-color target markers, so per-frame re-derivation loses the
+  target mid-solve (caught by the de-risk: re86 won 0/10 re-derived → 10/10
+  plan-once). Detector's adaptive route computed while all markers visible.
+  games/re86/dynamic.py.
+- **recognition fingerprint:** detect_state succeeds — EXACTLY one color-0 pixel
+  whose neighbor is a piece color (9/11), both pieces with valid target markers, a
+  big inactive cluster. ka59 also has 1 color-0 but no color-9 → excluded.
+  **status:** de-risk CLEAN — supervised 10/10 vs goal 0/10; no cross-fires.
+
+### wa30 — pick-up-and-deliver  [PORTED + de-risked 2026-06-16]
+- **entities:** 4×4 cursor (color-0 edge + color-14 body); color-4 items; color-2
+  drop zone. **win:** deliver all items to the zone (ACTION5 = pickup/drop).
+- **solution dynamic:** MULTI-PHASE (approach→face→pickup→carry→drop) so it does
+  NOT re-derive cleanly per frame (a carried item still reads as a loose color-4).
+  PLAN-ONCE per level via the detector's adaptive multi-item BFS, replay one
+  action at a time, each guarded by a "board changed" expectation → abort on a
+  no-op. games/wa30/dynamic.py. (First non-re-derivation dynamic; abort still caps
+  the downside, coarser check.)
+- **recognition fingerprint:** small color-0 cursor edge (≤40) + small color-2
+  drop zone (≤40) + color-14 body (≤40) AND detector finds items + a drop zone —
+  count caps exclude cd82 (large color-0) and sk48 (large color-2). **status:**
+  de-risk CLEAN — supervised 10/10 vs goal 0/10; no cross-fires.
+
+### ar25 — reflection-covers-markers  [PORTED + de-risked 2026-06-16]
+- **entities:** color-5 piece; color-10 vertical mirror; 5 color-11 markers.
+  **win:** the piece's reflection covers all 5 markers.
+- **solution dynamic:** re-derive per frame — detector solves the target
+  placement from {reflect(piece)} == {markers}, emit one move toward it. Piece and
+  markers never occlude (different colors), so re-derivation stays valid.
+  games/ar25/dynamic.py.
+- **recognition fingerprint:** piece(5)+markers(11)+mirror(10) present AND the
+  reflection placement is SOLVABLE for the frame (a strong structure gate).
+  **status:** de-risk CLEAN — supervised 10/10 vs goal 0/10; no cross-fires.
+
+### g50t — record-replay-ghost-holds-door  [PORTED + de-risked 2026-06-16]
+- **entities:** goal cursor; ghost (replays recording); button; door; tracker.
+  **win:** record path to button, submit, ghost holds door, navigate to tracker.
+- **solution dynamic:** PLAN-ONCE multi-stage (detector's frame-derived route:
+  goal→button, submit, start→tracker). games/g50t/dynamic.py. FIXED a detection
+  bug: the 3×3 color-8 button is joined to the door's color-8 region by a 1px bar
+  (→ detector `_find_button` returned None). New `_find_button`: scan every 3×3
+  all-color-8 window, pick the most ISOLATED (fewest color-8 neighbours in its
+  surrounding ring) — finds the button protrusion; route matches the validated
+  RIGHT×4+ACT5+DOWN×7+RIGHT×5.
+- **recognition fingerprint:** goal (color-5 ringed by 9) + tracker (color-9 ringed
+  by 5) + a robustly-found 3×3 color-8 button. **status:** de-risk CLEAN —
+  supervised 10/10 vs goal 0/10; no cross-fires; offline solve g50t=100.
+
+### sk48 — snake-sokoban-hybrid  [SKIPPED 2026-06-16]
+- **win:** sokoban-style push within snake constraint. **solution:** bfs_solver.py
+  runs from a HARDCODED initial state (not frame-derived) — a fixed canonical route;
+  detector.py is a stub (no frame recognizer). **status:** SKIPPED — low transfer
+  (fixed route) and no detector to build a precise recognizer on. Revisit only with
+  a frame-derived state extractor + recognizer.
+
+### cn04 — connector-rotate-translate-match  [PORTED + de-risked 2026-06-16]
+- **entities:** selected sprite (color-0 body, two color-8 markers); target piece
+  (two markers). **win:** rotate/translate so the markers overlap the target's.
+- **solution dynamic:** PLAN-ONCE — detector enumerates rotation × marker-assignment
+  and chains the (≤2) consistent candidates (win fires mid-route on the correct
+  one). games/cn04/dynamic.py.
+- **recognition fingerprint:** a color-0 selected sprite with EXACTLY two color-8
+  markers + a target with two markers + a SOLVABLE placement. **status:** de-risk
+  CLEAN — supervised 10/10 vs goal 0/10; no cross-fires.
+
+### ka59 — push-and-contain  [DEFERRED 2026-06-16]
+- **win:** nest a 3×3 container at (target+1,+1) inside a 5×5 target. **solution
+  dynamic:** BFS nav (games/ka59/dynamic.py written). **status:** DEFERRED — fails
+  the de-risk on BOTH axes: recognizer CROSS-FIRES on sk48, and L1 is not winnable
+  by the directly-movable container (needs ACTION6 click-select; P≈1/6) → 0/10.
+  Needs a tighter recognizer + a winnable-L1 check before it could pass.
+
+**PORTED + de-risked so far (LOCUS_MODE=solve, _test_dynamics.py --games):**
+sp80, cd82, tu93, wa30, re86, ar25, cn04, ls20, g50t (9/11) — confusion matrix is
+DIAGONAL (each fires only on its own game, 0 cross-fires), within-dynamic win 10/10 vs
+goal ≤1/10, full-library shows no off-target regression. Offline LOCUS_MODE=solve
+scores overall 12.31 (8 of 10 present games solved, g50t=100) vs 0.0 for goal/general —
+matching the old detector fleet (12.59) but via the additive-safe, recognition-gated,
+abortable architecture. Two solver shapes proven: per-frame RE-DERIVATION
+(sp80/cd82/tu93/ar25 — self-correcting) and PLAN-ONCE+abortable-replay
+(wa30/re86/cn04/ls20/g50t — multi-phase, self-occluding, or choreographed).
+**NOT PORTED (2/11):** sk48 SKIPPED (hardcoded fixed route, stub detector — no
+frame-derived recognizer to build on), ka59 DEFERRED (recognizer cross-fires sk48 + L1
+unwinnable without click-select → 0/10). The de-risk gate REJECTED re86-as-re-derived
+(occlusion → fixed via plan-once), g50t's first cut (button merged with door → fixed
+via a robust most-isolated-3×3 finder), and ka59 (cross-fire + 0/10) before any could
+ship — precision/upside are real gates. Each future add stays gated on its own
+confusion-matrix precision before entering core/dynamics/library.py; prefer
+palette/translation-independent structure (sp80 used 4px-block uniformity) so recall
+extends to hidden variants.
