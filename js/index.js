@@ -398,30 +398,35 @@
       return null;
     }
 
-    function normalizeRecordIdToken(rawToken) {
+    // Parses a record-id token into its optional type prefix (e.g. BELIEF, DREAM)
+    // and lat/lon coordinates. Accepts plain (`@LAT80LON-20`, `lat80lon-20`) and
+    // type-prefixed (`@BELIEF:LAT80LON-20`, `belief:lat80lon-20`) forms.
+    function parseRecordIdParts(rawToken) {
       if (typeof rawToken !== "string") return null;
       const trimmed = rawToken.trim();
       if (!trimmed) return null;
 
-      const directMatch = trimmed.match(/^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$/i);
-      if (directMatch) {
-        return `@LAT${directMatch[1]}LON${directMatch[2]}`;
-      }
+      const match = trimmed.match(/^@?(?:([A-Za-z]+):)?lat(-?\d+(?:\.\d+)?)lon(-?\d+(?:\.\d+)?)$/i);
+      if (!match) return null;
+      return {
+        prefix: match[1] ? match[1].toUpperCase() : null,
+        lat: match[2],
+        lon: match[3],
+      };
+    }
 
-      const compactMatch = trimmed.match(/^lat(-?\d+(?:\.\d+)?)lon(-?\d+(?:\.\d+)?)$/i);
-      if (compactMatch) {
-        return `@LAT${compactMatch[1]}LON${compactMatch[2]}`;
-      }
-
-      return null;
+    function normalizeRecordIdToken(rawToken) {
+      const parts = parseRecordIdParts(rawToken);
+      if (!parts) return null;
+      const coordToken = `LAT${parts.lat}LON${parts.lon}`;
+      return parts.prefix ? `@${parts.prefix}:${coordToken}` : `@${coordToken}`;
     }
 
     function toTootRecordToken(recordId) {
-      const normalized = normalizeRecordIdToken(recordId);
-      if (!normalized) return "";
-      const match = normalized.match(/^@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)$/i);
-      if (!match) return normalized;
-      return `lat${match[1]}lon${match[2]}`;
+      const parts = parseRecordIdParts(recordId);
+      if (!parts) return "";
+      const coordToken = `lat${parts.lat}lon${parts.lon}`;
+      return parts.prefix ? `${parts.prefix.toLowerCase()}:${coordToken}` : coordToken;
     }
 
     function getInitialDbPathFromUrl() {
@@ -2519,12 +2524,17 @@
       const legacy = parseLegacyRecordLinkTarget(rawToken);
       if (legacy) return legacy;
 
+      // Resolve the explicit `toot:` scheme before the generic id fallback so a
+      // type prefix (e.g. `belief:`, `dream:`) is not confused with the scheme.
+      const tootUriTarget = parseTootUriTarget(rawToken);
+      if (tootUriTarget) return tootUriTarget;
+
       const directRecordId = normalizeRecordIdToken(rawToken);
       if (directRecordId) {
         return { recordId: directRecordId, dbPath: null };
       }
 
-      return parseTootUriTarget(rawToken);
+      return null;
     }
 
     function parseViewerUrlRecordTarget(rawHref) {
