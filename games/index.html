@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>storied — games from the Feelings TTDB</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    :root {
+      --night: #12131f; --panel: #1b1d30; --line: #3d4060;
+      --ink: #e8e7f0; --dim: #9a99b8; --gold: #c9a94a; --gold-soft: #eccd7a;
+    }
+    body {
+      background: radial-gradient(120% 120% at 50% -10%, #23253f 0%, var(--night) 60%);
+      color: var(--ink); font: 16px/1.55 Georgia, "Times New Roman", serif;
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+      padding: 40px 16px 24px;
+    }
+    h1 { letter-spacing: 6px; color: var(--gold); font-size: 30px; }
+    .tag { color: var(--dim); font-style: italic; margin: 8px 0 34px; text-align: center; max-width: 640px; }
+    .games { display: flex; flex-direction: column; gap: 18px; width: min(760px, 100%); }
+    .game {
+      display: flex; gap: 18px; align-items: center;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+      padding: 16px 20px;
+      transition: transform 0.1s, border-color 0.1s;
+    }
+    .game:hover { transform: translateY(-2px); border-color: var(--gold); }
+    .game h2 a { color: inherit; text-decoration: none; }
+    .game h2 a:hover { text-decoration: underline; }
+    .game img { width: 74px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    .game .noart {
+      width: 74px; height: 103px; border-radius: 6px; flex-shrink: 0;
+      border: 1px dashed var(--line); color: var(--line);
+      display: flex; align-items: center; justify-content: center; font-size: 26px;
+    }
+    .game h2 { color: var(--gold-soft); font-size: 19px; letter-spacing: 2px; }
+    .game p { color: var(--dim); font-size: 14px; margin-top: 4px; }
+    .game .play { margin-left: auto; color: var(--gold-soft); white-space: nowrap; font-size: 14px; }
+    .links { font-size: 13px; margin-top: 6px; }
+    .links a { color: var(--gold-soft); }
+    footer { margin-top: auto; padding-top: 36px; color: var(--dim); font-size: 12px; text-align: center; }
+    footer a { color: var(--gold-soft); }
+  </style>
+</head>
+<body>
+  <h1>STORIED</h1>
+  <p class="tag">Story games grounded in the Toot Toot Engineering Locus Framework —
+    every deck, board, and rule generated from the Feelings TTDB.</p>
+
+  <div class="games">
+    <div class="game">
+      <img src="games/epistemic-weight/images/cards/back.png" alt="Epistemic Weight card back">
+      <span>
+        <h2><a href="games/epistemic-weight/">EPISTEMIC WEIGHT</a></h2>
+        <p>Carry your beliefs through the story — Suns and Eclipses judge them at the
+          Testament. Cooperative, 2–5 players. A digital table: the app moves the pieces,
+          the players keep the rules.</p>
+        <span class="links">also: <a href="games/epistemic-weight/Epistemic-Weight-Print-and-Play.md">print &amp; play</a></span>
+      </span>
+      <a class="play" href="games/epistemic-weight/">play in browser →</a>
+    </div>
+
+    <div class="game">
+      <img src="games/resonance/images/cards/back.png" alt="Resonance card back">
+      <span>
+        <h2><a href="games/resonance/">RESONANCE</a></h2>
+        <p>Grow the affective field one printed edge at a time and lay a marker-chain
+          from the story's Opening to its destination. Cooperative, 1–5 players.
+          Rules-enforced: every placement is a real TTDB edge.</p>
+        <span class="links">also: <a href="games/resonance/Resonance-Print-and-Play.md">print &amp; play</a></span>
+      </span>
+      <a class="play" href="games/resonance/">play in browser →</a>
+    </div>
+
+    <div class="game">
+      <span class="noart">♫</span>
+      <span>
+        <h2>PULSE</h2>
+        <p>The rhythm sibling — print &amp; play only, for now.</p>
+        <span class="links"><a href="games/pulse/">the box</a></span>
+      </span>
+    </div>
+
+    <div class="game">
+      <span class="noart">⋔</span>
+      <span>
+        <h2>METAMORPHOSIS</h2>
+        <p>The transformation sibling — print &amp; play only, for now.</p>
+        <span class="links"><a href="games/metamorphosis/">the box</a></span>
+      </span>
+    </div>
+  </div>
+
+  <footer>
+    dependency-free HTML / CSS / JS ·
+    <a href="games/IDEAS.md">the game catalog</a> ·
+    <a href="reference/feelings_ttdb.md">the Feelings TTDB</a> ·
+    serve locally with <code>python service.py</code>
+  </footer>
+</body>
+</html>

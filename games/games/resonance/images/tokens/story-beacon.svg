@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="300" viewBox="0 0 200 300">
+  <!-- STORY BEACON  ·  obelisk 14 sq × 36 mm  ·  qty 1  ·  marks the Story node -->
+  <defs>
+    <linearGradient id="beaconStone" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e5ddc2"/>
+      <stop offset="50%" stop-color="#cbbf98"/>
+      <stop offset="100%" stop-color="#a3925f"/>
+    </linearGradient>
+    <linearGradient id="beaconTip" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f4ecd2"/>
+      <stop offset="100%" stop-color="#b8a76e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- footprint -->
+  <ellipse cx="100" cy="256" rx="44" ry="10" fill="none" stroke="#77683c" stroke-width="2" stroke-dasharray="4 5" opacity="0.5"/>
+
+  <!-- plinth -->
+  <path d="M56 254 L144 254 L144 238 L56 238 Z" fill="url(#beaconStone)" stroke="#77683c" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M64 238 L136 238 L124 224 L76 224 Z" fill="url(#beaconStone)" stroke="#77683c" stroke-width="3" stroke-linejoin="round"/>
+  <!-- tapering shaft -->
+  <path d="M78 224 L122 224 L112 96 L88 96 Z" fill="url(#beaconStone)" stroke="#77683c" stroke-width="3" stroke-linejoin="round"/>
+  <!-- collar (the engraved signal ring) -->
+  <path d="M84 110 L116 110" stroke="#77683c" stroke-width="7" stroke-linecap="round"/>
+  <!-- pyramidion -->
+  <path d="M88 96 L112 96 L100 48 Z" fill="url(#beaconTip)" stroke="#77683c" stroke-width="3" stroke-linejoin="round"/>
+  <!-- the destination star -->
+  <path d="M100 18 L104 30 L117 30 L107 38 L111 50 L100 42 L89 50 L93 38 L83 30 L96 30 Z"
+        fill="#cfa53a" stroke="#77590e" stroke-width="2" stroke-linejoin="round" opacity="0.9"/>
+
+  <!-- label -->
+  <text x="100" y="282" text-anchor="middle" font-family="Georgia, serif"
+        font-size="19" letter-spacing="2" fill="#a3925f">STORY BEACON</text>
+  <text x="100" y="298" text-anchor="middle" font-family="Georgia, serif"
+        font-size="12" letter-spacing="1" fill="#77683c">obelisk 14 sq × 36 mm · ×1</text>
+</svg>

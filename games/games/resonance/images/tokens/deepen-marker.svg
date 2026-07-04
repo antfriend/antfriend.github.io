@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="240" viewBox="0 0 220 240">
+  <!-- DEEPEN MARKER  ·  16 mm square tile  ·  qty 10  ·  can_deepen_into / intensifies_into -->
+  <defs>
+    <linearGradient id="deepBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7fa8dc"/>
+      <stop offset="60%" stop-color="#4d78b4"/>
+      <stop offset="100%" stop-color="#31518080"/>
+    </linearGradient>
+    <linearGradient id="chevHi" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f2f7ff"/>
+      <stop offset="100%" stop-color="#cddff5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- footprint -->
+  <rect x="24" y="14" width="172" height="172" rx="22" fill="none" stroke="#27406a" stroke-width="2" stroke-dasharray="4 5" opacity="0.5"/>
+  <!-- square tile (top face) -->
+  <rect x="32" y="22" width="156" height="156" rx="18" fill="url(#deepBlue)" stroke="#27406a" stroke-width="3"/>
+  <rect x="46" y="36" width="128" height="128" rx="12" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.25"/>
+
+  <!-- raised double chevron (embossed in STL) — the feeling grows -->
+  <path d="M70 96 L110 58 L150 96" fill="none" stroke="url(#chevHi)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M70 148 L110 110 L150 148" fill="none" stroke="url(#chevHi)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- label -->
+  <text x="110" y="222" text-anchor="middle" font-family="Georgia, serif"
+        font-size="21" letter-spacing="3" fill="#31518f"><tspan>DEEPEN</tspan></text>
+  <text x="110" y="238" text-anchor="middle" font-family="Georgia, serif"
+        font-size="12" letter-spacing="1" fill="#27406a">16 mm tile · ×10 · deepen / intensify</text>
+</svg>

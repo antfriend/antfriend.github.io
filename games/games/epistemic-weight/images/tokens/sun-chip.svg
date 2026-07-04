@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="240" viewBox="0 0 220 240">
+  <!-- SUN CHIP  ·  18 mm disc  ·  qty 12  ·  evidence FOR a belief -->
+  <defs>
+    <radialGradient id="sunGold" cx="42%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#ecc35a"/>
+      <stop offset="55%" stop-color="#c99b2e"/>
+      <stop offset="100%" stop-color="#8c6812"/>
+    </radialGradient>
+  </defs>
+
+  <!-- footprint / extrusion outline -->
+  <circle cx="110" cy="100" r="92" fill="none" stroke="#8c6812" stroke-width="2" stroke-dasharray="4 5" opacity="0.5"/>
+  <!-- disc top face -->
+  <circle cx="110" cy="100" r="84" fill="url(#sunGold)" stroke="#6e5210" stroke-width="3"/>
+  <circle cx="110" cy="100" r="72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.25"/>
+
+  <!-- raised sun relief: core + 8 rays -->
+  <circle cx="110" cy="100" r="30" fill="#f4d885" stroke="#6e5210" stroke-width="3"/>
+  <g stroke="#f4d885" stroke-width="14" stroke-linecap="round">
+    <line x1="110" y1="58"  x2="110" y2="34"/>
+    <line x1="110" y1="142" x2="110" y2="166"/>
+    <line x1="68"  y1="100" x2="44"  y2="100"/>
+    <line x1="152" y1="100" x2="176" y2="100"/>
+    <line x1="80"  y1="70"  x2="63"  y2="53"/>
+    <line x1="140" y1="70"  x2="157" y2="53"/>
+    <line x1="80"  y1="130" x2="63"  y2="147"/>
+    <line x1="140" y1="130" x2="157" y2="147"/>
+  </g>
+
+  <!-- label -->
+  <text x="110" y="222" text-anchor="middle" font-family="Georgia, serif"
+        font-size="19" letter-spacing="2" fill="#8c6812">SUN</text>
+  <text x="110" y="238" text-anchor="middle" font-family="Georgia, serif"
+        font-size="12" letter-spacing="1" fill="#6e5210">18 mm disc · ×12 · it holds</text>
+</svg>

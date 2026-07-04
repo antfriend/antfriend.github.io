@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="240" viewBox="0 0 220 240">
+  <!-- BREATH MARKER  ·  11 mm slim chip  ·  qty 12  ·  spoken this chapter -->
+  <defs>
+    <radialGradient id="brPale" cx="42%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#e9ebf1"/>
+      <stop offset="100%" stop-color="#c6cad6"/>
+    </radialGradient>
+  </defs>
+
+  <!-- footprint / extrusion outline -->
+  <circle cx="110" cy="100" r="72" fill="none" stroke="#8b90a0" stroke-width="2" stroke-dasharray="4 5" opacity="0.6"/>
+  <!-- chip top face -->
+  <circle cx="110" cy="100" r="64" fill="url(#brPale)" stroke="#8b90a0" stroke-width="3"/>
+
+  <!-- engraved breath-waves (recessed in STL) -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M 72 82  q 10 -12 19 0 t 19 0 t 19 0 t 19 0" stroke="#9aa0b2" stroke-width="10"/>
+    <path d="M 72 82  q 10 -12 19 0 t 19 0 t 19 0 t 19 0" stroke="#ffffff" stroke-width="3" opacity="0.7"/>
+    <path d="M 72 120 q 10 -12 19 0 t 19 0 t 19 0 t 19 0" stroke="#9aa0b2" stroke-width="10"/>
+    <path d="M 72 120 q 10 -12 19 0 t 19 0 t 19 0 t 19 0" stroke="#ffffff" stroke-width="3" opacity="0.7"/>
+  </g>
+
+  <!-- label -->
+  <text x="110" y="222" text-anchor="middle" font-family="Georgia, serif"
+        font-size="19" letter-spacing="2" fill="#5d6272">BREATH</text>
+  <text x="110" y="238" text-anchor="middle" font-family="Georgia, serif"
+        font-size="12" letter-spacing="1" fill="#8b90a0">11 mm slim chip · ×12 · cleared at Dusk</text>
+</svg>

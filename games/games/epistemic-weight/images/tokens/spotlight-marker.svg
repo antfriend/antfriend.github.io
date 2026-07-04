@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="300" viewBox="0 0 200 300">
+  <!-- SPOTLIGHT MARKER  ·  22 ø x 36.5 mm pawn  ·  qty 1  ·  the umwelt eye -->
+  <defs>
+    <linearGradient id="spViolet" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8d7cc4"/>
+      <stop offset="50%" stop-color="#785ca8"/>
+      <stop offset="100%" stop-color="#4e3a78"/>
+    </linearGradient>
+  </defs>
+
+  <!-- footprint (base) -->
+  <ellipse cx="100" cy="246" rx="66" ry="14" fill="none" stroke="#4e3a78" stroke-width="2" stroke-dasharray="4 5" opacity="0.5"/>
+
+  <!-- pawn body of revolution (side profile) -->
+  <path d="M 40 244
+           C 40 232, 62 228, 70 220
+           C 78 212, 74 200, 76 180
+           C 78 158, 84 150, 82 142
+           C 80 134, 88 130, 92 126
+           L 108 126
+           C 112 130, 120 134, 118 142
+           C 116 150, 122 158, 124 180
+           C 126 200, 122 212, 130 220
+           C 138 228, 160 232, 160 244
+           L 160 252 L 40 252 Z"
+        fill="url(#spViolet)" stroke="#3a2b5c" stroke-width="3"/>
+  <!-- head -->
+  <circle cx="100" cy="96" r="34" fill="url(#spViolet)" stroke="#3a2b5c" stroke-width="3"/>
+
+  <!-- raised umwelt eye on the head: iris ring + pupil -->
+  <circle cx="100" cy="96" r="19" fill="none" stroke="#f0ecff" stroke-width="7"/>
+  <circle cx="100" cy="96" r="6.5" fill="#f0ecff"/>
+
+  <!-- label -->
+  <text x="100" y="282" text-anchor="middle" font-family="Georgia, serif"
+        font-size="19" letter-spacing="2" fill="#4e3a78">SPOTLIGHT</text>
+  <text x="100" y="298" text-anchor="middle" font-family="Georgia, serif"
+        font-size="12" letter-spacing="1" fill="#785ca8">22 ø × 36.5 mm pawn · ×1 · it watches the doubt</text>
+</svg>

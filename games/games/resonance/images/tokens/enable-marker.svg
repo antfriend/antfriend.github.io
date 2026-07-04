@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="240" viewBox="0 0 220 240">
+  <!-- ENABLE MARKER  ·  20 mm rounded triangle  ·  qty 6  ·  enables (disposition -> intent) -->
+  <defs>
+    <linearGradient id="enGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ecd27c"/>
+      <stop offset="60%" stop-color="#cfa53a"/>
+      <stop offset="100%" stop-color="#9c7a1c"/>
+    </linearGradient>
+    <linearGradient id="keyHi" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fffbe9"/>
+      <stop offset="100%" stop-color="#f4e3ae"/>
+    </linearGradient>
+  </defs>
+
+  <!-- footprint -->
+  <circle cx="110" cy="104" r="92" fill="none" stroke="#77590e" stroke-width="2" stroke-dasharray="4 5" opacity="0.5"/>
+  <!-- rounded triangle (top face) -->
+  <path d="M110 18
+           L188 152 a 16 16 0 0 1 -14 24
+           L46 176  a 16 16 0 0 1 -14 -24 Z"
+        fill="url(#enGold)" stroke="#77590e" stroke-width="3" stroke-linejoin="round"/>
+
+  <!-- raised keyhole (embossed in STL) — the unlock -->
+  <circle cx="110" cy="92" r="26" fill="url(#keyHi)" stroke="#77590e" stroke-width="2"/>
+  <path d="M98 108 L122 108 L128 156 L92 156 Z" fill="url(#keyHi)" stroke="#77590e" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="110" cy="92" r="10" fill="#9c7a1c"/>
+
+  <!-- label -->
+  <text x="110" y="222" text-anchor="middle" font-family="Georgia, serif"
+        font-size="21" letter-spacing="3" fill="#9c7a1c">ENABLE</text>
+  <text x="110" y="238" text-anchor="middle" font-family="Georgia, serif"
+        font-size="12" letter-spacing="1" fill="#77590e">20 mm triangle · ×6 · enables</text>
+</svg>

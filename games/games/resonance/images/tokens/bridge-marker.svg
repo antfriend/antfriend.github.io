@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="240" viewBox="0 0 220 240">
+  <!-- BRIDGE MARKER  ·  30 x 10 mm bar  ·  qty 4  ·  the mirror crossing (N <-> S) -->
+  <defs>
+    <linearGradient id="brRed" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e08a80"/>
+      <stop offset="60%" stop-color="#c14e46"/>
+      <stop offset="100%" stop-color="#8c2b28"/>
+    </linearGradient>
+  </defs>
+
+  <!-- footprint -->
+  <rect x="10" y="62" width="200" height="76" rx="38" fill="none" stroke="#6e1d1b" stroke-width="2" stroke-dasharray="4 5" opacity="0.5"/>
+  <!-- bar (top face) -->
+  <rect x="18" y="70" width="184" height="60" rx="30" fill="url(#brRed)" stroke="#6e1d1b" stroke-width="3"/>
+  <rect x="30" y="80" width="160" height="40" rx="20" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.25"/>
+
+  <!-- engraved arch groove (recessed in STL) — one shore to the other -->
+  <path d="M46 112 Q 110 62 174 112" fill="none" stroke="#5e1513" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="46" cy="112" r="7" fill="#5e1513"/>
+  <circle cx="174" cy="112" r="7" fill="#5e1513"/>
+
+  <!-- valence hints: light shore / dark shore -->
+  <text x="46" y="160" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#2e7d51">N</text>
+  <text x="174" y="160" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#8c2b28">S</text>
+
+  <!-- label -->
+  <text x="110" y="222" text-anchor="middle" font-family="Georgia, serif"
+        font-size="21" letter-spacing="3" fill="#8c2b28">BRIDGE</text>
+  <text x="110" y="238" text-anchor="middle" font-family="Georgia, serif"
+        font-size="12" letter-spacing="1" fill="#6e1d1b">30 × 10 mm bar · ×4 · mirror pairs only</text>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="240" viewBox="0 0 220 240">
+  <!-- CONVICTION TOKEN  ·  14 mm stacking chip  ·  qty 40  ·  conf as stack height -->
+  <defs>
+    <radialGradient id="convInd" cx="42%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#7a72c2"/>
+      <stop offset="55%" stop-color="#4a4390"/>
+      <stop offset="100%" stop-color="#2c2758"/>
+    </radialGradient>
+  </defs>
+
+  <!-- footprint / extrusion outline -->
+  <circle cx="110" cy="92" r="80" fill="none" stroke="#2c2758" stroke-width="2" stroke-dasharray="4 5" opacity="0.5"/>
+  <!-- chip top face -->
+  <circle cx="110" cy="92" r="74" fill="url(#convInd)" stroke="#232048" stroke-width="3"/>
+  <!-- raised stacking ring -->
+  <circle cx="110" cy="92" r="61" fill="none" stroke="#8f88d6" stroke-width="6" opacity="0.9"/>
+  <circle cx="110" cy="92" r="45" fill="none" stroke="#232048" stroke-width="4" opacity="0.55"/>
+  <circle cx="110" cy="92" r="53" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.25"/>
+
+  <!-- stack hint: three chips in side view -->
+  <g stroke="#232048" stroke-width="2">
+    <rect x="160" y="176" width="44" height="11" rx="4" fill="#4a4390"/>
+    <rect x="160" y="165" width="44" height="11" rx="4" fill="#554db0"/>
+    <rect x="160" y="154" width="44" height="11" rx="4" fill="#6058bd"/>
+  </g>
+
+  <!-- label -->
+  <text x="110" y="222" text-anchor="middle" font-family="Georgia, serif"
+        font-size="19" letter-spacing="2" fill="#2c2758">CONVICTION</text>
+  <text x="110" y="238" text-anchor="middle" font-family="Georgia, serif"
+        font-size="12" letter-spacing="1" fill="#4a4390">14 mm stacking chip · ×40 · they nest</text>
+</svg>

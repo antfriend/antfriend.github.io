@@ -1,0 +1,430 @@
+{
+  "game": "Epistemic Weight",
+  "generatedFrom": "tools/feelings_cards/generate_feelings_cards.py --deck epistemic_weight",
+  "cardImage": {
+    "width": 770,
+    "height": 1074,
+    "format": "png"
+  },
+  "cardBack": "cards/back.png",
+  "cardCount": 76,
+  "cards": [
+    {
+      "id": "scenario_THE_BRIDGE_AT_DUSK",
+      "type": "scenario",
+      "file": "cards/scenario_THE_BRIDGE_AT_DUSK.png"
+    },
+    {
+      "id": "scenario_THE_LONG_ROAD",
+      "type": "scenario",
+      "file": "cards/scenario_THE_LONG_ROAD.png"
+    },
+    {
+      "id": "scenario_THE_TRIAL",
+      "type": "scenario",
+      "file": "cards/scenario_THE_TRIAL.png"
+    },
+    {
+      "id": "scenario_THE_UNRAVELING",
+      "type": "scenario",
+      "file": "cards/scenario_THE_UNRAVELING.png"
+    },
+    {
+      "id": "scenario_WHAT_THE_FIRE_LEFT",
+      "type": "scenario",
+      "file": "cards/scenario_WHAT_THE_FIRE_LEFT.png"
+    },
+    {
+      "id": "char_THE_GIVER",
+      "type": "character",
+      "file": "cards/char_THE_GIVER.png"
+    },
+    {
+      "id": "char_THE_HEALER",
+      "type": "character",
+      "file": "cards/char_THE_HEALER.png"
+    },
+    {
+      "id": "char_THE_HERMIT",
+      "type": "character",
+      "file": "cards/char_THE_HERMIT.png"
+    },
+    {
+      "id": "char_THE_SEEKER",
+      "type": "character",
+      "file": "cards/char_THE_SEEKER.png"
+    },
+    {
+      "id": "char_THE_TRICKSTER",
+      "type": "character",
+      "file": "cards/char_THE_TRICKSTER.png"
+    },
+    {
+      "id": "char_THE_WARDEN",
+      "type": "character",
+      "file": "cards/char_THE_WARDEN.png"
+    },
+    {
+      "id": "core_THE_GIVER",
+      "type": "core-belief",
+      "file": "cards/core_THE_GIVER.png"
+    },
+    {
+      "id": "core_THE_HEALER",
+      "type": "core-belief",
+      "file": "cards/core_THE_HEALER.png"
+    },
+    {
+      "id": "core_THE_HERMIT",
+      "type": "core-belief",
+      "file": "cards/core_THE_HERMIT.png"
+    },
+    {
+      "id": "core_THE_SEEKER",
+      "type": "core-belief",
+      "file": "cards/core_THE_SEEKER.png"
+    },
+    {
+      "id": "core_THE_TRICKSTER",
+      "type": "core-belief",
+      "file": "cards/core_THE_TRICKSTER.png"
+    },
+    {
+      "id": "core_THE_WARDEN",
+      "type": "core-belief",
+      "file": "cards/core_THE_WARDEN.png"
+    },
+    {
+      "id": "story_corroboration_1",
+      "type": "story-corroboration",
+      "file": "cards/story_corroboration_1.png"
+    },
+    {
+      "id": "story_corroboration_2",
+      "type": "story-corroboration",
+      "file": "cards/story_corroboration_2.png"
+    },
+    {
+      "id": "story_corroboration_3",
+      "type": "story-corroboration",
+      "file": "cards/story_corroboration_3.png"
+    },
+    {
+      "id": "story_corroboration_4",
+      "type": "story-corroboration",
+      "file": "cards/story_corroboration_4.png"
+    },
+    {
+      "id": "story_corroboration_5",
+      "type": "story-corroboration",
+      "file": "cards/story_corroboration_5.png"
+    },
+    {
+      "id": "story_rupture_1",
+      "type": "story-rupture",
+      "file": "cards/story_rupture_1.png"
+    },
+    {
+      "id": "story_rupture_2",
+      "type": "story-rupture",
+      "file": "cards/story_rupture_2.png"
+    },
+    {
+      "id": "story_rupture_3",
+      "type": "story-rupture",
+      "file": "cards/story_rupture_3.png"
+    },
+    {
+      "id": "story_rupture_4",
+      "type": "story-rupture",
+      "file": "cards/story_rupture_4.png"
+    },
+    {
+      "id": "story_rupture_5",
+      "type": "story-rupture",
+      "file": "cards/story_rupture_5.png"
+    },
+    {
+      "id": "story_rupture_6",
+      "type": "story-rupture",
+      "file": "cards/story_rupture_6.png"
+    },
+    {
+      "id": "story_crossroads_THE_ASHES",
+      "type": "story-crossroads",
+      "file": "cards/story_crossroads_THE_ASHES.png"
+    },
+    {
+      "id": "story_crossroads_THE_FORK",
+      "type": "story-crossroads",
+      "file": "cards/story_crossroads_THE_FORK.png"
+    },
+    {
+      "id": "story_crossroads_THE_WITNESS",
+      "type": "story-crossroads",
+      "file": "cards/story_crossroads_THE_WITNESS.png"
+    },
+    {
+      "id": "story_climax",
+      "type": "story-climax",
+      "file": "cards/story_climax.png"
+    },
+    {
+      "id": "regard_01",
+      "type": "regard",
+      "file": "cards/regard_01.png"
+    },
+    {
+      "id": "regard_02",
+      "type": "regard",
+      "file": "cards/regard_02.png"
+    },
+    {
+      "id": "regard_03",
+      "type": "regard",
+      "file": "cards/regard_03.png"
+    },
+    {
+      "id": "regard_04",
+      "type": "regard",
+      "file": "cards/regard_04.png"
+    },
+    {
+      "id": "regard_05",
+      "type": "regard",
+      "file": "cards/regard_05.png"
+    },
+    {
+      "id": "regard_06",
+      "type": "regard",
+      "file": "cards/regard_06.png"
+    },
+    {
+      "id": "regard_07",
+      "type": "regard",
+      "file": "cards/regard_07.png"
+    },
+    {
+      "id": "regard_08",
+      "type": "regard",
+      "file": "cards/regard_08.png"
+    },
+    {
+      "id": "regard_09",
+      "type": "regard",
+      "file": "cards/regard_09.png"
+    },
+    {
+      "id": "regard_10",
+      "type": "regard",
+      "file": "cards/regard_10.png"
+    },
+    {
+      "id": "regard_11",
+      "type": "regard",
+      "file": "cards/regard_11.png"
+    },
+    {
+      "id": "regard_12",
+      "type": "regard",
+      "file": "cards/regard_12.png"
+    },
+    {
+      "id": "regard_13",
+      "type": "regard",
+      "file": "cards/regard_13.png"
+    },
+    {
+      "id": "regard_14",
+      "type": "regard",
+      "file": "cards/regard_14.png"
+    },
+    {
+      "id": "regard_15",
+      "type": "regard",
+      "file": "cards/regard_15.png"
+    },
+    {
+      "id": "regard_16",
+      "type": "regard",
+      "file": "cards/regard_16.png"
+    },
+    {
+      "id": "regard_17",
+      "type": "regard",
+      "file": "cards/regard_17.png"
+    },
+    {
+      "id": "regard_18",
+      "type": "regard",
+      "file": "cards/regard_18.png"
+    },
+    {
+      "id": "regard_19",
+      "type": "regard",
+      "file": "cards/regard_19.png"
+    },
+    {
+      "id": "regard_20",
+      "type": "regard",
+      "file": "cards/regard_20.png"
+    },
+    {
+      "id": "regard_21",
+      "type": "regard",
+      "file": "cards/regard_21.png"
+    },
+    {
+      "id": "regard_22",
+      "type": "regard",
+      "file": "cards/regard_22.png"
+    },
+    {
+      "id": "regard_23",
+      "type": "regard",
+      "file": "cards/regard_23.png"
+    },
+    {
+      "id": "regard_24",
+      "type": "regard",
+      "file": "cards/regard_24.png"
+    },
+    {
+      "id": "regard_blank_1",
+      "type": "regard-blank",
+      "file": "cards/regard_blank_1.png"
+    },
+    {
+      "id": "regard_blank_2",
+      "type": "regard-blank",
+      "file": "cards/regard_blank_2.png"
+    },
+    {
+      "id": "tenet_01",
+      "type": "tenet",
+      "file": "cards/tenet_01.png"
+    },
+    {
+      "id": "tenet_02",
+      "type": "tenet",
+      "file": "cards/tenet_02.png"
+    },
+    {
+      "id": "tenet_03",
+      "type": "tenet",
+      "file": "cards/tenet_03.png"
+    },
+    {
+      "id": "tenet_04",
+      "type": "tenet",
+      "file": "cards/tenet_04.png"
+    },
+    {
+      "id": "tenet_05",
+      "type": "tenet",
+      "file": "cards/tenet_05.png"
+    },
+    {
+      "id": "tenet_06",
+      "type": "tenet",
+      "file": "cards/tenet_06.png"
+    },
+    {
+      "id": "tenet_07",
+      "type": "tenet",
+      "file": "cards/tenet_07.png"
+    },
+    {
+      "id": "tenet_08",
+      "type": "tenet",
+      "file": "cards/tenet_08.png"
+    },
+    {
+      "id": "tenet_09",
+      "type": "tenet",
+      "file": "cards/tenet_09.png"
+    },
+    {
+      "id": "tenet_10",
+      "type": "tenet",
+      "file": "cards/tenet_10.png"
+    },
+    {
+      "id": "tenet_11",
+      "type": "tenet",
+      "file": "cards/tenet_11.png"
+    },
+    {
+      "id": "tenet_12",
+      "type": "tenet",
+      "file": "cards/tenet_12.png"
+    },
+    {
+      "id": "reference_chapter_1",
+      "type": "reference-chapter",
+      "file": "cards/reference_chapter_1.png"
+    },
+    {
+      "id": "reference_chapter_2",
+      "type": "reference-chapter",
+      "file": "cards/reference_chapter_2.png"
+    },
+    {
+      "id": "reference_chapter_3",
+      "type": "reference-chapter",
+      "file": "cards/reference_chapter_3.png"
+    },
+    {
+      "id": "reference_rites_1",
+      "type": "reference-rites",
+      "file": "cards/reference_rites_1.png"
+    },
+    {
+      "id": "reference_rites_2",
+      "type": "reference-rites",
+      "file": "cards/reference_rites_2.png"
+    },
+    {
+      "id": "reference_rites_3",
+      "type": "reference-rites",
+      "file": "cards/reference_rites_3.png"
+    }
+  ],
+  "tokens": [
+    {
+      "id": "conviction",
+      "name": "Conviction token",
+      "file": "tokens/conviction-token.svg",
+      "qty": 40,
+      "purpose": "Stacked on a belief, 0-5. New beliefs start at 2; Cores at 4."
+    },
+    {
+      "id": "sun",
+      "name": "Sun chip",
+      "file": "tokens/sun-chip.svg",
+      "qty": 12,
+      "purpose": "Evidence for. Laid by Corroborations and Crossroads."
+    },
+    {
+      "id": "eclipse",
+      "name": "Eclipse chip",
+      "file": "tokens/eclipse-chip.svg",
+      "qty": 12,
+      "purpose": "Evidence against. Stays through Double Down; cleared by Revise."
+    },
+    {
+      "id": "breath",
+      "name": "Breath marker",
+      "file": "tokens/breath-marker.svg",
+      "qty": 12,
+      "purpose": "Spoken this chapter. Cleared at Dusk; unmarked beliefs slide outward."
+    },
+    {
+      "id": "spotlight",
+      "name": "Spotlight marker",
+      "file": "tokens/spotlight-marker.svg",
+      "qty": 1,
+      "purpose": "Sits on the chapter's Spotlight belief."
+    }
+  ]
+}

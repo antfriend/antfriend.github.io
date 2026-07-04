@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="240" viewBox="0 0 220 240">
+  <!-- BECOME MARKER  ·  18 mm hexagon  ·  qty 8  ·  can_become / opens_toward -->
+  <defs>
+    <linearGradient id="becViolet" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a98fd4"/>
+      <stop offset="60%" stop-color="#7a5fae"/>
+      <stop offset="100%" stop-color="#54408a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- footprint -->
+  <circle cx="110" cy="100" r="92" fill="none" stroke="#3d2e66" stroke-width="2" stroke-dasharray="4 5" opacity="0.5"/>
+  <!-- hexagon (top face) -->
+  <polygon points="194,100 152,172 68,172 26,100 68,28 152,28"
+           fill="url(#becViolet)" stroke="#3d2e66" stroke-width="3" stroke-linejoin="round"/>
+  <polygon points="178,100 144,158 76,158 42,100 76,42 144,42"
+           fill="none" stroke="#ffffff" stroke-width="2" opacity="0.25"/>
+
+  <!-- engraved spiral groove (recessed in STL) — transformation -->
+  <path d="M110 100
+           m 6 0  a 6 6 0 1 1 -12 0
+           a 12 12 0 1 1 24 0
+           a 20 20 0 1 1 -40 0
+           a 30 30 0 1 1 60 0
+           a 42 42 0 0 1 -42 42"
+        fill="none" stroke="#33255c" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- label -->
+  <text x="110" y="222" text-anchor="middle" font-family="Georgia, serif"
+        font-size="21" letter-spacing="3" fill="#54408a">BECOME</text>
+  <text x="110" y="238" text-anchor="middle" font-family="Georgia, serif"
+        font-size="12" letter-spacing="1" fill="#3d2e66">18 mm hex · ×8 · become / open</text>
+</svg>

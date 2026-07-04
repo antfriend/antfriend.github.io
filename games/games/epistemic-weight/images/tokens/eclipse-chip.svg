@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="240" viewBox="0 0 220 240">
+  <!-- ECLIPSE CHIP  ·  18 mm disc  ·  qty 12  ·  evidence AGAINST a belief -->
+  <defs>
+    <radialGradient id="eclNight" cx="42%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#4b4b5c"/>
+      <stop offset="55%" stop-color="#2c2c38"/>
+      <stop offset="100%" stop-color="#17171f"/>
+    </radialGradient>
+  </defs>
+
+  <!-- footprint / extrusion outline -->
+  <circle cx="110" cy="100" r="92" fill="none" stroke="#17171f" stroke-width="2" stroke-dasharray="4 5" opacity="0.5"/>
+  <!-- disc top face -->
+  <circle cx="110" cy="100" r="84" fill="url(#eclNight)" stroke="#0e0e14" stroke-width="3"/>
+  <circle cx="110" cy="100" r="72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.12"/>
+
+  <!-- raised crescent: the sliver of what was believed -->
+  <path d="M 87 45 A 57 57 0 1 0 87 155 A 54 54 0 1 1 87 45 Z"
+        fill="#e9c25a" stroke="#8c6812" stroke-width="3"/>
+
+  <!-- label -->
+  <text x="110" y="222" text-anchor="middle" font-family="Georgia, serif"
+        font-size="19" letter-spacing="2" fill="#2c2c38">ECLIPSE</text>
+  <text x="110" y="238" text-anchor="middle" font-family="Georgia, serif"
+        font-size="12" letter-spacing="1" fill="#4b4b5c">18 mm disc · ×12 · the world answers back</text>
+</svg>
