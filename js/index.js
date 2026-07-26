@@ -20,7 +20,6 @@
     const SPECIAL_RECORD_SOUTH_POLE_LAT = -90;
     const TOUR_AUDIO_SPECIAL_KIND = "tour_sound";
     const DISCOVERY_TOUR_OFF_SPECIAL_KIND = "discovery_tour_off";
-    const DISCOVERY_KEY_PREFIX = "tte-terminology-discovered-records-v2";
     const LOCAL_CONTENT_KEY_PREFIX = "ttdb:local-content";
     const GLOBE_ZOOM_MIN = 0.7;
     const GLOBE_ZOOM_MAX = 350;
@@ -68,14 +67,12 @@
       tourPaused: false,
       tourSlowPace: false,
       tourTimer: null,
-      firstRecordId: null,
-      discoveredIds: [],
-      discoveredNodeColors: {},
+      nodeColors: {},
       pendingRecordTransition: null,
       recordTransitionToken: 0,
       recordViewportMode: null,
       specialRecords: {},
-      discoveryTourOff: false,
+      tourOff: false,
       tourAudioPath: null,
       tourAudioPlayer: null,
       recordAudioPath: null,
@@ -111,7 +108,6 @@
     const viewEl = document.getElementById("recordView");
     const pageEl = document.querySelector(".page");
     const graphCanvas = document.getElementById("graph");
-    const forgetDiscoveriesBtn = document.getElementById("forgetDiscoveries");
     const searchInput = document.getElementById("searchInput");
     const searchMeta = document.getElementById("searchMeta");
     const tourToggle = document.getElementById("tourToggle");
@@ -143,16 +139,6 @@
 
     let searchDebounceTimer = null;
 
-    forgetDiscoveriesBtn.addEventListener("click", () => {
-      try {
-        localStorage.removeItem(getDiscoveryKey());
-      } catch (err) {
-        // Ignore storage failures and continue with in-memory reset.
-      }
-      initializeDiscovery();
-      applySearch();
-      setStatusLink(state.order.length);
-    });
     searchInput.addEventListener("input", () => {
       if (searchDebounceTimer) {
         clearTimeout(searchDebounceTimer);
@@ -243,7 +229,7 @@
     window.addEventListener("keydown", (event) => {
       if (event.code !== "Space" || event.repeat) return;
       if (document.activeElement === searchInput) return;
-      if (state.discoveryTourOff) return;
+      if (state.tourOff) return;
       if (!state.tourEnabled) return;
 
       event.preventDefault();
@@ -261,7 +247,6 @@
     }
 
     function setStatusLink(recordCount) {
-      const discoveredCount = getDiscoveredOrder().length;
       const activeDbPath = state.activeDbPath || DEFAULT_DB_PATH;
       statusEl.textContent = "";
       statusEl.append("DB: ");
@@ -269,14 +254,9 @@
       link.href = activeDbPath;
       link.textContent = activeDbPath;
       const suffix = state.usingLocalContent
-        ? ` · ${discoveredCount}/${recordCount} discovered · 📌 local`
-        : ` · ${discoveredCount}/${recordCount} discovered`;
+        ? ` · ${recordCount} records · 📌 local`
+        : ` · ${recordCount} records`;
       statusEl.append(link, suffix);
-    }
-
-    function getDiscoveryKey(dbPath = state.activeDbPath) {
-      const keyPath = dbPath || DEFAULT_DB_PATH;
-      return `${DISCOVERY_KEY_PREFIX}:${keyPath}`;
     }
 
     function getLocalContentKey(dbPath = state.activeDbPath) {
@@ -487,24 +467,15 @@
       return Boolean(specialRecords[DISCOVERY_TOUR_OFF_SPECIAL_KIND]);
     }
 
-    function syncDiscoveryTourControls() {
-      const suppressed = state.discoveryTourOff;
+    function syncTourControls() {
+      const suppressed = state.tourOff;
       if (suppressed) {
         state.tourPaused = false;
         clearTour(true);
       }
-      forgetDiscoveriesBtn.hidden = suppressed;
       if (tourToggleLabel) tourToggleLabel.hidden = suppressed;
       if (slowTourToggleLabel) slowTourToggleLabel.hidden = suppressed;
       tourNote.hidden = suppressed;
-    }
-
-    function getDiscoveredOrder() {
-      if (!state.order.length) return [];
-      if (state.discoveryTourOff) return [...state.order];
-      if (!state.discoveredIds.length) return [];
-      const discoveredSet = new Set(state.discoveredIds);
-      return state.order.filter((recordId) => discoveredSet.has(recordId));
     }
 
     function getVisibleOrderForGraph() {
@@ -520,7 +491,7 @@
       return hash >>> 0;
     }
 
-    function pickDeterministicDiscoveredNodeColor(recordId) {
+    function pickDeterministicNodeColor(recordId) {
       const hash = hashRecordId(recordId);
       const hue = hash % 360;
       const saturation = 62 + (Math.floor(hash / 360) % 22);
@@ -528,92 +499,11 @@
       return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     }
 
-    function syncDiscoveredNodeColors() {
-      const discoveredSet = new Set(state.discoveredIds);
-      Object.keys(state.discoveredNodeColors).forEach((recordId) => {
-        if (!discoveredSet.has(recordId)) {
-          delete state.discoveredNodeColors[recordId];
-        }
-      });
-      state.discoveredIds.forEach((recordId) => {
-        if (!state.discoveredNodeColors[recordId]) {
-          state.discoveredNodeColors[recordId] = pickDeterministicDiscoveredNodeColor(recordId);
-        }
-      });
-    }
-
-    function getNodeColor(recordId, discoveredSet) {
-      if (!discoveredSet.has(recordId)) return "#6a6f78";
-      if (!state.discoveredNodeColors[recordId]) {
-        state.discoveredNodeColors[recordId] = pickDeterministicDiscoveredNodeColor(recordId);
+    function getNodeColor(recordId) {
+      if (!state.nodeColors[recordId]) {
+        state.nodeColors[recordId] = pickDeterministicNodeColor(recordId);
       }
-      return state.discoveredNodeColors[recordId];
-    }
-
-    function persistDiscovery() {
-      if (state.discoveryTourOff) return;
-      try {
-        localStorage.setItem(getDiscoveryKey(), JSON.stringify(state.discoveredIds));
-      } catch (err) {
-        // Ignore storage failures and continue with in-memory discovery state.
-      }
-    }
-
-    function initializeDiscovery() {
-      const firstRecordId = state.order[0] || null;
-      state.firstRecordId = firstRecordId;
-
-      if (state.discoveryTourOff) {
-        state.discoveredIds = [...state.order];
-        syncDiscoveredNodeColors();
-        return;
-      }
-
-      let storedIds = [];
-      try {
-        const raw = localStorage.getItem(getDiscoveryKey());
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed)) {
-            storedIds = parsed.filter((value) => typeof value === "string");
-          }
-        }
-      } catch (err) {
-        storedIds = [];
-      }
-
-      const discoveredSet = new Set(storedIds.filter((recordId) => Boolean(state.records[recordId])));
-      if (firstRecordId && state.records[firstRecordId]) {
-        discoveredSet.add(firstRecordId);
-      }
-
-      state.discoveredIds = state.order.filter((recordId) => discoveredSet.has(recordId));
-      syncDiscoveredNodeColors();
-      persistDiscovery();
-    }
-
-    function discoverRecord(recordId) {
-      if (state.discoveryTourOff) return false;
-      if (!recordId || !state.records[recordId]) return false;
-      const discoveredSet = new Set(state.discoveredIds);
-      const firstRecordId = state.firstRecordId || state.order[0] || null;
-      let changed = false;
-
-      if (firstRecordId && state.records[firstRecordId] && !discoveredSet.has(firstRecordId)) {
-        discoveredSet.add(firstRecordId);
-        changed = true;
-      }
-
-      if (!discoveredSet.has(recordId)) {
-        discoveredSet.add(recordId);
-        changed = true;
-      }
-
-      if (!changed) return false;
-      state.discoveredIds = state.order.filter((id) => discoveredSet.has(id));
-      syncDiscoveredNodeColors();
-      persistDiscovery();
-      return true;
+      return state.nodeColors[recordId];
     }
 
     function buildSearchIndex() {
@@ -629,11 +519,10 @@
     function applySearch(opts = {}) {
       const { preferVisibleSelection = true } = opts;
       const term = state.searchTerm;
-      const discoveredOrder = getDiscoveredOrder();
       if (!term) {
-        state.filteredOrder = [...discoveredOrder];
+        state.filteredOrder = [...state.order];
       } else {
-        state.filteredOrder = discoveredOrder.filter((recordId) => {
+        state.filteredOrder = state.order.filter((recordId) => {
           const blob = state.searchIndex[recordId] || "";
           return blob.includes(term);
         });
@@ -659,13 +548,12 @@
         searchMeta.textContent = "No records.";
         return;
       }
-      const discoveredCount = getDiscoveredOrder().length;
       if (!state.searchTerm) {
-        searchMeta.textContent = `${discoveredCount} discovered of ${state.order.length} terms.`;
+        searchMeta.textContent = `${state.order.length} terms.`;
         return;
       }
       searchMeta.textContent =
-        `${state.filteredOrder.length} matches within ${discoveredCount} discovered terms for "${state.searchTerm}".`;
+        `${state.filteredOrder.length} matches within ${state.order.length} terms for "${state.searchTerm}".`;
     }
 
     function loadDb(dbPath = state.activeDbPath, opts = {}) {
@@ -701,18 +589,14 @@
           state.order = order;
           state.coords = coords;
           state.specialRecords = specialRecords;
-          state.discoveryTourOff = hasDiscoveryTourOffSpecialRecord(state.specialRecords);
-          syncDiscoveryTourControls();
-          setTourAudioPath(state.discoveryTourOff ? null : getTourAudioPath(state.specialRecords));
-          initializeDiscovery();
+          state.tourOff = hasDiscoveryTourOffSpecialRecord(state.specialRecords);
+          syncTourControls();
+          setTourAudioPath(state.tourOff ? null : getTourAudioPath(state.specialRecords));
           buildSearchIndex();
           if (preferredRecordId && records[preferredRecordId]) {
             state.selectedId = preferredRecordId;
           } else if (resetSelection || !state.selectedId || !records[state.selectedId]) {
             state.selectedId = selected || order[0] || null;
-          }
-          if (state.selectedId) {
-            discoverRecord(state.selectedId);
           }
           applySearch();
           playRecordAudioForSelection(state.selectedId, { restart: true, suppress: false });
@@ -728,12 +612,10 @@
           state.filteredOrder = [];
           state.selectedId = null;
           state.coords = {};
-          state.firstRecordId = null;
-          state.discoveredIds = [];
-          state.discoveredNodeColors = {};
+          state.nodeColors = {};
           state.specialRecords = {};
-          state.discoveryTourOff = false;
-          syncDiscoveryTourControls();
+          state.tourOff = false;
+          syncTourControls();
           setTourAudioPath(null);
           stopRecordAudio();
           stopScenePlayback({ stopAudio: true, refreshControls: false, suppressRecordAudio: true });
@@ -1358,7 +1240,7 @@
       if (!source.length) {
         const empty = document.createElement("div");
         empty.className = "muted";
-        empty.textContent = state.searchTerm ? "No matching discovered records." : "No discovered records yet.";
+        empty.textContent = state.searchTerm ? "No matching records." : "No records.";
         listEl.appendChild(empty);
         return;
       }
@@ -1388,7 +1270,6 @@
       if (state.scenePlayback.active && !opts.fromScene) {
         stopScenePlayback({ stopAudio: true, refreshControls: false, suppressRecordAudio: true });
       }
-      discoverRecord(recordId);
       queueRecordTransition(state.selectedId, recordId, opts);
       state.selectedId = recordId;
       playRecordAudioForSelection(recordId, { restart: true, suppress: Boolean(opts.fromScene) });
@@ -2984,7 +2865,6 @@
 
       const visibleOrder = getVisibleOrderForGraph();
       const visibleSet = new Set(visibleOrder);
-      const discoveredSet = new Set(state.discoveredIds);
       const coordsEntries = visibleOrder
         .map((recordId) => [recordId, state.coords[recordId]])
         .filter(([, coords]) => coords);
@@ -3010,7 +2890,7 @@
       nodesBack.forEach(([recordId, x, y]) => {
         const px = cx + x * radius;
         const py = cy - y * radius;
-        ctx.fillStyle = getNodeColor(recordId, discoveredSet);
+        ctx.fillStyle = getNodeColor(recordId);
         ctx.beginPath();
         ctx.arc(px, py, 3, 0, Math.PI * 2);
         ctx.fill();
@@ -3050,8 +2930,7 @@
       nodesFront.forEach(([recordId, x, y]) => {
         const px = cx + x * radius;
         const py = cy - y * radius;
-        const isDiscovered = discoveredSet.has(recordId);
-        ctx.fillStyle = getNodeColor(recordId, discoveredSet);
+        ctx.fillStyle = getNodeColor(recordId);
         ctx.strokeStyle = "#0b0b10";
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -3060,7 +2939,7 @@
         ctx.stroke();
         state.screenPoints[recordId] = [px, py];
 
-        const recordTitle = isDiscovered ? state.records[recordId]?.title : null;
+        const recordTitle = state.records[recordId]?.title;
         if (recordTitle) {
           const labelSize = Math.max(9, Math.min(14, 10 * state.globeZoom));
           ctx.fillStyle = "#dfe7f2";
@@ -3073,7 +2952,7 @@
         const [recordId, x, y] = selectedPoint;
         const px = cx + x * radius;
         const py = cy - y * radius;
-        const selectedColor = getNodeColor(recordId, discoveredSet);
+        const selectedColor = getNodeColor(recordId);
         const eyeRadius = Math.max(8, Math.min(15, 8 + 2.6 * Math.sqrt(state.globeZoom)));
         const toCenterX = cx - px;
         const toCenterY = cy - py;
@@ -3555,22 +3434,21 @@
         tourNote.textContent = "Scene playback is active.";
         return;
       }
-      if (state.discoveryTourOff) {
+      if (state.tourOff) {
         setTourAudioPlaying(false);
         return;
       }
-      const discoveredOrder = getDiscoveredOrder();
       const selectedRecordHasAudio = Boolean(getRecordAudioConfig(state.selectedId).path);
       const shouldPlayTourAudio =
-        state.tourEnabled && !state.tourPaused && discoveredOrder.length >= 2 && !selectedRecordHasAudio;
+        state.tourEnabled && !state.tourPaused && state.order.length >= 2 && !selectedRecordHasAudio;
       setTourAudioPlaying(shouldPlayTourAudio);
       if (!state.tourEnabled) return;
       if (state.tourPaused) {
         tourNote.textContent = "Guided tour paused. Press Space to resume.";
         return;
       }
-      if (discoveredOrder.length < 2) {
-        tourNote.textContent = "Discover another record to expand the guided tour.";
+      if (state.order.length < 2) {
+        tourNote.textContent = "Add another record to expand the guided tour.";
         return;
       }
       tourNote.textContent = state.tourSlowPace
@@ -3592,9 +3470,9 @@
     }
 
     function advanceTour() {
-      const order = getDiscoveredOrder();
+      const order = state.order;
       if (state.scenePlayback.active) return;
-      if (state.discoveryTourOff || !state.tourEnabled || !order.length) return;
+      if (state.tourOff || !state.tourEnabled || !order.length) return;
       let index = order.indexOf(state.selectedId);
       if (index < 0) index = 0;
       const nextId = order[(index + 1) % order.length];
@@ -3606,7 +3484,7 @@
       if (state.scenePlayback.active) {
         stopScenePlayback({ stopAudio: true });
       }
-      if (state.discoveryTourOff) return;
+      if (state.tourOff) return;
       if (!state.tourEnabled) return;
       if (state.dbShiftAnimation) return;
       scheduleTour();
