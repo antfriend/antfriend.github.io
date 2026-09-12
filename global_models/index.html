@@ -1,0 +1,1298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Global Models</title>
+<meta name="description" content="A TTDB globe of the Earth. Climate renderings on a timeline, every number cited.">
+<style>
+:root{
+  --bg:#f4f3ef; --panel:#fffefb; --ink:#1d2126; --dim:#5d6670; --line:#d8d5cd;
+  --accent:#2f6f8f; --ocean:#c9d6de; --ocean2:#aebfcb; --coast:#5a6570; --grat:#b9c4cc;
+  --warn:#8a5a20; --dead:#a8a29a;
+}
+:root:not([data-theme="light"]){ }
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171a; --panel:#1b1f23; --ink:#e6e4de; --dim:#96a0aa; --line:#2e343a;
+    --accent:#7cc7ff; --ocean:#1e2a33; --ocean2:#16202a; --coast:#7d8a96; --grat:#2b343c;
+    --warn:#d9a441; --dead:#575e66;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171a; --panel:#1b1f23; --ink:#e6e4de; --dim:#96a0aa; --line:#2e343a;
+  --accent:#7cc7ff; --ocean:#1e2a33; --ocean2:#16202a; --coast:#7d8a96; --grat:#2b343c;
+  --warn:#d9a441; --dead:#575e66;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+.wrap{max-width:860px;margin:0 auto;padding:22px 18px 60px}
+header{margin-bottom:18px}
+h1{font-size:1.35rem;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--dim);font-size:.9rem;margin:0}
+.sub a{color:var(--accent)}
+#globewrap{position:relative;width:100%;aspect-ratio:1/1;margin:0 auto;
+  display:flex;align-items:center;justify-content:center}
+canvas{touch-action:none;cursor:grab;max-width:100%;max-height:100%}
+canvas:active{cursor:grabbing}
+.controls{margin-top:14px;display:flex;flex-direction:column;gap:14px}
+.field{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.field > label{display:block;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:8px}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+select{width:100%;font:inherit;color:var(--ink);background:var(--bg);
+  border:1px solid var(--line);border-radius:6px;padding:7px 8px}
+.readout{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px;font-size:.85rem;color:var(--dim)}
+/* a layer with nothing to report leaves no gap behind */
+#layerout:empty{display:none}
+.readout b{color:var(--ink);font-weight:600}
+.tier{font-size:.72rem;border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+.tier.observed{color:var(--accent);border-color:currentColor}
+.tier.projected{color:var(--warn);border-color:currentColor}
+.tier.extended{color:var(--dead);border-color:currentColor}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:10px;font-size:.82rem}
+.legend span{display:flex;align-items:center;gap:6px}
+.comp{width:100%;display:flex;flex-direction:column;gap:5px;margin-top:2px}
+.crow{display:grid;grid-template-columns:1fr 34% auto auto;align-items:center;gap:8px}
+.cx{color:var(--warn);font-size:.72rem;font-style:normal;white-space:nowrap;min-width:3.2em;text-align:right}
+.cl{color:var(--dim)}
+.ct{display:block;height:11px;background:rgba(127,127,127,.14);border-radius:2px;overflow:hidden}
+.cbar{display:block;height:100%;border-radius:2px}
+/* a bound is not a value: the bar frays out instead of ending on a number */
+.cbar.open{-webkit-mask-image:linear-gradient(90deg,#000 74%,transparent 100%);
+           mask-image:linear-gradient(90deg,#000 74%,transparent 100%)}
+.cbar.none{background:none!important}
+.cv{font-variant-numeric:tabular-nums;font-size:.78rem;white-space:nowrap}
+.cnote{color:var(--dim);font-size:.72rem;margin-top:3px}
+.prov{margin-top:6px;color:var(--warn);line-height:1.5}
+.prov b{font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.72rem}
+.prov code{font-size:.72rem;opacity:.85}
+.branch{margin-top:11px;font-size:.82rem}
+.branch label{display:flex;align-items:center;gap:7px;cursor:pointer}
+.branch .why{color:var(--dim);margin-top:5px;padding-left:22px;line-height:1.45}
+.branch.on label{color:var(--warn);font-weight:600}
+.offtl{font-size:.72rem;border:1px solid currentColor;border-radius:999px;padding:1px 8px;color:var(--warn)}
+.source{margin-top:9px;font-size:.78rem;color:var(--dim)}
+.source b{font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.72rem}
+.source a{color:var(--accent)}
+.sw{width:13px;height:13px;border-radius:3px;border:1px solid rgba(128,128,128,.45)}
+.ramp{height:13px;flex:1;min-width:130px;border-radius:3px;border:1px solid rgba(128,128,128,.45)}
+#panel{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+#panel h2{font-size:1.05rem;margin:0 0 2px}
+#panel .coord{font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--dim);margin-bottom:10px}
+.ew{display:flex;align-items:center;gap:10px;margin:10px 0 14px;padding:8px 10px;
+  background:var(--bg);border:1px solid var(--line);border-radius:7px;
+  font:12px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--dim);flex-wrap:wrap}
+.epsbar{flex:1;min-width:90px;height:7px;background:var(--line);border-radius:4px;overflow:hidden}
+.epsbar i{display:block;height:100%;background:var(--accent)}
+#panel .body{font-size:.93rem}
+#panel .body p{margin:.6em 0}
+#panel .body ul{margin:.5em 0;padding-left:1.2em}
+#panel .body a{color:var(--accent);word-break:break-word}
+#panel .body code{font:12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:var(--bg);padding:1px 4px;border-radius:3px}
+#panel .body blockquote{margin:.6em 0;padding-left:12px;border-left:3px solid var(--line);color:var(--dim)}
+.tablewrap{overflow-x:auto;margin:.7em 0}
+#panel .body table{border-collapse:collapse;font-size:.85rem;min-width:100%}
+#panel .body th,#panel .body td{border:1px solid var(--line);padding:4px 9px;text-align:left;white-space:nowrap}
+#panel .body th{background:var(--bg)}
+.edges{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:.82rem}
+.edges b{display:block;font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.edges a{color:var(--accent);text-decoration:none;margin-right:4px}
+.edges .x{color:var(--dead);text-decoration:line-through;cursor:not-allowed;margin-right:4px}
+.edges em{color:var(--dim);font-style:normal}
+.note{margin-top:10px;padding:9px 11px;border-left:3px solid var(--warn);
+  background:var(--bg);font-size:.85rem;color:var(--dim)}
+footer{margin-top:26px;font-size:.82rem;color:var(--dim);border-top:1px solid var(--line);padding-top:14px}
+footer a{color:var(--accent)}
+#err{display:none;margin:18px 0;padding:12px 14px;border:1px solid var(--warn);border-radius:8px;
+  background:var(--panel);font-size:.88rem}
+#err code{font:12px ui-monospace,Menlo,Consolas,monospace;background:var(--bg);padding:1px 5px;border-radius:3px}
+@media (max-width:560px){ .wrap{padding:16px 12px 48px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Global Models</h1>
+  <p class="sub">A TTDB globe of the Earth. Every constant below is read from
+    <a href="global_memory_system_ttdb.md">global_memory_system_ttdb.md</a> — this page holds
+    the projection and the coastlines, and no climate numbers of its own.</p>
+</header>
+
+<div id="err"></div>
+
+<div id="globewrap"><canvas id="globe"></canvas></div>
+
+<div class="controls">
+  <div class="field" id="yearfield">
+    <label for="year">Timeline</label>
+    <!-- bounds are a pre-boot placeholder; the store's timeline block replaces them -->
+    <input type="range" id="year" min="1926" max="2126" step="1" value="2026">
+    <div class="readout" id="yearout"></div>
+  </div>
+
+  <div class="field" id="scenfield">
+    <label for="scen">Emissions scenario</label>
+    <select id="scen"></select>
+    <div class="readout" id="scenout"></div>
+  </div>
+
+  <div class="field">
+    <label for="pick">Rendering</label>
+    <select id="pick"></select>
+    <div class="legend" id="legend"></div>
+    <div class="readout" id="layerout"></div>
+    <div class="branch" id="branch" hidden>
+      <label><input type="checkbox" id="branchbox"><span id="branchlabel"></span></label>
+      <div class="why" id="branchwhy"></div>
+    </div>
+    <div class="source" id="source"></div>
+  </div>
+</div>
+
+<div id="panel"></div>
+
+<footer>
+  <a href="RESEARCH.md">Research &amp; sources</a> ·
+  <a href="global_memory_system_ttdb.md">The store</a> ·
+  <a href="RFCs/">RFCs</a> ·
+  <a href="https://antfriend.github.io">Reference TTDB viewer</a><br>
+  Drag to rotate, scroll to zoom, tap a node to select it. Continent outlines are schematic —
+  see <a href="RESEARCH.md#12-known-simplifications">known simplifications</a>.
+</footer>
+</div>
+
+<script>
+"use strict";
+/* ------------------------------------------------------------------ *
+ * Global Models — one page, no dependencies.
+ *
+ * This file contains: the orthographic projection (TTCP-RFC-0002 §2),
+ * a per-pixel field rasteriser, schematic coastline geometry, and a
+ * minimal Markdown renderer. It contains NO climate constants — band
+ * edges, colours, sensitivities, the temperature series and the
+ * timeline bounds all come out of the TTDB store.
+ * ------------------------------------------------------------------ */
+
+const DB = "global_memory_system_ttdb.md";
+const RAD = Math.PI / 180;
+
+/* ---------- schematic coastlines (see RESEARCH.md §12) -------------- *
+ * Hand-authored at roughly 5° fidelity. Marginal seas enclosed by a
+ * single outline (Hudson Bay, Baltic, Black, Caspian, Adriatic) render
+ * as land. Adequate for orientation and for nothing else. Replace with
+ * Natural Earth if you need real coastlines.                          */
+const LAND = [
+ [[-17,21],[-17,14.7],[-13,8],[-7,4.5],[3,6.4],[9,4],[9.5,-1],[12,-6],[12,-17],[15,-27],
+  [18.5,-34.4],[25,-34],[32,-29],[35,-24],[40,-16],[40,-10],[42,-2],[51,11.5],[43,12],
+  [39,15],[37,22],[34,28],[32,31],[25,32],[18,30],[10,34],[3,36.8],[-5.5,36],[-10,30]],
+ [[-9.5,37],[-9.5,43.8],[-1.5,43.4],[-4.8,48.4],[2,51],[4.5,53],[8.5,54.5],[10.5,57.7],
+  [5,62],[12,68],[20,70],[30,70],[40,66],[55,68.5],[60,70],[70,72],[80,73],[95,76],[105,77],
+  [113,73],[128,73],[140,71],[160,69],[172,66],[180,65],[170,60],[163,58],[160,52],[142,54],
+  [135,45],[127,40],[129,35],[122,31],[110,21],[105,10],[100,7],[98,16],[90,22],[80,8],
+  [73,20],[68,24],[60,25],[56,26],[54,17],[45,13],[43,17],[35,28],[34,31],[36,36],[30,40],
+  [23,40],[19,42],[13,45],[16,41],[18,40],[12,38],[10,44],[6,43],[3,42],[0,39],[-6,36]],
+ [[-168,66],[-165,60],[-155,58],[-145,60],[-135,58],[-125,49],[-124,40],[-120,34],[-114,30],
+  [-112,25],[-105,20],[-95,16],[-88,15],[-83,9],[-79,9],[-82,12],[-87,16],[-91,18],[-87,21],
+  [-97,25],[-90,29],[-82,25],[-81,32],[-76,37],[-70,42],[-66,45],[-56,50],[-64,58],[-65,60],
+  [-78,73],[-100,70],[-125,70],[-140,70],[-156,71],[-165,68]],
+ [[-79,9],[-77,1],[-81,-6],[-76,-14],[-71,-18],[-71,-30],[-73,-42],[-75,-50],[-68,-55],
+  [-62,-40],[-57,-38],[-53,-34],[-48,-25],[-40,-20],[-39,-13],[-35,-8],[-44,-2],[-50,0],
+  [-52,5],[-60,8],[-71,12],[-75,9]],
+ [[114,-22],[113,-26],[115,-34],[129,-32],[138,-35],[145,-38],[150,-37],[153,-28],[145,-15],
+  [142,-11],[137,-12],[130,-12],[125,-14],[122,-18]],
+ [[-45,60],[-52,64],[-53,68],[-55,72],[-60,76],[-68,78],[-60,82],[-40,83],[-25,80],[-20,74],
+  [-28,68],[-38,65]],
+ [[-5.5,50],[1.5,51.3],[-0.5,54],[-3,58.6],[-5,57.5],[-4.5,54.5],[-3,53.4],[-5.2,51.6]],
+ [[-10,51.5],[-6,52],[-6,54.5],[-8,55.3],[-10.2,54]],
+ [[130,31],[132,34],[137,35],[141,36],[141,41],[145,44],[141,45],[139,40],[135,36],[132,35],[130,33.5]],
+ [[43,-12],[49,-13],[50,-18],[47,-25],[45,-25],[43.3,-21],[43,-16]],
+ [[172,-34.5],[178,-37.5],[177,-39],[174,-41.5],[171,-44],[167,-47],[166,-45.5],[170,-42.5],
+  [172.5,-40],[173,-36]],
+ [[95.5,5.5],[100,2],[106,-5.9],[103,-5.5],[98,0],[94.5,4]],
+ [[109,2],[113,3],[119,5],[118,-1],[116,-3.5],[110,-3],[108.8,-0.5]],
+ [[131,-1],[138,-2],[143,-3],[150,-9],[147,-9],[140,-8],[134,-4]],
+ [[-24.5,65],[-22,63.5],[-14,64.5],[-13.5,66],[-18,66.5],[-23,66]]
+];
+/* Antarctica as a pole-cap edge: land where lat < edge(lon). A closed
+   polygon containing a pole cannot be tested in the lon/lat plane. */
+const ANT = [[-180,-72],[-150,-77],[-120,-74],[-90,-73],[-70,-70],[-60,-63],[-45,-72],
+             [-20,-71],[0,-70],[30,-69],[60,-67],[90,-66],[120,-66],[150,-70],[165,-78],[180,-72]];
+
+/* ---------- TTDB parsing (TTCP-RFC-0001 §3, §4) -------------------- */
+function fence(text, tag){
+  const m = text.match(new RegExp("```" + tag + "\\r?\\n([\\s\\S]*?)```"));
+  return m ? m[1] : null;
+}
+function stripFences(body){ return body.replace(/```[a-z-]*\r?\n[\s\S]*?```/g, "").trim(); }
+
+function idKey(lat, lon){ return (+lat).toFixed(4) + "|" + (+lon).toFixed(4); }
+function parseId(s){
+  const m = /@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)/.exec(s);
+  return m ? { lat:+m[1], lon:+m[2], key:idKey(m[1], m[2]), id:m[0] } : null;
+}
+
+function parseStore(text){
+  const meta = fence(text, "mmpdb") || "";
+  const cursorBlock = fence(text, "cursor") || "";
+  // Record zone: everything after the cursor fence, split on --- rules.
+  const after = text.slice(text.indexOf("```", text.indexOf("```cursor") + 9) + 3);
+  const recs = [];
+  for (const chunk of after.split(/\r?\n---+\r?\n/)){
+    const lines = chunk.replace(/^\s+/, "").split(/\r?\n/);
+    const head = lines[0] || "";
+    const ref = parseId(head);
+    if (!ref || !/\|/.test(head)) continue;
+
+    const r = { ...ref, conf:128, rev:0, sal:0, touched:0, hasEw:false, edges:[], lane:"", title:"" };
+    for (const part of head.split("|").slice(1)){
+      const i = part.indexOf(":"); if (i < 0) continue;
+      const k = part.slice(0, i).trim().toLowerCase(), v = part.slice(i + 1).trim();
+      if (k === "created" || k === "updated") r[k] = +v;
+      else if (k === "lane") r.lane = v;
+      else if (k === "relates") r.edges = v.split(",").map(e => e.trim()).filter(Boolean)
+        .map(e => { const j = e.indexOf("@"); return { type:e.slice(0, j), target:parseId(e) }; });
+    }
+
+    let rest = lines.slice(1).join("\n");
+    const ew = rest.match(/^\s*\[ew\]\r?\n([\s\S]*?)\[\/ew\]\r?\n?/);
+    if (ew){
+      r.hasEw = true;
+      for (const line of ew[1].split(/\r?\n/)){
+        const m = /^(conf|rev|sal|touched)\s*:\s*(\d+)/.exec(line.trim());
+        if (m) r[m[1]] = +m[2];
+      }
+      rest = rest.slice(ew[0].length);
+    }
+    r.eps = Math.round(r.sal * (255 - r.conf) / 255);
+
+    const t = rest.match(/^\*\*(.+?)\*\*/m);
+    r.title = t ? t[1].replace(/\s*\([^)]*\)\s*$/, "").trim() : r.id;
+    r.fullTitle = t ? t[1] : r.id;
+
+    r.render  = fence(rest, "ttdb-render");
+    r.timeline= fence(rest, "ttdb-timeline");
+    r.special = fence(rest, "ttdb-special");
+    r.body    = stripFences(rest);
+    recs.push(r);
+  }
+  return { meta, cursorBlock, recs };
+}
+
+/* A `key: value` / repeated-key block. Repeated keys collect into arrays. */
+function parseBlock(src){
+  const o = {};
+  for (const raw of (src || "").split(/\r?\n/)){
+    const line = raw.trim(); if (!line || line.startsWith("#")) continue;
+    const i = line.indexOf(":"); if (i < 0) continue;
+    const k = line.slice(0, i).trim(), v = line.slice(i + 1).trim();
+    if (k in o){ if (!Array.isArray(o[k])) o[k] = [o[k]]; o[k].push(v); }
+    else o[k] = v;
+  }
+  return o;
+}
+const many = (o, k) => o[k] == null ? [] : (Array.isArray(o[k]) ? o[k] : [o[k]]);
+const cols = s => s.split("|").map(x => x.trim());
+
+/* ---------- state -------------------------------------------------- */
+let store = null, records = [], byKey = new Map(), renders = [], timeline = null;
+let gmst = [], gmstPast = [], scenarios = [], scenario = null, baseline = "";
+let active = null, selected = null, year = 0;   // the store's timeline sets it at boot
+let rotLat = 0.35, rotLon = -0.4, zoom = 1.0;
+let pulse = 0, pulsing = false, pulseAt = 0;
+
+/* ---------- land mask (1° grid, built once) ------------------------ */
+const mask = new Uint8Array(181 * 360);
+function inPoly(poly, x, y){
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++){
+    const xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+function antEdge(lon){
+  for (let i = 1; i < ANT.length; i++){
+    if (lon <= ANT[i][0]){
+      const a = ANT[i - 1], b = ANT[i], t = (lon - a[0]) / (b[0] - a[0]);
+      return a[1] + t * (b[1] - a[1]);
+    }
+  }
+  return -72;
+}
+function buildMask(){
+  for (let li = 0; li <= 180; li++){
+    const lat = li - 90;
+    for (let oi = 0; oi < 360; oi++){
+      const lon = oi - 180;
+      let land = lat < antEdge(lon);
+      if (!land) for (const p of LAND){
+        // test the point and its ±360 images, so polygons that run past
+        // the dateline still test correctly
+        if (inPoly(p, lon, lat) || inPoly(p, lon + 360, lat) || inPoly(p, lon - 360, lat)){ land = true; break; }
+      }
+      mask[li * 360 + oi] = land ? 1 : 0;
+    }
+  }
+}
+function isLand(lat, lon){
+  let li = Math.round(lat) + 90; if (li < 0) li = 0; else if (li > 180) li = 180;
+  let oi = Math.round(lon) + 180; oi = ((oi % 360) + 360) % 360;
+  return mask[li * 360 + oi] === 1;
+}
+
+/* ---------- series helpers ----------------------------------------- */
+function lerpSeries(series, x){
+  if (!series.length) return { v:0, tier:"" };
+  if (x <= series[0][0]) return { v:series[0][1], tier:series[0][2] };
+  const last = series[series.length - 1];
+  if (x >= last[0]) return { v:last[1], tier:last[2] };
+  for (let i = 1; i < series.length; i++){
+    if (x <= series[i][0]){
+      const a = series[i - 1], b = series[i], t = (x - a[0]) / (b[0] - a[0]);
+      return { v:a[1] + t * (b[1] - a[1]), tier:b[2] };
+    }
+  }
+  return { v:last[1], tier:last[2] };
+}
+const dT = y => lerpSeries(gmst, y).v;
+/* The observed anchors are one series; the future half branches. Splicing the
+   two here is the only place the choice enters — every layer reads dT(). */
+function setScenario(id){
+  scenario = scenarios.find(s => s.id === id) || scenarios[0] || null;
+  gmst = gmstPast.concat(scenario ? scenario.future : []).sort((a, b) => a[0] - b[0]);
+}
+function tierAt(y){
+  for (const t of (timeline ? many(timeline, "tier") : [])){
+    const c = cols(t), r = c[0].split(/\s+/);
+    if (y >= +r[0] && y <= +r[1]) return { name:c[1], conf:(c[2] || "").replace("conf", "").trim() };
+  }
+  return { name:"", conf:"" };
+}
+
+/* ---------- colour utilities --------------------------------------- */
+function hex2rgb(h){
+  h = h.replace("#", "");
+  return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+}
+function rampAt(stops, v){
+  if (v <= stops[0][0]) return stops[0][1];
+  const last = stops[stops.length - 1];
+  if (v >= last[0]) return last[1];
+  for (let i = 1; i < stops.length; i++){
+    if (v <= stops[i][0]){
+      const a = stops[i - 1], b = stops[i], t = (v - a[0]) / (b[0] - a[0]);
+      return [0,1,2].map(k => Math.round(a[1][k] + t * (b[1][k] - a[1][k])));
+    }
+  }
+  return last[1];
+}
+
+/* ---------- the renderings ------------------------------------------ *
+ * A rendering is a pure function (lat, lon, year) -> [r,g,b] | null.
+ * Adding one is adding a function and a ttdb-render block; nothing in
+ * the draw path needs to know about it.                                */
+function makeLayer(rec){
+  const b = parseBlock(rec.render);
+  const kind = b.kind, opacity = +(b.opacity || 0.45);
+
+  if (kind === "zonal-class"){
+    const bands = many(b, "band").map(s => {
+      const c = cols(s);
+      const nh = c[3] === "none" ? null : c[3].split(/\s+/).map(Number);
+      const sh = c[4] === "none" ? null : c[4].split(/\s+/).map(Number);
+      return { code:c[0], label:c[1], rgb:hex2rgb(c[2]), nh, sh };
+    });
+    const k = +(b.shift_deg_per_c || 0), pf = +(b.polar_factor || 1), pFrom = +(b.polar_from || 90);
+    const ref = +(b.reference_year || 2005), land = b.domain === "land";
+    // The sensitivity is one value out of a declared range. The layer draws with the
+    // value and the readout shows the range beside it, the way every other spread here
+    // is handled — drawn as a line, reported as an interval.
+    const kr = (b.shift_range || "").split(/\s+/).filter(x => x !== "").map(Number);
+    // The equator and the pole are fixed: only interior band edges migrate.
+    const shiftOf = (edge, y) => {
+      if (edge === 0 || edge >= 90) return edge;
+      const s = k * (dT(y) - dT(ref));
+      return Math.max(0, Math.min(90, edge + s * (edge >= pFrom ? pf : 1)));
+    };
+    return {
+      kind, opacity, bands, usesYear:true, usesScenario:true,
+      readout: cols(b.readout || "")[0] || "",
+      shift: y => (k * (dT(y) - dT(ref))),
+      shiftSpan: y => (kr.length === 2 ? kr.map(c => c * (dT(y) - dT(ref))) : null),
+      at(lat, lon, y){
+        if (land && !isLand(lat, lon)) return null;
+        const a = Math.abs(lat), north = lat >= 0;
+        for (const bd of bands){
+          const r = north ? bd.nh : bd.sh; if (!r) continue;
+          if (a >= shiftOf(r[0], y) && a < shiftOf(r[1], y)) return bd.rgb;
+        }
+        // past the last shifted edge, the final band runs to the pole. Which band that
+        // is, is the store's business — the app must not assume what the last one means.
+        const last = bands[bands.length - 1];
+        return (north ? last.nh : last.sh) ? last.rgb : null;
+      }
+    };
+  }
+
+  if (kind === "zonal-field"){
+    const amp = many(b, "amp").map(s => { const c = cols(s); return [+c[0], +c[1]]; })
+                              .sort((x, y) => x[0] - y[0]);
+    const stops = many(b, "stop").map(s => { const c = cols(s); return [+c[0], hex2rgb(c[1])]; })
+                                 .sort((x, y) => x[0] - y[0]);
+    const ampAt = lat => {
+      if (lat <= amp[0][0]) return amp[0][1];
+      const last = amp[amp.length - 1]; if (lat >= last[0]) return last[1];
+      for (let i = 1; i < amp.length; i++) if (lat <= amp[i][0]){
+        const a = amp[i - 1], c = amp[i];
+        return a[1] + (lat - a[0]) / (c[0] - a[0]) * (c[1] - a[1]);
+      }
+      return last[1];
+    };
+    const ro = cols(b.readout || "0 | ");
+    // Two kinds of zonal field. `scale: gmst` multiplies the ladder by the warming at
+    // the year on the slider — the ladder is an amplification factor. `scale: none`
+    // is the ladder itself, a climatology that does not move under the slider, and
+    // the readout says so in the store's words.
+    const scaled = (b.scale || "gmst") !== "none";
+    const valueAt = (lat, y) => (scaled ? dT(y) : 1) * ampAt(lat);
+    return {
+      kind, opacity, stops, unit:b.unit || "", scaled,
+      usesYear:scaled, usesScenario:scaled,
+      readout:{ lat:+ro[0], label:ro[1] || "" },
+      undated: scaled ? "" : (b.undated_note || ""),
+      valueAt,
+      at(lat, lon, y){ return rampAt(stops, valueAt(lat, y)); }
+    };
+  }
+
+  if (kind === "distribution-transport"){
+    // A transport across one section, given as a low/mean/high spread at year
+    // anchors — plus, optionally, one alternative state the block declares with
+    // no year at all. See the note on `branch` below.
+    const trajs = many(b, "traj").map(s => {
+      const c = cols(s); return {
+        year: +c[0],
+        values: c[1].split(/\s+/).map(Number),  // low, mean, high — the block declares the order
+        tier: c[2]
+      };
+    }).sort((a, b) => a.year - b.year);
+    const stops = many(b, "stop").map(s => { const c = cols(s); return [+c[0], hex2rgb(c[1])]; })
+                                 .sort((x, y) => x[0] - y[0]);
+    const ref_lat = +(b.reference_lat || rec.lat);
+    const ref_str = +(b.reference_strength || 1);
+    const half = +b.band_halfwidth || 0;
+
+    /* An alternative state, declared without a year.
+     *
+     * Interpolating between anchors is a claim that the quantity moves
+     * smoothly from one to the next. A block may declare one state that is
+     * *not* on that curve — same three columns, no year — and the app draws it
+     * as what it is: unchanging across the slider, and stippled, because a
+     * state with no date must not be readable as a projection for the year on
+     * screen. The app supplies the geometry of "no date"; every word and every
+     * number is the store's.                                                */
+    const bv = (b.branch_values || "").split(/\s+/).filter(x => x !== "").map(Number);
+    const branch = b.branch_id ? {
+      id: b.branch_id,
+      label: b.branch_label || b.branch_id,
+      note: b.branch_note || "",
+      readout: b.branch_readout || "",
+      lo: bv[0] || 0, hi: bv[bv.length - 1] || 0     // two ends and no middle
+    } : null;
+    let branchOn = false;
+
+    const strengthAt = y => {
+      if (!trajs.length) return { mean:ref_str, low:ref_str, high:ref_str };
+      if (y <= trajs[0].year) return { mean:trajs[0].values[1], low:trajs[0].values[0], high:trajs[0].values[2] };
+      const last = trajs[trajs.length - 1];
+      if (y >= last.year) return { mean:last.values[1], low:last.values[0], high:last.values[2] };
+      for (let i = 1; i < trajs.length; i++) if (y <= trajs[i].year){
+        const a = trajs[i - 1], b = trajs[i], t = (y - a.year) / (b.year - a.year);
+        return {
+          mean: a.values[1] + t * (b.values[1] - a.values[1]),
+          low:  a.values[0] + t * (b.values[0] - a.values[0]),
+          high: a.values[2] + t * (b.values[2] - a.values[2])
+        };
+      }
+      return { mean:last.values[1], low:last.values[0], high:last.values[2] };
+    };
+    
+    return {
+      kind, opacity, stops, trajs, ref_lat, ref_str, branch,
+      usesYear:true, usesScenario:false,
+      readout: cols(b.readout || "")[0] || "",
+      branchOn: () => (branchOn ? branch : null),
+      setBranch(on){ branchOn = !!on && !!branch; return branchOn; },
+      // No estimate goes in, so no estimate comes out. The spread is the answer.
+      valueAt: (y) => (branchOn ? NaN : strengthAt(y).mean),
+      spreadAt(y){
+        if (branchOn) return [branch.lo, branch.hi];
+        const s = strengthAt(y); return [s.low, s.high];
+      },
+      at(lat, lon, y){
+        // Drawn only in the band the store declares around its own latitude:
+        // the measurement is a transport across one section, not a field.
+        if (Math.abs(lat - ref_lat) > half) return null;
+        if (branchOn){
+          // No year went in, so no year comes out: stippled on a 1° lattice, at
+          // the same state for every position of the slider. And no estimate
+          // went in either, so it is drawn as the sweep between the two ends of
+          // its range and never rests on a number — or, where motion is
+          // unwelcome, as both ends at once on alternating cells of the lattice.
+          const q = (Math.floor(lat) + Math.floor(lon)) & 3;
+          if (!(q & 1)) return null;
+          return rampAt(stops, reduceMotion() ? (q === 1 ? branch.lo : branch.hi)
+                                              : branch.lo + (branch.hi - branch.lo) * sweep());
+        }
+        return rampAt(stops, strengthAt(y).mean);
+      }
+    };
+  }
+
+  if (kind === "zonal-extent" && isFinite(+b.reference_year)){
+    // An extent layer: everything poleward of the declared edge is covered, and the
+    // covered area shrinks at the store's assessed rate per °C. The boundary is then
+    // wherever the remaining spherical cap ends — the app supplies the geometry and
+    // the store supplies every number.
+    //
+    // Two ways to declare it. FRACTION mode takes a starting edge latitude and a rate
+    // as a fraction of the reference area per °C. AREA mode takes a measured area and
+    // a rate in the same units per °C, so both numbers are the same quantity, and the
+    // cap that area subtends is geometry this app can work out. A rate given as a
+    // RANGE draws two edges, and the gap between them is the declared uncertainty
+    // rather than a decorative fade.
+    const ref = +b.reference_year;
+    const land = b.domain === "land", sea = b.domain === "ocean";
+    const north = b.hemisphere !== "south";
+    const stops = many(b, "stop").map(s => { const c = cols(s); return [+c[0], hex2rgb(c[1])]; })
+                                 .sort((x, y) => x[0] - y[0]);
+    // Earth's hemisphere area, 2*pi*R^2 with R = 6371 km. Geodesy, like the coastlines:
+    // it says how big a cap of a given latitude is, and nothing about climate.
+    const HEMI = 2 * Math.PI * 6371 * 6371 / 1e6;      // million km^2
+    const area0 = +b.reference_area, floor = +b.area_floor || 0;
+    const byArea = isFinite(area0);
+    const rates = (b.decline_area_per_c || b.extent_decline_per_c || "0")
+                    .trim().split(/\s+/).map(Number).filter(isFinite).sort((x, y) => x - y);
+    const uncert = +b.uncertainty_band || 0;
+    const edge = +b.extent_edge;
+    const cap0 = byArea ? area0 / HEMI : 1 - Math.sin(edge * RAD);
+    // remaining area (AREA mode) or remaining fraction (FRACTION mode), per rate
+    const remain = (y, r) => byArea
+      ? Math.max(0, area0 - r * (dT(y) - dT(ref)))
+      : Math.max(0, Math.min(1, 1 - r * (dT(y) - dT(ref))));
+    const frac = y => byArea ? remain(y, rates[0]) / area0 : remain(y, rates[0]);
+    const edgeFor = (y, r) => {
+      const rem = remain(y, r);
+      const capFrac = byArea ? rem / HEMI : cap0 * rem;
+      if (capFrac <= 0) return 90;
+      return Math.asin(Math.max(-1, Math.min(1, 1 - capFrac))) / RAD;
+    };
+    // the slow rate leaves more ice, so it is the equatorward edge of the pair
+    const edgeAt = y => edgeFor(y, rates[0]);
+    const edgeHigh = y => edgeFor(y, rates[rates.length - 1]);
+    const areaAt = y => byArea ? [remain(y, rates[rates.length - 1]), remain(y, rates[0])] : null;
+    const atFloor = y => byArea && remain(y, rates[0]) <= floor;
+    return {
+      kind, opacity, edge, uncert, stops, edgeAt, edgeHigh, extentFraction: frac,
+      usesYear:true, usesScenario:true, byArea, areaAt, atFloor,
+      unit: b.unit || "", floorLabel: b.floor_label || "", floorValue: floor,
+      rates, referenceArea: area0,
+      readout: cols(b.readout || "")[0] || "",
+      at(lat, lon, y){
+        if (land && !isLand(lat, lon)) return null;
+        if (sea && isLand(lat, lon)) return null;
+        if (north ? lat < 0 : lat > 0) return null;
+        const a = north ? lat : -lat, f = frac(y);
+        if (f <= 0) return null;
+        // Which of the two rates gives the poleward edge flips either side of the
+        // reference year - a steeper rate means less ice ahead of it and more behind
+        // it - so order the pair by latitude, not by which rate produced it.
+        const e1 = edgeAt(y), e2 = edgeHigh(y);
+        const inner = Math.max(e1, e2), outer = Math.min(e1, e2);
+        if (a >= inner) return rampAt(stops, f);
+        // Between the two rates the store declares, the layer is drawn weaker: this
+        // band is the spread of the assessment, not a soft edge for looks.
+        if (a >= outer) return rampAt(stops, f * 0.45);
+        if (uncert > 0 && a >= outer - uncert) return rampAt(stops, f * (1 - (outer - a) / uncert));
+        return null;
+      }
+    };
+  }
+
+  if (kind === "sector-field"){
+    // A field that is constant inside each declared longitude sector. Where the
+    // store declares a value whose state it could not resolve, the layer refuses
+    // the ramp entirely: those cells are hatched on a 1° lattice and take one
+    // flat tone, so the sector is visibly drawn and visibly not coloured.
+    // Sectors are tested in declared order because they may overlap — the store
+    // says so in its own note, and the app does not second-guess the order.
+    const limit = +b.lat_limit, land = b.domain === "land", north = b.hemisphere !== "south";
+    const tone = hex2rgb(b.unresolved_tone || "#999999");
+    const stops = many(b, "stop").map(s => { const c = cols(s); return [+c[0], hex2rgb(c[1])]; })
+                                 .sort((x, y) => x[0] - y[0]);
+    const sectors = many(b, "sector").map(s => {
+      const c = cols(s);
+      return { id:c[0], label:c[1], from:+c[2], to:+c[3], period:c[4] || "",
+               value:+c[5], uncert:+c[6], resolved:c[7] !== "unresolved" };
+    });
+    return {
+      kind, opacity, stops, sectors, tone, unit:b.unit || "",
+      usesYear:false, usesScenario:false,
+      readout: cols(b.readout || "")[0] || "",
+      undated: b.undated_note || "",
+      unresolvedLabel: b.unresolved_label || "",
+      at(lat, lon){
+        // No year goes in, so no year comes out: the same field under every
+        // position of the slider, for the reason the record states.
+        if (land && !isLand(lat, lon)) return null;
+        if (north ? lat < limit : lat > limit) return null;
+        const s = sectors.find(x => lon >= x.from && lon <= x.to);
+        if (!s) return null;
+        if (s.resolved) return rampAt(stops, s.value);
+        return ((Math.floor(lat) + Math.floor(lon)) & 1) ? tone : null;
+      }
+    };
+  }
+
+  if (kind === "composition"){
+    // A set of terms of one whole, drawn beside the globe rather than on it —
+    // at() paints nothing, on purpose. A term may carry its own measured value,
+    // or be stated against the reference so the store keeps the source's own
+    // factor and the app does the division. A term the source states as an
+    // inequality becomes a bound and is drawn open-ended; a term the store has
+    // no number for is drawn as an empty slot rather than left out.
+    //
+    // Bars are shares of the declared whole where the store knows the whole, and
+    // shares of the reference where it does not — a set with a missing term has
+    // no whole to be a share of, and must not be drawn as though it had one.
+    const bars = {}; for (const s of many(b, "bar")){ const c = cols(s); bars[c[0]] = c[1]; }
+    const terms = many(b, "term").map(s => {
+      const c = cols(s);
+      return { id:c[0], label:c[1], relation:c[2], factor:+c[3], locus:c[4] || "",
+               // an optional second reading per term: the bar is one quantity and this
+               // is another about the same term, printed beside it and never summed
+               aux: c[5] !== undefined && c[5] !== "" ? +c[5] : NaN };
+    });
+    const ref = terms.find(t => t.id === b.reference);
+    const refVal = ref ? ref.factor : 0;
+    const whole = isFinite(+b.whole) ? +b.whole : NaN;
+    for (const t of terms){
+      t.isRef = t === ref;
+      t.bound = t.relation === "ratio_min";
+      t.empty = t.relation === "unrecorded";
+      t.value = t.isRef || t.relation === "measured" ? t.factor
+              : t.empty ? NaN
+              : t.factor ? refVal / t.factor : NaN;
+    }
+    const scale = isFinite(whole) ? whole : refVal;
+    const total = terms.reduce((a, t) => a + (isFinite(t.value) ? t.value : 0), 0);
+    for (const t of terms){
+      t.share = isFinite(t.value) && scale ? t.value / scale : 0;
+      t.tone = bars[t.isRef ? "reference" : t.empty ? "empty" : t.bound ? "bound" : "derived"] || "#888";
+    }
+    return {
+      kind, opacity, terms, bars, unit:b.unit || "", basis:b.basis || "",
+      auxUnit: b.aux_unit || "", auxLabel: b.aux_label || "",
+      usesYear:false, usesScenario:false,
+      whole, total,
+      readout: cols(b.readout || "")[0] || "",
+      offglobe: b.offglobe_note || "",
+      at(){ return null; }        // deliberately not a field: nothing goes on the sphere
+    };
+  }
+
+  return { kind:"none", opacity:0, blocker:b.blocker || "",
+           usesYear:false, usesScenario:false, at(){ return null; } };
+}
+
+/* ---------- globe --------------------------------------------------- */
+const cv = document.getElementById("globe"), ctx = cv.getContext("2d");
+const off = document.createElement("canvas"), octx = off.getContext("2d");
+let W = 0, H = 0, cx = 0, cy = 0, R = 0, dpr = 1;
+
+const sphereRadius = () => (Math.min(W, H) / 2 - dpr) * zoom;
+function resize(){
+  const box = document.getElementById("globewrap").getBoundingClientRect();
+  const side = Math.max(240, Math.min(box.width, box.height));
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.style.width = side + "px"; cv.style.height = side + "px";
+  W = cv.width = Math.round(side * dpr); H = cv.height = Math.round(side * dpr);
+  cx = W / 2; cy = H / 2; R = sphereRadius();
+  draw();
+}
+
+function project(lat, lon){
+  const la = lat * RAD, lo = (lon * RAD) - rotLon;
+  const x = Math.cos(la) * Math.sin(lo), y0 = Math.sin(la), z0 = Math.cos(la) * Math.cos(lo);
+  const c = Math.cos(rotLat), s = Math.sin(rotLat);
+  return { x, y:y0 * c - z0 * s, z:y0 * s + z0 * c };
+}
+const sx = p => cx + p.x * R, sy = p => cy - p.y * R;
+
+function unproject(px, py){
+  const nx = (px - cx) / R, ny = -(py - cy) / R, d = nx * nx + ny * ny;
+  if (d > 1) return null;
+  const nz = Math.sqrt(1 - d), c = Math.cos(rotLat), s = Math.sin(rotLat);
+  const y = ny * c + nz * s, z = -ny * s + nz * c;
+  return { lat: Math.asin(Math.max(-1, Math.min(1, y))) / RAD,
+           lon: ((Math.atan2(nx, z) + rotLon) / RAD + 540) % 360 - 180 };
+}
+
+function polyline(pts, close){
+  ctx.beginPath();
+  let started = false, prevVis = false;
+  for (let i = 0; i <= (close ? pts.length : pts.length - 1); i++){
+    const p = project(pts[i % pts.length][1], pts[i % pts.length][0]);
+    const vis = p.z > 0;
+    if (vis && !prevVis) ctx.moveTo(sx(p), sy(p));
+    else if (vis) ctx.lineTo(sx(p), sy(p));
+    prevVis = vis; started = started || vis;
+  }
+  if (started) ctx.stroke();
+}
+
+function drawField(){
+  if (!active || active.kind === "none") return;
+  const side = Math.min(Math.round(2 * R), 512);
+  if (side < 8) return;
+  off.width = side; off.height = side;
+  const img = octx.createImageData(side, side), d = img.data;
+  const scale = (2 * R) / side, x0 = cx - R, y0 = cy - R;
+  const a = Math.round(active.opacity * 255);
+  for (let j = 0; j < side; j++){
+    const py = y0 + (j + 0.5) * scale;
+    for (let i = 0; i < side; i++){
+      const g = unproject(x0 + (i + 0.5) * scale, py);
+      const o = (j * side + i) * 4;
+      if (!g){ d[o + 3] = 0; continue; }
+      const c = active.at(g.lat, g.lon, year);
+      if (!c){ d[o + 3] = 0; continue; }
+      d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; d[o + 3] = a;
+    }
+  }
+  octx.putImageData(img, 0, 0);
+  ctx.drawImage(off, cx - R, cy - R, 2 * R, 2 * R);
+}
+
+function css(v){ return getComputedStyle(document.body).getPropertyValue(v).trim(); }
+
+function draw(){
+  if (!R) return;
+  ctx.clearRect(0, 0, W, H);
+
+  // sphere
+  const g = ctx.createRadialGradient(cx - R * .3, cy - R * .35, R * .1, cx, cy, R);
+  g.addColorStop(0, css("--ocean")); g.addColorStop(1, css("--ocean2"));
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fillStyle = g; ctx.fill();
+
+  drawField();
+
+  // graticule (TTCP-RFC-0002 §12): 30° bands, 6° polyline step
+  ctx.strokeStyle = css("--grat"); ctx.lineWidth = Math.max(1, dpr * 0.6);
+  for (let lat = -60; lat <= 60; lat += 30){
+    const ring = []; for (let lon = -180; lon <= 180; lon += 6) ring.push([lon, lat]);
+    polyline(ring, false);
+  }
+  for (let lon = -180; lon < 180; lon += 30){
+    const mer = []; for (let lat = -90; lat <= 90; lat += 6) mer.push([lon, lat]);
+    polyline(mer, false);
+  }
+
+  // coastlines
+  ctx.strokeStyle = css("--coast"); ctx.lineWidth = Math.max(1, dpr * 1.1);
+  for (const p of LAND) polyline(p, true);
+  polyline(ANT, false);
+
+  // limb
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7);
+  ctx.strokeStyle = css("--line"); ctx.lineWidth = dpr; ctx.stroke();
+
+  drawNodes();
+}
+
+function nodeColor(rec){
+  let h = 0; for (const ch of rec.id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return "hsl(" + (h % 360) + ",72%,56%)";                 // TTCP-RFC-0002 §3.3
+}
+function drawNodes(){
+  for (const rec of records){
+    if (rec.lat <= -90) continue;                          // §8 special records
+    const p = project(rec.lat, rec.lon);
+    if (p.z <= 0) continue;
+    const x = sx(p), y = sy(p), isSel = selected === rec;
+    const r = (isSel ? 7 : 4) * dpr * Math.min(1.6, Math.max(.8, zoom));
+    if (isSel){
+      ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fillStyle = "#fff"; ctx.fill();
+      const dx = (cx - x) * 0.05, dy = (cy - y) * 0.05;
+      ctx.beginPath(); ctx.arc(x + dx, y + dy, r * .62, 0, 7);
+      ctx.fillStyle = nodeColor(rec); ctx.fill();
+      ctx.beginPath(); ctx.arc(x + dx, y + dy, r * .3, 0, 7); ctx.fillStyle = "#111"; ctx.fill();
+      ctx.beginPath(); ctx.arc(x + dx - r * .2, y + dy - r * .2, r * .12, 0, 7);
+      ctx.fillStyle = "#fff"; ctx.fill();
+    } else {
+      ctx.beginPath(); ctx.arc(x, y, r, 0, 7);
+      ctx.fillStyle = nodeColor(rec); ctx.globalAlpha = .9; ctx.fill(); ctx.globalAlpha = 1;
+      ctx.lineWidth = dpr; ctx.strokeStyle = "rgba(0,0,0,.35)"; ctx.stroke();
+    }
+    if (isSel || rec.render){
+      ctx.font = (11 * dpr) + "px ui-sans-serif,system-ui,sans-serif";
+      ctx.fillStyle = css("--ink"); ctx.textAlign = "center";
+      const label = rec.nodeLabel || rec.title;
+      const half = ctx.measureText(label).width / 2 + 2 * dpr;
+      ctx.fillText(label, Math.max(half, Math.min(W - half, x)), y - r - 5 * dpr);
+    }
+  }
+}
+
+/* ---------- interaction --------------------------------------------- */
+let drag = null;
+cv.addEventListener("pointerdown", e => {
+  cv.setPointerCapture(e.pointerId);
+  drag = { x:e.clientX, y:e.clientY, moved:0 };
+});
+cv.addEventListener("pointermove", e => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  drag.moved += Math.abs(dx) + Math.abs(dy);
+  rotLon -= dx * 0.006 / Math.max(1, zoom * .7);
+  rotLat += dy * 0.006 / Math.max(1, zoom * .7);
+  const lim = Math.PI / 2 - 0.05;                          // §5.1
+  rotLat = Math.max(-lim, Math.min(lim, rotLat));
+  drag.x = e.clientX; drag.y = e.clientY;
+  draw();
+});
+cv.addEventListener("pointerup", e => {
+  const wasDrag = drag && drag.moved > 6;
+  drag = null;
+  if (wasDrag) return;
+  const rect = cv.getBoundingClientRect();
+  const px = (e.clientX - rect.left) * (W / rect.width);
+  const py = (e.clientY - rect.top) * (H / rect.height);
+  const hit = (e.pointerType === "touch" ? 28 : 16) * dpr;
+  let best = null, bd = hit;
+  for (const rec of records){
+    if (rec.lat <= -90) continue;
+    const p = project(rec.lat, rec.lon); if (p.z <= 0) continue;
+    const d = Math.hypot(sx(p) - px, sy(p) - py);
+    if (d < bd){ bd = d; best = rec; }
+  }
+  if (best) select(best, true);
+});
+cv.addEventListener("wheel", e => {
+  e.preventDefault();
+  zoom = Math.max(0.8, Math.min(6, zoom * (e.deltaY < 0 ? 1.12 : 1 / 1.12)));  // §5.2
+  R = sphereRadius();
+  draw();
+}, { passive:false });
+
+/* ---------- minimal Markdown (TTCP-RFC-0001 §6) --------------------- */
+function esc(s){ return s.replace(/[&<>]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;" }[c])); }
+function inline(s){
+  return esc(s)
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>')
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/(^|\W)\*([^*]+)\*(\W|$)/g, "$1<em>$2</em>$3");
+}
+function md(src){
+  const out = []; const lines = src.split(/\r?\n/);
+  let i = 0, para = [], list = null;
+  const flush = () => {
+    if (para.length){ out.push("<p>" + inline(para.join(" ")) + "</p>"); para = []; }
+    if (list){ out.push("<ul>" + list.map(x => "<li>" + inline(x) + "</li>").join("") + "</ul>"); list = null; }
+  };
+  while (i < lines.length){
+    const L = lines[i];
+    if (/^\s*$/.test(L)){ flush(); i++; continue; }
+    if (/^\|/.test(L)){                                    // table
+      flush();
+      const rows = []; while (i < lines.length && /^\|/.test(lines[i])) rows.push(lines[i++]);
+      const cell = r => r.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+      const head = cell(rows[0]);
+      const bodyRows = rows.slice(/^[\s|:-]+$/.test(rows[1] || "") ? 2 : 1);
+      out.push('<div class="tablewrap"><table><thead><tr>' +
+        head.map(h => "<th>" + inline(h) + "</th>").join("") + "</tr></thead><tbody>" +
+        bodyRows.map(r => "<tr>" + cell(r).map(c => "<td>" + inline(c) + "</td>").join("") + "</tr>").join("") +
+        "</tbody></table></div>");
+      continue;
+    }
+    if (/^\s*[-*]\s+/.test(L)){ if (para.length){ out.push("<p>" + inline(para.join(" ")) + "</p>"); para = []; }
+      (list = list || []).push(L.replace(/^\s*[-*]\s+/, "")); i++; continue; }
+    if (list && /^\s{2,}\S/.test(L)){ list[list.length - 1] += " " + L.trim(); i++; continue; }
+    if (/^>\s?/.test(L)){ flush(); out.push("<blockquote>" + inline(L.replace(/^>\s?/, "")) + "</blockquote>"); i++; continue; }
+    if (/^#{2,4}\s/.test(L)){ flush(); const n = L.match(/^#+/)[0].length;
+      out.push("<h" + n + ">" + inline(L.replace(/^#+\s/, "")) + "</h" + n + ">"); i++; continue; }
+    if (list) flush();
+    para.push(L.trim()); i++;
+  }
+  flush();
+  return out.join("");
+}
+
+/* ---------- panel ---------------------------------------------------- */
+function select(rec, fromGlobe){
+  selected = rec;
+  const sel = document.getElementById("pick");
+  if (rec.render && sel.value !== rec.key) sel.value = rec.key;
+  if (rec.render) setActive(rec);
+  renderPanel(rec);
+  if (fromGlobe) spinTo(rec);
+  draw();
+}
+/* ---------- the pulse ------------------------------------------------ *
+ * A state declared without an estimate is drawn as the sweep between the two
+ * ends of its range, so that nothing on screen is a number the store does not
+ * have. The period is arbitrary, identical for every layer, and means nothing —
+ * only the two ends of the sweep mean anything. It is slow (one cycle every few
+ * seconds, repainted a few times a second) because a flash is an accessibility
+ * hazard and a distraction, and it does not run at all under
+ * prefers-reduced-motion, which gets both ends at once instead.            */
+const PULSE_MS = 4200, PULSE_FRAME_MS = 90;
+const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const sweep = () => 1 - Math.abs(1 - 2 * pulse);           // 0 -> 1 -> 0, no rest
+function pulseStep(t){
+  if (!pulsing) return;
+  if (t - pulseAt >= PULSE_FRAME_MS){ pulseAt = t; pulse = (t % PULSE_MS) / PULSE_MS; draw(); }
+  requestAnimationFrame(pulseStep);
+}
+function setPulsing(on){
+  const want = !!on && !reduceMotion();
+  if (want === pulsing) return;
+  pulsing = want;
+  if (want) requestAnimationFrame(pulseStep);
+}
+
+function spinTo(rec){                                      // §6.3
+  const lim = Math.PI / 2 - 0.05;
+  const tLat = Math.max(-lim, Math.min(lim, rec.lat * RAD)), tLon = rec.lon * RAD;
+  if (reduceMotion()){ rotLat = tLat; rotLon = tLon; draw(); return; }
+  const step = () => {
+    const dl = tLat - rotLat, dn = tLon - rotLon;
+    if (Math.abs(dl) < 0.002 && Math.abs(dn) < 0.002) return;
+    rotLat += dl * 0.15; rotLon += dn * 0.15; draw(); requestAnimationFrame(step);
+  };
+  step();
+}
+function renderPanel(rec){
+  const el = document.getElementById("panel");
+  const eps = rec.eps, pct = Math.min(100, eps / 255 * 100);
+  const ewLine = rec.hasEw
+    ? `<div class="ew"><span>EPS ${eps}</span><span class="epsbar"><i style="width:${pct}%"></i></span>
+       <span>conf ${rec.conf} · rev ${rec.rev} · sal ${rec.sal} · touched ${rec.touched}</span></div>`
+    : `<div class="ew"><span>EPS 0</span><span class="epsbar"><i style="width:0%"></i></span>
+       <span>no [ew] block — defaults: conf 128 · rev 0 · sal 0</span></div>`;
+  const edges = rec.edges.length
+    ? `<div class="edges"><b>Related records</b>` + rec.edges.map(e => {
+        const t = e.target && byKey.get(e.target.key);
+        return `<em>${esc(e.type)}</em> ` + (t
+          ? `<a href="#${e.target.id}" data-key="${e.target.key}">${esc(t.title)}</a>`
+          : `<span class="x" title="target does not exist in this store">${esc(e.target ? e.target.id : "?")}</span>`);
+      }).join(" · ") + `</div>`
+    : "";
+  let note = "";
+  if (rec.render){
+    const b = parseBlock(rec.render);
+    if (b.status === "planned") note =
+      `<div class="note"><b>Not drawn yet.</b> ${esc(b.blocker || "")} — the data and its sources are
+       recorded above, which is what makes this a candidate rather than a wish.</div>`;
+  }
+  el.innerHTML = `<h2>${inline(rec.fullTitle)}</h2>
+    <div class="coord">${rec.id}${rec.lane ? " · lane:" + esc(rec.lane) : ""}</div>
+    ${ewLine}<div class="body">${md(rec.body)}</div>${note}${edges}`;
+  el.querySelectorAll(".edges a[data-key]").forEach(a =>
+    a.addEventListener("click", ev => { ev.preventDefault(); select(byKey.get(a.dataset.key), true); }));
+}
+
+/* ---------- controls -------------------------------------------------- */
+function setActive(rec){
+  active = makeLayer(rec);
+  const blk = parseBlock(rec.render);
+  const srcs = many(blk, "source").map(s => cols(s))
+                 .filter(c => c[1]).map(c => `<a href="${esc(c[1])}" rel="noopener">${esc(c[0])}</a>`);
+  // Almost every number here is transcribed from an assessment and can be checked by
+  // reading one. A computed number cannot, so it never prints like a transcription:
+  // the layer says so, and says how it was made and what re-runs it.
+  const prov = (blk.provenance || "").trim();
+  const provHtml = prov && prov !== "transcribed"
+    ? `<div class="prov"><b>${esc(prov)}</b>${blk.method ? " " + esc(blk.method) : ""}` +
+      (blk.recompute ? ` <code>${esc(blk.recompute)}</code>` : "") + `</div>`
+    : "";
+  document.getElementById("source").innerHTML =
+    (srcs.length ? `<b>Source data</b> ${srcs.join(" · ")}` : "") + provHtml;
+  // A control that does nothing to the picture is worse than no control: it invites a
+  // reading the layer cannot support. Each layer says what it reads and the page puts
+  // the rest away. A layer that interpolates its own year anchors keeps the timeline
+  // and loses the scenario, because it never goes through the warming series.
+  document.getElementById("yearfield").hidden = !active.usesYear;
+  document.getElementById("scenfield").hidden = !active.usesScenario;
+  // The alternative-state control exists only where the block declares one, and
+  // every word in it is the store's.
+  const br = active.branch, wrap = document.getElementById("branch"),
+        box = document.getElementById("branchbox");
+  wrap.hidden = !br; wrap.className = "branch"; box.checked = false; setPulsing(false);
+  document.getElementById("branchlabel").textContent = br ? br.label : "";
+  document.getElementById("branchwhy").textContent = br ? br.note : "";
+  updateLegend();
+  updateReadout();
+}
+function updateLegend(){
+  const lg = document.getElementById("legend");
+  if (active.kind === "zonal-class"){
+    lg.innerHTML = active.bands.map(b =>
+      `<span><i class="sw" style="background:rgb(${b.rgb.join(",")})"></i>${esc(b.code)} ${esc(b.label)}</span>`).join("");
+  } else if (active.kind === "zonal-field"){
+    const s = active.stops;
+    const css2 = s.map((st, i) => `rgb(${st[1].join(",")}) ${(i / (s.length - 1) * 100).toFixed(0)}%`).join(",");
+    lg.innerHTML = `<span>${s[0][0]}</span><i class="ramp" style="background:linear-gradient(90deg,${css2})"></i>` +
+                   `<span>${s[s.length - 1][0]} ${esc(active.unit)}</span>`;
+  } else if (active.kind === "distribution-transport"){
+    const s = active.stops;
+    const css2 = s.map((st, i) => `rgb(${st[1].join(",")}) ${(i / (s.length - 1) * 100).toFixed(0)}%`).join(",");
+    const br = active.branchOn();
+    lg.innerHTML = `<span>weak</span><i class="ramp" style="background:linear-gradient(90deg,${css2})"></i>` +
+                   `<span>strong</span>` +
+      // the swatch carries both ends of the range, which is what the globe sweeps
+      // between — and, under prefers-reduced-motion, what it draws at once
+      (br ? `<span><i class="sw" style="background:repeating-linear-gradient(45deg,` +
+            `rgb(${rampAt(s, br.lo).join(",")}) 0 2px,rgb(${rampAt(s, br.hi).join(",")}) 2px 4px)"></i>` +
+            `${esc(br.label)}</span>` : "");
+  } else if (active.kind === "zonal-extent"){
+    const s = active.stops;
+    const css2 = s.map((st, i) => `rgb(${st[1].join(",")}) ${(i / (s.length - 1) * 100).toFixed(0)}%`).join(",");
+    lg.innerHTML = `<span>lost</span><i class="ramp" style="background:linear-gradient(90deg,${css2})"></i>` +
+                   `<span>present</span>`;
+  } else if (active.kind === "sector-field"){
+    // One swatch per sector, carrying the store's own number and period. The
+    // unresolved sector shows the hatch the globe draws it with, and its value
+    // beside the state — the reader can see the spread that swallowed the sign.
+    lg.innerHTML = active.sectors.map(s => {
+      const sw = s.resolved
+        ? `background:rgb(${rampAt(active.stops, s.value).join(",")})`
+        : `background:repeating-linear-gradient(45deg,rgb(${active.tone.join(",")}) 0 2px,transparent 2px 4px)`;
+      const v = (s.value > 0 ? "+" : "") + s.value +
+                (isFinite(s.uncert) ? " ± " + s.uncert : "") + " " + active.unit;
+      return `<span><i class="sw" style="${sw}"></i>${esc(s.label)} <b>${esc(v)}</b>` +
+             (s.period ? ` <em>${esc(s.period)}</em>` : "") +
+             (s.resolved ? "" : ` — ${esc(active.unresolvedLabel)}`) + `</span>`;
+    }).join("");
+  } else if (active.kind === "composition"){
+    // Bars, not swatches: the reference is full width and every other term is a
+    // share of it. A bound gets a ragged open end so it cannot be read as a value,
+    // and an empty slot is drawn at full width in outline so the gap has a size.
+    const pct = v => (Math.max(0, Math.min(1, v)) * 100).toFixed(1) + "%";
+    const rows = active.terms.map(t => {
+      const style = t.empty
+        ? `border:1px dashed ${t.tone};width:100%`
+        : `background:${t.tone};width:${pct(t.share)}`;
+      const val = t.empty ? "not recorded here"
+        : (t.bound ? "< " : "") + t.value.toFixed(1) + " " + active.unit
+          + (t.isRef ? " measured" : "");
+      // The second reading is about the same term but is not the bar and is never
+      // summed into it — it is what the bar cannot say.
+      const aux = isFinite(t.aux)
+        ? `<em class="cx">${esc(t.aux + (active.auxUnit ? " " + active.auxUnit : ""))}</em>` : "";
+      return `<div class="crow"><span class="cl">${esc(t.label)}</span>` +
+             `<span class="ct"><i class="cbar${t.bound ? " open" : ""}${t.empty ? " none" : ""}" ` +
+             `style="${style}"></i></span><b class="cv">${esc(val)}</b>${aux}</div>`;
+    }).join("");
+    // Where the whole is known the note says whether the terms actually account
+    // for it, so a set that does not add up says so instead of looking tidy.
+    const acct = isFinite(active.whole)
+      ? `terms account for ${active.total.toFixed(0)} of ${active.whole.toFixed(0)} ${active.unit}`
+      : "shares of the reference — the whole is not known here";
+    lg.innerHTML = `<div class="comp">${rows}` +
+      `<div class="cnote">basis ${esc(active.basis)} · ${esc(acct)}</div></div>`;
+  } else lg.innerHTML = `<span style="color:var(--dim)">No layer drawn for this rendering.</span>`;
+}
+function scenarioNote(){
+  const e = document.getElementById("scenout");
+  if (!scenario){ e.innerHTML = ""; return; }
+  e.innerHTML = `<span>${esc(scenario.label)}</span>` +
+    (scenario.best ? `<span>${esc(scenario.period)} best estimate <b>+${esc(scenario.best)} °C</b></span>` : "") +
+    (scenario.range ? `<span><em>very likely</em> ${esc(scenario.range)}</span>` : "");
+}
+function updateReadout(){
+  const t = tierAt(year), d = dT(year);
+  let extra = "";
+  if (active && active.kind === "zonal-class"){
+    const sp = active.shiftSpan(year), sgn = v => (v >= 0 ? "+" : "") + v.toFixed(1);
+    extra = `<span>${esc(active.readout)} <b>${sgn(active.shift(year))}°</b>` +
+            (sp ? ` <em>(${sgn(sp[0])} to ${sgn(sp[1])}°)</em>` : "") + `</span>`;
+  }
+  else if (active && active.kind === "zonal-field" && active.readout.label){
+    // A scaled field is a value for the year on the slider. An unscaled one is a
+    // climatology, so it carries the store's unit and says the year does not apply.
+    const v = active.valueAt(active.readout.lat, year);
+    extra = active.scaled
+      ? `<span>${esc(active.readout.label)} <b>+${v.toFixed(1)} °C</b></span>`
+      : `<span>${esc(active.readout.label)} <b>${v.toFixed(1)} ${esc(active.unit)}</b></span>` +
+        (active.undated ? `<span class="offtl">${esc(active.undated)}</span>` : "");
+  }
+  else if (active && active.kind === "distribution-transport"){
+    // Ordinarily the estimate, with the spread it came out of. Under an
+    // alternative there is no estimate to print, so the range is the reading —
+    // and the store's own words say why the year does not apply to it.
+    const sp = active.spreadAt(year), br = active.branchOn(), pc = v => (v * 100).toFixed(0);
+    extra = br
+      ? `<span>${esc(active.readout)} <b>${pc(sp[0])}–${pc(sp[1])}%</b></span>` +
+        `<span class="offtl">${esc(br.readout || br.label)}</span>`
+      : `<span>${esc(active.readout)} <b>${pc(active.valueAt(year))}%</b>` +
+        ` <em>(${pc(sp[0])}–${pc(sp[1])}%)</em></span>`;
+  }
+  else if (active && active.kind === "zonal-extent"){
+    // A fraction layer reads as a percentage of its own reference. An area layer reads
+    // as the spread between the two rates the store declares, and stops giving a number
+    // at all once it reaches the floor the store names — in the store's words.
+    if (!active.byArea)
+      extra = `<span>${esc(active.readout)} <b>${(active.extentFraction(year) * 100).toFixed(0)}%</b></span>`;
+    else if (active.atFloor(year))
+      extra = `<span>${esc(active.readout)}</span>` +
+              `<span class="offtl">${esc(active.floorLabel)}</span>`;
+    else {
+      // areaAt returns the two rates' remainders; which is larger flips either side
+      // of the reference year, so sort before printing rather than assume.
+      const band = active.areaAt(year).slice().sort((a, b) => a - b);
+      extra = `<span>${esc(active.readout)} <b>${band[0].toFixed(1)}–${band[1].toFixed(1)} ${esc(active.unit)}</b>` +
+              ` <em>(the declared rate is a range)</em></span>`;
+    }
+  }
+  else if (active && active.kind === "sector-field"){
+    // The count of sectors the store could not resolve is the reading here, and
+    // the store's own words say why the year above does not apply to any of them.
+    const u = active.sectors.filter(s => !s.resolved);
+    extra = `<span>${esc(active.readout)} <b>${active.sectors.length}</b>` +
+            (u.length ? ` <em>(${u.length} ${esc(active.unresolvedLabel)})</em>` : "") + `</span>` +
+            (active.undated ? `<span class="offtl">${esc(active.undated)}</span>` : "");
+  }
+  else if (active && active.kind === "composition"){
+    // Nothing is on the globe for this one, and the store's own words say why.
+    const empty = active.terms.filter(t => t.empty).length;
+    extra = `<span>${esc(active.readout)} <b>${active.terms.length - empty}</b>` +
+            (empty ? ` <em>(${empty} not recorded)</em>` : "") + `</span>` +
+            (active.offglobe ? `<span class="offtl">${esc(active.offglobe)}</span>` : "");
+  }
+  // Two readouts, because they can now appear apart. The year block belongs to the
+  // timeline and is hidden with it; the layer's own reading belongs to the layer and
+  // stays whatever the timeline is doing.
+  document.getElementById("yearout").innerHTML =
+    `<span>Year <b>${year}</b> <span style="opacity:.7">(centre of a 30-yr normal)</span></span>` +
+    `<span class="tier ${t.name}">${t.name}</span>` +
+    `<span>global mean <b>+${d.toFixed(2)} °C</b> vs ${esc(baseline)}</span>` +
+    (scenario && active && active.usesScenario ? `<span>scenario <b>${esc(scenario.id)}</b></span>` : "");
+  document.getElementById("layerout").innerHTML = extra;
+}
+
+/* ---------- boot ------------------------------------------------------ */
+function fail(msg){
+  const e = document.getElementById("err");
+  e.style.display = "block"; e.innerHTML = msg;
+}
+async function boot(){
+  let text;
+  try {
+    const res = await fetch(DB, { cache:"no-store" });     // TTCP-RFC-0001 §2.1
+    if (!res.ok) throw new Error(res.status + " " + res.statusText);
+    text = await res.text();
+  } catch (err){
+    fail(`<b>Could not load <code>${DB}</code></b> — ${esc(String(err.message || err))}.<br>
+      Opening this page from <code>file://</code> blocks the fetch. Serve the folder instead:
+      <code>python -m http.server</code>, then open <code>http://localhost:8000/</code>.`);
+    return;
+  }
+
+  store = parseStore(text);
+  records = store.recs;
+  byKey = new Map(records.map(r => [r.key, r]));
+
+  // The store declares `discovery_tour_off` at the South Pole marker, so every
+  // record is treated as discovered. This app implements no discovery system,
+  // which is the same behaviour; the declaration is there for other viewers.
+  for (const r of records){
+    if (r.timeline) timeline = parseBlock(r.timeline);
+    if (r.render){
+      const b = parseBlock(r.render);
+      r.nodeLabel = b.label || r.title;
+      const g = many(b, "gmst").map(s => { const c = cols(s); return [+c[0], +c[1], c[2] || ""]; });
+      if (g.length){ gmstPast = g.sort((a, c) => a[0] - c[0]); baseline = b.baseline || ""; }
+      const sc = many(b, "scenario").map(s => {
+        const c = cols(s);
+        return { id:c[0], label:c[1] || "", best:c[2] || "", range:c[3] || "",
+                 period:b.scenario_period || "", future:[] };
+      });
+      if (sc.length) scenarios = sc;
+      for (const f of many(b, "future")){
+        const c = cols(f), sn = scenarios.find(x => x.id === c[0]);
+        if (sn) sn.future.push([+c[1], +c[2], c[3] || ""]);
+      }
+      renders.push({ rec:r, block:b, order:+(b.order || 99) });
+    }
+  }
+  renders.sort((a, b) => a.order - b.order);
+
+  // the scenario set, its labels and which one starts selected: all from the store
+  setScenario(timeline ? timeline.scenario : "");
+
+  // timeline bounds come from the store, not from the markup
+  const yr = document.getElementById("year");
+  if (timeline){
+    yr.min = timeline.min; yr.max = timeline.max; yr.value = timeline.default;
+  }
+  year = +yr.value;
+
+  // selector: implemented first, planned in their own group
+  const sel = document.getElementById("pick");
+  const mk = (r, label) => { const o = document.createElement("option");
+    o.value = r.rec.key; o.textContent = label; return o; };
+  const done = renders.filter(r => r.block.status === "implemented");
+  const todo = renders.filter(r => r.block.status !== "implemented");
+  for (const r of done) sel.appendChild(mk(r, r.block.label));
+  if (todo.length){
+    const g = document.createElement("optgroup");
+    g.label = "Planned — data recorded, not yet drawn";
+    for (const r of todo) g.appendChild(mk(r, r.block.label));
+    sel.appendChild(g);
+  }
+
+  buildMask();
+
+  // initial selection: the cursor block (TTCP-RFC-0002 §6.1), else first record
+  const cm = /selected:\s*\r?\n\s*-\s*"?(@LAT[^"\s]+)"?/.exec(store.cursorBlock);
+  const first = (cm && byKey.get(parseId(cm[1]).key)) || (done[0] && done[0].rec) || records[0];
+  sel.value = first.render ? first.key : (done[0] ? done[0].rec.key : sel.value);
+
+  const scn = document.getElementById("scen");
+  for (const sc of scenarios){
+    const o = document.createElement("option");
+    o.value = sc.id; o.textContent = sc.id + " — " + sc.label;
+    scn.appendChild(o);
+  }
+  if (scenario) scn.value = scenario.id;
+  scenarioNote();
+
+  sel.addEventListener("change", () => select(byKey.get(sel.value), true));
+  scn.addEventListener("change", () => {
+    setScenario(scn.value); scenarioNote(); updateReadout(); draw();
+  });
+  yr.addEventListener("input", () => { year = +yr.value; updateReadout(); draw(); });
+  const box = document.getElementById("branchbox");
+  box.addEventListener("change", () => {
+    if (!active || !active.setBranch) return;
+    active.setBranch(box.checked);
+    document.getElementById("branch").className = box.checked ? "branch on" : "branch";
+    setPulsing(box.checked);
+    updateLegend(); updateReadout(); draw();
+  });
+
+  window.addEventListener("resize", resize);
+  resize();
+  select(first, false);
+  spinTo(first);
+}
+boot();
+</script>
+</body>
+</html>
