@@ -39,7 +39,8 @@ button,.pill{font:inherit;font-size:.8rem;color:var(--ink);background:var(--pane
 button:hover,.pill:hover{border-color:var(--accent)}
 button.primary{background:var(--accent);color:var(--panel);border-color:var(--accent);font-weight:600;padding:6px 16px}
 .grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
-@media (max-width:860px){ .grid{grid-template-columns:1fr} }
+.grid.lower{grid-template-columns:minmax(0,380px) minmax(0,1fr);margin-top:16px}
+@media (max-width:860px){ .grid,.grid.lower{grid-template-columns:1fr} }
 .card{background:var(--panel);border:1px solid var(--line);border-radius:10px}
 #log{padding:14px 16px;min-height:220px;max-height:62vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
 .turn-q{align-self:flex-end;max-width:85%;background:var(--bg);border:1px solid var(--line);border-radius:12px 12px 2px 12px;
@@ -75,7 +76,6 @@ textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1p
   padding:9px 10px;resize:vertical;min-height:62px}
 textarea.drop{border-color:var(--accent);border-style:dashed}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
-.side{display:flex;flex-direction:column;gap:14px}
 #spherewrap{padding:8px;display:flex;justify-content:center}
 canvas{touch-action:none;cursor:grab;width:100%;max-width:340px;aspect-ratio:1/1}
 .legend{display:flex;gap:12px;justify-content:center;font-size:.74rem;color:var(--dim);padding:0 0 8px}
@@ -162,26 +162,28 @@ footer{margin-top:26px;font-size:.82rem;color:var(--dim);border-top:1px solid va
     </form>
   </section>
 
-  <aside class="side">
-    <div class="card">
-      <div id="spherewrap"><canvas id="sphere" width="340" height="340"></canvas></div>
-      <div class="legend"><span><i style="background:var(--thing)"></i>things (east)</span>
-        <span><i style="background:var(--vector)"></i>vectors (west)</span>
-        <span><i style="background:var(--accent)"></i>grammar (meridian)</span></div>
+  <aside class="card terms">
+    <div class="row">
+      <input type="search" id="filter" placeholder="Filter terms" aria-label="Filter terms">
+      <select id="sort" aria-label="Sort terms">
+        <option value="eps">EPS</option><option value="seen">seen</option>
+        <option value="alpha">A–Z</option><option value="recent">recent</option>
+      </select>
     </div>
-    <div class="card terms">
-      <div class="row">
-        <input type="search" id="filter" placeholder="Filter terms" aria-label="Filter terms">
-        <select id="sort" aria-label="Sort terms">
-          <option value="eps">EPS</option><option value="seen">seen</option>
-          <option value="alpha">A–Z</option><option value="recent">recent</option>
-        </select>
-      </div>
-      <div id="filtermeta"></div>
-      <ul id="termlist"></ul>
-    </div>
-    <div class="card" id="panel"></div>
+    <div id="filtermeta"></div>
+    <ul id="termlist"></ul>
   </aside>
+</div>
+
+<div class="grid lower">
+  <div class="card">
+    <div id="spherewrap"><canvas id="sphere" width="340" height="340"></canvas></div>
+    <div class="legend"><span><i style="background:var(--thing)"></i>things (east)</span>
+      <span><i style="background:var(--vector)"></i>vectors (west)</span>
+      <span><i style="background:var(--accent)"></i>grammar (meridian)</span></div>
+  </div>
+
+  <div class="card" id="panel"></div>
 </div>
 
 <footer>
