@@ -58,8 +58,10 @@ eat grass*; fourteen questions and their verdicts; that the penguin answer names
 ancestor it overrules and quotes the owner's own sentence; that a new statement lands at
 `@LAT90LON9`, that its terms land in the right hemispheres beside the terms that introduced
 them, and that the tail of the file survives the write; that saying the opposite of a belief
-is reported at once and leaves the belief contested rather than overwritten; and that *Start
-empty* keeps exactly the kit.
+is reported at once and leaves the belief contested rather than overwritten; that *Start
+empty* keeps exactly the kit, and that the fixture it keeps is never searchable as your words;
+and that the store's description of the runtime's surface names exactly what the runtime
+exports.
 
 And they check the claim the whole design rests on, three ways:
 
@@ -129,7 +131,7 @@ same way. The runtime refers to grammar only by schema keys (`cop`, `class_of`,
 ## The grammar sphere
 
 The origin `@LAT0LON0` is **you** — the record your *I*, *me* and *my* resolve to. The prime
-meridian is **the grammar**: eight blueprint records north of you, seven language records
+meridian is **the grammar**: nine blueprint records north of you, seven language records
 south. **Things sit east, vectors west**, because the rule that decides which side a word
 falls on belongs on the line between the sides.
 
@@ -162,6 +164,10 @@ Each stage is one blueprint record in the store and one section of an RFC.
    reply out of grounds.
 8. **Write back** — only what changed; everything else byte for byte.
 
+A ninth record, `@LAT85LON0`, is not a stage. It names the runtime's surface — where the
+engine is, the calls, the store and reply objects, the page's conventions — so the engine can
+be lifted into another app from the store alone.
+
 ---
 
 ## What it can answer
@@ -192,7 +198,7 @@ Every answer lights the records it touched on the sphere, opens the first one, a
 
 ## Make your own
 
-This file is meant to be forked, and there are three depths to fork it at.
+This file is meant to be forked, and there are four depths to fork it at.
 
 1. **Your own corpus.** Press *Start empty*, then talk to it. Or run
    `node tools/feed.mjs notes.md journal.txt` against an emptied store. Download the store now
@@ -200,10 +206,16 @@ This file is meant to be forked, and there are three depths to fork it at.
 2. **Your own language.** Rewrite the seven records south of the origin and leave
    `index.html` alone. [tests/fixtures/es_ttdb.md](tests/fixtures/es_ttdb.md) is a working
    minimal example — about sixty lines of grammar.
-3. **Your own runtime.** The eight blueprint records up the meridian are the whole contract,
-   compressed: block formats, the percept line, placement, the conf formula, the inference
-   order, the intent table, the write rules. The three TTG RFCs are their expansion, and the
-   `mmpdb` constraints say what a runtime may and may not contain.
+3. **Your own runtime.** The first eight blueprint records up the meridian are the whole
+   contract, compressed: block formats, the percept line, placement, the conf formula, the
+   inference order, the intent table, the write rules. The three TTG RFCs are their expansion,
+   and the `mmpdb` constraints say what a runtime may and may not contain.
+4. **This runtime, inside another app.** Point the app's developer, or its development agent,
+   at the ninth, `@LAT85LON0`: `openStore`, `answer`, render the grounds by kind, persist
+   `serializeStore(S.st)`. The first embedding by someone else found what that record now
+   covers — function names, the store object, the boot gate, the `data-*` convention — had
+   to come from this page and this README instead. `docs.test.mjs` now holds the record to
+   the runtime's real exports.
 
 ---
 
@@ -257,7 +269,10 @@ The store is a conformant TTDB (TTDB-RFC-0001) and exercises the failure paths o
 
 - `@LAT99LON1` carries a **dead edge**, an **unknown header field** and **no `[ew]` block**,
   and an episode block holding **three malformed percept lines**, which the consolidator skips,
-  counts and reports (the page's status bar says *3 malformed skipped*).
+  counts and reports (the page's status bar says *3 malformed skipped*). Its `said:` line is
+  not your words: only episode blocks at lat 90 are, so it is never quoted, searched or
+  counted — including after *Start empty*, which keeps it. An earlier version did search it,
+  and a code review of someone else's embedding caught that before this suite did.
 - `@LAT-90LON0` is the South Pole special record, declaring a `kind` no viewer knows.
 - The page implements TTCP-RFC-0001 §11 (weights shown with EPS) and §12 (edges as
   navigation, dead edges visibly dead), TTCP-RFC-0002 §2 and §5–6 for the sphere, and

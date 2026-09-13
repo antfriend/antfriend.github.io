@@ -125,6 +125,12 @@ written. A consumer MUST skip, count and report malformed percept lines: fewer t
 columns, a non-integer sentence, an empty subject, vector or object, or a polarity other than
 `+`/`-`.
 
+**Only the lane is the owner's words.** An episode is a `ttdb-episode` block on a record whose
+latitude is `episode_lane`. A block of the same tag anywhere else — a conformance fixture, a
+quoted example — MUST still be checked for malformed lines, and MUST NOT contribute `said`
+lines to quotes or search, percepts to beliefs, mentions to `seen`, or itself to an episode
+count. Removing the lane (*Start empty*) and reading it MUST agree on what an episode is.
+
 ### 5.2 Term
 
 ```
@@ -199,5 +205,6 @@ wrapping inside the bands). Coordinates are written with as many decimals as `st
 | Date | Change |
 |---|---|
 | 2026-09-13 | Initial draft |
+| 2026-09-13 | §5.1: only episode blocks on `episode_lane` are the owner's words. The reference runtime had quoted the fixture's sentence in search; found by a third-party embedding's review. |
 
 *License: CC0*

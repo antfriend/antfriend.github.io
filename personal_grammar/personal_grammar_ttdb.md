@@ -66,11 +66,12 @@ touched:1789258020
 
 1. **The foundation.** It is the term the owner's first-person words resolve to — *I*, *me*,
    *my* — so everything they say about themselves hangs off the origin of the sphere.
-2. **The blueprint.** North of here, up the prime meridian, eight records compress the whole
+2. **The blueprint.** North of here, up the prime meridian, nine records compress the whole
    machine: [Read](lat10lon0), [Classify](lat20lon0), [Percept](lat30lon0),
    [Terms on the sphere](lat40lon0), [Consolidate](lat50lon0), [Reason](lat60lon0),
-   [Answer](lat70lon0), [Write back and make your own](lat80lon0). A reader who has only this
-   file should be able to build a new runtime from those eight.
+   [Answer](lat70lon0), [Write back and make your own](lat80lon0), and
+   [the runtime's surface](lat85lon0). A reader who has only this file should be able to build
+   a new runtime from the first eight, and embed this one from the ninth.
 3. **The data.** South of here, the language: [closed-class words](lat-10lon0),
    [morphology](lat-20lon0), [seed vectors](lat-30lon0), [vector algebra](lat-40lon0),
    [question forms](lat-50lon0), [replies](lat-60lon0) and [the numbers](lat-70lon0). East and
@@ -208,6 +209,11 @@ it is how every belief proves where it came from.
 ttdb-episode block: source:, at:, said: lines, percept: lines
 ```
 
+**Only the lane is the owner's words.** An episode is a `ttdb-episode` block at latitude
+`episode_lane`. The same block anywhere else — [the fixture](lat99lon1) — is checked for
+malformed lines and is never quoted, searched, counted or believed. *Start empty* deletes the
+lane, so reading must draw the line in the same place deleting does.
+
 ---
 
 @LAT40LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT0LON0,depends_on@LAT30LON0,derived_from@LAT98LON2
@@ -247,7 +253,8 @@ belief: <vector> | <object or -> | <+ - ?> | <for> <against> | <conf>
 **Blueprint 5 — Consolidate: from percepts to beliefs**
 src: RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md §2
 
-A belief is the consolidation of every percept with the same subject, vector and object.
+A belief is the consolidation of every percept, in the episodes on the lane, with the same
+subject, vector and object.
 This is TTDB-RFC-0007's Dream Cycle made deterministic for text: replay is a count, not a
 random walk, and the count runs over **episodes, not sentences** — saying a thing five times
 in one breath is one episode's worth of saying it.
@@ -350,9 +357,75 @@ the meridian and in lanes 98–99 and delete every lat-90 episode and every east
 record except Home (the page's *Start empty* does this). To make a grammar for another
 language, rewrite the records south of the origin — lexicon, morphology, seed vectors,
 algebra, questions, replies — and leave the runtime alone; the constraints in `mmpdb` say
-what a runtime may and may not contain. To make a new runtime, the eight blueprint records
+what a runtime may and may not contain. To make a new runtime, the nine blueprint records
 and the block formats above are the whole contract, and the three TTG RFCs are their
-expansion.
+expansion. To put this runtime inside another app, read [the runtime's surface](lat85lon0).
+
+---
+
+@LAT85LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT0LON0,depends_on@LAT80LON0
+
+**Blueprint 9 — The runtime's surface: embedding it**
+src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §10
+
+Blueprints 1–8 say what the machine does; this says how to hold it. It names the reference
+runtime, `index.html`, so an agent pointed only at this file can lift the engine into another
+app without reading the page.
+
+**The engine and the page.** `index.html` has one classic `<script>`. Above the comment line
+*The page. Everything below touches the DOM* is the engine: pure functions over strings, no
+DOM, no clock, no storage, no network. It ends by defining the constant **`PG`**, the whole
+public surface. The page below it runs only behind a **boot gate** — `boot()` is called if
+`document` exists *and* an element `#app` exists — so the script loads silently anywhere else.
+`PG` is a top-level `const`, not a `window` property: to capture it, evaluate the script text
+with `;globalThis.<name> = PG;` appended (`tools/harness.mjs` does exactly this in Node).
+
+**The lifecycle.** `now` is always unix seconds passed in; the engine never reads a clock.
+
+| Call | Returns | Mutates `S` |
+|---|---|---|
+| `openStore(text)` | `S`, the open store | — |
+| `answer(S, text, now, source?)` | a reply (below) | tell: a new episode and its terms. Every intent: `asked` on purchased terms, the cursor |
+| `ingestFile(S, name, text, now)` | `{ ep, msg }`, or `null` for no sentences | one episode for the whole file, the cursor |
+| `replyText(S, reply)` | the reply as plain text | — |
+| `serializeStore(S.st)` | the store text — persist it yourself, after every call that mutates | — |
+| `startEmpty(S, now)` | — | deletes the lane-90 episodes and every term but `self_lemma` |
+| `interpret(S, text)` | `{ intent, purchase, … }` without acting | — |
+| `verify(S, s, v, o)`, `objectsOf(S, s, [v])`, `subjectsOf(S, v, o)`, `portrait(S, lemma)`, `searchSaid(S, [lemma])` | raw reasoning, lemmas in | — |
+
+Intents are `perceive`, `verify`, `objectsOf`, `subjectsOf`, `portrait`, `search`. Also on
+`PG`, for tools and tests: `parseStore`, `parseRecord`, `parseBlock`, `records`, `epsOf`,
+`loadGrammar`, `say`, `sentencesOf`, `tokenize`, `nounLemma`, `verbLemma`, `perceiveSentence`,
+`perceive`, `consolidate`, `syncTerms`, `termState`, `markAsked`, and `SLOT` — the NUL
+character that stands for the hole a question asks the corpus to fill.
+
+**The store object `S`.** `st` (parsed chunks; the source of truth, serialise this); `G`
+(the loaded grammar); `things` and `vectors` (Map lemma → `{ chunk, cls, lemma, forms,
+asked }`); `episodes` (lane chunks) and `offLane` (other episode blocks, checked only);
+`trips` (Map `"s|v|o"` → `{ s, v, o, pol, conf, fr, ag, decided, sources }`); `said` (Map
+episode ID → Map sentence number → sentence); `malformed` (`{ id, line }`). `PG.records(S.st)`
+lists records as `{ id, key, lat, lon, title, body, edges, conf, sal, eps, … }`.
+
+**A reply.** `{ intent, query, verdict, head, items, portraits, search, notes, purchase:{
+found, missing }, records, episode }`. Each item is a ground `{ kind, pol, path, quotes, … }`
+where `kind` is `direct` (print with `label_said`), `inference` (`label_inferred`, and it
+carries `via`) or `conflict` (`label_contested`); `path` is the chain of beliefs; `quotes` are
+`{ ep, n, text, pol }`. A portrait is `{ lemma, head, direct, inferred, incoming, uses, withs }`,
+the first four lists of grounds. Three kinds, printed three ways — [Blueprint 7](lat70lon0) —
+is the host's job too. `records` are IDs to highlight; `search` is `{ ep, n, text, score, hit }`;
+`replyText` shows one plain rendering of all of it.
+
+**The page's conventions**, for a host that keeps the page. Any element with **`data-key`**
+selects a record on click (one delegated listener); the value is `lat|lon` to four decimals.
+**Every chrome string lives in a `data-*` attribute on the markup**, never in the script:
+`#storeinfo[data-seed|data-local|data-opened]`, `#mode[data-<intent in kebab case>]`,
+`#reset[data-confirm]`, `#empty[data-confirm]`, `#files[data-confirm-store]`, `#log[data-quota]`. The
+store persists under `localStorage` key `personal_grammar:store:v1`; `?seed` ignores that copy
+and `?ask=<text>` asks on load. The page fetches `personal_grammar_ttdb.md` beside itself.
+
+**Embedding, in one line:** take the engine, `openStore` your copy of this file, `answer`
+each input, render grounds by `kind`, and write `serializeStore(S.st)` wherever your app keeps
+data. The grammar and every reply word come with the store; your app supplies only chrome.
 
 ---
 

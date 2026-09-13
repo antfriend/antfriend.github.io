@@ -24,7 +24,8 @@ in the corpus, and how a reply is built from grounds.
 
 ## 2. Consolidation
 
-For each triple (subject, vector, object) over all non-comention percepts:
+For each triple (subject, vector, object) over all non-comention percepts of the episodes on
+the episode lane (TTG-RFC-0002 §5.1):
 
 - per episode, `plus` = the largest weight of its `+` percepts, `minus` = the largest weight of
   its `-` percepts, where weight is `weight_partial` for quantifier `~` and 1 otherwise;

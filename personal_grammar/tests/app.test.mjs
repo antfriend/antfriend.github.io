@@ -37,6 +37,11 @@ section("fixture, special record, lanes");
   const dead = fx.edges.find(e => e.type === "duplicates");
   ok(dead && !recs.some(r => r.key === dead.target.key), "duplicates@LAT88.8LON179.9 resolves to nothing");
   ok(S.malformed.length === 3 && S.malformed.every(m => m.id === "@LAT99LON1"), "three malformed percepts skipped, all in the fixture", String(S.malformed.length));
+  ok(S.episodes.length === 8 && !S.said.has("@LAT99LON1"), "the fixture's episode block is checked but is not the owner's words", S.episodes.length + " episodes");
+  // a well-formed percept off the episode lane still forms nothing
+  const wf = PG.openStore(STORE.replace("percept: 1 | fixture | is_a\n", "percept: 1 | fixture | is_a | thing | + | -\n"));
+  ok(wf.malformed.length === 2 && !wf.trips.has("fixture|is_a|thing") && !wf.things.has("fixture"),
+     "a well-formed percept outside lane 90 is neither malformed nor believed", wf.malformed.length + " malformed");
   let deadCount = 0;
   for (const r of recs) for (const e of r.edges) if (!e.target || !recs.some(x => x.key === e.target.key)) deadCount++;
   ok(deadCount === 1, "exactly one dead edge in the store (the fixture's)", String(deadCount));
@@ -191,10 +196,16 @@ section("start empty keeps the kit");
   const recs = PG.records(S.st);
   ok(!recs.some(r => r.lat === 90), "no episodes left");
   ok(S.things.size === 1 && S.things.has("self") && S.vectors.size === 0, "only the speaker remains as a term");
-  ok(recs.filter(r => r.lon === 0 && r.lat > -90 && r.lat < 90).length === 16, "home, eight blueprint and seven grammar records kept");
+  ok(recs.filter(r => r.lon === 0 && r.lat > -90 && r.lat < 90).length === 17, "home, nine blueprint and seven grammar records kept");
   ok(recs.some(r => r.id === "@LAT99LON1") && recs.some(r => r.lat === 98) && recs.some(r => r.lat === -90), "lanes 98, 99 and the special record kept");
   const r = PG.answer(S, "I like tea.", T0 + 60);
   ok(r.episode.id === "@LAT90LON1", "the first new episode is ordinal 1 again");
+  // the fixture survives Start empty, and its sentence shares words with ordinary speech
+  // (found in a third-party embedding's code review, not by this suite)
+  PG.answer(S, "My sentence is short.", T0 + 120);
+  const hits = PG.answer(S, "which sentence is here", T0 + 180).search;
+  ok(hits.length === 1 && hits[0].ep === "@LAT90LON2", "search after Start empty finds only the owner's words, never the fixture's",
+     hits.map(h => h.ep).join(" "));
 }
 
 section("the file IS the grammar");

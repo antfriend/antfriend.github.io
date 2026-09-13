@@ -12,8 +12,9 @@ Read them in this order.
 | [TTG-RFC-0002](TTG-RFC-0002-Semantic-Percepts.md) | Semantic Percepts, Episodes and Terms | Reading, nounish/verbish classification, the percept line, episode and term records, placement on the grammar sphere, and byte-stable write-back. |
 | [TTG-RFC-0003](TTG-RFC-0003-Beliefs-Reasoning-Response.md) | Beliefs, Vector Reasoning and Grounded Response | Consolidation (the rule of succession over episodes), vector algebra, inference with specificity, purchase, intents, and the three kinds of ground. |
 
-The store compresses these into eight blueprint records up the prime meridian; each carries
+The store compresses these into nine blueprint records up the prime meridian; each carries
 a `src:` line naming the section it expands to (TTN-RFC-0004 applied to the spec itself).
+The ninth, the runtime's surface, expands to TTG-RFC-0001 §10.
 
 ## The format — what a store *is*
 

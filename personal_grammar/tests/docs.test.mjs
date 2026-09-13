@@ -45,10 +45,37 @@ for (const m of store.matchAll(/^src: (RFCs\/[^\s]+) §(\d+)/gm)){
   const exists = fs.existsSync(file);
   ok(exists && new RegExp("^## " + m[2] + "\\. ", "m").test(fs.readFileSync(file, "utf8")), "src: " + m[1] + " §" + m[2] + " exists");
 }
-ok(recs.filter(r => r.lon === 0 && r.lat > 0 && r.lat < 90).length === 8, "eight blueprint records north of the origin");
+ok(recs.filter(r => r.lon === 0 && r.lat > 0 && r.lat < 90).length === 9, "nine blueprint records north of the origin");
 ok(recs.filter(r => r.lon === 0 && r.lat < 0 && r.lat > -90 && r.grammar != null).length === 7, "seven grammar records south of it");
 ok(rfcs.filter(f => f.startsWith("TTG-")).every(f => index.includes(f)) && rfcs.every(f => f === "INDEX.md" || index.includes(f)),
    "RFCs/INDEX.md lists every RFC in the folder");
+
+console.log("\n== the runtime's surface record matches the runtime (TTG-RFC-0001 §10) ==");
+{
+  const surf = recs.find(r => r.id === "@LAT85LON0");
+  const body = surf ? surf.body : "";
+  const exported = Object.keys(PG);
+  const named = new Set([...body.matchAll(/`([A-Za-z]\w*)(?:\(|`)/g)].map(m => m[1]));
+  const unlisted = exported.filter(k => !named.has(k));
+  ok(surf && unlisted.length === 0, "every name PG exports is listed in Blueprint 9", unlisted.join(", "));
+  const script = app.slice(app.indexOf("<script>"));
+  const cut = script.indexOf("The page. Everything below touches the DOM");
+  const engine = script.slice(0, cut), page = script.slice(cut);
+  const called = [...new Set([...body.matchAll(/`(?:PG\.)?([a-z]\w*)\(/g)].map(m => m[1]))];
+  const phantom = called.filter(k => !exported.includes(k) && !new RegExp("\\nfunction " + k + "\\(").test(page));
+  ok(called.length >= 10 && phantom.length === 0, "every call Blueprint 9 names is on PG, or is a page function (" + called.length + " named)", phantom.join(", "));
+  ok(engine.length > 1000 && body.includes("The page. Everything below touches the DOM"), "the engine/page divider Blueprint 9 quotes is in the script");
+  ok(!/\b(Date|localStorage|fetch|document|window)\b/.test(engine.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "")),
+     "above the divider: no clock, no storage, no network, no DOM");
+  ok(script.includes('typeof document !== "undefined" && document.getElementById("app")') && body.includes("`#app`"), "the boot gate Blueprint 9 describes is the one in the page");
+  for (const m of body.matchAll(/`#(\w+)(?:\[([^\]`]+)\])?`/g)){
+    const el = new RegExp('id="' + m[1] + '"[^>]*>').exec(app);
+    const attrs = (m[2] || "").split("|").map(a => a.trim()).filter(a => a.startsWith("data-") && !a.includes("<"));
+    ok(el && attrs.every(a => el[0].includes(a + "=")), "chrome element #" + m[1] + (attrs.length ? " carries " + attrs.join(", ") : " exists"));
+  }
+  const lsKey = /LS_KEY = "([^"]+)"/.exec(app);
+  ok(lsKey && body.includes("`" + lsKey[1] + "`"), "the localStorage key Blueprint 9 names is the page's", lsKey && lsKey[1]);
+}
 
 console.log("\n== README 'What it can answer' matches the engine ==");
 const rows = [...readme.matchAll(/^\| \*(.+?)\* \| (\w+) \| (.+?) \|$/gm)];

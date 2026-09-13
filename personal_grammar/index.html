@@ -820,7 +820,7 @@ function perceiveSentence(S, sentence, ctx){
 /* ---------- the engine ---------------------------------------------- */
 function openStore(text){
   const st = parseStore(text);
-  const S = { st, G:null, things:new Map(), vectors:new Map(), episodes:[], trips:new Map(), beliefsBy:new Map(),
+  const S = { st, G:null, things:new Map(), vectors:new Map(), episodes:[], offLane:[], trips:new Map(), beliefsBy:new Map(),
               byVector:new Map(), incoming:new Map(), comentions:new Map(), believers:new Set(), seenCounts:new Map(),
               said:new Map(), malformed:[], sentIndex:null, dec:1 };
   S.G = loadGrammar(st);
@@ -830,13 +830,20 @@ function openStore(text){
   consolidate(S);
   return S;
 }
+/* The owner's words are the episode blocks on the episode lane. An episode
+ * block anywhere else (the fixture's) is checked for malformed lines and is
+ * never quoted, searched, counted or believed (TTG-RFC-0002 §5.1).       */
+function indexEpisodes(S){
+  const lane = +S.G.sphere.episode_lane;
+  S.episodes = []; S.offLane = [];
+  for (const c of S.st.chunks) if (c.rec && c.rec.episode != null) (c.rec.lat === lane ? S.episodes : S.offLane).push(c);
+}
 function indexTerms(S){
-  S.things = new Map(); S.vectors = new Map(); S.episodes = [];
+  S.things = new Map(); S.vectors = new Map();
+  indexEpisodes(S);
   for (const c of S.st.chunks){
     const r = c.rec;
-    if (!r) continue;
-    if (r.episode != null) S.episodes.push(c);
-    if (r.term == null) continue;
+    if (!r || r.term == null) continue;
     const b = parseBlock(r.term);
     if (!b.lemma) continue;
     const t = { chunk:c, cls:b.class, lemma:b.lemma, forms:words(b.forms), asked:+b.asked || 0 };
@@ -854,19 +861,24 @@ function consolidate(S){
   const G = S.G, N = G.num, R = G.roles;
   const trips = new Map(), seen = new Map(), com = new Map(), malformed = [], said = new Map();
   const bump = k => seen.set(k, (seen.get(k) || 0) + 1);
-  for (const c of S.episodes){
+  const lane = +G.sphere.episode_lane;
+  for (const c of S.episodes.concat(S.offLane)){
+    const own = c.rec.lat === lane;
     const b = parseBlock(c.rec.episode);
-    const lines = new Map();
-    for (const line of many(b, "said")){
-      const i = line.indexOf("|");
-      if (i > 0) lines.set(+line.slice(0, i).trim(), line.slice(i + 1).trim());
+    if (own){
+      const lines = new Map();
+      for (const line of many(b, "said")){
+        const i = line.indexOf("|");
+        if (i > 0) lines.set(+line.slice(0, i).trim(), line.slice(i + 1).trim());
+      }
+      said.set(c.rec.id, lines);
     }
-    said.set(c.rec.id, lines);
     for (const line of many(b, "percept")){
       const p = cols(line);
       if (p.length < 6 || !/^\d+$/.test(p[0]) || !p[1] || !p[2] || !p[3] || (p[4] !== "+" && p[4] !== "-")){
         malformed.push({ id:c.rec.id, line }); continue;
       }
+      if (!own) continue;
       const [n, s, v, o, pol, q] = p;
       bump("thing|" + s); bump("vector|" + v); if (o !== "-") bump("thing|" + o);
       if (v === R.comention){
@@ -1030,8 +1042,8 @@ function perceive(S, text, source, isFile, now){
   const block = ["source: " + src, "at: " + now].concat(saidLines, perceptLines).join("\n");
   const ec = newChunk(epId, now, refs.join(","), null, say(G, "episode_title", { n:ord, source:src }) || epId, "ttdb-episode", block);
   insertChunk(S.st, ec);
-  // term objects already carry this episode's forms, so only the episode list is rebuilt here
-  S.episodes = S.st.chunks.filter(c => c.rec && c.rec.episode != null);
+  // term objects already carry this episode's forms, so only the episode lists are rebuilt here
+  indexEpisodes(S);
   consolidate(S);
   const touched = new Set();
   for (const p of all) for (const t of [S.things.get(p.s), S.vectors.get(p.v), S.things.get(p.o)]) if (t) touched.add(t);

@@ -131,7 +131,33 @@ emits: `label_said`, `label_inferred`, `label_contested`, `affirm`, `deny`, `aff
 
 ---
 
-## 10. Compatibility
+## 10. Embedding Surface
+
+A runtime that is meant to be embedded **SHOULD** describe its own surface inside the store, as
+a blueprint record, so that a developer — or a development agent — given only the store can
+host the runtime without reading its source. The reference store does this at `@LAT85LON0`.
+That record MUST name:
+
+1. **Where the engine is** and how to obtain it without starting a user interface, including
+   any condition that gates start-up;
+2. **The lifecycle calls** — open a store, answer an input, ingest a file, serialise the
+   store, empty the corpus — with what each returns and what each mutates;
+3. **The store object and the reply**, to the depth a host needs to render grounds by kind;
+4. **Every convention the page relies on** that a host could break: how chrome text is kept out
+   of the interpreter, how records are addressed from markup, where the store is persisted, and
+   what the page reads from its URL.
+
+The runtime **MUST** take time as an argument rather than read a clock, and **MUST NOT** perform
+storage or network access inside the engine; persistence belongs to the host. A test **SHOULD**
+check that every public name the surface record lists exists in the runtime and that every
+public name the runtime exports is listed.
+
+The surface record describes an implementation, not the grammar: it is exempt from §2's
+substitution test, and a store for another language keeps it unchanged.
+
+---
+
+## 11. Compatibility
 
 Both fence tags are unknown to TTCP-RFC-0001 and are silently skipped by generic viewers
 (§3). Unknown keys inside a block MUST be ignored. Several records MAY carry blocks of the
@@ -139,7 +165,7 @@ same kind; their entries merge in file order.
 
 ---
 
-## 11. Open Questions
+## 12. Open Questions
 
 1. **Word order.** Only subject–verb–object is interpretable. An `order:` key would let a
    store declare SOV or VSO; the clause parser would need a second shape, not new words.
@@ -150,10 +176,11 @@ same kind; their entries merge in file order.
 
 ---
 
-## 12. Changelog
+## 13. Changelog
 
 | Date | Change |
 |---|---|
 | 2026-09-13 | Initial draft, from the personal_grammar reference implementation |
+| 2026-09-13 | §10 Embedding Surface added, after a third-party embedding reported which facts it had to take from the page and README instead of the store. §10–12 renumbered to §11–13. |
 
 *License: CC0*
