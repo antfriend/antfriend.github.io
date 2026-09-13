@@ -1,0 +1,156 @@
+# TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
+
+**Version:** 0.1
+**Status:** Draft
+**RFC Number:** 0003
+**Project:** toot-toot-engineering
+**Component:** Toot Toot Grammar (TTG)
+**Depends on:** TTG-RFC-0001, TTG-RFC-0002, TTDB-RFC-0002, TTDB-RFC-0005, TTDB-RFC-0007
+**Author:** antfriend
+**Created:** 2026-09-13
+
+---
+
+## 1. Abstract
+
+A TTG store answers questions the way a primitive question-answering system does, with one
+difference that is the point: **every sentence of every answer is either something the owner
+said, something that follows from what they said by a named rule, or a report that the owner
+has said both**, and the three are never printed alike. This RFC defines how percepts
+consolidate into beliefs, how a runtime reasons along vectors, how input finds **purchase**
+in the corpus, and how a reply is built from grounds.
+
+---
+
+## 2. Consolidation
+
+For each triple (subject, vector, object) over all non-comention percepts:
+
+- per episode, `plus` = the largest weight of its `+` percepts, `minus` = the largest weight of
+  its `-` percepts, where weight is `weight_partial` for quantifier `~` and 1 otherwise;
+- `for` = Σ plus, `against` = Σ minus, over episodes;
+- polarity = `+` if for > against, `-` if against > for, `?` otherwise;
+- `conf` = round(255 × (max(for, against) + `prior_for`) ÷ (for + against + `prior_for` +
+  `prior_against`));
+- **decided** ⇔ polarity ≠ `?` and conf > `belief_conf_threshold`.
+
+This is TTDB-RFC-0007's replay made deterministic: counting replaces random walks, the count
+is atemporal as §3.2 there requires, and the formation threshold is the same. A contested
+belief is kept, never resolved by recency.
+
+Beliefs are derived. A conforming implementation MUST be able to recompute every belief line
+from the episodes and SHOULD ship a tool that reports drift.
+
+---
+
+## 3. Reasoning
+
+Let *decided⁺(x, v)* be the decided `+` beliefs of x along v.
+
+- **walk(s, V)**: breadth-first over decided⁺ beliefs whose vector is in V, up to `max_hops`,
+  recording the path to each node reached.
+- **ancestors(s)** = walk(s, `inherits`), nearest first.
+- **chain conf** = round(255 × Π(conf/255) × `inherit_decay`^(hops − 1)).
+
+**verify(s, v, o)** returns the first that applies:
+
+1. a belief (s, v, o): contested → **C**; else **Y**/**N**, *said*; if the nearest inherited
+   belief on (v, o) has the opposite polarity it is reported as an **exception**;
+2. v is `weak` → **U**;
+3. v `transitive` and walk(s, {v}) reaches o → **Y**, inferred;
+4. v has inverse w: a decided (o, w, s) → its polarity, inferred; or w transitive and
+   walk(o, {w}) reaches s → **Y**, inferred;
+5. v `symmetric`: a decided (o, v, s) → its polarity, inferred;
+6. the first ancestor a of s with a decided (a, v, o) → its polarity, inferred, via a;
+7. **U**.
+
+**objects(s, V)**: beliefs (s, v, ·) for v in V, said first; then transitive reach; then
+inverse beliefs pointing at s; then ancestors' decided beliefs whose object s has no belief on.
+The first ground found for an object stands.
+
+**subjects(v, o)**: candidates are the subjects of beliefs (·, v, o), their descendants along
+`inherits` (and along v when transitive), and the objects of o's inverse beliefs; each
+candidate is kept if verify(candidate, v, o) ≠ U. Said grounds sort before contested before
+inferred.
+
+**describe(x)**: x's beliefs (with exceptions), inherited beliefs from ancestors that x has
+not said anything about (nearest first), class membership beyond one hop, decided beliefs
+pointing at x, beliefs along x if x is a vector, and the most frequent comentions.
+
+Nothing inferred is ever written to the store.
+
+---
+
+## 4. Purchase, Intent and Reply
+
+**Purchase.** A content word (not an `about` word) finds purchase when its noun lemma or
+surface form is a THING, or its verb lemma is a VECTOR, or a VECTOR begins with its verb
+lemma plus `phrasal_join`. Words without purchase are listed in `no_purchase`.
+
+**Intent**, for single-sentence input (multi-sentence input is always *perceive*):
+
+| First matching shape | Intent |
+|---|---|
+| `wh_reason` + yes/no shape | verify |
+| `wh` + `cop` + (`wh_place` → objects along the place vector) / (`prep` → subjects) / noun phrases → describe | as stated |
+| `wh` + `aux`/`modal` + subject + verb | objects; with `wh_place`, the phrasal, bare and place vectors |
+| `wh` + anything else | subjects |
+| `aux`/`modal`/`cop`/`hav` first, with a percept after moving it behind the subject | verify |
+| an `about` word first | describe the following noun phrases |
+| a predicate yielding percepts | verify if it ends with `question_mark`, else perceive |
+| no predicate, content words ≤ `describe_max_words`, some with purchase | describe |
+| otherwise | search |
+
+Question shapes are parsed by the clause parser itself, with a slot token standing for the
+asked-about thing and the moved cue word restored behind the subject.
+
+**Reply.** A verdict (`affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `contest`,
+`unknown`, `noted`, `noted_nothing`, `nothing_found`) or a head, then grounds, each rendered
+by kind:
+
+| Kind | Label | Shows |
+|---|---|---|
+| direct | `label_said` | the triple and the owner's sentence(s), with episode and sentence number |
+| inference | `label_inferred` | the whole chain, and one sentence per link — never a single quote standing in for the conclusion |
+| conflict | `label_contested` | one `+` sentence and one `-` sentence, no verdict |
+
+then notes: `exception`, `contradicts` (when a new percept opposes a decided belief),
+`no_purchase`, and `suggest` for the purchased THING with the highest EPS at or above
+`suggest_eps_min`. Search results are ranked by Σ log(1 + N/df) over matched lemmas across
+all `said` lines.
+
+**Side effects.** A non-perceive answer increments `asked` on every purchased term (an
+`[ew]`-weight write in TTDB-RFC-0005's sense: `rev` does not change). Every answer rewrites the
+cursor block (TTG-RFC-0002 §6).
+
+---
+
+## 5. Constants
+
+All constants named here are keys of the `numbers` kind (TTG-RFC-0001 §9). The reference
+values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
+`belief_conf_threshold 128`, `inherit_decay 0.85`, `max_hops 4`, `answer_max_items 6`,
+`search_max_items 5`, `suggest_eps_min 40`, `with_max_pairs 3`, `said_max_chars 400`.
+
+---
+
+## 6. Open Questions
+
+1. **Change of mind vs contradiction.** Consolidation cannot tell them apart. A recency
+   window would be a claim about the owner; a `revises` percept marker (*I used to…*) would
+   be a claim about the language.
+2. **Defaults beyond specificity.** Only the nearest ancestor overrides. Multiple
+   inheritance with conflicting ancestors at equal distance currently resolves by walk order.
+3. **Answer realisation.** Replies quote rather than generate. A realisation layer — slot
+   templates per vector in the replies record — would read better and would also be the first
+   place a runtime could say something the owner never said.
+
+---
+
+## 7. Changelog
+
+| Date | Change |
+|---|---|
+| 2026-09-13 | Initial draft |
+
+*License: CC0*

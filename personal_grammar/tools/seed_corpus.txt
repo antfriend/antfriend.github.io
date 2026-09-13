@@ -1,0 +1,11 @@
+# The demo corpus in the seed store. Each line is one typed episode.
+# Rebuild: node tools/feed.mjs --lines --now 1789257600 tools/seed_corpus.txt
+# (run it on a store with no episodes; "Start empty" in the page makes one)
+Birds are animals. Birds can fly. Birds have feathers.
+A penguin is a bird. Penguins do not fly. Penguins swim.
+Mammals are animals. Mammals have fur. Cats are mammals.
+Cats chase mice. A mouse is a mammal. Mice eat cheese.
+Pixel is a cat. I love Pixel. Pixel sleeps in the sun.
+I drink tea in the morning. Tea is warm.
+Coffee is bitter. I like coffee.
+I do not like coffee.

@@ -1,0 +1,1916 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personal Grammar</title>
+<meta name="description" content="A corpus of your own words that answers in them. Every rule and every reply is read from one TTDB file.">
+<style>
+:root{
+  --bg:#f4f3ef; --panel:#fffefb; --ink:#1d2126; --dim:#5d6670; --line:#d8d5cd;
+  --accent:#2f6f8f; --thing:#2f7d5b; --vector:#8a4fa8; --warn:#8a5a20; --dead:#a8a29a;
+  --sphere:#e6e9e4; --sphere2:#d3d8d1; --grat:#c3c9c1;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171a; --panel:#1b1f23; --ink:#e6e4de; --dim:#96a0aa; --line:#2e343a;
+    --accent:#7cc7ff; --thing:#6fd3a4; --vector:#d59cf2; --warn:#d9a441; --dead:#575e66;
+    --sphere:#1f262b; --sphere2:#171c20; --grat:#2b343c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171a; --panel:#1b1f23; --ink:#e6e4de; --dim:#96a0aa; --line:#2e343a;
+  --accent:#7cc7ff; --thing:#6fd3a4; --vector:#d59cf2; --warn:#d9a441; --dead:#575e66;
+  --sphere:#1f262b; --sphere2:#171c20; --grat:#2b343c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:22px 18px 60px}
+header{margin-bottom:12px}
+h1{font-size:1.35rem;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--dim);font-size:.9rem;margin:0;max-width:760px}
+a{color:var(--accent)}
+code{font:12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--bg);padding:1px 4px;border-radius:3px}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:12px 0 14px;font-size:.82rem;color:var(--dim)}
+.bar b{color:var(--ink);font-weight:600}
+button,.pill{font:inherit;font-size:.8rem;color:var(--ink);background:var(--panel);border:1px solid var(--line);
+  border-radius:999px;padding:4px 11px;cursor:pointer}
+button:hover,.pill:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--panel);border-color:var(--accent);font-weight:600;padding:6px 16px}
+.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){ .grid{grid-template-columns:1fr} }
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px}
+#log{padding:14px 16px;min-height:220px;max-height:62vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.turn-q{align-self:flex-end;max-width:85%;background:var(--bg);border:1px solid var(--line);border-radius:12px 12px 2px 12px;
+  padding:7px 12px;white-space:pre-wrap;word-break:break-word}
+.turn-a{max-width:100%}
+.verdict{font-weight:600;margin-bottom:4px}
+.grounds{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.g{border-left:3px solid var(--accent);padding:3px 0 3px 10px;font-size:.9rem}
+.g.inference{border-left:3px dashed var(--warn)}
+.g.conflict{border-left:3px double var(--warn)}
+.g .lab{display:inline-block;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-right:6px}
+.g.inference .lab,.g.conflict .lab{color:var(--warn)}
+.g .qt{display:block;margin-top:2px}
+.g .cf{font-size:.72rem;color:var(--dim);margin-left:6px}
+.g q{color:var(--ink);font-style:italic;quotes:"\201C" "\201D"}
+.g .ep{font-size:.72rem;color:var(--dim);margin-left:6px;text-decoration:none}
+.triple{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px}
+.chip{display:inline-block;border-radius:4px;padding:0 6px;font-size:.82rem;cursor:pointer;border:1px solid transparent;
+  background:none;color:inherit;line-height:1.5}
+.chip.thing{color:var(--thing);border-color:currentColor}
+.chip.vector{color:var(--vector);border-color:currentColor;border-style:dashed}
+.chip.neg{text-decoration:line-through}
+.chip.miss{color:var(--dead);border-color:currentColor;cursor:default;text-decoration:line-through}
+.arrow{color:var(--dim);font-size:.8rem}
+.note{margin-top:8px;padding:7px 10px;border-left:3px solid var(--warn);background:var(--bg);font-size:.85rem;color:var(--dim)}
+.purchase{margin-top:8px;font-size:.78rem;color:var(--dim);display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+form{border-top:1px solid var(--line);padding:10px 12px 12px}
+#preview{min-height:1.6em;font-size:.82rem;margin-bottom:6px;display:flex;flex-wrap:wrap;gap:3px 5px;align-items:center}
+#preview .fn{color:var(--dim)}
+#preview .t{color:var(--thing)} #preview .v{color:var(--vector);font-style:italic} #preview .u{text-decoration:underline dotted var(--dead)}
+#mode{margin-left:auto;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;
+  padding:9px 10px;resize:vertical;min-height:62px}
+textarea.drop{border-color:var(--accent);border-style:dashed}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.side{display:flex;flex-direction:column;gap:14px}
+#spherewrap{padding:8px;display:flex;justify-content:center}
+canvas{touch-action:none;cursor:grab;width:100%;max-width:340px;aspect-ratio:1/1}
+.legend{display:flex;gap:12px;justify-content:center;font-size:.74rem;color:var(--dim);padding:0 0 8px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.terms{padding:10px 12px}
+.terms .row{margin:0 0 6px}
+input[type=search],select{font:inherit;font-size:.85rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);
+  border-radius:6px;padding:5px 8px}
+input[type=search]{flex:1;min-width:120px}
+#filtermeta{font-size:.74rem;color:var(--dim);margin-bottom:4px}
+#termlist{list-style:none;margin:0;padding:0;max-height:240px;overflow-y:auto;font-size:.85rem}
+#termlist li{display:flex;justify-content:space-between;gap:8px;padding:3px 4px;border-radius:4px;cursor:pointer}
+#termlist li:hover,#termlist li.sel{background:var(--bg)}
+#termlist .n{font-variant-numeric:tabular-nums;color:var(--dim);font-size:.75rem;white-space:nowrap}
+#panel{padding:14px 16px}
+#panel:empty{display:none}
+#panel h2{font-size:1.02rem;margin:0 0 2px}
+#panel .coord{font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--dim);margin-bottom:8px}
+.ew{display:flex;align-items:center;gap:10px;margin:8px 0 12px;padding:7px 10px;background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;font:12px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--dim);flex-wrap:wrap}
+.epsbar{flex:1;min-width:80px;height:7px;background:var(--line);border-radius:4px;overflow:hidden}
+.epsbar i{display:block;height:100%;background:var(--accent)}
+.tablewrap{overflow-x:auto;margin:.5em 0}
+#panel table{border-collapse:collapse;font-size:.82rem;min-width:100%}
+#panel th,#panel td{border:1px solid var(--line);padding:3px 7px;text-align:left;white-space:nowrap}
+#panel th{background:var(--bg)}
+#panel .body{font-size:.9rem}
+#panel .body p{margin:.55em 0}
+#panel .body ul,#panel .body ol{margin:.4em 0;padding-left:1.3em}
+#panel .body blockquote{margin:.5em 0;padding-left:12px;border-left:3px solid var(--line);color:var(--dim)}
+#panel pre{overflow-x:auto;background:var(--bg);padding:8px;border-radius:6px;font-size:.75rem}
+.edges{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:.8rem}
+.edges b{display:block;font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+.edges a{text-decoration:none;margin-right:4px}
+.edges .x{color:var(--dead);text-decoration:line-through;cursor:not-allowed;margin-right:4px}
+.edges em{color:var(--dim);font-style:normal}
+.said-list{font-size:.82rem;color:var(--dim);margin:4px 0 0;padding-left:1.1em}
+footer{margin-top:26px;font-size:.82rem;color:var(--dim);border-top:1px solid var(--line);padding-top:14px}
+#err{margin:14px 0;padding:12px 14px;border:1px solid var(--warn);border-radius:8px;background:var(--panel);font-size:.88rem}
+.busy{opacity:.55;pointer-events:none}
+@media (max-width:560px){ .wrap{padding:16px 16px 48px} }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+<header>
+  <h1>Personal Grammar</h1>
+  <p class="sub">A corpus of your own words that answers in them. Every rule the parser applies and every
+    phrase the librarian says is read from <a href="personal_grammar_ttdb.md">personal_grammar_ttdb.md</a> —
+    this page holds the machinery and no words of its own.</p>
+</header>
+
+<div id="err" hidden>
+  <b>Could not load <code>personal_grammar_ttdb.md</code>.</b> Opening this page from <code>file://</code>
+  blocks the fetch. Either serve the folder (<code>python -m http.server</code>, then
+  <code>http://localhost:8000/</code>) or open the store directly:
+  <label class="pill" for="openstore2">Open a TTDB store…</label>
+  <input type="file" id="openstore2" accept=".md" hidden>
+  <div id="errdetail" class="note"></div>
+</div>
+
+<div class="bar" id="bar">
+  <span id="storeinfo" data-seed="seed file" data-local="local copy" data-opened="opened file">Loading…</span>
+  <button type="button" id="dl" title="Download the whole store, corpus included">Download store</button>
+  <label class="pill" for="openstore" title="Replace the store with a TTDB file">Open store…</label>
+  <input type="file" id="openstore" accept=".md" hidden>
+  <button type="button" id="reset" data-confirm="Forget the local copy, and everything added to it, and reload the seed file?" title="Forget the local copy and reload the seed file">Reset to seed</button>
+  <button type="button" id="empty" data-confirm="Delete every episode and every term, keeping the grammar and the blueprint?" title="Keep the grammar and blueprint; delete every episode and term">Start empty</button>
+</div>
+
+<div class="grid">
+  <section class="card">
+    <div id="log" aria-live="polite" data-quota="The browser refused to save the store (storage is full or blocked). Download it to keep what was added."></div>
+    <form id="askform" autocomplete="off">
+      <div id="preview" aria-hidden="true"></div>
+      <textarea id="q" rows="2" placeholder="Tell it something, or ask it something. Drop .md or .txt files here to feed them in."></textarea>
+      <div class="row">
+        <button type="submit" class="primary">Send</button>
+        <label class="pill" for="files">Feed files…</label>
+        <input type="file" id="files" data-confirm-store="That file is a TTDB store, not words to read. Replace the current store with it?" multiple accept=".md,.txt,.markdown,text/plain,text/markdown" hidden>
+        <span id="mode" data-perceive="will be remembered" data-verify="will be checked" data-objects-of="asks for objects"
+          data-subjects-of="asks for subjects" data-portrait="will be described" data-search="will be searched"></span>
+      </div>
+    </form>
+  </section>
+
+  <aside class="side">
+    <div class="card">
+      <div id="spherewrap"><canvas id="sphere" width="340" height="340"></canvas></div>
+      <div class="legend"><span><i style="background:var(--thing)"></i>things (east)</span>
+        <span><i style="background:var(--vector)"></i>vectors (west)</span>
+        <span><i style="background:var(--accent)"></i>grammar (meridian)</span></div>
+    </div>
+    <div class="card terms">
+      <div class="row">
+        <input type="search" id="filter" placeholder="Filter terms" aria-label="Filter terms">
+        <select id="sort" aria-label="Sort terms">
+          <option value="eps">EPS</option><option value="seen">seen</option>
+          <option value="alpha">A–Z</option><option value="recent">recent</option>
+        </select>
+      </div>
+      <div id="filtermeta"></div>
+      <ul id="termlist"></ul>
+    </div>
+    <div class="card" id="panel"></div>
+  </aside>
+</div>
+
+<footer>
+  <a href="personal_grammar_ttdb.md">The store</a> ·
+  <a href="README.md">README</a> ·
+  <a href="RFCs/INDEX.md">RFCs</a> ·
+  <a href="https://antfriend.github.io">Reference TTDB viewer</a><br>
+  Enter sends, Shift+Enter starts a new line. Drag the sphere to turn it; tap a node to open its record.
+  The page chrome is English; the grammar is whatever the store says it is.
+</footer>
+</div>
+
+<script>
+"use strict";
+/* ------------------------------------------------------------------ *
+ * Personal Grammar — one page, no dependencies.
+ *
+ * This file contains: a TTDB parser and a round-trip writer, a
+ * tokenizer, a rule interpreter for the store's ttdb-grammar blocks,
+ * a consolidator, a reasoner and a small sphere renderer. It contains
+ * NO lexicon, NO morphology, NO vector names and NO reply phrasing —
+ * all of that is read from the store. Code refers to grammar only by
+ * schema keys (role names, class keys, reply keys).
+ * ------------------------------------------------------------------ */
+
+const DB = "personal_grammar_ttdb.md";
+const LS_KEY = "personal_grammar:store:v1";
+const FENCE = "```";
+
+/* ---------- small helpers ------------------------------------------ */
+const cols = s => String(s).split("|").map(x => x.trim());
+const words = s => String(s || "").trim().split(/\s+/).filter(Boolean);
+const many = (o, k) => o[k] == null ? [] : (Array.isArray(o[k]) ? o[k] : [o[k]]);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c])); }
+function fnv(s){
+  let h = 0x811c9dc5;
+  for (const ch of s){ h ^= ch.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; }
+  return h >>> 0;
+}
+function fence(text, tag){
+  const m = String(text).match(new RegExp(FENCE + tag + "\\n([\\s\\S]*?)" + FENCE));
+  return m ? m[1] : null;
+}
+/* A `key: value` block. Repeated keys collect into arrays; order is kept. */
+function parseBlock(src){
+  const o = {};
+  for (const raw of String(src || "").split("\n")){
+    const line = raw.trim(); if (!line || line.startsWith("#")) continue;
+    const i = line.indexOf(":"); if (i < 0) continue;
+    const k = line.slice(0, i).trim(), v = line.slice(i + 1).trim();
+    if (k in o){ if (!Array.isArray(o[k])) o[k] = [o[k]]; o[k].push(v); } else o[k] = v;
+  }
+  return o;
+}
+
+/* ---------- coordinates (TTDB-RFC-0004, TTCP-RFC-0003 §2.2) --------- */
+function idKey(lat, lon){ return (+lat).toFixed(4) + "|" + (+lon).toFixed(4); }
+function parseId(s){
+  const m = /@LAT(-?\d+(?:\.\d+)?)LON(-?\d+(?:\.\d+)?)/.exec(s);
+  return m ? { lat:+m[1], lon:+m[2], key:idKey(m[1], m[2]), id:m[0] } : null;
+}
+function parseToken(s){
+  const m = /^lat(-?\d+(?:\.\d+)?)lon(-?\d+(?:\.\d+)?)$/i.exec(String(s).trim());
+  return m ? { lat:+m[1], lon:+m[2], key:idKey(m[1], m[2]) } : null;
+}
+function fmtCoord(v, dec){ const f = Math.pow(10, dec); return String(Math.round(v * f) / f); }
+function makeId(lat, lon, dec){ return "@LAT" + fmtCoord(lat, dec) + "LON" + fmtCoord(lon, dec); }
+
+/* ---------- store: parse (TTDB-RFC-0001, TTCP-RFC-0001 §3–4) -------- *
+ * The file is kept as an ordered list of chunks, split on the --- rules,
+ * so that anything the runtime does not manage is written back byte for
+ * byte. Line endings are normalised to LF on read; the writer emits LF. */
+function parseStore(text){
+  text = String(text).replace(/\r\n?/g, "\n");
+  const parts = text.split(/(\n---+\n)/);
+  const chunks = [];
+  for (let i = 0; i < parts.length; i += 2){
+    chunks.push({ sep: i === 0 ? "" : parts[i - 1], text: parts[i], rec: null });
+  }
+  const store = { chunks, meta: parseBlock(fence(text, "mmpdb") || "") };
+  chunks.forEach((c, i) => { c.rec = i === 0 ? null : parseRecord(c.text); });
+  return store;
+}
+function parseRecord(raw){
+  const lead = raw.match(/^\s*/)[0];
+  const body = raw.slice(lead.length);
+  const nl = body.indexOf("\n");
+  const head = nl < 0 ? body : body.slice(0, nl);
+  const ref = parseId(head);
+  if (!ref || head.indexOf("|") < 0 || head.trim().indexOf("@") !== 0) return null;
+  const r = { ...ref, created:0, updated:0, fields:[], edges:[], conf:128, rev:0, sal:0, touched:0, hasEw:false };
+  for (const part of head.split("|").slice(1)){
+    const i = part.indexOf(":"); if (i < 0) continue;
+    const k = part.slice(0, i).trim(), v = part.slice(i + 1).trim();
+    r.fields.push([k, v]);
+    const kl = k.toLowerCase();
+    if (kl === "created" || kl === "updated") r[kl] = +v;
+    else if (kl === "relates") r.edges = v.split(",").map(e => e.trim()).filter(Boolean).map(e => {
+      const j = e.indexOf("@"); return { type:e.slice(0, j), target:parseId(e) };
+    });
+  }
+  let rest = nl < 0 ? "" : body.slice(nl + 1);
+  const ew = rest.match(/^\[ew\]\n([\s\S]*?)\[\/ew\]\n?/);
+  if (ew){
+    r.hasEw = true;
+    for (const line of ew[1].split("\n")){
+      const m = /^(conf|rev|sal|touched)\s*:\s*(\d+)/.exec(line.trim());
+      if (m) r[m[1]] = +m[2];
+    }
+    rest = rest.slice(ew[0].length);
+  }
+  r.eps = epsOf(r);
+  const t = rest.match(/\*\*([^*\n]+?)\*\*/);
+  r.title = t ? t[1].trim() : r.id;
+  r.term = fence(rest, "ttdb-term");
+  r.episode = fence(rest, "ttdb-episode");
+  r.special = fence(rest, "ttdb-special");
+  r.sphere = fence(rest, "ttdb-sphere");
+  r.grammar = fence(rest, "ttdb-grammar");
+  r.body = rest.replace(new RegExp(FENCE + "ttdb-[a-z]+\\n[\\s\\S]*?" + FENCE, "g"), "").trim();
+  return r;
+}
+function epsOf(r){ return Math.round(r.sal * (255 - r.conf) / 255); }     // TTDB-RFC-0005 §3.3
+const records = st => st.chunks.map(c => c.rec).filter(Boolean);
+
+/* ---------- store: write ------------------------------------------- */
+function serializeStore(st){ return st.chunks.map(c => c.sep + c.text).join(""); }
+function headerLine(id, fields){ return id + " | " + fields.map(([k, v]) => k + ":" + v).join(" | "); }
+function setField(fields, k, v){
+  const f = fields.find(x => x[0].toLowerCase() === k);
+  if (f) f[1] = String(v); else fields.push([k, String(v)]);
+}
+/* Rewrite a managed chunk: header `updated` + `relates`, the [ew] block and one
+   fenced block are replaced; everything else in the chunk is kept verbatim.  */
+function rewriteChunk(chunk, { updated, relates, ew, tag, block }){
+  const raw = chunk.text;
+  const lead = raw.match(/^\s*/)[0], trail = raw.match(/\s*$/)[0];
+  const body = raw.slice(lead.length, raw.length - trail.length);
+  const nl = body.indexOf("\n");
+  const rec = chunk.rec;
+  const fields = rec.fields.map(f => f.slice());
+  if (updated != null) setField(fields, "updated", updated);
+  if (relates != null){
+    // relates stays last, the position every header in the corpus uses
+    const i = fields.findIndex(f => f[0].toLowerCase() === "relates");
+    if (i >= 0) fields.splice(i, 1);
+    fields.push(["relates", relates]);
+  }
+  let rest = nl < 0 ? "" : body.slice(nl + 1);
+  rest = rest.replace(/^\[ew\]\n[\s\S]*?\[\/ew\]\n?/, "");
+  if (tag){
+    const re = new RegExp(FENCE + tag + "\\n[\\s\\S]*?" + FENCE);
+    const fresh = FENCE + tag + "\n" + block + "\n" + FENCE;
+    rest = re.test(rest) ? rest.replace(re, () => fresh) : rest.replace(/\s*$/, "") + "\n\n" + fresh;
+  }
+  const ewText = ew ? "[ew]\nconf:" + ew.conf + "\nrev:" + ew.rev + "\nsal:" + ew.sal + "\ntouched:" + ew.touched + "\n[/ew]\n" : "";
+  chunk.text = lead + headerLine(rec.id, fields) + "\n" + ewText + rest + trail;
+  chunk.rec = parseRecord(chunk.text);
+}
+function newChunk(id, created, relates, ew, title, tag, block){
+  const ewText = ew ? "[ew]\nconf:" + ew.conf + "\nrev:" + ew.rev + "\nsal:" + ew.sal + "\ntouched:" + ew.touched + "\n[/ew]\n" : "";
+  const text = "\n" + headerLine(id, [["created", created], ["updated", created], ["relates", relates]]) + "\n" +
+    ewText + "\n**" + title + "**\n\n" + FENCE + tag + "\n" + block + "\n" + FENCE + "\n";
+  const c = { sep:"\n---\n", text, rec:null };
+  c.rec = parseRecord(text);
+  return c;
+}
+/* New records go in before the first tail record (lat ≥ 98, or the −90 special). */
+function insertChunk(st, c){
+  let i = st.chunks.findIndex(x => x.rec && (x.rec.lat >= 98 || x.rec.lat <= -90));
+  if (i < 0) i = st.chunks.length;
+  st.chunks.splice(i, 0, c);
+}
+
+/* ---------- grammar: read every ttdb-grammar block ------------------ */
+function loadGrammar(st){
+  const G = {
+    classes:new Map(), whole:new Map(), contractions:[], sentenceEnd:new Set(), clauseBreak:new Set(),
+    questionMark:"", listSep:"", genericDet:new Set(),
+    nounIrr:new Map(), nounKeep:new Set(), plural:[], pluralGuard:[], verbIrr:new Map(), verb:[], verbGuard:[],
+    doubleKeep:new Set(), minStem:NaN, seed:new Set(),
+    roles:{}, vectors:new Map(), inherits:[], phrases:[],
+    whThing:new Set(), whPlace:new Map(), whReason:new Set(), about:new Set(), describeMax:NaN,
+    say:{}, units:{}, num:{}, sphere:{}, maxReply:NaN, loaded:[]
+  };
+  const rule = s => { const c = cols(s); return [c[0], c[1] === "-" ? "" : (c[1] || ""), words(c[2])]; };
+  for (const r of records(st)){
+    if (r.sphere){
+      const b = parseBlock(r.sphere);
+      for (const k of Object.keys(b)) G.sphere[k] = b[k];
+    }
+    if (!r.grammar) continue;
+    const b = parseBlock(r.grammar);
+    G.loaded.push(b.kind);
+    if (b.kind === "lexicon"){
+      for (const line of many(b, "class")){
+        const [cls, list] = cols(line);
+        for (const w of words(list)){ if (!G.classes.has(w)) G.classes.set(w, new Set()); G.classes.get(w).add(cls); }
+      }
+      for (const line of many(b, "whole")){ const c = cols(line); G.whole.set(c[0], words(c[1])); }
+      for (const line of many(b, "contraction")){ const c = cols(line); G.contractions.push([c[0], words(c[1])]); }
+      for (const w of words(b.sentence_end)) G.sentenceEnd.add(w);
+      for (const w of words(b.clause_break)) G.clauseBreak.add(w);
+      G.questionMark = (b.question_mark || "").trim();
+      G.listSep = (b.list_sep || "").trim();
+      for (const w of words(b.generic_det)) G.genericDet.add(w);
+    } else if (b.kind === "morphology"){
+      for (const line of many(b, "noun_irregular")){ const c = cols(line); for (const w of words(c[0])) G.nounIrr.set(w, c[1]); }
+      for (const w of words(b.noun_keep)) G.nounKeep.add(w);
+      G.plural = many(b, "plural").map(rule);
+      G.pluralGuard = words(b.plural_guard);
+      for (const line of many(b, "verb_irregular")){ const c = cols(line); for (const w of words(c[0])) G.verbIrr.set(w, c[1]); }
+      G.verb = many(b, "verb").map(rule);
+      G.verbGuard = words(b.verb_guard);
+      for (const w of words(b.double_keep)) G.doubleKeep.add(w);
+      G.minStem = +b.min_stem;
+      G.progressive = (b.progressive_ending || "").trim();
+      G.participle = (b.participle_ending || "").trim();
+    } else if (b.kind === "seed"){
+      for (const line of many(b, "seed")) for (const w of words(line)) G.seed.add(w);
+    } else if (b.kind === "vectors"){
+      for (const line of many(b, "role")){ const c = cols(line); G.roles[c[0]] = c[1]; }
+      for (const line of many(b, "vector")){
+        const c = cols(line);
+        G.vectors.set(c[0], { name:c[0], flags:new Set(words(c[1]).filter(f => f !== "-")),
+                              inverse:c[2] && c[2] !== "-" ? c[2] : null, label:c[3] || c[0] });
+      }
+      G.inherits = many(b, "inherits").flatMap(words);
+      for (const line of many(b, "phrase")){ const c = cols(line); G.phrases.push([words(c[0]), c[1]]); }
+    } else if (b.kind === "questions"){
+      for (const w of words(b.wh_thing)) G.whThing.add(w);
+      for (const line of many(b, "wh_place")){ const c = cols(line); for (const w of words(c[0])) G.whPlace.set(w, c[1]); }
+      for (const w of words(b.wh_reason)) G.whReason.add(w);
+      for (const w of words(b.about)) G.about.add(w);
+      G.describeMax = +b.describe_max_words;
+    } else if (b.kind === "responses"){
+      for (const k of Object.keys(b)){
+        if (k === "kind") continue;
+        if (k.startsWith("unit_")){ const c = cols(b[k]); G.units[k.slice(5)] = [c[0], c[1] || c[0]]; }
+        else G.say[k] = String(b[k]);
+      }
+    } else if (b.kind === "numbers"){
+      for (const k of Object.keys(b)) if (k !== "kind") G.num[k] = +b[k];
+    }
+  }
+  // parseBlock flattens the mmpdb YAML, so the librarian's nested key reads directly
+  G.maxReply = +st.meta.max_reply_chars;
+  return G;
+}
+/* A reply phrase with its {slots} filled. A missing phrase is the empty string:
+   the runtime never supplies wording of its own. */
+function say(G, key, slots){
+  const t = G.say[key];
+  if (t == null) return "";
+  return t.replace(/\{(\w+)\}/g, (m, k) => slots && slots[k] != null ? String(slots[k]) : m);
+}
+function unit(G, key, n){
+  const u = G.units[key];
+  return u ? n + " " + (n === 1 ? u[0] : u[1]) : String(n);
+}
+
+/* ---------- read: sentences and tokens (TTG-RFC-0002 §2) ----------- */
+function cleanMarkdown(t){
+  t = t.replace(new RegExp(FENCE + "[\\s\\S]*?" + FENCE, "g"), "\n\n")
+       .replace(/`[^`\n]*`/g, " ")
+       .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+       .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+       .replace(/<[^>\n]+>/g, " ")
+       .replace(/https?:\/\/\S+/g, " ");
+  return t.split("\n").map(line => {
+    if (/^\s*#{1,6}\s/.test(line)) return "\n" + line.replace(/^\s*#+\s*/, "") + "\n";
+    if (/^\s*([-*+]|\d+[.)])\s+/.test(line)) return "\n" + line.replace(/^\s*([-*+]|\d+[.)])\s+/, "") + "\n";
+    if (/^\s*\|/.test(line)) return /^[\s|:-]+$/.test(line) ? "\n" : "\n" + line.replace(/\|/g, " ") + "\n";
+    if (/^\s*(-{3,}|\*{3,}|_{3,})\s*$/.test(line)) return "\n";
+    return line.replace(/^\s*>+\s?/, "");
+  }).join("\n").replace(/(\*\*|__)(\S[\s\S]*?)\1/g, "$2").replace(/(^|\s)[*_](\S[^*_\n]*?)[*_](?=\s|$|[^\p{L}\p{N}])/gu, "$1$2");
+}
+function sentencesOf(S, text, isFile){
+  const G = S.G;
+  let t = String(text).replace(/\r\n?/g, "\n");
+  if (isFile) t = cleanMarkdown(t);
+  const out = [];
+  for (const para of t.split(/\n\s*\n/)){
+    const chars = Array.from(para.split("\n").map(s => s.trim()).filter(Boolean).join(" "));
+    let cur = "";
+    for (let i = 0; i < chars.length; i++){
+      cur += chars[i];
+      if (G.sentenceEnd.has(chars[i]) && (i + 1 === chars.length || /\s/.test(chars[i + 1]))){
+        if (cur.trim()) out.push(cur.trim());
+        cur = "";
+      }
+    }
+    if (cur.trim()) out.push(cur.trim());
+  }
+  return out;
+}
+const EMPTY = new Set();
+const SLOT = "\u0000";                 // the hole a question asks the corpus to fill
+function tokenize(S, sentence){
+  const G = S.G, out = [];
+  const push = w => { if (w) out.push({ w, cls:G.classes.get(w) || EMPTY, punct:false }); };
+  const s = String(sentence).toLowerCase().replace(/[‘’ʼ]/g, "'");
+  for (const m of s.matchAll(/[\p{L}\p{N}]+(?:'[\p{L}\p{N}]+)*|[^\s\p{L}\p{N}]/gu)){
+    const w = m[0];
+    if (!/[\p{L}\p{N}]/u.test(w)){
+      if (w === G.listSep || G.clauseBreak.has(w) || G.sentenceEnd.has(w)) out.push({ w, cls:EMPTY, punct:true });
+      continue;
+    }
+    if (G.whole.has(w)){ G.whole.get(w).forEach(push); continue; }
+    const c = G.contractions.find(([suf]) => suf && w.length > suf.length && w.endsWith(suf));
+    if (c){ push(w.slice(0, w.length - c[0].length)); c[1].forEach(push); continue; }
+    push(w);
+  }
+  return out;
+}
+const synth = w => ({ w, cls:EMPTY, punct:false, synthetic:true });
+const has = (t, cls) => !!t && !t.punct && t.cls.has(cls);
+const isContent = t => !!t && !t.punct && t.cls.size === 0;
+const NP_START = ["det", "poss", "quant_all", "quant_some", "quant_none"];
+const starts = t => NP_START.some(c => has(t, c));
+
+/* ---------- classify: lemmas (TTG-RFC-0002 §3) ---------------------- */
+const knownLemma = (S, w) => S.things.has(w) || S.vectors.has(w);
+function undouble(G, stem){
+  const n = stem.length;
+  if (n < 3 || stem[n - 1] !== stem[n - 2] || G.doubleKeep.has(stem[n - 1])) return null;
+  return stem.slice(0, -1);
+}
+function suffixRule(G, w, rules, guard){
+  if (guard.some(g => w.endsWith(g))) return null;
+  for (const [end, rep, alts] of rules){
+    if (!end || !w.endsWith(end)) continue;
+    const stem = w.slice(0, w.length - end.length);
+    if (stem.length < (G.minStem || 1)) continue;
+    const cands = [stem + rep];
+    let und = null;
+    for (const a of alts){
+      if (a === "~"){ und = undouble(G, stem); if (und) cands.push(und); }
+      else cands.push(a === "-" ? stem : stem + a);
+    }
+    return { end, cands:[...new Set(cands)], und, base:stem + rep };
+  }
+  return null;
+}
+function nounLemma(S, w){
+  const G = S.G;
+  if (w === SLOT) return { lemma:SLOT, changed:false };
+  if (G.nounIrr.has(w)) return { lemma:G.nounIrr.get(w), changed:true };
+  if (G.nounKeep.has(w) || S.things.has(w)) return { lemma:w, changed:false };
+  const r = suffixRule(G, w, G.plural, G.pluralGuard);
+  if (!r) return { lemma:w, changed:false };
+  return { lemma:r.cands.find(c => knownLemma(S, c)) || r.base, changed:true };
+}
+function verbLemma(S, w){
+  const G = S.G;
+  if (G.verbIrr.has(w)) return { lemma:G.verbIrr.get(w), end:null, irregular:true };
+  if (S.vectors.has(w) || G.seed.has(w)) return { lemma:w, end:null };
+  const r = suffixRule(G, w, G.verb, G.verbGuard);
+  if (!r) return { lemma:w, end:null };
+  const lemma = r.cands.find(c => knownLemma(S, c)) || r.cands.find(c => G.seed.has(c)) || r.und || r.base;
+  return { lemma, end:r.end };
+}
+function isVerbish(S, t){
+  if (!isContent(t) || t.synthetic) return false;
+  const v = verbLemma(S, t.w).lemma;
+  return S.vectors.has(v) || S.G.seed.has(v) || S.G.verbIrr.has(t.w);
+}
+
+/* ---------- classify: noun phrases and the predicate ---------------- */
+function nounPhrases(S, toks, from, to){
+  const nps = [];
+  let np = null, prep = null;
+  const open = i => { const o = { start:i, end:i, words:[], prep, det:false, quant:"-", none:false, pron:null }; prep = null; return o; };
+  const close = () => { if (np && np.words.length) nps.push(np); np = null; };
+  for (let i = from; i < Math.min(to, toks.length); i++){
+    const t = toks[i];
+    if (t.punct){ close(); continue; }
+    if (has(t, "prep")){ close(); prep = t.w; continue; }
+    if (starts(t)){
+      if (np && np.words.length) close();
+      if (!np) np = open(i);
+      if (has(t, "det") || has(t, "poss")) np.det = true;
+      if (has(t, "det") && S.G.genericDet.has(t.w)) np.quant = "*";
+      if (has(t, "quant_all")) np.quant = "*";
+      if (has(t, "quant_some")) np.quant = "~";
+      if (has(t, "quant_none")){ np.quant = "*"; np.none = true; }
+      continue;
+    }
+    if (has(t, "self") || has(t, "anaphor")){
+      close(); np = open(i); np.pron = has(t, "self") ? "self" : "anaphor";
+      np.words.push(t); np.end = i; close(); continue;
+    }
+    if (isContent(t)){ if (!np) np = open(i); np.words.push(t); np.end = i; continue; }
+    close();
+  }
+  close();
+  return nps;
+}
+function headOf(S, np, ctx){
+  const w = np.words[np.words.length - 1];
+  if (!w || w.synthetic && w.w !== SLOT) return null;
+  if (np.pron === "self") return S.G.sphere.self_lemma ? { lemma:S.G.sphere.self_lemma, form:w.w, self:true } : null;
+  if (np.pron === "anaphor") return ctx.last ? { lemma:ctx.last, form:null } : null;
+  const n = nounLemma(S, w.w);
+  return { lemma:n.lemma, form:w.w === SLOT ? null : w.w, changed:n.changed };
+}
+function skipSoft(toks, j){
+  while (j < toks.length && (has(toks[j], "neg") || has(toks[j], "adverb"))) j++;
+  return j;
+}
+function afterStarter(toks, i){
+  for (let j = i - 1; j >= 0; j--){
+    const t = toks[j];
+    if (t.punct) return false;
+    if (has(t, "adverb")) continue;
+    return starts(t) || has(t, "prep");
+  }
+  return false;
+}
+function copOrProgressive(S, toks, b, cue){
+  const j = skipSoft(toks, b + 1), n = toks[j];
+  if (isContent(n) && !n.synthetic && S.G.progressive && verbLemma(S, n.w).end === S.G.progressive)
+    return { kind:"verb", at:j, cue };
+  return { kind:"cop", at:b, cue };
+}
+function havOrPerfect(S, toks, h, cue){
+  const j = skipSoft(toks, h + 1), n = toks[j];
+  if (isContent(n) && !n.synthetic){
+    const v = verbLemma(S, n.w);
+    if ((S.G.participle && v.end === S.G.participle) || (v.irregular && v.lemma !== n.w)) return { kind:"verb", at:j, cue };
+  }
+  return { kind:"hav", at:h, cue };
+}
+function findPredicate(S, toks){
+  for (let i = 0; i < toks.length; i++){
+    if (!has(toks[i], "aux") && !has(toks[i], "modal")) continue;
+    const j = skipSoft(toks, i + 1), n = toks[j];
+    if (has(n, "cop")) return copOrProgressive(S, toks, j, i);
+    if (has(n, "hav")) return havOrPerfect(S, toks, j, i);
+    if (isContent(n) && !n.synthetic) return { kind:"verb", at:j, cue:i };
+  }
+  for (let i = 0; i < toks.length; i++) if (has(toks[i], "cop")) return copOrProgressive(S, toks, i, i);
+  for (let i = 0; i < toks.length; i++) if (has(toks[i], "hav")) return havOrPerfect(S, toks, i, i);
+  const beganAt = (pass) => {
+    let begun = false;
+    for (let i = 0; i < toks.length; i++){
+      const t = toks[i];
+      if (t.punct) continue;
+      if (isContent(t) && begun && !afterStarter(toks, i) && pass(t, i)) return { kind:"verb", at:i, cue:i };
+      if (isContent(t) || has(t, "self") || has(t, "anaphor")) begun = true;
+    }
+    return null;
+  };
+  // a verb the corpus or the seed list knows, once a noun phrase has begun
+  const known = beganAt(t => isVerbish(S, t));
+  if (known) return known;
+  // a word that runs straight into a new noun phrase, or wears a participle ending
+  const cued = beganAt((t, i) => !t.synthetic && (starts(toks[i + 1]) ||
+    (S.G.participle && verbLemma(S, t.w).end === S.G.participle)));
+  if (cued) return cued;
+  // nothing structural at all: three bare content words are S V O. Two are not a
+  // clause — "morning tea" is a search, not a claim that mornings tea.
+  const idx = toks.map((t, i) => isContent(t) ? i : -1).filter(i => i >= 0);
+  const structural = toks.some(t => !t.punct && !isContent(t) && !has(t, "adverb") && !has(t, "neg"));
+  if (!structural && idx.length === 3 && !toks[idx[1]].synthetic)
+    return { kind:"verb", at:idx[1], cue:idx[1] };
+  return null;
+}
+
+/* ---------- percept: one clause (TTG-RFC-0002 §4) ------------------- */
+function plainRun(nps, from){
+  const out = [];
+  let k = from;
+  for (; k < nps.length && (k === from || !nps[k].prep); k++) out.push(nps[k]);
+  return { run:out, rest:nps.slice(k) };
+}
+function clausePercepts(S, toks, ctx, inherited){
+  const G = S.G, R = G.roles;
+  const out = { percepts:[], forms:[], heads:[], pairs:[] };
+  const P = findPredicate(S, toks);
+  const allHeads = () => nounPhrases(S, toks, 0, toks.length).map(np => headOf(S, np, ctx)).filter(Boolean);
+  if (!P){
+    for (const h of allHeads()){ out.heads.push(h.lemma); if (h.form) out.forms.push(["thing", h.lemma, h.form]); }
+    return out;
+  }
+  const pre = nounPhrases(S, toks, 0, P.cue);
+  let subjects = [], quant = "-", none = false;
+  for (const np of pre){
+    if (np.prep) continue;
+    const h = headOf(S, np, ctx);
+    if (!h) continue;
+    subjects.push(h);
+    if (np.quant !== "-") quant = np.quant;
+    if (np.none) none = true;
+  }
+  if (!subjects.length && inherited){ subjects = inherited.subjects; quant = inherited.quant; none = inherited.none; }
+  const ppPre = pre.filter(np => np.prep).map(np => headOf(S, np, ctx)).filter(Boolean);
+  if (!subjects.length){
+    for (const h of allHeads()){ out.heads.push(h.lemma); if (h.form) out.forms.push(["thing", h.lemma, h.form]); }
+    return out;
+  }
+  const pol = toks.some(t => has(t, "neg")) || none ? "-" : "+";
+
+  // a second verb for the same subjects: "birds fly and swim"
+  let end = toks.length, extra = null;
+  for (let i = P.at + 1; i < toks.length; i++){
+    if (!has(toks[i], "conj")) continue;
+    const n = toks[skipSoft(toks, i + 1)];
+    if (has(n, "aux") || has(n, "modal") || isVerbish(S, n)){ end = i; extra = [synth("")].concat(toks.slice(i + 1)); break; }
+  }
+
+  const objects = [];                  // [{ head, vector }]
+  let vector = null, vform = null, rest = [];
+  const j = skipSoft(toks, P.at + 1);
+  if (P.kind === "verb" || P.kind === "hav"){
+    const vt = toks[P.at];
+    if (P.kind === "verb"){ vector = verbLemma(S, vt.w).lemma; vform = vt.w; }
+    else vector = R.possession;
+    const nps = nounPhrases(S, toks, P.at + 1, end);
+    // a preposition straight after the verb joins it: live in houses -> live_in | house
+    const phrasal = P.kind === "verb" && has(toks[j], "prep") && nps.length > 0 && nps[0].prep === toks[j].w;
+    if (phrasal){
+      vector = vector + (R.phrasal_join || "") + nps[0].prep;
+      vform = vform + (R.phrasal_join || "") + nps[0].prep;
+    }
+    const lead = phrasal || !nps.length || !nps[0].prep ? plainRun(nps, 0) : { run:[], rest:nps };
+    rest = lead.rest;
+    for (const np of lead.run){ const h = headOf(S, np, ctx); if (h) objects.push({ head:h, vector }); }
+  } else {
+    let k = j;
+    while (k < toks.length && (has(toks[k], "det") || has(toks[k], "quant_all") || has(toks[k], "quant_some"))) k++;
+    const ph = G.phrases.find(([ws]) => ws.length && ws.every((w, q) => toks[k + q] && !toks[k + q].punct && toks[k + q].w === w));
+    if (ph){
+      const pr = plainRun(nounPhrases(S, toks, k + ph[0].length, end), 0);
+      rest = pr.rest;
+      for (const np of pr.run){ const h = headOf(S, np, ctx); if (h) objects.push({ head:h, vector:ph[1] }); }
+    } else if (has(toks[j], "prep")){
+      const pr = plainRun(nounPhrases(S, toks, j, end), 0);
+      rest = pr.rest;
+      for (const np of pr.run){ const h = headOf(S, np, ctx); if (h) objects.push({ head:h, vector:toks[j].w }); }
+    } else {
+      const pr = plainRun(nounPhrases(S, toks, j, end), 0);
+      rest = pr.rest;
+      for (const np of pr.run){
+        const h = headOf(S, np, ctx);
+        if (!h) continue;
+        const isClass = np.det || np.quant !== "-" || h.changed || S.believers.has(h.lemma);
+        objects.push({ head:h, vector:isClass ? R.class_of : R.property });
+      }
+    }
+  }
+
+  for (const s of subjects){
+    if (s.form) out.forms.push(["thing", s.lemma, s.form]);
+    if (objects.length){
+      for (const o of objects){
+        if (!o.vector) continue;
+        out.percepts.push({ s:s.lemma, v:o.vector, o:o.head.lemma, pol, q:quant });
+      }
+    } else if (P.kind === "verb" && vector){
+      out.percepts.push({ s:s.lemma, v:vector, o:"-", pol, q:quant });
+    }
+  }
+  for (const o of objects) if (o.head.form) out.forms.push(["thing", o.head.lemma, o.head.form]);
+  if (vform && vector) out.forms.push(["vector", vector, vform]);
+
+  const anchor = (objects[0] && objects[0].head.lemma) || subjects[0].lemma;
+  for (const np of rest){ const h = headOf(S, np, ctx); if (h){ out.pairs.push([anchor, h.lemma]); if (h.form) out.forms.push(["thing", h.lemma, h.form]); } }
+  for (const h of ppPre){ out.pairs.push([subjects[0].lemma, h.lemma]); if (h.form) out.forms.push(["thing", h.lemma, h.form]); }
+
+  const firstOwn = subjects.find(s => !s.self);
+  if (firstOwn && firstOwn.lemma !== SLOT) ctx.last = firstOwn.lemma;
+  else if (objects[0] && objects[0].head.lemma !== SLOT) ctx.last = objects[0].head.lemma;
+
+  if (extra){
+    const more = clausePercepts(S, extra, ctx, { subjects, quant, none });
+    out.percepts.push(...more.percepts); out.forms.push(...more.forms); out.pairs.push(...more.pairs);
+  }
+  return out;
+}
+function splitClauses(S, toks){
+  const parts = [];
+  let cur = [];
+  for (const t of toks){
+    if ((t.punct && t.w !== S.G.listSep) || has(t, "subord")){ if (cur.length) parts.push(cur); cur = []; continue; }
+    cur.push(t);
+  }
+  if (cur.length) parts.push(cur);
+  const out = [];
+  for (const p of parts){
+    let start = 0;
+    for (let i = start + 1; i < p.length - 1; i++){
+      if (!has(p[i], "conj")) continue;
+      const left = p.slice(start, i), right = p.slice(i + 1);
+      if (findPredicate(S, left) && startsWithSubject(S, right) && findPredicate(S, right)){ out.push(left); start = i + 1; }
+    }
+    out.push(p.slice(start));
+  }
+  return out;
+}
+function startsWithSubject(S, toks){
+  const t = toks[skipSoft(toks, 0)];
+  if (!t) return false;
+  if (starts(t) || has(t, "self") || has(t, "anaphor")) return true;
+  return isContent(t) && !isVerbish(S, t);
+}
+/* One sentence -> percepts. Comentions come last and are capped: they are
+   searchable context, never evidence (@LAT98LON6). */
+function perceiveSentence(S, sentence, ctx){
+  const R = S.G.roles;
+  const res = { percepts:[], forms:[] };
+  const heads = [], pairs = [];
+  for (const cl of splitClauses(S, tokenize(S, sentence))){
+    const r = clausePercepts(S, cl, ctx, null);
+    res.percepts.push(...r.percepts); res.forms.push(...r.forms);
+    heads.push(...r.heads); pairs.push(...r.pairs);
+  }
+  if (!res.percepts.length) for (let i = 0; i + 1 < heads.length; i++) pairs.push([heads[i], heads[i + 1]]);
+  if (R.comention){
+    const max = S.G.num.with_max_pairs;
+    for (const [a, b] of pairs.filter(([a, b]) => a !== b).slice(0, max))
+      res.percepts.push({ s:a, v:R.comention, o:b, pol:"+", q:"-" });
+  }
+  const seen = new Set();
+  res.percepts = res.percepts.filter(p => {
+    const k = [p.s, p.v, p.o, p.pol, p.q].join("|");
+    if (seen.has(k) || p.s === p.o && p.v === R.comention) return false;
+    seen.add(k); return true;
+  });
+  return res;
+}
+
+/* ---------- the engine ---------------------------------------------- */
+function openStore(text){
+  const st = parseStore(text);
+  const S = { st, G:null, things:new Map(), vectors:new Map(), episodes:[], trips:new Map(), beliefsBy:new Map(),
+              byVector:new Map(), incoming:new Map(), comentions:new Map(), believers:new Set(), seenCounts:new Map(),
+              said:new Map(), malformed:[], sentIndex:null, dec:1 };
+  S.G = loadGrammar(st);
+  const step = String(S.G.sphere.step || "");
+  S.dec = (step.split(".")[1] || "").length;
+  indexTerms(S);
+  consolidate(S);
+  return S;
+}
+function indexTerms(S){
+  S.things = new Map(); S.vectors = new Map(); S.episodes = [];
+  for (const c of S.st.chunks){
+    const r = c.rec;
+    if (!r) continue;
+    if (r.episode != null) S.episodes.push(c);
+    if (r.term == null) continue;
+    const b = parseBlock(r.term);
+    if (!b.lemma) continue;
+    const t = { chunk:c, cls:b.class, lemma:b.lemma, forms:words(b.forms), asked:+b.asked || 0 };
+    (b.class === "vector" ? S.vectors : S.things).set(b.lemma, t);
+  }
+}
+const pushTo = (m, k, v) => { if (!m.has(k)) m.set(k, []); m.get(k).push(v); };
+const num2 = x => String(+(+x).toFixed(2));
+
+/* ---------- consolidate (TTG-RFC-0003 §2) ----------------------------- *
+ * Episodes, not sentences: within one episode a triple scores its largest
+ * + weight and its largest - weight; across episodes they sum. conf is the
+ * rule of succession with the store's priors.                            */
+function consolidate(S){
+  const G = S.G, N = G.num, R = G.roles;
+  const trips = new Map(), seen = new Map(), com = new Map(), malformed = [], said = new Map();
+  const bump = k => seen.set(k, (seen.get(k) || 0) + 1);
+  for (const c of S.episodes){
+    const b = parseBlock(c.rec.episode);
+    const lines = new Map();
+    for (const line of many(b, "said")){
+      const i = line.indexOf("|");
+      if (i > 0) lines.set(+line.slice(0, i).trim(), line.slice(i + 1).trim());
+    }
+    said.set(c.rec.id, lines);
+    for (const line of many(b, "percept")){
+      const p = cols(line);
+      if (p.length < 6 || !/^\d+$/.test(p[0]) || !p[1] || !p[2] || !p[3] || (p[4] !== "+" && p[4] !== "-")){
+        malformed.push({ id:c.rec.id, line }); continue;
+      }
+      const [n, s, v, o, pol, q] = p;
+      bump("thing|" + s); bump("vector|" + v); if (o !== "-") bump("thing|" + o);
+      if (v === R.comention){
+        for (const [a, z] of [[s, o], [o, s]]){ if (!com.has(a)) com.set(a, new Map()); com.get(a).set(z, (com.get(a).get(z) || 0) + 1); }
+        continue;
+      }
+      const key = s + "|" + v + "|" + o;
+      if (!trips.has(key)) trips.set(key, { s, v, o, per:new Map(), sources:[] });
+      const e = trips.get(key);
+      const w = q === "~" ? N.weight_partial : 1;
+      const pe = e.per.get(c.rec.id) || { plus:0, minus:0 };
+      if (pol === "+") pe.plus = Math.max(pe.plus, w); else pe.minus = Math.max(pe.minus, w);
+      e.per.set(c.rec.id, pe);
+      e.sources.push({ ep:c.rec.id, n:+n, pol, q });
+    }
+  }
+  S.beliefsBy = new Map(); S.byVector = new Map(); S.incoming = new Map(); S.believers = new Set();
+  for (const e of trips.values()){
+    let fr = 0, ag = 0;
+    for (const pe of e.per.values()){ fr += pe.plus; ag += pe.minus; }
+    e.fr = fr; e.ag = ag;
+    e.pol = fr > ag ? "+" : ag > fr ? "-" : "?";
+    e.conf = Math.round(255 * (Math.max(fr, ag) + N.prior_for) / (fr + ag + N.prior_for + N.prior_against));
+    e.decided = e.pol !== "?" && e.conf > N.belief_conf_threshold;
+    pushTo(S.beliefsBy, e.s, e); pushTo(S.byVector, e.v, e);
+    pushTo(S.incoming, e.o === "-" ? SLOT + e.v : e.o, e);
+    S.believers.add(e.s);
+  }
+  S.trips = trips; S.seenCounts = seen; S.comentions = com; S.malformed = malformed; S.said = said;
+  S.sentIndex = null;
+}
+
+/* ---------- terms on the sphere (TTG-RFC-0002 §5) --------------------- */
+function placeTerm(S, lemma, cls, partner){
+  const sp = S.G.sphere, step = +sp.step, f = Math.pow(10, S.dec);
+  const [latLo, latHi] = words(sp.term_lat).map(Number);
+  const [lonLo, lonHi] = words(cls === "vector" ? sp.vector_lon : sp.thing_lon).map(Number);
+  const [aLo, aHi] = words(sp.adjacent).map(Number);
+  const round = v => Math.round(v * f) / f;
+  const pick = (h, lo, hi) => lo + (h % (Math.round((hi - lo) / step) + 1)) * step;
+  let lat, lon;
+  if (partner){
+    const h1 = fnv(lemma + "~"), h2 = fnv(lemma + "~~");
+    lat = clamp(partner.lat + pick(h1, aLo, aHi) * ((h1 >>> 20) & 1 ? -1 : 1), latLo, latHi);
+    lon = clamp(partner.lon + pick(h2, aLo, aHi) * ((h2 >>> 20) & 1 ? -1 : 1), lonLo, lonHi);
+  } else {
+    lat = pick(fnv(lemma), latLo, latHi);
+    lon = pick(fnv(lemma + "#"), lonLo, lonHi);
+  }
+  lat = round(lat); lon = round(lon);
+  const used = new Set(records(S.st).map(r => r.key));
+  for (let g = 0; used.has(idKey(lat, lon)) && g < 1e6; g++){      // southeast_step
+    lat = round(lat - step); lon = round(lon + step);
+    if (lat < latLo) lat = latHi;
+    if (lon > lonHi) lon = lonLo;
+  }
+  return { lat, lon, id:makeId(lat, lon, S.dec) };
+}
+function termState(S, t){
+  const R = S.G.roles;
+  const beliefs = (t.cls === "vector" ? S.byVector.get(t.lemma) : S.beliefsBy.get(t.lemma)) || [];
+  const lines = t.cls === "vector" ? [] :
+    beliefs.map(e => "belief: " + e.v + " | " + e.o + " | " + e.pol + " | " + num2(e.fr) + " " + num2(e.ag) + " | " + e.conf);
+  const seen = S.seenCounts.get(t.cls + "|" + t.lemma) || 0;
+  const conf = beliefs.length ? Math.round(beliefs.reduce((m, e) => m + e.conf, 0) / beliefs.length) : 128;
+  const edges = [];
+  if (t.cls !== "vector") for (const e of beliefs){
+    if (!e.decided) continue;
+    const target = e.o === "-" ? S.vectors.get(e.v) : S.things.get(e.o);
+    if (!target) continue;
+    const edge = (e.pol === "-" ? (R.negation_prefix || "") : "") + e.v + target.chunk.rec.id;
+    if (!edges.includes(edge)) edges.push(edge);
+  }
+  const head = ["class: " + t.cls, "lemma: " + t.lemma, "forms: " + t.forms.join(" "), "seen: " + seen];
+  return { lines, seen, conf, sal:Math.min(255, seen + t.asked), relates:edges.join(","),
+           block:head.concat(["asked: " + t.asked], lines).join("\n"), bodyKey:head.concat(lines).join("\n") };
+}
+/* Bring every term record in line with the consolidated beliefs. A record
+   that nothing changed is not rewritten, so a quiet store stays byte-stable. */
+function syncTerms(S, now, touched){
+  for (const t of [...S.things.values(), ...S.vectors.values()]){
+    const rec = t.chunk.rec, ts = termState(S, t);
+    const old = parseBlock(rec.term || "");
+    const oldBody = ["class: " + old.class, "lemma: " + old.lemma, "forms: " + (old.forms || ""), "seen: " + old.seen]
+      .concat(many(old, "belief").map(l => "belief: " + l)).join("\n");
+    const beliefsChanged = many(old, "belief").map(l => "belief: " + l).join("\n") !== ts.lines.join("\n");
+    const bodyChanged = oldBody !== ts.bodyKey;
+    const relates = (rec.fields.find(f => f[0].toLowerCase() === "relates") || ["", ""])[1];
+    const changed = bodyChanged || relates !== ts.relates || +old.asked !== t.asked || !rec.hasEw ||
+                    rec.conf !== ts.conf || rec.sal !== ts.sal || touched.has(t);
+    if (!changed) continue;
+    rewriteChunk(t.chunk, {
+      updated: bodyChanged ? now : rec.updated, relates: ts.relates,
+      ew: { conf:ts.conf, rev:rec.rev + (beliefsChanged ? 1 : 0), sal:ts.sal, touched:now },
+      tag: "ttdb-term", block: ts.block
+    });
+  }
+}
+function ensureTerm(S, lemma, cls, partnerLemma, now){
+  const map = cls === "vector" ? S.vectors : S.things;
+  if (!lemma || lemma === "-" || lemma === SLOT) return null;
+  if (map.has(lemma)) return map.get(lemma);
+  const partner = partnerLemma && S.things.get(partnerLemma);
+  const pos = placeTerm(S, lemma, cls, partner ? partner.chunk.rec : null);
+  const t = { chunk:null, cls, lemma, forms:[], asked:0, created:true };
+  t.chunk = newChunk(pos.id, now, "", null, lemma, "ttdb-term", "class: " + cls + "\nlemma: " + lemma);
+  insertChunk(S.st, t.chunk);
+  map.set(lemma, t);
+  return t;
+}
+
+/* ---------- write: perceive one input as one episode ------------------ */
+function perceive(S, text, source, isFile, now){
+  const G = S.G, R = G.roles;
+  const sentences = sentencesOf(S, text, isFile);
+  if (!sentences.length) return null;
+  const ctx = { last:null }, saidLines = [], perceptLines = [], all = [], forms = [];
+  const max = G.num.said_max_chars;
+  sentences.forEach((sen, i) => {
+    const n = i + 1;
+    let txt = sen.split(FENCE).join("''");
+    if (isFinite(max) && txt.length > max) txt = Array.from(txt).slice(0, max).join("") + "…";
+    saidLines.push("said: " + n + " | " + txt);
+    const r = perceiveSentence(S, sen, ctx);
+    for (const p of r.percepts){
+      perceptLines.push("percept: " + [n, p.s, p.v, p.o, p.pol, p.q].join(" | "));
+      all.push({ ...p, n });
+    }
+    forms.push(...r.forms);
+  });
+  const before = new Map();
+  for (const p of all){
+    const e = S.trips.get(p.s + "|" + p.v + "|" + p.o);
+    if (e) before.set(p.s + "|" + p.v + "|" + p.o, { pol:e.pol, decided:e.decided, sources:e.sources.slice() });
+  }
+  const created = [];
+  for (const p of all){
+    const weak = p.v === R.comention;
+    for (const [lemma, cls, partner] of [[p.s, "thing", weak ? null : p.o], [p.o, "thing", weak ? null : p.s], [p.v, "vector", null]]){
+      const had = (cls === "vector" ? S.vectors : S.things).has(lemma);
+      const t = ensureTerm(S, lemma, cls, partner, now);
+      if (t && !had) created.push(t);
+    }
+  }
+  for (const [cls, lemma, form] of forms){
+    const t = (cls === "vector" ? S.vectors : S.things).get(lemma);
+    if (t && form && !t.forms.includes(form)) t.forms.push(form);
+  }
+  for (const t of created) if (!t.forms.includes(t.lemma) && !t.forms.length) t.forms.push(t.lemma);
+
+  const lane = +G.sphere.episode_lane;
+  const ord = records(S.st).filter(r => r.lat === lane).reduce((m, r) => Math.max(m, r.lon), 0) + 1;
+  const epId = makeId(lane, ord, 0);
+  const src = source || say(G, "source_typed");
+  const refs = [];
+  for (const p of all){
+    for (const t of [S.things.get(p.s), S.vectors.get(p.v), S.things.get(p.o)]){
+      if (t && R.episode_edge){ const e = R.episode_edge + t.chunk.rec.id; if (!refs.includes(e)) refs.push(e); }
+    }
+  }
+  const block = ["source: " + src, "at: " + now].concat(saidLines, perceptLines).join("\n");
+  const ec = newChunk(epId, now, refs.join(","), null, say(G, "episode_title", { n:ord, source:src }) || epId, "ttdb-episode", block);
+  insertChunk(S.st, ec);
+  // term objects already carry this episode's forms, so only the episode list is rebuilt here
+  S.episodes = S.st.chunks.filter(c => c.rec && c.rec.episode != null);
+  consolidate(S);
+  const touched = new Set();
+  for (const p of all) for (const t of [S.things.get(p.s), S.vectors.get(p.v), S.things.get(p.o)]) if (t) touched.add(t);
+  syncTerms(S, now, touched);
+  indexTerms(S);
+
+  const conflicts = [];
+  for (const p of all){
+    const k = p.s + "|" + p.v + "|" + p.o, b = before.get(k), e = S.trips.get(k);
+    if (!b || !e || p.v === R.comention) continue;
+    if (b.pol !== "?" && b.pol !== p.pol && !conflicts.some(c => c.trip === e))
+      conflicts.push({ trip:e, earlier:b.sources.filter(s => s.pol !== p.pol) });
+  }
+  return { id:epId, ord, sentences:sentences.length, percepts:all.filter(p => p.v !== R.comention), all, created, conflicts };
+}
+function markAsked(S, found, now){
+  const touched = new Set();
+  for (const f of found){
+    const t = (f.cls === "vector" ? S.vectors : S.things).get(f.lemma);
+    if (t && !touched.has(t)){ t.asked++; touched.add(t); }
+  }
+  if (touched.size) syncTerms(S, now, touched);
+  indexTerms(S);
+}
+function startEmpty(S, now){
+  const lane = +S.G.sphere.episode_lane, self = S.G.sphere.self_lemma;
+  S.st.chunks = S.st.chunks.filter(c => !(c.rec && ((c.rec.episode != null && c.rec.lat === lane) ||
+    (c.rec.term != null && parseBlock(c.rec.term).lemma !== self))));
+  indexTerms(S);
+  for (const t of S.things.values()){ t.asked = 0; t.forms = [t.lemma]; }
+  consolidate(S);
+  syncTerms(S, now, new Set(S.things.values()));
+  indexTerms(S);
+  writeCursor(S, "@LAT0LON0", "", "", []);
+}
+function recordById(S, id){
+  const ref = parseId(id);
+  return ref ? records(S.st).find(r => r.key === ref.key) : null;
+}
+function writeCursor(S, sel, query, answerText, ids){
+  const c0 = S.st.chunks[0];
+  const old = fence(c0.text, "cursor");
+  if (old == null) return;
+  const note = (old.split("\n").find(l => l.startsWith("agent_note:")) || "agent_note: \"\"");
+  const q = s => '"' + String(s).replace(/["\\]/g, "'").replace(/\s+/g, " ").trim() + '"';
+  const cut = (s, n) => { const a = Array.from(String(s)); return isFinite(n) && a.length > n ? a.slice(0, n - 1).join("") + "…" : a.join(""); };
+  const rec = recordById(S, sel);
+  const rest = rec ? rec.body.replace(/^\*\*[^*\n]+\*\*\s*/, "").replace(/[*`#>_]/g, "").replace(/\s+/g, " ").trim() : "";
+  const preview = rec ? cut(rec.title + (rest ? " - " + rest : ""), +S.st.meta.max_preview_chars) : "";
+  const lines = ["selected:", "  - " + q(sel), "preview:", "  " + q(sel) + ": " + q(preview), note,
+    "last_query: " + q(query), "last_answer: " + q(cut(answerText, S.G.maxReply)),
+    "answer_records: [" + ids.map(q).join(", ") + "]"];
+  c0.text = c0.text.replace(new RegExp(FENCE + "cursor\\n[\\s\\S]*?" + FENCE), () => FENCE + "cursor\n" + lines.join("\n") + "\n" + FENCE);
+}
+
+/* ---------- reason along the vectors (TTG-RFC-0003 §3) ---------------- */
+const tripOf = (S, s, v, o) => S.trips.get(s + "|" + v + "|" + o);
+const alg = (S, v) => S.G.vectors.get(v) || null;
+const flag = (S, v, f) => !!alg(S, v) && alg(S, v).flags.has(f);
+function unwind(prev, o){ const path = []; for (let e = prev.get(o); e; e = prev.get(e.s)) path.unshift(e); return path; }
+/* Everything reachable from s along decided + beliefs whose vector the predicate accepts. */
+function walk(S, s, ok){
+  const prev = new Map([[s, null]]), out = [];
+  let frontier = [s];
+  for (let hop = 0; hop < S.G.num.max_hops && frontier.length; hop++){
+    const next = [];
+    for (const x of frontier) for (const e of S.beliefsBy.get(x) || []){
+      if (!ok(e.v) || !e.decided || e.pol !== "+" || e.o === "-" || prev.has(e.o)) continue;
+      prev.set(e.o, e); out.push({ lemma:e.o, path:unwind(prev, e.o) }); next.push(e.o);
+    }
+    frontier = next;
+  }
+  return out;
+}
+const ancestors = (S, s) => walk(S, s, v => S.G.inherits.includes(v));
+function chainConf(S, path){
+  const p = path.reduce((m, e) => m * e.conf / 255, 1) * Math.pow(S.G.num.inherit_decay, path.length - 1);
+  return Math.round(255 * p);
+}
+function inherited(S, s, v, o){
+  for (const a of ancestors(S, s)){
+    const e = tripOf(S, a.lemma, v, o);
+    if (e && e.decided) return { pol:e.pol, via:a.lemma, path:a.path.concat([e]) };
+  }
+  return null;
+}
+const inferredAs = (S, pol, path, via) => ({ verdict:pol === "+" ? "Y" : "N", inferred:true, conf:chainConf(S, path),
+  grounds:[{ kind:"inference", pol, path, via }] });
+function verify(S, s, v, o){
+  const d = tripOf(S, s, v, o);
+  if (d){
+    if (d.pol === "?") return { verdict:"C", grounds:[{ kind:"conflict", pol:"?", path:[d] }] };
+    const r = { verdict:d.pol === "+" ? "Y" : "N", inferred:false, conf:d.conf, grounds:[{ kind:"direct", pol:d.pol, path:[d] }] };
+    const inh = inherited(S, s, v, o);
+    if (inh && inh.pol !== d.pol) r.exception = inh;
+    return r;
+  }
+  const a = alg(S, v);
+  if (a && a.flags.has("weak")) return { verdict:"U", grounds:[] };
+  if (a && a.flags.has("transitive")){
+    const hit = walk(S, s, x => x === v).find(x => x.lemma === o);
+    if (hit) return inferredAs(S, "+", hit.path);
+  }
+  if (a && a.inverse){
+    const e = tripOf(S, o, a.inverse, s);
+    if (e && e.decided) return inferredAs(S, e.pol, [e]);
+    if (flag(S, a.inverse, "transitive")){
+      const hit = walk(S, o, x => x === a.inverse).find(x => x.lemma === s);
+      if (hit) return inferredAs(S, "+", hit.path);
+    }
+  }
+  if (a && a.flags.has("symmetric")){
+    const e = tripOf(S, o, v, s);
+    if (e && e.decided) return inferredAs(S, e.pol, [e]);
+  }
+  const inh = inherited(S, s, v, o);
+  if (inh) return inferredAs(S, inh.pol, inh.path, inh.via);
+  return { verdict:"U", grounds:[] };
+}
+function objectsOf(S, s, vs){
+  const items = new Map();
+  const add = (o, g) => { if (o !== "-" && o !== SLOT && !items.has(o)) items.set(o, g); };
+  for (const v of vs){
+    for (const e of S.beliefsBy.get(s) || []) if (e.v === v)
+      add(e.o, { kind:e.pol === "?" ? "conflict" : "direct", pol:e.pol, path:[e], conf:e.conf });
+  }
+  for (const v of vs){
+    const a = alg(S, v);
+    if (a && a.flags.has("weak")) continue;
+    if (a && a.flags.has("transitive"))
+      for (const x of walk(S, s, y => y === v)) add(x.lemma, { kind:"inference", pol:"+", path:x.path, conf:chainConf(S, x.path) });
+    if (a && a.inverse)
+      for (const e of S.incoming.get(s) || []) if (e.v === a.inverse && e.decided)
+        add(e.s, { kind:"inference", pol:e.pol, path:[e], conf:e.conf });
+    for (const anc of ancestors(S, s)) for (const e of S.beliefsBy.get(anc.lemma) || []){
+      if (e.v !== v || !e.decided || tripOf(S, s, v, e.o)) continue;
+      const path = anc.path.concat([e]);
+      add(e.o, { kind:"inference", pol:e.pol, path, via:anc.lemma, conf:chainConf(S, path) });
+    }
+  }
+  return [...items].map(([o, g]) => ({ term:o, ...g }));
+}
+function subjectsOf(S, v, o){
+  const cands = new Set();
+  for (const e of S.incoming.get(o === "-" ? SLOT + v : o) || []) if (e.v === v) cands.add(e.s);
+  const a = alg(S, v);
+  const down = x => (S.incoming.get(x) || []).filter(e => e.decided && e.pol === "+" &&
+    (S.G.inherits.includes(e.v) || (a && a.flags.has("transitive") && e.v === v))).map(e => e.s);
+  let frontier = [...cands];
+  for (let hop = 0; hop < S.G.num.max_hops && frontier.length; hop++){
+    const next = [];
+    for (const x of frontier) for (const k of down(x)) if (!cands.has(k)){ cands.add(k); next.push(k); }
+    frontier = next;
+  }
+  if (a && a.inverse) for (const e of S.beliefsBy.get(o) || []) if (e.v === a.inverse && e.decided && e.o !== "-") cands.add(e.o);
+  const out = [];
+  for (const x of cands){
+    if (x === o) continue;
+    const r = verify(S, x, v, o);
+    if (r.verdict !== "U") out.push({ term:x, ...r.grounds[0], verdict:r.verdict, exception:r.exception });
+  }
+  const rank = g => (g.kind === "direct" ? 0 : g.kind === "conflict" ? 1 : 2);
+  return out.sort((p, q) => rank(p) - rank(q) || (p.pol === "+" ? 0 : 1) - (q.pol === "+" ? 0 : 1));
+}
+function portrait(S, lemma){
+  const G = S.G, N = G.num;
+  const t = S.things.get(lemma), vt = S.vectors.get(lemma);
+  const direct = (S.beliefsBy.get(lemma) || []).map(e => {
+    const g = { kind:e.pol === "?" ? "conflict" : "direct", pol:e.pol, path:[e], conf:e.conf };
+    const inh = e.pol !== "?" ? inherited(S, lemma, e.v, e.o) : null;
+    if (inh && inh.pol !== e.pol) g.exception = inh;
+    return g;
+  });
+  const inferred = [];
+  for (const anc of ancestors(S, lemma)){
+    if (anc.path.length > 1) inferred.push({ kind:"inference", pol:"+", path:anc.path, conf:chainConf(S, anc.path) });
+    for (const e of S.beliefsBy.get(anc.lemma) || []){
+      if (!e.decided || G.inherits.includes(e.v) || tripOf(S, lemma, e.v, e.o)) continue;
+      if (inferred.some(g => g.path[g.path.length - 1].v === e.v && g.path[g.path.length - 1].o === e.o)) continue;
+      const path = anc.path.concat([e]);
+      inferred.push({ kind:"inference", pol:e.pol, path, via:anc.lemma, conf:chainConf(S, path) });
+    }
+  }
+  const incoming = (S.incoming.get(lemma) || []).filter(e => e.decided)
+    .map(e => ({ kind:"direct", pol:e.pol, path:[e], conf:e.conf }));
+  const uses = vt ? (S.byVector.get(lemma) || []).map(e => ({ kind:e.pol === "?" ? "conflict" : "direct", pol:e.pol, path:[e], conf:e.conf })) : [];
+  const withs = [...(S.comentions.get(lemma) || new Map())].sort((a, b) => b[1] - a[1]).slice(0, N.answer_max_items);
+  return { lemma, thing:t || null, vector:vt || null, direct, inferred, incoming, uses, withs };
+}
+
+/* ---------- search the said lines ------------------------------------ */
+function buildSentIndex(S){
+  const idx = [], df = new Map();
+  for (const [ep, lines] of S.said){
+    for (const [n, text] of lines){
+      const lem = new Set();
+      for (const t of tokenize(S, text)) if (isContent(t)){ lem.add(nounLemma(S, t.w).lemma); lem.add(verbLemma(S, t.w).lemma); }
+      idx.push({ ep, n, text, lem });
+      for (const l of lem) df.set(l, (df.get(l) || 0) + 1);
+    }
+  }
+  S.sentIndex = { idx, df };
+}
+function searchSaid(S, lemmas){
+  if (!S.sentIndex) buildSentIndex(S);
+  const { idx, df } = S.sentIndex, total = idx.length;
+  return idx.map(r => {
+    let score = 0; const hit = [];
+    for (const l of new Set(lemmas)) if (r.lem.has(l)){ score += Math.log(1 + total / df.get(l)); hit.push(l); }
+    return { ...r, score, hit };
+  }).filter(r => r.score > 0).sort((a, b) => b.score - a.score).slice(0, S.G.num.search_max_items);
+}
+
+/* ---------- purchase and intent (TTG-RFC-0003 §4) ---------------------- */
+function purchaseOf(S, toks){
+  const found = [], missing = [];
+  for (const t of toks){
+    if (!isContent(t) || t.synthetic || S.G.about.has(t.w)) continue;
+    const n = nounLemma(S, t.w).lemma, v = verbLemma(S, t.w).lemma;
+    const hits = [];
+    if (S.things.has(n)) hits.push({ w:t.w, lemma:n, cls:"thing" });
+    else if (S.things.has(t.w)) hits.push({ w:t.w, lemma:t.w, cls:"thing" });
+    if (S.vectors.has(v)) hits.push({ w:t.w, lemma:v, cls:"vector" });
+    else if (S.G.roles.phrasal_join){
+      // sleep finds purchase on sleep_in: a phrasal vector is still the owner's verb
+      const pv = [...S.vectors.keys()].find(k => k.startsWith(v + S.G.roles.phrasal_join));
+      if (pv) hits.push({ w:t.w, lemma:pv, cls:"vector" });
+    }
+    if (hits.length) found.push(...hits); else if (!missing.includes(t.w)) missing.push(t.w);
+  }
+  return { found, missing };
+}
+function moveCue(S, rest, cue, isCop){
+  const nps = nounPhrases(S, rest, 0, rest.length);
+  if (!nps.length) return [cue].concat(rest);
+  let k;
+  if (isCop) k = nps.length === 1 && nps[0].words.length >= 2 && !nps[0].pron ? nps[0].end : nps[0].end + 1;
+  else {
+    k = rest.findIndex((t, i) => i > nps[0].start && isVerbish(S, t) && !afterStarter(rest, i));
+    if (k < 0) k = nps[0].end + 1;
+  }
+  return rest.slice(0, k).concat([cue], rest.slice(k));
+}
+function yesNo(S, toks, ctx){
+  const i = skipSoft(toks, 0), cue = toks[i];
+  if (!(has(cue, "aux") || has(cue, "modal") || has(cue, "cop") || has(cue, "hav"))) return null;
+  const rest = toks.slice(0, i).concat(toks.slice(i + 1));
+  const r = clausePercepts(S, moveCue(S, rest, cue, has(cue, "cop")), ctx, null);
+  const checks = r.percepts.filter(p => p.v !== S.G.roles.comention && p.s !== SLOT && p.o !== SLOT);
+  return checks.length ? { intent:"verify", checks } : null;
+}
+const wordTok = (S, w) => ({ w, cls:S.G.classes.get(w) || EMPTY, punct:false });
+function slotQuery(S, toks, ctx){
+  const r = clausePercepts(S, toks, ctx, null);
+  const p = r.percepts.find(x => x.s === SLOT || x.o === SLOT);
+  if (!p) return null;
+  return p.o === SLOT ? { intent:"objectsOf", s:p.s, vs:[p.v] } : { intent:"subjectsOf", v:p.v, o:p.o };
+}
+function whQuestion(S, wh, after, ctx){
+  const G = S.G, place = G.whPlace.get(wh.w);
+  if (!G.whThing.has(wh.w) && !place) return null;
+  const li = skipSoft(after, 0), lead = after[li];
+  const rest = after.slice(li + 1);
+  if (has(lead, "cop")){
+    if (place) return slotQuery(S, rest.concat([lead, wordTok(S, place), synth(SLOT)]), ctx);
+    if (has(rest[skipSoft(rest, 0)], "prep")) return slotQuery(S, [synth(SLOT), lead].concat(rest), ctx);
+    const terms = nounPhrases(S, rest, 0, rest.length).map(np => headOf(S, np, ctx)).filter(Boolean).map(h => h.lemma);
+    return terms.length ? { intent:"portrait", terms } : null;
+  }
+  if (has(lead, "aux") || has(lead, "modal")){
+    const moved = moveCue(S, rest, lead, false);
+    if (!place) return slotQuery(S, moved.concat([synth(SLOT)]), ctx);
+    const vs = [];
+    for (const tail of [[wordTok(S, place), synth(SLOT)], [synth(SLOT)]]){
+      const q = slotQuery(S, moved.concat(tail), { last:ctx.last });
+      if (q && q.intent === "objectsOf") for (const v of q.vs) if (!vs.includes(v)) vs.push(v);
+      if (q && !vs.length) return q;
+      if (q) var subj = q.s;
+    }
+    if (!vs.includes(place)) vs.push(place);
+    return subj ? { intent:"objectsOf", s:subj, vs } : null;
+  }
+  return slotQuery(S, [synth(SLOT)].concat(after), ctx);
+}
+function interpret(S, text){
+  const G = S.G;
+  const all = tokenize(S, text);
+  const toks = all.filter(t => !(t.punct && G.sentenceEnd.has(t.w)) && !has(t, "filler"));
+  const lexical = toks.filter(t => !t.punct);
+  const purchase = purchaseOf(S, lexical);
+  const base = { toks:lexical, purchase };
+  const marked = !!G.questionMark && String(text).trim().endsWith(G.questionMark);
+  if (sentencesOf(S, text, false).length > 1) return { ...base, intent:"perceive" };
+  const first = lexical[0];
+  if (!first) return { ...base, intent:"search" };
+  const ctx = { last:null };
+  const after = toks.slice(toks.indexOf(first) + 1);
+  if (G.whReason.has(first.w)){
+    const q = yesNo(S, after, ctx);
+    if (q) return { ...base, ...q, why:true };
+  }
+  if (has(first, "wh")){
+    const q = whQuestion(S, first, after, ctx);
+    if (q) return { ...base, ...q };
+  }
+  if (has(first, "aux") || has(first, "modal") || has(first, "cop") || has(first, "hav")){
+    const q = yesNo(S, toks.slice(toks.indexOf(first)), ctx);
+    if (q) return { ...base, ...q };
+  }
+  if (G.about.has(first.w)){
+    const terms = nounPhrases(S, after, 0, after.length).filter(np => np.pron !== "self")
+      .map(np => headOf(S, np, ctx)).filter(Boolean).map(h => h.lemma);
+    if (terms.length) return { ...base, intent:"portrait", terms };
+  }
+  const content = lexical.filter(isContent);
+  const P = findPredicate(S, toks);
+  if (P){
+    const ps = perceiveSentence(S, text, { last:null }).percepts.filter(p => p.v !== G.roles.comention);
+    if (ps.length) return marked ? { ...base, intent:"verify", checks:ps } : { ...base, intent:"perceive" };
+  }
+  if (!P && content.length && content.length <= G.describeMax){
+    const terms = [...new Set(purchase.found.map(f => f.lemma))];
+    if (terms.length) return { ...base, intent:"portrait", terms };
+  }
+  return { ...base, intent:"search" };
+}
+
+/* ---------- answer ------------------------------------------------------ *
+ * A reply is a verdict, then grounds. Every ground is one of three kinds and
+ * is printed as that kind: direct (quoted), inference (a chain, never quoted
+ * as if said) or conflict (both sayings).                                   */
+function quotesFor(S, e, pol){
+  const out = [];
+  for (const src of e.sources){
+    if (pol && src.pol !== pol) continue;
+    const lines = S.said.get(src.ep);
+    const text = lines && lines.get(src.n);
+    if (text && !out.some(q => q.ep === src.ep && q.n === src.n)) out.push({ ep:src.ep, n:src.n, text, pol:src.pol });
+  }
+  return out;
+}
+function groundQuotes(S, g){
+  if (g.kind === "conflict"){
+    const e = g.path[0];
+    return quotesFor(S, e, "+").slice(0, 1).concat(quotesFor(S, e, "-").slice(0, 1));
+  }
+  if (g.kind === "direct") return quotesFor(S, g.path[0], g.pol).slice(0, 2);
+  return g.path.map(e => quotesFor(S, e, e.pol)[0]).filter(Boolean);
+}
+const vlabel = (S, v) => (alg(S, v) || {}).label || v;
+function answer(S, text, now, source){
+  const G = S.G, N = G.num;
+  const it = interpret(S, text);
+  const reply = { intent:it.intent, query:text, verdict:"", head:"", items:[], notes:[], search:[],
+                  purchase:it.purchase, records:[], portraits:[], episode:null };
+  const cap = a => a.slice(0, N.answer_max_items);
+  if (it.intent === "perceive"){
+    const ep = perceive(S, text, source || null, false, now);
+    if (!ep) return reply;
+    reply.episode = ep;
+    reply.verdict = ep.percepts.length
+      ? say(G, "noted", { percepts:unit(G, "percept", ep.percepts.length), sentences:unit(G, "sentence", ep.sentences) })
+      : say(G, "noted_nothing");
+    const byKey = new Map();
+    for (const p of ep.percepts){
+      const e = S.trips.get(p.s + "|" + p.v + "|" + p.o);
+      if (e && !byKey.has(e)) byKey.set(e, { kind:"direct", pol:p.pol, path:[e], conf:e.conf,
+        quotes:[{ ep:ep.id, n:p.n, text:S.said.get(ep.id).get(p.n), pol:p.pol }] });
+    }
+    reply.items = cap([...byKey.values()]);
+    for (const c of ep.conflicts){
+      reply.notes.push(say(G, "contradicts"));
+      reply.items.push({ kind:"conflict", pol:c.trip.pol, path:[c.trip], conf:c.trip.conf,
+        quotes:quotesFor(S, c.trip).slice(-3) });
+    }
+    reply.records = [ep.id];
+  } else if (it.intent === "verify"){
+    const results = it.checks.map(p => ({ p, r:verify(S, p.s, p.v, p.o) }));
+    const lead = results.find(x => x.r.verdict !== "U") || results[0];
+    const r = lead.r;
+    reply.verdict = r.verdict === "C" ? say(G, "contest") :
+      r.verdict === "U" ? say(G, "unknown") :
+      say(G, (r.verdict === "Y" ? "affirm" : "deny") + (r.inferred ? "_inferred" : ""));
+    for (const { r:x } of results) for (const g of x.grounds) reply.items.push({ ...g, quotes:groundQuotes(S, g) });
+    for (const { p, r:x } of results) if (x.exception)
+      reply.notes.push(say(G, "exception", { term:p.s, via:x.exception.via }));
+  } else if (it.intent === "objectsOf" || it.intent === "subjectsOf"){
+    const list = it.intent === "objectsOf" ? objectsOf(S, it.s, it.vs) : subjectsOf(S, it.v, it.o);
+    reply.head = it.intent === "objectsOf" ? say(G, "objects_head", { s:it.s, v:vlabel(S, it.vs[0]) })
+                                          : say(G, "subjects_head", { v:vlabel(S, it.v), o:it.o === "-" ? "" : it.o });
+    reply.items = cap(list).map(g => ({ ...g, quotes:groundQuotes(S, g) }));
+    if (!list.length) reply.verdict = say(G, "nothing_found");
+  } else if (it.intent === "portrait"){
+    for (const lemma of it.terms){
+      const pt = portrait(S, lemma);
+      if (!pt.thing && !pt.vector) continue;
+      const empty = !pt.direct.length && !pt.inferred.length && !pt.incoming.length && !pt.uses.length && !pt.withs.length;
+      pt.head = say(G, empty ? "describe_empty" : "describe_head", { term:lemma });
+      for (const key of ["direct", "inferred", "incoming", "uses"])
+        pt[key] = cap(pt[key]).map(g => ({ ...g, quotes:groundQuotes(S, g) }));
+      reply.portraits.push(pt);
+      reply.records.push((pt.thing || pt.vector).chunk.rec.id);
+    }
+    if (!reply.portraits.length) reply.verdict = say(G, "unknown");
+  } else {
+    const lemmas = it.purchase.found.map(f => f.lemma);
+    reply.search = lemmas.length ? searchSaid(S, lemmas) : [];
+    reply.head = reply.search.length ? say(G, "search_head") : "";
+    if (!reply.search.length) reply.verdict = say(G, "unknown");
+  }
+  if (it.intent !== "perceive" && it.purchase.missing.length)
+    reply.notes.push(say(G, "no_purchase", { words:it.purchase.missing.join(", ") }));
+
+  // purchase leaves a trace: asked on every term the input touched (TBEW sal)
+  if (it.intent !== "perceive") markAsked(S, it.purchase.found, now);
+  for (const f of it.purchase.found){
+    const t = (f.cls === "vector" ? S.vectors : S.things).get(f.lemma);
+    if (t && !reply.records.includes(t.chunk.rec.id)) reply.records.push(t.chunk.rec.id);
+  }
+  // the most-used, least-settled thing the input touched is what the librarian asks about
+  let best = null;
+  for (const f of it.purchase.found){
+    const t = S.things.get(f.lemma);
+    if (t && t.chunk.rec.eps >= N.suggest_eps_min && (!best || t.chunk.rec.eps > best.chunk.rec.eps)) best = t;
+  }
+  if (best) reply.notes.push(say(G, "suggest", { term:best.lemma, eps:best.chunk.rec.eps }));
+  writeCursor(S, reply.records[0] || "@LAT0LON0", text, replyText(S, reply), reply.records);
+  return reply;
+}
+/* Plain-text rendering of a reply, for the cursor block and the command line. */
+function tripleText(S, e, pol){
+  const neg = (pol || e.pol) === "-" ? (S.G.roles.negation_prefix || "") : "";
+  return e.s + " " + neg + vlabel(S, e.v) + (e.o === "-" ? "" : " " + e.o);
+}
+function groundText(S, g){
+  const lab = say(S.G, g.kind === "direct" ? "label_said" : g.kind === "inference" ? "label_inferred" : "label_contested");
+  // a direct ground speaks for one saying, whose polarity may differ from the belief's
+  const chain = g.path.map(e => tripleText(S, e, g.kind === "direct" && g.path.length === 1 ? g.pol : null)).join(" → ");
+  const qs = (g.quotes || []).map(q => "“" + q.text + "” (" + q.ep + ")").join(" ");
+  return "[" + lab + "] " + chain + (qs ? " — " + qs : "");
+}
+function replyText(S, reply){
+  const out = [];
+  if (reply.verdict) out.push(reply.verdict);
+  if (reply.head) out.push(reply.head);
+  for (const g of reply.items) out.push("  " + (g.term ? g.term + ": " : "") + groundText(S, g));
+  for (const pt of reply.portraits){
+    out.push(pt.head);
+    for (const key of ["direct", "inferred", "incoming", "uses"]) for (const g of pt[key]) out.push("  " + groundText(S, g));
+    if (pt.withs.length) out.push("  " + say(S.G, "mentioned_with") + ": " + pt.withs.map(w => w[0]).join(", "));
+  }
+  for (const r of reply.search) out.push("  “" + r.text + "” (" + r.ep + ")");
+  for (const n of reply.notes) if (n) out.push(n);
+  return out.join("\n");
+}
+function ingestFile(S, name, text, now){
+  const ep = perceive(S, text, name, true, now);
+  if (!ep) return null;
+  const G = S.G;
+  const msg = say(G, "ingested", { file:name, sentences:unit(G, "sentence", ep.sentences),
+    percepts:unit(G, "percept", ep.percepts.length), terms:unit(G, "term", ep.created.length) });
+  writeCursor(S, ep.id, name, msg, [ep.id]);
+  return { ep, msg };
+}
+
+const PG = { parseStore, serializeStore, parseRecord, parseBlock, openStore, loadGrammar, sentencesOf, tokenize,
+  nounLemma, verbLemma, perceiveSentence, perceive, consolidate, syncTerms, termState, verify, objectsOf, subjectsOf,
+  portrait, searchSaid, interpret, answer, replyText, ingestFile, startEmpty, markAsked, records, epsOf, say, SLOT };
+
+/* ====================================================================== *
+ * The page. Everything below touches the DOM; everything above does not,
+ * which is what lets tools/ and tests/ run the engine in Node.
+ * ====================================================================== */
+let S = null, storeSource = "", selectedKey = null, lit = new Set();
+let rotLat = 0.3, rotLon = -0.9;
+const $ = id => document.getElementById(id);
+const unixNow = () => Math.floor(Date.now() / 1000);
+const reduceMotion = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- markdown (TTCP-RFC-0001 §6, minimal) -------------------------- */
+function inline(s){
+  return esc(s)
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, label, href) => {
+      const tok = parseToken(href);
+      if (tok) return `<a href="#" data-key="${tok.key}">${label}</a>`;
+      return `<a href="${href}" target="_blank" rel="noopener">${label}</a>`;
+    })
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/(^|[\s(])\*([^*\s][^*]*)\*(?=[\s).,;:!?]|$)/g, "$1<em>$2</em>");
+}
+function md(src){
+  const out = [], lines = String(src).split("\n");
+  let i = 0, para = [], list = null, ordered = false;
+  const flush = () => {
+    if (para.length){ out.push("<p>" + inline(para.join(" ")) + "</p>"); para = []; }
+    if (list){ const tag = ordered ? "ol" : "ul"; out.push("<" + tag + ">" + list.map(x => "<li>" + inline(x) + "</li>").join("") + "</" + tag + ">"); list = null; }
+  };
+  while (i < lines.length){
+    const L = lines[i];
+    if (L.startsWith(FENCE)){
+      flush();
+      const body = []; i++;
+      while (i < lines.length && !lines[i].startsWith(FENCE)) body.push(lines[i++]);
+      out.push("<pre>" + esc(body.join("\n")) + "</pre>"); i++; continue;
+    }
+    if (/^\s*$/.test(L)){ flush(); i++; continue; }
+    if (/^\|/.test(L)){
+      flush();
+      const rows = [];
+      while (i < lines.length && /^\|/.test(lines[i])) rows.push(lines[i++]);
+      const cell = r => r.replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+      const body = rows.slice(/^[\s|:-]+$/.test(rows[1] || "") ? 2 : 1);
+      out.push('<div class="tablewrap"><table><thead><tr>' + cell(rows[0]).map(h => "<th>" + inline(h) + "</th>").join("") +
+        "</tr></thead><tbody>" + body.map(r => "<tr>" + cell(r).map(c => "<td>" + inline(c) + "</td>").join("") + "</tr>").join("") +
+        "</tbody></table></div>");
+      continue;
+    }
+    const li = /^\s*([-*]|\d+\.)\s+(.*)$/.exec(L);
+    if (li){
+      if (para.length){ out.push("<p>" + inline(para.join(" ")) + "</p>"); para = []; }
+      const ord = /\d/.test(li[1]);
+      if (list && ord !== ordered) flush();
+      ordered = ord; (list = list || []).push(li[2]); i++; continue;
+    }
+    if (list && /^\s{2,}\S/.test(L)){ list[list.length - 1] += " " + L.trim(); i++; continue; }
+    if (/^>\s?/.test(L)){ flush(); out.push("<blockquote>" + inline(L.replace(/^>\s?/, "")) + "</blockquote>"); i++; continue; }
+    if (/^#{2,4}\s/.test(L)){ flush(); const n = L.match(/^#+/)[0].length; out.push("<h" + n + ">" + inline(L.replace(/^#+\s/, "")) + "</h" + n + ">"); i++; continue; }
+    if (list) flush();
+    para.push(L.trim()); i++;
+  }
+  flush();
+  return out.join("");
+}
+
+/* ---------- replies as HTML ------------------------------------------------ */
+const termKey = (lemma, cls) => { const t = (cls === "vector" ? S.vectors : S.things).get(lemma); return t ? t.chunk.rec.key : ""; };
+function chip(lemma, cls, extra){
+  if (lemma === "-" || lemma == null) return "";
+  const k = termKey(lemma, cls);
+  return `<button type="button" class="chip ${cls}${extra || ""}"${k ? ` data-key="${k}"` : ""}>${esc(lemma)}</button>`;
+}
+function tripleHtml(e, pol){
+  const neg = (pol || e.pol) === "-";
+  const vk = termKey(e.v, "vector");
+  return `<span class="triple">${chip(e.s, "thing")}<span class="arrow">—</span>` +
+    `<button type="button" class="chip vector${neg ? " neg" : ""}"${vk ? ` data-key="${vk}"` : ""}>${esc(vlabel(S, e.v))}</button>` +
+    (e.o === "-" ? "" : `<span class="arrow">→</span>${chip(e.o, "thing")}`) + `</span>`;
+}
+function groundHtml(g){
+  const G = S.G;
+  const lab = say(G, g.kind === "direct" ? "label_said" : g.kind === "inference" ? "label_inferred" : "label_contested");
+  const single = g.kind === "direct" && g.path.length === 1 ? g.pol : null;
+  const chain = g.path.map(e => tripleHtml(e, single)).join(`<span class="arrow"> ⟹ </span>`);
+  const quotes = (g.quotes || []).map(q => {
+    const ref = parseId(q.ep);
+    return `<span class="qt"><q>${esc(q.text)}</q><a href="#" class="ep"${ref ? ` data-key="${ref.key}"` : ""}>${esc(q.ep)} · ${q.n}</a></span>`;
+  }).join("");
+  const conf = isFinite(g.conf) ? ` <span class="cf">conf ${g.conf}</span>` : "";
+  const lead = g.term ? chip(g.term, "thing") + " " : "";
+  const exc = g.exception ? `<div class="note">${esc(say(G, "exception", { term:g.path[0].s, via:g.exception.via }))}</div>` : "";
+  return `<li class="g ${g.kind}">${lead}<span class="lab">${esc(lab)}</span>${chain}${conf}${quotes}${exc}</li>`;
+}
+function replyHtml(r){
+  const G = S.G, parts = [];
+  if (r.verdict) parts.push(`<div class="verdict">${esc(r.verdict)}</div>`);
+  if (r.head) parts.push(`<div class="verdict">${esc(r.head)}</div>`);
+  if (r.items.length) parts.push(`<ul class="grounds">${r.items.map(groundHtml).join("")}</ul>`);
+  for (const pt of r.portraits){
+    parts.push(`<div class="verdict">${esc(pt.head)}</div>`);
+    const gs = [...pt.direct, ...pt.inferred, ...pt.uses];
+    if (gs.length) parts.push(`<ul class="grounds">${gs.map(groundHtml).join("")}</ul>`);
+    if (pt.incoming.length) parts.push(`<div class="purchase">${esc(say(G, "points_here", { term:pt.lemma }))}</div>` +
+      `<ul class="grounds">${pt.incoming.map(groundHtml).join("")}</ul>`);
+    if (pt.withs.length) parts.push(`<div class="purchase">${esc(say(G, "mentioned_with"))} ` +
+      pt.withs.map(w => chip(w[0], "thing")).join(" ") + `</div>`);
+  }
+  if (r.search.length) parts.push(`<ul class="grounds">` + r.search.map(x => {
+    const ref = parseId(x.ep);
+    return `<li class="g direct"><span class="lab">${esc(say(G, "label_said"))}</span><span class="qt"><q>${esc(x.text)}</q>` +
+      `<a href="#" class="ep"${ref ? ` data-key="${ref.key}"` : ""}>${esc(x.ep)} · ${x.n}</a></span></li>`;
+  }).join("") + `</ul>`);
+  for (const n of r.notes) if (n) parts.push(`<div class="note">${esc(n)}</div>`);
+  const p = r.purchase || { found:[], missing:[] };
+  if (p.found.length || p.missing.length){
+    parts.push(`<div class="purchase">` + p.found.map(f => chip(f.lemma, f.cls)).join("") +
+      p.missing.map(w => `<span class="chip miss">${esc(w)}</span>`).join("") + `</div>`);
+  }
+  return parts.join("");
+}
+function appendTurn(q, html){
+  const log = $("log");
+  const qd = document.createElement("div"); qd.className = "turn-q"; qd.textContent = q;
+  const ad = document.createElement("div"); ad.className = "turn-a"; ad.innerHTML = html;
+  log.appendChild(qd); log.appendChild(ad);
+  log.scrollTop = log.scrollHeight;
+}
+
+/* ---------- live grammar preview ------------------------------------------ */
+let previewTimer = 0;
+function preview(){
+  const text = $("q").value;
+  const pv = $("preview"), mode = $("mode");
+  if (!S || !text.trim()){ pv.innerHTML = ""; mode.textContent = ""; return; }
+  const found = purchaseOf(S, tokenize(S, text)).found;
+  pv.innerHTML = tokenize(S, text).filter(t => !t.punct).map(t => {
+    if (!isContent(t)) return `<span class="fn">${esc(t.w)}</span>`;
+    const f = found.filter(x => x.w === t.w);
+    const cls = f.some(x => x.cls === "thing") ? "t" : f.some(x => x.cls === "vector") ? "v" : "u";
+    return `<span class="${cls}">${esc(t.w)}</span>`;
+  }).join(" ");
+  mode.textContent = mode.dataset[interpret(S, text).intent] || "";
+}
+
+/* ---------- term list (TTCP-RFC-0003 §6) ----------------------------------- */
+let filterTimer = 0;
+function renderTerms(){
+  const ul = $("termlist"), f = $("filter").value.trim().toLowerCase(), sort = $("sort").value;
+  const all = [...S.things.values(), ...S.vectors.values()];
+  const shown = all.filter(t => !f || t.lemma.includes(f) || t.forms.some(x => x.includes(f)));
+  const seen = t => S.seenCounts.get(t.cls + "|" + t.lemma) || 0;
+  const by = { eps:(a, b) => b.chunk.rec.eps - a.chunk.rec.eps || seen(b) - seen(a),
+               seen:(a, b) => seen(b) - seen(a), alpha:(a, b) => a.lemma.localeCompare(b.lemma),
+               recent:(a, b) => b.chunk.rec.touched - a.chunk.rec.touched }[sort];
+  shown.sort(by);
+  $("filtermeta").textContent = shown.length + " / " + all.length;
+  ul.innerHTML = shown.slice(0, 400).map(t => {
+    const r = t.chunk.rec;
+    return `<li data-key="${r.key}" class="${r.key === selectedKey ? "sel" : ""}"><span class="chip ${t.cls}">${esc(t.lemma)}</span>` +
+      `<span class="n">EPS ${r.eps} · seen ${seen(t)}</span></li>`;
+  }).join("");
+}
+
+/* ---------- record panel (TTCP-RFC-0001 §11–12) ---------------------------- */
+function renderPanel(rec){
+  const el = $("panel");
+  if (!rec){ el.innerHTML = ""; return; }
+  const ew = rec.hasEw
+    ? `<div class="ew"><span>EPS ${rec.eps}</span><span class="epsbar"><i style="width:${Math.min(100, rec.eps / 255 * 100)}%"></i></span>` +
+      `<span>conf ${rec.conf} · rev ${rec.rev} · sal ${rec.sal} · touched ${rec.touched}</span></div>`
+    : `<div class="ew"><span>EPS 0</span><span class="epsbar"><i style="width:0%"></i></span><span>[ew] — conf 128 · rev 0 · sal 0</span></div>`;
+  let body = "";
+  if (rec.term != null){
+    const b = parseBlock(rec.term);
+    const pt = portrait(S, b.lemma);
+    const gs = [...pt.direct, ...pt.inferred, ...pt.incoming, ...pt.uses].map(g => ({ ...g, quotes:groundQuotes(S, g) }));
+    body = `<div class="coord">${esc(b.class || "")} · forms: ${esc(b.forms || "")}</div>` +
+      (gs.length ? `<ul class="grounds">${gs.map(groundHtml).join("")}</ul>` : "") +
+      (pt.withs.length ? `<div class="purchase">${esc(say(S.G, "mentioned_with"))} ${pt.withs.map(w => chip(w[0], "thing")).join(" ")}</div>` : "") +
+      (rec.body.replace(/^\*\*[^*\n]+\*\*\s*/, "").trim() ? `<div class="body">${md(rec.body.replace(/^\*\*[^*\n]+\*\*\s*/, ""))}</div>` : "");
+  } else if (rec.episode != null){
+    const b = parseBlock(rec.episode);
+    const ps = many(b, "percept").map(cols);
+    body = `<div class="coord">${esc(b.source || "")} · at ${esc(b.at || "")}</div><ol class="said-list">` +
+      many(b, "said").map(line => {
+        const i = line.indexOf("|"), n = line.slice(0, i).trim(), text = line.slice(i + 1).trim();
+        const mine = ps.filter(p => p[0] === n && p.length >= 6);
+        return `<li><q>${esc(text)}</q>` + (mine.length ? `<div class="purchase">` +
+          mine.map(p => tripleHtml({ s:p[1], v:p[2], o:p[3], pol:p[4] })).join(" ") + `</div>` : "") + `</li>`;
+      }).join("") + `</ol>`;
+  } else {
+    body = `<div class="body">${md(rec.body)}</div>` +
+      [rec.grammar, rec.sphere, rec.special].filter(x => x != null).map(x => `<pre>${esc(x)}</pre>`).join("");
+  }
+  const edges = rec.edges.length ? `<div class="edges"><b>relates</b>` + rec.edges.map(e => {
+    const t = e.target && records(S.st).find(r => r.key === e.target.key);
+    return `<em>${esc(e.type)}</em> ` + (t ? `<a href="#" data-key="${t.key}">${esc(t.title)}</a>`
+      : `<span class="x" title="target does not exist in this store">${esc(e.target ? e.target.id : "?")}</span>`);
+  }).join(" · ") + `</div>` : "";
+  el.innerHTML = `<h2>${inline(rec.title)}</h2><div class="coord">${rec.id}</div>${ew}${body}${edges}`;
+}
+function select(key, spin){
+  const rec = records(S.st).find(r => r.key === key);
+  if (!rec || rec.lat <= -90) return;
+  selectedKey = key;
+  renderPanel(rec);
+  renderTerms();
+  if (spin && rec.lat < 90) spinTo(rec);
+  draw();
+}
+
+/* ---------- the grammar sphere (TTCP-RFC-0002 §2, compact) ----------------- */
+function project(lat, lon){
+  const la = lat * Math.PI / 180, lo = lon * Math.PI / 180;
+  const x = Math.cos(la) * Math.sin(lo - rotLon);
+  const y = Math.cos(rotLat) * Math.sin(la) - Math.sin(rotLat) * Math.cos(la) * Math.cos(lo - rotLon);
+  const z = Math.sin(rotLat) * Math.sin(la) + Math.cos(rotLat) * Math.cos(la) * Math.cos(lo - rotLon);
+  return { x, y, z };
+}
+const cssVar = v => getComputedStyle(document.body).getPropertyValue(v).trim();
+function nodeKind(r){
+  if (r.term != null) return parseBlock(r.term).class === "vector" ? "--vector" : (r.lat === 0 && r.lon === 0 ? "--accent" : "--thing");
+  return "--accent";
+}
+function draw(){
+  const cv = $("sphere");
+  if (!cv || !S) return;
+  const dpr = window.devicePixelRatio || 1, size = cv.clientWidth || 340;
+  if (cv.width !== Math.round(size * dpr)){ cv.width = Math.round(size * dpr); cv.height = cv.width; }
+  const ctx = cv.getContext("2d"), W = cv.width, R = W * 0.46, cx = W / 2, cy = W / 2;
+  ctx.clearRect(0, 0, W, W);
+  const g = ctx.createRadialGradient(cx - R * .3, cy - R * .35, R * .1, cx, cy, R);
+  g.addColorStop(0, cssVar("--sphere")); g.addColorStop(1, cssVar("--sphere2"));
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fillStyle = g; ctx.fill();
+  const line = (pts, color, width) => {
+    ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath();
+    let pen = false;
+    for (const [la, lo] of pts){
+      const p = project(la, lo);
+      if (p.z < 0){ pen = false; continue; }
+      const X = cx + p.x * R, Y = cy - p.y * R;
+      if (pen) ctx.lineTo(X, Y); else ctx.moveTo(X, Y);
+      pen = true;
+    }
+    ctx.stroke();
+  };
+  for (let la = -60; la <= 60; la += 30){ const ring = []; for (let lo = -180; lo <= 180; lo += 6) ring.push([la, lo]); line(ring, cssVar("--grat"), dpr * .6); }
+  for (let lo = -150; lo < 180; lo += 30){ const m = []; for (let la = -90; la <= 90; la += 6) m.push([la, lo]); line(m, cssVar("--grat"), dpr * .6); }
+  const spine = []; for (let la = -90; la <= 90; la += 3) spine.push([la, 0]);
+  line(spine, cssVar("--accent"), dpr * 1.4);
+  for (const r of records(S.st)){
+    if (r.lat >= 90 || r.lat <= -90) continue;
+    const p = project(r.lat, r.lon);
+    if (p.z <= 0) continue;
+    const X = cx + p.x * R, Y = cy - p.y * R, on = r.key === selectedKey, hot = lit.has(r.key);
+    const rad = (on ? 6 : hot ? 4.5 : 3) * dpr;
+    ctx.beginPath(); ctx.arc(X, Y, rad, 0, 7); ctx.fillStyle = cssVar(nodeKind(r)); ctx.globalAlpha = hot || on ? 1 : .75; ctx.fill(); ctx.globalAlpha = 1;
+    if (hot || on){ ctx.lineWidth = dpr * 1.5; ctx.strokeStyle = cssVar("--ink"); ctx.stroke(); }
+    if (on || hot){
+      ctx.font = (11 * dpr) + "px ui-sans-serif,system-ui,sans-serif"; ctx.fillStyle = cssVar("--ink"); ctx.textAlign = "center";
+      ctx.fillText(r.title, clamp(X, 40 * dpr, W - 40 * dpr), Y - rad - 4 * dpr);
+    }
+  }
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = dpr; ctx.stroke();
+}
+function spinTo(rec){
+  const tLat = clamp(rec.lat, -80, 80) * Math.PI / 180, tLon = rec.lon * Math.PI / 180;
+  let dn = tLon - rotLon; dn = Math.atan2(Math.sin(dn), Math.cos(dn));
+  const goal = rotLon + dn;
+  if (reduceMotion()){ rotLat = tLat; rotLon = goal; draw(); return; }
+  const step = () => {
+    const a = tLat - rotLat, b = goal - rotLon;
+    if (Math.abs(a) < .003 && Math.abs(b) < .003) return;
+    rotLat += a * .16; rotLon += b * .16; draw(); requestAnimationFrame(step);
+  };
+  step();
+}
+function wireSphere(){
+  const cv = $("sphere");
+  let drag = null;
+  cv.addEventListener("pointerdown", e => { cv.setPointerCapture(e.pointerId); drag = { x:e.clientX, y:e.clientY, moved:0 }; });
+  cv.addEventListener("pointermove", e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    drag.moved += Math.abs(dx) + Math.abs(dy);
+    rotLon -= dx * .008; rotLat = clamp(rotLat + dy * .008, -1.5, 1.5);
+    drag.x = e.clientX; drag.y = e.clientY; draw();
+  });
+  cv.addEventListener("pointerup", e => {
+    const moved = drag && drag.moved > 5; drag = null;
+    if (moved || !S) return;
+    const rect = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1, W = cv.width, R = W * .46;
+    const px = (e.clientX - rect.left) * (W / rect.width), py = (e.clientY - rect.top) * (W / rect.height);
+    let best = null, bd = (e.pointerType === "touch" ? 26 : 14) * dpr;
+    for (const r of records(S.st)){
+      if (r.lat >= 90 || r.lat <= -90) continue;
+      const p = project(r.lat, r.lon); if (p.z <= 0) continue;
+      const d = Math.hypot(W / 2 + p.x * R - px, W / 2 - p.y * R - py);
+      if (d < bd){ bd = d; best = r; }
+    }
+    if (best) select(best.key, false);
+  });
+}
+
+/* ---------- store lifecycle ------------------------------------------------ */
+function saveLocal(){
+  try { localStorage.setItem(LS_KEY, serializeStore(S.st)); return true; }
+  catch (err){ appendTurn("", `<div class="note">${esc($("log").dataset.quota || String(err))}</div>`); return false; }
+}
+function refreshInfo(){
+  const info = $("storeinfo");
+  const perc = [...S.trips.values()].reduce((m, e) => m + e.sources.length, 0);
+  info.innerHTML = `<b>${esc(info.dataset[storeSource] || storeSource)}</b> · ${S.things.size} things · ${S.vectors.size} vectors · ` +
+    `${S.episodes.length} episodes · ${perc} percepts` + (S.malformed.length ? ` · ${S.malformed.length} malformed skipped` : "");
+}
+function load(text, src){
+  S = openStore(text);
+  storeSource = src;
+  $("err").hidden = true;
+  refreshInfo();
+  renderTerms();
+  const cm = /selected:\s*\n\s*-\s*"?(@LAT[^"\s]+)"?/.exec(fence(S.st.chunks[0].text, "cursor") || "");
+  const first = cm && parseId(cm[1]);
+  select(first ? first.key : idKey(0, 0), true);
+}
+function after(){
+  saveLocal(); refreshInfo(); renderTerms();
+  if (selectedKey) renderPanel(records(S.st).find(r => r.key === selectedKey));
+  draw();
+}
+function send(text){
+  if (!S || !text.trim()) return;
+  const r = answer(S, text, unixNow());
+  lit = new Set(r.records.map(id => parseId(id)).filter(Boolean).map(x => x.key));
+  appendTurn(text, replyHtml(r));
+  after();
+  const firstTerm = r.records.map(id => parseId(id)).find(x => x && x.lat < 90);
+  if (firstTerm) select(firstTerm.key, true);
+}
+async function feedFiles(list){
+  for (const file of list){
+    const text = await file.text();
+    if (/^\s*```mmpdb\s*$/m.test(text)){
+      if (confirm($("files").dataset.confirmStore || file.name)){
+        try { localStorage.removeItem(LS_KEY); } catch (err){ /* nothing stored */ }
+        $("log").innerHTML = ""; load(text, "opened"); saveLocal();
+        appendTurn(file.name, `<div class="verdict">${esc(say(S.G, "store_opened", { file:file.name }))}</div>`);
+      }
+      continue;
+    }
+    const r = ingestFile(S, file.name, text, unixNow());
+    if (!r) continue;
+    lit = new Set([parseId(r.ep.id).key].concat(r.ep.created.map(t => t.chunk.rec.key)));
+    appendTurn(file.name, `<div class="verdict">${esc(r.msg)}</div>`);
+    after();
+  }
+}
+async function openStoreFile(file){
+  if (!file) return;
+  load(await file.text(), "opened");
+  saveLocal();
+}
+function boot(){
+  const params = new URLSearchParams(location.search);
+  const form = $("askform"), q = $("q");
+  form.addEventListener("submit", e => { e.preventDefault(); const t = q.value; q.value = ""; preview(); send(t); });
+  q.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey){ e.preventDefault(); form.requestSubmit(); } });
+  q.addEventListener("input", () => { clearTimeout(previewTimer); previewTimer = setTimeout(preview, 120); });
+  q.addEventListener("dragover", e => { e.preventDefault(); q.classList.add("drop"); });
+  q.addEventListener("dragleave", () => q.classList.remove("drop"));
+  q.addEventListener("drop", e => { e.preventDefault(); q.classList.remove("drop"); if (e.dataTransfer.files.length) feedFiles([...e.dataTransfer.files]); });
+  $("files").onchange = e => { feedFiles([...e.target.files]); e.target.value = ""; };
+  $("openstore").onchange = e => { openStoreFile(e.target.files[0]); e.target.value = ""; };
+  $("openstore2").onchange = e => { openStoreFile(e.target.files[0]); e.target.value = ""; };
+  $("filter").addEventListener("input", () => { clearTimeout(filterTimer); filterTimer = setTimeout(renderTerms, 120); });
+  $("sort").onchange = renderTerms;
+  $("dl").addEventListener("click", () => {
+    if (!S) return;
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([serializeStore(S.st)], { type:"text/markdown" }));
+    a.download = DB; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  });
+  $("reset").addEventListener("click", async () => {
+    if (!confirm($("reset").dataset.confirm || "")) return;
+    try { localStorage.removeItem(LS_KEY); } catch (err){ /* private mode: nothing stored */ }
+    const res = await fetch(DB, { cache:"no-store" });
+    if (res.ok){ $("log").innerHTML = ""; load(await res.text(), "seed"); }
+  });
+  $("empty").addEventListener("click", () => {
+    if (!S || !confirm($("empty").dataset.confirm || "")) return;
+    startEmpty(S, unixNow()); $("log").innerHTML = ""; lit = new Set(); after(); select(idKey(0, 0), true);
+  });
+  document.addEventListener("click", e => {
+    const a = e.target.closest("[data-key]");
+    if (!a || !S || a.tagName === "CANVAS") return;
+    e.preventDefault(); select(a.dataset.key, true);
+  });
+  wireSphere();
+  window.addEventListener("resize", draw);
+
+  let text = null;
+  try { if (!params.has("seed")) text = localStorage.getItem(LS_KEY); } catch (err){ text = null; }
+  const start = t => { load(t.text, t.src); const ask = params.get("ask"); if (ask) send(ask); };
+  if (text) return start({ text, src:"local" });
+  fetch(DB, { cache:"no-store" })
+    .then(res => { if (!res.ok) throw new Error(res.status + " " + res.statusText); return res.text(); })
+    .then(t => start({ text:t, src:"seed" }))
+    .catch(err => { $("err").hidden = false; $("errdetail").textContent = String(err.message || err); });
+}
+if (typeof document !== "undefined" && document.getElementById("app")) boot();
+</script>
+</body>
+</html>

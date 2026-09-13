@@ -1,0 +1,274 @@
+# Personal Grammar
+
+A one-page web app: **a corpus of your own words that answers in them.** You type sentences,
+or feed in whole `.md` and `.txt` files, and the page breaks them into *percepts* — nounish
+**things** and verbish **vectors** — forms beliefs about the things, reasons along the
+vectors, and answers questions the way a primitive Q/A system or an LLM chat would. The
+difference is that it can only ever say three kinds of thing: **what you said**, **what
+follows from what you said** (with the chain shown), and **that you have said both**.
+
+Static files, no build step, no dependencies. One TTDB file is the foundation, the
+blueprint and the data; one HTML page runs it.
+
+This folder is the corollary of [global_models](../global_models/) — the same corpus
+discipline pointed inward instead of at the Earth. See [Corollaries](#corollaries).
+
+---
+
+## Run it
+
+```bash
+python -m http.server        # then open http://localhost:8000/
+```
+
+Opened straight from `file://`, the page cannot fetch its store and says so — and offers an
+**Open a TTDB store…** button instead, so it still works with no server at all.
+
+The page keeps your store in the browser (`localStorage`) after every change. **Download
+store** gives you the whole file back, corpus included; **Open store…** loads any store;
+**Reset to seed** throws your copy away; **Start empty** keeps the grammar and deletes every
+episode and term, which is how you make the corpus your own.
+
+---
+
+## What is in here
+
+| File | What it is |
+|---|---|
+| [index.html](index.html) | The app: a TTDB parser and round-trip writer, a rule interpreter, a consolidator, a reasoner, a small sphere. **No words of any language.** |
+| [personal_grammar_ttdb.md](personal_grammar_ttdb.md) | The store. The blueprint, the English grammar, every reply phrase, every constant, and the corpus. |
+| [RFCs/](RFCs/) | The specs, three of them new. Start at [RFCs/INDEX.md](RFCs/INDEX.md). |
+| [tests/](tests/) | Two Node scripts and a Spanish grammar fixture. No dependencies, no test runner. |
+| [tools/](tools/) | Command-line access to the same engine: ask, feed, re-consolidate. |
+
+---
+
+## Tests
+
+```bash
+node tests/app.test.mjs      # the engine, headless, against the real store
+node tests/docs.test.mjs     # the docs against the store and the engine
+```
+
+Both load `index.html`'s real script — the page only boots its UI when a DOM exists — so
+they exercise the shipping code. Between them they check that the store round-trips byte for
+byte and that a sync with nothing new rewrites nothing; that every stored belief recomputes
+from its episodes; fifteen parses, from *Cats are mammals* to *Cats chase mice but they don't
+eat grass*; fourteen questions and their verdicts; that the penguin answer names *bird* as the
+ancestor it overrules and quotes the owner's own sentence; that a new statement lands at
+`@LAT90LON9`, that its terms land in the right hemispheres beside the terms that introduced
+them, and that the tail of the file survives the write; that saying the opposite of a belief
+is reported at once and leaves the belief contested rather than overwritten; and that *Start
+empty* keeps exactly the kit.
+
+And they check the claim the whole design rests on, three ways:
+
+1. **Delete the grammar records** and the runtime sees only word order — *Cats are mammals*
+   comes out as `cats | are | mammals`, with no copula, no plural and no class — and the
+   librarian has no words at all.
+2. **Swap in another language.** [tests/fixtures/es_ttdb.md](tests/fixtures/es_ttdb.md) is a
+   small Spanish grammar on the same runtime. *Los gatos son mamíferos. Los gatos cazan
+   ratones. Yo no como queso.* parses to `gato | es_un | mamífero`, `gato | cazar | ratón`,
+   `yo | comer | queso | -`, and *¿Los gatos cazan ratones?* is answered *Sí.*
+3. **Grep for leaks.** None of the 400-odd words the grammar lists appears as a string literal
+   in `index.html`, no reply phrase is copied into it, and every number the store declares is
+   named in it.
+
+The first version of that third check failed on five words, and three of them were real:
+`on` was a CSS class, `change` a DOM event name, and a comment quoted `ok`. Two were the
+grammar colliding with the file format — `kind` and `said` are block keys as well as English
+words — and block keys are schema, so the check exempts them by name.
+
+`node tests/*.test.mjs` exits non-zero on failure.
+
+---
+
+## The one design decision
+
+### The file is the grammar
+
+`index.html` knows how to split text, look a token up in a class, strip a suffix, walk a
+typed edge and fill a `{slot}`. It does not know that *the* is a determiner, that *mice* is
+the plural of *mouse*, that *is a* is transitive, or how to say *yes*. All of that is in the
+store, south of the origin on the prime meridian:
+
+| Record | Kind | Holds |
+|---|---|---|
+| `@LAT-10LON0` | `lexicon` | closed-class words, contractions, sentence punctuation |
+| `@LAT-20LON0` | `morphology` | irregular forms, plural and verb suffix rules |
+| `@LAT-30LON0` | `seed` | common verbs, a head start for finding predicates |
+| `@LAT-40LON0` | `vectors` | structural roles, vector algebra, naming phrases |
+| `@LAT-50LON0` | `questions` | the words that open each kind of question |
+| `@LAT-60LON0` | `responses` | every phrase the librarian can say |
+| `@LAT-70LON0` | `numbers` | every constant |
+
+That is *the file IS the model, the runtime is a generic interpreter* from global_models,
+taken as literally for language as global_models took it for climate — and falsifiable the
+same way. The runtime refers to grammar only by schema keys (`cop`, `class_of`,
+`label_said`), the way global_models' app refers to `shift_deg_per_c` and never to 2.0.
+
+### Corollaries
+
+| global_models | personal_grammar |
+|---|---|
+| The Earth as its instruments know it | A person as their words know them |
+| `index.html` holds no climate number | `index.html` holds no word |
+| A rendering is a pure function plus a `ttdb-render` block | A rule is a function kind plus a `ttdb-grammar` block |
+| A measurement and a model output are never printed alike | **What you said and what follows from it are never printed alike** |
+| A computed value declares its method and what re-runs it | A belief is derived and `node tools/consolidate.mjs` re-derives it |
+| An undated collapse is drawn as its two ends, and no mean | A contradiction is quoted as both sayings, and no verdict |
+| A planned layer names its blocker instead of being drawn | A word with no purchase is named instead of guessed |
+| EPS decides the roadmap | EPS decides what the librarian asks you about |
+| Latitude is real, so lanes need a `lane:` field | The sphere is a knowledge map, so lanes are latitudes again |
+| Beliefs sit beside their subjects | Beliefs sit *inside* their subjects, as `belief:` lines |
+| Bouvet Island holds the fixture | `@LAT99LON1` holds the fixture — with three malformed percepts |
+| The South Pole switches discovery off | The South Pole declares a kind no viewer knows, so discovery stays on |
+
+---
+
+## The grammar sphere
+
+The origin `@LAT0LON0` is **you** — the record your *I*, *me* and *my* resolve to. The prime
+meridian is **the grammar**: eight blueprint records north of you, seven language records
+south. **Things sit east, vectors west**, because the rule that decides which side a word
+falls on belongs on the line between the sides.
+
+A new term sits **beside the term that first gave it meaning**: *Pixel is a cat* puts
+`pixel` a degree or two from `cat`, so the sphere clusters by meaning in the order meaning
+arrived. With no partner a term hashes into its hemisphere. IDs never move (TTDB-RFC-0004).
+
+Latitude 90 is the timeline — every episode, verbatim, `lon` = its ordinal. Latitude 98 holds
+beliefs about the design, 99 the fixture, −90 the special record.
+
+---
+
+## The pipeline
+
+Each stage is one blueprint record in the store and one section of an RFC.
+
+1. **Read** — one input, one episode. Files are cleaned structurally; every sentence is kept.
+2. **Classify** — function word or content word; noun and verb lemmas; the predicate by the
+   first of six rules. *A candidate lemma the corpus already knows wins*, so the grammar gets
+   better at exactly the words you use.
+3. **Percept** — `sentence | subject | vector | object | polarity | quantifier`. *Cats chase
+   mice* is `cat | chase | mouse | + | -`. Your verbs become the store's edge types.
+4. **Terms** — a THING or VECTOR record per lemma, placed on the sphere.
+5. **Consolidate** — per triple, count **episodes, not sentences**, for and against;
+   conf = Laplace's rule of succession. One saying reads 170; *I like coffee* followed by *I
+   do not like coffee* reads 128 and is **contested**.
+6. **Reason** — said, then transitive, then inverse and symmetric, then inherited from the
+   nearest `is_a` ancestor. Specificity is the only defeasible rule.
+7. **Answer** — find purchase, pick the intent from the shape of the input, and build the
+   reply out of grounds.
+8. **Write back** — only what changed; everything else byte for byte.
+
+---
+
+## What it can answer
+
+The seed store carries eight demo episodes from [tools/seed_corpus.txt](tools/seed_corpus.txt):
+a small bestiary, a cat called Pixel, and one change of mind about coffee.
+
+| You type | Intent | The librarian says |
+|---|---|---|
+| *Does Pixel chase mice?* | verify | Probably — it follows from what you said. |
+| *Is Pixel an animal?* | verify | Probably — it follows from what you said. |
+| *Can penguins fly?* | verify | No. |
+| *Do I like coffee?* | verify | Your words disagree, and neither is chosen. |
+| *Is a whale a fish?* | verify | Your words don't reach that yet. |
+| *What eats cheese?* | subjectsOf | … eat cheese |
+| *Where does Pixel sleep?* | objectsOf | pixel sleep_in … |
+| *Tell me about penguins.* | portrait | What your words hold about penguin. |
+
+*Does Pixel chase mice?* is answered with the chain `pixel —is a→ cat ⟹ cat —chase→ mouse`
+and both sentences it rests on, labelled **inferred, not said**. *Can penguins fly?* quotes
+*Penguins do not fly.* and adds that *penguin is an exception — bird would suggest
+otherwise*. *Is a whale a fish?* ends *No purchase: whale, fish.*
+
+Every answer lights the records it touched on the sphere, opens the first one, and writes
+`last_query`, `last_answer` and `answer_records` into the store's cursor.
+
+---
+
+## Make your own
+
+This file is meant to be forked, and there are three depths to fork it at.
+
+1. **Your own corpus.** Press *Start empty*, then talk to it. Or run
+   `node tools/feed.mjs notes.md journal.txt` against an emptied store. Download the store now
+   and then; it is the only copy that leaves the browser.
+2. **Your own language.** Rewrite the seven records south of the origin and leave
+   `index.html` alone. [tests/fixtures/es_ttdb.md](tests/fixtures/es_ttdb.md) is a working
+   minimal example — about sixty lines of grammar.
+3. **Your own runtime.** The eight blueprint records up the meridian are the whole contract,
+   compressed: block formats, the percept line, placement, the conf formula, the inference
+   order, the intent table, the write rules. The three TTG RFCs are their expansion, and the
+   `mmpdb` constraints say what a runtime may and may not contain.
+
+---
+
+## Roadmap
+
+The order is EPS over the design beliefs in lane 98, as it was over the layers in
+global_models.
+
+| Record | Belief | conf | sal | EPS |
+|---|---|---|---|---|
+| `@LAT98LON5` | What the parser cannot see | 70 | 190 | **138** |
+| `@LAT98LON4` | The lemmatizer is a guess the corpus corrects | 120 | 210 | **111** |
+| `@LAT98LON3` | Said outranks inferred; a contradiction is kept | 190 | 200 | 51 |
+| `@LAT98LON1` | A verb is a vector, and the edge is the datum | 200 | 180 | 39 |
+| `@LAT98LON6` | Mentions are not evidence | 215 | 150 | 24 |
+| `@LAT98LON2` | Lanes are latitudes again | 230 | 60 | 6 |
+
+**First, the parser's blind spots** — relative clauses, attributive adjectives, tense and
+modality, names with spaces. Every sentence passes through them and they are the least
+settled thing here. The test for any fix is the one in `@LAT98LON5`: if it needs English in
+`index.html`, it is the wrong fix. Each is a rule kind the grammar could declare.
+
+**Second, the lemmatizer.** It is right about the words you use and wrong about the first use
+of anything irregular, and a wrong first lemma becomes the term later uses are matched
+against. Every merged surface form is visible on the term record's `forms:` line.
+
+**Not on the list: a recency rule for contradictions.** *I like coffee* on Monday and *I do not
+like coffee* on Friday is a change of mind, and the store cannot tell it from a contradiction.
+A recency window would be one line in the numbers record and a large claim about you.
+
+---
+
+## Known limits
+
+- **Subject–verb–object only.** Questions that invert word order beyond the declared forms
+  fall back to search.
+- **Modifiers are dropped.** *Black cats* is *cats*.
+- **A file is one episode**, however long. One long document cannot outvote two typed remarks.
+  That is a claim about what feeding a file in means — *here is something I read* — and it is
+  written down at `@LAT98LON6`.
+- **Replies quote rather than generate.** Articles and agreement are whatever your sentences
+  had; a chain prints as triples.
+- **`localStorage` is small.** Browsers allow a few megabytes. The page tells you if a save is
+  refused; download the store before feeding it a library.
+
+---
+
+## Conformance
+
+The store is a conformant TTDB (TTDB-RFC-0001) and exercises the failure paths on purpose:
+
+- `@LAT99LON1` carries a **dead edge**, an **unknown header field** and **no `[ew]` block**,
+  and an episode block holding **three malformed percept lines**, which the consolidator skips,
+  counts and reports (the page's status bar says *3 malformed skipped*).
+- `@LAT-90LON0` is the South Pole special record, declaring a `kind` no viewer knows.
+- The page implements TTCP-RFC-0001 §11 (weights shown with EPS) and §12 (edges as
+  navigation, dead edges visibly dead), TTCP-RFC-0002 §2 and §5–6 for the sphere, and
+  TTCP-RFC-0003 §2.2 record tokens and §6 search over the term list.
+
+Not implemented: the guided tour, scene playback, side globes, URL sync (the page reads
+`?ask=` to run a question on load and `?seed` to ignore the local copy, and nothing else).
+
+---
+
+## Credit and licence
+
+Specs and format: [toot-toot-engineering](https://antfriend.github.io) by antfriend. The
+demo sentences are invented. Licence: [LICENSE](LICENSE).
