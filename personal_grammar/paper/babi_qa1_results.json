@@ -1,20 +1,23 @@
 {
-  "task": "qa15_basic-deduction_test.txt",
+  "task": "qa1_single-supporting-fact_test.txt",
   "adaptation": [
-    "phrase: afraid of | afraid_of"
+    "rule: go_to X Y => in X Y | going somewhere puts you there",
+    "rule: journey_to X Y => in X Y | journeying somewhere puts you there",
+    "rule: travell_to X Y => in X Y | travelling somewhere puts you there",
+    "class: adverb | very … → class: adverb | back very …"
   ],
   "results": {
     "seed": {
       "questions": 1000,
-      "correct": 0,
-      "attributed": 0,
+      "correct": 194,
+      "attributed": 182,
       "facts": 2000,
       "perceived": 2000,
-      "ms": 287.4189999999971,
+      "ms": 243.81450000000112,
       "intents": {
-        "portrait": 1000
+        "objectsOf": 1000
       },
-      "outcomes_sha256": "33e361f4dd1c58fc"
+      "outcomes_sha256": "ed9fa0be5427c98c"
     },
     "+adapted": {
       "questions": 1000,
@@ -22,7 +25,7 @@
       "attributed": 1000,
       "facts": 2000,
       "perceived": 2000,
-      "ms": 213.74400000000082,
+      "ms": 218.90010000000416,
       "intents": {
         "objectsOf": 1000
       },
@@ -30,15 +33,15 @@
     },
     "+adapted, no exclusive flag": {
       "questions": 1000,
-      "correct": 1000,
-      "attributed": 1000,
+      "correct": 549,
+      "attributed": 549,
       "facts": 2000,
       "perceived": 2000,
-      "ms": 197.5697999999902,
+      "ms": 188.3605999999927,
       "intents": {
         "objectsOf": 1000
       },
-      "outcomes_sha256": "6bc1575590ad9171"
+      "outcomes_sha256": "ced41ffc11592e74"
     },
     "permuted": {
       "questions": 1000,
@@ -46,7 +49,7 @@
       "attributed": 1000,
       "facts": 2000,
       "perceived": 2000,
-      "ms": 199.57680000000482,
+      "ms": 192.96889999999803,
       "intents": {
         "objectsOf": 1000
       },
@@ -58,9 +61,9 @@
       "attributed": 0,
       "facts": 2000,
       "perceived": 0,
-      "ms": 97.20399999999972,
+      "ms": 108.06410000000596,
       "intents": {
-        "search": 1000
+        "verify": 1000
       },
       "outcomes_sha256": "33e361f4dd1c58fc"
     }

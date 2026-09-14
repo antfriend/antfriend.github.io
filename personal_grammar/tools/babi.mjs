@@ -4,6 +4,7 @@
 // story's gold supporting facts.
 //
 //   node tools/babi.mjs PATH/qa15_basic-deduction_test.txt [--json results.json]
+//   node tools/babi.mjs PATH/qa1_single-supporting-fact_test.txt [--json results.json]
 //
 // Data: bAbI tasks v1.2 (Weston et al., 2015), CC BY 3.0, not included here. The
 // archive tasks_1-20_v1-2.tar.gz is mirrored at
@@ -11,9 +12,11 @@
 //
 // Conditions:
 //   seed      the store exactly as shipped (English and Spanish grammars)
-//   +phrase   plus ONE grammar line, `phrase: afraid of | afraid_of`: a declared,
-//             task-specific adaptation, made in data and reported as such
-//   permuted  +phrase with a fixed letter bijection applied to the grammar records
+//   +adapted  plus the task's declared adaptation (ADAPTATIONS below): a few lines
+//             of grammar data, never code, printed with the results
+//   +adapted, no exclusive flag   the same, with `exclusive` removed from every vector
+//             line: an ablation of supersession (TTG-RFC-0004 §3)
+//   permuted  +adapted with a fixed letter bijection applied to the grammar records
 //             and to the (lowercased) data. If the runtime holds no English, every
 //             question's outcome is unchanged.
 import fs from "node:fs";
@@ -100,7 +103,8 @@ function run(storeText, data, σ = w => w){
       t.ms += performance.now() - start;
       t.questions++;
       t.intents[r.intent] = (t.intents[r.intent] || 0) + 1;
-      const top = r.items.find(g => g.pol !== "-");
+      // the answer is the first ground that holds: not a denial, not a retired fact (TTG-RFC-0004)
+      const top = r.items.find(g => g.pol !== "-" && g.kind !== "superseded");
       const said = top ? top.term : "";
       const ok = said === σ(item.answer);
       const quoted = top ? [...new Set(top.quotes.map(q => lineOf.get(q.ep)))].sort((a, b) => a - b) : [];
@@ -115,16 +119,35 @@ function run(storeText, data, σ = w => w){
 }
 
 /* ---------- the three conditions --------------------------------------------- */
+// Each task's adaptation: [anchor line, lines inserted after it] or [line, null, replacement].
+const ADAPTATIONS = {
+  // "afraid of" names one relation, as "part of" does
+  qa15: [["phrase: full of | contains", ["phrase: afraid of | afraid_of"]]],
+  // the other three motion verbs link to "in" as the seed's move_to does; "went back to" is "went to"
+  qa1: [["rule: move_to X Y => in X Y | moving somewhere puts you there",
+         ["rule: go_to X Y => in X Y | going somewhere puts you there",
+          "rule: journey_to X Y => in X Y | journeying somewhere puts you there",
+          "rule: travell_to X Y => in X Y | travelling somewhere puts you there"]],
+        ["class: adverb | very", null, "class: adverb | back very"]]
+};
 const seed = read(STORE).replace(/\r\n?/g, "\n");
-const ADAPT = "phrase: afraid of | afraid_of";
-const adapted = seed.replace("phrase: full of | contains\n", "phrase: full of | contains\n" + ADAPT + "\n");
-if (adapted === seed) throw new Error("the English vectors record has moved; update the anchor");
+const task = (file.split(/[\\/]/).pop().match(/^qa\d+/) || [""])[0];
+if (!ADAPTATIONS[task]) throw new Error("no declared adaptation for " + (task || file) + "; add one to ADAPTATIONS");
+let adapted = seed;
+const ADAPT = [];
+for (const [anchor, after, replacement] of ADAPTATIONS[task]){
+  if (!adapted.includes(anchor + (replacement ? "" : "\n"))) throw new Error("the store has moved; update the anchor: " + anchor);
+  if (replacement){ adapted = adapted.replace(anchor, replacement); ADAPT.push(anchor + " … → " + replacement + " …"); }
+  else { adapted = adapted.replace(anchor + "\n", anchor + "\n" + after.join("\n") + "\n"); ADAPT.push(...after); }
+}
 const data = stories(fs.readFileSync(file, "utf8"));
 const σ = bijection(15);
 
 const results = {
   seed: run(seed, data),
-  "+phrase": run(adapted, data),
+  "+adapted": run(adapted, data),
+  // ablation: the same, with no vector declared exclusive, so nothing is ever retired
+  "+adapted, no exclusive flag": run(adapted.replace(/^(vector: [^|]*\|[^|]*)\bexclusive\b ?/gm, "$1").replace(/\| \|/g, "| - |"), data),
   permuted: run(permuteStore(adapted, σ), data, σ),
   // negative control: a permuted grammar reading unpermuted data should understand nothing
   "control: permuted grammar, plain data": run(permuteStore(adapted, σ), data)
@@ -140,10 +163,10 @@ for (const [name, t] of Object.entries(results)){
   const intents = Object.entries(t.intents).map(([k, v]) => k + " " + v).join(", ");
   console.log(`| ${name} | ${pct(t.correct, t.questions)} | ${pct(t.attributed, t.questions)} | ${pct(t.perceived, t.facts)} | ${intents} | ${(t.ms / t.questions).toFixed(3)} |`);
 }
-console.log(`\nadaptation: \`${ADAPT}\` (one line of grammar data)`);
+console.log(`\nadaptation, ${ADAPT.length} line${ADAPT.length === 1 ? "" : "s"} of grammar data:\n` + ADAPT.map(l => "  " + l).join("\n"));
 console.log(`bijection sample: "${data[0][0].fact.toLowerCase()}" -> "${σ(data[0][0].fact.toLowerCase())}"`);
-console.log(`permuted vs +phrase, question by question: ${hash(results.permuted) === hash(results["+phrase"]) ? "identical" : "DIFFERENT"}`);
-console.log(`+phrase run twice: ${hash(again) === hash(results["+phrase"]) ? "identical (deterministic)" : "DIFFERENT"}`);
+console.log(`permuted vs +adapted, question by question: ${hash(results.permuted) === hash(results["+adapted"]) ? "identical" : "DIFFERENT"}`);
+console.log(`+adapted run twice: ${hash(again) === hash(results["+adapted"]) ? "identical (deterministic)" : "DIFFERENT"}`);
 console.log(`engine: ${Buffer.byteLength(read("index.html").match(/<script>([\s\S]*?)<\/script>/)[1])} bytes of script, 0 parameters`);
 
 if (jsonOut){

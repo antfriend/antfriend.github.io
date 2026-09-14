@@ -16,7 +16,8 @@
 A TTG store answers questions the way a primitive question-answering system does, with one
 difference that is the point: **every sentence of every answer is either something the owner
 said, something that follows from what they said by a named rule, or a report that the owner
-has said both**, and the three are never printed alike. This RFC defines how percepts
+has said both**, and the three are never printed alike. (TTG-RFC-0004 adds a fourth, **what
+no longer holds**, printed with what replaced it.) This RFC defines how percepts
 consolidate into beliefs, how a runtime reasons along vectors, how input finds **purchase**
 in the corpus, and how a reply is built from grounds.
 
@@ -37,7 +38,8 @@ the episode lane (TTG-RFC-0002 §5.1):
 
 This is TTDB-RFC-0007's replay made deterministic: counting replaces random walks, the count
 is atemporal as §3.2 there requires, and the formation threshold is the same. A contested
-belief is kept, never resolved by recency.
+belief is kept, never resolved by recency. Order enters only through `exclusive` vectors, which
+retire facts without touching consolidation (TTG-RFC-0004 §3).
 
 Beliefs are derived. A conforming implementation MUST be able to recompute every belief line
 from the episodes and SHOULD ship a tool that reports drift.
@@ -55,6 +57,9 @@ Let *decided⁺(x, v)* be the decided `+` beliefs of x along v.
 
 **verify(s, v, o)** returns the first that applies:
 
+0. (s, v, o) retired along an `exclusive` vector, unless the belief is contested → **N**,
+   *superseded*, with the fact that retired it (TTG-RFC-0004 §3.4); steps 4–5 check the
+   reversed triple the same way, and no walk passes through a retired fact;
 1. a belief (s, v, o): contested → **C**; else **Y**/**N**, *said*; if the nearest inherited
    belief on (v, o) has the opposite polarity it is reported as an **exception**;
 2. v is `weak` → **U**;
@@ -107,7 +112,9 @@ head variable does not occur in the body.
 - the base facts are the decided beliefs;
 - each round applies the algebra as rules — `transitive` (positive facts), `symmetric`, and
   `inverse` — and then every rule, to all facts so far;
-- a fact is added the first time its key appears, so it keeps a shortest proof;
+- a fact is added the first time its key appears, so it keeps a shortest proof; it also
+  carries when it last came to hold, and a later reason replaces an earlier one (TTG-RFC-0004
+  §3.2);
 - rounds repeat until one adds nothing.
 
 Facts range over the terms the store names and its declared vectors, a finite set, so the
@@ -151,7 +158,7 @@ Question shapes are parsed by the clause parser itself, with a slot token standi
 asked-about thing and the moved cue word restored behind the subject.
 
 **Reply.** A verdict (`affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `contest`,
-`unknown`, `noted`, `noted_nothing`, `nothing_found`) or a head, then grounds, each rendered
+`unknown`, `deny_superseded`, `noted`, `noted_nothing`, `nothing_found`) or a head, then grounds, each rendered
 by kind:
 
 | Kind | Label | Shows |
@@ -159,8 +166,10 @@ by kind:
 | direct | `label_said` | the triple and the owner's sentence(s), with episode and sentence number |
 | inference | `label_inferred` | the whole chain, and one sentence per link — never a single quote standing in for the conclusion |
 | conflict | `label_contested` | one `+` sentence and one `-` sentence, no verdict |
+| superseded | `label_superseded` | the retired fact, then `superseded_by` and the ground that retired it (TTG-RFC-0004 §3.4) |
 
 then notes: `exception`, `contradicts` (when a new percept opposes a decided belief),
+`supersedes` (when a new episode retires a fact),
 `no_purchase`, and `suggest` for the purchased THING with the highest EPS at or above
 `suggest_eps_min`. Search results are ranked by Σ log(1 + N/df) over matched lemmas across
 all `said` lines.
@@ -185,7 +194,8 @@ values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
 
 1. **Change of mind vs contradiction.** Consolidation cannot tell them apart. A recency
    window would be a claim about the owner; a `revises` percept marker (*I used to…*) would
-   be a claim about the language.
+   be a claim about the language. The `exclusive` flag (TTG-RFC-0004) is a third kind, a claim
+   about a relation, and settles only changes of object, never of polarity.
 2. **Defaults beyond specificity.** Only the nearest ancestor overrides. Multiple
    inheritance with conflicting ancestors at equal distance currently resolves by walk order.
 3. **Answer realisation.** Replies quote rather than generate. A realisation layer — slot
@@ -200,5 +210,6 @@ values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
 |---|---|
 | 2026-09-13 | Initial draft |
 | 2026-09-14 | §3.1 Rules: Datalog-style rules over vectors, derived to a fixpoint after each consolidation; verify, objects, subjects and describe read their conclusions. |
+| 2026-09-14 | Supersession from TTG-RFC-0004: verify step 0, facts carry when they came to hold, the `superseded` ground; inference grounds quote each step at its latest saying. |
 
 *License: CC0*

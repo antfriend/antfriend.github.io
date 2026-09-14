@@ -217,7 +217,7 @@ section("start empty keeps the kit");
 section("rules: Datalog-style, over vectors (TTG-RFC-0003 §3.1)");
 {
   const S = fresh();
-  ok(S.G.rules.length === 3 && S.G.ruleErrors.length === 0 && S.grammars[1].rules.length === 3, "three seed rules load, none rejected, and the Spanish grammar borrows them");
+  ok(S.G.rules.length === 4 && S.G.ruleErrors.length === 0 && S.grammars[1].rules.length === 4, "four seed rules load, none rejected, and the Spanish grammar borrows them");
 
   const sun = PG.answer(S, "Is Pixel in the sun?", T0);
   ok(sun.verdict === PG.say(S.G, "affirm_inferred") && sun.items[0].path.map(e => e.v).join(">") === "sleep_in>in" && sun.items[0].path[1].rule,
@@ -249,21 +249,87 @@ section("rules: Datalog-style, over vectors (TTG-RFC-0003 §3.1)");
 
   const cyc = overlay(["rule: chase X Y => hunt Y X | a", "rule: hunt X Y => chase X Y | b", "rule: is_a X Y => is_a Y X | c", "rule: eat X Y, is_a X Z => eat Z Y | d"]);
   const terms = cyc.things.size + 1, bound = terms * terms * (cyc.vectors.size + cyc.G.vectors.size) * 2;
-  ok(cyc.G.rules.length === 7 && cyc.derived.size > 0 && cyc.derived.size <= bound, "rules written to cycle still reach a fixpoint within the bound", cyc.derived.size + " ≤ " + bound);
+  ok(cyc.G.rules.length === 8 && cyc.derived.size > 0 && cyc.derived.size <= bound, "rules written to cycle still reach a fixpoint within the bound", cyc.derived.size + " ≤ " + bound);
 
   const bad = overlay(["rule: chase X Y => eat X Z | unsafe", "rule: chase X Y, chase Y Z, chase Z W, chase W V => chase X V | long",
                        "rule: chase X Y => with X Y | protected", "rule: chase X Y | no arrow"]);
-  ok(bad.G.rules.length === 3 && bad.G.ruleErrors.map(e => e.why).join() === "unsafe,length,protected,shape", "unsafe, over-long, protected and malformed rules are rejected and reported",
+  ok(bad.G.rules.length === 4 && bad.G.ruleErrors.map(e => e.why).join() === "unsafe,length,protected,shape", "unsafe, over-long, protected and malformed rules are rejected and reported",
      bad.G.ruleErrors.map(e => e.why).join());
+}
 
-  const motion = overlay(["rule: move_to X Y => in X Y | moving somewhere puts you there"]);
-  PG.startEmpty(motion, T0);
-  PG.answer(motion, "Mary moved to the kitchen.", T0 + 1);
-  const where = PG.answer(motion, "Where is Mary?", T0 + 2);
-  PG.answer(motion, "Mary moved to the garden.", T0 + 3);
-  const later = PG.answer(motion, "Where is Mary?", T0 + 4).items.map(g => g.term);
-  ok(where.items[0] && where.items[0].term === "kitchen" && later.join() === "kitchen,garden",
-     "a motion rule answers where someone is, and without recency both places stand", later.join());
+section("time: exclusive vectors and supersession (TTG-RFC-0004 §2–3)");
+{
+  const empty = () => { const S = fresh(); PG.startEmpty(S, T0); return PG.openStore(PG.serializeStore(S.st)); };
+  const S0 = fresh();
+  ok(S0.G.vectors.get("in").flags.has("exclusive") && S0.grammars[1].vectors.get("in").flags.has("exclusive"),
+     "in is declared exclusive in the store, and the Spanish grammar borrows the flag");
+  ok(S0.superseded.size === 0, "the seed corpus retires nothing");
+
+  const S = empty();
+  PG.answer(S, "Mary moved to the kitchen.", T0 + 10);
+  const first = PG.answer(S, "Where is Mary?", T0 + 10);
+  ok(first.items.map(g => g.term).join() === "kitchen" && first.items[0].kind === "inference", "a motion rule says where someone is");
+  const told = PG.answer(S, "Mary moved to the garden.", T0 + 10);
+  ok(told.notes.includes(PG.say(S.G, "supersedes")) && told.items.some(g => g.kind === "superseded" && g.path.at(-1).o === "kitchen"),
+     "saying the later place is reported at once, with what it replaced");
+  const where = PG.answer(S, "Where is Mary?", T0 + 10);
+  ok(where.items.map(g => g.term + ":" + g.kind).join() === "garden:inference,kitchen:superseded",
+     "where: what holds first, what no longer holds after it", where.items.map(g => g.term + ":" + g.kind).join());
+  const v = PG.answer(S, "Is Mary in the kitchen?", T0 + 10), g = v.items[0];
+  ok(v.verdict === PG.say(S.G, "deny_superseded") && g.kind === "superseded" &&
+     g.quotes.map(q => q.text).join() === "Mary moved to the kitchen." && g.by.quotes.map(q => q.text).join() === "Mary moved to the garden.",
+     "is she in the kitchen: no longer, quoting what was said and what was said since", v.verdict);
+  const text = PG.replyText(S, v);
+  ok(text.includes("[" + PG.say(S.G, "label_superseded") + "]") && text.includes(" " + PG.say(S.G, "superseded_by") + " [" + PG.say(S.G, "label_inferred") + "]"),
+     "the plain reply prints the retired ground, then the later one under its own label");
+  const record = S.things.get("mary").chunk.rec.term;
+  const again = PG.openStore(PG.serializeStore(S.st));
+  ok(record.includes("belief: move_to | kitchen | + | 1 0 | 170") && [...again.superseded.keys()].join() === [...S.superseded.keys()].join(),
+     "retiring is not forgetting: the belief line is unchanged, and what is retired is recomputed from the words on open");
+
+  PG.answer(S, "Mary moved to the kitchen.", T0 + 10);
+  ok(PG.objectsOf(S, "mary", ["in"]).map(g => g.term + ":" + g.kind).join() === "kitchen:inference,garden:superseded",
+     "going back: the latest saying of a place makes it hold again");
+
+  const order = empty();
+  PG.answer(order, "John moved to the hall. John moved to the office.", T0 + 500);
+  PG.answer(order, "Daniel moved to the office.", T0 + 500);
+  PG.answer(order, "Daniel moved to the hall.", T0);
+  ok(PG.verify(order, "john", "in", "hall").superseded && PG.verify(order, "daniel", "in", "office").superseded && !PG.verify(order, "daniel", "in", "hall").superseded,
+     "order is sentence order within an episode and episode order on the lane; the clock passed in is not consulted");
+
+  const nest = empty();
+  PG.answer(nest, "The kitchen is in the house.", T0);
+  PG.answer(nest, "Sam is in the kitchen.", T0);
+  const inHouse = PG.verify(nest, "sam", "in", "house");
+  PG.answer(nest, "Sam is in the house.", T0);
+  ok(inHouse.verdict === "Y" && inHouse.inferred && !PG.verify(nest, "sam", "in", "kitchen").superseded && !PG.verify(nest, "sam", "in", "house").superseded,
+     "two places along the vector from each other are compatible: the kitchen is in the house");
+  PG.answer(nest, "Sam moved to the garden.", T0);
+  ok(PG.verify(nest, "sam", "in", "kitchen").superseded && PG.verify(nest, "sam", "in", "house").superseded,
+     "a place off that chain retires both");
+  const nest2 = empty();
+  PG.answer(nest2, "The kitchen is in the house.", T0);
+  PG.answer(nest2, "Sam is in the kitchen.", T0);
+  PG.answer(nest2, "Sam moved to the garden.", T0);
+  ok(PG.verify(nest2, "sam", "in", "house").verdict === "U", "and no chain is walked through a retired link", PG.verify(nest2, "sam", "in", "house").verdict);
+
+  const mind = empty();
+  PG.answer(mind, "Kim is in the garden.", T0);
+  PG.answer(mind, "Kim is not in the garden.", T0);
+  ok(PG.verify(mind, "kim", "in", "garden").verdict === "C", "a later denial of the same place is still a contradiction, not a supersession");
+
+  const many = empty();
+  PG.answer(many, "Pixel chases mice.", T0);
+  PG.answer(many, "Pixel chases birds.", T0);
+  ok(PG.objectsOf(many, "pixel", ["chase"]).every(g => g.kind === "direct") && many.superseded.size === 0,
+     "a vector not declared exclusive keeps every object");
+
+  const es = empty();
+  PG.answer(es, "Mary moved to the kitchen.", T0);
+  PG.answer(es, "Mary moved to the garden.", T0);
+  const q = PG.answer(es, "¿Está Mary en el kitchen?", T0);
+  ok(q.lang === "es" && q.verdict === PG.say(es.grammars[1], "deny_superseded"), "asked in Spanish, the answer is no longer, in Spanish", q.verdict);
 }
 
 section("two languages, one sphere (TTG-RFC-0001 §11)");

@@ -94,6 +94,13 @@ for (const [, q, intent, says] of rows){
   const w = PG.answer(PG.openStore(store), "Is a whale a fish?", 1789400000);
   const flat = readme.replace(/\s+/g, " ");
   ok(flat.includes("*" + w.notes[0] + "*"), "the whale no-purchase note is quoted exactly", w.notes[0]);
+  const moved = PG.openStore(store);
+  const told = PG.answer(moved, "Pixel moved to the kitchen.", 1789400000), sun = PG.answer(moved, "Is Pixel in the sun?", 1789400000);
+  // the README wraps the plain reply: episode IDs dropped, each quote and the later ground on their own lines
+  const plain = PG.replyText(moved, sun).replace(/ \(@LAT[\d.-]+LON[\d.-]+\)/g, "").replace(/ — “/g, "\n    — “").replace(/ (since \[)/, "\n  $1");
+  const doc = readme.replace(/\r\n?/g, "\n");
+  ok(doc.includes(told.verdict + "\n  …\n" + told.notes[0] + "\n") && doc.includes(plain),
+     "the 'What no longer holds' example is what the engine says", JSON.stringify(plain));
   const p = PG.answer(PG.openStore(store), "Can penguins fly?", 1789400000);
   ok(flat.includes("*" + p.notes[0].replace(/\.$/, "") + "*"), "the penguin exception is quoted exactly", p.notes[0]);
 }

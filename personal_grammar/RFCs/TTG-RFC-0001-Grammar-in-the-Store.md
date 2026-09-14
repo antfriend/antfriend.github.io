@@ -97,8 +97,10 @@ A word the owner has used as a verb is recognised as a VECTOR term regardless of
 | `label` | `<vector> \| <label>` | Renames a declared vector for display; how a later language names the first's (§11). |
 
 Roles: `class_of`, `property`, `possession`, `comention`, `episode_edge`, `negation_prefix`,
-`phrasal_join`. Flags: `transitive`, `symmetric`, `weak`. A vector not declared here has no
-algebra. `weak` vectors are never walked and never consolidate.
+`phrasal_join`. Flags: `transitive`, `symmetric`, `weak`, `exclusive`. A vector not declared
+here has no algebra. `weak` vectors are never walked and never consolidate. Along an
+`exclusive` vector a subject holds one object at a time, and a later saying retires an earlier
+one (TTG-RFC-0004 §3).
 
 ---
 
@@ -113,9 +115,9 @@ words fill are defined in TTG-RFC-0003 §4.
 ## 8. `kind: responses`
 
 `<key>: <phrase with {slots}>`, and `unit_<noun>: <singular> | <plural>`. Keys the runtime
-emits: `label_said`, `label_inferred`, `label_contested`, `affirm`, `deny`, `affirm_inferred`,
-`deny_inferred`, `contest`, `unknown`, `exception`, `no_purchase`, `noted`, `noted_nothing`,
-`contradicts`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
+emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `superseded_by`,
+`affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `deny_superseded`, `contest`, `unknown`,
+`exception`, `no_purchase`, `noted`, `noted_nothing`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
 `objects_head`, `subjects_head`, `nothing_found`, `search_head`, `suggest`, `ingested`,
 `episode_title`, `source_typed`, `store_opened`; units `percept`, `sentence`, `term`.
 
@@ -218,5 +220,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-09-13 | §10 Embedding Surface added, after a third-party embedding reported which facts it had to take from the page and README instead of the store. §10–12 renumbered to §11–13. |
 | 2026-09-13 | §11 Several Languages added; the reference store carries Spanish beside English. `label:` in §6; progressive and participle endings become lists in §4; rule lists append (§12). Former open question 2 answered; §11–13 renumbered to §12–14. |
 | 2026-09-14 | `kind: rules` (defined in TTG-RFC-0003 §3.1) and `rule_max_body` in §9; rules are shared like numbers (§11); open question 2 narrowed. |
+| 2026-09-14 | The `exclusive` flag in §6 and four reply keys in §8, for supersession (TTG-RFC-0004 §3). |
 
 *License: CC0*

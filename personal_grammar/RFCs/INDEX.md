@@ -1,7 +1,7 @@
 # RFC Index — Personal Grammar
 
 The subset of the [toot-toot-engineering](https://antfriend.github.io) RFC corpus this
-project depends on, copied so the folder is self-contained, plus the three drafts it adds.
+project depends on, copied so the folder is self-contained, plus the four drafts it adds.
 Read them in this order.
 
 ## What this project adds — Toot Toot Grammar (TTG)
@@ -10,7 +10,8 @@ Read them in this order.
 |---|---|---|
 | [TTG-RFC-0001](TTG-RFC-0001-Grammar-in-the-Store.md) | Grammar in the Store | The `ttdb-grammar` and `ttdb-sphere` blocks, the eight grammar kinds, and the **runtime contract**: no natural-language word or reply phrase in the interpreter. |
 | [TTG-RFC-0002](TTG-RFC-0002-Semantic-Percepts.md) | Semantic Percepts, Episodes and Terms | Reading, nounish/verbish classification, the percept line, episode and term records, placement on the grammar sphere, and byte-stable write-back. |
-| [TTG-RFC-0003](TTG-RFC-0003-Beliefs-Reasoning-Response.md) | Beliefs, Vector Reasoning and Grounded Response | Consolidation (the rule of succession over episodes), vector algebra, Datalog-style rules over vectors (§3.1), inference with specificity, purchase, intents, and the three kinds of ground. |
+| [TTG-RFC-0003](TTG-RFC-0003-Beliefs-Reasoning-Response.md) | Beliefs, Vector Reasoning and Grounded Response | Consolidation (the rule of succession over episodes), vector algebra, Datalog-style rules over vectors (§3.1), inference with specificity, purchase, intents, and the kinds of ground. |
+| [TTG-RFC-0004](TTG-RFC-0004-Time-and-the-Fleet.md) | Time — the Order of Sayings, Supersession, and a Fleet's Shared Clock | The order of sayings, `exclusive` vectors whose later sayings retire earlier ones, the `superseded` ground; and, proposed, how a fleet of agents orders sayings on a shared pulse. |
 
 The store compresses these into nine blueprint records up the prime meridian; each carries
 a `src:` line naming the section it expands to (TTN-RFC-0004 applied to the spec itself).
@@ -37,8 +38,16 @@ The ninth, the runtime's surface, expands to TTG-RFC-0001 §10.
 | [TTCP-RFC-0003](TTCP-RFC-0003-Link-System-and-Addressability.md) | Link System and Addressability | Record tokens (`lat10lon0`) used for in-store links, and §6 search over the term list. |
 | [TTN-RFC-0004](TTN-RFC-0004-Semantic-Compression.md) | Semantic Compression | The `src:` convention by which every blueprint record names its deterministic expansion. |
 
+## The fleet — agents that share a clock
+
+| RFC | Title | Why it is here |
+|---|---|---|
+| [TTN-RFC-0010](TTN-RFC-0010-Fleet-Pulse.md) | Fleet Pulse — Self-Synchronizing Heartbeat and the Band Time-Base | The chart, conductor election, drift-paced beacons and `scene_id`, adopted unchanged by TTG-RFC-0004 §4 as a fleet's time-base. |
+
 ## Referenced but not copied
 
+- **TTN-RFC-0007, TTN-RFC-0008, TTN-RFC-0009** *(Reliable Delivery, Time-Sync, TTDB Push-Back)* — the
+  delivery, clock-offset and belief-distribution machinery TTG-RFC-0004 §4 leans on. Upstream.
 - **TTDB-RFC-0010** *(Stigmergic Fields, Lane Discipline and Record Identity)* — the corpus
   lane allocation (90 timeline, 98 belief, 99 fixture) that this store uses directly, and that
   global_models could not. Upstream.

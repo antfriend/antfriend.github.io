@@ -289,8 +289,8 @@ reports any belief line that has drifted from its percepts.
 src: RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md §3
 
 Beliefs are formed about THINGS; reasoning travels along VECTORS. The algebra is declared
-per vector in [vector algebra](lat-40lon0) with four flags — `transitive`, `symmetric`,
-`inherits`, `weak` — and an optional inverse. Anything more is a [rule](lat-80lon0):
+per vector in [vector algebra](lat-40lon0) with five flags — `transitive`, `symmetric`,
+`inherits`, `weak`, `exclusive` — and an optional inverse. Anything more is a [rule](lat-80lon0):
 `not_fly X -, is_a X bird => has_property X flightless`. Rule conclusions are recomputed in
 memory after every episode, until a round adds nothing; the algebra runs at answer time.
 Nothing inferred is ever written, and everything inferred is labelled as inference.
@@ -312,6 +312,14 @@ An inferred conf is the product of the chain's confs (as fractions of 255) times
 said belief outranks any inference, and the nearest ancestor outranks a farther one — so
 *penguins do not fly* stands against *birds fly*, and the answer says which ancestor was
 overruled. `weak` vectors are never walked.
+
+**Time enters in one place.** Along an `exclusive` vector (`in`) a subject holds one object at
+a time, so a later saying, or a rule conclusion from one (*Mary moved to the garden*),
+**retires** an earlier object unless the two lie on one chain (*the kitchen is in the house*).
+Verify answers a retired triple before step 1 — *no longer*, quoting what was said and what
+was said since — unless its belief is contested; no walk passes through it; nothing about it
+is written. *Later* means later in the file: the episode's place on the lane, then the
+sentence. Expansion: [TTG-RFC-0004](RFCs/TTG-RFC-0004-Time-and-the-Fleet.md).
 
 ---
 
@@ -337,8 +345,9 @@ The intent comes from the shape of the input, using [question forms](lat-50lon0)
 | anything else with purchase | **search** the `said:` lines, ranked by the rarity of the matched lemmas | *morning tea* |
 
 A reply is a **verdict** from [replies](lat-60lon0) followed by **grounds**, each one of
-three kinds, printed three ways: `said` (the owner's sentence, quoted, with its episode),
-`inferred` (the chain, never quoted as if said), `contested` (both sayings). Every answer
+four kinds, printed four ways: `said` (the owner's sentence, quoted, with its episode),
+`inferred` (the chain, never quoted as if said), `contested` (both sayings), `no longer` (a
+retired fact, then what retired it). Every answer
 increments `asked` on the terms it found purchase on, and writes `last_query`,
 `last_answer` and `answer_records` into the cursor (TTDB-RFC-0002). When a purchased term's
 EPS reaches `suggest_eps_min`, the librarian asks the owner about it: the most-used,
@@ -368,7 +377,7 @@ record except Home (the page's *Start empty* does this). To make a grammar for a
 language, rewrite the records south of the origin — lexicon, morphology, seed vectors,
 algebra, questions, replies — and leave the runtime alone; the constraints in `mmpdb` say
 what a runtime may and may not contain. To make a new runtime, the nine blueprint records
-and the block formats above are the whole contract, and the three TTG RFCs are their
+and the block formats above are the whole contract, and the four TTG RFCs are their
 expansion. To put this runtime inside another app, read [the runtime's surface](lat85lon0).
 
 ---
@@ -416,16 +425,19 @@ character that stands for the hole a question asks the corpus to fill.
 (the grammar in use, normally the first language's) and `grammars` (one per `lang:`); `things` and `vectors` (Map lemma → `{ chunk, cls, lemma, forms,
 asked }`); `episodes` (lane chunks) and `offLane` (other episode blocks, checked only);
 `trips` (Map `"s|v|o"` → `{ s, v, o, pol, conf, fr, ag, decided, sources }`); `derived`
-(Map `"s|v|o"` → a rule conclusion `{ s, v, o, pol, rule, proof }`, never written); `said` (Map
+(Map `"s|v|o"` → a rule conclusion `{ s, v, o, pol, rule, proof }`, never written); `superseded` (Map
+`"s|v|o"` → `{ fact, by }`, each `{ s, v, o, t, path }`: what an `exclusive` vector retired and the later
+fact that retired it, never written); `said` (Map
 episode ID → Map sentence number → sentence); `malformed` (`{ id, line }`). `PG.records(S.st)`
 lists records as `{ id, key, lat, lon, title, body, edges, conf, sal, eps, … }`.
 
 **A reply.** `{ intent, lang, query, verdict, head, items, portraits, search, notes, purchase:{
 found, missing }, records, episode }`. Each item is a ground `{ kind, pol, path, quotes, … }`
 where `kind` is `direct` (print with `label_said`), `inference` (`label_inferred`, and it
-carries `via`) or `conflict` (`label_contested`); `path` is the chain of beliefs; `quotes` are
+carries `via`) `conflict` (`label_contested`) or `superseded` (`label_superseded`, carrying `by`, a ground of
+the first two kinds printed after `superseded_by`); `path` is the chain of beliefs; `quotes` are
 `{ ep, n, text, pol }`. A portrait is `{ lemma, head, direct, inferred, incoming, uses, withs }`,
-the first four lists of grounds. Three kinds, printed three ways — [Blueprint 7](lat70lon0) —
+the first four lists of grounds. Four kinds, printed four ways — [Blueprint 7](lat70lon0) —
 is the host's job too. `records` are IDs to highlight; `search` is `{ ep, n, text, score, hit }`;
 `replyText` shows one plain rendering of all of it.
 
@@ -643,8 +655,10 @@ What the grammar's own vectors mean, and the multi-word phrases that name them. 
 line tells the runtime which vector plays a structural part — the runtime asks for the
 `class_of` role, never for a word. A `vector:` line reads
 `name | flags | inverse | label`, where the label is how an answer prints the vector.
-Owner vectors that are not declared here have no algebra: they are said or not said, and
-they inherit down `is_a` like everything else.
+`exclusive` means one object at a time: *Mary is in the garden* retires *Mary is in the
+kitchen* if it was said later, and the answer shows both. Owner vectors that are not
+declared here have no algebra: they are said or not said, and they inherit down `is_a`
+like everything else.
 
 ```ttdb-grammar
 kind: vectors
@@ -659,7 +673,7 @@ vector: is_a | transitive | - | is a
 vector: has_property | - | - | is
 vector: has | - | part_of | has
 vector: part_of | transitive | has | is part of
-vector: in | transitive | contains | is in
+vector: in | transitive exclusive | contains | is in
 vector: contains | transitive | in | contains
 vector: equals | symmetric transitive | - | is the same as
 vector: opposes | symmetric | - | is the opposite of
@@ -724,6 +738,10 @@ no_purchase: No purchase: {words}.
 noted: Noted {percepts} from {sentences}.
 noted_nothing: Kept your words, but no percept formed — nothing to reason along yet.
 contradicts: This disagrees with something you said before.
+supersedes: This replaces something you said before.
+label_superseded: no longer
+superseded_by: since
+deny_superseded: No longer — you said something since.
 describe_head: What your words hold about {term}.
 describe_empty: {term} is in your words, but nothing has been said about it yet.
 points_here: What points at {term}
@@ -788,6 +806,7 @@ kind: rules
 rule: sleep_in X Y => in X Y | sleeping somewhere is being there
 rule: not_fly X -, is_a X bird => has_property X flightless | a bird that does not fly
 rule: cazar X Y => chase X Y | cazar is chase
+rule: move_to X Y => in X Y | moving somewhere puts you there
 ```
 
 ---
@@ -974,6 +993,10 @@ no_purchase: Sin agarre: {words}.
 noted: Anotado: {percepts} de {sentences}.
 noted_nothing: Guardé tus palabras, pero no se formó ninguna percepción.
 contradicts: Esto contradice algo que dijiste antes.
+supersedes: Esto reemplaza algo que dijiste antes.
+label_superseded: ya no
+superseded_by: desde
+deny_superseded: Ya no — dijiste otra cosa después.
 describe_head: Lo que tus palabras dicen de {term}.
 describe_empty: {term} está en tus palabras, pero aún no se ha dicho nada de ello.
 points_here: Lo que apunta a {term}
@@ -1752,17 +1775,17 @@ owner, and they keep the corpus lane.
 
 ---
 
-@LAT98LON3 | created:1789257600 | updated:1789257600 | relates:supports@LAT60LON0,supports@LAT50LON0
+@LAT98LON3 | created:1789257600 | updated:1789344000 | relates:supports@LAT60LON0,supports@LAT50LON0
 [ew]
 conf:190
-rev:0
+rev:1
 sal:200
-touched:1789257600
+touched:1789344000
 [/ew]
 
 **BELIEF — Said outranks inferred, the nearest ancestor outranks a farther one, and a contradiction is kept.**
 
-These are the only three judgements the reasoner makes, and each is a refusal to invent. A
+These are the reasoner's three judgements about what to say, and each is a refusal to invent. A
 said belief outranks an inference because the owner said it. The nearest ancestor outranks a
 farther one because it is the more specific thing the owner said. And when the owner has
 said a thing and its opposite equally often, the belief is **contested**: conf 128, no edge,
@@ -1770,11 +1793,18 @@ both sentences quoted, no verdict — the correlary of global_models drawing an 
 collapse as its two ends and no mean. A contested belief is not an error in the store; it is
 the most interesting thing in it, and its EPS is how the librarian finds it again.
 
-What this cannot do is weigh *when* something was said. *I like coffee* on Monday and *I do
-not like coffee* on Friday is a change of mind, not a contradiction, and the store cannot
-tell those apart: consolidation is deliberately atemporal, as TTDB-RFC-0007 §3.2 requires of
-replay. A recency rule would be one line in the numbers record and a large claim about the
-owner, so it is not made.
+Consolidation still does not weigh *when* something was said. *I like coffee* on Monday and
+*I do not like coffee* on Friday is a change of mind, not a contradiction, and the store
+cannot tell those apart: replay is deliberately atemporal, as TTDB-RFC-0007 §3.2 requires. A
+recency rule would be one line in the numbers record and a large claim about the owner, so it
+is not made.
+
+Time enters in one narrower place, as a claim about a relation rather than about the owner.
+A vector the grammar declares `exclusive` holds one object at a time, so *Mary is in the
+garden* **retires** an earlier *Mary is in the kitchen*. That is a fourth judgement, about
+order, and it refuses to invent in the same way: the retired saying is still quoted beside
+what replaced it, and a flip of polarity (*Kim is not in the garden*) is still a
+contradiction ([TTG-RFC-0004](RFCs/TTG-RFC-0004-Time-and-the-Fleet.md)).
 
 ---
 
@@ -1880,6 +1910,36 @@ test.
 
 Try it: *Un gato es un cat.* then *¿Es un gato un animal?* A third language is another set of
 records with its own `lang:`, and nothing in the runtime.
+
+---
+
+@LAT98LON8 | created:1789344000 | updated:1789344000 | relates:refines@LAT98LON3,supports@LAT60LON0
+[ew]
+conf:90
+rev:0
+sal:180
+touched:1789344000
+[/ew]
+
+**BELIEF — Order, not clocks: a fleet shares a tempo, and orders only what it can show.**
+
+A lone store knows what came later without a clock. Episodes are only appended, so the file is
+the order, and [the step that retires](lat60lon0) *in the kitchen* when *in the garden* is said
+later reads nothing else. What is not yet tested is what happens when several agents hear one
+owner — a phone, a Pi, an ESP32 badge — and their episodes meet. No file order is shared, and
+their clocks disagree.
+
+The proposal borrows a band's answer, TTN-RFC-0010's fleet pulse: agree on the tempo, keep it
+locally, and glance at the conductor only as often as drift requires. Each agent stamps an
+episode with its pulse time **and a bound** — at 50 ppm, ±4 s for a day since the last beacon.
+A saying is later only when a `follows@` edge shows its agent had already heard the other, or
+when the bounds do not overlap. Inside the bound, as inside the band's ±50 ms swing, no order
+is claimed: two places said at about the same time are **contested**, and neither silently
+wins. The chart's `scene_id` becomes a hash of the grammar, because agents reading with
+different grammars are a band playing different songs.
+
+Low conf because none of it runs yet; high salience because it decides whether *personal* can
+mean more than one device. Expansion: [TTG-RFC-0004 §4](RFCs/TTG-RFC-0004-Time-and-the-Fleet.md).
 
 ---
 

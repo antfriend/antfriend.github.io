@@ -4,8 +4,9 @@ A one-page web app: **a corpus of your own words that answers in them.** You typ
 or feed in whole `.md` and `.txt` files, and the page breaks them into *percepts* — nounish
 **things** and verbish **vectors** — forms beliefs about the things, reasons along the
 vectors, and answers questions the way a primitive Q/A system or an LLM chat would. The
-difference is that it can only ever say three kinds of thing: **what you said**, **what
-follows from what you said** (with the chain shown), and **that you have said both**.
+difference is that it can only ever say four kinds of thing: **what you said**, **what
+follows from what you said** (with the chain shown), **that you have said both**, and **what
+no longer holds** (with what you said since).
 
 Static files, no build step, no dependencies. One TTDB file is the foundation, the
 blueprint and the data; one HTML page runs it.
@@ -37,7 +38,7 @@ episode and term, which is how you make the corpus your own.
 |---|---|
 | [index.html](index.html) | The app: a TTDB parser and round-trip writer, a rule interpreter, a consolidator, a reasoner, a small sphere. **No words of any language.** |
 | [personal_grammar_ttdb.md](personal_grammar_ttdb.md) | The store. The blueprint, an English grammar and a Spanish one, every reply phrase, every constant, and the corpus. |
-| [RFCs/](RFCs/) | The specs, three of them new. Start at [RFCs/INDEX.md](RFCs/INDEX.md). |
+| [RFCs/](RFCs/) | The specs, four of them new. Start at [RFCs/INDEX.md](RFCs/INDEX.md). |
 | [tests/](tests/) | Two Node scripts and a Spanish grammar fixture. No dependencies, no test runner. |
 | [tools/](tools/) | Command-line access to the same engine: ask, feed, re-consolidate. |
 
@@ -60,8 +61,9 @@ ancestor it overrules and quotes the owner's own sentence; that a new statement 
 them, and that the tail of the file survives the write; that saying the opposite of a belief
 is reported at once and leaves the belief contested rather than overwritten; that *Start
 empty* keeps exactly the kit, and that the fixture it keeps is never searchable as your words;
-and that the store's description of the runtime's surface names exactly what the runtime
-exports.
+that a later place retires an earlier one in the order things were said, whatever clock the
+host passed in, while a later denial of the same place stays a contradiction; and that the
+store's description of the runtime's surface names exactly what the runtime exports.
 
 And they check the claim the whole design rests on, three ways:
 
@@ -84,6 +86,13 @@ grammar colliding with the file format — `kind` and `said` are block keys as w
 words — and block keys are schema, so the check exempts them by name.
 
 `node tests/*.test.mjs` exits non-zero on failure.
+
+`node tools/babi.mjs <task file>` runs a bAbI task (Weston et al., 2015; data not included)
+through the same engine, with any adaptation as declared lines of grammar data, a
+letter-permuted copy of grammar and data, and a control. Task 1, *single supporting fact*:
+100% of 1,000 answers right with exactly the gold sentences quoted, from four lines of data;
+54.9% with the `exclusive` flag removed. Task 15, *basic deduction*: 100% from one line. The
+permuted runs match question by question. Results are in [paper/](paper/).
 
 ---
 
@@ -182,8 +191,9 @@ Each stage is one blueprint record in the store and one section of an RFC.
 5. **Consolidate** — per triple, count **episodes, not sentences**, for and against;
    conf = Laplace's rule of succession. One saying reads 170; *I like coffee* followed by *I
    do not like coffee* reads 128 and is **contested**.
-6. **Reason** — said, then transitive, then inverse and symmetric, then inherited from the
-   nearest `is_a` ancestor. Specificity is the only defeasible rule.
+6. **Reason** — said, then transitive, then inverse and symmetric, then rules, then inherited
+   from the nearest `is_a` ancestor. Specificity is the only defeasible rule. Along an
+   `exclusive` vector, a later object retires an earlier one.
 7. **Answer** — find purchase, pick the intent from the shape of the input, and build the
    reply out of grounds.
 8. **Write back** — only what changed; everything else byte for byte.
@@ -221,6 +231,31 @@ Nobody said penguins are flightless. *Are penguins flightless?* is answered by a
 `@LAT-80LON0`, `not_fly X -, is_a X bird => has_property X flightless`, which joins *Penguins
 do not fly.* to *A penguin is a bird.* and names itself in the chain.
 
+### What no longer holds
+
+`in` is declared `exclusive` in the grammar: a thing is in one place at a time. So order
+matters along it, and only along it:
+
+```
+> Pixel moved to the kitchen.
+Noted 1 percept from 1 sentence.
+  …
+This replaces something you said before.
+> Is Pixel in the sun?
+No longer — you said something since.
+  [no longer] pixel sleep_in sun → pixel is in sun (sleeping somewhere is being there)
+    — “Pixel sleeps in the sun.”
+  since [inferred, not said] pixel move_to kitchen → pixel is in kitchen (moving somewhere puts you there)
+    — “Pixel moved to the kitchen.”
+```
+
+*Later* is the order of the file — the episode, then the sentence — never a clock, so a
+store needs none. The retired saying stays in its belief line and is still quoted; *I do not
+like coffee* still contests *I like coffee*, because the flag compares places, not yes and no.
+How several devices hearing one person could share that order is proposed in
+[TTG-RFC-0004](RFCs/TTG-RFC-0004-Time-and-the-Fleet.md) §4, on the fleet pulse of
+[TTN-RFC-0010](RFCs/TTN-RFC-0010-Fleet-Pulse.md).
+
 Every answer lights the records it touched on the sphere, opens the first one, and writes
 `last_query`, `last_answer` and `answer_records` into the store's cursor.
 
@@ -240,7 +275,7 @@ This file is meant to be forked, and there are four depths to fork it at.
    vector algebra, and you can ask in either language.
 3. **Your own runtime.** The first eight blueprint records up the meridian are the whole
    contract, compressed: block formats, the percept line, placement, the conf formula, the
-   inference order, the intent table, the write rules. The three TTG RFCs are their expansion,
+   inference order, the intent table, the write rules. The four TTG RFCs are their expansion,
    and the `mmpdb` constraints say what a runtime may and may not contain.
 4. **This runtime, inside another app.** Point the app's developer, or its development agent,
    at the ninth, `@LAT85LON0`: `openStore`, `answer`, render the grounds by kind, persist
@@ -259,6 +294,7 @@ global_models.
 | Record | Belief | conf | sal | EPS |
 |---|---|---|---|---|
 | `@LAT98LON5` | What the parser cannot see | 70 | 190 | **138** |
+| `@LAT98LON8` | Order, not clocks: a fleet shares a tempo | 90 | 180 | **116** |
 | `@LAT98LON4` | The lemmatizer is a guess the corpus corrects | 120 | 210 | **111** |
 | `@LAT98LON7` | Two languages, one sphere | 100 | 140 | **85** |
 | `@LAT98LON3` | Said outranks inferred; a contradiction is kept | 190 | 200 | 51 |
@@ -280,9 +316,17 @@ subjects (*No como carne*), verb-first questions (*¿Dónde duerme Pixel?*), and
 that agree in number (*son negros*). Verbs link across languages only one rule at a time
 (`cazar X Y => chase X Y`).
 
+**Then, time across devices** — `@LAT98LON8`, second on the list before a line of it runs. One
+store orders what you said by its file. Several agents hearing you (a phone, a Pi, a badge)
+share no file and disagree about the time. The proposal is a band's: share a tempo, stamp each
+saying with how far your clock can be trusted, and call two sayings contested when their
+bounds overlap.
+
 **Not on the list: a recency rule for contradictions.** *I like coffee* on Monday and *I do not
 like coffee* on Friday is a change of mind, and the store cannot tell it from a contradiction.
-A recency window would be one line in the numbers record and a large claim about you.
+A recency window would be one line in the numbers record and a large claim about you. The
+`exclusive` flag is not that: it is a claim about a relation, and it never settles yes against
+no.
 
 ---
 

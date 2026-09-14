@@ -53,6 +53,9 @@ button.primary{background:var(--accent);color:var(--panel);border-color:var(--ac
 .g.conflict{border-left:3px double var(--warn)}
 .g .lab{display:inline-block;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-right:6px}
 .g.inference .lab,.g.conflict .lab{color:var(--warn)}
+.g.superseded{border-left:3px dotted var(--dead)}
+.g.superseded>.triple,.g.superseded>.qt q{opacity:.62}
+.g.by{margin-top:4px;font-size:1em}
 .g .qt{display:block;margin-top:2px}
 .g .cf{font-size:.72rem;color:var(--dim);margin-left:6px}
 .g q{color:var(--ink);font-style:italic;quotes:"\201C" "\201D"}
@@ -882,7 +885,8 @@ function openStore(text){
   const st = parseStore(text);
   const S = { st, G:null, things:new Map(), vectors:new Map(), episodes:[], offLane:[], trips:new Map(), beliefsBy:new Map(),
               byVector:new Map(), incoming:new Map(), comentions:new Map(), believers:new Set(), seenCounts:new Map(),
-              said:new Map(), malformed:[], sentIndex:null, dec:1, derived:new Map(), derivedBy:new Map(), derivedIn:new Map() };
+              said:new Map(), malformed:[], sentIndex:null, dec:1, derived:new Map(), derivedBy:new Map(), derivedIn:new Map(),
+              superseded:new Map(), epOrder:new Map() };
   S.G = loadGrammar(st);
   S.grammars = grammarRecords(st).langs.map(l => l === S.G.lang ? S.G : loadGrammar(st, l));
   const step = String(S.G.sphere.step || "");
@@ -898,7 +902,12 @@ function indexEpisodes(S){
   const lane = +S.G.sphere.episode_lane;
   S.episodes = []; S.offLane = [];
   for (const c of S.st.chunks) if (c.rec && c.rec.episode != null) (c.rec.lat === lane ? S.episodes : S.offLane).push(c);
+  S.epOrder = new Map(S.episodes.map((c, i) => [c.rec.id, i + 1]));
 }
+/* When a saying was said, for ordering only (TTG-RFC-0004 §2): its episode's
+ * place on the lane, then its sentence. Episodes are appended in the order
+ * they are made, so a lone store needs no clock to know what came later.  */
+const whenSaid = (S, src) => (S.epOrder.get(src.ep) || 0) * 1e6 + src.n;
 /* Which language a text is in: the grammar that recognises most of its words
  * as its own closed-class words, seed verbs or irregular forms. Ties, and
  * text none of them recognise, go to the first language.                 */
@@ -997,18 +1006,29 @@ function consolidate(S){
  * so every fact carries a shortest proof. Keys are subject|vector|object|
  * polarity over terms the store names, a finite set, so the rounds stop.
  * What a rule concludes is held in memory, never written as a belief; a
- * triple the owner said is never replaced by one a rule derives.          */
+ * triple the owner said is never replaced by one a rule derives.
+ *
+ * Every fact also carries t, when it last came to hold: a belief's latest
+ * saying, a conclusion's latest premise. A later reason replaces an earlier
+ * one; t only grows and takes finitely many values, so the rounds still stop.
+ * Then supersession (TTG-RFC-0004 §3): along an exclusive vector, a said or
+ * concluded fact is retired by a later one with a different object, unless
+ * one object lies along the vector from the other.                        */
 function deriveRules(S){
   const G = S.G;
-  S.derived = new Map(); S.derivedBy = new Map(); S.derivedIn = new Map();
-  if (!G.rules.length) return;
-  const facts = new Set(), byV = new Map(), made = [];
+  S.derived = new Map(); S.derivedBy = new Map(); S.derivedIn = new Map(); S.superseded = new Map();
+  const exclusive = [...G.vectors.values()].filter(a => a.flags.has("exclusive")).map(a => a.name);
+  if (!G.rules.length && !exclusive.length) return;
+  const facts = new Map(), byV = new Map();
   const put = f => {
-    const k = f.s + "|" + f.v + "|" + f.o + "|" + f.pol;
-    if (facts.has(k)) return false;
-    facts.add(k); pushTo(byV, f.v, f); return true;
+    const k = f.s + "|" + f.v + "|" + f.o + "|" + f.pol, had = facts.get(k);
+    if (!had){ facts.set(k, f); pushTo(byV, f.v, f); return true; }
+    if (f.t <= had.t) return false;
+    had.t = f.t; had.path = f.path; had.D = f.D || had.D;
+    return true;
   };
-  for (const e of S.trips.values()) if (e.decided && e.pol !== "?") put({ s:e.s, v:e.v, o:e.o, pol:e.pol, path:[e] });
+  for (const e of S.trips.values()) if (e.decided && e.pol !== "?")
+    put({ s:e.s, v:e.v, o:e.o, pol:e.pol, path:[e], t:Math.max(...e.sources.filter(x => x.pol === e.pol).map(x => whenSaid(S, x))) });
   const bind = (term, value, env) => !isVar(term) ? (term === value ? env : null)
     : term in env ? (env[term] === value ? env : null) : { ...env, [term]:value };
   for (let grew = true; grew; ){
@@ -1018,35 +1038,52 @@ function deriveRules(S){
       if (a.flags.has("weak")) continue;
       const fs = byV.get(v) || [];
       if (a.flags.has("transitive")) for (const f of fs) if (f.pol === "+" && f.o !== "-")
-        for (const g of fs) if (g.pol === "+" && g.s === f.o && g.o !== f.s) round.push({ s:f.s, v, o:g.o, pol:"+", path:f.path.concat(g.path) });
+        for (const g of fs) if (g.pol === "+" && g.s === f.o && g.o !== f.s)
+          round.push({ s:f.s, v, o:g.o, pol:"+", path:f.path.concat(g.path), t:Math.max(f.t, g.t) });
       for (const f of fs) if (f.o !== "-"){
-        if (a.flags.has("symmetric")) round.push({ s:f.o, v, o:f.s, pol:f.pol, path:f.path });
-        if (a.inverse) round.push({ s:f.o, v:a.inverse, o:f.s, pol:f.pol, path:f.path });
+        if (a.flags.has("symmetric")) round.push({ s:f.o, v, o:f.s, pol:f.pol, path:f.path, t:f.t });
+        if (a.inverse) round.push({ s:f.o, v:a.inverse, o:f.s, pol:f.pol, path:f.path, t:f.t });
       }
     }
     for (const r of G.rules){
-      let envs = [{ env:{}, path:[] }];
+      let envs = [{ env:{}, path:[], t:0 }];
       for (const at of r.body){
         const next = [];
-        for (const { env, path } of envs) for (const f of byV.get(at.v) || []){
+        for (const { env, path, t } of envs) for (const f of byV.get(at.v) || []){
           if (f.pol !== (at.neg ? "-" : "+")) continue;
           const e1 = bind(at.s, f.s, env), e2 = e1 && bind(at.o, f.o, e1);
-          if (e2) next.push({ env:e2, path:path.concat(f.path) });
+          if (e2) next.push({ env:e2, path:path.concat(f.path), t:Math.max(t, f.t) });
         }
         envs = next;
       }
-      for (const { env, path } of envs){
+      for (const { env, path, t } of envs){
         const h = r.head, s = isVar(h.s) ? env[h.s] : h.s, o = isVar(h.o) ? env[h.o] : h.o;
         const D = { s, v:h.v, o, pol:h.neg ? "-" : "+", conf:255, decided:true, derived:true, rule:r.label, sources:[] };
         D.proof = path.concat([D]);
-        round.push({ s, v:h.v, o, pol:D.pol, path:D.proof, D });
+        round.push({ s, v:h.v, o, pol:D.pol, path:D.proof, D, t });
       }
     }
-    for (const f of round) if (put(f)){ grew = true; if (f.D) made.push(f.D); }
+    for (const f of round) if (put(f)) grew = true;
   }
-  for (const D of made){
+  const key3 = f => f.s + "|" + f.v + "|" + f.o;
+  for (const v of exclusive){
+    const bySubject = new Map();
+    for (const f of byV.get(v) || []){
+      const said = S.trips.get(key3(f));
+      if (f.pol === "+" && f.o !== "-" && (said ? said.decided && said.pol === "+" : !!f.D)) pushTo(bySubject, f.s, f);
+    }
+    for (const fs of bySubject.values()) for (const f of fs){
+      let by = null;
+      for (const g of fs) if (g.t > f.t && (!by || g.t > by.t) &&
+        !facts.has(f.o + "|" + v + "|" + g.o + "|+") && !facts.has(g.o + "|" + v + "|" + f.o + "|+")) by = g;
+      if (by) S.superseded.set(key3(f), { fact:f, by });
+    }
+  }
+  for (const f of facts.values()){
+    const D = f.D;
+    if (!D) continue;
     const k = D.s + "|" + D.v + "|" + D.o, had = S.derived.get(k);
-    if (S.trips.has(k)) continue;
+    if (S.trips.has(k) || (D.pol === "+" && S.superseded.has(k))) continue;
     if (!had) S.derived.set(k, D);
     else if (had.pol !== D.pol && had.pol !== "?")
       S.derived.set(k, { s:D.s, v:D.v, o:D.o, pol:"?", plus:had.pol === "+" ? had : D, minus:had.pol === "-" ? had : D });
@@ -1174,7 +1211,7 @@ function perceive(S, text, source, isFile, now){
   }
   for (const t of created) if (!t.forms.includes(t.lemma) && !t.forms.length) t.forms.push(t.lemma);
 
-  const lane = +G.sphere.episode_lane;
+  const lane = +G.sphere.episode_lane, retiredBefore = new Set(S.superseded.keys());
   const ord = records(S.st).filter(r => r.lat === lane).reduce((m, r) => Math.max(m, r.lon), 0) + 1;
   const epId = makeId(lane, ord, 0);
   const src = source || say(G, "source_typed");
@@ -1202,7 +1239,8 @@ function perceive(S, text, source, isFile, now){
     if (b.pol !== "?" && b.pol !== p.pol && !conflicts.some(c => c.trip === e))
       conflicts.push({ trip:e, earlier:b.sources.filter(s => s.pol !== p.pol) });
   }
-  return { id:epId, ord, sentences:sentences.length, percepts:all.filter(p => p.v !== R.comention), all, created, conflicts };
+  const superseded = [...S.superseded].filter(([k]) => !retiredBefore.has(k)).map(([, sup]) => sup);
+  return { id:epId, ord, sentences:sentences.length, percepts:all.filter(p => p.v !== R.comention), all, created, conflicts, superseded };
 }
 function markAsked(S, found, now){
   const touched = new Set();
@@ -1252,6 +1290,12 @@ function unwind(prev, o){ const path = []; for (let e = prev.get(o); e; e = prev
 const factsOf = (S, x) => (S.beliefsBy.get(x) || []).concat(S.derivedBy.get(x) || []);
 const derivedOf = (S, s, v, o) => S.derived.get(s + "|" + v + "|" + o) || null;
 const proofGround = (S, D) => ({ kind:"inference", pol:D.pol, path:D.proof, conf:chainConf(S, D.proof) });
+/* A retired fact (TTG-RFC-0004 §3) is printed as its own kind of ground, with
+ * the later fact that retired it as a ground of its ordinary kind.         */
+const retired = (S, e) => e.pol === "+" && S.superseded.has(e.s + "|" + e.v + "|" + e.o);
+const factGround = (S, f) => ({ kind:f.path.length === 1 && !f.path[0].derived ? "direct" : "inference", pol:"+", path:f.path, conf:chainConf(S, f.path) });
+const supersededGround = (S, sup) => ({ kind:"superseded", pol:"+", path:sup.fact.path, conf:chainConf(S, sup.fact.path), by:factGround(S, sup.by) });
+const retiredAs = (S, sup) => ({ verdict:"N", superseded:true, inferred:false, conf:chainConf(S, sup.by.path), grounds:[supersededGround(S, sup)] });
 /* Everything reachable from s along decided + beliefs whose vector the predicate accepts. */
 function walk(S, s, ok){
   const prev = new Map([[s, null]]), out = [];
@@ -1259,7 +1303,7 @@ function walk(S, s, ok){
   for (let hop = 0; hop < S.G.num.max_hops && frontier.length; hop++){
     const next = [];
     for (const x of frontier) for (const e of factsOf(S, x)){
-      if (!ok(e.v) || !e.decided || e.pol !== "+" || e.o === "-" || prev.has(e.o)) continue;
+      if (!ok(e.v) || !e.decided || e.pol !== "+" || e.o === "-" || prev.has(e.o) || retired(S, e)) continue;
       prev.set(e.o, e); out.push({ lemma:e.o, path:unwind(prev, e.o) }); next.push(e.o);
     }
     frontier = next;
@@ -1274,7 +1318,7 @@ function chainConf(S, path){
 function inherited(S, s, v, o){
   for (const a of ancestors(S, s)){
     const e = tripOf(S, a.lemma, v, o), D = derivedOf(S, a.lemma, v, o);
-    if (e && e.decided) return { pol:e.pol, via:a.lemma, path:a.path.concat([e]) };
+    if (e && e.decided && !retired(S, e)) return { pol:e.pol, via:a.lemma, path:a.path.concat([e]) };
     if (D && D.pol !== "?") return { pol:D.pol, via:a.lemma, path:a.path.concat(D.proof) };
   }
   return null;
@@ -1282,9 +1326,10 @@ function inherited(S, s, v, o){
 const inferredAs = (S, pol, path, via) => ({ verdict:pol === "+" ? "Y" : "N", inferred:true, conf:chainConf(S, path),
   grounds:[{ kind:"inference", pol, path, via }] });
 function verify(S, s, v, o){
-  const d = tripOf(S, s, v, o);
+  const d = tripOf(S, s, v, o), sup = S.superseded.get(s + "|" + v + "|" + o);
+  if (d && d.pol === "?") return { verdict:"C", grounds:[{ kind:"conflict", pol:"?", path:[d] }] };
+  if (sup) return retiredAs(S, sup);
   if (d){
-    if (d.pol === "?") return { verdict:"C", grounds:[{ kind:"conflict", pol:"?", path:[d] }] };
     const r = { verdict:d.pol === "+" ? "Y" : "N", inferred:false, conf:d.conf, grounds:[{ kind:"direct", pol:d.pol, path:[d] }] };
     const inh = inherited(S, s, v, o);
     if (inh && inh.pol !== d.pol) r.exception = inh;
@@ -1297,7 +1342,8 @@ function verify(S, s, v, o){
     if (hit) return inferredAs(S, "+", hit.path);
   }
   if (a && a.inverse){
-    const e = tripOf(S, o, a.inverse, s);
+    const e = tripOf(S, o, a.inverse, s), supI = S.superseded.get(o + "|" + a.inverse + "|" + s);
+    if (supI) return retiredAs(S, supI);
     if (e && e.decided) return inferredAs(S, e.pol, [e]);
     if (flag(S, a.inverse, "transitive")){
       const hit = walk(S, o, x => x === a.inverse).find(x => x.lemma === s);
@@ -1305,7 +1351,8 @@ function verify(S, s, v, o){
     }
   }
   if (a && a.flags.has("symmetric")){
-    const e = tripOf(S, o, v, s);
+    const e = tripOf(S, o, v, s), supS = S.superseded.get(o + "|" + v + "|" + s);
+    if (supS) return retiredAs(S, supS);
     if (e && e.decided) return inferredAs(S, e.pol, [e]);
   }
   const D = derivedOf(S, s, v, o);
@@ -1319,7 +1366,7 @@ function objectsOf(S, s, vs){
   const items = new Map();
   const add = (o, g) => { if (o !== "-" && o !== SLOT && !items.has(o)) items.set(o, g); };
   for (const v of vs){
-    for (const e of S.beliefsBy.get(s) || []) if (e.v === v)
+    for (const e of S.beliefsBy.get(s) || []) if (e.v === v && !retired(S, e))
       add(e.o, { kind:e.pol === "?" ? "conflict" : "direct", pol:e.pol, path:[e], conf:e.conf });
     for (const D of S.derivedBy.get(s) || []) if (D.v === v) add(D.o, proofGround(S, D));
   }
@@ -1329,13 +1376,19 @@ function objectsOf(S, s, vs){
     if (a && a.flags.has("transitive"))
       for (const x of walk(S, s, y => y === v)) add(x.lemma, { kind:"inference", pol:"+", path:x.path, conf:chainConf(S, x.path) });
     if (a && a.inverse)
-      for (const e of S.incoming.get(s) || []) if (e.v === a.inverse && e.decided)
+      for (const e of S.incoming.get(s) || []) if (e.v === a.inverse && e.decided && !retired(S, e))
         add(e.s, { kind:"inference", pol:e.pol, path:[e], conf:e.conf });
     for (const anc of ancestors(S, s)) for (const e of S.beliefsBy.get(anc.lemma) || []){
-      if (e.v !== v || !e.decided || tripOf(S, s, v, e.o)) continue;
+      if (e.v !== v || !e.decided || tripOf(S, s, v, e.o) || retired(S, e)) continue;
       const path = anc.path.concat([e]);
       add(e.o, { kind:"inference", pol:e.pol, path, via:anc.lemma, conf:chainConf(S, path) });
     }
+  }
+  // retired facts come after everything that still holds
+  for (const sup of S.superseded.values()){
+    const f = sup.fact, a = alg(S, f.v);
+    if (f.s === s && vs.includes(f.v)) add(f.o, supersededGround(S, sup));
+    else if (f.o === s && a && a.inverse && vs.includes(a.inverse)) add(f.s, supersededGround(S, sup));
   }
   return [...items].map(([o, g]) => ({ term:o, ...g }));
 }
@@ -1343,8 +1396,9 @@ function subjectsOf(S, v, o){
   const cands = new Set();
   for (const e of S.incoming.get(o === "-" ? SLOT + v : o) || []) if (e.v === v) cands.add(e.s);
   for (const D of S.derivedIn.get(o === "-" ? SLOT + v : o) || []) if (D.v === v) cands.add(D.s);
+  for (const { fact:f } of S.superseded.values()) if (f.v === v && f.o === o) cands.add(f.s);
   const a = alg(S, v);
-  const down = x => (S.incoming.get(x) || []).filter(e => e.decided && e.pol === "+" &&
+  const down = x => (S.incoming.get(x) || []).filter(e => e.decided && e.pol === "+" && !retired(S, e) &&
     (S.G.inherits.includes(e.v) || (a && a.flags.has("transitive") && e.v === v))).map(e => e.s);
   let frontier = [...cands];
   for (let hop = 0; hop < S.G.num.max_hops && frontier.length; hop++){
@@ -1359,13 +1413,14 @@ function subjectsOf(S, v, o){
     const r = verify(S, x, v, o);
     if (r.verdict !== "U") out.push({ term:x, ...r.grounds[0], verdict:r.verdict, exception:r.exception });
   }
-  const rank = g => (g.kind === "direct" ? 0 : g.kind === "conflict" ? 1 : 2);
+  const rank = g => ({ direct:0, conflict:1, inference:2, superseded:3 }[g.kind]);
   return out.sort((p, q) => rank(p) - rank(q) || (p.pol === "+" ? 0 : 1) - (q.pol === "+" ? 0 : 1));
 }
 function portrait(S, lemma){
   const G = S.G, N = G.num;
   const t = S.things.get(lemma), vt = S.vectors.get(lemma);
   const direct = (S.beliefsBy.get(lemma) || []).map(e => {
+    if (retired(S, e)) return supersededGround(S, S.superseded.get(e.s + "|" + e.v + "|" + e.o));
     const g = { kind:e.pol === "?" ? "conflict" : "direct", pol:e.pol, path:[e], conf:e.conf };
     const inh = e.pol !== "?" ? inherited(S, lemma, e.v, e.o) : null;
     if (inh && inh.pol !== e.pol) g.exception = inh;
@@ -1375,13 +1430,13 @@ function portrait(S, lemma){
   for (const anc of ancestors(S, lemma)){
     if (anc.path.length > 1) inferred.push({ kind:"inference", pol:"+", path:anc.path, conf:chainConf(S, anc.path) });
     for (const e of S.beliefsBy.get(anc.lemma) || []){
-      if (!e.decided || G.inherits.includes(e.v) || tripOf(S, lemma, e.v, e.o) || derivedOf(S, lemma, e.v, e.o)) continue;
+      if (!e.decided || G.inherits.includes(e.v) || tripOf(S, lemma, e.v, e.o) || derivedOf(S, lemma, e.v, e.o) || retired(S, e)) continue;
       if (inferred.some(g => g.path[g.path.length - 1].v === e.v && g.path[g.path.length - 1].o === e.o)) continue;
       const path = anc.path.concat([e]);
       inferred.push({ kind:"inference", pol:e.pol, path, via:anc.lemma, conf:chainConf(S, path) });
     }
   }
-  const incoming = (S.incoming.get(lemma) || []).filter(e => e.decided)
+  const incoming = (S.incoming.get(lemma) || []).filter(e => e.decided && !retired(S, e))
     .map(e => ({ kind:"direct", pol:e.pol, path:[e], conf:e.conf }));
   const uses = vt ? (S.byVector.get(lemma) || []).map(e => ({ kind:e.pol === "?" ? "conflict" : "direct", pol:e.pol, path:[e], conf:e.conf })) : [];
   const withs = [...(S.comentions.get(lemma) || new Map())].sort((a, b) => b[1] - a[1]).slice(0, N.answer_max_items);
@@ -1538,9 +1593,10 @@ function interpret(S, text){
 }
 
 /* ---------- answer ------------------------------------------------------ *
- * A reply is a verdict, then grounds. Every ground is one of three kinds and
+ * A reply is a verdict, then grounds. Every ground is one of four kinds and
  * is printed as that kind: direct (quoted), inference (a chain, never quoted
- * as if said) or conflict (both sayings).                                   */
+ * as if said), conflict (both sayings) or superseded (what held, then the
+ * later ground that retired it).                                            */
 function quotesFor(S, e, pol){
   const out = [];
   for (const src of e.sources){
@@ -1556,9 +1612,12 @@ function groundQuotes(S, g){
     const e = g.path[0];
     return quotesFor(S, e, "+").slice(0, 1).concat(quotesFor(S, e, "-").slice(0, 1));
   }
-  if (g.kind === "direct") return quotesFor(S, g.path[0], g.pol).slice(0, 2);
-  return g.path.map(e => quotesFor(S, e, e.pol)[0]).filter(Boolean);
+  if (g.kind === "direct" && !g.later) return quotesFor(S, g.path[0], g.pol).slice(0, 2);
+  // a chain, a retired fact and the fact that retired it quote each step at its
+  // latest saying: the reason it holds now, or last held (TTG-RFC-0004 §3)
+  return g.path.map(e => quotesFor(S, e, e.pol).pop()).filter(Boolean);
 }
+const quoted = (S, g) => ({ ...g, quotes:groundQuotes(S, g), ...(g.by ? { by:{ ...g.by, quotes:groundQuotes(S, { ...g.by, later:true }) } } : {}) });
 const vlabel = (S, v) => (alg(S, v) || {}).label || v;
 // a reply is in the language of the input; a told sentence is perceived in its own
 function answer(S, text, now, source){
@@ -1589,22 +1648,24 @@ function answerIn(S, text, now, source){
       reply.items.push({ kind:"conflict", pol:c.trip.pol, path:[c.trip], conf:c.trip.conf,
         quotes:quotesFor(S, c.trip).slice(-3) });
     }
+    if (ep.superseded.length) reply.notes.push(say(G, "supersedes"));
+    for (const sup of ep.superseded) reply.items.push(quoted(S, supersededGround(S, sup)));
     reply.records = [ep.id];
   } else if (it.intent === "verify"){
     const results = it.checks.map(p => ({ p, r:verify(S, p.s, p.v, p.o) }));
     const lead = results.find(x => x.r.verdict !== "U") || results[0];
     const r = lead.r;
     reply.verdict = r.verdict === "C" ? say(G, "contest") :
-      r.verdict === "U" ? say(G, "unknown") :
+      r.verdict === "U" ? say(G, "unknown") : r.superseded ? say(G, "deny_superseded") :
       say(G, (r.verdict === "Y" ? "affirm" : "deny") + (r.inferred ? "_inferred" : ""));
-    for (const { r:x } of results) for (const g of x.grounds) reply.items.push({ ...g, quotes:groundQuotes(S, g) });
+    for (const { r:x } of results) for (const g of x.grounds) reply.items.push(quoted(S, g));
     for (const { p, r:x } of results) if (x.exception)
       reply.notes.push(say(G, "exception", { term:p.s, via:x.exception.via }));
   } else if (it.intent === "objectsOf" || it.intent === "subjectsOf"){
     const list = it.intent === "objectsOf" ? objectsOf(S, it.s, it.vs) : subjectsOf(S, it.v, it.o);
     reply.head = it.intent === "objectsOf" ? say(G, "objects_head", { s:it.s, v:vlabel(S, it.vs[0]) })
                                           : say(G, "subjects_head", { v:vlabel(S, it.v), o:it.o === "-" ? "" : it.o });
-    reply.items = cap(list).map(g => ({ ...g, quotes:groundQuotes(S, g) }));
+    reply.items = cap(list).map(g => quoted(S, g));
     if (!list.length) reply.verdict = say(G, "nothing_found");
   } else if (it.intent === "portrait"){
     for (const lemma of it.terms){
@@ -1613,7 +1674,7 @@ function answerIn(S, text, now, source){
       const empty = !pt.direct.length && !pt.inferred.length && !pt.incoming.length && !pt.uses.length && !pt.withs.length;
       pt.head = say(G, empty ? "describe_empty" : "describe_head", { term:lemma });
       for (const key of ["direct", "inferred", "incoming", "uses"])
-        pt[key] = cap(pt[key]).map(g => ({ ...g, quotes:groundQuotes(S, g) }));
+        pt[key] = cap(pt[key]).map(g => quoted(S, g));
       reply.portraits.push(pt);
       reply.records.push((pt.thing || pt.vector).chunk.rec.id);
     }
@@ -1648,12 +1709,14 @@ function tripleText(S, e, pol){
   const neg = (pol || e.pol) === "-" ? (S.G.roles.negation_prefix || "") : "";
   return e.s + " " + neg + vlabel(S, e.v) + (e.o === "-" ? "" : " " + e.o) + (e.derived && e.rule ? " (" + e.rule + ")" : "");
 }
+const LABEL = { direct:"label_said", inference:"label_inferred", conflict:"label_contested", superseded:"label_superseded" };
+// a direct ground speaks for one saying, whose polarity may differ from the belief's
+const singlePol = g => (g.kind === "direct" || g.kind === "superseded") && g.path.length === 1 ? g.pol : null;
 function groundText(S, g){
-  const lab = say(S.G, g.kind === "direct" ? "label_said" : g.kind === "inference" ? "label_inferred" : "label_contested");
-  // a direct ground speaks for one saying, whose polarity may differ from the belief's
-  const chain = g.path.map(e => tripleText(S, e, g.kind === "direct" && g.path.length === 1 ? g.pol : null)).join(" → ");
+  const chain = g.path.map(e => tripleText(S, e, singlePol(g))).join(" → ");
   const qs = (g.quotes || []).map(q => "“" + q.text + "” (" + q.ep + ")").join(" ");
-  return "[" + lab + "] " + chain + (qs ? " — " + qs : "");
+  return "[" + say(S.G, LABEL[g.kind]) + "] " + chain + (qs ? " — " + qs : "") +
+    (g.by ? " " + say(S.G, "superseded_by") + " " + groundText(S, g.by) : "");
 }
 function replyText(S, reply){
   return withGrammar(S, grammarOf(S, reply.lang), () => replyTextIn(S, reply));
@@ -1770,19 +1833,22 @@ function tripleHtml(e, pol){
     (e.o === "-" ? "" : `<span class="arrow">→</span>${chip(e.o, "thing")}`) +
     (e.derived && e.rule ? `<span class="rl">${esc(e.rule)}</span>` : "") + `</span>`;
 }
-function groundHtml(g){
-  const G = S.G;
-  const lab = say(G, g.kind === "direct" ? "label_said" : g.kind === "inference" ? "label_inferred" : "label_contested");
-  const single = g.kind === "direct" && g.path.length === 1 ? g.pol : null;
-  const chain = g.path.map(e => tripleHtml(e, single)).join(`<span class="arrow"> ⟹ </span>`);
+function groundBody(g){
+  const chain = g.path.map(e => tripleHtml(e, singlePol(g))).join(`<span class="arrow"> ⟹ </span>`);
   const quotes = (g.quotes || []).map(q => {
     const ref = parseId(q.ep);
     return `<span class="qt"><q>${esc(q.text)}</q><a href="#" class="ep"${ref ? ` data-key="${ref.key}"` : ""}>${esc(q.ep)} · ${q.n}</a></span>`;
   }).join("");
   const conf = isFinite(g.conf) ? ` <span class="cf">conf ${g.conf}</span>` : "";
+  return `<span class="lab">${esc(say(S.G, LABEL[g.kind]))}</span>${chain}${conf}${quotes}`;
+}
+function groundHtml(g){
+  const G = S.G;
   const lead = g.term ? chip(g.term, "thing") + " " : "";
   const exc = g.exception ? `<div class="note">${esc(say(G, "exception", { term:g.path[0].s, via:g.exception.via }))}</div>` : "";
-  return `<li class="g ${g.kind}">${lead}<span class="lab">${esc(lab)}</span>${chain}${conf}${quotes}${exc}</li>`;
+  // the fact that retired this one keeps its own kind's look, indented under it
+  const by = g.by ? `<div class="g ${g.by.kind} by"><span class="lab">${esc(say(G, "superseded_by"))}</span>${groundBody(g.by)}</div>` : "";
+  return `<li class="g ${g.kind}">${lead}${groundBody(g)}${by}${exc}</li>`;
 }
 function replyHtml(r){
   return withGrammar(S, grammarOf(S, r.lang), () => replyHtmlIn(r));
@@ -1872,7 +1938,7 @@ function renderPanel(rec){
   if (rec.term != null){
     const b = parseBlock(rec.term);
     const pt = portrait(S, b.lemma);
-    const gs = [...pt.direct, ...pt.inferred, ...pt.incoming, ...pt.uses].map(g => ({ ...g, quotes:groundQuotes(S, g) }));
+    const gs = [...pt.direct, ...pt.inferred, ...pt.incoming, ...pt.uses].map(g => quoted(S, g));
     body = `<div class="coord">${esc(b.class || "")} · forms: ${esc(b.forms || "")}</div>` +
       (gs.length ? `<ul class="grounds">${gs.map(groundHtml).join("")}</ul>` : "") +
       (pt.withs.length ? `<div class="purchase">${esc(say(S.G, "mentioned_with"))} ${pt.withs.map(w => chip(w[0], "thing")).join(" ")}</div>` : "") +

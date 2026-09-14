@@ -27,7 +27,8 @@ console.log(S.episodes.length + " episodes, " + beliefs.reduce((m, e) => m + e.s
   beliefs.length + " beliefs (" + beliefs.filter(e => e.decided).length + " decided, " +
   beliefs.filter(e => e.pol === "?").length + " contested)");
 for (const m of S.malformed) console.log("  skipped malformed percept in " + m.id + ": " + m.line);
-console.log(S.G.rules.length + " rules, " + S.derived.size + " conclusions held in memory");
+console.log(S.G.rules.length + " rules, " + S.derived.size + " conclusions held in memory, " +
+  S.superseded.size + " facts retired along exclusive vectors");
 for (const e of S.G.ruleErrors) console.log("  rejected rule (" + e.why + "): " + e.line);
 if (S.G.ruleErrors.length) process.exitCode = 1;
 if (!drift.length){ console.log("no drift"); process.exit(process.exitCode || 0); }
