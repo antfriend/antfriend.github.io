@@ -1325,8 +1325,13 @@ function moveCue(S, rest, cue, isCop){
   const nps = nounPhrases(S, rest, 0, rest.length);
   if (!nps.length) return [cue].concat(rest);
   let k;
-  if (isCop) k = nps.length === 1 && nps[0].words.length >= 2 && !nps[0].pron ? nps[0].end : nps[0].end + 1;
-  else {
+  if (isCop){
+    // the copula goes back before the first noun phrase's last word when that word is predicative:
+    // alone ("is pixel happy") or opening a declared phrase ("is a wheel part of a car")
+    const np = nps[0], split = np.words.length >= 2 && !np.pron;
+    const phrased = split && S.G.phrases.some(([ws]) => ws.length > 1 && ws.every((w, q) => rest[np.end + q] && rest[np.end + q].w === w));
+    k = split && (nps.length === 1 || phrased) ? np.end : np.end + 1;
+  } else {
     k = rest.findIndex((t, i) => i > nps[0].start && isVerbish(S, t) && !afterStarter(rest, i));
     if (k < 0) k = nps[0].end + 1;
   }
@@ -1355,6 +1360,11 @@ function whQuestion(S, wh, after, ctx){
   if (has(lead, "cop")){
     if (place) return slotQuery(S, rest.concat([lead, wordTok(S, place), synth(SLOT)]), ctx);
     if (has(rest[skipSoft(rest, 0)], "prep")) return slotQuery(S, [synth(SLOT), lead].concat(rest), ctx);
+    // a stranded preposition asks for its object: "what is a wheel part of" is "a wheel is part of ?"
+    if (has(rest[rest.length - 1], "prep")){
+      const q = slotQuery(S, moveCue(S, rest, lead, true).concat([synth(SLOT)]), ctx);
+      if (q) return q;
+    }
     const terms = nounPhrases(S, rest, 0, rest.length).map(np => headOf(S, np, ctx)).filter(Boolean).map(h => h.lemma);
     return terms.length ? { intent:"portrait", terms } : null;
   }

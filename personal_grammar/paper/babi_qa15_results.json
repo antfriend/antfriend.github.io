@@ -1,0 +1,54 @@
+{
+  "task": "qa15_basic-deduction_test.txt",
+  "adaptation": "phrase: afraid of | afraid_of",
+  "results": {
+    "seed": {
+      "questions": 1000,
+      "correct": 0,
+      "attributed": 0,
+      "facts": 2000,
+      "perceived": 2000,
+      "ms": 276.3171999999975,
+      "intents": {
+        "portrait": 1000
+      },
+      "outcomes_sha256": "33e361f4dd1c58fc"
+    },
+    "+phrase": {
+      "questions": 1000,
+      "correct": 1000,
+      "attributed": 1000,
+      "facts": 2000,
+      "perceived": 2000,
+      "ms": 206.84999999999832,
+      "intents": {
+        "objectsOf": 1000
+      },
+      "outcomes_sha256": "6bc1575590ad9171"
+    },
+    "permuted": {
+      "questions": 1000,
+      "correct": 1000,
+      "attributed": 1000,
+      "facts": 2000,
+      "perceived": 2000,
+      "ms": 187.29589999999416,
+      "intents": {
+        "objectsOf": 1000
+      },
+      "outcomes_sha256": "6bc1575590ad9171"
+    },
+    "control: permuted grammar, plain data": {
+      "questions": 1000,
+      "correct": 0,
+      "attributed": 0,
+      "facts": 2000,
+      "perceived": 0,
+      "ms": 100.52009999999927,
+      "intents": {
+        "search": 1000
+      },
+      "outcomes_sha256": "33e361f4dd1c58fc"
+    }
+  }
+}
