@@ -103,6 +103,8 @@ section("parsing: nounish, verbish, percepts");
     const got = PG.perceiveSentence(S, text, { last:null }).percepts.map(pk);
     ok(JSON.stringify(got) === JSON.stringify(want), JSON.stringify(text), got.join(" ; "));
   }
+  const strays = cases.filter(([t]) => PG.pickGrammar(S, t).lang !== "en").map(([t]) => t);
+  ok(strays.length === 0, "with Spanish in the store, every case still reads as English", strays.join(" ; "));
   ok(PG.nounLemma(S, "mice").lemma === "mouse" && PG.nounLemma(S, "glass").lemma === "glass", "irregular plural and a guarded -ss");
   ok(PG.verbLemma(S, "stopped").lemma === "stop" && PG.verbLemma(S, "called").lemma === "call", "undouble, except where double_keep says not");
   ok(PG.verbLemma(S, "chasing").lemma === "chase", "a seed vector breaks the tie between chas and chase");
@@ -198,6 +200,7 @@ section("start empty keeps the kit");
   ok(S.things.size === 1 && S.things.has("self") && S.vectors.size === 0, "only the speaker remains as a term");
   ok(recs.filter(r => r.lon === 0 && r.lat > -90 && r.lat < 90).length === 17, "home, nine blueprint and seven grammar records kept");
   ok(recs.some(r => r.id === "@LAT99LON1") && recs.some(r => r.lat === 98) && recs.some(r => r.lat === -90), "lanes 98, 99 and the special record kept");
+  ok(recs.filter(r => r.lon === 180 && r.grammar != null).length === 6 && S.grammars.length === 2, "the second language on the antimeridian kept");
   const r = PG.answer(S, "I like tea.", T0 + 60);
   ok(r.episode.id === "@LAT90LON1", "the first new episode is ordinal 1 again");
   // the fixture survives Start empty, and its sentence shares words with ordinary speech
@@ -206,6 +209,52 @@ section("start empty keeps the kit");
   const hits = PG.answer(S, "which sentence is here", T0 + 180).search;
   ok(hits.length === 1 && hits[0].ep === "@LAT90LON2", "search after Start empty finds only the owner's words, never the fixture's",
      hits.map(h => h.ep).join(" "));
+}
+
+section("two languages, one sphere (TTG-RFC-0001 §11)");
+{
+  const S = fresh(), [en, es] = S.grammars;
+  ok(S.grammars.map(G => G.lang).join(" ") === "en es", "two grammars, in the order the store declares them");
+  ok(JSON.stringify(es.num) === JSON.stringify(en.num) && JSON.stringify(es.roles) === JSON.stringify(en.roles) &&
+     [...en.vectors].every(([k, v]) => es.vectors.get(k).inverse === v.inverse && [...v.flags].join() === [...es.vectors.get(k).flags].join()),
+     "the second borrows the numbers, the roles and the vector algebra");
+  ok(es.vectors.get("is_a").label === "es un" && en.vectors.get("is_a").label === "is a", "and names the vectors in its own words");
+
+  const cases = [
+    ["Los gatos son mamíferos.",       ["gato | is_a | mamífero | + | -"]],
+    ["Los gatos cazan ratones.",       ["gato | cazar | ratón | + | -"]],
+    ["Yo no bebo café.",               ["self | beber | café | - | -"]],
+    ["Pixel duerme en el sol.",        ["pixel | dormir_en | sol | + | -"]],
+    ["Los pingüinos no pueden volar.", ["pingüino | volar | - | - | -"]],
+    ["La rueda es parte del coche.",   ["rueda | part_of | coche | + | -"]],
+    ["El gato está en la caja.",       ["gato | in | caja | + | -"]]
+  ];
+  for (const [text, want] of cases){
+    const G = PG.pickGrammar(S, text);
+    const got = PG.withGrammar(S, G, () => PG.perceiveSentence(S, text, { last:null }).percepts.map(pk));
+    ok(G.lang === "es" && JSON.stringify(got) === JSON.stringify(want), JSON.stringify(text), G.lang + ": " + got.join(" ; "));
+  }
+
+  const q = PG.answer(S, "¿Es Pixel un animal?", T0);
+  ok(q.lang === "es" && q.verdict === PG.say(es, "affirm_inferred") && q.items[0].quotes[0].text === "Pixel is a cat.",
+     "asked in Spanish, answered in Spanish, from English sayings quoted as said", q.verdict);
+  ok(PG.replyText(S, q).includes("[" + es.say.label_inferred + "]"), "and the plain-text reply keeps the language it was asked in");
+
+  const mixed = PG.answer(S, "Los gatos duermen mucho. Cats are lazy.", T0 + 60);
+  ok(mixed.episode.percepts.map(pk).join(" ; ") === "gato | dormir | - | + | - ; cat | has_property | lazy | + | -",
+     "one episode, each sentence read in its own language", mixed.episode.percepts.map(pk).join(" ; "));
+
+  PG.answer(S, "Un pingüino es un penguin.", T0 + 120);
+  const v = PG.verify(S, "pingüino", "fly", "-");
+  ok(v.verdict === "N" && v.inferred && v.grounds[0].path.map(e => e.s + ">" + e.v).join(" ") === "pingüino>is_a penguin>fly",
+     "a term the owner links inherits across the languages, exception and all", v.grounds[0] && v.grounds[0].path.map(e => e.s + ">" + e.v).join(" "));
+  ok(PG.pickGrammar(S, "No cats bark.").lang === "en" && PG.pickGrammar(S, "morning tea").lang === "en", "a tie, or no recognised word, goes to the first language");
+
+  // why the languages are kept apart: merged into one lexicon, the collisions break English
+  const merged = PG.openStore(STORE.replace("kind: lexicon\nlang: es\n", "kind: lexicon\n"));
+  const parseCases = ["A penguin is a bird.", "A wheel is part of a car.", "No cats bark.", "Cats chase mice but they don't eat grass."];
+  const broke = parseCases.filter(t => PG.perceiveSentence(merged, t, { last:null }).percepts.map(pk).join() !== PG.perceiveSentence(S, t, { last:null }).percepts.map(pk).join());
+  ok(broke.join(" ; ") === "A penguin is a bird. ; A wheel is part of a car.", "merged, *a* and *no* collide and break two English parses", broke.join(" ; "));
 }
 
 section("the file IS the grammar");
@@ -231,16 +280,16 @@ section("the file IS the grammar");
 
   // 3. No word the grammar lists appears as a string literal in the runtime.
   const code = scriptOf();
-  const G = fresh().G;
+  const Gs = fresh().grammars, G = Gs[0];
   // block keys are schema, like a column name: the check is about the words, not the keys that hold them
-  const SCHEMA = new Set(["kind", "class", "lemma", "forms", "seen", "asked", "belief", "source", "at", "said", "percept"]);
-  const vocab = new Set([...G.classes.keys(), ...G.whole.keys(), ...G.nounIrr.keys(), ...G.nounIrr.values(),
+  const SCHEMA = new Set(["kind", "class", "lemma", "forms", "seen", "asked", "belief", "source", "at", "said", "percept", "lang", "label"]);
+  const vocab = new Set(Gs.flatMap(G => [...G.classes.keys(), ...G.whole.keys(), ...G.nounIrr.keys(), ...G.nounIrr.values(),
     ...G.verbIrr.keys(), ...G.verbIrr.values(), ...G.seed, ...G.vectors.keys(), ...G.phrases.flatMap(p => p[0]),
-    ...G.whThing, ...G.whPlace.keys(), ...G.about].filter(w => w.length >= 2 && !SCHEMA.has(w)));
+    ...G.whThing, ...G.whPlace.keys(), ...G.about, ...[...G.vectors.values()].map(v => v.label)]).filter(w => w.length >= 2 && !SCHEMA.has(w)));
   const leaks = [...vocab].filter(w => new RegExp("[\"'`]" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[\"'`]").test(code));
-  ok(leaks.length === 0, "no lexicon, morphology, seed or vector word is a string literal in index.html (" + vocab.size + " checked)", leaks.join(", "));
-  const phrases = Object.values(G.say).filter(p => p.length >= 6 && !code.includes(p));
-  ok(phrases.length === Object.values(G.say).filter(p => p.length >= 6).length, "no reply phrase is copied into index.html");
+  ok(leaks.length === 0, "no word of either language's grammar is a string literal in index.html (" + vocab.size + " checked)", leaks.join(", "));
+  const said = Gs.flatMap(G => Object.values(G.say)).filter(p => p.length >= 6);
+  ok(said.every(p => !code.includes(p)), "no reply phrase in either language is copied into index.html");
 
   // 4. Every number the store declares is read by the runtime.
   const numbers = Object.keys(G.num).concat(Object.keys(G.sphere));

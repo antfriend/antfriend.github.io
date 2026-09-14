@@ -36,7 +36,7 @@ episode and term, which is how you make the corpus your own.
 | File | What it is |
 |---|---|
 | [index.html](index.html) | The app: a TTDB parser and round-trip writer, a rule interpreter, a consolidator, a reasoner, a small sphere. **No words of any language.** |
-| [personal_grammar_ttdb.md](personal_grammar_ttdb.md) | The store. The blueprint, the English grammar, every reply phrase, every constant, and the corpus. |
+| [personal_grammar_ttdb.md](personal_grammar_ttdb.md) | The store. The blueprint, an English grammar and a Spanish one, every reply phrase, every constant, and the corpus. |
 | [RFCs/](RFCs/) | The specs, three of them new. Start at [RFCs/INDEX.md](RFCs/INDEX.md). |
 | [tests/](tests/) | Two Node scripts and a Spanish grammar fixture. No dependencies, no test runner. |
 | [tools/](tools/) | Command-line access to the same engine: ask, feed, re-consolidate. |
@@ -71,7 +71,9 @@ And they check the claim the whole design rests on, three ways:
 2. **Swap in another language.** [tests/fixtures/es_ttdb.md](tests/fixtures/es_ttdb.md) is a
    small Spanish grammar on the same runtime. *Los gatos son mamíferos. Los gatos cazan
    ratones. Yo no como queso.* parses to `gato | es_un | mamífero`, `gato | cazar | ratón`,
-   `yo | comer | queso | -`, and *¿Los gatos cazan ratones?* is answered *Sí.*
+   `yo | comer | queso | -`, and *¿Los gatos cazan ratones?* is answered *Sí.* The seed
+   store goes further and keeps both: every English parse case still reads as English beside
+   its Spanish grammar, and merging the two into one lexicon instead is shown to break two.
 3. **Grep for leaks.** None of the 400-odd words the grammar lists appears as a string literal
    in `index.html`, no reply phrase is copied into it, and every number the store declares is
    named in it.
@@ -104,6 +106,9 @@ store, south of the origin on the prime meridian:
 | `@LAT-60LON0` | `responses` | every phrase the librarian can say |
 | `@LAT-70LON0` | `numbers` | every constant |
 
+Spanish has the same records on the antimeridian, `@LAT-10LON180` to `@LAT-60LON180`, each
+marked `lang: es`. It borrows the numbers and the vector algebra and supplies everything else.
+
 That is *the file IS the model, the runtime is a generic interpreter* from global_models,
 taken as literally for language as global_models took it for climate — and falsifiable the
 same way. The runtime refers to grammar only by schema keys (`cop`, `class_of`,
@@ -133,7 +138,25 @@ same way. The runtime refers to grammar only by schema keys (`cop`, `class_of`,
 The origin `@LAT0LON0` is **you** — the record your *I*, *me* and *my* resolve to. The prime
 meridian is **the grammar**: nine blueprint records north of you, seven language records
 south. **Things sit east, vectors west**, because the rule that decides which side a word
-falls on belongs on the line between the sides.
+falls on belongs on the line between the sides. The antimeridian is the other line between
+them, and holds **a second language**.
+
+### Two languages
+
+Each sentence is read by whichever grammar recognises more of its words, and a question is
+answered in its own language. The languages share their structural vectors, so *es un* and
+*is a* are one edge:
+
+```
+> ¿Es Pixel un animal?
+Probablemente — se sigue de lo que dijiste.
+  [inferido, no dicho] pixel es un cat → cat es un mammal → mammal es un animal
+    — “Pixel is a cat.” “Cats are mammals.” “Mammals are animals.”
+```
+
+Content words are not translated: `gato` and `cat` are two terms until you say *Un gato es un
+cat.* After that, anything said about cats in English is inherited by `gato` in Spanish.
+What doesn't cross yet is at [`@LAT98LON7`](#roadmap).
 
 A new term sits **beside the term that first gave it meaning**: *Pixel is a cat* puts
 `pixel` a degree or two from `cat`, so the sphere clusters by meaning in the order meaning
@@ -185,6 +208,7 @@ a small bestiary, a cat called Pixel, and one change of mind about coffee.
 | *What eats cheese?* | subjectsOf | … eat cheese |
 | *Where does Pixel sleep?* | objectsOf | pixel sleep_in … |
 | *Tell me about penguins.* | portrait | What your words hold about penguin. |
+| *¿Es Pixel un animal?* | verify | Probablemente — se sigue de lo que dijiste. |
 
 *Does Pixel chase mice?* is answered with the chain `pixel —is a→ cat ⟹ cat —chase→ mouse`
 and both sentences it rests on, labelled **inferred, not said**. *Can penguins fly?* quotes
@@ -205,7 +229,9 @@ This file is meant to be forked, and there are four depths to fork it at.
    and then; it is the only copy that leaves the browser.
 2. **Your own language.** Rewrite the seven records south of the origin and leave
    `index.html` alone. [tests/fixtures/es_ttdb.md](tests/fixtures/es_ttdb.md) is a working
-   minimal example — about sixty lines of grammar.
+   minimal example — about sixty lines of grammar. Or keep English and add yours beside it,
+   as the six Spanish records do: give each one `lang:`, supply `label:` lines instead of
+   vector algebra, and you can ask in either language.
 3. **Your own runtime.** The first eight blueprint records up the meridian are the whole
    contract, compressed: block formats, the percept line, placement, the conf formula, the
    inference order, the intent table, the write rules. The three TTG RFCs are their expansion,
@@ -228,6 +254,7 @@ global_models.
 |---|---|---|---|---|
 | `@LAT98LON5` | What the parser cannot see | 70 | 190 | **138** |
 | `@LAT98LON4` | The lemmatizer is a guess the corpus corrects | 120 | 210 | **111** |
+| `@LAT98LON7` | Two languages, one sphere | 100 | 140 | **85** |
 | `@LAT98LON3` | Said outranks inferred; a contradiction is kept | 190 | 200 | 51 |
 | `@LAT98LON1` | A verb is a vector, and the edge is the datum | 200 | 180 | 39 |
 | `@LAT98LON6` | Mentions are not evidence | 215 | 150 | 24 |
@@ -241,6 +268,11 @@ settled thing here. The test for any fix is the one in `@LAT98LON5`: if it needs
 **Second, the lemmatizer.** It is right about the words you use and wrong about the first use
 of anything irregular, and a wrong first lemma becomes the term later uses are matched
 against. Every merged surface form is visible on the term record's `forms:` line.
+
+**Third, the second language.** Spanish brings blind spots English never showed: dropped
+subjects (*No como carne*), verb-first questions (*¿Dónde duerme Pixel?*), and adjectives
+that agree in number (*son negros*). A verb in one language can't yet be linked to its
+counterpart in the other.
 
 **Not on the list: a recency rule for contradictions.** *I like coffee* on Monday and *I do not
 like coffee* on Friday is a change of mind, and the store cannot tell it from a contradiction.

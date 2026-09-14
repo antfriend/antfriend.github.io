@@ -79,7 +79,7 @@ console.log("\n== the runtime's surface record matches the runtime (TTG-RFC-0001
 
 console.log("\n== README 'What it can answer' matches the engine ==");
 const rows = [...readme.matchAll(/^\| \*(.+?)\* \| (\w+) \| (.+?) \|$/gm)];
-ok(rows.length === 8, "8 rows", String(rows.length));
+ok(rows.length === 9, "9 rows, one of them in Spanish", String(rows.length));
 for (const [, q, intent, says] of rows){
   const s = PG.openStore(store);
   const r = PG.answer(s, q, 1789400000);
@@ -119,6 +119,16 @@ const qCases = (appTest.match(/section\("reasoning[\s\S]*?const cases = \[([\s\S
 const count = s => (s.match(/^\s*\["/gm) || []).length;
 ok(readme.includes("fifteen parses") && count(parseCases) === 15, "README's 'fifteen parses' matches the suite", String(count(parseCases)));
 ok(readme.includes("fourteen questions") && count(qCases) === 14, "README's 'fourteen questions' matches the suite", String(count(qCases)));
+{
+  // the bilingual belief quotes what merging the two lexicons would break; re-run it over every parse case
+  const texts = [...parseCases.matchAll(/^\s*\["([^"]+)"/gm)].map(m => m[1]);
+  const pk = p => [p.s, p.v, p.o, p.pol, p.q].join(" | ");
+  const apart = PG.openStore(store), merged = PG.openStore(store.replace(/kind: lexicon\r?\nlang: es\r?\n/, "kind: lexicon\n"));
+  const broke = texts.filter(t => PG.perceiveSentence(apart, t, { last:null }).percepts.map(pk).join() !== PG.perceiveSentence(merged, t, { last:null }).percepts.map(pk).join());
+  const belief = recs.find(r => r.id === "@LAT98LON7");
+  ok(belief && belief.body.replace(/\s+/g, " ").includes("break " + broke.length + " of the fifteen English parse cases"),
+     "@LAT98LON7 quotes how many of the fifteen parses a merged lexicon breaks", broke.length + ": " + broke.join(" ; "));
+}
 
 console.log("\n" + (fails ? fails + " FAILED" : "all passed"));
 process.exit(fails ? 1 : 0);

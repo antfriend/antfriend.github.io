@@ -180,7 +180,7 @@ footer{margin-top:26px;font-size:.82rem;color:var(--dim);border-top:1px solid va
     <div id="spherewrap"><canvas id="sphere" width="340" height="340"></canvas></div>
     <div class="legend"><span><i style="background:var(--thing)"></i>things (east)</span>
       <span><i style="background:var(--vector)"></i>vectors (west)</span>
-      <span><i style="background:var(--accent)"></i>grammar (meridian)</span></div>
+      <span><i style="background:var(--accent)"></i>grammars (meridian, antimeridian)</span></div>
   </div>
 
   <div class="card" id="panel"></div>
@@ -360,24 +360,43 @@ function insertChunk(st, c){
 }
 
 /* ---------- grammar: read every ttdb-grammar block ------------------ */
-function loadGrammar(st){
+/* Languages (TTG-RFC-0001 §11). A grammar record's language is its `lang:`;
+ * a record without one belongs to the first language declared. A later
+ * language supplies whole kinds and borrows the kinds it lacks from the
+ * first. It borrows the numbers and the vector algebra always: it may name
+ * the first language's vectors, never change them, so every language
+ * reasons along the same edges.                                          */
+const SHARED_KINDS = ["numbers"];
+function grammarRecords(st){
+  const recs = records(st).filter(r => r.grammar != null).map(r => ({ r, b:parseBlock(r.grammar) }));
+  const tagged = recs.find(x => x.b.lang);
+  const first = tagged ? String(tagged.b.lang).trim() : "";
+  for (const x of recs) x.lang = x.b.lang ? String(x.b.lang).trim() : first;
+  return { recs, langs:[...new Set([first, ...recs.map(x => x.lang)])] };
+}
+function loadGrammar(st, lang){
+  const { recs, langs } = grammarRecords(st);
+  const first = langs[0], want = lang == null ? first : lang, later = want !== first;
+  const own = new Set(recs.filter(x => x.lang === want && !SHARED_KINDS.includes(x.b.kind)).map(x => x.b.kind));
+  const use = recs.filter(x => x.lang === want ? !later || !SHARED_KINDS.includes(x.b.kind)
+                                               : x.lang === first && (!own.has(x.b.kind) || x.b.kind === "vectors"))
+                  .sort((a, z) => (a.lang === want) - (z.lang === want));
   const G = {
-    classes:new Map(), whole:new Map(), contractions:[], sentenceEnd:new Set(), clauseBreak:new Set(),
+    lang:want, classes:new Map(), whole:new Map(), contractions:[], sentenceEnd:new Set(), clauseBreak:new Set(),
     questionMark:"", listSep:"", genericDet:new Set(),
     nounIrr:new Map(), nounKeep:new Set(), plural:[], pluralGuard:[], verbIrr:new Map(), verb:[], verbGuard:[],
-    doubleKeep:new Set(), minStem:NaN, seed:new Set(),
+    doubleKeep:new Set(), minStem:NaN, seed:new Set(), progressive:[], participle:[],
     roles:{}, vectors:new Map(), inherits:[], phrases:[],
     whThing:new Set(), whPlace:new Map(), whReason:new Set(), about:new Set(), describeMax:NaN,
     say:{}, units:{}, num:{}, sphere:{}, maxReply:NaN, loaded:[]
   };
   const rule = s => { const c = cols(s); return [c[0], c[1] === "-" ? "" : (c[1] || ""), words(c[2])]; };
-  for (const r of records(st)){
-    if (r.sphere){
-      const b = parseBlock(r.sphere);
-      for (const k of Object.keys(b)) G.sphere[k] = b[k];
-    }
-    if (!r.grammar) continue;
-    const b = parseBlock(r.grammar);
+  for (const r of records(st)) if (r.sphere){
+    const b = parseBlock(r.sphere);
+    for (const k of Object.keys(b)) G.sphere[k] = b[k];
+  }
+  for (const x of use){
+    const b = x.b;
     G.loaded.push(b.kind);
     if (b.kind === "lexicon"){
       for (const line of many(b, "class")){
@@ -394,26 +413,33 @@ function loadGrammar(st){
     } else if (b.kind === "morphology"){
       for (const line of many(b, "noun_irregular")){ const c = cols(line); for (const w of words(c[0])) G.nounIrr.set(w, c[1]); }
       for (const w of words(b.noun_keep)) G.nounKeep.add(w);
-      G.plural = many(b, "plural").map(rule);
-      G.pluralGuard = words(b.plural_guard);
+      // rule lists merge in file order; a scalar is the last record's
+      G.plural.push(...many(b, "plural").map(rule));
+      G.pluralGuard.push(...words(b.plural_guard));
       for (const line of many(b, "verb_irregular")){ const c = cols(line); for (const w of words(c[0])) G.verbIrr.set(w, c[1]); }
-      G.verb = many(b, "verb").map(rule);
-      G.verbGuard = words(b.verb_guard);
+      G.verb.push(...many(b, "verb").map(rule));
+      G.verbGuard.push(...words(b.verb_guard));
       for (const w of words(b.double_keep)) G.doubleKeep.add(w);
       G.minStem = +b.min_stem;
-      G.progressive = (b.progressive_ending || "").trim();
-      G.participle = (b.participle_ending || "").trim();
+      G.progressive.push(...words(b.progressive_ending));
+      G.participle.push(...words(b.participle_ending));
     } else if (b.kind === "seed"){
       for (const line of many(b, "seed")) for (const w of words(line)) G.seed.add(w);
     } else if (b.kind === "vectors"){
-      for (const line of many(b, "role")){ const c = cols(line); G.roles[c[0]] = c[1]; }
-      for (const line of many(b, "vector")){
-        const c = cols(line);
-        G.vectors.set(c[0], { name:c[0], flags:new Set(words(c[1]).filter(f => f !== "-")),
-                              inverse:c[2] && c[2] !== "-" ? c[2] : null, label:c[3] || c[0] });
+      const algebra = !later || x.lang === first, named = x.lang === want;
+      if (algebra){
+        for (const line of many(b, "role")){ const c = cols(line); G.roles[c[0]] = c[1]; }
+        for (const line of many(b, "vector")){
+          const c = cols(line);
+          G.vectors.set(c[0], { name:c[0], flags:new Set(words(c[1]).filter(f => f !== "-")),
+                                inverse:c[2] && c[2] !== "-" ? c[2] : null, label:c[3] || c[0] });
+        }
+        G.inherits.push(...many(b, "inherits").flatMap(words));
       }
-      G.inherits = many(b, "inherits").flatMap(words);
-      for (const line of many(b, "phrase")){ const c = cols(line); G.phrases.push([words(c[0]), c[1]]); }
+      if (named || !own.has("vectors")){
+        for (const line of many(b, "phrase")){ const c = cols(line); G.phrases.push([words(c[0]), c[1]]); }
+        for (const line of many(b, "label")){ const c = cols(line); const v = G.vectors.get(c[0]); if (v && c[1]) v.label = c[1]; }
+      }
     } else if (b.kind === "questions"){
       for (const w of words(b.wh_thing)) G.whThing.add(w);
       for (const line of many(b, "wh_place")){ const c = cols(line); for (const w of words(c[0])) G.whPlace.set(w, c[1]); }
@@ -606,7 +632,7 @@ function afterStarter(toks, i){
 }
 function copOrProgressive(S, toks, b, cue){
   const j = skipSoft(toks, b + 1), n = toks[j];
-  if (isContent(n) && !n.synthetic && S.G.progressive && verbLemma(S, n.w).end === S.G.progressive)
+  if (isContent(n) && !n.synthetic && S.G.progressive.includes(verbLemma(S, n.w).end))
     return { kind:"verb", at:j, cue };
   return { kind:"cop", at:b, cue };
 }
@@ -614,7 +640,7 @@ function havOrPerfect(S, toks, h, cue){
   const j = skipSoft(toks, h + 1), n = toks[j];
   if (isContent(n) && !n.synthetic){
     const v = verbLemma(S, n.w);
-    if ((S.G.participle && v.end === S.G.participle) || (v.irregular && v.lemma !== n.w)) return { kind:"verb", at:j, cue };
+    if (S.G.participle.includes(v.end) || (v.irregular && v.lemma !== n.w)) return { kind:"verb", at:j, cue };
   }
   return { kind:"hav", at:h, cue };
 }
@@ -643,7 +669,7 @@ function findPredicate(S, toks){
   if (known) return known;
   // a word that runs straight into a new noun phrase, or wears a participle ending
   const cued = beganAt((t, i) => !t.synthetic && (starts(toks[i + 1]) ||
-    (S.G.participle && verbLemma(S, t.w).end === S.G.participle)));
+    S.G.participle.includes(verbLemma(S, t.w).end)));
   if (cued) return cued;
   // nothing structural at all: three bare content words are S V O. Two are not a
   // clause — "morning tea" is a search, not a claim that mornings tea.
@@ -824,6 +850,7 @@ function openStore(text){
               byVector:new Map(), incoming:new Map(), comentions:new Map(), believers:new Set(), seenCounts:new Map(),
               said:new Map(), malformed:[], sentIndex:null, dec:1 };
   S.G = loadGrammar(st);
+  S.grammars = grammarRecords(st).langs.map(l => l === S.G.lang ? S.G : loadGrammar(st, l));
   const step = String(S.G.sphere.step || "");
   S.dec = (step.split(".")[1] || "").length;
   indexTerms(S);
@@ -838,6 +865,24 @@ function indexEpisodes(S){
   S.episodes = []; S.offLane = [];
   for (const c of S.st.chunks) if (c.rec && c.rec.episode != null) (c.rec.lat === lane ? S.episodes : S.offLane).push(c);
 }
+/* Which language a text is in: the grammar that recognises most of its words
+ * as its own closed-class words, seed verbs or irregular forms. Ties, and
+ * text none of them recognise, go to the first language.                 */
+function withGrammar(S, G, fn){
+  const prev = S.G; S.G = G || prev;
+  try { return fn(); } finally { S.G = prev; }
+}
+function pickGrammar(S, text){
+  let best = S.grammars[0], top = 0;
+  if (S.grammars.length < 2) return best;
+  for (const G of S.grammars){
+    const n = withGrammar(S, G, () => tokenize(S, text).filter(t => !t.punct &&
+      (t.cls.size || G.verbIrr.has(t.w) || G.nounIrr.has(t.w) || G.seed.has(verbLemma(S, t.w).lemma))).length);
+    if (n > top){ best = G; top = n; }
+  }
+  return best;
+}
+const grammarOf = (S, lang) => S.grammars.find(G => G.lang === lang) || S.G;
 function indexTerms(S){
   S.things = new Map(); S.vectors = new Map();
   indexEpisodes(S);
@@ -1002,7 +1047,7 @@ function perceive(S, text, source, isFile, now){
     let txt = sen.split(FENCE).join("''");
     if (isFinite(max) && txt.length > max) txt = Array.from(txt).slice(0, max).join("") + "…";
     saidLines.push("said: " + n + " | " + txt);
-    const r = perceiveSentence(S, sen, ctx);
+    const r = withGrammar(S, pickGrammar(S, sen), () => perceiveSentence(S, sen, ctx));
     for (const p of r.percepts){
       perceptLines.push("percept: " + [n, p.s, p.v, p.o, p.pol, p.q].join(" | "));
       all.push({ ...p, n });
@@ -1394,10 +1439,14 @@ function groundQuotes(S, g){
   return g.path.map(e => quotesFor(S, e, e.pol)[0]).filter(Boolean);
 }
 const vlabel = (S, v) => (alg(S, v) || {}).label || v;
+// a reply is in the language of the input; a told sentence is perceived in its own
 function answer(S, text, now, source){
+  return withGrammar(S, pickGrammar(S, text), () => answerIn(S, text, now, source));
+}
+function answerIn(S, text, now, source){
   const G = S.G, N = G.num;
   const it = interpret(S, text);
-  const reply = { intent:it.intent, query:text, verdict:"", head:"", items:[], notes:[], search:[],
+  const reply = { intent:it.intent, lang:G.lang, query:text, verdict:"", head:"", items:[], notes:[], search:[],
                   purchase:it.purchase, records:[], portraits:[], episode:null };
   const cap = a => a.slice(0, N.answer_max_items);
   if (it.intent === "perceive"){
@@ -1486,6 +1535,9 @@ function groundText(S, g){
   return "[" + lab + "] " + chain + (qs ? " — " + qs : "");
 }
 function replyText(S, reply){
+  return withGrammar(S, grammarOf(S, reply.lang), () => replyTextIn(S, reply));
+}
+function replyTextIn(S, reply){
   const out = [];
   if (reply.verdict) out.push(reply.verdict);
   if (reply.head) out.push(reply.head);
@@ -1500,18 +1552,21 @@ function replyText(S, reply){
   return out.join("\n");
 }
 function ingestFile(S, name, text, now){
-  const ep = perceive(S, text, name, true, now);
-  if (!ep) return null;
-  const G = S.G;
-  const msg = say(G, "ingested", { file:name, sentences:unit(G, "sentence", ep.sentences),
-    percepts:unit(G, "percept", ep.percepts.length), terms:unit(G, "term", ep.created.length) });
-  writeCursor(S, ep.id, name, msg, [ep.id]);
-  return { ep, msg };
+  return withGrammar(S, pickGrammar(S, text), () => {
+    const ep = perceive(S, text, name, true, now);
+    if (!ep) return null;
+    const G = S.G;
+    const msg = say(G, "ingested", { file:name, sentences:unit(G, "sentence", ep.sentences),
+      percepts:unit(G, "percept", ep.percepts.length), terms:unit(G, "term", ep.created.length) });
+    writeCursor(S, ep.id, name, msg, [ep.id]);
+    return { ep, msg, lang:G.lang };
+  });
 }
 
 const PG = { parseStore, serializeStore, parseRecord, parseBlock, openStore, loadGrammar, sentencesOf, tokenize,
   nounLemma, verbLemma, perceiveSentence, perceive, consolidate, syncTerms, termState, verify, objectsOf, subjectsOf,
-  portrait, searchSaid, interpret, answer, replyText, ingestFile, startEmpty, markAsked, records, epsOf, say, SLOT };
+  portrait, searchSaid, interpret, answer, replyText, ingestFile, startEmpty, markAsked, records, epsOf, say, SLOT,
+  pickGrammar, withGrammar };
 
 /* ====================================================================== *
  * The page. Everything below touches the DOM; everything above does not,
@@ -1608,6 +1663,9 @@ function groundHtml(g){
   return `<li class="g ${g.kind}">${lead}<span class="lab">${esc(lab)}</span>${chain}${conf}${quotes}${exc}</li>`;
 }
 function replyHtml(r){
+  return withGrammar(S, grammarOf(S, r.lang), () => replyHtmlIn(r));
+}
+function replyHtmlIn(r){
   const G = S.G, parts = [];
   if (r.verdict) parts.push(`<div class="verdict">${esc(r.verdict)}</div>`);
   if (r.head) parts.push(`<div class="verdict">${esc(r.head)}</div>`);
@@ -1648,14 +1706,17 @@ function preview(){
   const text = $("q").value;
   const pv = $("preview"), mode = $("mode");
   if (!S || !text.trim()){ pv.innerHTML = ""; mode.textContent = ""; return; }
-  const found = purchaseOf(S, tokenize(S, text)).found;
-  pv.innerHTML = tokenize(S, text).filter(t => !t.punct).map(t => {
-    if (!isContent(t)) return `<span class="fn">${esc(t.w)}</span>`;
-    const f = found.filter(x => x.w === t.w);
-    const cls = f.some(x => x.cls === "thing") ? "t" : f.some(x => x.cls === "vector") ? "v" : "u";
-    return `<span class="${cls}">${esc(t.w)}</span>`;
-  }).join(" ");
-  mode.textContent = mode.dataset[interpret(S, text).intent] || "";
+  withGrammar(S, pickGrammar(S, text), () => {
+    const found = purchaseOf(S, tokenize(S, text)).found;
+    pv.innerHTML = tokenize(S, text).filter(t => !t.punct).map(t => {
+      if (!isContent(t)) return `<span class="fn">${esc(t.w)}</span>`;
+      const f = found.filter(x => x.w === t.w);
+      const cls = f.some(x => x.cls === "thing") ? "t" : f.some(x => x.cls === "vector") ? "v" : "u";
+      return `<span class="${cls}">${esc(t.w)}</span>`;
+    }).join(" ");
+    // with more than one grammar in the store, show which one the text reads as
+    mode.textContent = (mode.dataset[interpret(S, text).intent] || "") + (S.grammars.length > 1 ? " · " + S.G.lang : "");
+  });
 }
 
 /* ---------- term list (TTCP-RFC-0003 §6) ----------------------------------- */

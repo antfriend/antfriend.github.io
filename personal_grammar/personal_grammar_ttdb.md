@@ -23,7 +23,7 @@ umwelt:
   globe:
     frame: grammar-sphere
     origin: "@LAT0LON0"
-    mapping: "A knowledge map, not the Earth. The origin is the speaker. The prime meridian is the grammar itself - the blueprint north of the origin, the language rules south of it - because the rule that decides which side a word falls on belongs on the line between the sides. Nounish THING terms sit in the eastern hemisphere, verbish VECTOR terms in the western. A new term sits beside the term that first gave it meaning, or where its lemma hashes when nothing did. Lat 90 is the episode timeline (lon = ordinal), lat 98 holds beliefs about this design, lat 99 the fixture, lat -90 the special record."
+    mapping: "A knowledge map, not the Earth. The origin is the speaker. The prime meridian is the grammar itself - the blueprint north of the origin, the language rules south of it - because the rule that decides which side a word falls on belongs on the line between the sides. A second language's grammar sits on the antimeridian, the other line between the sides. Nounish THING terms sit in the eastern hemisphere, verbish VECTOR terms in the western. A new term sits beside the term that first gave it meaning, or where its lemma hashes when nothing did. Lat 90 is the episode timeline (lon = ordinal), lat 98 holds beliefs about this design, lat 99 the fixture, lat -90 the special record."
     note: "Latitude lanes are available here because the globe is a knowledge map again - the mechanism global_models had to replace with a lane: field. See @LAT98LON2."
 cursor_policy:
   max_preview_chars: 256
@@ -74,8 +74,10 @@ touched:1789258020
    a new runtime from the first eight, and embed this one from the ninth.
 3. **The data.** South of here, the language: [closed-class words](lat-10lon0),
    [morphology](lat-20lon0), [seed vectors](lat-30lon0), [vector algebra](lat-40lon0),
-   [question forms](lat-50lon0), [replies](lat-60lon0) and [the numbers](lat-70lon0). East and
-   west, the owner's own terms. Up at lat 90, every episode, verbatim.
+   [question forms](lat-50lon0), [replies](lat-60lon0) and [the numbers](lat-70lon0). On the
+   far side, the antimeridian, [a second language](lat-10lon180) — ask in Spanish and it
+   reasons over what you said in English. East and west, the owner's own terms. Up at lat 90,
+   every episode, verbatim.
 
 **The runtime holds no words.** `index.html` knows how to split, match, strip a suffix, walk a
 typed edge and fill a slot. It does not know that *the* is a determiner, that *mice* is the
@@ -132,6 +134,10 @@ offered as a store instead.
   replace a token outright (*can't* → *can not*); `contraction:` entries split a suffix off
   (*don't* → *do not*). A `list_sep` comma survives as a token because it separates
   coordinated noun phrases.
+- **Language**: a store may hold several grammars, told apart by `lang:`. Each sentence is
+  read by the one that recognises most of its words — closed-class words, seed verbs,
+  irregular forms — with ties to the first; a question is answered in its own language. See
+  [two languages, one sphere](lat98lon7).
 - **Clauses**: split at `clause_break` characters and at `subord` words (*because*, *when*).
   A `conj` word (*and*, *but*) splits the clause **only** when both sides carry a predicate;
   otherwise it coordinates noun phrases.
@@ -393,20 +399,23 @@ with `;globalThis.<name> = PG;` appended (`tools/harness.mjs` does exactly this 
 | `interpret(S, text)` | `{ intent, purchase, … }` without acting | — |
 | `verify(S, s, v, o)`, `objectsOf(S, s, [v])`, `subjectsOf(S, v, o)`, `portrait(S, lemma)`, `searchSaid(S, [lemma])` | raw reasoning, lemmas in | — |
 
-Intents are `perceive`, `verify`, `objectsOf`, `subjectsOf`, `portrait`, `search`. Also on
+Intents are `perceive`, `verify`, `objectsOf`, `subjectsOf`, `portrait`, `search`. With more
+than one language: `pickGrammar(S, text)` returns the grammar a text reads as, and
+`withGrammar(S, G, fn)` runs `fn` under it — `answer`, `ingestFile` and `replyText` already
+do both. Also on
 `PG`, for tools and tests: `parseStore`, `parseRecord`, `parseBlock`, `records`, `epsOf`,
 `loadGrammar`, `say`, `sentencesOf`, `tokenize`, `nounLemma`, `verbLemma`, `perceiveSentence`,
 `perceive`, `consolidate`, `syncTerms`, `termState`, `markAsked`, and `SLOT` — the NUL
 character that stands for the hole a question asks the corpus to fill.
 
 **The store object `S`.** `st` (parsed chunks; the source of truth, serialise this); `G`
-(the loaded grammar); `things` and `vectors` (Map lemma → `{ chunk, cls, lemma, forms,
+(the grammar in use, normally the first language's) and `grammars` (one per `lang:`); `things` and `vectors` (Map lemma → `{ chunk, cls, lemma, forms,
 asked }`); `episodes` (lane chunks) and `offLane` (other episode blocks, checked only);
 `trips` (Map `"s|v|o"` → `{ s, v, o, pol, conf, fr, ag, decided, sources }`); `said` (Map
 episode ID → Map sentence number → sentence); `malformed` (`{ id, line }`). `PG.records(S.st)`
 lists records as `{ id, key, lat, lon, title, body, edges, conf, sal, eps, … }`.
 
-**A reply.** `{ intent, query, verdict, head, items, portraits, search, notes, purchase:{
+**A reply.** `{ intent, lang, query, verdict, head, items, portraits, search, notes, purchase:{
 found, missing }, records, episode }`. Each item is a ground `{ kind, pol, path, quotes, … }`
 where `kind` is `direct` (print with `label_said`), `inference` (`label_inferred`, and it
 carries `via`) or `conflict` (`label_contested`); `path` is the chain of beliefs; `quotes` are
@@ -751,6 +760,208 @@ search_max_items: 5
 suggest_eps_min: 40
 with_max_pairs: 3
 said_max_chars: 400
+```
+
+---
+
+@LAT-10LON180 | created:1789257600 | updated:1789257600 | relates:translates@LAT-10LON0
+
+**Gramática — palabras cerradas (español)**
+src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §3
+
+A second language, on the antimeridian: the other line between things and vectors. Each
+sentence is read by whichever grammar knows more of its words (TTG-RFC-0001 §11), so *a*,
+*no* and *son* can mean one thing here and another at [the English lexicon](lat-10lon0).
+
+```ttdb-grammar
+kind: lexicon
+lang: es
+class: det | el la los las un una unos unas este esta estos estas ese esa esos esas
+class: poss | su sus tu tus nuestro nuestra nuestros nuestras
+class: quant_all | todo toda todos todas cada
+class: quant_some | algún alguna algunos algunas muchos muchas pocos pocas varios varias
+class: quant_none | ningún ninguno ninguna
+class: self | yo me mi mis mí conmigo
+class: anaphor | él ella ellos ellas
+class: prep | en de a con por para sobre sin desde hasta entre hacia bajo contra durante
+class: conj | y e o u pero ni
+class: subord | porque cuando si aunque mientras que
+class: aux | suele suelen
+class: cop | es son soy eres somos está están estoy estás estamos era eran estaba estaban fue fueron ser estar
+class: hav | tiene tienen tengo tienes tenemos
+class: modal | puede pueden puedo puedes podemos debe deben debo
+class: neg | no nunca jamás nada nadie
+class: wh | qué quién quiénes cuál cuáles dónde cuándo cómo
+class: adverb | muy también siempre ya aún todavía casi bastante mucho poco
+class: filler | sí vale hola gracias bueno pues
+whole: del | de el
+whole: al | a el
+sentence_end: . ! ?
+clause_break: ; :
+question_mark: ?
+list_sep: ,
+generic_det: un una
+```
+
+---
+
+@LAT-20LON180 | created:1789257600 | updated:1789257600 | relates:translates@LAT-20LON0
+
+**Gramática — morfología (español)**
+src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §4
+
+Stem-changing verbs are irregulars; everything else is a suffix rule, and the corpus corrects
+the guesses as it does for English ([the lemmatizer belief](lat98lon4)).
+
+```ttdb-grammar
+kind: morphology
+lang: es
+noun_keep: lunes martes miércoles jueves viernes crisis tesis análisis virus
+plural: ones | ón
+plural: ces | z
+plural: les | l | le
+plural: res | r | re
+plural: nes | n | ne
+plural: des | d | de
+plural: s | -
+verb_irregular: estoy estás está estamos están | estar
+verb_irregular: tengo tienes tiene tenemos tienen | tener
+verb_irregular: voy vas va vamos van | ir
+verb_irregular: hago haces hace hacemos hacen | hacer
+verb_irregular: puedo puedes puede podemos pueden | poder
+verb_irregular: quiero quieres quiere queremos quieren | querer
+verb_irregular: duermo duermes duerme dormimos duermen | dormir
+verb_irregular: vuelo vuelas vuela volamos vuelan | volar
+verb_irregular: juego juegas juega jugamos juegan | jugar
+verb_irregular: pienso piensas piensa pensamos piensan | pensar
+verb_irregular: prefiero prefieres prefiere preferimos prefieren | preferir
+verb_irregular: digo dices dice decimos dicen | decir
+verb_irregular: sé sabes sabe sabemos saben | saber
+verb: ando | ar
+verb: iendo | er | ir
+verb: ado | ar
+verb: ido | er | ir
+verb: amos | ar
+verb: emos | er
+verb: imos | ir
+verb: an | ar
+verb: en | er | ir
+verb: as | ar
+verb: es | er | ir
+verb: a | ar
+verb: e | er | ir
+verb: o | ar | er ir
+progressive_ending: ando iendo
+participle_ending: ado ido
+min_stem: 2
+```
+
+---
+
+@LAT-30LON180 | created:1789257600 | updated:1789257600 | relates:translates@LAT-30LON0
+
+**Gramática — verbos semilla (español)**
+src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §5
+
+```ttdb-grammar
+kind: seed
+lang: es
+seed: comer beber gustar amar odiar querer necesitar saber conocer pensar creer ver oír sentir hacer dar tomar tener encontrar traer comprar vender usar ayudar construir escribir leer decir llamar enseñar aprender jugar trabajar correr caminar nadar volar saltar crecer cazar perseguir atrapar temer evitar proteger causar crear contener llevar perder ganar cambiar seguir abrir cerrar empezar terminar disfrutar preferir recordar olvidar visitar mirar cantar cocinar viajar estudiar hablar vivir dormir morder pagar dibujar pintar soñar esperar ronronear ladrar oler caer despertar pertenecer
+```
+
+---
+
+@LAT-40LON180 | created:1789257600 | updated:1789257600 | relates:translates@LAT-40LON0
+
+**Gramática — nombres de los vectores (español)**
+src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §6
+
+No algebra here, and no roles: a later language borrows [the first one's](lat-40lon0), so
+*es un* and *is a* are one edge and a question in either language walks sayings in both.
+It only names those vectors (`label:`) and says which phrases point at them.
+
+```ttdb-grammar
+kind: vectors
+lang: es
+label: is_a | es un
+label: has_property | es
+label: has | tiene
+label: part_of | es parte de
+label: in | está en
+label: contains | contiene
+label: equals | es lo mismo que
+label: opposes | es lo contrario de
+label: causes | causa
+label: with | aparece con
+phrase: parte de | part_of
+phrase: hecho de | made_of
+phrase: tipo de | is_a
+phrase: clase de | is_a
+phrase: lo mismo que | equals
+phrase: lo contrario de | opposes
+phrase: lleno de | contains
+phrase: en | in
+```
+
+---
+
+@LAT-50LON180 | created:1789257600 | updated:1789257600 | relates:translates@LAT-50LON0
+
+**Gramática — preguntas (español)**
+src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §7
+
+```ttdb-grammar
+kind: questions
+lang: es
+wh_thing: qué quién quiénes cuál cuáles
+wh_place: dónde | in
+about: háblame cuéntame describe explica define sobre
+describe_max_words: 2
+```
+
+---
+
+@LAT-60LON180 | created:1789257600 | updated:1789257600 | relates:translates@LAT-60LON0
+
+**Gramática — respuestas (español)**
+src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §8
+
+The librarian answers in the language it was asked in, and quotes the owner in whatever
+language they spoke.
+
+```ttdb-grammar
+kind: responses
+lang: es
+label_said: dijiste
+label_inferred: inferido, no dicho
+label_contested: has dicho ambas cosas
+affirm: Sí.
+deny: No.
+affirm_inferred: Probablemente — se sigue de lo que dijiste.
+deny_inferred: Probablemente no — se sigue de lo que dijiste.
+contest: Tus palabras no coinciden, y no se elige ninguna.
+unknown: Tus palabras todavía no llegan a eso.
+exception: {term} es una excepción — {via} sugeriría lo contrario.
+no_purchase: Sin agarre: {words}.
+noted: Anotado: {percepts} de {sentences}.
+noted_nothing: Guardé tus palabras, pero no se formó ninguna percepción.
+contradicts: Esto contradice algo que dijiste antes.
+describe_head: Lo que tus palabras dicen de {term}.
+describe_empty: {term} está en tus palabras, pero aún no se ha dicho nada de ello.
+points_here: Lo que apunta a {term}
+mentioned_with: aparece con
+objects_head: {s} {v} …
+subjects_head: … {v} {o}
+nothing_found: Nada en tus palabras encaja.
+search_head: Lo más cercano que has dicho
+suggest: Mencionas {term} a menudo y lo que dices de ello no está asentado (EPS {eps}). ¿Me cuentas más sobre {term}?
+ingested: Leído {file}: {sentences}, {percepts}, {terms} nuevos.
+episode_title: Episodio {n} — {source}
+source_typed: escrito
+store_opened: Se abrió un almacén en lugar de leerlo como palabras: {file}.
+unit_percept: percepción | percepciones
+unit_sentence: frase | frases
+unit_term: término | términos
 ```
 
 ---
@@ -1609,6 +1820,38 @@ The cost is real: a file is one episode however long it is, so one long document
 outvote two short typed remarks. That is a claim about what the owner means by feeding a
 file in — *here is something I read* rather than *here is what I think* — and it is written
 down because it is a claim.
+
+---
+
+@LAT98LON7 | created:1789257600 | updated:1789257600 | relates:supports@LAT10LON0,refines@LAT98LON5
+[ew]
+conf:100
+rev:0
+sal:140
+touched:1789257600
+[/ew]
+
+**BELIEF — Two languages, one sphere.**
+
+People rarely keep their words in one language, so the store reads a second beside the
+first: [Spanish](lat-10lon180) on the antimeridian, chosen per sentence. What crosses is the
+test.
+
+- **Crosses:** every structural vector. *Un pingüino es un penguin* is the same `is_a` edge
+  as *A penguin is a bird*, so *Háblame de los pingüinos* answers in Spanish with English
+  sayings quoted as said — the penguin exception included.
+- **Does not cross:** content words. `gato` and `cat` are two terms and `cazar` and `chase`
+  two vectors until the owner links them, and only terms can be linked: nothing yet says
+  *cazar* is *chase*.
+- **Why not one merged lexicon:** *a* is an article in one language and a preposition in the
+  other, *no* a quantifier and a negation. Merged, they break 2 of the fifteen English parse
+  cases; kept apart, none.
+- **New blind spots:** a dropped subject (*No como carne* forms nothing), a verb-first
+  question (*¿Dónde duerme Pixel?*), an adjective that agrees in number (*son negros* reads
+  as a class). Each would be a rule the grammar declares — never Spanish in `index.html`.
+
+Try it: *Un gato es un cat.* then *¿Es un gato un animal?* A third language is another set of
+records with its own `lang:`, and nothing in the runtime.
 
 ---
 

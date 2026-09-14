@@ -69,7 +69,7 @@ Class keys the runtime interprets: `det`, `poss`, `quant_all`, `quant_some`, `qu
 | `noun_keep` | words | Never reduced. |
 | `plural`, `verb` | `<ending> \| <replacement> \| <alternatives>` | Suffix rules, first match wins. `-` is empty; `~` undoubles the final consonant. |
 | `plural_guard`, `verb_guard` | endings | A word ending in one of these is not reduced by that rule set. |
-| `progressive_ending`, `participle_ending` | ending | Which verb-rule endings mark a progressive or a participle. |
+| `progressive_ending`, `participle_ending` | endings | Which verb-rule endings mark a progressive or a participle. |
 | `double_keep` | letters | Final doubles that `~` leaves alone. |
 | `min_stem` | integer | Shortest stem a rule may leave. |
 
@@ -94,6 +94,7 @@ A word the owner has used as a verb is recognised as a VECTOR term regardless of
 | `vector` | `<name> \| <flags> \| <inverse or -> \| <label>` | Algebra and display label. |
 | `inherits` | vector names | Vectors along which beliefs flow downward. |
 | `phrase` | `<words> \| <vector>` | A multi-word complement that names a vector. |
+| `label` | `<vector> \| <label>` | Renames a declared vector for display; how a later language names the first's (§11). |
 
 Roles: `class_of`, `property`, `possession`, `comention`, `episode_edge`, `negation_prefix`,
 `phrasal_join`. Flags: `transitive`, `symmetric`, `weak`. A vector not declared here has no
@@ -157,30 +158,60 @@ substitution test, and a store for another language keeps it unchanged.
 
 ---
 
-## 11. Compatibility
+## 11. Several Languages
 
-Both fence tags are unknown to TTCP-RFC-0001 and are silently skipped by generic viewers
-(§3). Unknown keys inside a block MUST be ignored. Several records MAY carry blocks of the
-same kind; their entries merge in file order.
+A store MAY hold grammars for several languages.
+
+1. **Membership.** A grammar record's language is its `lang:` value. A record with no `lang:`
+   belongs to the first language declared in file order.
+2. **Borrowing.** A later language supplies whole kinds. A kind it does not supply is taken
+   from the first language. `numbers` is always the first language's.
+3. **One algebra.** A later language MUST NOT change roles, vector flags, inverses or
+   `inherits`; the runtime takes all of them from the first language. A later language's
+   `vectors` record contributes only `phrase:` lines and `label: <vector> | <label>` lines.
+   Every language therefore reasons along the same edges, and a question in one walks
+   sayings in another.
+4. **Choice.** Each sentence is perceived under the grammar that recognises the most of its
+   tokens — a token counts when it is in one of that grammar's classes, is an irregular form,
+   or lemmatises to a seed verb. A tie, or no recognised token, goes to the first language.
+   A whole input chooses the same way for its intent and its reply, so a question is answered
+   in its own language while every quote stays in the language it was said in.
+5. **Terms are not translated.** A lemma is a term whatever language produced it. Two words
+   for one thing are two terms until the owner relates them.
+
+Merging two languages into one lexicon is not equivalent: a word that is closed-class in both
+with different classes (*a*, *no* across English and Spanish) changes how sentences in both
+languages parse.
 
 ---
 
-## 12. Open Questions
+## 12. Compatibility
+
+Both fence tags are unknown to TTCP-RFC-0001 and are silently skipped by generic viewers
+(§3). Unknown keys inside a block MUST be ignored. Within one language, several records MAY
+carry blocks of the same kind: their entries merge in file order, rule lists append, and a
+scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
+
+---
+
+## 13. Open Questions
 
 1. **Word order.** Only subject–verb–object is interpretable. An `order:` key would let a
    store declare SOV or VSO; the clause parser would need a second shape, not new words.
-2. **Multiple languages in one store.** `lang:` is recorded but unused. A store holding two
-   grammars would need a per-episode language and per-term language.
+   Spanish verb-first questions (*¿Dónde duerme Pixel?*) are the first case in the store.
+2. **Linking vectors across languages.** Terms link through `is_a`; nothing links `cazar` to
+   `chase`. An `equals` belief between two vector terms would need the reasoner to walk it.
 3. **Grammar revision.** Episodes are perceived under the grammar of their day. Whether a
    grammar change should re-perceive old episodes, and how that is recorded, is open.
 
 ---
 
-## 13. Changelog
+## 14. Changelog
 
 | Date | Change |
 |---|---|
 | 2026-09-13 | Initial draft, from the personal_grammar reference implementation |
 | 2026-09-13 | §10 Embedding Surface added, after a third-party embedding reported which facts it had to take from the page and README instead of the store. §10–12 renumbered to §11–13. |
+| 2026-09-13 | §11 Several Languages added; the reference store carries Spanish beside English. `label:` in §6; progressive and participle endings become lists in §4; rule lists append (§12). Former open question 2 answered; §11–13 renumbered to §12–14. |
 
 *License: CC0*
