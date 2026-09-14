@@ -18,7 +18,7 @@ read that data: the closed-class words of a language, its morphology, a seed lis
 the algebra of the relations it reasons along, its question forms, every phrase its
 librarian may say, and every constant its consolidator uses. A TTG runtime is a **generic
 interpreter** of those blocks. This RFC defines the `ttdb-grammar` and `ttdb-sphere` fenced
-blocks, the seven grammar kinds, and the runtime contract that makes the claim *the file IS
+blocks, the eight grammar kinds, and the runtime contract that makes the claim *the file IS
 the grammar* testable.
 
 ---
@@ -125,7 +125,10 @@ emits: `label_said`, `label_inferred`, `label_contested`, `affirm`, `deny`, `aff
 
 `numbers`: `prior_for`, `prior_against`, `weight_partial`, `belief_conf_threshold`,
 `inherit_decay`, `max_hops`, `answer_max_items`, `search_max_items`, `suggest_eps_min`,
-`with_max_pairs`, `said_max_chars`.
+`with_max_pairs`, `said_max_chars`, `rule_max_body`.
+
+`kind: rules` holds `rule:` lines; its syntax, safety conditions and derivation are defined in
+TTG-RFC-0003 §3.1.
 
 `ttdb-sphere` (on the Home record): `thing_lon`, `vector_lon`, `term_lat` (each `lo hi`),
 `adjacent` (`lo hi` degrees), `step`, `episode_lane`, `self_lemma`.
@@ -165,7 +168,7 @@ A store MAY hold grammars for several languages.
 1. **Membership.** A grammar record's language is its `lang:` value. A record with no `lang:`
    belongs to the first language declared in file order.
 2. **Borrowing.** A later language supplies whole kinds. A kind it does not supply is taken
-   from the first language. `numbers` is always the first language's.
+   from the first language. `numbers` and `rules` are always the first language's.
 3. **One algebra.** A later language MUST NOT change roles, vector flags, inverses or
    `inherits`; the runtime takes all of them from the first language. A later language's
    `vectors` record contributes only `phrase:` lines and `label: <vector> | <label>` lines.
@@ -199,8 +202,9 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 1. **Word order.** Only subject–verb–object is interpretable. An `order:` key would let a
    store declare SOV or VSO; the clause parser would need a second shape, not new words.
    Spanish verb-first questions (*¿Dónde duerme Pixel?*) are the first case in the store.
-2. **Linking vectors across languages.** Terms link through `is_a`; nothing links `cazar` to
-   `chase`. An `equals` belief between two vector terms would need the reasoner to walk it.
+2. **Linking words across languages.** A rule links vectors (`cazar X Y => chase X Y`,
+   TTG-RFC-0003 §3.1) and `is_a` links terms, one direction and one pair at a time. A store-wide
+   translation table would need its own kind.
 3. **Grammar revision.** Episodes are perceived under the grammar of their day. Whether a
    grammar change should re-perceive old episodes, and how that is recorded, is open.
 
@@ -213,5 +217,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-09-13 | Initial draft, from the personal_grammar reference implementation |
 | 2026-09-13 | §10 Embedding Surface added, after a third-party embedding reported which facts it had to take from the page and README instead of the store. §10–12 renumbered to §11–13. |
 | 2026-09-13 | §11 Several Languages added; the reference store carries Spanish beside English. `label:` in §6; progressive and participle endings become lists in §4; rule lists append (§12). Former open question 2 answered; §11–13 renumbered to §12–14. |
+| 2026-09-14 | `kind: rules` (defined in TTG-RFC-0003 §3.1) and `rule_max_body` in §9; rules are shared like numbers (§11); open question 2 narrowed. |
 
 *License: CC0*

@@ -65,6 +65,7 @@ button.primary{background:var(--accent);color:var(--panel);border-color:var(--ac
 .chip.neg{text-decoration:line-through}
 .chip.miss{color:var(--dead);border-color:currentColor;cursor:default;text-decoration:line-through}
 .arrow{color:var(--dim);font-size:.8rem}
+.rl{font-size:.72rem;color:var(--warn);font-style:italic;margin-left:2px}
 .note{margin-top:8px;padding:7px 10px;border-left:3px solid var(--warn);background:var(--bg);font-size:.85rem;color:var(--dim)}
 .purchase{margin-top:8px;font-size:.78rem;color:var(--dim);display:flex;flex-wrap:wrap;gap:4px;align-items:center}
 form{border-top:1px solid var(--line);padding:10px 12px 12px}
@@ -366,7 +367,7 @@ function insertChunk(st, c){
  * first. It borrows the numbers and the vector algebra always: it may name
  * the first language's vectors, never change them, so every language
  * reasons along the same edges.                                          */
-const SHARED_KINDS = ["numbers"];
+const SHARED_KINDS = ["numbers", "rules"];
 function grammarRecords(st){
   const recs = records(st).filter(r => r.grammar != null).map(r => ({ r, b:parseBlock(r.grammar) }));
   const tagged = recs.find(x => x.b.lang);
@@ -388,7 +389,7 @@ function loadGrammar(st, lang){
     doubleKeep:new Set(), minStem:NaN, seed:new Set(), progressive:[], participle:[],
     roles:{}, vectors:new Map(), inherits:[], phrases:[],
     whThing:new Set(), whPlace:new Map(), whReason:new Set(), about:new Set(), describeMax:NaN,
-    say:{}, units:{}, num:{}, sphere:{}, maxReply:NaN, loaded:[]
+    say:{}, units:{}, num:{}, sphere:{}, maxReply:NaN, loaded:[], ruleLines:[], rules:[], ruleErrors:[]
   };
   const rule = s => { const c = cols(s); return [c[0], c[1] === "-" ? "" : (c[1] || ""), words(c[2])]; };
   for (const r of records(st)) if (r.sphere){
@@ -454,11 +455,44 @@ function loadGrammar(st, lang){
       }
     } else if (b.kind === "numbers"){
       for (const k of Object.keys(b)) if (k !== "kind") G.num[k] = +b[k];
+    } else if (b.kind === "rules"){
+      G.ruleLines.push(...many(b, "rule").map(String));
     }
   }
+  parseRules(G);
   // parseBlock flattens the mmpdb YAML, so the librarian's nested key reads directly
   G.maxReply = +st.meta.max_reply_chars;
   return G;
+}
+/* Rules (TTG-RFC-0003 §3.1): `rule: <atom>, <atom> => <atom> | <label>`, an atom
+ * being `vector subject object` like a percept. A capitalised argument is a
+ * variable and `-` is no object; a vector wearing the negation prefix matches
+ * a decided negative belief, never an absence. A rule is kept only if it is
+ * safe — each head variable occurs in the body, the body has 1..rule_max_body
+ * atoms, and the head is not a structural edge — so rules can relate named
+ * terms and nothing else, and derivation always reaches a fixpoint.        */
+const isVar = a => /^\p{Lu}/u.test(a);
+function parseRules(G){
+  const R = G.roles, neg = R.negation_prefix || "", max = G.num.rule_max_body;
+  const atom = txt => {
+    const w = words(txt);
+    if (w.length !== 3 || isVar(w[0]) || w[1] === "-") return null;
+    const negated = !!neg && w[0].length > neg.length && w[0].startsWith(neg);
+    return { v:negated ? w[0].slice(neg.length) : w[0], s:w[1], o:w[2], neg:negated };
+  };
+  G.rules = []; G.ruleErrors = [];
+  for (const line of G.ruleLines){
+    const [main, ...rest] = line.split("|"), arrow = main.indexOf("=>");
+    const body = arrow < 0 ? [] : main.slice(0, arrow).split(",").map(atom);
+    const head = arrow < 0 ? null : atom(main.slice(arrow + 2));
+    const bound = new Set(body.filter(Boolean).flatMap(a => [a.s, a.o]).filter(isVar));
+    const why = !head || !body.length || body.some(a => !a) ? "shape"
+      : isFinite(max) && body.length > max ? "length"
+      : [R.comention, R.episode_edge].includes(head.v) ? "protected"
+      : [head.s, head.o].some(x => isVar(x) && !bound.has(x)) ? "unsafe" : "";
+    if (why) G.ruleErrors.push({ line, why });
+    else G.rules.push({ body, head, label:rest.join("|").trim(), line });
+  }
 }
 /* A reply phrase with its {slots} filled. A missing phrase is the empty string:
    the runtime never supplies wording of its own. */
@@ -848,7 +882,7 @@ function openStore(text){
   const st = parseStore(text);
   const S = { st, G:null, things:new Map(), vectors:new Map(), episodes:[], offLane:[], trips:new Map(), beliefsBy:new Map(),
               byVector:new Map(), incoming:new Map(), comentions:new Map(), believers:new Set(), seenCounts:new Map(),
-              said:new Map(), malformed:[], sentIndex:null, dec:1 };
+              said:new Map(), malformed:[], sentIndex:null, dec:1, derived:new Map(), derivedBy:new Map(), derivedIn:new Map() };
   S.G = loadGrammar(st);
   S.grammars = grammarRecords(st).langs.map(l => l === S.G.lang ? S.G : loadGrammar(st, l));
   const step = String(S.G.sphere.step || "");
@@ -954,6 +988,72 @@ function consolidate(S){
   }
   S.trips = trips; S.seenCounts = seen; S.comentions = com; S.malformed = malformed; S.said = said;
   S.sentIndex = null;
+  deriveRules(S);
+}
+
+/* Derivation (TTG-RFC-0003 §3.1). Facts are the decided beliefs; each round
+ * applies the vector algebra (transitive, symmetric, inverse) and then every
+ * rule to all facts so far, and keeps a fact the first time its key appears,
+ * so every fact carries a shortest proof. Keys are subject|vector|object|
+ * polarity over terms the store names, a finite set, so the rounds stop.
+ * What a rule concludes is held in memory, never written as a belief; a
+ * triple the owner said is never replaced by one a rule derives.          */
+function deriveRules(S){
+  const G = S.G;
+  S.derived = new Map(); S.derivedBy = new Map(); S.derivedIn = new Map();
+  if (!G.rules.length) return;
+  const facts = new Set(), byV = new Map(), made = [];
+  const put = f => {
+    const k = f.s + "|" + f.v + "|" + f.o + "|" + f.pol;
+    if (facts.has(k)) return false;
+    facts.add(k); pushTo(byV, f.v, f); return true;
+  };
+  for (const e of S.trips.values()) if (e.decided && e.pol !== "?") put({ s:e.s, v:e.v, o:e.o, pol:e.pol, path:[e] });
+  const bind = (term, value, env) => !isVar(term) ? (term === value ? env : null)
+    : term in env ? (env[term] === value ? env : null) : { ...env, [term]:value };
+  for (let grew = true; grew; ){
+    grew = false;
+    const round = [];
+    for (const [v, a] of G.vectors){
+      if (a.flags.has("weak")) continue;
+      const fs = byV.get(v) || [];
+      if (a.flags.has("transitive")) for (const f of fs) if (f.pol === "+" && f.o !== "-")
+        for (const g of fs) if (g.pol === "+" && g.s === f.o && g.o !== f.s) round.push({ s:f.s, v, o:g.o, pol:"+", path:f.path.concat(g.path) });
+      for (const f of fs) if (f.o !== "-"){
+        if (a.flags.has("symmetric")) round.push({ s:f.o, v, o:f.s, pol:f.pol, path:f.path });
+        if (a.inverse) round.push({ s:f.o, v:a.inverse, o:f.s, pol:f.pol, path:f.path });
+      }
+    }
+    for (const r of G.rules){
+      let envs = [{ env:{}, path:[] }];
+      for (const at of r.body){
+        const next = [];
+        for (const { env, path } of envs) for (const f of byV.get(at.v) || []){
+          if (f.pol !== (at.neg ? "-" : "+")) continue;
+          const e1 = bind(at.s, f.s, env), e2 = e1 && bind(at.o, f.o, e1);
+          if (e2) next.push({ env:e2, path:path.concat(f.path) });
+        }
+        envs = next;
+      }
+      for (const { env, path } of envs){
+        const h = r.head, s = isVar(h.s) ? env[h.s] : h.s, o = isVar(h.o) ? env[h.o] : h.o;
+        const D = { s, v:h.v, o, pol:h.neg ? "-" : "+", conf:255, decided:true, derived:true, rule:r.label, sources:[] };
+        D.proof = path.concat([D]);
+        round.push({ s, v:h.v, o, pol:D.pol, path:D.proof, D });
+      }
+    }
+    for (const f of round) if (put(f)){ grew = true; if (f.D) made.push(f.D); }
+  }
+  for (const D of made){
+    const k = D.s + "|" + D.v + "|" + D.o, had = S.derived.get(k);
+    if (S.trips.has(k)) continue;
+    if (!had) S.derived.set(k, D);
+    else if (had.pol !== D.pol && had.pol !== "?")
+      S.derived.set(k, { s:D.s, v:D.v, o:D.o, pol:"?", plus:had.pol === "+" ? had : D, minus:had.pol === "-" ? had : D });
+  }
+  for (const D of S.derived.values()) if (D.pol !== "?"){
+    pushTo(S.derivedBy, D.s, D); pushTo(S.derivedIn, D.o === "-" ? SLOT + D.v : D.o, D);
+  }
 }
 
 /* ---------- terms on the sphere (TTG-RFC-0002 §5) --------------------- */
@@ -1148,14 +1248,17 @@ function writeCursor(S, sel, query, answerText, ids){
 const tripOf = (S, s, v, o) => S.trips.get(s + "|" + v + "|" + o);
 const alg = (S, v) => S.G.vectors.get(v) || null;
 const flag = (S, v, f) => !!alg(S, v) && alg(S, v).flags.has(f);
-function unwind(prev, o){ const path = []; for (let e = prev.get(o); e; e = prev.get(e.s)) path.unshift(e); return path; }
+function unwind(prev, o){ const path = []; for (let e = prev.get(o); e; e = prev.get(e.s)) path.unshift(e); return path.flatMap(e => e.derived ? e.proof : [e]); }
+const factsOf = (S, x) => (S.beliefsBy.get(x) || []).concat(S.derivedBy.get(x) || []);
+const derivedOf = (S, s, v, o) => S.derived.get(s + "|" + v + "|" + o) || null;
+const proofGround = (S, D) => ({ kind:"inference", pol:D.pol, path:D.proof, conf:chainConf(S, D.proof) });
 /* Everything reachable from s along decided + beliefs whose vector the predicate accepts. */
 function walk(S, s, ok){
   const prev = new Map([[s, null]]), out = [];
   let frontier = [s];
   for (let hop = 0; hop < S.G.num.max_hops && frontier.length; hop++){
     const next = [];
-    for (const x of frontier) for (const e of S.beliefsBy.get(x) || []){
+    for (const x of frontier) for (const e of factsOf(S, x)){
       if (!ok(e.v) || !e.decided || e.pol !== "+" || e.o === "-" || prev.has(e.o)) continue;
       prev.set(e.o, e); out.push({ lemma:e.o, path:unwind(prev, e.o) }); next.push(e.o);
     }
@@ -1170,8 +1273,9 @@ function chainConf(S, path){
 }
 function inherited(S, s, v, o){
   for (const a of ancestors(S, s)){
-    const e = tripOf(S, a.lemma, v, o);
+    const e = tripOf(S, a.lemma, v, o), D = derivedOf(S, a.lemma, v, o);
     if (e && e.decided) return { pol:e.pol, via:a.lemma, path:a.path.concat([e]) };
+    if (D && D.pol !== "?") return { pol:D.pol, via:a.lemma, path:a.path.concat(D.proof) };
   }
   return null;
 }
@@ -1204,6 +1308,9 @@ function verify(S, s, v, o){
     const e = tripOf(S, o, v, s);
     if (e && e.decided) return inferredAs(S, e.pol, [e]);
   }
+  const D = derivedOf(S, s, v, o);
+  if (D && D.pol === "?") return { verdict:"C", grounds:[proofGround(S, D.plus), proofGround(S, D.minus)] };
+  if (D) return inferredAs(S, D.pol, D.proof);
   const inh = inherited(S, s, v, o);
   if (inh) return inferredAs(S, inh.pol, inh.path, inh.via);
   return { verdict:"U", grounds:[] };
@@ -1214,6 +1321,7 @@ function objectsOf(S, s, vs){
   for (const v of vs){
     for (const e of S.beliefsBy.get(s) || []) if (e.v === v)
       add(e.o, { kind:e.pol === "?" ? "conflict" : "direct", pol:e.pol, path:[e], conf:e.conf });
+    for (const D of S.derivedBy.get(s) || []) if (D.v === v) add(D.o, proofGround(S, D));
   }
   for (const v of vs){
     const a = alg(S, v);
@@ -1234,6 +1342,7 @@ function objectsOf(S, s, vs){
 function subjectsOf(S, v, o){
   const cands = new Set();
   for (const e of S.incoming.get(o === "-" ? SLOT + v : o) || []) if (e.v === v) cands.add(e.s);
+  for (const D of S.derivedIn.get(o === "-" ? SLOT + v : o) || []) if (D.v === v) cands.add(D.s);
   const a = alg(S, v);
   const down = x => (S.incoming.get(x) || []).filter(e => e.decided && e.pol === "+" &&
     (S.G.inherits.includes(e.v) || (a && a.flags.has("transitive") && e.v === v))).map(e => e.s);
@@ -1262,11 +1371,11 @@ function portrait(S, lemma){
     if (inh && inh.pol !== e.pol) g.exception = inh;
     return g;
   });
-  const inferred = [];
+  const inferred = (S.derivedBy.get(lemma) || []).map(D => proofGround(S, D));
   for (const anc of ancestors(S, lemma)){
     if (anc.path.length > 1) inferred.push({ kind:"inference", pol:"+", path:anc.path, conf:chainConf(S, anc.path) });
     for (const e of S.beliefsBy.get(anc.lemma) || []){
-      if (!e.decided || G.inherits.includes(e.v) || tripOf(S, lemma, e.v, e.o)) continue;
+      if (!e.decided || G.inherits.includes(e.v) || tripOf(S, lemma, e.v, e.o) || derivedOf(S, lemma, e.v, e.o)) continue;
       if (inferred.some(g => g.path[g.path.length - 1].v === e.v && g.path[g.path.length - 1].o === e.o)) continue;
       const path = anc.path.concat([e]);
       inferred.push({ kind:"inference", pol:e.pol, path, via:anc.lemma, conf:chainConf(S, path) });
@@ -1311,6 +1420,8 @@ function purchaseOf(S, toks){
     const hits = [];
     if (S.things.has(n)) hits.push({ w:t.w, lemma:n, cls:"thing" });
     else if (S.things.has(t.w)) hits.push({ w:t.w, lemma:t.w, cls:"thing" });
+    // a term a rule concludes about ("flightless") has purchase though no record holds it
+    else if (S.derivedBy.has(n) || S.derivedIn.has(n)) hits.push({ w:t.w, lemma:n, cls:"thing" });
     if (S.vectors.has(v)) hits.push({ w:t.w, lemma:v, cls:"vector" });
     else if (S.G.roles.phrasal_join){
       // sleep finds purchase on sleep_in: a phrasal vector is still the owner's verb
@@ -1535,7 +1646,7 @@ function answerIn(S, text, now, source){
 /* Plain-text rendering of a reply, for the cursor block and the command line. */
 function tripleText(S, e, pol){
   const neg = (pol || e.pol) === "-" ? (S.G.roles.negation_prefix || "") : "";
-  return e.s + " " + neg + vlabel(S, e.v) + (e.o === "-" ? "" : " " + e.o);
+  return e.s + " " + neg + vlabel(S, e.v) + (e.o === "-" ? "" : " " + e.o) + (e.derived && e.rule ? " (" + e.rule + ")" : "");
 }
 function groundText(S, g){
   const lab = say(S.G, g.kind === "direct" ? "label_said" : g.kind === "inference" ? "label_inferred" : "label_contested");
@@ -1656,7 +1767,8 @@ function tripleHtml(e, pol){
   const vk = termKey(e.v, "vector");
   return `<span class="triple">${chip(e.s, "thing")}<span class="arrow">—</span>` +
     `<button type="button" class="chip vector${neg ? " neg" : ""}"${vk ? ` data-key="${vk}"` : ""}>${esc(vlabel(S, e.v))}</button>` +
-    (e.o === "-" ? "" : `<span class="arrow">→</span>${chip(e.o, "thing")}`) + `</span>`;
+    (e.o === "-" ? "" : `<span class="arrow">→</span>${chip(e.o, "thing")}`) +
+    (e.derived && e.rule ? `<span class="rl">${esc(e.rule)}</span>` : "") + `</span>`;
 }
 function groundHtml(g){
   const G = S.G;

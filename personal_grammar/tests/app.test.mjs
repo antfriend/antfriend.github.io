@@ -23,8 +23,8 @@ section("the store parses and round-trips");
   ok(PG.serializeStore(S.st) === STORE, "parse then write reproduces the file byte for byte");
   PG.syncTerms(S, T0, new Set());
   ok(PG.serializeStore(S.st) === STORE, "a sync with nothing new rewrites nothing");
-  const kinds = ["lexicon", "morphology", "seed", "vectors", "questions", "responses", "numbers"];
-  ok(kinds.every(k => S.G.loaded.includes(k)), "all seven grammar kinds load", S.G.loaded.join(","));
+  const kinds = ["lexicon", "morphology", "seed", "vectors", "questions", "responses", "numbers", "rules"];
+  ok(kinds.every(k => S.G.loaded.includes(k)), "all eight grammar kinds load", S.G.loaded.join(","));
   ok(!STORE.includes("@@"), "no doubled @ in any edge");
 }
 
@@ -201,7 +201,7 @@ section("start empty keeps the kit");
   const recs = PG.records(S.st);
   ok(!recs.some(r => r.lat === 90), "no episodes left");
   ok(S.things.size === 1 && S.things.has("self") && S.vectors.size === 0, "only the speaker remains as a term");
-  ok(recs.filter(r => r.lon === 0 && r.lat > -90 && r.lat < 90).length === 17, "home, nine blueprint and seven grammar records kept");
+  ok(recs.filter(r => r.lon === 0 && r.lat > -90 && r.lat < 90).length === 18, "home, nine blueprint and eight grammar records kept");
   ok(recs.some(r => r.id === "@LAT99LON1") && recs.some(r => r.lat === 98) && recs.some(r => r.lat === -90), "lanes 98, 99 and the special record kept");
   ok(recs.filter(r => r.lon === 180 && r.grammar != null).length === 6 && S.grammars.length === 2, "the second language on the antimeridian kept");
   const r = PG.answer(S, "I like tea.", T0 + 60);
@@ -212,6 +212,58 @@ section("start empty keeps the kit");
   const hits = PG.answer(S, "which sentence is here", T0 + 180).search;
   ok(hits.length === 1 && hits[0].ep === "@LAT90LON2", "search after Start empty finds only the owner's words, never the fixture's",
      hits.map(h => h.ep).join(" "));
+}
+
+section("rules: Datalog-style, over vectors (TTG-RFC-0003 §3.1)");
+{
+  const S = fresh();
+  ok(S.G.rules.length === 3 && S.G.ruleErrors.length === 0 && S.grammars[1].rules.length === 3, "three seed rules load, none rejected, and the Spanish grammar borrows them");
+
+  const sun = PG.answer(S, "Is Pixel in the sun?", T0);
+  ok(sun.verdict === PG.say(S.G, "affirm_inferred") && sun.items[0].path.map(e => e.v).join(">") === "sleep_in>in" && sun.items[0].path[1].rule,
+     "a one-atom rule: sleeping in the sun is being in it, shown with its label", sun.items[0] && sun.items[0].path.map(e => e.v).join(">"));
+
+  const fl = PG.answer(S, "Are penguins flightless?", T0);
+  const flPath = fl.items[0] ? fl.items[0].path.map(e => (e.pol === "-" ? "not " : "") + e.v).join(">") : "";
+  ok(fl.verdict === PG.say(S.G, "affirm_inferred") && flPath === "not fly>is_a>has_property" &&
+     fl.items[0].quotes.map(q => q.text).join(" | ") === "Penguins do not fly. | A penguin is a bird.",
+     "a negative atom matches what the owner denied, joined to a second atom on a shared variable", flPath);
+  ok(!fl.notes.some(n => n.includes("flightless")), "a term a rule concludes about has purchase");
+  ok(!S.trips.has("penguin|has_property|flightless") && !S.things.get("penguin").chunk.rec.term.includes("flightless"),
+     "a conclusion is never written as a belief");
+
+  const es = fresh();
+  PG.answer(es, "Pixel caza ratones.", T0);
+  const chases = PG.objectsOf(es, "pixel", ["chase"]).map(g => g.term);
+  ok(chases.includes("ratón") && chases.includes("mouse"), "a rule links a Spanish verb to the English one", chases.join(", "));
+
+  const said = fresh();
+  PG.answer(said, "Pixel is not in the sun.", T0);
+  const v = PG.verify(said, "pixel", "in", "sun");
+  ok(v.verdict === "N" && !v.inferred && !said.derived.has("pixel|in|sun"), "what the owner said outranks what a rule derives");
+
+  const overlay = extra => PG.openStore(STORE.replace("rule: cazar X Y => chase X Y | cazar is chase\n", "rule: cazar X Y => chase X Y | cazar is chase\n" + extra.join("\n") + "\n"));
+  const both = overlay(["rule: sleep_in X Y => not_in X Y | the opposite"]);
+  const c = PG.verify(both, "pixel", "in", "sun");
+  ok(c.verdict === "C" && c.grounds.length === 2 && c.grounds.every(g => g.kind === "inference"), "rules concluding both polarities give a contested answer with both proofs", c.verdict);
+
+  const cyc = overlay(["rule: chase X Y => hunt Y X | a", "rule: hunt X Y => chase X Y | b", "rule: is_a X Y => is_a Y X | c", "rule: eat X Y, is_a X Z => eat Z Y | d"]);
+  const terms = cyc.things.size + 1, bound = terms * terms * (cyc.vectors.size + cyc.G.vectors.size) * 2;
+  ok(cyc.G.rules.length === 7 && cyc.derived.size > 0 && cyc.derived.size <= bound, "rules written to cycle still reach a fixpoint within the bound", cyc.derived.size + " ≤ " + bound);
+
+  const bad = overlay(["rule: chase X Y => eat X Z | unsafe", "rule: chase X Y, chase Y Z, chase Z W, chase W V => chase X V | long",
+                       "rule: chase X Y => with X Y | protected", "rule: chase X Y | no arrow"]);
+  ok(bad.G.rules.length === 3 && bad.G.ruleErrors.map(e => e.why).join() === "unsafe,length,protected,shape", "unsafe, over-long, protected and malformed rules are rejected and reported",
+     bad.G.ruleErrors.map(e => e.why).join());
+
+  const motion = overlay(["rule: move_to X Y => in X Y | moving somewhere puts you there"]);
+  PG.startEmpty(motion, T0);
+  PG.answer(motion, "Mary moved to the kitchen.", T0 + 1);
+  const where = PG.answer(motion, "Where is Mary?", T0 + 2);
+  PG.answer(motion, "Mary moved to the garden.", T0 + 3);
+  const later = PG.answer(motion, "Where is Mary?", T0 + 4).items.map(g => g.term);
+  ok(where.items[0] && where.items[0].term === "kitchen" && later.join() === "kitchen,garden",
+     "a motion rule answers where someone is, and without recency both places stand", later.join());
 }
 
 section("two languages, one sphere (TTG-RFC-0001 §11)");

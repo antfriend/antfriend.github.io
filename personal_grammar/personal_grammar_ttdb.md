@@ -74,7 +74,8 @@ touched:1789258020
    a new runtime from the first eight, and embed this one from the ninth.
 3. **The data.** South of here, the language: [closed-class words](lat-10lon0),
    [morphology](lat-20lon0), [seed vectors](lat-30lon0), [vector algebra](lat-40lon0),
-   [question forms](lat-50lon0), [replies](lat-60lon0) and [the numbers](lat-70lon0). On the
+   [question forms](lat-50lon0), [replies](lat-60lon0), [the numbers](lat-70lon0) and
+   [the rules](lat-80lon0). On the
    far side, the antimeridian, [a second language](lat-10lon180) — ask in Spanish and it
    reasons over what you said in English. East and west, the owner's own terms. Up at lat 90,
    every episode, verbatim.
@@ -289,8 +290,10 @@ src: RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md §3
 
 Beliefs are formed about THINGS; reasoning travels along VECTORS. The algebra is declared
 per vector in [vector algebra](lat-40lon0) with four flags — `transitive`, `symmetric`,
-`inherits`, `weak` — and an optional inverse. Nothing is inferred ahead of time and nothing
-inferred is ever written: inference happens at answer time and is labelled as inference.
+`inherits`, `weak` — and an optional inverse. Anything more is a [rule](lat-80lon0):
+`not_fly X -, is_a X bird => has_property X flightless`. Rule conclusions are recomputed in
+memory after every episode, until a round adds nothing; the algebra runs at answer time.
+Nothing inferred is ever written, and everything inferred is labelled as inference.
 
 To **verify** `(s, v, o)`, stop at the first step that answers:
 
@@ -299,9 +302,10 @@ To **verify** `(s, v, o)`, stop at the first step that answers:
    to o within `max_hops`.
 3. **Inverse / symmetric**: `(o, inverse(v), s)` or, for a symmetric `v`, `(o, v, s)`,
    tried by steps 1–2.
-4. **Inherited**: walk the `inherits` vector (`is_a`) up from s, nearest ancestor first;
-   the first ancestor holding a decided belief on `(v, o)` answers, either polarity.
-5. Otherwise **unknown** — and the words that found no purchase are named, not guessed.
+4. **Rule**: a rule concluded `(s, v, o)` → its polarity, shown with its proof and label.
+5. **Inherited**: walk the `inherits` vector (`is_a`) up from s, nearest ancestor first;
+   the first ancestor holding a decided belief or rule conclusion on `(v, o)` answers.
+6. Otherwise **unknown** — and the words that found no purchase are named, not guessed.
 
 An inferred conf is the product of the chain's confs (as fractions of 255) times
 `inherit_decay` per hop beyond the first. **Specificity is the only defeasible rule**: a
@@ -411,7 +415,8 @@ character that stands for the hole a question asks the corpus to fill.
 **The store object `S`.** `st` (parsed chunks; the source of truth, serialise this); `G`
 (the grammar in use, normally the first language's) and `grammars` (one per `lang:`); `things` and `vectors` (Map lemma → `{ chunk, cls, lemma, forms,
 asked }`); `episodes` (lane chunks) and `offLane` (other episode blocks, checked only);
-`trips` (Map `"s|v|o"` → `{ s, v, o, pol, conf, fr, ag, decided, sources }`); `said` (Map
+`trips` (Map `"s|v|o"` → `{ s, v, o, pol, conf, fr, ag, decided, sources }`); `derived`
+(Map `"s|v|o"` → a rule conclusion `{ s, v, o, pol, rule, proof }`, never written); `said` (Map
 episode ID → Map sentence number → sentence); `malformed` (`{ id, line }`). `PG.records(S.st)`
 lists records as `{ id, key, lat, lon, title, body, edges, conf, sal, eps, … }`.
 
@@ -760,6 +765,29 @@ search_max_items: 5
 suggest_eps_min: 40
 with_max_pairs: 3
 said_max_chars: 400
+rule_max_body: 3
+```
+
+---
+
+@LAT-80LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT60LON0,refines@LAT-40LON0
+
+**Grammar — rules**
+src: RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md §3
+
+What follows from what, beyond the algebra's flags. A rule reads like a percept with
+variables: `body atoms => head atom | label`, each atom `vector subject object`, capitals
+for variables, `-` for no object. A `not_` vector matches something the owner denied, never
+something they didn't say. Rules only relate terms the store already names, so inference
+always finishes; their conclusions print as *inferred, not said* with the rule's label, and
+anything the owner actually said outranks them. Every language borrows these, since they
+name vectors, not words.
+
+```ttdb-grammar
+kind: rules
+rule: sleep_in X Y => in X Y | sleeping somewhere is being there
+rule: not_fly X -, is_a X bird => has_property X flightless | a bird that does not fly
+rule: cazar X Y => chase X Y | cazar is chase
 ```
 
 ---
@@ -1841,8 +1869,8 @@ test.
   as *A penguin is a bird*, so *Háblame de los pingüinos* answers in Spanish with English
   sayings quoted as said — the penguin exception included.
 - **Does not cross:** content words. `gato` and `cat` are two terms and `cazar` and `chase`
-  two vectors until the owner links them, and only terms can be linked: nothing yet says
-  *cazar* is *chase*.
+  two vectors until the owner links them: terms with `is_a`, vectors with a
+  [rule](lat-80lon0) such as `cazar X Y => chase X Y`.
 - **Why not one merged lexicon:** *a* is an article in one language and a preposition in the
   other, *no* a quantifier and a negation. Merged, they break 2 of the fifteen English parse
   cases; kept apart, none.

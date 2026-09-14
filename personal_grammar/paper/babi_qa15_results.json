@@ -8,7 +8,7 @@
       "attributed": 0,
       "facts": 2000,
       "perceived": 2000,
-      "ms": 276.3171999999975,
+      "ms": 266.5633000000009,
       "intents": {
         "portrait": 1000
       },
@@ -20,7 +20,7 @@
       "attributed": 1000,
       "facts": 2000,
       "perceived": 2000,
-      "ms": 206.84999999999832,
+      "ms": 217.09879999999407,
       "intents": {
         "objectsOf": 1000
       },
@@ -32,7 +32,7 @@
       "attributed": 1000,
       "facts": 2000,
       "perceived": 2000,
-      "ms": 187.29589999999416,
+      "ms": 202.53420000000096,
       "intents": {
         "objectsOf": 1000
       },
@@ -44,7 +44,7 @@
       "attributed": 0,
       "facts": 2000,
       "perceived": 0,
-      "ms": 100.52009999999927,
+      "ms": 100.24849999998605,
       "intents": {
         "search": 1000
       },

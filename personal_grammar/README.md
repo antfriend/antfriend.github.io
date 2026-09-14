@@ -105,6 +105,7 @@ store, south of the origin on the prime meridian:
 | `@LAT-50LON0` | `questions` | the words that open each kind of question |
 | `@LAT-60LON0` | `responses` | every phrase the librarian can say |
 | `@LAT-70LON0` | `numbers` | every constant |
+| `@LAT-80LON0` | `rules` | what follows from what, beyond the vector flags |
 
 Spanish has the same records on the antimeridian, `@LAT-10LON180` to `@LAT-60LON180`, each
 marked `lang: es`. It borrows the numbers and the vector algebra and supplies everything else.
@@ -136,7 +137,7 @@ same way. The runtime refers to grammar only by schema keys (`cop`, `class_of`,
 ## The grammar sphere
 
 The origin `@LAT0LON0` is **you** — the record your *I*, *me* and *my* resolve to. The prime
-meridian is **the grammar**: nine blueprint records north of you, seven language records
+meridian is **the grammar**: nine blueprint records north of you, eight grammar records
 south. **Things sit east, vectors west**, because the rule that decides which side a word
 falls on belongs on the line between the sides. The antimeridian is the other line between
 them, and holds **a second language**.
@@ -208,12 +209,17 @@ a small bestiary, a cat called Pixel, and one change of mind about coffee.
 | *What eats cheese?* | subjectsOf | … eat cheese |
 | *Where does Pixel sleep?* | objectsOf | pixel sleep_in … |
 | *Tell me about penguins.* | portrait | What your words hold about penguin. |
+| *Are penguins flightless?* | verify | Probably — it follows from what you said. |
 | *¿Es Pixel un animal?* | verify | Probablemente — se sigue de lo que dijiste. |
 
 *Does Pixel chase mice?* is answered with the chain `pixel —is a→ cat ⟹ cat —chase→ mouse`
 and both sentences it rests on, labelled **inferred, not said**. *Can penguins fly?* quotes
 *Penguins do not fly.* and adds that *penguin is an exception — bird would suggest
 otherwise*. *Is a whale a fish?* ends *No purchase: whale, fish.*
+
+Nobody said penguins are flightless. *Are penguins flightless?* is answered by a rule in
+`@LAT-80LON0`, `not_fly X -, is_a X bird => has_property X flightless`, which joins *Penguins
+do not fly.* to *A penguin is a bird.* and names itself in the chain.
 
 Every answer lights the records it touched on the sphere, opens the first one, and writes
 `last_query`, `last_answer` and `answer_records` into the store's cursor.
@@ -271,8 +277,8 @@ against. Every merged surface form is visible on the term record's `forms:` line
 
 **Third, the second language.** Spanish brings blind spots English never showed: dropped
 subjects (*No como carne*), verb-first questions (*¿Dónde duerme Pixel?*), and adjectives
-that agree in number (*son negros*). A verb in one language can't yet be linked to its
-counterpart in the other.
+that agree in number (*son negros*). Verbs link across languages only one rule at a time
+(`cazar X Y => chase X Y`).
 
 **Not on the list: a recency rule for contradictions.** *I like coffee* on Monday and *I do not
 like coffee* on Friday is a change of mind, and the store cannot tell it from a contradiction.

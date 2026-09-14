@@ -8,9 +8,9 @@ Read them in this order.
 
 | RFC | Title | What it defines |
 |---|---|---|
-| [TTG-RFC-0001](TTG-RFC-0001-Grammar-in-the-Store.md) | Grammar in the Store | The `ttdb-grammar` and `ttdb-sphere` blocks, the seven grammar kinds, and the **runtime contract**: no natural-language word or reply phrase in the interpreter. |
+| [TTG-RFC-0001](TTG-RFC-0001-Grammar-in-the-Store.md) | Grammar in the Store | The `ttdb-grammar` and `ttdb-sphere` blocks, the eight grammar kinds, and the **runtime contract**: no natural-language word or reply phrase in the interpreter. |
 | [TTG-RFC-0002](TTG-RFC-0002-Semantic-Percepts.md) | Semantic Percepts, Episodes and Terms | Reading, nounish/verbish classification, the percept line, episode and term records, placement on the grammar sphere, and byte-stable write-back. |
-| [TTG-RFC-0003](TTG-RFC-0003-Beliefs-Reasoning-Response.md) | Beliefs, Vector Reasoning and Grounded Response | Consolidation (the rule of succession over episodes), vector algebra, inference with specificity, purchase, intents, and the three kinds of ground. |
+| [TTG-RFC-0003](TTG-RFC-0003-Beliefs-Reasoning-Response.md) | Beliefs, Vector Reasoning and Grounded Response | Consolidation (the rule of succession over episodes), vector algebra, Datalog-style rules over vectors (§3.1), inference with specificity, purchase, intents, and the three kinds of ground. |
 
 The store compresses these into nine blueprint records up the prime meridian; each carries
 a `src:` line naming the section it expands to (TTN-RFC-0004 applied to the spec itself).

@@ -46,7 +46,7 @@ for (const m of store.matchAll(/^src: (RFCs\/[^\s]+) §(\d+)/gm)){
   ok(exists && new RegExp("^## " + m[2] + "\\. ", "m").test(fs.readFileSync(file, "utf8")), "src: " + m[1] + " §" + m[2] + " exists");
 }
 ok(recs.filter(r => r.lon === 0 && r.lat > 0 && r.lat < 90).length === 9, "nine blueprint records north of the origin");
-ok(recs.filter(r => r.lon === 0 && r.lat < 0 && r.lat > -90 && r.grammar != null).length === 7, "seven grammar records south of it");
+ok(recs.filter(r => r.lon === 0 && r.lat < 0 && r.lat > -90 && r.grammar != null).length === 8, "eight grammar records south of it");
 ok(rfcs.filter(f => f.startsWith("TTG-")).every(f => index.includes(f)) && rfcs.every(f => f === "INDEX.md" || index.includes(f)),
    "RFCs/INDEX.md lists every RFC in the folder");
 
@@ -79,7 +79,7 @@ console.log("\n== the runtime's surface record matches the runtime (TTG-RFC-0001
 
 console.log("\n== README 'What it can answer' matches the engine ==");
 const rows = [...readme.matchAll(/^\| \*(.+?)\* \| (\w+) \| (.+?) \|$/gm)];
-ok(rows.length === 9, "9 rows, one of them in Spanish", String(rows.length));
+ok(rows.length === 10, "10 rows, one answered by a rule and one in Spanish", String(rows.length));
 for (const [, q, intent, says] of rows){
   const s = PG.openStore(store);
   const r = PG.answer(s, q, 1789400000);
