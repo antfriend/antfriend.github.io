@@ -8,66 +8,61 @@
   <meta property="og:title" content="Toot Toot Engineering — TTDB · TTAI · Autonomy OS" />
   <meta property="og:description" content="Toot Toot Engineering is free, open-source, no dependencies software: Science, Storytelling and Semantic Data Systems by example" />
   <meta property="og:type" content="website" />
-  <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <link rel="stylesheet" href="css/eyeball.css" />
   <link rel="stylesheet" href="css/tte-common.css" />
   <link rel="stylesheet" href="css/tte-core.css" />
   <link rel="stylesheet" href="css/index.css" />
+  <link rel="stylesheet" href="css/index-ttdb.css" />
 </head>
 <body>
-  
+
   <div class="page">
-    
-    <header>
-           
-      <a href="index.html" data-hover-preview-off>Toot Toot Engineering is open-source, runtime-dependency-free and free software: Science, Storytelling, Semiotic Semantic Data Systems by example</a>
+
+    <header class="stage-header">
+
+      <a class="tagline" href="index.html" data-hover-preview-off>Toot Toot Engineering is open-source, runtime-dependency-free and free software: Science, Storytelling, Semiotic Semantic Data Systems by example</a>
 
       <div class="header-left">
 
-        <div class="graph-wrap">
-          <canvas id="graph"></canvas>
+        <!-- Single globe over index_ttdb.md. The old multi-globe browser
+             lives on at index_OG.html. -->
+        <div class="globe-stage" id="globeStage">
+          <canvas id="globe" aria-label="Index globe: six record cards on a sine-wave ribbon"></canvas>
+          <div class="card-layer" id="cardLayer"></div>
+          <div class="globe-hud">
+            <b id="hudTitle">Index</b>
+            <p id="hudSub"><span>loading index_ttdb.md…</span></p>
+          </div>
+          <div class="tour-flag" id="tourFlag">touring ▸</div>
         </div>
 
       </div>
-      <div id="panelResizer" class="panel-resizer"></div>
+
       <div class="header-right">
         <div class="record" id="recordView"></div>
+        <div class="topic-links">
+          <strong>Card topics</strong>
+          <ul class="topic-rail" id="topicRail"></ul>
+          <p class="rail-note">Six draft cards on a sine-wave ribbon. Drag the globe, pick a card, or wait ten seconds and the ribbon walks itself.</p>
+        </div>
       </div>
 
     </header>
 
-    <section class="panel records-panel">
-      <strong>Records</strong>
-      <input class="search" id="searchInput" type="search" placeholder="Search terms, examples, or links" />
-      <div class="search-meta" id="searchMeta">Loading...</div>
-      <ul class="list" id="recordList"></ul>
-    </section>
-
-    <details class="panel record-panel info-panel" open>
+    <details class="panel record-panel info-panel">
       <summary>Settings</summary>
       <div class="title">
-        <span id="status">Loading Toot Toot DB ...</span>
+        <span id="status">Loading index_ttdb.md ...</span>
       </div>
       <div class="controls">
-        <button class="pill" id="saveLocalContent">Save local copy</button>
-        <button class="pill" id="clearLocalContent" hidden>Clear local copy</button>
-        <label class="pill" for="localFileInput">Upload file</label>
-        <input type="file" id="localFileInput" accept=".md,.latex" />
         <label class="toggle">
           <input type="checkbox" id="tourToggle" checked />
-          Guided tour
+          Guided tour after 10s idle
         </label>
-        <label class="toggle">
-          <input type="checkbox" id="slowTourToggle" />
-          Slow tour pace
-        </label>
-        <label class="toggle">
-          <input type="checkbox" id="invertDragToggle" checked />
-          Invert drag Y
-        </label>
+        <a class="pill" href="index_OG.html">Open the OG multi-globe browser</a>
+        <a class="pill" href="index_ttdb.md">View index_ttdb.md source</a>
       </div>
-      <div class="tour-note" id="tourNote">Default network tour will advance after a short pause.</div>
+      <div class="tour-note">Any click, key, wheel or scroll stops the tour and restarts the ten-second idle clock.</div>
     </details>
 
     <footer>
@@ -76,56 +71,9 @@
     </footer>
   </div>
 
-  <script>
-    (function () {
-      const resizer = document.getElementById('panelResizer');
-      const page = document.querySelector('.page');
-      let startY = 0, startHeight = 0;
-
-      page.style.setProperty('--globe-panel-height', Math.round(window.innerHeight * 0.5) + 'px');
-
-      function currentHeight() {
-        return parseFloat(getComputedStyle(page).getPropertyValue('--globe-panel-height')) || 144;
-      }
-
-      function onMove(clientY) {
-        const h = Math.max(60, Math.min(600, startHeight + (clientY - startY)));
-        page.style.setProperty('--globe-panel-height', h + 'px');
-      }
-
-      function onMouseMove(e) { onMove(e.clientY); }
-      function onTouchMove(e) { e.preventDefault(); onMove(e.touches[0].clientY); }
-
-      function onUp() {
-        resizer.classList.remove('is-dragging');
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onUp);
-        document.removeEventListener('touchmove', onTouchMove);
-        document.removeEventListener('touchend', onUp);
-      }
-
-      resizer.addEventListener('mousedown', function (e) {
-        e.preventDefault();
-        startY = e.clientY;
-        startHeight = currentHeight();
-        resizer.classList.add('is-dragging');
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onUp);
-      });
-
-      resizer.addEventListener('touchstart', function (e) {
-        e.preventDefault();
-        startY = e.touches[0].clientY;
-        startHeight = currentHeight();
-        resizer.classList.add('is-dragging');
-        document.addEventListener('touchmove', onTouchMove, { passive: false });
-        document.addEventListener('touchend', onUp);
-      }, { passive: false });
-    })();
-  </script>
   <script src="js/link-hover-preview.js"></script>
   <script src="js/eyeball.js"></script>
   <script src="js/audio-player.js"></script>
-  <script type="module" src="js/index.js"></script>
+  <script type="module" src="js/index-ttdb.js"></script>
 </body>
 </html>
