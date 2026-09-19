@@ -24,12 +24,20 @@ const CARD_SCALE_MIN = 0.44;
 const CARD_SCALE_MAX = 2.35;
 
 const THEMES = {
-  banjo: { accent: "#f2c14d", glyph: "strings" },
+  // The banjo deck's own banjo card, face 01 of banjo_taro. It is already a
+  // card, so it needs no badge; glyph stays as the face if the poster goes.
+  banjo: {
+    accent: "#f2c14d",
+    glyph: "strings",
+    poster: "banjo/banjo_taro_01.png",
+    tag: "TARO DECK",
+  },
   // The ICU2 deck opens on Dread vs ICU2, so the door wears that fight's
   // still. Thumbnails are stable per video id; this one is fNIpPwDtRdI.
   ICU2: {
     accent: "#ff7a5c",
     poster: "https://i.ytimg.com/vi/fNIpPwDtRdI/hqdefault.jpg",
+    badge: "play",
     tag: "SIX FIGHTS",
   },
   games: { accent: "#7cc7ff", glyph: "grid" },
@@ -280,10 +288,13 @@ function faceMarkup(theme, uid) {
       'preserveAspectRatio="xMidYMid slice"/>' +
       '<rect x="1.5" y="1.5" width="115" height="175" fill="url(#veil' + uid + ')"/>' +
       "</g>" +
-      // A still needs to read as a video even at the limb of the globe.
-      '<circle cx="59" cy="64" r="16" fill="#03080a" fill-opacity="0.46" stroke="' + theme.accent +
-      '" stroke-opacity="0.9" stroke-width="1.6"/>' +
-      '<path d="M54 55 L70 64 L54 73 Z" fill="' + theme.accent + '"/>';
+      // Only a video still needs to say so; a picture that is already a card
+      // is left alone to be one.
+      (theme.badge === "play"
+        ? '<circle cx="59" cy="64" r="16" fill="#03080a" fill-opacity="0.46" stroke="' + theme.accent +
+          '" stroke-opacity="0.9" stroke-width="1.6"/>' +
+          '<path d="M54 55 L70 64 L54 73 Z" fill="' + theme.accent + '"/>'
+        : "");
   }
   return '<rect x="1.5" y="1.5" width="115" height="175" rx="9" fill="url(#hatch' + uid + ')"/>' +
     '<rect x="8" y="8" width="102" height="162" rx="6" fill="none" stroke="' + theme.accent +

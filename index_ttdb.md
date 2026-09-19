@@ -5,8 +5,9 @@ top-level topic, laid out on a sine-wave ribbon that wraps the globe once and
 a fifth (`lat = 34 · sin((lon + 150) · 1.2°)`, `lon ∈ [-150, 150]`), then closes
 back on itself along the equator. Most records are placeholder cards: draft
 copy, a generated SVG face, and one link out to the topic it stands for. A
-topic that already has a picture of its own wears it instead — ICU2 shows the
-still from the fight its deck opens on.
+topic that already has a picture of its own wears it instead: banjo shows the
+banjo card from its own deck, and ICU2 shows the still from the fight its deck
+opens on.
 
 ```mmpdb
 db_id: ttdb:tte:index:v1
