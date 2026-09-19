@@ -8,7 +8,7 @@ const DB_PATH = "index_ttdb.md";
    Record coordinates in index_ttdb.md sit exactly on this curve. */
 const RIBBON = { amp: 34, freq: 1.2, lonStart: -150, lonEnd: 150 };
 
-const IDLE_MS = 10000;   // no interaction before the tour takes over
+const IDLE_MS = 60000;   // no interaction before the tour takes over
 const STEP_MS = 5500;    // dwell on each record while touring
 const EASE_TOUR = 0.045; // slow drift when the tour is driving
 const EASE_PICK = 0.14;  // snappier when a person picked the card
@@ -147,8 +147,28 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
+/* A toot frame is image syntax whose target is a document rather than a
+   picture: ![label](thing.html) renders as an inline iframe of that page.
+   Same rule the OG reader uses, so a record reads the same in either. */
+function isFrameSource(src) {
+  return /\.(html|md|pdf)(?:[?#].*)?$/i.test(src.trim());
+}
+
+/* Both arguments must already be HTML-escaped. */
+function mediaMarkup(alt, src) {
+  if (isFrameSource(src)) {
+    return '<iframe class="record-html-embed" src="' + src + '" title="' + alt +
+      '" loading="lazy" referrerpolicy="no-referrer"></iframe>';
+  }
+  return '<img class="record-media" src="' + src + '" alt="' + alt + '" loading="lazy" />';
+}
+
 function renderInline(text) {
   let out = escapeHtml(text);
+  // Frames before links, or the link rule would eat the ![...](...) tail.
+  out = out.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, function (_m, alt, src) {
+    return mediaMarkup(alt, src);
+  });
   out = out.replace(/`([^`]+)`/g, "<code>$1</code>");
   out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   out = out.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function (_m, label, href) {
@@ -168,6 +188,9 @@ function renderMarkdown(source) {
     .map(function (block) {
       const lines = block.split(/\n/).filter(function (l) { return l.trim(); });
       if (!lines.length) return "";
+      // A block that is nothing but a frame stands on its own, unwrapped.
+      const sole = block.trim().match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/);
+      if (sole) return mediaMarkup(escapeHtml(sole[1]), escapeHtml(sole[2]));
       if (lines.every(function (l) { return /^[-*]\s+/.test(l); })) {
         const items = lines
           .map(function (l) { return "<li>" + renderInline(l.replace(/^[-*]\s+/, "")) + "</li>"; })
@@ -297,7 +320,9 @@ function orientationFor(record) {
 }
 
 function geometry() {
-  const radius = Math.max(40, Math.min(state.width, state.height) * 0.4);
+  // Sized off the width so the globe almost spans the panel; the height term
+  // only bites if the stage is ever squatter than its 5/4 aspect ratio.
+  const radius = Math.max(40, Math.min(state.width * 0.46, state.height * 0.62));
   return { radius: radius, cx: state.width * 0.5, cy: state.height * 0.5 };
 }
 
@@ -478,7 +503,6 @@ function renderRecord(record) {
 
   els.record.innerHTML =
     '<div class="record-head">' +
-    '<div class="record-card-art">' + cardSvg(record, index) + "</div>" +
     '<div class="record-head-text">' +
     '<div class="record-coord">@' + record.id + " &middot; card " + (index + 1) + " of " + state.records.length + "</div>" +
     "<h2>" + escapeHtml(record.title) + "</h2>" +

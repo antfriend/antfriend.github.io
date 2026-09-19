@@ -21,7 +21,7 @@ umwelt:
   scope: "One record per top-level directory of antfriend.github.io. No content, only doorways."
   constraints:
     - "One record per topic directory."
-    - "Every record carries exactly one outbound link to its topic."
+    - "Every record's body is a single toot frame pointing at its topic."
     - "Card art is a generated placeholder, not a final asset."
   globe:
     frame: "ribbon"
@@ -61,13 +61,7 @@ preview:
 
 ### thirteen cards, one globe, no rules worth defending
 
-A taro deck of instruments, transcribed record-for-card into a TTDB and dealt
-off a globe. It is the least serious door in the building and the best place to
-see what a TTDB actually feels like when you turn it.
-
-Open it: [banjo/](banjo/banjo.html)
-
-Then keep walking the ribbon east to [games](lat32lon-90).
+![banjo](banjo/banjo.html)
 
 ---
 
@@ -77,12 +71,7 @@ Then keep walking the ribbon east to [games](lat32lon-90).
 
 ### storied, played from a feelings database
 
-Small playable things that read their world out of a TTDB instead of a level
-file. The feelings deck supplies the states; the game supplies the pressure.
-
-Open it: [games/](games/index.html)
-
-Next along the ribbon: [global_models](lat20lon-30).
+![games](games/index.html)
 
 ---
 
@@ -92,13 +81,7 @@ Next along the ribbon: [global_models](lat20lon-30).
 
 ### one shared memory, many agents reading it
 
-The global memory system: a single TTDB corpus that more than one agent may
-read, write and disagree inside, with epistemic weight carrying the
-disagreement rather than hiding it.
-
-Open it: [global_models/](global_models/index.html)
-
-Its corollary sits one card further east: [personal_grammar](lat-20lon30).
+![global_models](global_models/index.html)
 
 ---
 
@@ -108,13 +91,7 @@ Its corollary sits one card further east: [personal_grammar](lat-20lon30).
 
 ### one grammar, one corpus, no words in the runtime
 
-The private mirror of [global_models](lat20lon-30): a single grammar and corpus
-belonging to one reader, and a runtime that renders it without shipping the
-words themselves.
-
-Open it: [personal_grammar/](personal_grammar/index.html)
-
-Next: the specs that hold all of this together — [RFCs](lat-32lon90).
+![personal_grammar](personal_grammar/index.html)
 
 ---
 
@@ -124,15 +101,7 @@ Next: the specs that hold all of this together — [RFCs](lat-32lon90).
 
 ### the file format, written down so it can be argued with
 
-TTDB file format, cursor semantics, typed edges, event IDs, epistemic weight,
-Locus Points and the Dream Cycle; plus TTN for the mesh and A32 for the device.
-Thirty documents, and a compressed TTDB of themselves.
-
-Open the index: [RFCs/](RFCs/INDEX.md)
-
-Read them as a TTDB: [rfc.ttdb.md](index_OG.html?ttdb=rfc.ttdb.md)
-
-Last card on the ribbon: [OG](lat0lon150).
+![RFCs](index_OG.html?ttdb=rfc.ttdb.md)
 
 ---
 
@@ -142,13 +111,6 @@ Last card on the ribbon: [OG](lat0lon150).
 
 ### the previous front door, still running
 
-The multi-globe browser this page replaced: every TTDB in the repo as its own
-globe, with search, tour and local overrides intact. Nothing was removed — it
-moved here.
-
-Open it: [index_OG.html](index_OG.html)
-
-The ribbon closes: the dashed return arc runs back along the equator to
-[banjo](lat0lon-150).
+![OG](index_OG.html)
 
 ---

@@ -11,7 +11,6 @@ body {
 
 .page {
   grid-template-columns: minmax(0, 1fr);
-  --stage-max: min(100%, 68vh);
   /* Small at rest; js/index-ttdb.js scales each card exponentially with its
      depth, so the card facing the panel centre is the only large one. */
   --card-w: clamp(32px, 4.4vw, 58px);
@@ -49,10 +48,11 @@ header.stage-header > a.tagline {
 
 .globe-stage {
   position: relative;
+  /* No cap: the stage fills its grid track, so the globe panel and the record
+     panel are the same width. Shorter than square, so the globe can grow to
+     nearly that width with only its poles cropped away. */
   width: 100%;
-  max-width: var(--stage-max);
-  margin-inline: auto;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 5 / 4;
   border-radius: 20px;
   overflow: hidden;
   background:
@@ -189,20 +189,6 @@ header.stage-header > a.tagline {
   align-items: flex-start;
   gap: 14px;
   flex-wrap: wrap;
-}
-
-.record-head .record-card-art {
-  width: clamp(76px, 12vw, 108px);
-  flex: 0 0 auto;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 10px 20px rgba(11, 17, 18, 0.24);
-}
-
-.record-head .record-card-art svg {
-  display: block;
-  width: 100%;
-  height: auto;
 }
 
 .record-head-text {
@@ -379,4 +365,30 @@ ul.topic-rail .out {
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
+}
+
+/* Toot frames. css/index.css sizes .record-html-embed off
+   --record-media-max-height, which is derived from the OG reader's fixed
+   panel height; this view flows, so give the frame its own size.
+
+   The frame is what sets the record panel's height, so it carries the
+   doubling: the panel was frame + ~208px of head and edges, and 2*(f + 208)
+   means the frame itself goes to 2f + 208. Measured at 1474x1087 the panel
+   runs 708px on the old numbers and 1416px on these. */
+.header-right .record iframe.record-html-embed {
+  width: 100%;
+  max-width: 100%;
+  height: clamp(768px, calc(92vh + 208px), 1248px);
+  max-height: none;
+  margin: 0;
+  border-radius: 14px;
+  border: 1px solid rgba(11, 17, 18, 0.22);
+  background: rgba(255, 255, 255, 0.9);
+  display: block;
+}
+
+.header-right .record img.record-media {
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
 }
