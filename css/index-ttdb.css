@@ -323,23 +323,96 @@ ul.topic-rail .out {
 }
 
 /* css/index.css sizes .record as a fixed-height grid for the OG frame
-   (--record-panel-height, overflow hidden). This view flows instead. */
+   (--record-panel-height). This view flows instead. The panel is a fixed
+   window with record slides behind it; js/index-ttdb.js shifts them in step
+   with the globe, so the window clips whatever is sliding in or out. */
 .header-right .record {
   height: auto;
   min-height: 0;
   max-height: none;
-  overflow: visible;
-  display: grid;
-  gap: 12px;
-  align-content: start;
-  padding: 16px;
+  overflow: hidden;
+  display: block;
+  padding: 0;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.28);
   border: 1px solid var(--line);
 }
 
-.header-right .record > p {
+.record-track {
+  position: relative;
+}
+
+.record-slide {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  width: 100%;
+  padding: 16px;
+}
+
+/* Mid-transition every slide leaves the flow and the track carries an
+   explicit height, blended from the old record's to the new one's. At rest
+   the single slide is back in flow and sizes the panel itself. */
+.record-track.is-moving > .record-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+.record-slide > p {
   max-width: 62ch;
+}
+
+/* ASCII blocks are art, not prose: never reflow them. A narrow panel scrolls
+   the block sideways rather than wrapping the columns out of alignment. */
+.header-right .record pre.record-ascii {
+  margin: 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  white-space: pre;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: clamp(9px, 1.05vw, 12.5px);
+  line-height: 1.35;
+  color: var(--accent);
+  background: rgba(11, 17, 18, 0.045);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+/* Monospace chips: the `lat 10` lane tags and the RFC-number links. */
+.header-right .record code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.85em;
+  letter-spacing: 0.02em;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(15, 139, 141, 0.1);
+  border: 1px solid rgba(15, 139, 141, 0.22);
+  white-space: nowrap;
+}
+
+.header-right .record a > code {
+  color: #0f4f2d;
+}
+
+.header-right .record a:hover > code {
+  background: rgba(15, 139, 141, 0.22);
+  border-color: rgba(15, 139, 141, 0.5);
+}
+
+/* The table of contents: one line per RFC, no bullets, coordinate chip first. */
+.header-right .record ul {
+  padding-left: 0;
+  list-style: none;
+  gap: 4px;
+}
+
+.header-right .record li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
 }
 
 /* The Settings <details> is now the last row on its own, which exposes two

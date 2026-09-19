@@ -13,6 +13,7 @@ const STEP_MS = 5500;    // dwell on each record while touring
 const EASE_TOUR = 0.045; // slow drift when the tour is driving
 const EASE_PICK = 0.14;  // snappier when a person picked the card
 const EASE_COAST = 0.07; // let go of a drag and glide the nearest card home
+const OPEN_GRACE_MS = 450; // a card just made current ignores clicks this long
 
 /* Card size grows exponentially with depth: scale = MIN * (MAX/MIN)^facing,
    where facing is 0 at the limb and 1 dead centre. A card only reads large
@@ -50,6 +51,7 @@ const state = {
   records: [],
   byId: new Map(),
   activeId: null,
+  selectedAt: 0, // when activeId last changed, ms
   width: 1,
   height: 1,
   rotLat: 0,
@@ -182,10 +184,21 @@ function renderInline(text) {
   return out;
 }
 
+/* Fenced blocks are lifted out before the blank-line split, so ASCII art keeps
+   its own line breaks — and any blank lines inside it — instead of being
+   reflowed into a paragraph. A sentinel holds the slot until the end. */
 function renderMarkdown(source) {
-  return source
+  const fences = [];
+  const staged = source.replace(/```[A-Za-z0-9_-]*\r?\n([\s\S]*?)```/g, function (_m, code) {
+    fences.push('<pre class="record-ascii">' + escapeHtml(code.replace(/\s+$/, "")) + "</pre>");
+    return "\n\n{{fence:" + (fences.length - 1) + "}}\n\n";
+  });
+
+  return staged
     .split(/\n{2,}/)
     .map(function (block) {
+      const fence = block.trim().match(/^\{\{fence:(\d+)\}\}$/);
+      if (fence) return fences[Number(fence[1])];
       const lines = block.split(/\n/).filter(function (l) { return l.trim(); });
       if (!lines.length) return "";
       // A block that is nothing but a frame stands on its own, unwrapped.
@@ -479,19 +492,284 @@ function render() {
 function frame() {
   const dLat = angleDelta(state.targetLat, state.rotLat);
   const dLon = angleDelta(state.targetLon, state.rotLon);
-  if (!state.dragging && (Math.abs(dLat) > 0.0005 || Math.abs(dLon) > 0.0005)) {
-    state.rotLat += dLat * state.ease;
-    state.rotLon += dLon * state.ease;
+  let settled = false;
+  if (!state.dragging) {
+    if (Math.abs(dLat) > 0.0005 || Math.abs(dLon) > 0.0005) {
+      state.rotLat += dLat * state.ease;
+      state.rotLon += dLon * state.ease;
+    } else {
+      // Land exactly, so the record panel lands with the globe.
+      state.rotLat += dLat;
+      state.rotLon += dLon;
+      settled = true;
+    }
   }
   render();
+  updatePanel(settled);
   requestAnimationFrame(frame);
+}
+
+/* ----------------------------------------------------- record slides */
+
+/* The record panel is a window onto a sheet of record slides, and the globe
+   drives the sheet, not a clock. Each move to another record is a leg: it
+   starts wherever the globe points and ends facing the target record. The
+   target's slide is laid just outside the window along the leg's angle, the
+   (lon, lat) step from start to target with lon to the right and lat up.
+   Each frame, the sheet shifts by exactly the fraction of that rotation the
+   globe has completed. The current record leaves on one side as the new one
+   comes in from the other, in step with the globe. A drag is a chain of
+   legs toward whichever record the globe is being turned to. */
+
+const SLIDE_GAP = 24;       // px of clear panel between neighbouring slides
+const DRAG_TAKEOVER = 0.12; // lead a rival record needs to take over a drag leg
+const LEG_MIN = rad(0.5);   // a leg shorter than this has no direction
+const DRAG_LEG_MIN = rad(10); // a drag never heads for the record it is already on
+
+const panel = {
+  track: null,
+  slides: new Map(), // record id -> { el, x, y }: slide offset at the leg's start, px
+  target: null,      // record id sliding in; null while nothing is
+  from: null,        // globe rotation { lat, lon } where the leg began
+  leg: null,         // rotation step { lat, lon } from `from` to the target
+  startH: 0,         // track height when the leg began
+  t: 0,              // fraction of the leg's rotation completed
+};
+
+function globeRotation() {
+  return { lat: state.rotLat, lon: state.rotLon };
+}
+
+function legTo(id) {
+  const o = orientationFor(state.byId.get(id));
+  return { lat: o.lat - panel.from.lat, lon: angleDelta(o.lon, panel.from.lon) };
+}
+
+/* How far the globe has turned along a leg: 0 at its start, 1 on arrival.
+   The globe eases lat and lon by the same factor every frame, so an eased
+   leg is a straight line in rotation space and this fraction is exact. Lon
+   is unwrapped about the leg's midpoint, so a half-turn leg (banjo to
+   personal_grammar) cannot flip sign as it crosses the far side. */
+function legProgress(leg) {
+  const len2 = leg.lat * leg.lat + leg.lon * leg.lon;
+  if (len2 < LEG_MIN * LEG_MIN) return null;
+  const mid = panel.from.lon + leg.lon / 2;
+  const lon = leg.lon / 2 + angleDelta(state.rotLon, mid);
+  const lat = state.rotLat - panel.from.lat;
+  return (lat * leg.lat + lon * leg.lon) / len2;
+}
+
+function makeSlide(id) {
+  const el = document.createElement("div");
+  el.className = "record-slide";
+  el.innerHTML = recordMarkup(state.byId.get(id));
+  panel.track.appendChild(el);
+  const slide = { el: el, x: 0, y: 0 };
+  panel.slides.set(id, slide);
+  return slide;
+}
+
+function dropSlide(id) {
+  const slide = panel.slides.get(id);
+  if (!slide) return;
+  slide.el.remove();
+  panel.slides.delete(id);
+}
+
+function isMoving() {
+  return panel.track.classList.contains("is-moving");
+}
+
+/* Only the selected record takes clicks and focus while slides are moving. */
+function markActiveSlide() {
+  const moving = isMoving();
+  panel.slides.forEach(function (slide, id) {
+    const inert = moving && id !== state.activeId;
+    if (slide.el.inert !== inert) slide.el.inert = inert;
+  });
+}
+
+/* Settle on one slide, back in normal flow and sizing the panel itself. */
+function restOn(id) {
+  Array.from(panel.slides.keys()).forEach(function (key) {
+    if (key !== id) dropSlide(key);
+  });
+  const slide = panel.slides.get(id) || makeSlide(id);
+  slide.x = 0;
+  slide.y = 0;
+  slide.el.style.transform = "";
+  panel.track.classList.remove("is-moving");
+  panel.track.style.height = "";
+  panel.target = null;
+  panel.leg = null;
+  panel.t = 0;
+  // A centred slide stands for the globe facing its record, so the next leg
+  // is measured from the record itself, not from wherever the globe drifted.
+  const o = orientationFor(state.byId.get(id));
+  panel.from = { lat: o.lat, lon: o.lon };
+  markActiveSlide();
+}
+
+/* Freeze the leg where it stands: fold its progress into every slide's
+   offset, so the next leg starts from exactly what is on screen. */
+function bake(t) {
+  const target = panel.slides.get(panel.target);
+  if (target) {
+    const sx = target.x * t;
+    const sy = target.y * t;
+    panel.startH += (target.el.offsetHeight - panel.startH) * t;
+    panel.slides.forEach(function (slide) {
+      slide.x -= sx;
+      slide.y -= sy;
+    });
+  }
+  panel.target = null;
+  panel.leg = null;
+  panel.t = 0;
+}
+
+/* Slides wholly outside the window will not be seen again on this leg. */
+function pruneHidden(keepId) {
+  const w = panel.track.clientWidth;
+  const h = panel.startH;
+  Array.from(panel.slides.keys()).forEach(function (id) {
+    if (id === keepId) return;
+    const s = panel.slides.get(id);
+    const showing = s.x < w - 0.5 && s.x + w > 0.5 && s.y < h - 0.5 && s.y + s.el.offsetHeight > 0.5;
+    if (!showing) dropSlide(id);
+  });
+}
+
+/* How far along (ux, uy) a new slide of height newH must sit to clear the
+   window and every other slide on the sheet. Two boxes are clear once they
+   separate along either axis; the slide has to clear all of them. */
+function clearance(ux, uy, newH, newId) {
+  const w = panel.track.clientWidth + SLIDE_GAP;
+  const boxes = [{ x: 0, y: 0, h: panel.startH }];
+  panel.slides.forEach(function (s, id) {
+    if (id !== newId) boxes.push({ x: s.x, y: s.y, h: s.el.offsetHeight });
+  });
+  let reach = 0;
+  boxes.forEach(function (b) {
+    const alongX = Math.abs(ux) > 1e-6 ? (w + Math.sign(ux) * b.x) / Math.abs(ux) : Infinity;
+    let alongY = Infinity;
+    if (uy > 1e-6) alongY = (b.y + b.h + SLIDE_GAP) / uy;
+    else if (uy < -1e-6) alongY = (newH + SLIDE_GAP - b.y) / -uy;
+    reach = Math.max(reach, Math.min(alongX, alongY));
+  });
+  return reach;
+}
+
+function beginLeg(id) {
+  if (!panel.track) return;
+  if (!panel.slides.size) { restOn(id); return; }
+  if (panel.target === id) return; // already on its way in
+  const resting = panel.slides.get(id);
+  if (!panel.target && panel.slides.size === 1 && resting && !resting.x && !resting.y) return;
+
+  if (panel.target) {
+    // Retarget mid-leg: freeze what is on screen and measure on from here.
+    bake(panel.t);
+    panel.from = globeRotation();
+  } else {
+    // The sheet already stands for the globe at panel.from: the record it
+    // rests on, or the start of a leg a drag backed out of.
+    panel.startH = panel.track.offsetHeight;
+  }
+  const leg = legTo(id);
+  const len = Math.hypot(leg.lat, leg.lon);
+  if (len < LEG_MIN) { restOn(id); return; } // the globe is already there
+
+  panel.track.style.height = panel.startH.toFixed(1) + "px";
+  panel.track.classList.add("is-moving");
+  pruneHidden(id);
+
+  if (!panel.slides.has(id)) {
+    // Screen x follows view lon (= -rotLon), screen y runs against lat.
+    const ux = -leg.lon / len;
+    const uy = -leg.lat / len;
+    const slide = makeSlide(id);
+    const reach = clearance(ux, uy, slide.el.offsetHeight, id);
+    slide.x = ux * reach;
+    slide.y = uy * reach;
+  }
+  panel.target = id;
+  panel.leg = leg;
+  panel.t = 0;
+  layoutSlides();
+}
+
+function layoutSlides() {
+  const target = panel.target ? panel.slides.get(panel.target) : null;
+  const t = target ? panel.t : 0;
+  const endH = target ? target.el.offsetHeight : panel.startH; // read before writing
+  const sx = target ? target.x * t : 0;
+  const sy = target ? target.y * t : 0;
+  panel.slides.forEach(function (slide) {
+    slide.el.style.transform =
+      "translate3d(" + (slide.x - sx).toFixed(2) + "px, " + (slide.y - sy).toFixed(2) + "px, 0)";
+  });
+  panel.track.style.height = (panel.startH + (endH - panel.startH) * t).toFixed(1) + "px";
+  markActiveSlide();
+}
+
+/* While a hand holds the globe there is no destination, so the panel follows
+   the record the globe is being turned toward: the one with the most
+   progress from where the leg began. Passing it rests on it and starts a
+   fresh leg; backing out past the start lets it go; a rival has to lead by a
+   clear margin before it takes over, and the takeover freezes the sheet
+   where it stands so nothing jumps. */
+function steerDrag() {
+  if (!panel.from) panel.from = globeRotation();
+  let best = null;
+  let bestT = 0;
+  state.records.forEach(function (record) {
+    const leg = legTo(record.id);
+    if (Math.hypot(leg.lat, leg.lon) < DRAG_LEG_MIN) return;
+    const t = legProgress(leg);
+    if (t > bestT) { best = record.id; bestT = t; }
+  });
+
+  if (panel.target) {
+    const t = legProgress(panel.leg);
+    if (t === null) return;
+    if (t >= 1) {
+      restOn(panel.target);
+    } else if (t <= 0) {
+      panel.t = 0;
+      panel.target = null;
+      panel.leg = null;
+    } else if (best !== panel.target && bestT > t + DRAG_TAKEOVER) {
+      bake(t);
+      panel.from = globeRotation();
+    }
+    return;
+  }
+  // A clear lead first, so a one-pixel nudge does not load a record's frame.
+  if (best && bestT > 0.01) beginLeg(best);
+}
+
+function updatePanel(settled) {
+  if (!panel.track) return;
+  if (state.dragging) steerDrag();
+  if (!panel.target) {
+    if (isMoving()) layoutSlides();
+    return;
+  }
+  const progress = legProgress(panel.leg);
+  const t = progress === null ? 1 : Math.max(0, Math.min(1, progress));
+  if (!state.dragging && (settled || t > 0.9995)) {
+    restOn(panel.target);
+    return;
+  }
+  panel.t = t;
+  layoutSlides();
 }
 
 /* -------------------------------------------------------- record view */
 
-function renderRecord(record) {
+function recordMarkup(record) {
   const theme = THEMES[record.title] || FALLBACK_THEME;
-  const index = state.records.indexOf(record);
   const edges = record.edges
     .filter(function (edge) { return state.byId.has(edge.target); })
     .map(function (edge) {
@@ -501,12 +779,8 @@ function renderRecord(record) {
     })
     .join("");
 
-  els.record.innerHTML =
-    '<div class="record-head">' +
+  return '<div class="record-head">' +
     '<div class="record-head-text">' +
-    '<div class="record-coord">@' + record.id + " &middot; card " + (index + 1) + " of " + state.records.length + "</div>" +
-    "<h2>" + escapeHtml(record.title) + "</h2>" +
-    (record.subtitle ? "<h3>" + escapeHtml(record.subtitle) + "</h3>" : "") +
     (record.opens
       ? '<a class="record-open" href="' + record.opens + '" style="border-color:' + theme.accent +
         '">Open ' + escapeHtml(record.title) + " &rarr;</a>"
@@ -533,6 +807,7 @@ function select(id, options) {
   const opts = options || {};
   const record = state.byId.get(id);
   if (!record) return;
+  if (id !== state.activeId) state.selectedAt = performance.now();
   state.activeId = id;
   state.ease = opts.ease || (opts.fromTour ? EASE_TOUR : EASE_PICK);
 
@@ -545,8 +820,10 @@ function select(id, options) {
 
   state.nodes.forEach(function (node, nodeId) {
     node.classList.toggle("is-active", nodeId === id);
+    labelCard(node, state.byId.get(nodeId), nodeId === id);
   });
-  renderRecord(record);
+  beginLeg(id);
+  markActiveSlide();
   renderRail();
 
   if (els.status) {
@@ -653,7 +930,12 @@ function bindGlobeDrag() {
     if (canvas.hasPointerCapture && canvas.hasPointerCapture(event.pointerId)) {
       canvas.releasePointerCapture(event.pointerId);
     }
-    if (!state.dragMoved) return;
+    if (!state.dragMoved) {
+      // A press can still nudge the rotation by a pixel and overwrite the
+      // target; point the globe (and any leg in flight) home again.
+      select(state.activeId, { ease: state.ease });
+      return;
+    }
     state.dragMoved = false;
     select(nearestRecordId(), { ease: EASE_COAST });
   }
@@ -661,12 +943,40 @@ function bindGlobeDrag() {
   canvas.addEventListener("pointercancel", end);
 }
 
+/* The current card is a door: one click on it goes through to the page its
+   record opens, and a modified click opens that page in a new tab, as a link
+   would. The grace period keeps the second half of a double-click, whose
+   first half just made the card current, from walking straight through. */
+function openCurrentCard(id, event) {
+  const record = state.byId.get(id);
+  if (!record || !record.opens || id !== state.activeId) return false;
+  if (performance.now() - state.selectedAt < OPEN_GRACE_MS) return true;
+  if (event.ctrlKey || event.metaKey || event.shiftKey) {
+    window.open(record.opens, "_blank", "noopener");
+  } else {
+    location.href = record.opens;
+  }
+  return true;
+}
+
+function labelCard(node, record, current) {
+  if (current && record.opens) {
+    node.setAttribute("aria-label", "Open " + record.title + " (" + record.opens + ")");
+    node.title = "Open " + record.opens;
+  } else {
+    node.setAttribute("aria-label", record.title + " — " + (record.subtitle || record.id));
+    node.removeAttribute("title");
+  }
+}
+
 function bindDelegatedNav() {
   document.addEventListener("click", function (event) {
     const trigger = event.target.closest ? event.target.closest("[data-goto]") : null;
     if (!trigger) return;
     event.preventDefault();
-    select(trigger.getAttribute("data-goto"));
+    const id = trigger.getAttribute("data-goto");
+    if (trigger.classList.contains("ribbon-card") && openCurrentCard(id, event)) return;
+    select(id);
   });
 }
 
@@ -698,7 +1008,7 @@ function buildCards() {
     node.type = "button";
     node.className = "ribbon-card";
     node.setAttribute("data-goto", record.id);
-    node.setAttribute("aria-label", record.title + " — " + (record.subtitle || record.id));
+    labelCard(node, record, false);
     node.innerHTML = cardSvg(record, index);
     els.cardLayer.appendChild(node);
     state.nodes.set(record.id, node);
@@ -729,6 +1039,10 @@ async function boot() {
   }
 
   buildCards();
+  panel.track = document.createElement("div");
+  panel.track.className = "record-track";
+  els.record.innerHTML = "";
+  els.record.appendChild(panel.track);
   resize();
   if (window.ResizeObserver) new ResizeObserver(resize).observe(els.stage);
   window.addEventListener("resize", resize);
