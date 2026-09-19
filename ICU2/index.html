@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ICU2 — six fights on a globe</title>
+  <meta name="description" content="The combat record of ICU2, an IRCL antweight, as a TTDB deck: the six latest videos from youtube.com/@antfriend, one record per match, laid out on a sine-wave ribbon." />
+  <meta property="og:title" content="ICU2 — six fights on a globe" />
+  <meta property="og:description" content="Six matches from the antfriend channel, read out of one TTDB file and played inside the record that names them." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="../favicon.ico" />
+  <link rel="stylesheet" href="../css/eyeball.css" />
+  <link rel="stylesheet" href="../css/tte-common.css" />
+  <link rel="stylesheet" href="../css/tte-core.css" />
+  <link rel="stylesheet" href="../css/index.css" />
+  <link rel="stylesheet" href="../css/index-ttdb.css" />
+  <link rel="stylesheet" href="icu2.css" />
+</head>
+<body>
+
+  <div class="page">
+
+    <header class="stage-header">
+
+      <a class="tagline" href="../index.html" data-hover-preview-off>ICU2 fights out of a TTDB file: six records, one per match, newest at the west end of the ribbon — back to the Toot Toot Engineering front door</a>
+
+      <div class="header-left">
+
+        <!-- Same globe as the front door, over icu2_ttdb.md instead. Each
+             card wears its video's thumbnail; the record plays the fight. -->
+        <div class="globe-stage" id="globeStage">
+          <canvas id="globe" aria-label="ICU2 globe: six fight cards on a sine-wave ribbon"></canvas>
+          <div class="card-layer" id="cardLayer"></div>
+          <div class="globe-hud">
+            <b id="hudTitle">ICU2</b>
+            <p id="hudSub"><span>loading icu2_ttdb.md…</span></p>
+          </div>
+          <div class="tour-flag" id="tourFlag">touring ▸</div>
+        </div>
+
+      </div>
+
+      <div class="header-right">
+        <div class="record" id="recordView"></div>
+        <div class="topic-links">
+          <strong>Fight card</strong>
+          <ul class="topic-rail" id="topicRail"></ul>
+          <p class="rail-note">Six matches on a sine-wave ribbon, newest first. Drag the globe, pick a card, or wait a minute and the ribbon walks itself back through the seasons.</p>
+        </div>
+      </div>
+
+    </header>
+
+    <details class="panel record-panel info-panel">
+      <summary>Settings</summary>
+      <div class="title">
+        <span id="status">Loading icu2_ttdb.md ...</span>
+      </div>
+      <div class="controls">
+        <label class="toggle">
+          <input type="checkbox" id="tourToggle" checked />
+          Guided tour after 60s idle
+        </label>
+        <a class="pill" href="icu2_ttdb.md">View icu2_ttdb.md source</a>
+        <a class="pill" href="https://www.youtube.com/@antfriend/videos" target="_blank" rel="noopener">Open the channel’s Videos tab</a>
+        <a class="pill" href="../index.html">Back to the front door</a>
+      </div>
+      <div class="tour-note">Any click, key, wheel or scroll stops the tour and restarts the sixty-second idle clock. Clicking the card already facing you opens that fight on YouTube in a new tab.</div>
+    </details>
+
+    <footer>
+      <span id="eyeball-foot"></span>
+      &copy; 2026 Toot Toot Engineering. All signals cleared.
+    </footer>
+  </div>
+
+  <script src="../js/link-hover-preview.js"></script>
+  <script src="../js/eyeball.js"></script>
+  <script src="../js/audio-player.js"></script>
+  <script type="module" src="icu2-globe.js"></script>
+</body>
+</html>

@@ -1,13 +1,13 @@
-/* index-ttdb.js — single-globe ribbon view over index_ttdb.md.
-   Replaces the multi-globe browser (still available as index_OG.html).
-   Draft: most record cards are generated SVG placeholders, not final art. A
-   topic that already has a picture of its own declares a `poster` instead,
-   and that card wears the picture — same frame, same type, real face. */
+/* icu2-globe.js — single-globe ribbon view over icu2_ttdb.md.
+   Same ribbon, projection and sliding record panel as js/index-ttdb.js; the
+   deck differs in what a record is. Here every record is one fight, so the
+   card face is the video's own thumbnail instead of a generated placeholder,
+   and a record's toot frame is a YouTube player rather than a local page. */
 
-const DB_PATH = "index_ttdb.md";
+const DB_PATH = "icu2_ttdb.md";
 
 /* The ribbon: lat = AMP * sin((lon - lonStart) * FREQ), lon in [-150, 150].
-   Record coordinates in index_ttdb.md sit exactly on this curve. */
+   Record coordinates in icu2_ttdb.md sit exactly on this curve. */
 const RIBBON = { amp: 34, freq: 1.2, lonStart: -150, lonEnd: 150 };
 
 const IDLE_MS = 60000;   // no interaction before the tour takes over
@@ -23,22 +23,17 @@ const OPEN_GRACE_MS = 450; // a card just made current ignores clicks this long
 const CARD_SCALE_MIN = 0.44;
 const CARD_SCALE_MAX = 2.35;
 
+/* One accent per fight, warm for the 2026 season and cooling as the ribbon
+   walks back through 2025 to the first-generation ICU matches of 2024. */
 const THEMES = {
-  banjo: { accent: "#f2c14d", glyph: "strings" },
-  // The ICU2 deck opens on Dread vs ICU2, so the door wears that fight's
-  // still. Thumbnails are stable per video id; this one is fNIpPwDtRdI.
-  ICU2: {
-    accent: "#ff7a5c",
-    poster: "https://i.ytimg.com/vi/fNIpPwDtRdI/hqdefault.jpg",
-    tag: "SIX FIGHTS",
-  },
-  games: { accent: "#7cc7ff", glyph: "grid" },
-  global_models: { accent: "#8fe6d2", glyph: "orbits" },
-  personal_grammar: { accent: "#c9a2ff", glyph: "brackets" },
-  RFCs: { accent: "#ff9f7c", glyph: "sheets" },
-  OG: { accent: "#a6d96a", glyph: "cluster" },
+  "Dread vs ICU2": { accent: "#ff7a5c" },
+  "Brawndo vs ICU2": { accent: "#f2c14d" },
+  "ICU2 vs Benny": { accent: "#a6d96a" },
+  "ICU2 vs TENACITY": { accent: "#8fe6d2" },
+  "ICU vs Jumbo": { accent: "#7cc7ff" },
+  "ICU vs Broombox": { accent: "#c9a2ff" },
 };
-const FALLBACK_THEME = { accent: "#9cb2bf", glyph: "orbits" };
+const FALLBACK_THEME = { accent: "#9cb2bf" };
 
 const els = {
   stage: document.getElementById("globeStage"),
@@ -160,13 +155,37 @@ function escapeHtml(value) {
 
 /* A toot frame is image syntax whose target is a document rather than a
    picture: ![label](thing.html) renders as an inline iframe of that page.
-   Same rule the OG reader uses, so a record reads the same in either. */
+   Same rule the OG reader uses, plus one this deck needs — a YouTube player
+   is a frame too, and its URL carries no extension to recognise it by. */
+const YT_EMBED = /^https?:\/\/(?:www\.)?youtube(?:-nocookie)?\.com\/embed\/([A-Za-z0-9_-]{6,})/i;
+
 function isFrameSource(src) {
-  return /\.(html|md|pdf)(?:[?#].*)?$/i.test(src.trim());
+  const s = src.trim();
+  return YT_EMBED.test(s) || /\.(html|md|pdf)(?:[?#].*)?$/i.test(s);
+}
+
+/* The ID out of a watch, embed or youtu.be URL; "" when there is none. */
+function videoId(url) {
+  const s = String(url || "").trim();
+  const embed = s.match(YT_EMBED);
+  if (embed) return embed[1];
+  const watch = s.match(/[?&]v=([A-Za-z0-9_-]{6,})/);
+  if (watch) return watch[1];
+  const short = s.match(/^https?:\/\/youtu\.be\/([A-Za-z0-9_-]{6,})/i);
+  return short ? short[1] : "";
 }
 
 /* Both arguments must already be HTML-escaped. */
 function mediaMarkup(alt, src) {
+  if (YT_EMBED.test(src)) {
+    // rel=0 keeps the end-card suggestions inside this channel, and the
+    // player needs its own allow-list before fullscreen or casting work.
+    const url = src + (src.indexOf("?") === -1 ? "?" : "&amp;") + "rel=0";
+    return '<iframe class="record-html-embed record-video" src="' + url + '" title="' + alt +
+      '" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" ' +
+      'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">' +
+      "</iframe>";
+  }
   if (isFrameSource(src)) {
     return '<iframe class="record-html-embed" src="' + src + '" title="' + alt +
       '" loading="lazy" referrerpolicy="no-referrer"></iframe>';
@@ -224,80 +243,53 @@ function renderMarkdown(source) {
     .join("");
 }
 
-/* ------------------------------------------------- placeholder SVG art */
+/* ------------------------------------------------------- card art */
 
 let svgUid = 0;
 
-function glyphMarkup(kind, accent) {
-  function stroke(d, extra) {
-    return '<path d="' + d + '" fill="none" stroke="' + accent +
-      '" stroke-width="2" stroke-linecap="round" ' + (extra || "") + "/>";
-  }
-  switch (kind) {
-    case "strings":
-      return stroke("M35 36 L35 92") + stroke("M47 32 L47 96") + stroke("M59 29 L59 99") +
-        stroke("M71 32 L71 96") + stroke("M83 36 L83 92") +
-        '<circle cx="59" cy="64" r="27" fill="none" stroke="' + accent + '" stroke-width="2" opacity="0.55"/>';
-    case "grid":
-      return '<rect x="33" y="38" width="52" height="52" rx="8" fill="none" stroke="' + accent + '" stroke-width="2"/>' +
-        '<circle cx="47" cy="52" r="4.5" fill="' + accent + '"/><circle cx="71" cy="52" r="4.5" fill="' + accent + '"/>' +
-        '<circle cx="59" cy="64" r="4.5" fill="' + accent + '"/>' +
-        '<circle cx="47" cy="76" r="4.5" fill="' + accent + '"/><circle cx="71" cy="76" r="4.5" fill="' + accent + '"/>';
-    case "orbits":
-      return '<circle cx="59" cy="64" r="26" fill="none" stroke="' + accent + '" stroke-width="2"/>' +
-        '<ellipse cx="59" cy="64" rx="26" ry="10" fill="none" stroke="' + accent + '" stroke-width="1.5" opacity="0.7"/>' +
-        '<ellipse cx="59" cy="64" rx="10" ry="26" fill="none" stroke="' + accent + '" stroke-width="1.5" opacity="0.7"/>' +
-        '<circle cx="59" cy="38" r="3.5" fill="' + accent + '"/><circle cx="85" cy="64" r="3.5" fill="' + accent + '"/>';
-    case "brackets":
-      return stroke("M48 36 C34 36 34 58 30 64 C34 70 34 92 48 92") +
-        stroke("M70 36 C84 36 84 58 88 64 C84 70 84 92 70 92") +
-        '<circle cx="59" cy="64" r="5" fill="' + accent + '"/>';
-    case "sheets":
-      return '<rect x="30" y="34" width="46" height="58" rx="5" fill="none" stroke="' + accent + '" stroke-width="2" opacity="0.5"/>' +
-        '<rect x="41" y="43" width="46" height="58" rx="5" fill="none" stroke="' + accent + '" stroke-width="2"/>' +
-        stroke("M50 59 L78 59") + stroke("M50 69 L78 69") + stroke("M50 79 L69 79");
-    case "cluster":
-    default:
-      return '<circle cx="59" cy="64" r="11" fill="none" stroke="' + accent + '" stroke-width="2"/>' +
-        '<circle cx="34" cy="46" r="7" fill="none" stroke="' + accent + '" stroke-width="1.8" opacity="0.8"/>' +
-        '<circle cx="85" cy="46" r="7" fill="none" stroke="' + accent + '" stroke-width="1.8" opacity="0.8"/>' +
-        '<circle cx="34" cy="84" r="7" fill="none" stroke="' + accent + '" stroke-width="1.8" opacity="0.8"/>' +
-        '<circle cx="85" cy="84" r="7" fill="none" stroke="' + accent + '" stroke-width="1.8" opacity="0.8"/>' +
-        stroke("M41 51 L51 58", 'opacity="0.6"') + stroke("M78 51 L68 58", 'opacity="0.6"') +
-        stroke("M41 79 L51 70", 'opacity="0.6"') + stroke("M78 79 L68 70", 'opacity="0.6"');
-  }
+/* YouTube keeps a still for every video at a stable URL, so a card can wear
+   the fight it stands for. hqdefault is the 4:3 still: the four phone-shot
+   matches fill it, and the two widescreen ones letterbox inside it, which on
+   a video card reads as letterboxing rather than as a mistake. */
+function thumbUrl(record) {
+  const id = videoId(record.opens);
+  return id ? "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg" : "";
 }
 
-/* The two card faces. A placeholder face is the hatch plus the topic's
-   glyph; a poster face is a picture bled to the card edge under a veil that
-   darkens the top and bottom strips, so the coordinate and the title keep
-   their contrast whatever the picture happens to be. Everything outside the
-   face — frame, coordinate, title, tag, pips — is the same either way. */
-function faceMarkup(theme, uid) {
-  if (theme.poster) {
-    return '<g clip-path="url(#clip' + uid + ')">' +
-      '<image href="' + escapeHtml(theme.poster) + '" x="1.5" y="1.5" width="115" height="175" ' +
-      'preserveAspectRatio="xMidYMid slice"/>' +
-      '<rect x="1.5" y="1.5" width="115" height="175" fill="url(#veil' + uid + ')"/>' +
-      "</g>" +
-      // A still needs to read as a video even at the limb of the globe.
-      '<circle cx="59" cy="64" r="16" fill="#03080a" fill-opacity="0.46" stroke="' + theme.accent +
-      '" stroke-opacity="0.9" stroke-width="1.6"/>' +
-      '<path d="M54 55 L70 64 L54 73 Z" fill="' + theme.accent + '"/>';
-  }
-  return '<rect x="1.5" y="1.5" width="115" height="175" rx="9" fill="url(#hatch' + uid + ')"/>' +
-    '<rect x="8" y="8" width="102" height="162" rx="6" fill="none" stroke="' + theme.accent +
-    '" stroke-opacity="0.26" stroke-dasharray="5 5"/>' +
-    glyphMarkup(theme.glyph, theme.accent);
+/* Greedy wrap on spaces, never mid-word, capped at maxLines; the last line
+   carries whatever is left over rather than being dropped. */
+function wrapLabel(label, maxChars, maxLines) {
+  const words = String(label).split(/\s+/).filter(Boolean);
+  const lines = [];
+  words.forEach(function (word) {
+    const last = lines[lines.length - 1];
+    if (last && lines.length >= maxLines) { lines[lines.length - 1] = last + " " + word; return; }
+    if (last && (last + " " + word).length <= maxChars) { lines[lines.length - 1] = last + " " + word; return; }
+    lines.push(word);
+  });
+  return lines.length ? lines : [""];
 }
 
 function cardSvg(record, index) {
   const theme = THEMES[record.title] || FALLBACK_THEME;
   svgUid += 1;
   const uid = "c" + svgUid;
-  const label = record.title;
-  const fontSize = Math.min(13, Math.max(7.5, 150 / Math.max(6, label.length)));
-  const tag = theme.tag || "PLACEHOLDER";
+  const thumb = thumbUrl(record);
+
+  const lines = wrapLabel(record.title, 13, 2);
+  const longest = lines.reduce(function (n, l) { return Math.max(n, l.length); }, 1);
+  // 0.55em is about the advance width of this face at bold weight.
+  const fontSize = Math.min(12.5, 100 / (longest * 0.55));
+  const firstY = 142 - (lines.length - 1) * (fontSize + 1.5);
+  const titleText = lines
+    .map(function (line, i) {
+      return '<text x="59" y="' + (firstY + i * (fontSize + 1.5)).toFixed(1) +
+        '" text-anchor="middle" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="' +
+        fontSize.toFixed(1) + '" font-weight="700" fill="#f4faf7" letter-spacing="0.2">' +
+        escapeHtml(line) + "</text>";
+    })
+    .join("");
+
   const pips = state.records
     .map(function (_r, i) {
       const cx = 59 - (state.records.length - 1) * 5 + i * 10;
@@ -306,32 +298,36 @@ function cardSvg(record, index) {
     })
     .join("");
 
-  return '<svg viewBox="0 0 118 178" role="img" aria-label="' + escapeHtml(label) +
-    (theme.poster ? " card" : " placeholder card") + '">' +
+  return '<svg viewBox="0 0 118 178" role="img" aria-label="' + escapeHtml(record.title) + ' thumbnail">' +
     "<defs>" +
+    '<clipPath id="clip' + uid + '"><rect x="1.5" y="1.5" width="115" height="175" rx="9"/></clipPath>' +
     '<linearGradient id="bg' + uid + '" x1="0" y1="0" x2="0" y2="1">' +
     '<stop offset="0" stop-color="#16262c"/><stop offset="1" stop-color="#060c10"/></linearGradient>' +
-    '<pattern id="hatch' + uid + '" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">' +
-    '<line x1="0" y1="0" x2="0" y2="7" stroke="' + theme.accent + '" stroke-opacity="0.11" stroke-width="1.4"/></pattern>' +
-    (theme.poster
-      ? '<clipPath id="clip' + uid + '"><rect x="1.5" y="1.5" width="115" height="175" rx="9"/></clipPath>' +
-        '<linearGradient id="veil' + uid + '" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0" stop-color="#03080a" stop-opacity="0.82"/>' +
-        '<stop offset="0.22" stop-color="#03080a" stop-opacity="0"/>' +
-        '<stop offset="0.5" stop-color="#03080a" stop-opacity="0"/>' +
-        '<stop offset="1" stop-color="#03080a" stop-opacity="0.94"/></linearGradient>'
-      : "") +
+    '<linearGradient id="veil' + uid + '" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="#03080a" stop-opacity="0.82"/>' +
+    '<stop offset="0.22" stop-color="#03080a" stop-opacity="0"/>' +
+    '<stop offset="0.52" stop-color="#03080a" stop-opacity="0"/>' +
+    '<stop offset="1" stop-color="#03080a" stop-opacity="0.94"/></linearGradient>' +
     "</defs>" +
-    '<rect x="1.5" y="1.5" width="115" height="175" rx="9" fill="url(#bg' + uid + ')"/>' +
-    faceMarkup(theme, uid) +
-    '<rect x="1.5" y="1.5" width="115" height="175" rx="9" fill="none" stroke="' + theme.accent + '" stroke-opacity="0.78" stroke-width="1.6"/>' +
-    '<text x="59" y="24" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="7.5" ' +
-    'fill="' + theme.accent + '" fill-opacity="0.72" letter-spacing="1.2">' + record.lat + " / " + record.lon + "</text>" +
-    '<text x="59" y="128" text-anchor="middle" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="' +
-    fontSize.toFixed(1) + '" font-weight="700" fill="#eef7f2" letter-spacing="0.4">' + escapeHtml(label) + "</text>" +
-    '<text x="59" y="145" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="6.5" ' +
-    'fill="#eef7f2" fill-opacity="' + (theme.poster ? "0.62" : "0.42") + '" letter-spacing="1.6">' +
-    escapeHtml(tag) + "</text>" +
+    '<g clip-path="url(#clip' + uid + ')">' +
+    '<rect x="1.5" y="1.5" width="115" height="175" fill="url(#bg' + uid + ')"/>' +
+    (thumb
+      ? '<image href="' + thumb + '" x="1.5" y="1.5" width="115" height="175" ' +
+        'preserveAspectRatio="xMidYMid slice"/>'
+      : "") +
+    '<rect x="1.5" y="1.5" width="115" height="175" fill="url(#veil' + uid + ')"/>' +
+    "</g>" +
+    '<rect x="1.5" y="1.5" width="115" height="175" rx="9" fill="none" stroke="' + theme.accent +
+    '" stroke-opacity="0.85" stroke-width="1.6"/>' +
+    '<text x="59" y="17" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="7.5" ' +
+    'fill="' + theme.accent + '" fill-opacity="0.9" letter-spacing="1.2">' + record.lat + " / " + record.lon + "</text>" +
+    // A play badge, so a still reads as a video even at the limb of the globe.
+    '<circle cx="59" cy="72" r="16" fill="#03080a" fill-opacity="0.46" stroke="' + theme.accent +
+    '" stroke-opacity="0.9" stroke-width="1.6"/>' +
+    '<path d="M54 63 L70 72 L54 81 Z" fill="' + theme.accent + '"/>' +
+    titleText +
+    '<text x="59" y="153" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="6" ' +
+    'fill="#eef7f2" fill-opacity="0.5" letter-spacing="1.4">YOUTUBE</text>' +
     pips +
     "</svg>";
 }
@@ -823,8 +819,9 @@ function recordMarkup(record) {
   return '<div class="record-head">' +
     '<div class="record-head-text">' +
     (record.opens
-      ? '<a class="record-open" href="' + record.opens + '" style="border-color:' + theme.accent +
-        '">Open ' + escapeHtml(record.title) + " &rarr;</a>"
+      ? '<a class="record-open" href="' + record.opens + '" style="border-color:' + theme.accent + '"' +
+        (isExternal(record.opens) ? ' target="_blank" rel="noopener"' : "") +
+        ">Watch " + escapeHtml(record.title) + " on YouTube &rarr;</a>"
       : "") +
     "</div></div>" +
     renderMarkdown(record.body) +
@@ -836,7 +833,8 @@ function renderRail() {
     .map(function (record) {
       const theme = THEMES[record.title] || FALLBACK_THEME;
       const active = record.id === state.activeId ? " active" : "";
-      const out = record.opens ? '<span class="out">' + escapeHtml(record.opens) + "</span>" : "";
+      const id = videoId(record.opens);
+      const out = id ? '<span class="out">youtu.be/' + escapeHtml(id) + "</span>" : "";
       return '<li><button type="button" class="topic' + active + '" data-goto="' + record.id +
         '" style="--dot:' + theme.accent + '"><span class="dot"></span>' +
         escapeHtml(record.title) + out + "</button></li>";
@@ -868,7 +866,7 @@ function select(id, options) {
   renderRail();
 
   if (els.status) {
-    els.status.textContent = (state.meta.dbName || "Index") + " — " + record.title + " (@" + record.id + ")";
+    els.status.textContent = (state.meta.dbName || "ICU2") + " — " + record.title + " (@" + record.id + ")";
   }
 }
 
@@ -988,11 +986,17 @@ function bindGlobeDrag() {
    record opens, and a modified click opens that page in a new tab, as a link
    would. The grace period keeps the second half of a double-click, whose
    first half just made the card current, from walking straight through. */
+function isExternal(href) {
+  return /^https?:\/\//i.test(String(href || ""));
+}
+
 function openCurrentCard(id, event) {
   const record = state.byId.get(id);
   if (!record || !record.opens || id !== state.activeId) return false;
   if (performance.now() - state.selectedAt < OPEN_GRACE_MS) return true;
-  if (event.ctrlKey || event.metaKey || event.shiftKey) {
+  // Every door in this deck leads off-site, so the deck keeps its tab and
+  // the fight opens beside it. A modified click behaves the same.
+  if (isExternal(record.opens) || event.ctrlKey || event.metaKey || event.shiftKey) {
     window.open(record.opens, "_blank", "noopener");
   } else {
     location.href = record.opens;
@@ -1002,8 +1006,8 @@ function openCurrentCard(id, event) {
 
 function labelCard(node, record, current) {
   if (current && record.opens) {
-    node.setAttribute("aria-label", "Open " + record.title + " (" + record.opens + ")");
-    node.title = "Open " + record.opens;
+    node.setAttribute("aria-label", "Watch " + record.title + " on YouTube (" + record.opens + ")");
+    node.title = "Watch on YouTube — " + record.opens;
   } else {
     node.setAttribute("aria-label", record.title + " — " + (record.subtitle || record.id));
     node.removeAttribute("title");

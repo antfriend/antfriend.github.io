@@ -1,10 +1,12 @@
 # Index TTDB
 
-The front-door deck for Toot Toot Engineering. Six records, one per top-level
-topic, laid out on a sine-wave ribbon that wraps the globe once and a fifth
-(`lat = 34 · sin((lon + 150) · 1.2°)`, `lon ∈ [-150, 150]`), then closes back on
-itself along the equator. Each record is a placeholder card: draft copy, a
-generated SVG face, and one link out to the topic it stands for.
+The front-door deck for Toot Toot Engineering. Seven records, one per
+top-level topic, laid out on a sine-wave ribbon that wraps the globe once and
+a fifth (`lat = 34 · sin((lon + 150) · 1.2°)`, `lon ∈ [-150, 150]`), then closes
+back on itself along the equator. Most records are placeholder cards: draft
+copy, a generated SVG face, and one link out to the topic it stands for. A
+topic that already has a picture of its own wears it instead — ICU2 shows the
+still from the fight its deck opens on.
 
 ```mmpdb
 db_id: ttdb:tte:index:v1
@@ -22,12 +24,12 @@ umwelt:
   constraints:
     - "One record per topic directory."
     - "Every record's body is a single toot frame pointing at its topic."
-    - "Card art is a generated placeholder, not a final asset."
+    - "Card art is a generated placeholder unless the topic supplies a poster."
   globe:
     frame: "ribbon"
     origin: "banjo at (0, -150); the ribbon runs west to east."
-    mapping: "lat = 34 * sin((lon + 150) * 1.2deg), sampled every 60deg of lon."
-    note: "A single closed circuit: six cards forward along the sine, one dashed return arc along the equator."
+    mapping: "lat = 34 * sin((lon + 150) * 1.2deg), sampled every 60deg of lon, plus one half-step at lon -120 for ICU2."
+    note: "A single closed circuit: seven cards forward along the sine, one dashed return arc along the equator. ICU2 was inserted on the rising limb rather than respacing the ribbon, so every other record kept its coordinate and its id."
 cursor_policy:
   max_preview_chars: 260
   max_nodes: 12
@@ -55,7 +57,7 @@ preview:
 
 ---
 
-@LAT0LON-150 | created:1789689600 | updated:1789689600 | relates:next>@LAT32LON-90,prev>@LAT0LON150,opens>banjo/banjo.html
+@LAT0LON-150 | created:1789689600 | updated:1789689600 | relates:next>@LAT20LON-120,prev>@LAT0LON150,opens>banjo/banjo.html
 
 ## banjo
 
@@ -65,7 +67,17 @@ preview:
 
 ---
 
-@LAT32LON-90 | created:1789689660 | updated:1789689660 | relates:prev>@LAT0LON-150,next>@LAT20LON-30,opens>games/index.html
+@LAT20LON-120 | created:1758240000 | updated:1758240000 | relates:prev>@LAT0LON-150,next>@LAT32LON-90,sibling_of>@LAT0LON-150,opens>ICU2/index.html
+
+## ICU2
+
+### six fights on the same globe, read from the channel
+
+![ICU2](ICU2/index.html)
+
+---
+
+@LAT32LON-90 | created:1789689660 | updated:1789689660 | relates:prev>@LAT20LON-120,next>@LAT20LON-30,opens>games/index.html
 
 ## games
 
