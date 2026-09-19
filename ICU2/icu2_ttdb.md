@@ -23,7 +23,7 @@ timestamp_kind: unix_utc
 source:
   channel: "https://www.youtube.com/@antfriend/videos"
   channel_id: UCHUjNpsRjye59GbY1tdgBBg
-  harvested: 1758240000
+  harvested: 1789776000
   method: "channel Atom feed + oEmbed, newest six of the Videos tab"
   note: "Shorts live on a separate tab and are out of scope for this deck."
 umwelt:

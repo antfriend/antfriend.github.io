@@ -1,13 +1,15 @@
-/* index-ttdb.js — single-globe ribbon view over index_ttdb.md.
-   Replaces the multi-globe browser (still available as index_OG.html).
-   Draft: most record cards are generated SVG placeholders, not final art. A
-   topic that already has a picture of its own declares a `poster` instead,
-   and that card wears the picture — same frame, same type, real face. */
+/* github-globe.js — single-globe ribbon view over github_ttdb.md.
+   Same ribbon, projection and sliding record panel as js/index-ttdb.js and
+   ICU2/icu2-globe.js; the deck differs in what a record is. Here every record
+   is one repository, and GitHub serves frame-ancestors 'none', so nothing can
+   be embedded live. The card face is built instead: the repository's own
+   OpenGraph card fitted as a band, under it a language bar drawn to the byte
+   counts GitHub reports, and the repo name in type big enough to read. */
 
-const DB_PATH = "index_ttdb.md";
+const DB_PATH = "github_ttdb.md";
 
 /* The ribbon: lat = AMP * sin((lon - lonStart) * FREQ), lon in [-150, 150].
-   Record coordinates in index_ttdb.md sit exactly on this curve. */
+   Record coordinates in github_ttdb.md sit exactly on this curve. */
 const RIBBON = { amp: 34, freq: 1.2, lonStart: -150, lonEnd: 150 };
 
 const IDLE_MS = 60000;   // no interaction before the tour takes over
@@ -23,39 +25,58 @@ const OPEN_GRACE_MS = 450; // a card just made current ignores clicks this long
 const CARD_SCALE_MIN = 0.44;
 const CARD_SCALE_MAX = 2.35;
 
-const THEMES = {
-  // The banjo deck's own banjo card, face 01 of banjo_taro. It is already a
-  // card, so it needs no badge; glyph stays as the face if the poster goes.
-  banjo: {
-    accent: "#f2c14d",
-    glyph: "strings",
-    poster: "banjo/banjo_taro_01.png",
-    tag: "TARO DECK",
-  },
-  // The ICU2 deck opens on Dread vs ICU2, so the door wears that fight's
-  // still. Thumbnails are stable per video id; this one is fNIpPwDtRdI.
-  ICU2: {
-    accent: "#ff7a5c",
-    poster: "https://i.ytimg.com/vi/fNIpPwDtRdI/hqdefault.jpg",
-    badge: "play",
-    tag: "SIX FIGHTS",
-  },
-  games: { accent: "#7cc7ff", glyph: "grid" },
-  global_models: { accent: "#8fe6d2", glyph: "orbits" },
-  personal_grammar: { accent: "#c9a2ff", glyph: "brackets" },
-  RFCs: { accent: "#ff9f7c", glyph: "sheets" },
-  // The github deck is a shelf of repositories, and the picture GitHub keeps
-  // for the account is the avatar. Square, so it slices into the card with an
-  // even crop off each side.
-  github: {
-    accent: "#cdd9e5",
-    glyph: "cluster",
-    poster: "https://avatars.githubusercontent.com/u/1195514?v=4&s=300",
-    tag: "SIX REPOS",
-  },
-  OG: { accent: "#a6d96a", glyph: "cluster" },
+/* GitHub's own colour for each language, so the bar on a card says the same
+   thing the bar on the repo page says. Anything unlisted falls back to grey. */
+const LANG_COLOR = {
+  "JavaScript": "#f1e05a",
+  "HTML": "#e34c26",
+  "CSS": "#663399",
+  "Python": "#3572a5",
+  "TeX": "#3d6117",
+  "C": "#555555",
+  "C++": "#f34b7d",
+  "PowerShell": "#012456",
+  "Makefile": "#427819",
+  "Shell": "#89e051",
+  "Jupyter Notebook": "#da5b0b",
+  "OpenSCAD": "#e5cd45",
 };
-const FALLBACK_THEME = { accent: "#9cb2bf", glyph: "orbits" };
+const LANG_FALLBACK = "#8b949e";
+
+/* One accent per repository, spread across the wheel rather than taken from
+   the primary language — three of these six are Python, and three identical
+   cards would tell the visitor nothing. The language truth is in the bar.
+
+   `langs` is a census in bytes of code, harvested with the TTDB on
+   2026-09-19 from api.github.com/repos/antfriend/<name>/languages. It will
+   drift; the record body carries the same figures and the same caveat. */
+const THEMES = {
+  "antfriend.github.io": {
+    accent: "#f1e05a",
+    langs: [["JavaScript", 460660], ["HTML", 342575], ["Python", 206094], ["CSS", 52221], ["TeX", 29227]],
+  },
+  "robot_team": {
+    accent: "#f34b7d",
+    langs: [["C++", 1442046], ["Python", 557301], ["HTML", 17634], ["C", 9975], ["PowerShell", 9353], ["Makefile", 9281], ["Shell", 6748]],
+  },
+  "toot-toot-engineering": {
+    accent: "#8fe6d2",
+    langs: [["Python", 101691]],
+  },
+  "Anubis": {
+    accent: "#c9a2ff",
+    langs: [["C", 1997483], ["C++", 781000], ["Python", 237245], ["PowerShell", 45239], ["JavaScript", 16980], ["OpenSCAD", 5823]],
+  },
+  "storied": {
+    accent: "#a6d96a",
+    langs: [["Python", 219953], ["JavaScript", 90095], ["CSS", 15164], ["HTML", 5774]],
+  },
+  "companion_arc": {
+    accent: "#ff9f7c",
+    langs: [["Python", 4404147], ["Jupyter Notebook", 2855]],
+  },
+};
+const FALLBACK_THEME = { accent: "#9cb2bf", langs: [] };
 
 const els = {
   stage: document.getElementById("globeStage"),
@@ -177,9 +198,17 @@ function escapeHtml(value) {
 
 /* A toot frame is image syntax whose target is a document rather than a
    picture: ![label](thing.html) renders as an inline iframe of that page.
-   Same rule the OG reader uses, so a record reads the same in either. */
+   Nothing in this deck qualifies — GitHub serves frame-ancestors 'none', so
+   every record's image is an OpenGraph card and renders as a picture. */
 function isFrameSource(src) {
   return /\.(html|md|pdf)(?:[?#].*)?$/i.test(src.trim());
+}
+
+/* "owner/name" out of a repository URL; "" when there is none. */
+function repoSlug(url) {
+  const m = String(url || "").trim()
+    .match(/^https?:\/\/(?:www\.)?github\.com\/([A-Za-z0-9._-]+)\/([A-Za-z0-9._-]+)/i);
+  return m ? m[1] + "/" + m[2] : "";
 }
 
 /* Both arguments must already be HTML-escaped. */
@@ -188,7 +217,7 @@ function mediaMarkup(alt, src) {
     return '<iframe class="record-html-embed" src="' + src + '" title="' + alt +
       '" loading="lazy" referrerpolicy="no-referrer"></iframe>';
   }
-  return '<img class="record-media" src="' + src + '" alt="' + alt + '" loading="lazy" />';
+  return '<img class="record-media record-og" src="' + src + '" alt="' + alt + '" loading="lazy" />';
 }
 
 function renderInline(text) {
@@ -241,83 +270,83 @@ function renderMarkdown(source) {
     .join("");
 }
 
-/* ------------------------------------------------- placeholder SVG art */
+/* ------------------------------------------------------- card art */
 
 let svgUid = 0;
 
-function glyphMarkup(kind, accent) {
-  function stroke(d, extra) {
-    return '<path d="' + d + '" fill="none" stroke="' + accent +
-      '" stroke-width="2" stroke-linecap="round" ' + (extra || "") + "/>";
-  }
-  switch (kind) {
-    case "strings":
-      return stroke("M35 36 L35 92") + stroke("M47 32 L47 96") + stroke("M59 29 L59 99") +
-        stroke("M71 32 L71 96") + stroke("M83 36 L83 92") +
-        '<circle cx="59" cy="64" r="27" fill="none" stroke="' + accent + '" stroke-width="2" opacity="0.55"/>';
-    case "grid":
-      return '<rect x="33" y="38" width="52" height="52" rx="8" fill="none" stroke="' + accent + '" stroke-width="2"/>' +
-        '<circle cx="47" cy="52" r="4.5" fill="' + accent + '"/><circle cx="71" cy="52" r="4.5" fill="' + accent + '"/>' +
-        '<circle cx="59" cy="64" r="4.5" fill="' + accent + '"/>' +
-        '<circle cx="47" cy="76" r="4.5" fill="' + accent + '"/><circle cx="71" cy="76" r="4.5" fill="' + accent + '"/>';
-    case "orbits":
-      return '<circle cx="59" cy="64" r="26" fill="none" stroke="' + accent + '" stroke-width="2"/>' +
-        '<ellipse cx="59" cy="64" rx="26" ry="10" fill="none" stroke="' + accent + '" stroke-width="1.5" opacity="0.7"/>' +
-        '<ellipse cx="59" cy="64" rx="10" ry="26" fill="none" stroke="' + accent + '" stroke-width="1.5" opacity="0.7"/>' +
-        '<circle cx="59" cy="38" r="3.5" fill="' + accent + '"/><circle cx="85" cy="64" r="3.5" fill="' + accent + '"/>';
-    case "brackets":
-      return stroke("M48 36 C34 36 34 58 30 64 C34 70 34 92 48 92") +
-        stroke("M70 36 C84 36 84 58 88 64 C84 70 84 92 70 92") +
-        '<circle cx="59" cy="64" r="5" fill="' + accent + '"/>';
-    case "sheets":
-      return '<rect x="30" y="34" width="46" height="58" rx="5" fill="none" stroke="' + accent + '" stroke-width="2" opacity="0.5"/>' +
-        '<rect x="41" y="43" width="46" height="58" rx="5" fill="none" stroke="' + accent + '" stroke-width="2"/>' +
-        stroke("M50 59 L78 59") + stroke("M50 69 L78 69") + stroke("M50 79 L69 79");
-    case "cluster":
-    default:
-      return '<circle cx="59" cy="64" r="11" fill="none" stroke="' + accent + '" stroke-width="2"/>' +
-        '<circle cx="34" cy="46" r="7" fill="none" stroke="' + accent + '" stroke-width="1.8" opacity="0.8"/>' +
-        '<circle cx="85" cy="46" r="7" fill="none" stroke="' + accent + '" stroke-width="1.8" opacity="0.8"/>' +
-        '<circle cx="34" cy="84" r="7" fill="none" stroke="' + accent + '" stroke-width="1.8" opacity="0.8"/>' +
-        '<circle cx="85" cy="84" r="7" fill="none" stroke="' + accent + '" stroke-width="1.8" opacity="0.8"/>' +
-        stroke("M41 51 L51 58", 'opacity="0.6"') + stroke("M78 51 L68 58", 'opacity="0.6"') +
-        stroke("M41 79 L51 70", 'opacity="0.6"') + stroke("M78 79 L68 70", 'opacity="0.6"');
-  }
+/* GitHub renders an OpenGraph card for every repository at a stable URL. The
+   leading segment is only a cache key, so any value serves. The card is 2:1
+   and this one is 2:3, which is why it is fitted as a band rather than bled
+   to the edges: sliced to portrait it would crop to the blank middle. */
+function ogUrl(record) {
+  const slug = repoSlug(record.opens);
+  return slug ? "https://opengraph.githubassets.com/1/" + slug : "";
 }
 
-/* The two card faces. A placeholder face is the hatch plus the topic's
-   glyph; a poster face is a picture bled to the card edge under a veil that
-   darkens the top and bottom strips, so the coordinate and the title keep
-   their contrast whatever the picture happens to be. Everything outside the
-   face — frame, coordinate, title, tag, pips — is the same either way. */
-function faceMarkup(theme, uid) {
-  if (theme.poster) {
-    return '<g clip-path="url(#clip' + uid + ')">' +
-      '<image href="' + escapeHtml(theme.poster) + '" x="1.5" y="1.5" width="115" height="175" ' +
-      'preserveAspectRatio="xMidYMid slice"/>' +
-      '<rect x="1.5" y="1.5" width="115" height="175" fill="url(#veil' + uid + ')"/>' +
-      "</g>" +
-      // Only a video still needs to say so; a picture that is already a card
-      // is left alone to be one.
-      (theme.badge === "play"
-        ? '<circle cx="59" cy="64" r="16" fill="#03080a" fill-opacity="0.46" stroke="' + theme.accent +
-          '" stroke-opacity="0.9" stroke-width="1.6"/>' +
-          '<path d="M54 55 L70 64 L54 73 Z" fill="' + theme.accent + '"/>'
-        : "");
-  }
-  return '<rect x="1.5" y="1.5" width="115" height="175" rx="9" fill="url(#hatch' + uid + ')"/>' +
-    '<rect x="8" y="8" width="102" height="162" rx="6" fill="none" stroke="' + theme.accent +
-    '" stroke-opacity="0.26" stroke-dasharray="5 5"/>' +
-    glyphMarkup(theme.glyph, theme.accent);
+/* Greedy wrap that may also break after ".", "-" and "_", because repo names
+   carry those instead of spaces and "toot-toot-engineering" has to go
+   somewhere. The separator stays on the line it ends. */
+function wrapLabel(label, maxChars, maxLines) {
+  const parts = String(label).split(/(?<=[\s._-])/);
+  const lines = [];
+  parts.forEach(function (part) {
+    const piece = part.replace(/\s+$/, " ");
+    const last = lines.length ? lines[lines.length - 1] : null;
+    if (last !== null && lines.length >= maxLines) { lines[lines.length - 1] = last + piece; return; }
+    if (last !== null && (last + piece).trim().length <= maxChars) { lines[lines.length - 1] = last + piece; return; }
+    lines.push(piece);
+  });
+  const trimmed = lines.map(function (l) { return l.trim(); }).filter(Boolean);
+  return trimmed.length ? trimmed : [""];
+}
+
+/* The language bar: one segment per language, widths in proportion to bytes
+   of code, on a pale track so that C at #555 and PowerShell at #012456 still
+   read as segments rather than as gaps. Anything under a third of a unit is
+   given that third, so a 0.1% language is a sliver and not nothing. */
+function langBar(theme, x, y, w, h) {
+  const langs = theme.langs || [];
+  if (!langs.length) return "";
+  const total = langs.reduce(function (n, pair) { return n + pair[1]; }, 0) || 1;
+  const min = 0.34;
+  const raw = langs.map(function (pair) { return Math.max(min, (pair[1] / total) * w); });
+  const scale = w / raw.reduce(function (a, b) { return a + b; }, 0);
+  let cursor = x;
+  const segs = langs.map(function (pair, i) {
+    const seg = raw[i] * scale;
+    const rect = '<rect x="' + cursor.toFixed(2) + '" y="' + y + '" width="' + seg.toFixed(2) +
+      '" height="' + h + '" fill="' + (LANG_COLOR[pair[0]] || LANG_FALLBACK) + '"/>';
+    cursor += seg;
+    return rect;
+  }).join("");
+  return '<g><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h +
+    '" rx="' + (h / 2) + '" fill="#ffffff" fill-opacity="0.16"/>' +
+    '<g clip-path="url(#bar' + svgUid + ')">' + segs + "</g>" +
+    '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (h / 2) +
+    '" fill="none" stroke="#03080a" stroke-opacity="0.45" stroke-width="0.6"/></g>';
 }
 
 function cardSvg(record, index) {
   const theme = THEMES[record.title] || FALLBACK_THEME;
   svgUid += 1;
   const uid = "c" + svgUid;
-  const label = record.title;
-  const fontSize = Math.min(13, Math.max(7.5, 150 / Math.max(6, label.length)));
-  const tag = theme.tag || "PLACEHOLDER";
+  const og = ogUrl(record);
+  const primary = (theme.langs || [])[0];
+
+  const lines = wrapLabel(record.title, 12, 2);
+  const longest = lines.reduce(function (n, l) { return Math.max(n, l.length); }, 1);
+  // 0.55em is about the advance width of this face at bold weight.
+  const fontSize = Math.min(11.5, 100 / (longest * 0.55));
+  const firstY = 126 - (lines.length - 1) * (fontSize + 1.5);
+  const titleText = lines
+    .map(function (line, i) {
+      return '<text x="59" y="' + (firstY + i * (fontSize + 1.5)).toFixed(1) +
+        '" text-anchor="middle" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="' +
+        fontSize.toFixed(1) + '" font-weight="700" fill="#f4faf7" letter-spacing="0.2">' +
+        escapeHtml(line) + "</text>";
+    })
+    .join("");
+
   const pips = state.records
     .map(function (_r, i) {
       const cx = 59 - (state.records.length - 1) * 5 + i * 10;
@@ -326,32 +355,34 @@ function cardSvg(record, index) {
     })
     .join("");
 
-  return '<svg viewBox="0 0 118 178" role="img" aria-label="' + escapeHtml(label) +
-    (theme.poster ? " card" : " placeholder card") + '">' +
+  return '<svg viewBox="0 0 118 178" role="img" aria-label="' + escapeHtml(record.title) + ' repository card">' +
     "<defs>" +
     '<linearGradient id="bg' + uid + '" x1="0" y1="0" x2="0" y2="1">' +
     '<stop offset="0" stop-color="#16262c"/><stop offset="1" stop-color="#060c10"/></linearGradient>' +
     '<pattern id="hatch' + uid + '" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">' +
-    '<line x1="0" y1="0" x2="0" y2="7" stroke="' + theme.accent + '" stroke-opacity="0.11" stroke-width="1.4"/></pattern>' +
-    (theme.poster
-      ? '<clipPath id="clip' + uid + '"><rect x="1.5" y="1.5" width="115" height="175" rx="9"/></clipPath>' +
-        '<linearGradient id="veil' + uid + '" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0" stop-color="#03080a" stop-opacity="0.82"/>' +
-        '<stop offset="0.22" stop-color="#03080a" stop-opacity="0"/>' +
-        '<stop offset="0.5" stop-color="#03080a" stop-opacity="0"/>' +
-        '<stop offset="1" stop-color="#03080a" stop-opacity="0.94"/></linearGradient>'
-      : "") +
+    '<line x1="0" y1="0" x2="0" y2="7" stroke="' + theme.accent + '" stroke-opacity="0.1" stroke-width="1.4"/></pattern>' +
+    '<clipPath id="og' + uid + '"><rect x="8" y="28" width="102" height="51" rx="4"/></clipPath>' +
+    '<clipPath id="bar' + svgUid + '"><rect x="8" y="88" width="102" height="7" rx="3.5"/></clipPath>' +
     "</defs>" +
     '<rect x="1.5" y="1.5" width="115" height="175" rx="9" fill="url(#bg' + uid + ')"/>' +
-    faceMarkup(theme, uid) +
-    '<rect x="1.5" y="1.5" width="115" height="175" rx="9" fill="none" stroke="' + theme.accent + '" stroke-opacity="0.78" stroke-width="1.6"/>' +
-    '<text x="59" y="24" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="7.5" ' +
-    'fill="' + theme.accent + '" fill-opacity="0.72" letter-spacing="1.2">' + record.lat + " / " + record.lon + "</text>" +
-    '<text x="59" y="128" text-anchor="middle" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="' +
-    fontSize.toFixed(1) + '" font-weight="700" fill="#eef7f2" letter-spacing="0.4">' + escapeHtml(label) + "</text>" +
-    '<text x="59" y="145" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="6.5" ' +
-    'fill="#eef7f2" fill-opacity="' + (theme.poster ? "0.62" : "0.42") + '" letter-spacing="1.6">' +
-    escapeHtml(tag) + "</text>" +
+    '<rect x="1.5" y="1.5" width="115" height="175" rx="9" fill="url(#hatch' + uid + ')"/>' +
+    // The OpenGraph card, whole, on its own white plate.
+    '<rect x="8" y="28" width="102" height="51" rx="4" fill="#ffffff" fill-opacity="0.94"/>' +
+    (og
+      ? '<image href="' + escapeHtml(og) + '" x="8" y="28" width="102" height="51" ' +
+        'preserveAspectRatio="xMidYMid meet" clip-path="url(#og' + uid + ')"/>'
+      : "") +
+    '<rect x="8" y="28" width="102" height="51" rx="4" fill="none" stroke="' + theme.accent +
+    '" stroke-opacity="0.55" stroke-width="1"/>' +
+    langBar(theme, 8, 88, 102, 7) +
+    '<rect x="1.5" y="1.5" width="115" height="175" rx="9" fill="none" stroke="' + theme.accent +
+    '" stroke-opacity="0.85" stroke-width="1.6"/>' +
+    '<text x="59" y="19" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="7.5" ' +
+    'fill="' + theme.accent + '" fill-opacity="0.85" letter-spacing="1.2">' + record.lat + " / " + record.lon + "</text>" +
+    titleText +
+    '<text x="59" y="146" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="6" ' +
+    'fill="#eef7f2" fill-opacity="0.55" letter-spacing="1.3">' +
+    escapeHtml(primary ? primary[0].toUpperCase() : "GITHUB") + "</text>" +
     pips +
     "</svg>";
 }
@@ -843,8 +874,9 @@ function recordMarkup(record) {
   return '<div class="record-head">' +
     '<div class="record-head-text">' +
     (record.opens
-      ? '<a class="record-open" href="' + record.opens + '" style="border-color:' + theme.accent +
-        '">Open ' + escapeHtml(record.title) + " &rarr;</a>"
+      ? '<a class="record-open" href="' + record.opens + '" style="border-color:' + theme.accent + '"' +
+        (isExternal(record.opens) ? ' target="_blank" rel="noopener"' : "") +
+        ">Open " + escapeHtml(record.title) + " on GitHub &rarr;</a>"
       : "") +
     "</div></div>" +
     renderMarkdown(record.body) +
@@ -856,7 +888,8 @@ function renderRail() {
     .map(function (record) {
       const theme = THEMES[record.title] || FALLBACK_THEME;
       const active = record.id === state.activeId ? " active" : "";
-      const out = record.opens ? '<span class="out">' + escapeHtml(record.opens) + "</span>" : "";
+      const slug = repoSlug(record.opens);
+      const out = slug ? '<span class="out">' + escapeHtml(slug) + "</span>" : "";
       return '<li><button type="button" class="topic' + active + '" data-goto="' + record.id +
         '" style="--dot:' + theme.accent + '"><span class="dot"></span>' +
         escapeHtml(record.title) + out + "</button></li>";
@@ -888,7 +921,7 @@ function select(id, options) {
   renderRail();
 
   if (els.status) {
-    els.status.textContent = (state.meta.dbName || "Index") + " — " + record.title + " (@" + record.id + ")";
+    els.status.textContent = (state.meta.dbName || "GitHub") + " — " + record.title + " (@" + record.id + ")";
   }
 }
 
@@ -1008,11 +1041,17 @@ function bindGlobeDrag() {
    record opens, and a modified click opens that page in a new tab, as a link
    would. The grace period keeps the second half of a double-click, whose
    first half just made the card current, from walking straight through. */
+function isExternal(href) {
+  return /^https?:\/\//i.test(String(href || ""));
+}
+
 function openCurrentCard(id, event) {
   const record = state.byId.get(id);
   if (!record || !record.opens || id !== state.activeId) return false;
   if (performance.now() - state.selectedAt < OPEN_GRACE_MS) return true;
-  if (event.ctrlKey || event.metaKey || event.shiftKey) {
+  // Every door in this deck leads off-site, so the deck keeps its tab and
+  // the repository opens beside it. A modified click behaves the same.
+  if (isExternal(record.opens) || event.ctrlKey || event.metaKey || event.shiftKey) {
     window.open(record.opens, "_blank", "noopener");
   } else {
     location.href = record.opens;
@@ -1022,8 +1061,8 @@ function openCurrentCard(id, event) {
 
 function labelCard(node, record, current) {
   if (current && record.opens) {
-    node.setAttribute("aria-label", "Open " + record.title + " (" + record.opens + ")");
-    node.title = "Open " + record.opens;
+    node.setAttribute("aria-label", "Open " + record.title + " on GitHub (" + record.opens + ")");
+    node.title = "Open on GitHub — " + record.opens;
   } else {
     node.setAttribute("aria-label", record.title + " — " + (record.subtitle || record.id));
     node.removeAttribute("title");

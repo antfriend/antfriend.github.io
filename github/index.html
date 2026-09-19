@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GitHub — six repos on a globe</title>
+  <meta name="description" content="The six most recently pushed repositories from github.com/antfriend as a TTDB deck: one record each, with the repository's OpenGraph card and a language census counted in bytes." />
+  <meta property="og:title" content="GitHub — six repos on a globe" />
+  <meta property="og:description" content="Six repositories read out of one TTDB file: what was pushed, in what language, and how much of it." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="../favicon.ico" />
+  <link rel="stylesheet" href="../css/eyeball.css" />
+  <link rel="stylesheet" href="../css/tte-common.css" />
+  <link rel="stylesheet" href="../css/tte-core.css" />
+  <link rel="stylesheet" href="../css/index.css" />
+  <link rel="stylesheet" href="../css/index-ttdb.css" />
+  <link rel="stylesheet" href="github.css" />
+</head>
+<body>
+
+  <div class="page">
+
+    <header class="stage-header">
+
+      <a class="tagline" href="../index.html" data-hover-preview-off>Six repositories out of a TTDB file, newest push at the west end of the ribbon — back to the Toot Toot Engineering front door</a>
+
+      <div class="header-left">
+
+        <!-- Same globe as the front door, over github_ttdb.md instead. GitHub
+             cannot be framed, so a card is built rather than embedded: the
+             repo's OpenGraph card, its language bar, its name. -->
+        <div class="globe-stage" id="globeStage">
+          <canvas id="globe" aria-label="GitHub globe: six repository cards on a sine-wave ribbon"></canvas>
+          <div class="card-layer" id="cardLayer"></div>
+          <div class="globe-hud">
+            <b id="hudTitle">GitHub</b>
+            <p id="hudSub"><span>loading github_ttdb.md…</span></p>
+          </div>
+          <div class="tour-flag" id="tourFlag">touring ▸</div>
+        </div>
+
+      </div>
+
+      <div class="header-right">
+        <div class="record" id="recordView"></div>
+        <div class="topic-links">
+          <strong>Repositories</strong>
+          <ul class="topic-rail" id="topicRail"></ul>
+          <p class="rail-note">The six most recently pushed of fifty-nine, newest first. Drag the globe, pick a card, or wait a minute and the ribbon walks itself back through the year.</p>
+        </div>
+      </div>
+
+    </header>
+
+    <details class="panel record-panel info-panel">
+      <summary>Settings</summary>
+      <div class="title">
+        <span id="status">Loading github_ttdb.md ...</span>
+      </div>
+      <div class="controls">
+        <label class="toggle">
+          <input type="checkbox" id="tourToggle" checked />
+          Guided tour after 60s idle
+        </label>
+        <a class="pill" href="github_ttdb.md">View github_ttdb.md source</a>
+        <a class="pill" href="https://github.com/antfriend" target="_blank" rel="noopener">Open the profile</a>
+        <a class="pill" href="https://github.com/antfriend?tab=repositories&amp;sort=pushed" target="_blank" rel="noopener">All 59 repositories</a>
+        <a class="pill" href="../index.html">Back to the front door</a>
+      </div>
+      <div class="tour-note">Counts were harvested on 2026-09-19 and will drift as the repositories move. Any click, key, wheel or scroll stops the tour and restarts the sixty-second idle clock. Clicking the card already facing you opens that repository in a new tab.</div>
+    </details>
+
+    <footer>
+      <span id="eyeball-foot"></span>
+      &copy; 2026 Toot Toot Engineering. All signals cleared.
+    </footer>
+  </div>
+
+  <script src="../js/link-hover-preview.js"></script>
+  <script src="../js/eyeball.js"></script>
+  <script src="../js/audio-player.js"></script>
+  <script type="module" src="github-globe.js"></script>
+</body>
+</html>

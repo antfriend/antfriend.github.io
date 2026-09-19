@@ -1,13 +1,13 @@
 # Index TTDB
 
-The front-door deck for Toot Toot Engineering. Seven records, one per
+The front-door deck for Toot Toot Engineering. Eight records, one per
 top-level topic, laid out on a sine-wave ribbon that wraps the globe once and
 a fifth (`lat = 34 · sin((lon + 150) · 1.2°)`, `lon ∈ [-150, 150]`), then closes
 back on itself along the equator. Most records are placeholder cards: draft
 copy, a generated SVG face, and one link out to the topic it stands for. A
 topic that already has a picture of its own wears it instead: banjo shows the
-banjo card from its own deck, and ICU2 shows the still from the fight its deck
-opens on.
+banjo card from its own deck, ICU2 the still from the fight its deck opens on,
+and github the avatar the account is kept under.
 
 ```mmpdb
 db_id: ttdb:tte:index:v1
@@ -29,8 +29,8 @@ umwelt:
   globe:
     frame: "ribbon"
     origin: "banjo at (0, -150); the ribbon runs west to east."
-    mapping: "lat = 34 * sin((lon + 150) * 1.2deg), sampled every 60deg of lon, plus one half-step at lon -120 for ICU2."
-    note: "A single closed circuit: seven cards forward along the sine, one dashed return arc along the equator. ICU2 was inserted on the rising limb rather than respacing the ribbon, so every other record kept its coordinate and its id."
+    mapping: "lat = 34 * sin((lon + 150) * 1.2deg), sampled every 60deg of lon, plus half-steps at lon -120 for ICU2 and lon 120 for github."
+    note: "A single closed circuit: eight cards forward along the sine, one dashed return arc along the equator. The two newest records were inserted at half-steps rather than respacing the ribbon, so every other record kept its coordinate and its id."
 cursor_policy:
   max_preview_chars: 260
   max_nodes: 12
@@ -68,7 +68,7 @@ preview:
 
 ---
 
-@LAT20LON-120 | created:1758240000 | updated:1758240000 | relates:prev>@LAT0LON-150,next>@LAT32LON-90,sibling_of>@LAT0LON-150,opens>ICU2/index.html
+@LAT20LON-120 | created:1789776000 | updated:1789776000 | relates:prev>@LAT0LON-150,next>@LAT32LON-90,sibling_of>@LAT0LON-150,opens>ICU2/index.html
 
 ## ICU2
 
@@ -108,7 +108,7 @@ preview:
 
 ---
 
-@LAT-32LON90 | created:1789689840 | updated:1789689840 | relates:prev>@LAT-20LON30,next>@LAT0LON150,specifies>@LAT0LON-150,opens>RFCs/INDEX.md
+@LAT-32LON90 | created:1789689840 | updated:1789689840 | relates:prev>@LAT-20LON30,next>@LAT-20LON120,specifies>@LAT0LON-150,opens>RFCs/INDEX.md
 
 ## RFCs
 
@@ -185,7 +185,17 @@ disagrees with the spec — starting at
 
 ---
 
-@LAT0LON150 | created:1789689900 | updated:1789689900 | relates:prev>@LAT-32LON90,next>@LAT0LON-150,supersedes>@LAT0LON-150,opens>index_OG.html
+@LAT-20LON120 | created:1789776000 | updated:1789776000 | relates:prev>@LAT-32LON90,next>@LAT0LON150,sibling_of>@LAT20LON-120,opens>github/index.html
+
+## github
+
+### six repositories, where the rest of this is kept
+
+![github](github/index.html)
+
+---
+
+@LAT0LON150 | created:1789689900 | updated:1789689900 | relates:prev>@LAT-20LON120,next>@LAT0LON-150,supersedes>@LAT0LON-150,opens>index_OG.html
 
 ## OG
 
