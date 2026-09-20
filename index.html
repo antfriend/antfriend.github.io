@@ -3,6 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Deep links carry the DB and record the OG multi-globe browser reads:
+       /index.html?ttdb=feelings_ttdb.md&toot=lat0lon0. This page only ever
+       shows index_ttdb.md, so hand any such link straight to index_OG.html
+       with its query and hash intact. Runs before the stylesheets so the
+       single-globe view never paints first. -->
+  <script>
+    (function () {
+      var KEYS = ["ttdb", "db", "toot", "record"];
+      var search = window.location.search || "";
+      if (!search) return;
+      var params = new URLSearchParams(search);
+      for (var i = 0; i < KEYS.length; i++) {
+        var value = params.get(KEYS[i]);
+        if (value && value.trim()) {
+          // replace(), not assign(): the pass-through stays out of history,
+          // so Back leaves the way it came.
+          window.location.replace("index_OG.html" + search + (window.location.hash || ""));
+          return;
+        }
+      }
+    })();
+  </script>
   <title>Toot Toot Engineering — TTDB · TTAI · Autonomy OS</title>
   <meta name="description" content="Toot Toot Engineering builds TTDB (MyMentalPalaceDB), TTAI, and the autonomy OS stack — an offline-first semantic graph system for structured knowledge and AI-assisted reasoning." />
   <meta property="og:title" content="Toot Toot Engineering — TTDB · TTAI · Autonomy OS" />
