@@ -67,9 +67,11 @@ store's description of the runtime's surface names exactly what the runtime expo
 check the shapes too: fifteen readings, from *Pixel chases mice that eat cheese* to *Swim.*;
 that every reading, in either language, reads back as itself; that marks overrule the parser
 and a join makes one term; that *Coffee.* is a mention and *coffee* a look-up; that a
-relative clause closes at the next verb, that a phrase's head sits where each language puts
-it, and that what *or* joins or a stance verb takes is held — seen, never believed, never a
-contradiction; and that an amendment stands in for a sentence without touching its episode,
+relative clause closes at the next verb, whether its antecedent is its subject or its object,
+and a stance clause inside one closes with it; that a phrase's head sits where each language
+puts it; that what *or* joins or a stance verb takes is held — seen, never believed, never a
+contradiction — unless the *or* is denied, and that an aside turns a hedge into a plain
+saying; and that an amendment stands in for a sentence without touching its episode,
 and is withdrawn by reading the sentence back the episode's way.
 
 And they check the claim the whole design rests on, three ways:
@@ -310,10 +312,18 @@ Not everything you say is something you assert. *I doubt cats like fish.* reads
 `[i] {doubt} [cats] {like} [fish]`: `self | doubt | -` is said, and `cat | like | fish | ?`
 is **held** — written, counted and searchable, never believed, and never a contradiction of
 *Cats like fish*. What *or* joins is held the same way (*Pixel is a cat or a dog*), and the
-reply names what it held. A relative clause closes at the next verb, so *Cats that chase mice
-are fast* is `cat | has_property | fast`, not a claim about mice. Which word of a phrase is
-its head is the lexicon's to say: last in English, first in Spanish, so *el gato negro* is a
-`gato`.
+reply names what it held. *Pixel is not a cat or a dog*, on the other hand, is a plain
+denial of each.
+
+If you meant the hedge as fact, set it aside: select *I think*, mark it an **aside**, and
+`(i think) [cats] {bark}` reads `cat | bark | - | +`, said. Parentheses you type are asides
+too, so *Pixel (my old cat) purrs.* is about Pixel purring, and the parentheses stay in your
+words.
+
+Clauses open and close inside a sentence. A relative clause closes at the next verb, so *Cats
+that chase mice are fast* is `cat | has_property | fast`, not a claim about mice, and *The dog
+that the cat chased ran away* is `cat | chase | dog`. Which word of a phrase is its head is
+the lexicon's to say: last in English, first in Spanish, so *el gato negro* is a `gato`.
 
 ---
 
@@ -359,8 +369,8 @@ global_models.
 | `@LAT98LON6` | Mentions are not evidence | 215 | 150 | 24 |
 | `@LAT98LON2` | Lanes are latitudes again | 230 | 60 | 6 |
 
-**First, the parser's blind spots** — nesting deeper than a relative clause, attributive
-adjectives, tense and modality, the scope of *not* over *or*. Every sentence passes through
+**First, the parser's blind spots** — finite verbs from bare ones, attributive adjectives,
+tense and modality, the polarity of a held clause. Every sentence passes through
 them and they are the least settled thing here, though you can now correct any reading they
 get wrong, and what the parser cannot tell is asserted is held rather than believed. The test for any fix is the one in `@LAT98LON5`: if it needs English in
 `index.html`, it is the wrong fix. Each is a rule kind the grammar could declare.
@@ -394,16 +404,16 @@ no.
 
 ## Known limits
 
-- **Chains are nearly flat.** A clause reads as alternating segments, each verb relating its
-  neighbours; a relative clause closes at the next verb, but a stance inside a relative (*the
-  man that says cats bark is tall*) holds the main clause too, and an object relative (*the
-  dog that the cat chased*) is not read as one. Questions that invert word order beyond the
-  declared forms fall back to search. Where it reads you wrongly,
-  [correct the reading](#how-it-read-you).
+- **Clauses nest one way.** A relative clause closes at the next verb, so a perception chain
+  inside one (*the man that saw the cat eat cheese is tall*) gives *is tall* to the cheese.
+  *The dog that cats chase* is not read as a relative (*which* is), and after a verb that is
+  not a stance verb (*I emailed the man that the cat sleeps*) a reported clause is believed,
+  not held. Questions that invert word order beyond the declared forms fall back to search.
+  Where it reads you wrongly, [correct the reading](#how-it-read-you).
 - **Modifiers are dropped.** *Black cats* is *cats*, unless you make *black cats* one term.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
-  less than you did; *not a cat or a dog* is held rather than denied; and *I think cats bark*
-  meant as fact has to be said again plainly.
+  less than you did, and a held clause keeps no polarity: *I doubt cats don't bark* holds
+  `cat bark`.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.
   That is a claim about what feeding a file in means — *here is something I read* — and it is
   written down at `@LAT98LON6`.

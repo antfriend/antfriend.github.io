@@ -56,6 +56,7 @@ keep such text in markup rather than in the interpreter.
 | `generic_det` | words | Determiners that make a noun phrase generic (quantifier `*`). |
 | `nounish_marks`, `verbish_marks` | two characters | The owner's brackets for a nounish and a verbish segment, open then close (TTG-RFC-0005 §4). |
 | `head` | `last` or `first` | Which word of a phrase is its head; `last` when absent (TTG-RFC-0005 §3). |
+| `aside_marks` | two characters | The owner's brackets for words left out of a reading, open then close (TTG-RFC-0005 §4). |
 
 Class keys the runtime interprets: `det`, `poss`, `quant_all`, `quant_some`, `quant_none`,
 `self`, `anaphor`, `prep`, `conj`, `subord`, `aux`, `cop`, `hav`, `modal`, `neg`, `wh`,
@@ -229,5 +230,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-09-14 | The `exclusive` flag in §6 and four reply keys in §8, for supersession (TTG-RFC-0004 §3). |
 | 2026-09-21 | For shapes and amendments (TTG-RFC-0005): the `relative` and `infinitive` classes and the two mark keys in §3, the `amend_edge` role in §6, three reply keys in §8, `phrase_max_words` and `amend_lane` in §9. |
 | 2026-09-21 | For held sayings and head position (TTG-RFC-0005 0.2): the `alt` and `premod` classes and the `head` key in §3, `stance` in §5, `noted_held` in §8. |
+| 2026-09-21 | `aside_marks` in §3 (TTG-RFC-0005 0.3). |
 
 *License: CC0*

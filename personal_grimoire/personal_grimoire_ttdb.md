@@ -216,7 +216,9 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, - or ?> | <* al
   one on its right as object: `N1 V1 N2 V2 N3` is `(N1 V1 N2)` and `(N2 V2 N3)` — *I saw
   the man eat cheese* is `self see man` and `man eat cheese`. A relative clause closes at the
   next verb, which goes back to its antecedent: *cats that chase mice are fast* is about cats.
-  A phrase's head is its last word or its first, as the lexicon's `head:` says.
+  A relative with a subject of its own takes the antecedent as object: *the dog that the cat
+  chased* is `cat chase dog`. A phrase's head is its last word or its first, as the lexicon's
+  `head:` says.
 - **Verb** → its verbs and particles joined by `phrasal_join`: *live in houses* →
   `live_in | house`, *want to eat cheese* → `want_to_eat | cheese`. No object → `-`.
 - **Copula** → a `phrase:` from [vector algebra](lat-40lon0) at the start of the complement
@@ -236,7 +238,8 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, - or ?> | <* al
   is `- | feed | cat`. Counted in `seen`, searchable, never a belief.
 - **Held** → polarity `?`: whatever a list or clause joined by an `alt` word says (*a cat or
   a dog*), and the clause a `stance` verb takes (*I doubt* — *cats like fish*). Said but not
-  asserted: written and seen like a mention, never a belief, never a contradiction.
+  asserted: written and seen like a mention, never a belief, never a contradiction. A denied
+  alternative is not held but denied, each member: *not a cat or a dog*.
 
 Percepts live in the episode that perceived them, beside the `said:` line they came from.
 An episode is written once and **never rewritten**; it is the owner's episodic memory, and
@@ -250,7 +253,8 @@ ttdb-episode block: source:, at:, said: lines, shape: lines, percept: lines
 
 **The owner's reading.** Each sentence's shape is written beside it in the lexicon's marks —
 `shape: 1 | [birds] {can fly and swim}.` — and reads back to itself. Marks typed into the
-input overrule the parser, and a join (`ice_cream`) makes one term. A sentence already said
+input overrule the parser, an aside — `(i think) [cats] {bark}.` — is left out of the reading,
+and a join (`ice_cream`) makes one term. A sentence already said
 is re-read by an **amendment**: one record per episode at `@LAT91LON<n>`, beside
 `@LAT90LON<n>`, holding the shape that stands and its percepts. Consolidation takes those in
 place of the episode's own, still as that episode's saying, and the episode is never touched.
@@ -490,7 +494,7 @@ selects a record on click (one delegated listener); the value is `lat|lon` to fo
 **Every chrome string lives in a `data-*` attribute on the markup**, never in the script:
 `#storeinfo[data-seed|data-local|data-opened]`, `#mode[data-<intent in kebab case>]`,
 `#reset[data-confirm]`, `#empty[data-confirm]`, `#files[data-confirm-store]`, `#log[data-quota]`,
-`#preview[data-nounish|data-verbish|data-join|data-keep|data-amended]` — the labels of a reading's
+`#preview[data-nounish|data-verbish|data-aside|data-join|data-keep|data-amended]` — the labels of a reading's
 controls, where each word is a button carrying `data-row`. The
 store persists under `localStorage` key `personal_grimoire:store:v1`; `?seed` ignores that copy
 and `?ask=<text>` asks on load. The page fetches `personal_grimoire_ttdb.md` beside itself.
@@ -558,6 +562,7 @@ list_sep: ,
 generic_det: a an
 nounish_marks: [ ]
 verbish_marks: { }
+aside_marks: ( )
 head: last
 ```
 
@@ -694,7 +699,7 @@ nouns (*fly*, *play*, *work*) are resolved by position, not by membership.
 ```ttdb-grammar
 kind: seed
 seed: eat drink like love hate want need know think believe see hear feel make give take get find keep hold bring buy sell use help build write read say tell call show teach learn play work move run walk swim fly climb jump sleep live grow chase hunt catch fight fear avoid protect cause produce create contain include carry own lose win change become follow lead open close start stop begin end enjoy prefer remember forget visit meet watch wear sing cook bake drive ride travel study speak mean seem hide bite kill save pay send cut draw paint dream wish hope miss plan try purr bark smell taste lay sit stand fall wake throw lie belong depend
-stance: think believe doubt suppose guess hope wish wonder fear suspect imagine assume expect pretend dream say claim
+stance: think believe doubt suppose guess hope wish wonder fear suspect imagine assume expect pretend dream say claim tell show warn remind promise convince persuade inform assure
 ```
 
 ---
@@ -912,6 +917,7 @@ list_sep: ,
 generic_det: un una
 nounish_marks: [ ]
 verbish_marks: { }
+aside_marks: ( )
 head: first
 ```
 
@@ -950,6 +956,7 @@ verb_irregular: prefiero prefieres prefiere preferimos prefieren | preferir
 verb_irregular: digo dices dice decimos dicen | decir
 verb_irregular: sé sabes sabe sabemos saben | saber
 verb_irregular: creo | creer
+verb_irregular: persigo persigues persigue perseguimos persiguen | perseguir
 verb: ando | ar
 verb: iendo | er | ir
 verb: ado | ar
@@ -1937,20 +1944,20 @@ The highest EPS in the design, because every sentence goes through it and it is 
 settled thing here. Since [TTG-RFC-0005](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md) it reads
 any alternating run of nounish and verbish segments, lists of either, relative words,
 infinitives and one-word sentences — *mice that eat cheese*, *saw the man eat cheese*,
-*fly, swim and sing*. A relative clause closes at the next verb, so *cats that chase mice
-are fast* is about cats. What a sentence says without asserting it is **held**, written and
-never believed: the members of an *or*, and the clause after a stance verb (*I doubt cats
-like fish*). A phrase's head is where the lexicon says: last in English, first in Spanish.
-It still does not see:
+*fly, swim and sing*. Relative and stance clauses open inside the chain and close again:
+*cats that chase mice are fast* is about cats, *the dog that the cat chased* is chased, and
+*the man that says cats bark is tall* is a tall man. What a sentence says without asserting it
+is **held**, written and never believed: the members of an *or*, unless it is denied (*not a
+cat or a dog* is neither), and the clause after a stance verb (*I doubt cats like fish*). An
+aside is left out of a reading, so a hedge can be said as fact. A phrase's head is where the
+lexicon says: last in English, first in Spanish. It still does not see:
 
-- **Deeper nesting** — a stance inside a relative (*the man that says cats bark is tall*)
-  holds the main clause with it; an object relative (*the dog that the cat chased*) is not
-  read as a relative at all.
+- **Finite from bare** — a perception chain inside a relative (*the man that saw the cat eat
+  cheese is tall*) gives *eat* to the man and *is tall* to the cheese.
 - **Modifiers** — *black cats* is *cats*; the adjective is dropped unless the owner binds the
   phrase into one term (`black_cat`).
 - **Tense and modality** — *birds fly*, *birds flew* and *birds might fly* are one percept.
-- **Scope** — *not a cat or a dog* denies both, and is only held. A held clause the owner
-  meant as fact (*I think cats bark*) can be said again plainly, but not yet marked so.
+- **Held polarity** — *I doubt cats don't bark* holds `cat bark`; the *not* inside is lost.
 - **Word order other than a chain**, and questions that invert it beyond the forms in
   [question forms](lat-50lon0).
 - **Numbers, dates and names with spaces** — *New York* is two things until the owner writes
@@ -2074,6 +2081,10 @@ correction can teach: once the owner binds *ice cream* into one term, the words 
 unmarked ever after, the way a known lemma wins a tie. That is also the risk — a binding made
 once applies everywhere, visibly on the term's `forms:` line but silently at parse time. Inside
 marks it never applies, so any reading can still be written back exactly as the owner means it.
+
+A correction can also take words out. What the reader holds rather than believes — the clause
+after *I think* — the owner can say as fact by marking *I think* an aside: the parser's caution
+is its default, and the owner's word overrules it, beside the episode like any other reading.
 
 Mid conf because the chain is new and flat; mid salience because every sentence has a reading
 and most will never be touched.

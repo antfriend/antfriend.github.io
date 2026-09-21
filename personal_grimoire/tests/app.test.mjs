@@ -184,7 +184,7 @@ section("shapes: alternating segments, lists and mentions (TTG-RFC-0005)");
      "every sentence of every episode has a reading, written or recomputed");
 }
 
-section("said but not asserted: relatives close, alternatives and stance are held (TTG-RFC-0005 §3)");
+section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC-0005 §3–§4)");
 {
   const S = fresh();
   const cases = [
@@ -202,7 +202,28 @@ section("said but not asserted: relatives close, alternatives and stance are hel
     ["Los gatos que cazan ratones son rápidos.",     "[los gatos] que {cazan} [ratones] {son} [rápidos].",           ["gato | cazar | ratón | + | -", "gato | is_a | rápido | + | -"]],
     ["Creo que los gatos ladran.",                   "{creo} que [los gatos] {ladran}.",                             ["- | creer | - | + | -", "gato | ladrar | - | ? | -"]],
     ["El gato negro duerme.",                        "[el gato negro] {duerme}.",                                    ["gato | dormir | - | + | -"]],
-    ["Tengo dos gatos.",                             "{tengo} [dos gatos].",                                         ["- | has | gato | + | -"]]
+    ["Tengo dos gatos.",                             "{tengo} [dos gatos].",                                         ["- | has | gato | + | -"]],
+    // a stance inside a relative: the stance's clause is held, and the relative still closes
+    ["The man that says cats bark is tall.",         "[the man] that {says} [cats] {bark is} [tall].",               ["man | say | - | + | -", "cat | bark | - | ? | -", "man | has_property | tall | + | -"]],
+    ["The man that says cats like fish is tall.",    "[the man] that {says} [cats] {like} [fish] {is} [tall].",      ["man | say | - | + | -", "cat | like | fish | ? | -", "man | has_property | tall | + | -"]],
+    // a relative inside a stance's clause is held with it; without a clause after it, the stance keeps its thing
+    ["I think the cat that chased the mouse is fast.", "[i] {think} [the cat] that {chased} [the mouse] {is} [fast].", ["self | think | - | + | -", "cat | chase | mouse | ? | -", "cat | has_property | fast | ? | -"]],
+    ["I believe the man that fixed the car.",        "[i] {believe} [the man] that {fixed} [the car].",              ["self | believe | man | + | -", "man | fix | car | + | -"]],
+    // object relatives: the relative's verb takes the thing before the relative word as its object —
+    // always before the sentence's own verb, after it only for a verb the corpus uses with an object
+    ["The dog that the cat chased ran away.",        "[the dog] that [the cat] {chased ran} [away].",                ["cat | chase | dog | + | -", "dog | run | away | + | -"]],
+    ["I like the dog that the cat chased.",          "[i] {like} [the dog] that [the cat] {chased}.",                ["self | like | dog | + | -", "cat | chase | dog | + | -"]],
+    ["I emailed the man that the cat sleeps.",       "[i] {emailed} [the man] that [the cat] {sleeps}.",             ["self | email | man | + | -", "cat | sleep | - | + | -"]],
+    ["I told the man that the cat sleeps.",          "[i] {told} [the man] that [the cat] {sleeps}.",                ["self | tell | man | + | -", "cat | sleep | - | ? | -"]],
+    ["I gave the dog that bone.",                    "[i] {gave} [the dog that bone].",                              ["self | give | dog | + | -", "self | give | bone | + | -"]],
+    ["El perro que el gato persigue es negro.",      "[el perro] que [el gato] {persigue es} [negro].",              ["gato | perseguir | perro | + | -", "perro | has_property | negro | + | -"]],
+    // not over or: neither; an alternative of subjects stays held
+    ["Pixel is not a cat or a dog.",                 "[pixel] {is not} [a cat or a dog].",                           ["pixel | is_a | cat | - | -", "pixel | is_a | dog | - | -"]],
+    ["Birds do not fly or swim.",                    "[birds] {do not fly or swim}.",                                ["bird | fly | - | - | -", "bird | swim | - | - | -"]],
+    ["Cats or dogs do not bark.",                    "[cats or dogs] {do not bark}.",                                ["cat | bark | - | ? | -", "dog | bark | - | ? | -"]],
+    // an aside is left out of the reading: a hedge the owner meant as fact
+    ["(I think) cats bark.",                         "(i think) [cats] {bark}.",                                     ["cat | bark | - | + | -"]],
+    ["Pixel (my cat) sleeps.",                       "[pixel] (my cat) {sleeps}.",                                   ["pixel | sleep | - | + | -"]]
   ];
   for (const [text, shape, want] of cases){
     const r = PG.shapeOf(S, text), got = r.percepts.map(pk);
@@ -229,6 +250,17 @@ section("said but not asserted: relatives close, alternatives and stance are hel
   ok(d.verdict === PG.say(H.G, "noted", { percepts:"2 percepts", sentences:"1 sentence" }), "the verdict counts it", d.verdict);
   const q = PG.answer(H, "Is Pixel a cat or a dog?", T0 + 120);
   ok(q.intent === "verify", "a question still asks after each alternative");
+
+  // a hedge meant as fact: mark it an aside, and what it held is said
+  const U = fresh(), bark = () => (U.trips.get("cat|bark|-") || { fr:0 }).fr;
+  const hedge = PG.answer(U, "I think cats bark.", T0), b0 = bark();
+  ok(hedge.episode.held.map(pk).join() === "cat | bark | - | ? | -", "said plainly, a stance's clause is held");
+  const un = PG.amendReply(U, hedge.episode.id, 1, "(i think) [cats] {bark}.", T0 + 60);
+  ok(un && bark() === b0 + 1 && !un.episode.held.length && un.items[0].quotes[0].text === "I think cats bark.",
+     "amended with the stance as an aside, the clause is believed, quoted as the owner said it");
+  const typed = PG.answer(U, "Pixel (my old cat) purrs.", T0 + 120);
+  ok(U.said.get(typed.episode.id).get(1) === "Pixel (my old cat) purrs." &&
+     PG.serializeStore(U.st).includes("shape: 1 | [pixel] (my old cat) {purrs}."), "typed parentheses are an aside, and stay in the said line");
 }
 
 section("amendments: the owner's reading kept beside the words (TTG-RFC-0005 §5)");

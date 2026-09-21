@@ -110,6 +110,7 @@ form{border-top:1px solid var(--line);padding:10px 12px 12px}
 .shape .seg{display:inline-flex;flex-wrap:wrap;align-items:center;padding:0 2px;border:1px solid currentColor;border-radius:2px}
 .shape .seg.N{color:var(--thing);font-variant:small-caps;letter-spacing:.015em}
 .shape .seg.V{color:var(--vector);border-style:dashed;font-style:italic}
+.shape .seg.A{color:var(--dim);border-style:dotted}
 .shape .tok{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;border-radius:1px;padding:0 2px;cursor:pointer;text-shadow:inherit;line-height:1.5}
 .shape .tok:hover{color:var(--accent);box-shadow:none}
 .shape .tok.lk{color:var(--dim)}
@@ -243,7 +244,7 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
   <section class="card">
     <div id="log" aria-live="polite" data-quota="The browser refused to save the store (storage is full or blocked). Download it to keep what was added."></div>
     <form id="askform" autocomplete="off">
-      <div id="preview" data-nounish="thing" data-verbish="vector" data-join="one term / split" data-keep="keep this reading"
+      <div id="preview" data-nounish="thing" data-verbish="vector" data-aside="aside" data-join="one term / split" data-keep="keep this reading"
         data-amended="read as you marked it"></div>
       <textarea id="q" rows="2" placeholder="Tell it something, or ask it something. Drop .md or .txt files here to feed them in."></textarea>
       <div class="row">
@@ -286,7 +287,7 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
   <a href="RFCs/INDEX.md">RFCs</a> ·
   <a href="https://antfriend.github.io">Reference TTDB viewer</a><br>
   Enter sends, Shift+Enter starts a new line. Tap a word in a reading, shift-tap to extend, then mark it a thing,
-  a vector or one term. Drag the sphere to turn it; tap a node to open its record.
+  a vector, an aside (left out of the reading) or one term. Drag the sphere to turn it; tap a node to open its record.
   The page chrome is English; the grammar is whatever the store says it is.
 </footer>
 </div>
@@ -506,8 +507,8 @@ function loadGrammar(st, lang){
       G.questionMark = (b.question_mark || "").trim();
       G.listSep = (b.list_sep || "").trim();
       for (const w of words(b.generic_det)) G.genericDet.add(w);
-      // the owner's own brackets: an open and a close character for each kind of segment
-      for (const [cls, key] of [["N", "nounish_marks"], ["V", "verbish_marks"]]){
+      // the owner's own brackets: an open and a close character for each kind of segment, and for an aside
+      for (const [cls, key] of [["N", "nounish_marks"], ["V", "verbish_marks"], ["A", "aside_marks"]]){
         const m = words(b[key]);
         if (m.length === 2){ G.marks[m[0]] = { cls, open:true }; G.marks[m[1]] = { cls, open:false }; G.marks[cls] = m; }
       }
@@ -878,10 +879,20 @@ function startsWithSubject(S, toks){
   return isContent(t) && !isVerbish(S, t);
 }
 function labelTokens(S, T){
+  // an aside is not read at all: label the words around it, then put it back (TTG-RFC-0005 §4)
+  if (T.some(t => t.force === "A")){
+    const keep = T.map((t, i) => i).filter(i => T[i].force !== "A"), sub = labelTokens(S, keep.map(i => T[i]));
+    const L = T.map(() => "A");
+    keep.forEach((i, k) => { L[i] = sub[k]; });
+    return L;
+  }
   const G = S.G, L = T.map(t => t.force || "");
   // a word that is both subord and relative is a relative between a thing and a verb (los gatos que cazan)
   const thingy = t => !!t && !t.punct && (t.force ? t.force === "N" : has(t, "self") || has(t, "anaphor") || (isContent(t) && !isVerbish(S, t)));
-  const relAt = i => has(T[i], "relative") && thingy(T[i - 1]) && vStartTok(S, T[i + 1]);
+  const verbAhead = i => { for (let k = i; k < T.length && !(T[k].punct && T[k].w !== G.listSep); k++) if (vStartTok(S, T[k])) return true; return false; };
+  // before a verb (los gatos que cazan), or before a phrase and then a verb (el perro que el gato persigue)
+  const relAt = i => has(T[i], "relative") && thingy(T[i - 1]) && (vStartTok(S, T[i + 1]) ||
+    (!!T[i + 1] && !T[i + 1].punct && (starts(T[i + 1]) || has(T[i + 1], "self") || has(T[i + 1], "anaphor")) && verbAhead(i + 2)));
   for (let i = 0; i < T.length; i++){
     const t = T[i];
     if (!t.force && ((t.punct && t.w !== G.listSep) || (has(t, "subord") && !relAt(i)) || has(t, "filler"))) L[i] = "L";
@@ -917,11 +928,16 @@ function labelTokens(S, T){
  * clause — so "a good drink" stays a thing.                                */
 function labelClause(S, T, L, a, b){
   const G = S.G;
-  let prev = "", nBegun = false, vSeen = false, bareV = false, afterR = false, takes = false;
+  let prev = "", nBegun = false, vSeen = false, bareV = false, afterR = false, takes = false, orel = false, gapV = false;
   const free = j => j < b && !T[j].force;
   const hard = j => { while (j < b && !T[j].force && soft(T[j])) j++; return j; };
   const stanceIn = (i, j) => T.slice(i, j).some(t => isContent(t) && !t.synthetic && G.stance.has(verbLemma(S, t.w).lemma));
-  const setV = (i, j) => { for (let k = i; k < j; k++) if (!T[k].force) L[k] = "V"; prev = "V"; nBegun = false; vSeen = true; bareV = false; afterR = false; takes = stanceIn(i, j); };
+  // after an object relative's verb one more verb may follow straight on: the dog that the cat chased | ran
+  const setV = (i, j) => { for (let k = i; k < j; k++) if (!T[k].force) L[k] = "V"; prev = "V"; nBegun = false; vSeen = true; bareV = false; afterR = false; takes = stanceIn(i, j); gapV = orel; orel = false; };
+  const verbish = k => vStartTok(S, T[k]) || (isContent(T[k]) && !T[k].synthetic && G.participle.includes(verbLemma(S, T[k].w).end));
+  // a relative word before a thing and then a verb opens an object relative: the dog that [the cat] {chased}
+  const objRel = (t, n, j) => !n.punct && (n.force ? n.force === "N" : starts(n) || has(n, "self") || has(n, "anaphor") ||
+    (!has(t, "det") && isContent(n) && !isVerbish(S, n))) && T.slice(j + 1, b).some((x, q) => verbish(j + 1 + q));
   // a verb after an infinitive marker: one with a thing after it, or one the owner already uses as a verb
   const verbWord = k => {
     const t = T[k], n = T[hard(k + 1)];
@@ -970,12 +986,13 @@ function labelClause(S, T, L, a, b){
     const t = T[i], j = hard(i + 1);
     if (t.force){
       L[i] = t.force;
-      if (t.force === "V"){ takes = stanceIn(i, i + 1) || (prev === "V" && takes); prev = "V"; nBegun = false; vSeen = true; }
+      if (t.force === "V"){ takes = stanceIn(i, i + 1) || (prev === "V" && takes); gapV = orel || (prev === "V" && gapV); orel = false; prev = "V"; nBegun = false; vSeen = true; }
       else if (!soft(t)){ prev = "N"; if (isContent(t) || has(t, "self") || has(t, "anaphor")) nBegun = true; }
       bareV = afterR = false; i++; continue;
     }
     if (soft(t)){ L[i] = "?"; i++; continue; }
-    if (has(t, "relative") && prev === "N" && j < b && vStartTok(S, T[j])){ L[i] = "R"; afterR = true; i++; continue; }
+    if (has(t, "relative") && prev === "N" && j < b && !T[j].punct && (T[j].force ? T[j].force === "V" : verbish(j))){ L[i] = "R"; afterR = true; i++; continue; }
+    if (has(t, "relative") && prev === "N" && j < b && objRel(t, T[j], j)){ L[i] = "R"; orel = true; i++; continue; }
     if (has(t, "conj") || (t.punct && t.w === G.listSep)){
       if (prev === "V" && j < b && vStartTok(S, T[j])){ L[i] = "V"; bareV = true; i++; continue; }        // fly and swim
       if (prev === "N" && has(t, "conj") && j < b && vStartTok(S, T[j])){                               // …and eat cheese
@@ -996,11 +1013,12 @@ function labelClause(S, T, L, a, b){
     const n = T[j];
     if (i === hard(a) && isContent(t) && !t.synthetic && stanceIn(i, i + 1) && n && !n.punct && !n.force &&
         (starts(n) || has(n, "self") || has(n, "anaphor") || has(n, "subord") || has(n, "relative"))){ const e = tail(i); setV(i, e); i = e; continue; }
+    if (gapV && isContent(t) && !t.synthetic && isVerbish(S, t)){ const e = tail(i); setV(i, e); i = e; continue; }
     if (isContent(t) && !t.synthetic && (nBegun || bareV) && !afterStart(i)){
-      const later = vSeen && !bareV && !afterR && !takes;
+      const later = vSeen && !bareV && !afterR && !takes && !orel;
       const cued = !bareV && nBegun && i + 1 < b && starts(T[i + 1]);
       const known = isVerbish(S, t) && (!later || (j < b && nStartTok(T[j]) && !has(T[j], "prep")));
-      const shaped = !bareV && nBegun && !vSeen && G.participle.includes(verbLemma(S, t.w).end);
+      const shaped = !bareV && nBegun && (!vSeen || orel) && G.participle.includes(verbLemma(S, t.w).end);
       if (known || cued || shaped){ const e = tail(i); setV(i, e); i = e; continue; }
     }
     L[i] = "N"; prev = "N"; bareV = afterR = false;
@@ -1072,7 +1090,7 @@ function predOf(S, toks){
   if (isContent(h)) return verbFrom(i);
   return { kind:"", neg };
 }
-function verbItems(S, toks){
+function verbItems(S, toks, gap){
   const items = [];
   let cur = [];
   for (const t of toks){
@@ -1084,7 +1102,9 @@ function verbItems(S, toks){
     const preds = [];
     let p = [], verbed = false;
     for (const t of it){
-      if (verbed && (has(t, "aux") || has(t, "modal") || has(t, "cop") || has(t, "hav"))){ preds.push(p); p = []; verbed = false; }
+      // after an object relative's verb, a second verb straight after it is the next predicate too
+      const next = gap && isContent(t) && isContent(p[p.length - 1]);
+      if (verbed && (next || has(t, "aux") || has(t, "modal") || has(t, "cop") || has(t, "hav"))){ preds.push(p); p = []; verbed = false; }
       p.push(t);
       if (isContent(t)) verbed = true;
     }
@@ -1097,7 +1117,7 @@ function clausesOf(L){
   let cur = { idx:[], inherit:false };
   L.forEach((lab, i) => {
     if (lab === "L" || lab === "C"){ if (cur.idx.length) out.push(cur); cur = { idx:[], inherit:lab === "C" }; }
-    else cur.idx.push(i);
+    else if (lab !== "A") cur.idx.push(i);
   });
   if (cur.idx.length) out.push(cur);
   return out;
@@ -1105,10 +1125,11 @@ function clausesOf(L){
 /* Each V takes the nounish segment on its left as subject and the one on its
  * right as object: N1 V1 N2 V2 N3 is (N1 V1 N2) and (N2 V2 N3). A V with no
  * subject has an unstated one, `-`, and forms a mention, never a belief.
- * Three things bend the chain (TTG-RFC-0005 §3): a relative clause closes at
- * the next verb, which goes back to its antecedent; a stance verb takes the
- * clause after it rather than its first thing; and what a stance verb takes,
- * or an alternative word joins, is held — said, never believed.           */
+ * Clauses open inside the chain (TTG-RFC-0005 §3): a relative, whose verb takes
+ * its antecedent as subject — or, after a thing of its own, as object — and
+ * which closes at the next verb, back to where it hangs; and the clause a
+ * stance verb takes instead of its first thing. What a stance verb takes, or
+ * an alternative word joins, is held — said, never believed.               */
 function readClause(S, T, L, idx, ctx, inherited, hold){
   const G = S.G, R = G.roles;
   const out = { percepts:[], forms:[], heads:[], pairs:[], subjects:null, open:false };
@@ -1118,15 +1139,15 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
     if (L[i] === "R"){ rel = true; continue; }
     if (L[i] !== "N" && L[i] !== "V") continue;
     const last = runs[runs.length - 1];
-    if (last && last.cls === L[i]) last.toks.push(T[i]);
-    else { runs.push({ cls:L[i], toks:[T[i]], rel:rel && L[i] === "V" }); rel = false; }
+    if (last && last.cls === L[i] && !rel) last.toks.push(T[i]);
+    else { runs.push({ cls:L[i], toks:[T[i]], rel:rel && L[i] === "V", orel:rel && L[i] === "N" }); rel = false; }
   }
   const thing = h => { if (h.form) out.forms.push(["thing", h.lemma, h.form]); };
   const firstV = runs.findIndex(r => r.cls === "V");
   runs.forEach((r, k) => {
     r.alt = r.toks.some(t => has(t, "alt"));        // cats or dogs, fly or swim: one of them, not each
     if (r.cls === "V"){
-      r.items = verbItems(S, r.toks);
+      r.items = verbItems(S, r.toks, k > 0 && runs[k - 1].orel);
       r.stance = r.items.some(ps => G.stance.has(ps[ps.length - 1].head));
       return;
     }
@@ -1144,31 +1165,73 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
     return out;
   }
   const isClass = o => o.np.det || o.np.quant !== "-" || o.h.changed || S.believers.has(o.h.lemma);
-  const polOf = (P, s, o) => P.neg || s.none || s.neg || (o && o.np.neg) ? "-" : "+";
-  // a stance verb before a thing and a verb takes a clause, not the thing: I doubt [cats like fish]
-  runs.forEach((r, k) => { r.takes = !!r.stance && !!runs[k + 1] && runs[k + 1].cls === "N" && !!runs[k + 2] && runs[k + 2].cls === "V"; });
-  const heldAfter = runs.findIndex(r => r.takes);
-  // a relative clause closes at the next verb, which goes back to the antecedent:
-  // cats that chase mice are fast is about cats, however deep the relatives nest
-  const subjectRun = k => {
-    let j = k - 1;
-    if (!runs[k].rel) while (j >= 2 && runs[j].cls === "N" && runs[j - 1].rel && !runs[j - 1].takes && runs[j - 2].cls === "N") j -= 2;
-    return runs[j];
-  };
-  let firstObjects = null;
+  // the walk: a stack of open clauses — the sentence's own, a relative's, a stance's —
+  // each remembering its last thing (the next verb's subject) and its last verb
+  const pos = r => runs.indexOf(r);
+  const open = (kind, parent, last, extra) => ({ kind, parent, last, lastV:null, ...extra });
+  // a stance verb with only its first thing after it, so far: a verb now makes that thing a clause's subject
+  const takesNow = f => !!f.lastV && f.lastV.stance && !f.lastV.takes && !!f.last && pos(f.last) === pos(f.lastV) + 1;
+  const outerRel = f => { let o = null; for (let x = f; x; x = x.parent) if (x.kind === "rel") o = x; return o; };
+  const comp = f => { f.lastV.takes = true; return open("comp", f, f.last); };
+  let top = open("main", null, null);
+  const acts = [];
   runs.forEach((r, k) => {
-    if (r.cls !== "V") return;
-    const left = subjectRun(k), right = runs[k + 1];
-    let subjects = left && left.cls === "N" ? left.members.map(m => ({ lemma:m.h.lemma, self:m.h.self, quant:m.np.quant, none:m.np.none, neg:m.np.neg, alt:left.alt })) : [];
-    if (!subjects.length && k === firstV && inherited) subjects = inherited;
+    if (r.cls === "N"){
+      // told the man that [the cat] sleeps: after a stance verb's thing the relative word opens its clause,
+      // and the stance keeps its thing; the dog that [the cat] chased: a relative with a subject of its own
+      if (r.orel && takesNow(top)) top = open("comp", top, r);
+      else if (r.orel) top = open("rel", top, r, { gap:top.last, sure:!top.lastV, on:takesNow(top) ? top.lastV : null });
+      else top.last = r;
+      return;
+    }
+    const slots = Math.max(...r.items.map(ps => ps.length));
+    let subj = null;
+    for (let pi = 0; pi < slots; pi++){
+      let gap = null;
+      if (pi === 0 && r.rel){ top = open("rel", top, top.last, { on:takesNow(top) ? top.lastV : null }); subj = top.last; }
+      else if (pi === 0 && top.gap && !top.lastV){ subj = top.last; gap = top; }
+      else if (pi === 0 && takesNow(top) && runs[k - 1] === top.last){ top = comp(top); subj = top.last; }
+      else if (top.lastV && outerRel(top)){
+        // a verb after a relative's own closes it, and any it holds, back to what the outermost hangs from:
+        // cats that chase mice are fast; the man that says cats bark is tall
+        top = outerRel(top).parent;
+        if (takesNow(top)) top = comp(top);
+        subj = top.last;
+      } else if (pi === 0) subj = top.last;
+      acts.push({ r, k, pi, frame:top, subj, gap });
+      top.lastV = r;
+    }
+  });
+  // held: inside a stance's clause, or a relative hanging from a stance's thing that became one
+  const heldIn = f => !!f && (f.kind === "comp" || !!(f.on && f.on.takes) || heldIn(f.parent));
+  const membersOf = run => run ? run.members.map(m => ({ lemma:m.h.lemma, self:m.h.self, quant:m.np.quant, none:m.np.none, neg:m.np.neg, alt:run.alt })) : [];
+  let firstObjects = null;
+  for (const a of acts){
+    const { r, k, pi } = a, right = runs[k + 1] && runs[k + 1].cls === "N" ? runs[k + 1] : null;
+    let subjects = membersOf(a.subj);
+    if (!subjects.length && a === acts[0] && inherited) subjects = inherited;
     if (!subjects.length) subjects = [{ lemma:"-", quant:"-" }];
-    const objects = right && right.cls === "N" && !r.takes ? right.members : [];
-    const held = hold || r.alt || (heldAfter >= 0 && k > heldAfter);
+    const objects = right && !r.takes ? right.members : [];
+    const held = hold || heldIn(a.frame);
     if (!out.subjects){ out.subjects = subjects; firstObjects = objects; }
-    for (const preds of r.items) preds.forEach((P, pi) => {
-      const os = pi === preds.length - 1 ? objects : [];
+    // not (a or b) is neither: a denied alternative of objects or verbs is a denial of each
+    const negAll = r.alt && r.items.some(ps => ps[0] && ps[0].neg);
+    for (const preds of r.items){
+      const P = preds[pi];
+      if (!P) continue;
+      let os = pi === preds.length - 1 ? objects : [], from = right;
+      // the gap is the antecedent: always before the sentence's own verb (the dog that the cat chased ran),
+      // after it only for a verb the owner's words already give an object — else the relative word may
+      // begin a reported clause (I emailed the man that the cat sleeps)
+      const takesThings = P.kind === "hav" || (S.byVector.get(P.vector) || []).some(e => e.o !== "-");
+      if (!os.length && a.gap && (P.kind === "verb" || P.kind === "hav") && (a.gap.sure || takesThings)){ os = a.gap.gap.members; from = a.gap.gap; }
+      const neg = P.neg || negAll;
       for (const s of subjects){
-        const pol = o => held || s.alt || (o && right.alt) ? "?" : polOf(P, s, o);
+        const pol = o => {
+          const alt = !!(o && from && from.alt) || r.alt, denied = neg && alt && !s.alt;
+          if (held || ((alt || s.alt) && !denied)) return "?";
+          return neg || s.none || s.neg || (o && o.np.neg) ? "-" : "+";
+        };
         if (os.length){
           for (const o of os){
             const v = P.kind === "cop" ? (isClass(o) ? R.class_of : R.property) : P.vector;
@@ -1177,8 +1240,8 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
         } else if (P.kind === "verb" && P.vector) out.percepts.push({ s:s.lemma, v:P.vector, o:"-", pol:pol(null), q:s.quant });
       }
       if (P.kind === "verb" && P.vector) out.forms.push(["vector", P.vector, P.vform]);
-    });
-  });
+    }
+  }
   const end = runs[runs.length - 1];
   out.open = !!end && end.cls === "V" && !!end.stance;     // I wonder | if cats bark
   // prepositional phrases are mentioned beside the first thing of their segment, or the subject
@@ -1201,7 +1264,8 @@ function clausePercepts(S, toks, ctx, inherited){
   for (const cl of clausesOf(labels)){
     // clauses either side of an alternative word are held, and so is the clause after a
     // subord when the clause before ends on a stance verb: "I wonder if cats bark"
-    const at = toks[cl.idx[0] - 1], next = toks[cl.idx[cl.idx.length - 1] + 1];
+    const near = (i, d) => { while (labels[i] === "A") i += d; return toks[i]; };
+    const at = near(cl.idx[0] - 1, -1), next = near(cl.idx[cl.idx.length - 1] + 1, 1);
     const hold = has(at, "alt") || has(next, "alt") || (open && has(at, "subord"));
     const r = readClause(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold);
     first = false; open = r.open;
@@ -1211,15 +1275,17 @@ function clausePercepts(S, toks, ctx, inherited){
   return out;
 }
 /* The shape of a sentence as the store writes it: nounish segments inside the
- * lexicon's nounish marks, verbish inside its verbish marks, links bare. It
- * reads back to the same segments, so it is how the owner overrules them.  */
-const shapeItems = (toks, labels) => toks.map((t, i) => ({ w:t.w, cls:labels[i] === "N" || labels[i] === "V" ? labels[i] : "" }));
+ * lexicon's nounish marks, verbish inside its verbish marks, asides inside its
+ * aside marks, links bare. It reads back to the same segments, so it is how
+ * the owner overrules them.                                                */
+const SEGS = ["N", "V", "A"];
+const shapeItems = (toks, labels) => toks.map((t, i) => ({ w:t.w, cls:SEGS.includes(labels[i]) ? labels[i] : "" }));
 function shapeText(S, items){
   const M = S.G.marks;
   if (!M.N || !M.V) return "";
   let out = "", open = "";
   for (const it of items){
-    const c = it.cls === "N" || it.cls === "V" ? it.cls : "";
+    const c = SEGS.includes(it.cls) && M[it.cls] ? it.cls : "";
     const gap = out && /[\p{L}\p{N}]/u.test(it.w) ? " " : "";
     if (c !== open && open){ out += M[open][1]; open = ""; }
     if (c && c !== open){ out += gap + M[c][0] + it.w; open = c; }
@@ -2428,7 +2494,7 @@ function rowHtml(id){
     html += `<button type="button" class="${cls}" data-row="${id}" data-t="${i}" aria-pressed="${on(i)}">${esc(it.w)}</button>`;
   });
   if (open) html += "</span>";
-  const tools = sel ? [["N", pv.nounish], ["V", pv.verbish], ["J", pv.join]]
+  const tools = sel ? [["N", pv.nounish], ["V", pv.verbish], ["A", pv.aside], ["J", pv.join]]
     .map(([op, label]) => `<button type="button" data-row="${id}" data-op="${op}">${esc(label || op)}</button>`).join("") : "";
   const keep = row.ep && row.shape !== row.orig ? `<button type="button" class="primary" data-row="${id}" data-op="K">${esc(pv.keep || "")}</button>` : "";
   const mark = row.amended ? `<span class="mk" title="${esc(pv.amended || "")}">✎</span>` : "";
