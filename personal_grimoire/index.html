@@ -104,9 +104,23 @@ button.primary:hover{color:var(--bg);box-shadow:0 0 18px rgb(var(--glow) / .55)}
 .note{clear:left;margin-top:8px;padding:7px 10px;border-left:3px solid var(--warn);background:var(--bg);font-size:.85rem;color:var(--dim)}
 .purchase{clear:left;margin-top:8px;font-size:.78rem;color:var(--dim);display:flex;flex-wrap:wrap;gap:4px;align-items:center}
 form{border-top:1px solid var(--line);padding:10px 12px 12px}
-#preview{min-height:1.6em;font-size:.82rem;margin-bottom:6px;display:flex;flex-wrap:wrap;gap:3px 5px;align-items:center}
-#preview .fn{color:var(--dim)}
-#preview .t{color:var(--thing);font-variant:small-caps} #preview .v{color:var(--vector);font-style:italic} #preview .u{text-decoration:underline dotted var(--dead)}
+#preview{min-height:1.6em;margin-bottom:6px;display:flex;flex-direction:column;gap:2px}
+/* a reading: nounish segments boxed as things, verbish as vectors, links bare */
+.shape{display:flex;flex-wrap:wrap;gap:3px 4px;align-items:center;font-size:.82rem;margin-top:4px}
+.shape .seg{display:inline-flex;flex-wrap:wrap;align-items:center;padding:0 2px;border:1px solid currentColor;border-radius:2px}
+.shape .seg.N{color:var(--thing);font-variant:small-caps;letter-spacing:.015em}
+.shape .seg.V{color:var(--vector);border-style:dashed;font-style:italic}
+.shape .tok{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;border-radius:1px;padding:0 2px;cursor:pointer;text-shadow:inherit;line-height:1.5}
+.shape .tok:hover{color:var(--accent);box-shadow:none}
+.shape .tok.lk{color:var(--dim)}
+.shape .tok.u{text-decoration:underline dotted var(--dead)}
+.shape .tok.sel{background:var(--accent);color:var(--bg);text-shadow:none}
+.shape .mk{color:var(--warn);margin-right:2px}
+.shape .tools{display:inline-flex;flex-wrap:wrap;gap:4px;margin-left:4px}
+.shape .tools button{padding:0 8px;font-size:.72rem}
+/* under a reply a reading takes a margin sigil like the grounds do: the sentence, as read */
+.turn-a>.shape{position:relative;padding-left:1.5em}
+.turn-a>.shape::before{content:"\00B6";position:absolute;left:0;width:1.15em;text-align:center;color:var(--dim)}
 #mode{margin-left:auto;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
 textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:2px;
   padding:9px 10px;resize:vertical;min-height:62px;caret-color:var(--accent);caret-shape:block;text-shadow:inherit}
@@ -229,7 +243,8 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
   <section class="card">
     <div id="log" aria-live="polite" data-quota="The browser refused to save the store (storage is full or blocked). Download it to keep what was added."></div>
     <form id="askform" autocomplete="off">
-      <div id="preview" aria-hidden="true"></div>
+      <div id="preview" data-nounish="thing" data-verbish="vector" data-join="one term / split" data-keep="keep this reading"
+        data-amended="read as you marked it"></div>
       <textarea id="q" rows="2" placeholder="Tell it something, or ask it something. Drop .md or .txt files here to feed them in."></textarea>
       <div class="row">
         <button type="submit" class="primary">Send</button>
@@ -270,7 +285,8 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
   <a href="README.md">README</a> ·
   <a href="RFCs/INDEX.md">RFCs</a> ·
   <a href="https://antfriend.github.io">Reference TTDB viewer</a><br>
-  Enter sends, Shift+Enter starts a new line. Drag the sphere to turn it; tap a node to open its record.
+  Enter sends, Shift+Enter starts a new line. Tap a word in a reading, shift-tap to extend, then mark it a thing,
+  a vector or one term. Drag the sphere to turn it; tap a node to open its record.
   The page chrome is English; the grammar is whatever the store says it is.
 </footer>
 </div>
@@ -380,6 +396,7 @@ function parseRecord(raw){
   r.title = t ? t[1].trim() : r.id;
   r.term = fence(rest, "ttdb-term");
   r.episode = fence(rest, "ttdb-episode");
+  r.amend = fence(rest, "ttdb-amend");
   r.special = fence(rest, "ttdb-special");
   r.sphere = fence(rest, "ttdb-sphere");
   r.grammar = fence(rest, "ttdb-grammar");
@@ -462,7 +479,7 @@ function loadGrammar(st, lang){
                   .sort((a, z) => (a.lang === want) - (z.lang === want));
   const G = {
     lang:want, classes:new Map(), whole:new Map(), contractions:[], sentenceEnd:new Set(), clauseBreak:new Set(),
-    questionMark:"", listSep:"", genericDet:new Set(),
+    questionMark:"", listSep:"", genericDet:new Set(), marks:{},
     nounIrr:new Map(), nounKeep:new Set(), plural:[], pluralGuard:[], verbIrr:new Map(), verb:[], verbGuard:[],
     doubleKeep:new Set(), minStem:NaN, seed:new Set(), progressive:[], participle:[],
     roles:{}, vectors:new Map(), inherits:[], phrases:[],
@@ -489,6 +506,11 @@ function loadGrammar(st, lang){
       G.questionMark = (b.question_mark || "").trim();
       G.listSep = (b.list_sep || "").trim();
       for (const w of words(b.generic_det)) G.genericDet.add(w);
+      // the owner's own brackets: an open and a close character for each kind of segment
+      for (const [cls, key] of [["N", "nounish_marks"], ["V", "verbish_marks"]]){
+        const m = words(b[key]);
+        if (m.length === 2){ G.marks[m[0]] = { cls, open:true }; G.marks[m[1]] = { cls, open:false }; G.marks[cls] = m; }
+      }
     } else if (b.kind === "morphology"){
       for (const line of many(b, "noun_irregular")){ const c = cols(line); for (const w of words(c[0])) G.nounIrr.set(w, c[1]); }
       for (const w of words(b.noun_keep)) G.nounKeep.add(w);
@@ -621,14 +643,26 @@ function sentencesOf(S, text, isFile){
 }
 const EMPTY = new Set();
 const SLOT = "\u0000";                 // the hole a question asks the corpus to fill
+const reEsc = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+/* Tokens (TTG-RFC-0002 §2). Two things the owner can write reach past the
+ * grammar (TTG-RFC-0005 §4): the lexicon's marks, which force every token
+ * between them nounish or verbish, and the phrasal join between two words,
+ * which binds them into one token and so one term. A run of unmarked words
+ * that already names a term the corpus holds is bound the same way; inside
+ * marks the owner's reading stands, and only an explicit join binds.      */
 function tokenize(S, sentence){
-  const G = S.G, out = [];
-  const push = w => { if (w) out.push({ w, cls:G.classes.get(w) || EMPTY, punct:false }); };
+  const G = S.G, J = G.roles.phrasal_join, out = [];
+  let force = "";
+  const tok = (w, cls, punct) => force ? { w, cls, punct, force } : { w, cls, punct };
+  const push = w => { if (w) out.push(tok(w, G.classes.get(w) || EMPTY, false)); };
   const s = String(sentence).toLowerCase().replace(/[‘’ʼ]/g, "'");
-  for (const m of s.matchAll(/[\p{L}\p{N}]+(?:'[\p{L}\p{N}]+)*|[^\s\p{L}\p{N}]/gu)){
+  const re = new RegExp("[\\p{L}\\p{N}]+(?:(?:'" + (J ? "|" + reEsc(J) : "") + ")[\\p{L}\\p{N}]+)*|[^\\s\\p{L}\\p{N}]", "gu");
+  for (const m of s.matchAll(re)){
     const w = m[0];
     if (!/[\p{L}\p{N}]/u.test(w)){
-      if (w === G.listSep || G.clauseBreak.has(w) || G.sentenceEnd.has(w)) out.push({ w, cls:EMPTY, punct:true });
+      const mk = G.marks[w];
+      if (mk && w.length === 1){ force = mk.open ? mk.cls : ""; continue; }
+      if (w === G.listSep || G.clauseBreak.has(w) || G.sentenceEnd.has(w)) out.push(tok(w, EMPTY, true));
       continue;
     }
     if (G.whole.has(w)){ G.whole.get(w).forEach(push); continue; }
@@ -636,7 +670,32 @@ function tokenize(S, sentence){
     if (c){ push(w.slice(0, w.length - c[0].length)); c[1].forEach(push); continue; }
     push(w);
   }
+  return bindKnown(S, out);
+}
+function bindKnown(S, toks){
+  const J = S.G.roles.phrasal_join, max = S.G.num.phrase_max_words;
+  if (!J || !(max >= 2)) return toks;
+  const out = [];
+  for (let i = 0; i < toks.length; ){
+    let hit = 0;
+    for (let n = Math.min(max, toks.length - i); n >= 2 && !hit; n--){
+      const run = toks.slice(i, i + n);
+      if (!run.every(t => isContent(t) && !t.synthetic && !t.force)) continue;
+      const w = run.map(t => t.w).join(J);
+      if (S.things.has(nounLemma(S, w).lemma) || S.vectors.has(w)) hit = n;
+    }
+    if (hit){ out.push({ ...toks[i], w:toks.slice(i, i + hit).map(t => t.w).join(J) }); i += hit; }
+    else out.push(toks[i++]);
+  }
   return out;
+}
+/* The owner's words as said: marks dropped, a join between words read as a space. */
+function unmark(G, s){
+  let t = String(s);
+  for (const cls of ["N", "V"]) for (const c of G.marks[cls] || []) t = t.split(c).join("");
+  const J = G.roles.phrasal_join;
+  if (J) t = t.replace(new RegExp("(?<=[\\p{L}\\p{N}])" + reEsc(J) + "(?=[\\p{L}\\p{N}])", "gu"), " ");
+  return t.replace(/\s+/g, " ").trim();
 }
 const synth = w => ({ w, cls:EMPTY, punct:false, synthetic:true });
 const has = (t, cls) => !!t && !t.punct && t.cls.has(cls);
@@ -694,12 +753,13 @@ function isVerbish(S, t){
 /* ---------- classify: noun phrases and the predicate ---------------- */
 function nounPhrases(S, toks, from, to){
   const nps = [];
-  let np = null, prep = null;
-  const open = i => { const o = { start:i, end:i, words:[], prep, det:false, quant:"-", none:false, pron:null }; prep = null; return o; };
+  let np = null, prep = null, neg = false;
+  const open = i => { const o = { start:i, end:i, words:[], prep, det:false, quant:"-", none:false, pron:null, neg }; prep = null; neg = false; return o; };
   const close = () => { if (np && np.words.length) nps.push(np); np = null; };
   for (let i = from; i < Math.min(to, toks.length); i++){
     const t = toks[i];
     if (t.punct){ close(); continue; }
+    if (has(t, "neg") && !starts(t)){ close(); neg = true; continue; }   // "but not dogs": the denial is the member's
     if (has(t, "prep")){ close(); prep = t.w; continue; }
     if (starts(t)){
       if (np && np.words.length) close();
@@ -792,160 +852,353 @@ function findPredicate(S, toks){
   return null;
 }
 
-/* ---------- percept: one clause (TTG-RFC-0002 §4) ------------------- */
+/* ---------- shape: nounish and verbish segments (TTG-RFC-0005 §2) ----- *
+ * Every token of a sentence is labelled N (nounish) or V (verbish), or is a
+ * link between segments: L ends a clause, C starts a clause that inherits
+ * the subject ("…and eat cheese"), R is a relative word joining a nounish
+ * segment to the verbish one after it ("mice that eat"). A clause is then
+ * any alternating run of N and V segments — N, V, N V, V N, N V N V N … —
+ * and two segments of one kind side by side are one segment.             */
+const soft = t => has(t, "neg") || has(t, "adverb");
+const isMention = p => p.s === "-" || p.v === "-";
+const vStartTok = (S, t) => !!t && !t.punct && (t.force ? t.force === "V" :
+  has(t, "aux") || has(t, "modal") || has(t, "cop") || has(t, "hav") || isVerbish(S, t));
+const nStartTok = t => !!t && !t.punct && (t.force ? t.force === "N" :
+  starts(t) || has(t, "self") || has(t, "anaphor") || isContent(t));
+function startsWithSubject(S, toks){
+  const t = toks[skipSoft(toks, 0)];
+  if (!t) return false;
+  if (t.force) return t.force === "N";
+  if (starts(t) || has(t, "self") || has(t, "anaphor")) return true;
+  return isContent(t) && !isVerbish(S, t);
+}
+function labelTokens(S, T){
+  const G = S.G, L = T.map(t => t.force || "");
+  for (let i = 0; i < T.length; i++){
+    const t = T[i];
+    if (!t.force && ((t.punct && t.w !== G.listSep) || has(t, "subord") || has(t, "filler"))) L[i] = "L";
+  }
+  // a conj splits a part only when both sides are clauses of their own (TTG-RFC-0002 §2)
+  const hasPred = side => side.some(t => t.force === "V") || !!findPredicate(S, side);
+  const clauses = [];
+  for (let i = 0, a = 0; i <= T.length; i++){
+    if (i < T.length && L[i] !== "L") continue;
+    let start = a;
+    for (let k = a + 1; k < i - 1; k++){
+      if (!has(T[k], "conj") || T[k].force) continue;
+      const left = T.slice(start, k), right = T.slice(k + 1, i);
+      if (hasPred(left) && startsWithSubject(S, right) && hasPred(right)){ L[k] = "L"; clauses.push([start, k]); start = k + 1; }
+    }
+    if (i > start) clauses.push([start, i]);
+    a = i + 1;
+  }
+  for (const [a, b] of clauses) labelClause(S, T, L, a, b);
+  // a lone word the corpus knows only as a vector is verbish; any other lone word is nounish
+  const content = T.map((t, i) => isContent(t) ? i : -1).filter(i => i >= 0);
+  if (content.length === 1 && !L.includes("V")){
+    const t = T[content[0]];
+    if (!t.force && !t.synthetic && S.vectors.has(verbLemma(S, t.w).lemma) && !S.things.has(nounLemma(S, t.w).lemma)) L[content[0]] = "V";
+  }
+  return L;
+}
+/* The six predicate rules of TTG-RFC-0002 §3, applied left to right to every
+ * segment rather than once per clause. What keeps them honest is the
+ * alternation: a content word straight after a verbish segment is nounish,
+ * and a second verb in a clause needs a cue — a relative word before it, a
+ * conj, or a noun phrase after it — so "a good drink" stays a thing.       */
+function labelClause(S, T, L, a, b){
+  const G = S.G;
+  let prev = "", nBegun = false, vSeen = false, bareV = false, afterR = false;
+  const free = j => j < b && !T[j].force;
+  const hard = j => { while (j < b && !T[j].force && soft(T[j])) j++; return j; };
+  const setV = (i, j) => { for (let k = i; k < j; k++) if (!T[k].force) L[k] = "V"; prev = "V"; nBegun = false; vSeen = true; bareV = false; afterR = false; };
+  // a verb after an infinitive marker: one with a thing after it, or one the owner already uses as a verb
+  const verbWord = k => {
+    const t = T[k], n = T[hard(k + 1)];
+    return isContent(t) && !t.synthetic && isVerbish(S, t) && !S.things.has(nounLemma(S, t.w).lemma) &&
+      (S.vectors.has(verbLemma(S, t.w).lemma) || (hard(k + 1) < b && nStartTok(n) && !has(n, "prep")));
+  };
+  // after a verb: an infinitive marker before a verb carries it on (want to eat), and a
+  // preposition that opens a noun phrase joins it (live in -> live_in)
+  const tail = h => {
+    for (;;){
+      const j = hard(h + 1);
+      if (!free(j)) return h + 1;
+      const k = hard(j + 1);
+      if (has(T[j], "infinitive") && free(k) && verbWord(k)){ h = k; continue; }
+      if (has(T[j], "prep") && j + 1 < b && nStartTok(T[j + 1])) return j + 1;
+      return h + 1;
+    }
+  };
+  const copEnd = i => {
+    const j = hard(i + 1), n = T[j];
+    if (free(j) && isContent(n) && !n.synthetic && G.progressive.includes(verbLemma(S, n.w).end)) return tail(j);
+    let k = j;
+    while (free(k) && (has(T[k], "det") || has(T[k], "quant_all") || has(T[k], "quant_some"))) k++;
+    const ph = G.phrases.find(([ws]) => ws.length && ws.every((w, q) => free(k + q) && !T[k + q].punct && T[k + q].w === w));
+    if (ph) return k + ph[0].length;
+    if (free(j) && has(n, "prep")) return j + 1;
+    return i + 1;
+  };
+  const havEnd = h => {
+    const j = hard(h + 1), n = T[j];
+    if (free(j) && isContent(n) && !n.synthetic){
+      const v = verbLemma(S, n.w);
+      if (G.participle.includes(v.end) || (v.irregular && v.lemma !== n.w)) return tail(j);
+    }
+    return h + 1;
+  };
+  const afterStart = i => {
+    for (let k = i - 1; k >= a; k--){
+      if (L[k] === "R") return false;
+      if (has(T[k], "adverb")) continue;
+      return !T[k].punct && (starts(T[k]) || has(T[k], "prep"));
+    }
+    return false;
+  };
+  for (let i = a; i < b; ){
+    const t = T[i], j = hard(i + 1);
+    if (t.force){
+      L[i] = t.force;
+      if (t.force === "V"){ prev = "V"; nBegun = false; vSeen = true; }
+      else if (!soft(t)){ prev = "N"; if (isContent(t) || has(t, "self") || has(t, "anaphor")) nBegun = true; }
+      bareV = afterR = false; i++; continue;
+    }
+    if (soft(t)){ L[i] = "?"; i++; continue; }
+    if (has(t, "relative") && prev === "N" && j < b && vStartTok(S, T[j])){ L[i] = "R"; afterR = true; i++; continue; }
+    if (has(t, "conj") || (t.punct && t.w === G.listSep)){
+      if (prev === "V" && j < b && vStartTok(S, T[j])){ L[i] = "V"; bareV = true; i++; continue; }        // fly and swim
+      if (prev === "N" && has(t, "conj") && j < b && vStartTok(S, T[j])){                               // …and eat cheese
+        L[i] = "C"; prev = ""; nBegun = vSeen = false; bareV = true; i++; continue;
+      }
+      L[i] = prev ? "N" : "L"; if (prev) prev = "N"; i++; continue;                                      // cats and dogs
+    }
+    if (has(t, "aux") || has(t, "modal")){
+      const n = T[j];
+      const e = free(j) && has(n, "cop") ? copEnd(j) : free(j) && has(n, "hav") ? havEnd(j)
+        : free(j) && isContent(n) && !n.synthetic ? tail(j) : i + 1;
+      setV(i, e); i = e; continue;
+    }
+    if (has(t, "cop")){ const e = copEnd(i); setV(i, e); i = e; continue; }
+    if (has(t, "hav")){ const e = havEnd(i); setV(i, e); i = e; continue; }
+    if (has(t, "infinitive") && prev === "N" && free(j) && verbWord(j)){ const e = tail(j); setV(i, e); i = e; continue; }
+    if (isContent(t) && !t.synthetic && (nBegun || bareV) && !afterStart(i)){
+      const later = vSeen && !bareV && !afterR;
+      const cued = !bareV && nBegun && i + 1 < b && starts(T[i + 1]);
+      const known = isVerbish(S, t) && (!later || (j < b && nStartTok(T[j]) && !has(T[j], "prep")));
+      const shaped = !bareV && nBegun && !vSeen && G.participle.includes(verbLemma(S, t.w).end);
+      if (known || cued || shaped){ const e = tail(i); setV(i, e); i = e; continue; }
+    }
+    L[i] = "N"; prev = "N"; bareV = afterR = false;
+    if (isContent(t) || has(t, "self") || has(t, "anaphor")) nBegun = true;
+    i++;
+  }
+  // nothing structural at all: three bare content words are S V O. Two are not a
+  // clause — "morning tea" is a search, not a claim that mornings tea.
+  if (!L.slice(a, b).includes("V")){
+    const idx = [];
+    let structural = false;
+    for (let k = a; k < b; k++){ if (isContent(T[k])) idx.push(k); else if (!T[k].punct && !soft(T[k])) structural = true; }
+    if (!structural && idx.length === 3 && !T[idx[1]].synthetic && !T[idx[1]].force) L[idx[1]] = "V";
+  }
+  // a soft word belongs to the verb beside it, else to the thing after it
+  for (let k = a; k < b; k++){
+    if (L[k] !== "?") continue;
+    let n = k + 1; while (n < b && L[n] === "?") n++;
+    L[k] = (n < b && L[n] === "V") || (k > a && L[k - 1] === "V") ? "V" : "N";
+  }
+}
+
+/* ---------- percept: a clause read as a chain (TTG-RFC-0005 §3) ------- */
 function plainRun(nps, from){
   const out = [];
   let k = from;
   for (; k < nps.length && (k === from || !nps[k].prep); k++) out.push(nps[k]);
   return { run:out, rest:nps.slice(k) };
 }
-function clausePercepts(S, toks, ctx, inherited){
-  const G = S.G, R = G.roles;
-  const out = { percepts:[], forms:[], heads:[], pairs:[] };
-  const P = findPredicate(S, toks);
-  const allHeads = () => nounPhrases(S, toks, 0, toks.length).map(np => headOf(S, np, ctx)).filter(Boolean);
-  if (!P){
-    for (const h of allHeads()){ out.heads.push(h.lemma); if (h.form) out.forms.push(["thing", h.lemma, h.form]); }
-    return out;
-  }
-  const pre = nounPhrases(S, toks, 0, P.cue);
-  let subjects = [], quant = "-", none = false;
-  for (const np of pre){
-    if (np.prep) continue;
-    const h = headOf(S, np, ctx);
-    if (!h) continue;
-    subjects.push(h);
-    if (np.quant !== "-") quant = np.quant;
-    if (np.none) none = true;
-  }
-  if (!subjects.length && inherited){ subjects = inherited.subjects; quant = inherited.quant; none = inherited.none; }
-  const ppPre = pre.filter(np => np.prep).map(np => headOf(S, np, ctx)).filter(Boolean);
-  if (!subjects.length){
-    for (const h of allHeads()){ out.heads.push(h.lemma); if (h.form) out.forms.push(["thing", h.lemma, h.form]); }
-    return out;
-  }
-  const pol = toks.some(t => has(t, "neg")) || none ? "-" : "+";
-
-  // a second verb for the same subjects: "birds fly and swim"
-  let end = toks.length, extra = null;
-  for (let i = P.at + 1; i < toks.length; i++){
-    if (!has(toks[i], "conj")) continue;
-    const n = toks[skipSoft(toks, i + 1)];
-    if (has(n, "aux") || has(n, "modal") || isVerbish(S, n)){ end = i; extra = [synth("")].concat(toks.slice(i + 1)); break; }
-  }
-
-  const objects = [];                  // [{ head, vector }]
-  let vector = null, vform = null, rest = [];
-  const j = skipSoft(toks, P.at + 1);
-  if (P.kind === "verb" || P.kind === "hav"){
-    const vt = toks[P.at];
-    if (P.kind === "verb"){ vector = verbLemma(S, vt.w).lemma; vform = vt.w; }
-    else vector = R.possession;
-    const nps = nounPhrases(S, toks, P.at + 1, end);
-    // a preposition straight after the verb joins it: live in houses -> live_in | house
-    const phrasal = P.kind === "verb" && has(toks[j], "prep") && nps.length > 0 && nps[0].prep === toks[j].w;
-    if (phrasal){
-      vector = vector + (R.phrasal_join || "") + nps[0].prep;
-      vform = vform + (R.phrasal_join || "") + nps[0].prep;
+/* A verbish segment is a list of items (fly and swim), each a sequence of
+ * predicates (hunt, are). A predicate is named by a declared phrase, a
+ * copula's preposition, the copula itself, possession, or else its verbs
+ * and particles joined: live_in, want_to_eat.                             */
+function predOf(S, toks){
+  const G = S.G, R = G.roles, J = R.phrasal_join || "";
+  const neg = toks.some(t => has(t, "neg"));
+  const core = toks.filter(t => !soft(t) && !has(t, "aux") && !has(t, "modal") && !t.punct);
+  let i = 0;
+  while (i < core.length && has(core[i], "infinitive") && !isContent(core[i])) i++;
+  const h = core[i];
+  const verbFrom = k => {
+    const parts = [], forms = [];
+    for (const t of core.slice(k)){
+      if (isContent(t)){ parts.push(t.synthetic ? t.w : verbLemma(S, t.w).lemma); forms.push(t.w); }
+      else if (has(t, "prep") || has(t, "infinitive")){ parts.push(t.w); forms.push(t.w); }
     }
-    const lead = phrasal || !nps.length || !nps[0].prep ? plainRun(nps, 0) : { run:[], rest:nps };
-    rest = lead.rest;
-    for (const np of lead.run){ const h = headOf(S, np, ctx); if (h) objects.push({ head:h, vector }); }
-  } else {
-    let k = j;
-    while (k < toks.length && (has(toks[k], "det") || has(toks[k], "quant_all") || has(toks[k], "quant_some"))) k++;
-    const ph = G.phrases.find(([ws]) => ws.length && ws.every((w, q) => toks[k + q] && !toks[k + q].punct && toks[k + q].w === w));
-    if (ph){
-      const pr = plainRun(nounPhrases(S, toks, k + ph[0].length, end), 0);
-      rest = pr.rest;
-      for (const np of pr.run){ const h = headOf(S, np, ctx); if (h) objects.push({ head:h, vector:ph[1] }); }
-    } else if (has(toks[j], "prep")){
-      const pr = plainRun(nounPhrases(S, toks, j, end), 0);
-      rest = pr.rest;
-      for (const np of pr.run){ const h = headOf(S, np, ctx); if (h) objects.push({ head:h, vector:toks[j].w }); }
-    } else {
-      const pr = plainRun(nounPhrases(S, toks, j, end), 0);
-      rest = pr.rest;
-      for (const np of pr.run){
-        const h = headOf(S, np, ctx);
-        if (!h) continue;
-        const isClass = np.det || np.quant !== "-" || h.changed || S.believers.has(h.lemma);
-        objects.push({ head:h, vector:isClass ? R.class_of : R.property });
-      }
+    return { kind:"verb", vector:parts.join(J), vform:forms.join(J), neg };
+  };
+  if (!h) return { kind:"", neg };
+  if (has(h, "cop")){
+    const n = core[i + 1];
+    if (n && isContent(n) && !n.synthetic && G.progressive.includes(verbLemma(S, n.w).end)) return verbFrom(i + 1);
+    let m = i + 1;
+    while (m < core.length && (has(core[m], "det") || has(core[m], "quant_all") || has(core[m], "quant_some"))) m++;
+    const ph = G.phrases.find(([ws]) => ws.length && ws.length === core.length - m && ws.every((w, q) => core[m + q].w === w));
+    if (ph) return { kind:"phrase", vector:ph[1], neg };
+    if (n && has(n, "prep")) return { kind:"prep", vector:n.w, neg };
+    return { kind:"cop", neg };
+  }
+  if (has(h, "hav")){
+    const n = core[i + 1];
+    if (n && isContent(n) && !n.synthetic){
+      const v = verbLemma(S, n.w);
+      if (G.participle.includes(v.end) || (v.irregular && v.lemma !== n.w)) return verbFrom(i + 1);
     }
+    return { kind:"hav", vector:R.possession, neg };
   }
-
-  for (const s of subjects){
-    if (s.form) out.forms.push(["thing", s.lemma, s.form]);
-    if (objects.length){
-      for (const o of objects){
-        if (!o.vector) continue;
-        out.percepts.push({ s:s.lemma, v:o.vector, o:o.head.lemma, pol, q:quant });
-      }
-    } else if (P.kind === "verb" && vector){
-      out.percepts.push({ s:s.lemma, v:vector, o:"-", pol, q:quant });
-    }
-  }
-  for (const o of objects) if (o.head.form) out.forms.push(["thing", o.head.lemma, o.head.form]);
-  if (vform && vector) out.forms.push(["vector", vector, vform]);
-
-  const anchor = (objects[0] && objects[0].head.lemma) || subjects[0].lemma;
-  for (const np of rest){ const h = headOf(S, np, ctx); if (h){ out.pairs.push([anchor, h.lemma]); if (h.form) out.forms.push(["thing", h.lemma, h.form]); } }
-  for (const h of ppPre){ out.pairs.push([subjects[0].lemma, h.lemma]); if (h.form) out.forms.push(["thing", h.lemma, h.form]); }
-
-  const firstOwn = subjects.find(s => !s.self);
-  if (firstOwn && firstOwn.lemma !== SLOT) ctx.last = firstOwn.lemma;
-  else if (objects[0] && objects[0].head.lemma !== SLOT) ctx.last = objects[0].head.lemma;
-
-  if (extra){
-    const more = clausePercepts(S, extra, ctx, { subjects, quant, none });
-    out.percepts.push(...more.percepts); out.forms.push(...more.forms); out.pairs.push(...more.pairs);
-  }
-  return out;
+  if (isContent(h)) return verbFrom(i);
+  return { kind:"", neg };
 }
-function splitClauses(S, toks){
-  const parts = [];
+function verbItems(S, toks){
+  const items = [];
   let cur = [];
   for (const t of toks){
-    if ((t.punct && t.w !== S.G.listSep) || has(t, "subord")){ if (cur.length) parts.push(cur); cur = []; continue; }
+    if (has(t, "conj") || (t.punct && t.w === S.G.listSep)){ if (cur.length) items.push(cur); cur = []; continue; }
     cur.push(t);
   }
-  if (cur.length) parts.push(cur);
-  const out = [];
-  for (const p of parts){
-    let start = 0;
-    for (let i = start + 1; i < p.length - 1; i++){
-      if (!has(p[i], "conj")) continue;
-      const left = p.slice(start, i), right = p.slice(i + 1);
-      if (findPredicate(S, left) && startsWithSubject(S, right) && findPredicate(S, right)){ out.push(left); start = i + 1; }
+  if (cur.length) items.push(cur);
+  return items.map(it => {
+    const preds = [];
+    let p = [], verbed = false;
+    for (const t of it){
+      if (verbed && (has(t, "aux") || has(t, "modal") || has(t, "cop") || has(t, "hav"))){ preds.push(p); p = []; verbed = false; }
+      p.push(t);
+      if (isContent(t)) verbed = true;
     }
-    out.push(p.slice(start));
+    if (p.length) preds.push(p);
+    return preds.map(q => predOf(S, q));
+  });
+}
+function clausesOf(L){
+  const out = [];
+  let cur = { idx:[], inherit:false };
+  L.forEach((lab, i) => {
+    if (lab === "L" || lab === "C"){ if (cur.idx.length) out.push(cur); cur = { idx:[], inherit:lab === "C" }; }
+    else cur.idx.push(i);
+  });
+  if (cur.idx.length) out.push(cur);
+  return out;
+}
+/* Each V takes the nounish segment on its left as subject and the one on its
+ * right as object: N1 V1 N2 V2 N3 is (N1 V1 N2) and (N2 V2 N3). A V with no
+ * subject has an unstated one, `-`, and forms a mention, never a belief.   */
+function readClause(S, T, L, idx, ctx, inherited){
+  const G = S.G, R = G.roles;
+  const out = { percepts:[], forms:[], heads:[], pairs:[], subjects:null };
+  const runs = [];
+  for (const i of idx){
+    if (L[i] !== "N" && L[i] !== "V") continue;
+    const last = runs[runs.length - 1];
+    if (last && last.cls === L[i]) last.toks.push(T[i]); else runs.push({ cls:L[i], toks:[T[i]] });
+  }
+  const thing = h => { if (h.form) out.forms.push(["thing", h.lemma, h.form]); };
+  const firstV = runs.findIndex(r => r.cls === "V");
+  runs.forEach((r, k) => {
+    if (r.cls !== "N") return;
+    const nps = nounPhrases(S, r.toks, 0, r.toks.length);
+    let lead, rest;
+    if (firstV < 0 || k < firstV){ lead = nps.filter(np => !np.prep); rest = nps.filter(np => np.prep); }
+    else if (nps.length && nps[0].prep){ lead = []; rest = nps; }
+    else { const pr = plainRun(nps, 0); lead = pr.run; rest = pr.rest; }
+    r.all = nps.map(np => headOf(S, np, ctx)).filter(Boolean);
+    r.members = lead.map(np => ({ np, h:headOf(S, np, ctx) })).filter(m => m.h);
+    r.adjuncts = rest.map(np => headOf(S, np, ctx)).filter(Boolean);
+  });
+  if (firstV < 0){
+    for (const r of runs) for (const h of r.all){ out.heads.push(h.lemma); thing(h); }
+    return out;
+  }
+  const isClass = o => o.np.det || o.np.quant !== "-" || o.h.changed || S.believers.has(o.h.lemma);
+  const polOf = (P, s, o) => P.neg || s.none || s.neg || (o && o.np.neg) ? "-" : "+";
+  let firstObjects = null;
+  runs.forEach((r, k) => {
+    if (r.cls !== "V") return;
+    const left = runs[k - 1], right = runs[k + 1];
+    let subjects = left && left.cls === "N" ? left.members.map(m => ({ lemma:m.h.lemma, self:m.h.self, quant:m.np.quant, none:m.np.none, neg:m.np.neg })) : [];
+    if (!subjects.length && k === firstV && inherited) subjects = inherited;
+    if (!subjects.length) subjects = [{ lemma:"-", quant:"-" }];
+    const objects = right && right.cls === "N" ? right.members : [];
+    if (!out.subjects){ out.subjects = subjects; firstObjects = objects; }
+    for (const preds of verbItems(S, r.toks)) preds.forEach((P, pi) => {
+      const os = pi === preds.length - 1 ? objects : [];
+      for (const s of subjects){
+        if (os.length){
+          for (const o of os){
+            const v = P.kind === "cop" ? (isClass(o) ? R.class_of : R.property) : P.vector;
+            if (v) out.percepts.push({ s:s.lemma, v, o:o.h.lemma, pol:polOf(P, s, o), q:s.quant });
+          }
+        } else if (P.kind === "verb" && P.vector) out.percepts.push({ s:s.lemma, v:P.vector, o:"-", pol:polOf(P, s, null), q:s.quant });
+      }
+      if (P.kind === "verb" && P.vector) out.forms.push(["vector", P.vector, P.vform]);
+    });
+  });
+  // prepositional phrases are mentioned beside the first thing of their segment, or the subject
+  const subj0 = out.subjects[0].lemma !== "-" ? out.subjects[0].lemma : null;
+  for (const r of runs){
+    if (r.cls !== "N") continue;
+    for (const m of r.members) thing(m.h);
+    const anchor = r.members.length ? r.members[0].h.lemma : subj0;
+    for (const h of r.adjuncts){ if (anchor) out.pairs.push([anchor, h.lemma]); thing(h); }
+  }
+  const own = out.subjects.find(s => !s.self && s.lemma !== "-" && s.lemma !== SLOT);
+  if (own) ctx.last = own.lemma;
+  else if (firstObjects && firstObjects[0] && firstObjects[0].h.lemma !== SLOT) ctx.last = firstObjects[0].h.lemma;
+  return out;
+}
+function clausePercepts(S, toks, ctx, inherited){
+  const labels = labelTokens(S, toks);
+  const out = { percepts:[], forms:[], heads:[], pairs:[], labels };
+  let prev = inherited, first = true;
+  for (const cl of clausesOf(labels)){
+    const r = readClause(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null);
+    first = false;
+    out.percepts.push(...r.percepts); out.forms.push(...r.forms); out.heads.push(...r.heads); out.pairs.push(...r.pairs);
+    if (r.subjects && r.subjects[0].lemma !== "-") prev = r.subjects;
   }
   return out;
 }
-function startsWithSubject(S, toks){
-  const t = toks[skipSoft(toks, 0)];
-  if (!t) return false;
-  if (starts(t) || has(t, "self") || has(t, "anaphor")) return true;
-  return isContent(t) && !isVerbish(S, t);
+/* The shape of a sentence as the store writes it: nounish segments inside the
+ * lexicon's nounish marks, verbish inside its verbish marks, links bare. It
+ * reads back to the same segments, so it is how the owner overrules them.  */
+const shapeItems = (toks, labels) => toks.map((t, i) => ({ w:t.w, cls:labels[i] === "N" || labels[i] === "V" ? labels[i] : "" }));
+function shapeText(S, items){
+  const M = S.G.marks;
+  if (!M.N || !M.V) return "";
+  let out = "", open = "";
+  for (const it of items){
+    const c = it.cls === "N" || it.cls === "V" ? it.cls : "";
+    const gap = out && /[\p{L}\p{N}]/u.test(it.w) ? " " : "";
+    if (c !== open && open){ out += M[open][1]; open = ""; }
+    if (c && c !== open){ out += gap + M[c][0] + it.w; open = c; }
+    else out += gap + it.w;
+  }
+  return open ? out + M[open][1] : out;
 }
 /* One sentence -> percepts. Comentions come last and are capped: they are
-   searchable context, never evidence (@LAT98LON6). */
+   searchable context, never evidence (@LAT98LON6). A sentence that names one
+   thing and says nothing of it is a mention: seen, searchable, never a belief. */
 function perceiveSentence(S, sentence, ctx){
   const R = S.G.roles;
-  const res = { percepts:[], forms:[] };
-  const heads = [], pairs = [];
-  for (const cl of splitClauses(S, tokenize(S, sentence))){
-    const r = clausePercepts(S, cl, ctx, null);
-    res.percepts.push(...r.percepts); res.forms.push(...r.forms);
-    heads.push(...r.heads); pairs.push(...r.pairs);
-  }
+  const toks = tokenize(S, sentence);
+  const r = clausePercepts(S, toks, ctx, null);
+  const items = shapeItems(toks, r.labels);
+  const res = { percepts:r.percepts, forms:r.forms, items, shape:shapeText(S, items) };
+  const pairs = r.pairs.slice(), heads = r.heads;
   if (!res.percepts.length) for (let i = 0; i + 1 < heads.length; i++) pairs.push([heads[i], heads[i + 1]]);
   if (R.comention){
     const max = S.G.num.with_max_pairs;
     for (const [a, b] of pairs.filter(([a, b]) => a !== b).slice(0, max))
       res.percepts.push({ s:a, v:R.comention, o:b, pol:"+", q:"-" });
   }
+  if (!res.percepts.length && heads.length === 1) res.percepts.push({ s:heads[0], v:"-", o:"-", pol:"+", q:"-" });
   const seen = new Set();
   res.percepts = res.percepts.filter(p => {
     const k = [p.s, p.v, p.o, p.pol, p.q].join("|");
@@ -954,6 +1207,14 @@ function perceiveSentence(S, sentence, ctx){
   });
   return res;
 }
+/* A text's reading, under the grammar it reads as: its shape, its segments and
+   what it would perceive. Marks in the text overrule the parser.            */
+function shapeOf(S, text){
+  return withGrammar(S, pickGrammar(S, text), () => {
+    const r = perceiveSentence(S, text, { last:null });
+    return { shape:r.shape, items:r.items, percepts:r.percepts, lang:S.G.lang };
+  });
+}
 
 /* ---------- the engine ---------------------------------------------- */
 function openStore(text){
@@ -961,7 +1222,7 @@ function openStore(text){
   const S = { st, G:null, things:new Map(), vectors:new Map(), episodes:[], offLane:[], trips:new Map(), beliefsBy:new Map(),
               byVector:new Map(), incoming:new Map(), comentions:new Map(), believers:new Set(), seenCounts:new Map(),
               said:new Map(), malformed:[], sentIndex:null, dec:1, derived:new Map(), derivedBy:new Map(), derivedIn:new Map(),
-              superseded:new Map(), epOrder:new Map() };
+              superseded:new Map(), epOrder:new Map(), amends:new Map() };
   S.G = loadGrammar(st);
   S.grammars = grammarRecords(st).langs.map(l => l === S.G.lang ? S.G : loadGrammar(st, l));
   const step = String(S.G.sphere.step || "");
@@ -972,11 +1233,17 @@ function openStore(text){
 }
 /* The owner's words are the episode blocks on the episode lane. An episode
  * block anywhere else (the fixture's) is checked for malformed lines and is
- * never quoted, searched, counted or believed (TTG-RFC-0002 §5.1).       */
+ * never quoted, searched, counted or believed (TTG-RFC-0002 §5.1). The
+ * owner's amendments are the amend blocks on the amend lane, one per
+ * episode, at its longitude (TTG-RFC-0005 §5).                          */
 function indexEpisodes(S){
-  const lane = +S.G.sphere.episode_lane;
-  S.episodes = []; S.offLane = [];
-  for (const c of S.st.chunks) if (c.rec && c.rec.episode != null) (c.rec.lat === lane ? S.episodes : S.offLane).push(c);
+  const lane = +S.G.sphere.episode_lane, alane = +S.G.sphere.amend_lane;
+  S.episodes = []; S.offLane = []; S.amends = new Map();
+  for (const c of S.st.chunks){
+    if (!c.rec) continue;
+    if (c.rec.episode != null) (c.rec.lat === lane ? S.episodes : S.offLane).push(c);
+    else if (c.rec.amend != null && c.rec.lat === alane) S.amends.set(c.rec.lon, { chunk:c, entries:amendEntries(c.rec.amend) });
+  }
   S.epOrder = new Map(S.episodes.map((c, i) => [c.rec.id, i + 1]));
 }
 /* When a saying was said, for ordering only (TTG-RFC-0004 §2): its episode's
@@ -1036,14 +1303,21 @@ function consolidate(S){
       }
       said.set(c.rec.id, lines);
     }
-    for (const line of many(b, "percept")){
+    // an amended sentence is read from its amendment, still as this episode's saying
+    const am = own ? S.amends.get(c.rec.lon) : null;
+    const lines = many(b, "percept").map(line => ({ line, id:c.rec.id, orig:true }));
+    if (am) for (const e of am.entries.values()) for (const line of e.lines) lines.push({ line, id:am.chunk.rec.id, orig:false });
+    for (const { line, id, orig } of lines){
       const p = cols(line);
       if (p.length < 6 || !/^\d+$/.test(p[0]) || !p[1] || !p[2] || !p[3] || (p[4] !== "+" && p[4] !== "-")){
-        malformed.push({ id:c.rec.id, line }); continue;
+        malformed.push({ id, line }); continue;
       }
-      if (!own) continue;
+      if (!own || (orig && am && am.entries.has(+p[0]))) continue;
       const [n, s, v, o, pol, q] = p;
-      bump("thing|" + s); bump("vector|" + v); if (o !== "-") bump("thing|" + o);
+      if (s !== "-") bump("thing|" + s);
+      if (v !== "-") bump("vector|" + v);
+      if (o !== "-") bump("thing|" + o);
+      if (s === "-" || v === "-") continue;          // a mention: seen, searchable, never believed
       if (v === R.comention){
         for (const [a, z] of [[s, o], [o, s]]){ if (!com.has(a)) com.set(a, new Map()); com.get(a).set(z, (com.get(a).get(z) || 0) + 1); }
         continue;
@@ -1248,30 +1522,10 @@ function ensureTerm(S, lemma, cls, partnerLemma, now){
 }
 
 /* ---------- write: perceive one input as one episode ------------------ */
-function perceive(S, text, source, isFile, now){
-  const G = S.G, R = G.roles;
-  const sentences = sentencesOf(S, text, isFile);
-  if (!sentences.length) return null;
-  const ctx = { last:null }, saidLines = [], perceptLines = [], all = [], forms = [];
-  const max = G.num.said_max_chars;
-  sentences.forEach((sen, i) => {
-    const n = i + 1;
-    let txt = sen.split(FENCE).join("''");
-    if (isFinite(max) && txt.length > max) txt = Array.from(txt).slice(0, max).join("") + "…";
-    saidLines.push("said: " + n + " | " + txt);
-    const r = withGrammar(S, pickGrammar(S, sen), () => perceiveSentence(S, sen, ctx));
-    for (const p of r.percepts){
-      perceptLines.push("percept: " + [n, p.s, p.v, p.o, p.pol, p.q].join(" | "));
-      all.push({ ...p, n });
-    }
-    forms.push(...r.forms);
-  });
-  const before = new Map();
-  for (const p of all){
-    const e = S.trips.get(p.s + "|" + p.v + "|" + p.o);
-    if (e) before.set(p.s + "|" + p.v + "|" + p.o, { pol:e.pol, decided:e.decided, sources:e.sources.slice() });
-  }
-  const created = [];
+const perceptLine = (n, p) => [n, p.s, p.v, p.o, p.pol, p.q].join(" | ");
+// terms for every lemma the percepts name, placed beside their partners, with their surface forms
+function landTerms(S, all, forms, now){
+  const R = S.G.roles, created = [];
   for (const p of all){
     const weak = p.v === R.comention;
     for (const [lemma, cls, partner] of [[p.s, "thing", weak ? null : p.o], [p.o, "thing", weak ? null : p.s], [p.v, "vector", null]]){
@@ -1285,8 +1539,63 @@ function perceive(S, text, source, isFile, now){
     if (t && form && !t.forms.includes(form)) t.forms.push(form);
   }
   for (const t of created) if (!t.forms.includes(t.lemma) && !t.forms.length) t.forms.push(t.lemma);
+  return created;
+}
+const beforeOf = (S, all) => {
+  const before = new Map();
+  for (const p of all){
+    const k = p.s + "|" + p.v + "|" + p.o, e = S.trips.get(k);
+    if (e) before.set(k, { pol:e.pol, decided:e.decided, sources:e.sources.slice() });
+  }
+  return before;
+};
+// re-read the corpus after a write, and report what the write disagreed with or retired
+function settle(S, all, now, before, retiredBefore){
+  const R = S.G.roles;
+  // term objects already carry this write's forms, so only the episode lists are rebuilt here
+  indexEpisodes(S);
+  consolidate(S);
+  const touched = new Set();
+  for (const p of all) for (const t of [S.things.get(p.s), S.vectors.get(p.v), S.things.get(p.o)]) if (t) touched.add(t);
+  syncTerms(S, now, touched);
+  indexTerms(S);
+  const conflicts = [];
+  for (const p of all){
+    const k = p.s + "|" + p.v + "|" + p.o, b = before.get(k), e = S.trips.get(k);
+    if (!b || !e || p.v === R.comention) continue;
+    if (b.pol !== "?" && b.pol !== p.pol && !conflicts.some(c => c.trip === e))
+      conflicts.push({ trip:e, earlier:b.sources.filter(s => s.pol !== p.pol) });
+  }
+  const superseded = [...S.superseded].filter(([k]) => !retiredBefore.has(k)).map(([, sup]) => sup);
+  return { conflicts, superseded };
+}
+const mentioned = w => [...new Set(w.mentions.flatMap(p => [p.s, p.v, p.o]).filter(x => x !== "-"))];
+const splitAll = (S, all) => ({ percepts:all.filter(p => p.v !== S.G.roles.comention && !isMention(p)), mentions:all.filter(isMention) });
+/* `shapes`, if given, is the owner's reading of each sentence, by position: the
+   percepts come from it and the episode's shape line records it (TTG-RFC-0005 §4). */
+function perceive(S, text, source, isFile, now, shapes){
+  const G = S.G, R = G.roles;
+  const sentences = sentencesOf(S, text, isFile);
+  if (!sentences.length) return null;
+  const ctx = { last:null }, saidLines = [], shapeLines = [], perceptLines = [], all = [], forms = [];
+  const max = G.num.said_max_chars;
+  sentences.forEach((sen, i) => {
+    const n = i + 1, SG = pickGrammar(S, sen);
+    let txt = unmark(SG, sen).split(FENCE).join("''");
+    if (isFinite(max) && txt.length > max) txt = Array.from(txt).slice(0, max).join("") + "…";
+    saidLines.push("said: " + n + " | " + txt);
+    const r = withGrammar(S, SG, () => perceiveSentence(S, shapes && shapes[i] ? shapes[i] : sen, ctx));
+    if (r.shape) shapeLines.push("shape: " + n + " | " + r.shape);
+    for (const p of r.percepts){
+      perceptLines.push("percept: " + perceptLine(n, p));
+      all.push({ ...p, n });
+    }
+    forms.push(...r.forms);
+  });
+  const before = beforeOf(S, all), retiredBefore = new Set(S.superseded.keys());
+  const created = landTerms(S, all, forms, now);
 
-  const lane = +G.sphere.episode_lane, retiredBefore = new Set(S.superseded.keys());
+  const lane = +G.sphere.episode_lane;
   const ord = records(S.st).filter(r => r.lat === lane).reduce((m, r) => Math.max(m, r.lon), 0) + 1;
   const epId = makeId(lane, ord, 0);
   const src = source || say(G, "source_typed");
@@ -1296,26 +1605,80 @@ function perceive(S, text, source, isFile, now){
       if (t && R.episode_edge){ const e = R.episode_edge + t.chunk.rec.id; if (!refs.includes(e)) refs.push(e); }
     }
   }
-  const block = ["source: " + src, "at: " + now].concat(saidLines, perceptLines).join("\n");
+  const block = ["source: " + src, "at: " + now].concat(saidLines, shapeLines, perceptLines).join("\n");
   const ec = newChunk(epId, now, refs.join(","), null, say(G, "episode_title", { n:ord, source:src }) || epId, "ttdb-episode", block);
   insertChunk(S.st, ec);
-  // term objects already carry this episode's forms, so only the episode lists are rebuilt here
-  indexEpisodes(S);
-  consolidate(S);
-  const touched = new Set();
-  for (const p of all) for (const t of [S.things.get(p.s), S.vectors.get(p.v), S.things.get(p.o)]) if (t) touched.add(t);
-  syncTerms(S, now, touched);
-  indexTerms(S);
+  const { conflicts, superseded } = settle(S, all, now, before, retiredBefore);
+  return { id:epId, ord, sentences:sentences.length, ...splitAll(S, all), all, created, conflicts, superseded };
+}
 
-  const conflicts = [];
-  for (const p of all){
-    const k = p.s + "|" + p.v + "|" + p.o, b = before.get(k), e = S.trips.get(k);
-    if (!b || !e || p.v === R.comention) continue;
-    if (b.pol !== "?" && b.pol !== p.pol && !conflicts.some(c => c.trip === e))
-      conflicts.push({ trip:e, earlier:b.sources.filter(s => s.pol !== p.pol) });
+/* ---------- amend: the owner's reading of a sentence already said ------- *
+ * An episode is never rewritten. An amendment is the owner overruling how one
+ * of its sentences was read: a record on amend_lane at the episode's own
+ * longitude, holding a shape line and the percepts that shape reads as for
+ * each sentence it amends. Consolidation takes those percepts in place of the
+ * episode's own, still as that episode and sentence — so counting, order and
+ * quotes are the saying's, not the correction's (TTG-RFC-0005 §5).        */
+function lineMap(lines){
+  const m = new Map();
+  for (const line of lines){ const i = line.indexOf("|"); if (i > 0) m.set(+line.slice(0, i).trim(), line.slice(i + 1).trim()); }
+  return m;
+}
+function amendEntries(block){
+  const m = new Map();
+  for (const raw of String(block || "").split("\n")){
+    const line = raw.trim(), i = line.indexOf(":");
+    if (i < 0) continue;
+    const k = line.slice(0, i).trim(), v = line.slice(i + 1).trim(), n = +cols(v)[0];
+    if (k !== "shape" && k !== "percept") continue;
+    if (!m.has(n)) m.set(n, { shape:"", lines:[] });
+    if (k === "shape") m.get(n).shape = v.slice(v.indexOf("|") + 1).trim(); else m.get(n).lines.push(v);
   }
-  const superseded = [...S.superseded].filter(([k]) => !retiredBefore.has(k)).map(([, sup]) => sup);
-  return { id:epId, ord, sentences:sentences.length, percepts:all.filter(p => p.v !== R.comention), all, created, conflicts, superseded };
+  return m;
+}
+const episodeOf = (S, id) => { const ref = parseId(id); return ref ? S.episodes.find(c => c.rec.key === ref.key) || null : null; };
+/* Each sentence of an episode with the reading that stands: an amendment's,
+   else the episode's shape line, else the shape its words read as today.  */
+function readingsOf(S, epId){
+  const c = episodeOf(S, epId);
+  if (!c) return [];
+  const own = lineMap(many(parseBlock(c.rec.episode), "shape")), am = S.amends.get(c.rec.lon);
+  return [...(S.said.get(c.rec.id) || new Map())].map(([n, text]) => {
+    const e = am && am.entries.get(n);
+    return { n, text, shape:e ? e.shape : own.get(n) || shapeOf(S, text).shape, amended:!!e };
+  });
+}
+function amend(S, epId, n, shape, now){
+  const c = episodeOf(S, epId), said = c && S.said.get(c.rec.id);
+  if (!c || !said || !said.has(n)) return null;
+  return withGrammar(S, pickGrammar(S, said.get(n)), () => {
+    const G = S.G, R = G.roles, alane = +G.sphere.amend_lane;
+    if (!isFinite(alane) || !G.marks.N) return null;
+    // the sentences before it, as they now read, carry the context its pronouns resolve in
+    const ctx = { last:null }, readings = readingsOf(S, c.rec.id);
+    for (const x of readings) if (x.n < n) withGrammar(S, pickGrammar(S, x.text), () => perceiveSentence(S, x.shape || x.text, ctx));
+    const r = perceiveSentence(S, shape, ctx);
+    const all = r.percepts.map(p => ({ ...p, n }));
+    const before = beforeOf(S, all), retiredBefore = new Set(S.superseded.keys());
+    const created = landTerms(S, all, r.forms, now);
+    const had = S.amends.get(c.rec.lon), entries = new Map(had ? had.entries : []);
+    const mine = all.map(p => perceptLine(n, p));
+    const origLines = many(parseBlock(c.rec.episode), "percept").filter(l => +cols(l)[0] === n).map(l => cols(l).join(" | "));
+    const origShape = lineMap(many(parseBlock(c.rec.episode), "shape")).get(n) || withGrammar(S, G, () => perceiveSentence(S, said.get(n), { last:null }).shape);
+    // reading it back the way the episode already reads it withdraws the amendment
+    if (r.shape === origShape && mine.join("\n") === origLines.join("\n")) entries.delete(n);
+    else entries.set(n, { shape:r.shape, lines:mine });
+    const block = [...entries].sort((x, y) => x[0] - y[0])
+      .flatMap(([k, e]) => ["shape: " + k + " | " + e.shape].concat(e.lines.map(l => "percept: " + l))).join("\n");
+    const id = makeId(alane, c.rec.lon, 0), relates = R.amend_edge ? R.amend_edge + c.rec.id : "";
+    if (had && !entries.size) S.st.chunks = S.st.chunks.filter(x => x !== had.chunk);
+    else if (had) rewriteChunk(had.chunk, { updated:now, relates, tag:"ttdb-amend", block });
+    else if (entries.size) insertChunk(S.st, newChunk(id, now, relates, null, say(G, "amend_title", { n:c.rec.lon }) || id, "ttdb-amend", block));
+    const { conflicts, superseded } = settle(S, all, now, before, retiredBefore);
+    const res = { id, amends:c.rec.id, n, shape:r.shape, sentences:1, ...splitAll(S, all), all, created, conflicts, superseded };
+    writeCursor(S, c.rec.id, said.get(n), say(G, "amended", { percepts:unit(G, "percept", res.percepts.length) }), [c.rec.id]);
+    return res;
+  });
 }
 function markAsked(S, found, now){
   const touched = new Set();
@@ -1327,8 +1690,9 @@ function markAsked(S, found, now){
   indexTerms(S);
 }
 function startEmpty(S, now){
-  const lane = +S.G.sphere.episode_lane, self = S.G.sphere.self_lemma;
+  const lane = +S.G.sphere.episode_lane, alane = +S.G.sphere.amend_lane, self = S.G.sphere.self_lemma;
   S.st.chunks = S.st.chunks.filter(c => !(c.rec && ((c.rec.episode != null && c.rec.lat === lane) ||
+    (c.rec.amend != null && c.rec.lat === alane) ||
     (c.rec.term != null && parseBlock(c.rec.term).lemma !== self))));
   indexTerms(S);
   for (const t of S.things.values()){ t.asked = 0; t.forms = [t.lemma]; }
@@ -1583,7 +1947,7 @@ function yesNo(S, toks, ctx){
   if (!(has(cue, "aux") || has(cue, "modal") || has(cue, "cop") || has(cue, "hav"))) return null;
   const rest = toks.slice(0, i).concat(toks.slice(i + 1));
   const r = clausePercepts(S, moveCue(S, rest, cue, has(cue, "cop")), ctx, null);
-  const checks = r.percepts.filter(p => p.v !== S.G.roles.comention && p.s !== SLOT && p.o !== SLOT);
+  const checks = r.percepts.filter(p => p.v !== S.G.roles.comention && !isMention(p) && p.s !== SLOT && p.o !== SLOT);
   return checks.length ? { intent:"verify", checks } : null;
 }
 const wordTok = (S, w) => ({ w, cls:S.G.classes.get(w) || EMPTY, punct:false });
@@ -1655,10 +2019,15 @@ function interpret(S, text){
     if (terms.length) return { ...base, intent:"portrait", terms };
   }
   const content = lexical.filter(isContent);
-  const P = findPredicate(S, toks);
-  if (P){
+  const labels = labelTokens(S, toks), P = labels.includes("V");
+  // one segment alone is a look-up, unless it is said as a statement: "coffee" asks, "Coffee." tells
+  const runs = labels.filter((l, i) => (l === "N" || l === "V") && l !== labels[i - 1]).length;
+  const told = !marked && G.sentenceEnd.has(Array.from(String(text).trim()).pop());
+  if (P || (told && content.length)){
     const ps = perceiveSentence(S, text, { last:null }).percepts.filter(p => p.v !== G.roles.comention);
-    if (ps.length) return marked ? { ...base, intent:"verify", checks:ps } : { ...base, intent:"perceive" };
+    const checks = ps.filter(p => !isMention(p));
+    if (marked && checks.length) return { ...base, intent:"verify", checks };
+    if (!marked && ps.length && (runs > 1 || told)) return { ...base, intent:"perceive" };
   }
   if (!P && content.length && content.length <= G.describeMax){
     const terms = [...new Set(purchase.found.map(f => f.lemma))];
@@ -1695,36 +2064,23 @@ function groundQuotes(S, g){
 const quoted = (S, g) => ({ ...g, quotes:groundQuotes(S, g), ...(g.by ? { by:{ ...g.by, quotes:groundQuotes(S, { ...g.by, later:true }) } } : {}) });
 const vlabel = (S, v) => (alg(S, v) || {}).label || v;
 // a reply is in the language of the input; a told sentence is perceived in its own
-function answer(S, text, now, source){
-  return withGrammar(S, pickGrammar(S, text), () => answerIn(S, text, now, source));
+function answer(S, text, now, source, shapes){
+  return withGrammar(S, pickGrammar(S, text), () => answerIn(S, text, now, source, shapes));
 }
-function answerIn(S, text, now, source){
+function answerIn(S, text, now, source, shapes){
   const G = S.G, N = G.num;
   const it = interpret(S, text);
   const reply = { intent:it.intent, lang:G.lang, query:text, verdict:"", head:"", items:[], notes:[], search:[],
                   purchase:it.purchase, records:[], portraits:[], episode:null };
   const cap = a => a.slice(0, N.answer_max_items);
   if (it.intent === "perceive"){
-    const ep = perceive(S, text, source || null, false, now);
+    const ep = perceive(S, text, source || null, false, now, shapes);
     if (!ep) return reply;
     reply.episode = ep;
     reply.verdict = ep.percepts.length
       ? say(G, "noted", { percepts:unit(G, "percept", ep.percepts.length), sentences:unit(G, "sentence", ep.sentences) })
-      : say(G, "noted_nothing");
-    const byKey = new Map();
-    for (const p of ep.percepts){
-      const e = S.trips.get(p.s + "|" + p.v + "|" + p.o);
-      if (e && !byKey.has(e)) byKey.set(e, { kind:"direct", pol:p.pol, path:[e], conf:e.conf,
-        quotes:[{ ep:ep.id, n:p.n, text:S.said.get(ep.id).get(p.n), pol:p.pol }] });
-    }
-    reply.items = cap([...byKey.values()]);
-    for (const c of ep.conflicts){
-      reply.notes.push(say(G, "contradicts"));
-      reply.items.push({ kind:"conflict", pol:c.trip.pol, path:[c.trip], conf:c.trip.conf,
-        quotes:quotesFor(S, c.trip).slice(-3) });
-    }
-    if (ep.superseded.length) reply.notes.push(say(G, "supersedes"));
-    for (const sup of ep.superseded) reply.items.push(quoted(S, supersededGround(S, sup)));
+      : ep.mentions.length ? say(G, "noted_mention", { terms:mentioned(ep).join(", ") }) : say(G, "noted_nothing");
+    writeGrounds(S, reply, ep, ep.id);
     reply.records = [ep.id];
   } else if (it.intent === "verify"){
     const results = it.checks.map(p => ({ p, r:verify(S, p.s, p.v, p.o) }));
@@ -1779,6 +2135,37 @@ function answerIn(S, text, now, source){
   writeCursor(S, reply.records[0] || "@LAT0LON0", text, replyText(S, reply), reply.records);
   return reply;
 }
+/* What a write said, as grounds: each new belief quoted from its sentence, then
+   anything it disagreed with, then anything it retired.                    */
+function writeGrounds(S, reply, w, epId){
+  const G = S.G, byKey = new Map();
+  for (const p of w.percepts){
+    const e = S.trips.get(p.s + "|" + p.v + "|" + p.o);
+    if (e && !byKey.has(e)) byKey.set(e, { kind:"direct", pol:p.pol, path:[e], conf:e.conf,
+      quotes:[{ ep:epId, n:p.n, text:S.said.get(epId).get(p.n), pol:p.pol }] });
+  }
+  reply.items = [...byKey.values()].slice(0, G.num.answer_max_items);
+  for (const c of w.conflicts){
+    reply.notes.push(say(G, "contradicts"));
+    reply.items.push({ kind:"conflict", pol:c.trip.pol, path:[c.trip], conf:c.trip.conf, quotes:quotesFor(S, c.trip).slice(-3) });
+  }
+  if (w.superseded.length) reply.notes.push(say(G, "supersedes"));
+  for (const sup of w.superseded) reply.items.push(quoted(S, supersededGround(S, sup)));
+}
+/* Amend a sentence and answer as a tell does: the verdict, then the grounds. */
+function amendReply(S, epId, n, shape, now){
+  const c = episodeOf(S, epId), said = c && S.said.get(c.rec.id);
+  const w = said && said.has(n) ? amend(S, epId, n, shape, now) : null;
+  if (!w) return null;
+  return withGrammar(S, pickGrammar(S, said.get(n)), () => {
+    const G = S.G;
+    const reply = { intent:"perceive", lang:G.lang, query:said.get(n), verdict:say(G, "amended", { percepts:unit(G, "percept", w.percepts.length) }),
+                    head:"", items:[], notes:[], search:[], purchase:{ found:[], missing:[] }, records:[w.amends], portraits:[], episode:w };
+    writeGrounds(S, reply, w, w.amends);
+    if (S.amends.has(c.rec.lon)) reply.records.push(w.id);
+    return reply;
+  });
+}
 /* Plain-text rendering of a reply, for the cursor block and the command line. */
 function tripleText(S, e, pol){
   const neg = (pol || e.pol) === "-" ? (S.G.roles.negation_prefix || "") : "";
@@ -1825,7 +2212,7 @@ function ingestFile(S, name, text, now){
 const PG = { parseStore, serializeStore, parseRecord, parseBlock, openStore, loadGrammar, sentencesOf, tokenize,
   nounLemma, verbLemma, perceiveSentence, perceive, consolidate, syncTerms, termState, verify, objectsOf, subjectsOf,
   portrait, searchSaid, interpret, answer, replyText, ingestFile, startEmpty, markAsked, records, epsOf, say, SLOT,
-  pickGrammar, withGrammar };
+  pickGrammar, withGrammar, shapeOf, shapeText, readingsOf, amend, amendReply };
 
 /* ====================================================================== *
  * The page. Everything below touches the DOM; everything above does not,
@@ -1933,6 +2320,11 @@ function replyHtmlIn(r){
   if (r.verdict) parts.push(`<div class="verdict">${esc(r.verdict)}</div>`);
   if (r.head) parts.push(`<div class="verdict">${esc(r.head)}</div>`);
   if (r.items.length) parts.push(`<ul class="grounds">${r.items.map(groundHtml).join("")}</ul>`);
+  if (r.intent === "perceive" && r.episode){
+    const ep = r.episode.amends || r.episode.id;
+    const rs = readingsOf(S, ep).filter(x => !r.episode.amends || x.n === r.episode.n).slice(0, G.num.answer_max_items);
+    if (rs.length) parts.push(readingRows(ep, rs));
+  }
   for (const pt of r.portraits){
     parts.push(`<div class="verdict">${esc(pt.head)}</div>`);
     const gs = [...pt.direct, ...pt.inferred, ...pt.uses];
@@ -1963,21 +2355,95 @@ function appendTurn(q, html){
   log.scrollTop = log.scrollHeight;
 }
 
+/* ---------- readings: the owner overrules a shape (TTG-RFC-0005 §4) ------- *
+ * A row is one sentence's reading as buttons: its segments boxed as things or
+ * vectors, its links bare. Select words, then mark them nounish, verbish or one
+ * term, and the row reads itself again through the engine. A row under the
+ * input changes how that sentence will be written; a row under a reply, or in
+ * an episode's panel, keeps its reading as an amendment.                    */
+const rows = new Map();
+let rowSeq = 0, pending = null;
+function addRow(r, extra){
+  const id = "r" + (++rowSeq);
+  rows.set(id, { items:r.items, shape:r.shape, orig:r.shape, lang:r.lang, sel:null, ...extra });
+  return id;
+}
+function rowHtml(id){
+  const row = rows.get(id), pv = $("preview").dataset, sel = row.sel;
+  const on = i => !!sel && i >= sel[0] && i <= sel[1];
+  let html = "", open = "";
+  row.items.forEach((it, i) => {
+    const c = it.cls || "";
+    if (c !== open){ if (open) html += "</span>"; if (c) html += `<span class="seg ${c}">`; open = c; }
+    const cls = "tok" + (c ? "" : " lk") + (row.miss && row.miss.has(it.w) ? " u" : "") + (on(i) ? " sel" : "");
+    html += `<button type="button" class="${cls}" data-row="${id}" data-t="${i}" aria-pressed="${on(i)}">${esc(it.w)}</button>`;
+  });
+  if (open) html += "</span>";
+  const tools = sel ? [["N", pv.nounish], ["V", pv.verbish], ["J", pv.join]]
+    .map(([op, label]) => `<button type="button" data-row="${id}" data-op="${op}">${esc(label || op)}</button>`).join("") : "";
+  const keep = row.ep && row.shape !== row.orig ? `<button type="button" class="primary" data-row="${id}" data-op="K">${esc(pv.keep || "")}</button>` : "";
+  const mark = row.amended ? `<span class="mk" title="${esc(pv.amended || "")}">✎</span>` : "";
+  return `<div class="shape" data-rowbox="${id}">${mark}${html}${tools || keep ? `<span class="tools">${tools}${keep}</span>` : ""}</div>`;
+}
+function redrawRow(id){
+  const el = document.querySelector(`[data-rowbox="${id}"]`);
+  if (el) el.outerHTML = rowHtml(id);
+}
+function pickTok(id, t, extend){
+  const row = rows.get(id), sel = row.sel;
+  row.sel = extend && sel ? [Math.min(sel[0], t), Math.max(sel[1], t)] : sel && sel[0] === t && sel[1] === t ? null : [t, t];
+  redrawRow(id);
+}
+function editRow(id, op){
+  const row = rows.get(id);
+  if (!row || !S) return;
+  if (op === "K") return keepRow(id);
+  if (!row.sel) return;
+  const [a, b] = row.sel, G = grammarOf(S, row.lang), J = G.roles.phrasal_join || "";
+  const items = row.items.map(x => ({ ...x }));
+  if (op === "J"){
+    // one bound term splits back into its words; several words bind into one
+    const one = a === b && J && items[a].w.includes(J);
+    const words = items.slice(a, b + 1).filter(x => /[\p{L}\p{N}]/u.test(x.w)).map(x => x.w);
+    const cls = items[a].cls || "N";
+    items.splice(a, b - a + 1, ...(one ? items[a].w.split(J) : [words.join(J)]).map(w => ({ w, cls })));
+  } else for (let k = a; k <= b; k++) items[k].cls = op;
+  const r = shapeOf(S, withGrammar(S, G, () => shapeText(S, items)));
+  Object.assign(row, { items:r.items, shape:r.shape, sel:null });
+  if (row.pending != null && pending) pending.shapes[row.pending] = r.shape;
+  redrawRow(id);
+}
+function keepRow(id){
+  const row = rows.get(id);
+  const r = amendReply(S, row.ep, row.n, row.shape, unixNow());
+  if (!r) return;
+  Object.assign(row, { orig:row.shape, amended:true });
+  redrawRow(id);
+  lit = new Set(r.records.map(x => parseId(x)).filter(Boolean).map(x => x.key));
+  appendTurn(row.text, replyHtml(r));
+  after();
+}
+const readingRows = (ep, readings) => readings.map(x => rowHtml(addRow(shapeOf(S, x.shape),
+  { ep, n:x.n, text:x.text, amended:x.amended }))).join("");
+
 /* ---------- live grammar preview ------------------------------------------ */
 let previewTimer = 0;
 function preview(){
   const text = $("q").value;
   const pv = $("preview"), mode = $("mode");
-  if (!S || !text.trim()){ pv.innerHTML = ""; mode.textContent = ""; return; }
+  if (!S || !text.trim()){ pv.innerHTML = ""; mode.textContent = ""; pending = null; return; }
+  if (!pending || pending.text !== text){
+    // any change to the words discards the readings marked on the old ones
+    if (pending) for (const id of pending.ids) rows.delete(id);
+    const sents = sentencesOf(S, text, false);
+    pending = { text, shapes:sents.map(() => null), ids:sents.map((sen, i) => {
+      const miss = withGrammar(S, pickGrammar(S, sen), () => new Set(purchaseOf(S, tokenize(S, sen)).missing));
+      return addRow(shapeOf(S, sen), { pending:i, miss });
+    }) };
+  }
+  pv.innerHTML = pending.ids.map(rowHtml).join("");
+  // with more than one grammar in the store, show which one the text reads as
   withGrammar(S, pickGrammar(S, text), () => {
-    const found = purchaseOf(S, tokenize(S, text)).found;
-    pv.innerHTML = tokenize(S, text).filter(t => !t.punct).map(t => {
-      if (!isContent(t)) return `<span class="fn">${esc(t.w)}</span>`;
-      const f = found.filter(x => x.w === t.w);
-      const cls = f.some(x => x.cls === "thing") ? "t" : f.some(x => x.cls === "vector") ? "v" : "u";
-      return `<span class="${cls}">${esc(t.w)}</span>`;
-    }).join(" ");
-    // with more than one grammar in the store, show which one the text reads as
     mode.textContent = (mode.dataset[interpret(S, text).intent] || "") + (S.grammars.length > 1 ? " · " + S.G.lang : "");
   });
 }
@@ -2020,17 +2486,21 @@ function renderPanel(rec){
       (rec.body.replace(/^\*\*[^*\n]+\*\*\s*/, "").trim() ? `<div class="body">${md(rec.body.replace(/^\*\*[^*\n]+\*\*\s*/, ""))}</div>` : "");
   } else if (rec.episode != null){
     const b = parseBlock(rec.episode);
+    const am = rec.lat === +S.G.sphere.episode_lane ? S.amends.get(rec.lon) : null;
+    const readings = new Map(readingsOf(S, rec.id).map(x => [x.n, x]));
     const ps = many(b, "percept").map(cols);
     body = `<div class="coord">${esc(b.source || "")} · at ${esc(b.at || "")}</div><ol class="said-list">` +
       many(b, "said").map(line => {
         const i = line.indexOf("|"), n = line.slice(0, i).trim(), text = line.slice(i + 1).trim();
-        const mine = ps.filter(p => p[0] === n && p.length >= 6);
-        return `<li><q>${esc(text)}</q>` + (mine.length ? `<div class="purchase">` +
+        const e = am && am.entries.get(+n);
+        const mine = (e ? e.lines.map(cols) : ps.filter(p => p[0] === n)).filter(p => p.length >= 6 && p[1] !== "-" && p[2] !== "-");
+        const x = readings.get(+n);
+        return `<li><q>${esc(text)}</q>` + (x ? readingRows(rec.id, [x]) : "") + (mine.length ? `<div class="purchase">` +
           mine.map(p => tripleHtml({ s:p[1], v:p[2], o:p[3], pol:p[4] })).join(" ") + `</div>` : "") + `</li>`;
       }).join("") + `</ol>`;
   } else {
     body = `<div class="body">${md(rec.body)}</div>` +
-      [rec.grammar, rec.sphere, rec.special].filter(x => x != null).map(x => `<pre>${esc(x)}</pre>`).join("");
+      [rec.grammar, rec.sphere, rec.special, rec.amend].filter(x => x != null).map(x => `<pre>${esc(x)}</pre>`).join("");
   }
   const edges = rec.edges.length ? `<div class="edges"><b>relates</b>` + rec.edges.map(e => {
     const t = e.target && records(S.st).find(r => r.key === e.target.key);
@@ -2196,7 +2666,8 @@ function after(){
 }
 function send(text){
   if (!S || !text.trim()) return;
-  const r = answer(S, text, unixNow());
+  const shapes = pending && pending.text === text && pending.shapes.some(Boolean) ? pending.shapes : null;
+  const r = answer(S, text, unixNow(), null, shapes);
   lit = new Set(r.records.map(id => parseId(id)).filter(Boolean).map(x => x.key));
   appendTurn(text, replyHtml(r));
   after();
@@ -2229,7 +2700,7 @@ async function openStoreFile(file){
 function boot(){
   const params = new URLSearchParams(location.search);
   const form = $("askform"), q = $("q");
-  form.addEventListener("submit", e => { e.preventDefault(); const t = q.value; q.value = ""; preview(); send(t); });
+  form.addEventListener("submit", e => { e.preventDefault(); const t = q.value; send(t); q.value = ""; preview(); });
   q.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey){ e.preventDefault(); form.requestSubmit(); } });
   q.addEventListener("input", () => { clearTimeout(previewTimer); previewTimer = setTimeout(preview, 120); });
   q.addEventListener("dragover", e => { e.preventDefault(); q.classList.add("drop"); });
@@ -2258,6 +2729,12 @@ function boot(){
     startEmpty(S, unixNow()); $("log").innerHTML = ""; lit = new Set(); after(); select(idKey(0, 0), true);
   });
   document.addEventListener("click", e => {
+    const rb = e.target.closest("[data-row]");
+    if (rb && S){
+      e.preventDefault();
+      if (rb.dataset.op) editRow(rb.dataset.row, rb.dataset.op); else pickTok(rb.dataset.row, +rb.dataset.t, e.shiftKey);
+      return;
+    }
     const a = e.target.closest("[data-key]");
     if (!a || !S || a.tagName === "CANVAS") return;
     e.preventDefault(); select(a.dataset.key, true);

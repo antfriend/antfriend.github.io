@@ -54,10 +54,11 @@ keep such text in markup rather than in the interpreter.
 | `question_mark` | character | Marks a question. |
 | `list_sep` | character | Survives tokenisation to separate coordinated noun phrases. |
 | `generic_det` | words | Determiners that make a noun phrase generic (quantifier `*`). |
+| `nounish_marks`, `verbish_marks` | two characters | The owner's brackets for a nounish and a verbish segment, open then close (TTG-RFC-0005 §4). |
 
 Class keys the runtime interprets: `det`, `poss`, `quant_all`, `quant_some`, `quant_none`,
 `self`, `anaphor`, `prep`, `conj`, `subord`, `aux`, `cop`, `hav`, `modal`, `neg`, `wh`,
-`adverb`, `filler`. A token in no class is a **content word**.
+`adverb`, `filler`, `relative`, `infinitive` (the last two, TTG-RFC-0005 §2). A token in no class is a **content word**.
 
 ---
 
@@ -97,7 +98,7 @@ A word the owner has used as a verb is recognised as a VECTOR term regardless of
 | `label` | `<vector> \| <label>` | Renames a declared vector for display; how a later language names the first's (§11). |
 
 Roles: `class_of`, `property`, `possession`, `comention`, `episode_edge`, `negation_prefix`,
-`phrasal_join`. Flags: `transitive`, `symmetric`, `weak`, `exclusive`. A vector not declared
+`phrasal_join`, `amend_edge`. `phrasal_join` also binds words into one term (TTG-RFC-0005 §4). Flags: `transitive`, `symmetric`, `weak`, `exclusive`. A vector not declared
 here has no algebra. `weak` vectors are never walked and never consolidate. Along an
 `exclusive` vector a subject holds one object at a time, and a later saying retires an earlier
 one (TTG-RFC-0004 §3).
@@ -117,7 +118,7 @@ words fill are defined in TTG-RFC-0003 §4.
 `<key>: <phrase with {slots}>`, and `unit_<noun>: <singular> | <plural>`. Keys the runtime
 emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `superseded_by`,
 `affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `deny_superseded`, `contest`, `unknown`,
-`exception`, `no_purchase`, `noted`, `noted_nothing`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
+`exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
 `objects_head`, `subjects_head`, `nothing_found`, `search_head`, `suggest`, `ingested`,
 `episode_title`, `source_typed`, `store_opened`; units `percept`, `sentence`, `term`.
 
@@ -127,13 +128,13 @@ emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `s
 
 `numbers`: `prior_for`, `prior_against`, `weight_partial`, `belief_conf_threshold`,
 `inherit_decay`, `max_hops`, `answer_max_items`, `search_max_items`, `suggest_eps_min`,
-`with_max_pairs`, `said_max_chars`, `rule_max_body`.
+`with_max_pairs`, `said_max_chars`, `rule_max_body`, `phrase_max_words`.
 
 `kind: rules` holds `rule:` lines; its syntax, safety conditions and derivation are defined in
 TTG-RFC-0003 §3.1.
 
 `ttdb-sphere` (on the Home record): `thing_lon`, `vector_lon`, `term_lat` (each `lo hi`),
-`adjacent` (`lo hi` degrees), `step`, `episode_lane`, `self_lemma`.
+`adjacent` (`lo hi` degrees), `step`, `episode_lane`, `amend_lane`, `self_lemma`.
 
 ---
 
@@ -207,8 +208,9 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 2. **Linking words across languages.** A rule links vectors (`cazar X Y => chase X Y`,
    TTG-RFC-0003 §3.1) and `is_a` links terms, one direction and one pair at a time. A store-wide
    translation table would need its own kind.
-3. **Grammar revision.** Episodes are perceived under the grammar of their day. Whether a
-   grammar change should re-perceive old episodes, and how that is recorded, is open.
+3. **Grammar revision.** Episodes are perceived under the grammar of their day. An amendment
+   (TTG-RFC-0005 §5) is how a re-reading is recorded; whether a grammar change should write
+   one for every sentence it reads differently is open.
 
 ---
 
@@ -221,5 +223,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-09-13 | §11 Several Languages added; the reference store carries Spanish beside English. `label:` in §6; progressive and participle endings become lists in §4; rule lists append (§12). Former open question 2 answered; §11–13 renumbered to §12–14. |
 | 2026-09-14 | `kind: rules` (defined in TTG-RFC-0003 §3.1) and `rule_max_body` in §9; rules are shared like numbers (§11); open question 2 narrowed. |
 | 2026-09-14 | The `exclusive` flag in §6 and four reply keys in §8, for supersession (TTG-RFC-0004 §3). |
+| 2026-09-21 | For shapes and amendments (TTG-RFC-0005): the `relative` and `infinitive` classes and the two mark keys in §3, the `amend_edge` role in §6, three reply keys in §8, `phrase_max_words` and `amend_lane` in §9. |
 
 *License: CC0*

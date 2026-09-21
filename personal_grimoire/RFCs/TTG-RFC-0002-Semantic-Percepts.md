@@ -70,6 +70,10 @@ The predicate is the first of:
 
 Two bare content words are never a clause.
 
+TTG-RFC-0005 §2 applies these rules at every position, not once per clause: a clause is any
+alternating run of nounish and verbish segments, and each rule decides where a verbish
+segment begins.
+
 ---
 
 ## 4. Percepts
@@ -95,6 +99,10 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+ or -> | <*, ~ or
   `with_max_pairs` per sentence, as `comention`-role percepts with polarity `+`.
 - Identical percepts within a sentence are written once.
 
+TTG-RFC-0005 §3 reads longer shapes as a chain — each verbish segment relates the nounish
+segments either side of it — and defines **mentions**: a percept whose subject or vector is
+`-`, counted and searchable, never believed.
+
 **Divergence from TTDB-RFC-0006, stated.** The pair is subject→object, not before→after, and
 an intransitive percept has no second endpoint. It is kept (object `-`), and its belief edge
 points at the vector's own record. Every percept carries its agent context: the owner is the
@@ -115,15 +123,19 @@ umwelt and the episode names the source.
 source: <file name, or source_typed>
 at: <t>
 said: <n> | <sentence, cut at said_max_chars>
+shape: <n> | <the sentence's shape, TTG-RFC-0005 §4>
 percept: ...
 ```
 ```
 
-Every sentence gets a `said` line whether or not it yields a percept. The ordinal is one more
+Every sentence gets a `said` line whether or not it yields a percept, and, when the grammar
+declares marks, a `shape` line. The ordinal is one more
 than the largest existing longitude in the lane. An episode MUST NOT be modified after it is
 written. A consumer MUST skip, count and report malformed percept lines: fewer than six
 columns, a non-integer sentence, an empty subject, vector or object, or a polarity other than
-`+`/`-`.
+`+`/`-`. A subject or vector of `-` is well-formed: it is a mention (TTG-RFC-0005 §3). A
+correction to how a sentence was read is an amendment, kept beside the episode on
+`amend_lane` (TTG-RFC-0005 §5).
 
 **Only the lane is the owner's words.** An episode is a `ttdb-episode` block on a record whose
 latitude is `episode_lane`. A block of the same tag anywhere else — a conformance fixture, a
@@ -190,8 +202,9 @@ wrapping inside the bands). Coordinates are written with as many decimals as `st
 ## 7. Open Questions
 
 1. **Re-perception.** When the grammar improves, old episodes still hold the percepts of the
-   old grammar. A `reperceived_from` edge and a grammar hash per episode would make that
-   auditable.
+   old grammar. The amendment (TTG-RFC-0005 §5) is the record a re-reading writes, with its
+   `amend_edge` to the episode; a grammar hash per amendment would make a grammar-driven
+   re-reading auditable.
 2. **Modifiers.** Attributive adjectives are dropped. Emitting them as `property` percepts
    would be cheap and wrong for compounds (*house cat*).
 3. **Placement drift.** Adjacency clusters terms by the order meaning arrived, which is not
@@ -206,5 +219,6 @@ wrapping inside the bands). Coordinates are written with as many decimals as `st
 |---|---|
 | 2026-09-13 | Initial draft |
 | 2026-09-13 | §5.1: only episode blocks on `episode_lane` are the owner's words. The reference runtime had quoted the fixture's sentence in search; found by a third-party embedding's review. |
+| 2026-09-21 | §3–§4 generalised by TTG-RFC-0005 (shapes); §5.1 gains the `shape:` line, mentions and amendments; §7.1 answered by amendments. |
 
 *License: CC0*

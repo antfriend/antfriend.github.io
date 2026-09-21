@@ -150,7 +150,8 @@ a VECTOR begins with its verb lemma plus `phrasal_join`. Words without purchase 
 | `wh` + anything else | subjects |
 | `aux`/`modal`/`cop`/`hav` first, with a percept after moving it behind the subject | verify |
 | an `about` word first | describe the following noun phrases |
-| a predicate yielding percepts | verify if it ends with `question_mark`, else perceive |
+| a predicate yielding percepts | verify if it ends with `question_mark` (checking no mention), else perceive — unless the input is one segment alone (TTG-RFC-0005 §3), which is perceived only as the next row says |
+| one segment, ending in a `sentence_end` that is not `question_mark` | perceive: a mention (TTG-RFC-0005 §3) |
 | no predicate, content words ≤ `describe_max_words`, some with purchase | describe |
 | otherwise | search |
 
@@ -158,7 +159,7 @@ Question shapes are parsed by the clause parser itself, with a slot token standi
 asked-about thing and the moved cue word restored behind the subject.
 
 **Reply.** A verdict (`affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `contest`,
-`unknown`, `deny_superseded`, `noted`, `noted_nothing`, `nothing_found`) or a head, then grounds, each rendered
+`unknown`, `deny_superseded`, `noted`, `noted_nothing`, `noted_mention`, `amended`, `nothing_found`) or a head, then grounds, each rendered
 by kind:
 
 | Kind | Label | Shows |
@@ -211,5 +212,6 @@ values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
 | 2026-09-13 | Initial draft |
 | 2026-09-14 | §3.1 Rules: Datalog-style rules over vectors, derived to a fixpoint after each consolidation; verify, objects, subjects and describe read their conclusions. |
 | 2026-09-14 | Supersession from TTG-RFC-0004: verify step 0, facts carry when they came to hold, the `superseded` ground; inference grounds quote each step at its latest saying. |
+| 2026-09-21 | §4: a lone segment said as a statement is perceived as a mention; a question never checks a mention; `noted_mention` and `amended` verdicts (TTG-RFC-0005). |
 
 *License: CC0*

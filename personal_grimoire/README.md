@@ -38,7 +38,7 @@ episode and term, which is how you make the corpus your own.
 |---|---|
 | [index.html](index.html) | The app: a TTDB parser and round-trip writer, a rule interpreter, a consolidator, a reasoner, a small sphere. **No words of any language.** |
 | [personal_grimoire_ttdb.md](personal_grimoire_ttdb.md) | The store. The blueprint, an English grammar and a Spanish one, every reply phrase, every constant, and the corpus. |
-| [RFCs/](RFCs/) | The specs, four of them new. Start at [RFCs/INDEX.md](RFCs/INDEX.md). |
+| [RFCs/](RFCs/) | The specs, five of them new. Start at [RFCs/INDEX.md](RFCs/INDEX.md). |
 | [tests/](tests/) | Two Node scripts and a Spanish grammar fixture. No dependencies, no test runner. |
 | [tools/](tools/) | Command-line access to the same engine: ask, feed, re-consolidate. |
 
@@ -63,7 +63,12 @@ is reported at once and leaves the belief contested rather than overwritten; tha
 empty* keeps exactly the kit, and that the fixture it keeps is never searchable as your words;
 that a later place retires an earlier one in the order things were said, whatever clock the
 host passed in, while a later denial of the same place stays a contradiction; and that the
-store's description of the runtime's surface names exactly what the runtime exports.
+store's description of the runtime's surface names exactly what the runtime exports. They
+check the shapes too: fifteen readings, from *Pixel chases mice that eat cheese* to *Swim.*;
+that every reading, in either language, reads back as itself; that marks overrule the parser
+and a join makes one term; that *Coffee.* is a mention and *coffee* a look-up; and that an
+amendment stands in for a sentence without touching its episode, and is withdrawn by reading
+the sentence back the episode's way.
 
 And they check the claim the whole design rests on, three ways:
 
@@ -83,13 +88,16 @@ And they check the claim the whole design rests on, three ways:
 The first version of that third check failed on five words, and three of them were real:
 `on` was a CSS class, `change` a DOM event name, and a comment quoted `ok`. Two were the
 grammar colliding with the file format — `kind` and `said` are block keys as well as English
-words — and block keys are schema, so the check exempts them by name.
+words — and block keys are schema, so the check exempts them by name. It caught three more
+while shapes were built, all real: `none` as the name of a predicate with no vector, and
+`am` and `keep` as a class and an action name in the reading controls.
 
 `node tests/*.test.mjs` exits non-zero on failure.
 
 `node tools/babi.mjs <task file>` runs a bAbI task (Weston et al., 2015; data not included)
 through the same engine, with any adaptation as declared lines of grammar data, a
-letter-permuted copy of grammar and data, and a control. Task 1, *single supporting fact*:
+letter-permuted copy of grammar and data, and a control. The outcomes are unchanged, question
+for question, since the parser learned shapes. Task 1, *single supporting fact*:
 100% of 1,000 answers right with exactly the gold sentences quoted, from four lines of data;
 54.9% with the `exclusive` flag removed. Task 15, *basic deduction*: 100% from one line. The
 permuted runs match question by question. Results are in [paper/](paper/).
@@ -172,7 +180,8 @@ A new term sits **beside the term that first gave it meaning**: *Pixel is a cat*
 `pixel` a degree or two from `cat`, so the sphere clusters by meaning in the order meaning
 arrived. With no partner a term hashes into its hemisphere. IDs never move (TTDB-RFC-0004).
 
-Latitude 90 is the timeline — every episode, verbatim, `lon` = its ordinal. Latitude 98 holds
+Latitude 90 is the timeline — every episode, verbatim, `lon` = its ordinal. Latitude 91 holds
+your corrections to how an episode was read, at the episode's own longitude. Latitude 98 holds
 beliefs about the design, 99 the fixture, −90 the special record.
 
 ---
@@ -182,11 +191,14 @@ beliefs about the design, 99 the fixture, −90 the special record.
 Each stage is one blueprint record in the store and one section of an RFC.
 
 1. **Read** — one input, one episode. Files are cleaned structurally; every sentence is kept.
-2. **Classify** — function word or content word; noun and verb lemmas; the predicate by the
-   first of six rules. *A candidate lemma the corpus already knows wins*, so the grammar gets
-   better at exactly the words you use.
-3. **Percept** — `sentence | subject | vector | object | polarity | quantifier`. *Cats chase
-   mice* is `cat | chase | mouse | + | -`. Your verbs become the store's edge types.
+2. **Classify** — function word or content word; noun and verb lemmas; then **segments**: a
+   clause is any alternating run of nounish and verbish segments, each a phrase or a list, and
+   six rules decide where a verbish one begins. *A candidate lemma the corpus already knows
+   wins*, so the grammar gets better at exactly the words you use.
+3. **Percept** — `sentence | subject | vector | object | polarity | quantifier`, one per verb,
+   relating the segments either side of it. *Cats chase mice* is `cat | chase | mouse | + | -`;
+   *I saw the man eat cheese* is two. Your verbs become the store's edge types. A one-word
+   statement is a mention, and every sentence's shape is written beside it.
 4. **Terms** — a THING or VECTOR record per lemma, placed on the sphere.
 5. **Consolidate** — per triple, count **episodes, not sentences**, for and against;
    conf = Laplace's rule of succession. One saying reads 170; *I like coffee* followed by *I
@@ -259,6 +271,38 @@ How several devices hearing one person could share that order is proposed in
 Every answer lights the records it touched on the sphere, opens the first one, and writes
 `last_query`, `last_answer` and `answer_records` into the store's cursor.
 
+### How it read you
+
+Under every tell, and under every sentence in an episode's panel, the page shows the sentence's
+**shape**: nounish segments boxed as things, verbish ones dashed as vectors, the words between
+them bare. The same shape is written into the episode, in the lexicon's marks:
+
+```
+said: 1 | Pixel chases mice that eat cheese.
+shape: 1 | [pixel] {chases} [mice] that {eat} [cheese].
+percept: 1 | pixel | chase | mouse | + | -
+percept: 1 | mouse | eat | cheese | + | -
+```
+
+Any reading can be overruled. Tap a word, shift-tap to take in more, then mark the span a
+*thing*, a *vector*, or *one term*. *I like fly fishing* reads `self | like | fishing`; make
+*fly fishing* one term and it reads `self | like | fly_fishing`. Do it in the preview, before
+you send, and the episode is written that way. Do it under a reply and press *keep this
+reading*, and it becomes an **amendment**: a record at `@LAT91LON<n>` beside the episode
+`@LAT90LON<n>`, holding the shape that stands and what it reads as. The episode is never
+touched, the corrected saying still counts and quotes as the saying it was, and reading the
+sentence back the episode's way withdraws the amendment.
+
+You can also type the marks, or join words yourself. *Fruit flies like bananas.* reads
+`[fruit] {flies} [like bananas]` — `fruit | fly | banana`, the famous wrong reading.
+`[Fruit flies] {like} [bananas].` fixes the segments (`fly | like | banana`), and
+`[Fruit_flies] {like} [bananas].` makes the insect one term (`fruit_fly | like | banana`). Once
+the corpus holds a joined term, the words find it unmarked.
+
+A sentence of one word is allowed. *Coffee.*, said as a statement, is kept as a **mention**:
+the term is counted and searchable, and nothing is believed about it. Typed bare, *coffee* is
+still a look-up.
+
 ---
 
 ## Make your own
@@ -297,14 +341,16 @@ global_models.
 | `@LAT98LON8` | Order, not clocks: a fleet shares a tempo | 90 | 180 | **116** |
 | `@LAT98LON4` | The lemmatizer is a guess the corpus corrects | 120 | 210 | **111** |
 | `@LAT98LON7` | Two languages, one sphere | 100 | 140 | **85** |
+| `@LAT98LON9` | A reading is a guess the owner can overrule | 150 | 160 | 66 |
 | `@LAT98LON3` | Said outranks inferred; a contradiction is kept | 190 | 200 | 51 |
 | `@LAT98LON1` | A verb is a vector, and the edge is the datum | 200 | 180 | 39 |
 | `@LAT98LON6` | Mentions are not evidence | 215 | 150 | 24 |
 | `@LAT98LON2` | Lanes are latitudes again | 230 | 60 | 6 |
 
-**First, the parser's blind spots** — relative clauses, attributive adjectives, tense and
-modality, names with spaces. Every sentence passes through them and they are the least
-settled thing here. The test for any fix is the one in `@LAT98LON5`: if it needs English in
+**First, the parser's blind spots** — nested relative clauses, attributive adjectives, tense and
+modality, disjunction, a phrase's head that is always its last word. Every sentence passes
+through them and they are the least settled thing here, though you can now correct any
+reading they get wrong. The test for any fix is the one in `@LAT98LON5`: if it needs English in
 `index.html`, it is the wrong fix. Each is a rule kind the grammar could declare.
 
 **Second, the lemmatizer.** It is right about the words you use and wrong about the first use
@@ -322,6 +368,10 @@ share no file and disagree about the time. The proposal is a band's: share a tem
 saying with how far your clock can be trusted, and call two sayings contested when their
 bounds overlap.
 
+**And the readings you correct** — `@LAT98LON9`. A correction lives beside the episode, never
+in it, and never counts twice. But a term you bind once is found everywhere after, silently at
+parse time; the `forms:` line is the only place it shows.
+
 **Not on the list: a recency rule for contradictions.** *I like coffee* on Monday and *I do not
 like coffee* on Friday is a change of mind, and the store cannot tell it from a contradiction.
 A recency window would be one line in the numbers record and a large claim about you. The
@@ -332,9 +382,12 @@ no.
 
 ## Known limits
 
-- **Subject–verb–object only.** Questions that invert word order beyond the declared forms
-  fall back to search.
-- **Modifiers are dropped.** *Black cats* is *cats*.
+- **Chains are flat.** A clause reads as alternating segments, each verb relating its
+  neighbours, so the object of a relative clause takes the next verb. Questions that invert
+  word order beyond the declared forms fall back to search. Where it reads you wrongly,
+  [correct the reading](#how-it-read-you).
+- **Modifiers are dropped.** *Black cats* is *cats*, unless you make *black cats* one term.
+- **`or` is read as `and`.** *Pixel is a cat or a dog* believes both.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.
   That is a claim about what feeding a file in means — *here is something I read* — and it is
   written down at `@LAT98LON6`.

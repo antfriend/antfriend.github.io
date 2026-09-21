@@ -23,7 +23,7 @@ umwelt:
   globe:
     frame: grammar-sphere
     origin: "@LAT0LON0"
-    mapping: "A knowledge map, not the Earth. The origin is the speaker. The prime meridian is the grammar itself - the blueprint north of the origin, the language rules south of it - because the rule that decides which side a word falls on belongs on the line between the sides. A second language's grammar sits on the antimeridian, the other line between the sides. Nounish THING terms sit in the eastern hemisphere, verbish VECTOR terms in the western. A new term sits beside the term that first gave it meaning, or where its lemma hashes when nothing did. Lat 90 is the episode timeline (lon = ordinal), lat 98 holds beliefs about this design, lat 99 the fixture, lat -90 the special record."
+    mapping: "A knowledge map, not the Earth. The origin is the speaker. The prime meridian is the grammar itself - the blueprint north of the origin, the language rules south of it - because the rule that decides which side a word falls on belongs on the line between the sides. A second language's grammar sits on the antimeridian, the other line between the sides. Nounish THING terms sit in the eastern hemisphere, verbish VECTOR terms in the western. A new term sits beside the term that first gave it meaning, or where its lemma hashes when nothing did. Lat 90 is the episode timeline (lon = ordinal), lat 91 the owner's amendments to how an episode was read (same lon), lat 98 holds beliefs about this design, lat 99 the fixture, lat -90 the special record."
     note: "Latitude lanes are available here because the globe is a knowledge map again - the mechanism global_models had to replace with a lane: field. See @LAT98LON2."
 cursor_policy:
   max_preview_chars: 256
@@ -78,7 +78,7 @@ touched:1789258020
    [the rules](lat-80lon0). On the
    far side, the antimeridian, [a second language](lat-10lon180) — ask in Spanish and it
    reasons over what you said in English. East and west, the owner's own terms. Up at lat 90,
-   every episode, verbatim.
+   every episode, verbatim; at lat 91, beside each, any reading of it the owner corrected.
 
 **The runtime holds no words.** `index.html` knows how to split, match, strip a suffix, walk a
 typed edge and fill a slot. It does not know that *the* is a determiner, that *mice* is the
@@ -101,6 +101,7 @@ term_lat: -60 60
 adjacent: 0.5 3
 step: 0.1
 episode_lane: 90
+amend_lane: 91
 self_lemma: self
 ```
 
@@ -134,14 +135,17 @@ offered as a store instead.
 - **Tokens**: lowercase; runs of letters and digits with inner apostrophes. `whole:` entries
   replace a token outright (*can't* → *can not*); `contraction:` entries split a suffix off
   (*don't* → *do not*). A `list_sep` comma survives as a token because it separates
-  coordinated noun phrases.
+  the members of a list. The owner's marks (`nounish_marks`, `verbish_marks`) force the
+  tokens between them, and a `phrasal_join` binds two words into one (`ice_cream`); a run of
+  unmarked words that already names a term is bound the same way.
 - **Language**: a store may hold several grammars, told apart by `lang:`. Each sentence is
   read by the one that recognises most of its words — closed-class words, seed verbs,
   irregular forms — with ties to the first; a question is answered in its own language. See
   [two languages, one sphere](lat98lon7).
 - **Clauses**: split at `clause_break` characters and at `subord` words (*because*, *when*).
   A `conj` word (*and*, *but*) splits the clause **only** when both sides carry a predicate;
-  otherwise it coordinates noun phrases.
+  straight before a verb it starts a clause that keeps the subject (*…and eat cheese*);
+  otherwise it joins a list.
 
 Every sentence is kept verbatim in the episode as a `said:` line (cut at `said_max_chars`),
 whether or not it yields a percept — the corpus is the sum of the words, not the sum of
@@ -153,6 +157,7 @@ what parsed.
 
 **Blueprint 2 — Classify: nounish or verbish**
 src: RFCs/TTG-RFC-0002-Semantic-Percepts.md §3
+src: RFCs/TTG-RFC-0005-Shapes-and-Amendments.md §2
 
 Every token is a **function word** (it belongs to a `class:` in [lexicon](lat-10lon0)) or a
 **content word**. Every content word gets two lemmas from [morphology](lat-20lon0): a noun
@@ -161,20 +166,34 @@ rule produces candidates, and **a candidate the corpus already knows wins**, the
 [seed vectors](lat-30lon0), then the rule's default. The grammar is primitive and the
 owner's words correct it: see [the lemmatizer belief](lat98lon4).
 
-The predicate of a clause is found by the first rule that fires:
+A clause is any alternating run of **nounish** and **verbish** segments — `N`, `V`, `N V`,
+`N V N`, `N V N V N` … — each a whole phrase or a list. Read left to right, a verbish
+segment begins where one of these rules fires:
 
-1. a content word right after an `aux` or `modal` (skipping `neg` and `adverb`) → **verb**;
+1. an `aux` or `modal` (skipping `neg` and `adverb`), carrying through the `cop`, `hav` or
+   content word after it → **verb**;
 2. a `cop` (copula) word → if the next content word takes a verb rule ending in *-ing*, that is the
-   verb (progressive); otherwise the clause is a **copula**;
-3. a `hav` word with no other verb → the `possession` vector;
-4. a content word, after at least one noun phrase, whose verb lemma is a known VECTOR term
+   verb (progressive); a declared `phrase:` or a `prep` after it joins it (*is part of*,
+   *is in*); otherwise the segment is a **copula**;
+3. a `hav` word with no participle after it → the `possession` vector;
+4. a content word, after a nounish segment has begun, whose verb lemma is a known VECTOR term
    or a seed vector → **verb**;
-5. a content word, after a noun phrase has begun, that runs straight into a `det`, `poss`
+5. a content word, after a nounish segment has begun, that runs straight into a `det`, `poss`
    or `quant` word, or whose verb rule is the `participle_ending` → **verb**;
 6. exactly three content words and no function words at all → the middle one is the
    **verb**. Two bare content words are never a clause: *morning tea* is a search.
 
-Everything left is **nounish**. A noun phrase is an optional `det`/`poss`/`quant`, then
+A verbish segment carries on through a `prep` that opens a noun phrase (*live in houses*)
+and through an `infinitive` before a verb (*want to eat*). **The alternation is the
+constraint**: a content word straight after a verbish segment is nounish (*like fly
+fishing*), and a second verb in a clause needs a cue — a `relative` word before it (*mice
+that eat*), a `conj`, or a noun phrase after it (*saw the man eat cheese*). A `conj` or
+`list_sep` between two segments of one kind makes one list; two segments of one kind side by
+side are one. So every labelling is a valid shape, and the owner may relabel any of it
+([Percept](lat30lon0)).
+
+Everything left is **nounish**. A sentence of one word is nounish unless the corpus knows the
+word only as a verb. A noun phrase is an optional `det`/`poss`/`quant`, then
 content words; its **head** is the last. A phrase introduced by a `prep` is a prepositional
 phrase, never a subject or object. `self` words resolve to `self_lemma`; `anaphor` words
 resolve to the most recent subject head in the same episode, or drop.
@@ -185,6 +204,7 @@ resolve to the most recent subject head in the same episode, or drop.
 
 **Blueprint 3 — Percept: the unit of what was said**
 src: RFCs/TTG-RFC-0002-Semantic-Percepts.md §4
+src: RFCs/TTG-RFC-0005-Shapes-and-Amendments.md §3
 
 A **percept** is one typed, directed claim: a THING, a VECTOR, and a THING or nothing.
 
@@ -192,19 +212,26 @@ A **percept** is one typed, directed claim: a THING, a VECTOR, and a THING or no
 percept: <sentence> | <subject> | <vector> | <object or -> | <+ or -> | <* all, ~ some, or ->
 ```
 
-- **Verb clause** → `subject | verb | object`. A `prep` right after the verb joins it:
-  *live in houses* → `live_in | house`. No object and no preposition → object `-`.
+- **Chain** → each verbish segment takes the nounish segment on its left as subject and the
+  one on its right as object: `N1 V1 N2 V2 N3` is `(N1 V1 N2)` and `(N2 V2 N3)` — *I saw
+  the man eat cheese* is `self see man` and `man eat cheese`.
+- **Verb** → its verbs and particles joined by `phrasal_join`: *live in houses* →
+  `live_in | house`, *want to eat cheese* → `want_to_eat | cheese`. No object → `-`.
 - **Copula** → a `phrase:` from [vector algebra](lat-40lon0) at the start of the complement
   names the vector (*part of* → `part_of`); a `prep` names it directly (*is in the box* →
   `in`); otherwise the complement is a **class** (`class_of` role) when it carries a
   `det`/`quant`, when its plural rule changed it, or when it is already a THING with
   beliefs — and a **property** (`property` role) when it is a bare word.
-- **Coordination** distributes: *cats and dogs eat meat* is two percepts.
-- **Polarity** is `-` when a `neg` word or a `quant_none` word is in the clause.
+- **Lists** distribute: *cats and dogs eat meat* is two percepts, *birds fly, swim and sing*
+  three.
+- **Polarity** is `-` when the verb, the subject or the object carries a `neg` word, or the
+  subject a `quant_none`: *I like cats but not dogs* is `like cat +` and `like dog -`.
 - **Quantifier**: `quant_some` → `~`; `quant_all`, or a `generic_det` (*a*, *an*), → `*`.
 - A prepositional phrase after the object, or content words that formed no percept, add
   `comention` percepts between adjacent heads, at most `with_max_pairs` per sentence.
   [Mentions are not evidence](lat98lon6): they are searchable and never become beliefs.
+- **Mention** → a subject or vector of `-`. *Coffee.* is `coffee | - | -`; *Feed the cat.*
+  is `- | feed | cat`. Counted in `seen`, searchable, never a belief.
 
 Percepts live in the episode that perceived them, beside the `said:` line they came from.
 An episode is written once and **never rewritten**; it is the owner's episodic memory, and
@@ -213,8 +240,15 @@ it is how every belief proves where it came from.
 ```
 @LAT90LON<n> | created | updated | relates:perceives@<term>,...
 **Episode n — source**
-ttdb-episode block: source:, at:, said: lines, percept: lines
+ttdb-episode block: source:, at:, said: lines, shape: lines, percept: lines
 ```
+
+**The owner's reading.** Each sentence's shape is written beside it in the lexicon's marks —
+`shape: 1 | [birds] {can fly and swim}.` — and reads back to itself. Marks typed into the
+input overrule the parser, and a join (`ice_cream`) makes one term. A sentence already said
+is re-read by an **amendment**: one record per episode at `@LAT91LON<n>`, beside
+`@LAT90LON<n>`, holding the shape that stands and its percepts. Consolidation takes those in
+place of the episode's own, still as that episode's saying, and the episode is never touched.
 
 **Only the lane is the owner's words.** An episode is a `ttdb-episode` block at latitude
 `episode_lane`. The same block anywhere else — [the fixture](lat99lon1) — is checked for
@@ -367,13 +401,14 @@ offers it back as a download; it can also open any store. On every write:
   — the mmpdb block, this blueprint, the grammar, the belief lane, the fixture;
 - in a managed term record only the header's `updated` and `relates`, the `[ew]` block and
   the `ttdb-term` fence are replaced; prose the owner wrote there stays;
-- episodes are appended and never touched again; new records go in before the first lane-98
-  record, in the order they were made;
+- episodes are appended and never touched again; an amendment (lat 91) is the one record per
+  episode that is rewritten in place, and is deleted when it amends nothing; new records go in
+  before the first lane-98 record, in the order they were made;
 - parsing a store and writing it back unchanged reproduces the file exactly.
 
 **Making your own.** This file is the kit. To start a corpus of your own, keep everything on
-the meridian and in lanes 98–99 and delete every lat-90 episode and every east/west term
-record except Home (the page's *Start empty* does this). To make a grammar for another
+the meridian and in lanes 98–99 and delete every lat-90 episode, every lat-91 amendment and every
+east/west term record except Home (the page's *Start empty* does this). To make a grammar for another
 language, rewrite the records south of the origin — lexicon, morphology, seed vectors,
 algebra, questions, replies — and leave the runtime alone; the constraints in `mmpdb` say
 what a runtime may and may not contain. To make a new runtime, the nine blueprint records
@@ -404,11 +439,15 @@ with `;globalThis.<name> = PG;` appended (`tools/harness.mjs` does exactly this 
 | Call | Returns | Mutates `S` |
 |---|---|---|
 | `openStore(text)` | `S`, the open store | — |
-| `answer(S, text, now, source?)` | a reply (below) | tell: a new episode and its terms. Every intent: `asked` on purchased terms, the cursor |
+| `answer(S, text, now, source?, shapes?)` | a reply (below) | tell: a new episode and its terms, read from `shapes` (one shape per sentence) where given. Every intent: `asked` on purchased terms, the cursor |
 | `ingestFile(S, name, text, now)` | `{ ep, msg }`, or `null` for no sentences | one episode for the whole file, the cursor |
 | `replyText(S, reply)` | the reply as plain text | — |
 | `serializeStore(S.st)` | the store text — persist it yourself, after every call that mutates | — |
-| `startEmpty(S, now)` | — | deletes the lane-90 episodes and every term but `self_lemma` |
+| `startEmpty(S, now)` | — | deletes the lane-90 episodes, the lane-91 amendments and every term but `self_lemma` |
+| `shapeOf(S, text)` | `{ shape, items, percepts, lang }`: how the text reads — marks in it overrule the parser; `items` are `{ w, cls }`, `cls` `N`, `V` or empty | — |
+| `shapeText(S, items)` | the shape those items make, in the grammar's marks | — |
+| `readingsOf(S, episodeId)` | `[{ n, text, shape, amended }]`: each sentence with the reading that stands | — |
+| `amendReply(S, episodeId, n, shape, now)` | a reply as for a tell, or `null`; `amend(…)` returns the bare write | the episode's amendment record, terms, the cursor |
 | `interpret(S, text)` | `{ intent, purchase, … }` without acting | — |
 | `verify(S, s, v, o)`, `objectsOf(S, s, [v])`, `subjectsOf(S, v, o)`, `portrait(S, lemma)`, `searchSaid(S, [lemma])` | raw reasoning, lemmas in | — |
 
@@ -424,7 +463,7 @@ character that stands for the hole a question asks the corpus to fill.
 **The store object `S`.** `st` (parsed chunks; the source of truth, serialise this); `G`
 (the grammar in use, normally the first language's) and `grammars` (one per `lang:`); `things` and `vectors` (Map lemma → `{ chunk, cls, lemma, forms,
 asked }`); `episodes` (lane chunks) and `offLane` (other episode blocks, checked only);
-`trips` (Map `"s|v|o"` → `{ s, v, o, pol, conf, fr, ag, decided, sources }`); `derived`
+`amends` (Map episode longitude → `{ chunk, entries }`, the amendment on `amend_lane`); `trips` (Map `"s|v|o"` → `{ s, v, o, pol, conf, fr, ag, decided, sources }`); `derived`
 (Map `"s|v|o"` → a rule conclusion `{ s, v, o, pol, rule, proof }`, never written); `superseded` (Map
 `"s|v|o"` → `{ fact, by }`, each `{ s, v, o, t, path }`: what an `exclusive` vector retired and the later
 fact that retired it, never written); `said` (Map
@@ -432,7 +471,7 @@ episode ID → Map sentence number → sentence); `malformed` (`{ id, line }`). 
 lists records as `{ id, key, lat, lon, title, body, edges, conf, sal, eps, … }`.
 
 **A reply.** `{ intent, lang, query, verdict, head, items, portraits, search, notes, purchase:{
-found, missing }, records, episode }`. Each item is a ground `{ kind, pol, path, quotes, … }`
+found, missing }, records, episode }`; after a tell, `episode` is `{ id, percepts, mentions, conflicts, superseded, … }`. Each item is a ground `{ kind, pol, path, quotes, … }`
 where `kind` is `direct` (print with `label_said`), `inference` (`label_inferred`, and it
 carries `via`) `conflict` (`label_contested`) or `superseded` (`label_superseded`, carrying `by`, a ground of
 the first two kinds printed after `superseded_by`); `path` is the chain of beliefs; `quotes` are
@@ -445,7 +484,9 @@ is the host's job too. `records` are IDs to highlight; `search` is `{ ep, n, tex
 selects a record on click (one delegated listener); the value is `lat|lon` to four decimals.
 **Every chrome string lives in a `data-*` attribute on the markup**, never in the script:
 `#storeinfo[data-seed|data-local|data-opened]`, `#mode[data-<intent in kebab case>]`,
-`#reset[data-confirm]`, `#empty[data-confirm]`, `#files[data-confirm-store]`, `#log[data-quota]`. The
+`#reset[data-confirm]`, `#empty[data-confirm]`, `#files[data-confirm-store]`, `#log[data-quota]`,
+`#preview[data-nounish|data-verbish|data-join|data-keep|data-amended]` — the labels of a reading's
+controls, where each word is a button carrying `data-row`. The
 store persists under `localStorage` key `personal_grimoire:store:v1`; `?seed` ignores that copy
 and `?ask=<text>` asks on load. The page fetches `personal_grimoire_ttdb.md` beside itself.
 
@@ -469,7 +510,7 @@ because which marks do that is a fact about a language.
 kind: lexicon
 lang: en
 class: det | a an the this that these those
-class: poss | your his her its our their
+class: poss | my your his her its our their
 class: quant_all | all every each any
 class: quant_some | some many most few several
 class: quant_none | no
@@ -478,6 +519,8 @@ class: anaphor | it they them he him she
 class: prep | in on at of to from by with for about into onto over under near between through after before during without within across against toward towards among inside outside behind beside beyond
 class: conj | and or but nor
 class: subord | because so if then than when while although though since unless whereas
+class: relative | that which who
+class: infinitive | to
 class: aux | do does did
 class: cop | am is are was were be been being
 class: hav | has have had having
@@ -507,6 +550,8 @@ clause_break: ; :
 question_mark: ?
 list_sep: ,
 generic_det: a an
+nounish_marks: [ ]
+verbish_marks: { }
 ```
 
 ---
@@ -669,6 +714,7 @@ role: comention | with
 role: episode_edge | perceives
 role: negation_prefix | not_
 role: phrasal_join | _
+role: amend_edge | amends
 vector: is_a | transitive | - | is a
 vector: has_property | - | - | is
 vector: has | - | part_of | has
@@ -737,6 +783,9 @@ exception: {term} is an exception — {via} would suggest otherwise.
 no_purchase: No purchase: {words}.
 noted: Noted {percepts} from {sentences}.
 noted_nothing: Kept your words, but no percept formed — nothing to reason along yet.
+noted_mention: Noted {terms} — named, with nothing said about it yet.
+amended: Read again as you marked it: {percepts}.
+amend_title: Amendment {n}
 contradicts: This disagrees with something you said before.
 supersedes: This replaces something you said before.
 label_superseded: no longer
@@ -784,6 +833,7 @@ suggest_eps_min: 40
 with_max_pairs: 3
 said_max_chars: 400
 rule_max_body: 3
+phrase_max_words: 4
 ```
 
 ---
@@ -824,7 +874,7 @@ sentence is read by whichever grammar knows more of its words (TTG-RFC-0001 §11
 kind: lexicon
 lang: es
 class: det | el la los las un una unos unas este esta estos estas ese esa esos esas
-class: poss | su sus tu tus nuestro nuestra nuestros nuestras
+class: poss | mi mis su sus tu tus nuestro nuestra nuestros nuestras
 class: quant_all | todo toda todos todas cada
 class: quant_some | algún alguna algunos algunas muchos muchas pocos pocas varios varias
 class: quant_none | ningún ninguno ninguna
@@ -848,6 +898,8 @@ clause_break: ; :
 question_mark: ?
 list_sep: ,
 generic_det: un una
+nounish_marks: [ ]
+verbish_marks: { }
 ```
 
 ---
@@ -992,6 +1044,9 @@ exception: {term} es una excepción — {via} sugeriría lo contrario.
 no_purchase: Sin agarre: {words}.
 noted: Anotado: {percepts} de {sentences}.
 noted_nothing: Guardé tus palabras, pero no se formó ninguna percepción.
+noted_mention: Anotado {terms} — nombrado, sin que se diga nada de ello todavía.
+amended: Leído de nuevo como lo marcaste: {percepts}.
+amend_title: Enmienda {n}
 contradicts: Esto contradice algo que dijiste antes.
 supersedes: Esto reemplaza algo que dijiste antes.
 label_superseded: ya no
@@ -1150,6 +1205,9 @@ at: 1789257600
 said: 1 | Birds are animals.
 said: 2 | Birds can fly.
 said: 3 | Birds have feathers.
+shape: 1 | [birds] {are} [animals].
+shape: 2 | [birds] {can fly}.
+shape: 3 | [birds] {have} [feathers].
 percept: 1 | bird | is_a | animal | + | -
 percept: 2 | bird | fly | - | + | -
 percept: 3 | bird | has | feather | + | -
@@ -1210,6 +1268,9 @@ at: 1789257660
 said: 1 | A penguin is a bird.
 said: 2 | Penguins do not fly.
 said: 3 | Penguins swim.
+shape: 1 | [a penguin] {is} [a bird].
+shape: 2 | [penguins] {do not fly}.
+shape: 3 | [penguins] {swim}.
 percept: 1 | penguin | is_a | bird | + | *
 percept: 2 | penguin | fly | - | - | -
 percept: 3 | penguin | swim | - | + | -
@@ -1291,6 +1352,9 @@ at: 1789257720
 said: 1 | Mammals are animals.
 said: 2 | Mammals have fur.
 said: 3 | Cats are mammals.
+shape: 1 | [mammals] {are} [animals].
+shape: 2 | [mammals] {have} [fur].
+shape: 3 | [cats] {are} [mammals].
 percept: 1 | mammal | is_a | animal | + | -
 percept: 2 | mammal | has | fur | + | -
 percept: 3 | cat | is_a | mammal | + | -
@@ -1390,6 +1454,9 @@ at: 1789257780
 said: 1 | Cats chase mice.
 said: 2 | A mouse is a mammal.
 said: 3 | Mice eat cheese.
+shape: 1 | [cats] {chase} [mice].
+shape: 2 | [a mouse] {is} [a mammal].
+shape: 3 | [mice] {eat} [cheese].
 percept: 1 | cat | chase | mouse | + | -
 percept: 2 | mouse | is_a | mammal | + | *
 percept: 3 | mouse | eat | cheese | + | -
@@ -1489,6 +1556,9 @@ at: 1789257840
 said: 1 | Pixel is a cat.
 said: 2 | I love Pixel.
 said: 3 | Pixel sleeps in the sun.
+shape: 1 | [pixel] {is} [a cat].
+shape: 2 | [i] {love} [pixel].
+shape: 3 | [pixel] {sleeps in} [the sun].
 percept: 1 | pixel | is_a | cat | + | -
 percept: 2 | self | love | pixel | + | -
 percept: 3 | pixel | sleep_in | sun | + | -
@@ -1626,6 +1696,8 @@ source: typed
 at: 1789257900
 said: 1 | I drink tea in the morning.
 said: 2 | Tea is warm.
+shape: 1 | [i] {drink} [tea in the morning].
+shape: 2 | [tea] {is} [warm].
 percept: 1 | self | drink | tea | + | -
 percept: 1 | tea | with | morning | + | -
 percept: 2 | tea | has_property | warm | + | -
@@ -1703,6 +1775,8 @@ source: typed
 at: 1789257960
 said: 1 | Coffee is bitter.
 said: 2 | I like coffee.
+shape: 1 | [coffee] {is} [bitter].
+shape: 2 | [i] {like} [coffee].
 percept: 1 | coffee | has_property | bitter | + | -
 percept: 2 | self | like | coffee | + | -
 ```
@@ -1717,6 +1791,7 @@ percept: 2 | self | like | coffee | + | -
 source: typed
 at: 1789258020
 said: 1 | I do not like coffee.
+shape: 1 | [i] {do not like} [coffee].
 percept: 1 | self | like | coffee | - | -
 ```
 
@@ -1832,25 +1907,38 @@ so a wrong merge can at least be seen.
 
 ---
 
-@LAT98LON5 | created:1789257600 | updated:1789257600 | relates:supports@LAT20LON0,supports@LAT30LON0
+@LAT98LON5 | created:1789257600 | updated:1789948800 | relates:supports@LAT20LON0,supports@LAT30LON0
 [ew]
 conf:70
-rev:0
+rev:1
 sal:190
-touched:1789257600
+touched:1789948800
 [/ew]
 
 **BELIEF — What the parser cannot see, and why that list is the roadmap.**
 
 The highest EPS in the design, because every sentence goes through it and it is the least
-settled thing here. The parser does not see:
+settled thing here. Since [TTG-RFC-0005](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md) it reads
+any alternating run of nounish and verbish segments, lists of either, relative words,
+infinitives and one-word sentences — *mice that eat cheese*, *saw the man eat cheese*,
+*fly, swim and sing*. It still does not see:
 
-- **Relative clauses** — *cats that hunt are fast* yields nonsense or nothing.
-- **Modifiers** — *black cats* is *cats*; the adjective is dropped, not recorded.
+- **Nesting** — a chain is flat, so the object of a relative clause takes the next verb:
+  *cats that chase mice are fast* reads `mouse has_property fast`.
+- **Modifiers** — *black cats* is *cats*; the adjective is dropped unless the owner binds the
+  phrase into one term (`black_cat`).
 - **Tense and modality** — *birds fly*, *birds flew* and *birds might fly* are one percept.
-- **Word order other than subject–verb–object**, and questions that invert it beyond the
-  forms in [question forms](lat-50lon0).
-- **Numbers, dates and names with spaces** — *New York* is two things.
+- **Disjunction and stance** — *a cat or a dog* believes both; *I doubt cats like fish*
+  believes the second half.
+- **Head position** — a phrase's head is its last word, which is English: *el gato negro*
+  reads *negro*.
+- **Word order other than a chain**, and questions that invert it beyond the forms in
+  [question forms](lat-50lon0).
+- **Numbers, dates and names with spaces** — *New York* is two things until the owner writes
+  `new_york` once.
+
+What changed is not only the list. Where the parser reads a sentence wrongly, the owner can
+now say how it reads, and [that correction is kept](lat98lon9).
 
 Each is a rule kind the grammar could declare and the runtime could learn to apply, and none
 is a list of words. That is the test of whether a fix belongs here: if it needs English in
@@ -1940,6 +2028,35 @@ different grammars are a band playing different songs.
 
 Low conf because none of it runs yet; high salience because it decides whether *personal* can
 mean more than one device. Expansion: [TTG-RFC-0004 §4](RFCs/TTG-RFC-0004-Time-and-the-Fleet.md).
+
+---
+
+@LAT98LON9 | created:1789948800 | updated:1789948800 | relates:supports@LAT30LON0,refines@LAT98LON5,refines@LAT98LON4
+[ew]
+conf:150
+rev:0
+sal:160
+touched:1789948800
+[/ew]
+
+**BELIEF — A reading is the parser's guess, and the owner's correction is kept beside the words.**
+
+[The lemmatizer belief](lat98lon4) says the corpus corrects the grammar one word at a time.
+Shapes let the owner correct it one reading at a time, and the question is where a correction
+lives. Not in the episode: an episode is the owner's words and is never rewritten, and the
+first reading is itself a fact — what the grammar of the day made of them. Not in the grammar:
+one sentence's reading is not a rule of the language. So beside the episode, on its own lane at
+its own longitude: an **amendment** ([TTG-RFC-0005](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md) §5).
+
+Two consequences are deliberate. An amended saying still counts, orders and quotes as the
+saying it was: a correction is not a second saying, so it can outvote nothing. And a
+correction can teach: once the owner binds *ice cream* into one term, the words find that term
+unmarked ever after, the way a known lemma wins a tie. That is also the risk — a binding made
+once applies everywhere, visibly on the term's `forms:` line but silently at parse time. Inside
+marks it never applies, so any reading can still be written back exactly as the owner means it.
+
+Mid conf because the chain is new and flat; mid salience because every sentence has a reading
+and most will never be touched.
 
 ---
 

@@ -103,6 +103,17 @@ for (const [, q, intent, says] of rows){
      "the 'What no longer holds' example is what the engine says", JSON.stringify(plain));
   const p = PG.answer(PG.openStore(store), "Can penguins fly?", 1789400000);
   ok(flat.includes("*" + p.notes[0].replace(/\.$/, "") + "*"), "the penguin exception is quoted exactly", p.notes[0]);
+  // 'How it read you': every reading the README quotes is the engine's
+  const reads = [["Pixel chases mice that eat cheese.", "[pixel] {chases} [mice] that {eat} [cheese]."],
+                 ["Fruit flies like bananas.", "[fruit] {flies} [like bananas]."]];
+  const says = [["Fruit flies like bananas.", "fruit | fly | banana"], ["[Fruit flies] {like} [bananas].", "fly | like | banana"],
+                ["[Fruit_flies] {like} [bananas].", "fruit_fly | like | banana"], ["I like fly fishing.", "self | like | fishing"],
+                ["[i] {like} [fly_fishing].", "self | like | fly_fishing"]];
+  const trip = t => PG.shapeOf(PG.openStore(store), t).percepts.map(x => [x.s, x.v, x.o].join(" | ")).join();
+  const wrongShape = reads.filter(([t, sh]) => PG.shapeOf(PG.openStore(store), t).shape !== sh || !flat.includes(sh.replace(/\.$/, "")));
+  const wrongSay = says.filter(([t, want]) => trip(t) !== want || !flat.includes("`" + want + "`"));
+  ok(!wrongShape.length && !wrongSay.length, "the shapes and readings 'How it read you' quotes are the engine's",
+     wrongShape.concat(wrongSay).map(x => x[0]).join(" ; "));
 }
 
 console.log("\n== README roadmap matches the lane-98 weights ==");

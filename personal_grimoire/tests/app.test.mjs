@@ -97,7 +97,7 @@ section("parsing: nounish, verbish, percepts");
     ["Cats chase mice but they don't eat grass.", ["cat | chase | mouse | + | -", "cat | eat | grass | - | -"]],
     ["The children were running.",        ["child | run | - | + | -"]],
     ["Pixel purrs when he is happy.",     ["pixel | purr | - | + | -", "pixel | has_property | happy | + | -"]],
-    ["morning tea",                       []]
+    ["morning tea",                       ["tea | - | - | + | -"]]
   ];
   for (const [text, want] of cases){
     const got = PG.perceiveSentence(S, text, { last:null }).percepts.map(pk);
@@ -108,6 +108,123 @@ section("parsing: nounish, verbish, percepts");
   ok(PG.nounLemma(S, "mice").lemma === "mouse" && PG.nounLemma(S, "glass").lemma === "glass", "irregular plural and a guarded -ss");
   ok(PG.verbLemma(S, "stopped").lemma === "stop" && PG.verbLemma(S, "called").lemma === "call", "undouble, except where double_keep says not");
   ok(PG.verbLemma(S, "chasing").lemma === "chase", "a seed vector breaks the tie between chas and chase");
+}
+
+section("shapes: alternating segments, lists and mentions (TTG-RFC-0005)");
+{
+  const S = fresh();
+  const cases = [
+    ["Pixel chases mice that eat cheese.",      "[pixel] {chases} [mice] that {eat} [cheese].",      ["pixel | chase | mouse | + | -", "mouse | eat | cheese | + | -"]],
+    ["I saw the man eat cheese.",               "[i] {saw} [the man] {eat} [cheese].",               ["self | see | man | + | -", "man | eat | cheese | + | -"]],
+    ["My grandmother taught me to bake bread.", "[my grandmother] {taught} [me] {to bake} [bread].", ["grandmother | teach | self | + | -", "self | bake | bread | + | -"]],
+    ["Cats that hunt are fast.",                "[cats] that {hunt are} [fast].",                    ["cat | hunt | - | + | -", "cat | has_property | fast | + | -"]],
+    ["I like cats but not dogs.",               "[i] {like} [cats but not dogs].",                   ["self | like | cat | + | -", "self | like | dog | - | -"]],
+    ["I bought eggs, milk and bread.",          "[i] {bought} [eggs, milk and bread].",              ["self | buy | egg | + | -", "self | buy | milk | + | -", "self | buy | bread | + | -"]],
+    ["Birds fly, swim and sing.",               "[birds] {fly, swim and sing}.",                     ["bird | fly | - | + | -", "bird | swim | - | + | -", "bird | sing | - | + | -"]],
+    ["Cats chase and eat mice.",                "[cats] {chase and eat} [mice].",                    ["cat | chase | mouse | + | -", "cat | eat | mouse | + | -"]],
+    ["Cats are mammals and have fur.",          "[cats] {are} [mammals] and {have} [fur].",          ["cat | is_a | mammal | + | -", "cat | has | fur | + | -"]],
+    ["I want to eat cheese.",                   "[i] {want to eat} [cheese].",                       ["self | want_to_eat | cheese | + | -"]],
+    ["I went to work.",                         "[i] {went to} [work].",                             ["self | go_to | work | + | -"]],
+    ["I had a good drink.",                     "[i] {had} [a good drink].",                         ["self | has | drink | + | -"]],
+    ["My cat sleeps.",                          "[my cat] {sleeps}.",                                ["cat | sleep | - | + | -"]],
+    ["Coffee.",                                 "[coffee].",                                         ["coffee | - | - | + | -"]],
+    ["Swim.",                                   "{swim}.",                                           ["- | swim | - | + | -"]]
+  ];
+  for (const [text, shape, want] of cases){
+    const r = PG.perceiveSentence(S, text, { last:null });
+    const got = r.percepts.map(pk);
+    ok(r.shape === shape && JSON.stringify(got) === JSON.stringify(want), JSON.stringify(text) + " reads " + shape, r.shape + "  " + got.join(" ; "));
+  }
+  // every reading reads back as itself, in either language: the shape is a faithful edit surface
+  const texts = cases.map(c => c[0]).concat(["Cats are mammals.", "A wheel is part of a car.", "Cats chase mice but they don't eat grass.",
+    "Pixel purrs when he is happy.", "I drink tea in the morning.", "Yes, I like tea.", "morning tea",
+    "Los gatos no pueden volar.", "La rueda es parte del coche.", "El gato está en la caja.", "Mi gato duerme."]);
+  const drift = texts.filter(t => {
+    const a = PG.shapeOf(S, t), b = PG.shapeOf(S, a.shape);
+    return a.shape !== b.shape || a.percepts.map(pk).join() !== b.percepts.map(pk).join();
+  });
+  ok(drift.length === 0, "every shape reads back to the same shape and the same percepts (" + texts.length + " sentences)", drift.join(" ; "));
+  ok(PG.shapeOf(S, "Mi gato duerme.").lang === "es" && PG.shapeOf(S, "Mi gato duerme.").percepts.map(pk).join() === "gato | dormir | - | + | -",
+     "a possessive is part of its thing in Spanish too, not a second subject");
+
+  // marks overrule the parser; a join binds words into one term
+  const flip = PG.perceiveSentence(S, "[I] {like fly fishing}.", { last:null });
+  ok(flip.percepts.map(pk).join() === "self | like_fly_fish | - | + | -" && flip.shape === "[i] {like fly fishing}.", "marks overrule the reading: a verbish segment is one vector", flip.percepts.map(pk).join());
+  const W = fresh();
+  const joined = PG.answer(W, "I love ice_cream.", T0);
+  ok(joined.episode.percepts.map(pk).join() === "self | love | ice_cream | + | -" && W.said.get(joined.episode.id).get(1) === "I love ice cream.",
+     "a joined phrase is one term, and the said line keeps the owner's words");
+  const later = PG.answer(W, "Ice cream is cold.", T0 + 60);
+  ok(later.episode.percepts.map(pk).join() === "ice_cream | has_property | cold | + | -", "once the corpus holds the phrase, the words find it unmarked");
+  ok(PG.perceiveSentence(W, "[ice cream] {is} [cold].", { last:null }).percepts.map(pk).join() === "cream | has_property | cold | + | -",
+     "inside marks the owner's reading stands: only an explicit join binds");
+
+  // one segment alone: said as a statement it is a mention; bare, it is a look-up
+  const M = fresh(), seen = () => M.seenCounts.get("thing|coffee") || 0, before = seen();
+  const c = PG.answer(M, "Coffee.", T0);
+  ok(c.intent === "perceive" && c.verdict === PG.say(M.G, "noted_mention", { terms:"coffee" }) && c.episode.mentions.length === 1 && !c.episode.percepts.length,
+     "a one-word statement is kept as a mention", c.verdict);
+  ok(seen() === before + 1 && !M.trips.has("coffee|-|-") && M.trips.get("coffee|has_property|bitter").fr === 1, "a mention is seen, never believed");
+  ok(PG.answer(M, "coffee", T0).intent === "portrait" && PG.answer(M, "morning tea", T0).intent === "portrait", "the same words unstopped are a look-up");
+  const sw = PG.answer(M, "Swim.", T0);
+  ok(sw.intent === "perceive" && sw.episode.mentions.map(pk).join() === "- | swim | - | + | -", "a lone word the corpus uses only as a verb is verbish");
+  ok(PG.answer(M, "Can penguins fly?", T0).verdict === PG.say(M.G, "deny"), "a question never checks a mention");
+
+  // shapes are written with the episode; marks never reach the said line
+  const E = fresh();
+  const e1 = PG.answer(E, "[Birds] {can fly and swim}.", T0);
+  const text = PG.serializeStore(E.st);
+  ok(text.includes("said: 1 | Birds can fly and swim.\nshape: 1 | [birds] {can fly and swim}.\npercept: 1 | bird | fly |"),
+     "the episode records each sentence's shape between its said and percept lines, marks stripped from the words");
+  const e2 = PG.answer(E, "I like fly fishing.", T0 + 60, null, ["[i] {like} [fly_fishing]."]);
+  ok(e2.episode.percepts.map(pk).join() === "self | like | fly_fishing | + | -" && E.said.get(e2.episode.id).get(1) === "I like fly fishing.",
+     "a reading passed with the text is how the episode is written the first time");
+  ok(PG.readingsOf(E, e1.episode.id).map(x => x.shape).join() === "[birds] {can fly and swim}." &&
+     PG.readingsOf(E, "@LAT90LON1")[0].shape === "[birds] {are} [animals]." && !PG.readingsOf(E, "@LAT90LON1")[0].amended,
+     "every sentence of every episode has a reading, written or recomputed");
+}
+
+section("amendments: the owner's reading kept beside the words (TTG-RFC-0005 §5)");
+{
+  const S = fresh();
+  const told = PG.answer(S, "I like fly fishing.", T0), ep = told.episode.id;
+  const epText = S.episodes.find(c => c.rec.id === ep).text;
+  const r = PG.amendReply(S, ep, 1, "[i] {like} [fly_fishing].", T0 + 60);
+  ok(r.verdict === PG.say(S.G, "amended", { percepts:"1 percept" }) && r.items[0].path[0].o === "fly_fishing" &&
+     r.items[0].quotes[0].text === "I like fly fishing." && r.items[0].quotes[0].ep === ep,
+     "an amendment answers as a tell does, quoting the sentence it re-reads", r.verdict);
+  ok(S.trips.has("self|like|fly_fishing") && !S.trips.has("self|like|fishing"), "the amended reading stands in place of the episode's own");
+  ok(S.episodes.find(c => c.rec.id === ep).text === epText, "the episode itself is never rewritten");
+  const e = S.trips.get("self|like|fly_fishing");
+  ok(e.sources.length === 1 && e.sources[0].ep === ep && e.sources[0].n === 1, "the saying is still the episode's: its order, its count, its quote");
+  const out = PG.serializeStore(S.st);
+  ok(/\n@LAT91LON9 \| created:1789400060 \| updated:1789400060 \| relates:amends@LAT90LON9\n/.test(out) &&
+     out.includes("shape: 1 | [i] {like} [fly_fishing].\npercept: 1 | self | like | fly_fishing | + | -"),
+     "one amendment record per episode, on lane 91 at the episode's longitude");
+  const order = PG.records(S.st).map(x => x.id);
+  ok(order.indexOf("@LAT91LON9") > order.indexOf(ep) && order.indexOf("@LAT91LON9") < order.indexOf("@LAT98LON1"), "it goes in before the lane-98 tail");
+  const re = PG.openStore(out);
+  ok(PG.serializeStore(re.st) === out && re.trips.has("self|like|fly_fishing") && !re.trips.has("self|like|fishing"), "it round-trips, and reopening reads the same");
+  const drift = [...re.things.values()].filter(t => PG.parseBlock(t.chunk.rec.term).belief + "" !== PG.termState(re, t).lines.map(l => l.slice(8)).join() && PG.termState(re, t).lines.length);
+  ok(!drift.length, "the term records agree with the amended percepts");
+  ok(PG.readingsOf(S, ep)[0].amended && PG.readingsOf(S, ep)[0].shape === "[i] {like} [fly_fishing].", "the reading that stands is the amendment's");
+
+  PG.amend(S, ep, 1, "[i] {like fly fishing}.", T0 + 120);
+  ok(S.trips.has("self|like_fly_fish|-") && !S.trips.has("self|like|fly_fishing") && (PG.serializeStore(S.st).match(/\n@LAT91LON9 /g) || []).length === 1,
+     "amending again rewrites the one amendment record");
+  PG.amendReply(S, ep, 1, "[i] {like} [fly fishing].", T0 + 180);
+  ok(!PG.serializeStore(S.st).includes("\n@LAT91LON9 ") && S.trips.has("self|like|fishing"), "reading it back the episode's own way withdraws the amendment");
+
+  const P = fresh();
+  const two = PG.answer(P, "Pixel is a cat. He chases birds.", T0);
+  PG.amend(P, two.episode.id, 2, "[he] {chases birds}.", T0 + 60);
+  ok(P.trips.has("pixel|chase_bird|-"), "a pronoun in an amended sentence resolves in the sentences before it");
+  PG.startEmpty(P, T0 + 120);
+  ok(!PG.records(P.st).some(x => x.lat === 91), "Start empty removes the amendments with the episodes");
+
+  const bad = PG.openStore(out.replace("percept: 1 | self | like | fly_fishing | + | -", "percept: 1 | self | like"));
+  ok(bad.malformed.some(m => m.id === "@LAT91LON9") && !bad.trips.has("self|like|fishing"),
+     "a malformed amendment line is skipped and counted, and still stands in for the sentence it amends");
 }
 
 section("reasoning: said, inferred, contested, unknown");
