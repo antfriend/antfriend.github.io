@@ -10,9 +10,9 @@
 /* one phosphor: the page is a green tube whatever the system asks for */
 :root{
   color-scheme:dark;
-  --bg:#040806; --panel:#08110b; --ink:#b6f7c6; --dim:#69a877; --line:#1c3a24;
-  --accent:#3dff7a; --thing:#5fe3d0; --vector:#d6a6ff; --warn:#ffb341; --dead:#4a6b52;
-  --sphere:#0c1d11; --sphere2:#030805; --grat:#1f4029;
+  --bg:#0f1d13; --panel:#1a3020; --ink:#bdf8cb; --dim:#80bd8d; --line:#2f5238;
+  --accent:#3dff7a; --thing:#5fe3d0; --vector:#d6a6ff; --warn:#ffb341; --dead:#5c7f64;
+  --sphere:#21402a; --sphere2:#112216; --grat:#36633f;
   --glow:61 255 122;
   --mono:ui-monospace,"Cascadia Mono","Cascadia Code","SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
   scrollbar-color:var(--grat) transparent;
@@ -23,14 +23,14 @@
 body{margin:0;background-color:var(--bg);color:var(--ink);
   /* phosphor grain: one inline turbulence tile, no file and no request */
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 90% 70% at 50% 15%,#0a1a0e,transparent 72%);
+    radial-gradient(ellipse 90% 70% at 50% 15%,#16291b,transparent 72%);
   background-attachment:fixed;
   font-family:var(--mono);font-size:14px;line-height:1.6;
   text-shadow:0 0 3px rgb(var(--glow) / .22)}
 /* the glass: scanlines and a darkened rim, laid over everything and never in the way */
 body::before{content:"";position:fixed;inset:0;z-index:20;pointer-events:none;
-  background:repeating-linear-gradient(to bottom,rgb(0 0 0 / .16) 0 1px,transparent 1px 3px),
-    radial-gradient(ellipse 125% 110% at 50% 50%,transparent 58%,rgb(0 0 0 / .55))}
+  background:repeating-linear-gradient(to bottom,rgb(0 0 0 / .07) 0 1px,transparent 1px 9px),
+    radial-gradient(ellipse 125% 110% at 50% 50%,transparent 62%,rgb(0 0 0 / .3))}
 /* and under the glass a green candle: it gutters, it never goes out */
 body::after{content:"";position:fixed;inset:0;z-index:19;pointer-events:none;opacity:.88;
   background:radial-gradient(ellipse 55% 40% at 50% 4%,rgb(var(--glow) / .10),transparent 70%),
