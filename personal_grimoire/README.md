@@ -1,4 +1,4 @@
-# Personal Grammar
+# Personal Grimoire
 
 A one-page web app: **a corpus of your own words that answers in them.** You type sentences,
 or feed in whole `.md` and `.txt` files, and the page breaks them into *percepts* — nounish
@@ -37,7 +37,7 @@ episode and term, which is how you make the corpus your own.
 | File | What it is |
 |---|---|
 | [index.html](index.html) | The app: a TTDB parser and round-trip writer, a rule interpreter, a consolidator, a reasoner, a small sphere. **No words of any language.** |
-| [personal_grammar_ttdb.md](personal_grammar_ttdb.md) | The store. The blueprint, an English grammar and a Spanish one, every reply phrase, every constant, and the corpus. |
+| [personal_grimoire_ttdb.md](personal_grimoire_ttdb.md) | The store. The blueprint, an English grammar and a Spanish one, every reply phrase, every constant, and the corpus. |
 | [RFCs/](RFCs/) | The specs, four of them new. Start at [RFCs/INDEX.md](RFCs/INDEX.md). |
 | [tests/](tests/) | Two Node scripts and a Spanish grammar fixture. No dependencies, no test runner. |
 | [tools/](tools/) | Command-line access to the same engine: ask, feed, re-consolidate. |
@@ -126,7 +126,7 @@ same way. The runtime refers to grammar only by schema keys (`cop`, `class_of`,
 
 ### Corollaries
 
-| global_models | personal_grammar |
+| global_models | personal_grimoire |
 |---|---|
 | The Earth as its instruments know it | A person as their words know them |
 | `index.html` holds no climate number | `index.html` holds no word |

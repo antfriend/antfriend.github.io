@@ -4,7 +4,7 @@ import path from "node:path";
 import { loadEngine, read, root } from "../tools/harness.mjs";
 
 const PG = await loadEngine();
-const store = read("personal_grammar_ttdb.md"), readme = read("README.md"), index = read("RFCs/INDEX.md");
+const store = read("personal_grimoire_ttdb.md"), readme = read("README.md"), index = read("RFCs/INDEX.md");
 const app = read("index.html");
 
 let fails = 0;
@@ -25,7 +25,7 @@ for (const [src, txt, base] of [["README.md", readme, root], ["RFCs/INDEX.md", i
   }
 }
 { const chrome = app.slice(0, app.indexOf("<script>")); const seen = new Set(); let m;
-  const re = /href="(?!https?:|#)([^"#]+)(?:#[^"]*)?"/g;
+  const re = /href="(?!https?:|data:|#)([^"#]+)(?:#[^"]*)?"/g;  // a data: URI is not a relative link
   while ((m = re.exec(chrome))){ if (seen.has(m[1])) continue; seen.add(m[1]); ok(fs.existsSync(path.join(root, m[1])), "index.html -> " + m[1]); } }
 
 console.log("\n== README anchors resolve ==");

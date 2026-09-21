@@ -98,13 +98,13 @@ preview:
 
 ---
 
-@LAT-20LON30 | created:1789689780 | updated:1789689780 | relates:prev>@LAT20LON-30,next>@LAT-32LON90,corollary_of>@LAT20LON-30,opens>personal_grammar/index.html
+@LAT-20LON30 | created:1789689780 | updated:1789689780 | relates:prev>@LAT20LON-30,next>@LAT-32LON90,corollary_of>@LAT20LON-30,opens>personal_grimoire/index.html
 
-## personal_grammar
+## personal_grimoire
 
 ### one grammar, one corpus, no words in the runtime
 
-![personal_grammar](personal_grammar/index.html)
+![personal_grimoire](personal_grimoire/index.html)
 
 ---
 

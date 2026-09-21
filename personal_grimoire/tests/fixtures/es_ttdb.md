@@ -1,7 +1,7 @@
 # Fixture — a Spanish grammar on the same runtime
 
 ```mmpdb
-db_id: personal-grammar-es-fixture
+db_id: personal-grimoire-es-fixture
 db_name: Spanish fixture (tests only)
 coord_increment:
   lat: 1
@@ -16,7 +16,7 @@ umwelt:
   globe:
     frame: grammar-sphere
     origin: "@LAT0LON0"
-    mapping: "as personal_grammar_ttdb.md"
+    mapping: "as personal_grimoire_ttdb.md"
 cursor_policy:
   max_preview_chars: 256
   max_nodes: 64

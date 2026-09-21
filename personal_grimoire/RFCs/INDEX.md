@@ -1,4 +1,4 @@
-# RFC Index — Personal Grammar
+# RFC Index — Personal Grimoire
 
 The subset of the [toot-toot-engineering](https://antfriend.github.io) RFC corpus this
 project depends on, copied so the folder is self-contained, plus the four drafts it adds.

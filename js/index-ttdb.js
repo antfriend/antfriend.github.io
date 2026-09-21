@@ -42,7 +42,7 @@ const THEMES = {
   },
   games: { accent: "#7cc7ff", glyph: "grid" },
   global_models: { accent: "#8fe6d2", glyph: "orbits" },
-  personal_grammar: { accent: "#c9a2ff", glyph: "brackets" },
+  personal_grimoire: { accent: "#d9b978", glyph: "grimoire" },
   RFCs: { accent: "#ff9f7c", glyph: "sheets" },
   // The github deck is a shelf of repositories, and the picture GitHub keeps
   // for the account is the avatar. Square, so it slices into the card with an
@@ -265,6 +265,14 @@ function glyphMarkup(kind, accent) {
         '<ellipse cx="59" cy="64" rx="26" ry="10" fill="none" stroke="' + accent + '" stroke-width="1.5" opacity="0.7"/>' +
         '<ellipse cx="59" cy="64" rx="10" ry="26" fill="none" stroke="' + accent + '" stroke-width="1.5" opacity="0.7"/>' +
         '<circle cx="59" cy="38" r="3.5" fill="' + accent + '"/><circle cx="85" cy="64" r="3.5" fill="' + accent + '"/>';
+    case "grimoire":
+      // a closed codex, with the sphere whose meridian is the grammar as its seal
+      return '<rect x="30" y="30" width="58" height="68" rx="4" fill="none" stroke="' + accent + '" stroke-width="2"/>' +
+        stroke("M41 30 L41 98", 'opacity="0.6"') +
+        '<circle cx="66" cy="64" r="13" fill="none" stroke="' + accent + '" stroke-width="1.8"/>' +
+        '<ellipse cx="66" cy="64" rx="5.5" ry="13" fill="none" stroke="' + accent + '" stroke-width="1.5" opacity="0.8"/>' +
+        stroke("M53 64 L79 64", 'opacity="0.8" stroke-width="1.5"') +
+        '<circle cx="66" cy="64" r="2.6" fill="' + accent + '"/>';
     case "brackets":
       return stroke("M48 36 C34 36 34 58 30 64 C34 70 34 92 48 92") +
         stroke("M70 36 C84 36 84 58 88 64 C84 70 84 92 70 92") +
@@ -610,7 +618,7 @@ function legTo(id) {
    The globe eases lat and lon by the same factor every frame, so an eased
    leg is a straight line in rotation space and this fraction is exact. Lon
    is unwrapped about the leg's midpoint, so a half-turn leg (banjo to
-   personal_grammar) cannot flip sign as it crosses the far side. */
+   personal_grimoire) cannot flip sign as it crosses the far side. */
 function legProgress(leg) {
   const len2 = leg.lat * leg.lat + leg.lon * leg.lon;
   if (len2 < LEG_MIN * LEG_MIN) return null;

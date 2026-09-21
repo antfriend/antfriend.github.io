@@ -2,7 +2,7 @@
 import { loadEngine, read, scriptOf } from "../tools/harness.mjs";
 
 const PG = await loadEngine();
-const STORE = read("personal_grammar_ttdb.md").replace(/\r\n?/g, "\n");
+const STORE = read("personal_grimoire_ttdb.md").replace(/\r\n?/g, "\n");
 const fresh = () => PG.openStore(STORE);
 const T0 = 1789400000;
 

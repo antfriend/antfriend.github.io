@@ -216,7 +216,7 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 
 | Date | Change |
 |---|---|
-| 2026-09-13 | Initial draft, from the personal_grammar reference implementation |
+| 2026-09-13 | Initial draft, from the personal_grimoire reference implementation |
 | 2026-09-13 | §10 Embedding Surface added, after a third-party embedding reported which facts it had to take from the page and README instead of the store. §10–12 renumbered to §11–13. |
 | 2026-09-13 | §11 Several Languages added; the reference store carries Spanish beside English. `label:` in §6; progressive and participle endings become lists in §4; rule lists append (§12). Former open question 2 answered; §11–13 renumbered to §12–14. |
 | 2026-09-14 | `kind: rules` (defined in TTG-RFC-0003 §3.1) and `rule_max_body` in §9; rules are shared like numbers (§11); open question 2 narrowed. |

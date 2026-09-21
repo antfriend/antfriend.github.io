@@ -1,8 +1,8 @@
-# Personal Grammar — a person as their words know them
+# Personal Grimoire — a person as their words know them
 
 ```mmpdb
-db_id: personal-grammar-001
-db_name: Personal Grammar (a corpus of one person's words, and the rules that read it)
+db_id: personal-grimoire-001
+db_name: Personal Grimoire (a corpus of one person's words, and the rules that read it)
 coord_increment:
   lat: 1
   lon: 1
@@ -446,8 +446,8 @@ selects a record on click (one delegated listener); the value is `lat|lon` to fo
 **Every chrome string lives in a `data-*` attribute on the markup**, never in the script:
 `#storeinfo[data-seed|data-local|data-opened]`, `#mode[data-<intent in kebab case>]`,
 `#reset[data-confirm]`, `#empty[data-confirm]`, `#files[data-confirm-store]`, `#log[data-quota]`. The
-store persists under `localStorage` key `personal_grammar:store:v1`; `?seed` ignores that copy
-and `?ask=<text>` asks on load. The page fetches `personal_grammar_ttdb.md` beside itself.
+store persists under `localStorage` key `personal_grimoire:store:v1`; `?seed` ignores that copy
+and `?ask=<text>` asks on load. The page fetches `personal_grimoire_ttdb.md` beside itself.
 
 **Embedding, in one line:** take the engine, `openStore` your copy of this file, `answer`
 each input, render grounds by `kind`, and write `serializeStore(S.st)` wherever your app keeps

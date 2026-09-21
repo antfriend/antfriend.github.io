@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export const read = f => fs.readFileSync(path.isAbsolute(f) ? f : path.join(root, f), "utf8");
-export const STORE = "personal_grammar_ttdb.md";
+export const STORE = "personal_grimoire_ttdb.md";
 
 export function scriptOf(html = read("index.html")){
   return html.match(/<script>\r?\n([\s\S]*?)<\/script>/)[1];

@@ -641,7 +641,7 @@ function legTo(id) {
    The globe eases lat and lon by the same factor every frame, so an eased
    leg is a straight line in rotation space and this fraction is exact. Lon
    is unwrapped about the leg's midpoint, so a half-turn leg (banjo to
-   personal_grammar) cannot flip sign as it crosses the far side. */
+   personal_grimoire) cannot flip sign as it crosses the far side. */
 function legProgress(leg) {
   const len2 = leg.lat * leg.lat + leg.lon * leg.lon;
   if (len2 < LEG_MIN * LEG_MIN) return null;
