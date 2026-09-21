@@ -5,58 +5,71 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Personal Grimoire</title>
 <meta name="description" content="A corpus of your own words that answers in them. Every rule and every reply is read from one TTDB file.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cstyle%3Eg%7Bstroke:%232f3a6b%7D circle.o%7Bfill:%232f3a6b%7D%40media(prefers-color-scheme:dark)%7Bg%7Bstroke:%23c9a86a%7Dcircle.o%7Bfill:%23c9a86a%7D%7D%3C/style%3E%3Cg fill='none' stroke-width='2'%3E%3Ccircle cx='16' cy='16' r='13'/%3E%3Cellipse cx='16' cy='16' rx='5.5' ry='13'/%3E%3Cpath d='M3 16h26'/%3E%3C/g%3E%3Ccircle class='o' cx='16' cy='16' r='2.6'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cstyle%3Eg%7Bstroke:%231f8a45%7D circle.o%7Bfill:%231f8a45%7D%40media(prefers-color-scheme:dark)%7Bg%7Bstroke:%233dff7a%7Dcircle.o%7Bfill:%233dff7a%7D%7D%3C/style%3E%3Cg fill='none' stroke-width='2'%3E%3Ccircle cx='16' cy='16' r='13'/%3E%3Cellipse cx='16' cy='16' rx='5.5' ry='13'/%3E%3Cpath d='M3 16h26'/%3E%3C/g%3E%3Ccircle class='o' cx='16' cy='16' r='2.6'/%3E%3C/svg%3E">
 <style>
+/* one phosphor: the page is a green tube whatever the system asks for */
 :root{
-  --bg:#f2ede1; --panel:#fbf7ee; --ink:#1b1714; --dim:#6b6154; --line:#ddd3c0;
-  --accent:#2f3a6b; --thing:#3f7a4e; --vector:#7a4a96; --warn:#8a5320; --dead:#a9a08f;
-  --sphere:#e7dfce; --sphere2:#d6ccb6; --grat:#c6bba4;
-  --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,"Times New Roman",serif;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#16130f; --panel:#1e1a15; --ink:#e8e0cf; --dim:#9d9483; --line:#332c22;
-    --accent:#c9a86a; --thing:#7fc88f; --vector:#c9a2e8; --warn:#d9a441; --dead:#5d554a;
-    --sphere:#241f18; --sphere2:#191510; --grat:#3a3226;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#16130f; --panel:#1e1a15; --ink:#e8e0cf; --dim:#9d9483; --line:#332c22;
-  --accent:#c9a86a; --thing:#7fc88f; --vector:#c9a2e8; --warn:#d9a441; --dead:#5d554a;
-  --sphere:#241f18; --sphere2:#191510; --grat:#3a3226;
+  color-scheme:dark;
+  --bg:#040806; --panel:#08110b; --ink:#b6f7c6; --dim:#69a877; --line:#1c3a24;
+  --accent:#3dff7a; --thing:#5fe3d0; --vector:#d6a6ff; --warn:#ffb341; --dead:#4a6b52;
+  --sphere:#0c1d11; --sphere2:#030805; --grat:#1f4029;
+  --glow:61 255 122;
+  --mono:ui-monospace,"Cascadia Mono","Cascadia Code","SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  scrollbar-color:var(--grat) transparent;
 }
 *{box-sizing:border-box}
+::selection{background:var(--accent);color:var(--bg);text-shadow:none}
+:focus-visible{outline:1px solid var(--accent);outline-offset:2px}
 body{margin:0;background-color:var(--bg);color:var(--ink);
-  /* laid-paper grain: one inline turbulence tile, no file and no request */
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
-  font:15px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  /* phosphor grain: one inline turbulence tile, no file and no request */
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 90% 70% at 50% 15%,#0a1a0e,transparent 72%);
+  background-attachment:fixed;
+  font-family:var(--mono);font-size:14px;line-height:1.6;
+  text-shadow:0 0 3px rgb(var(--glow) / .22)}
+/* the glass: scanlines and a darkened rim, laid over everything and never in the way */
+body::before{content:"";position:fixed;inset:0;z-index:20;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgb(0 0 0 / .16) 0 1px,transparent 1px 3px),
+    radial-gradient(ellipse 125% 110% at 50% 50%,transparent 58%,rgb(0 0 0 / .55))}
+/* and under the glass a green candle: it gutters, it never goes out */
+body::after{content:"";position:fixed;inset:0;z-index:19;pointer-events:none;opacity:.88;
+  background:radial-gradient(ellipse 55% 40% at 50% 4%,rgb(var(--glow) / .10),transparent 70%),
+    radial-gradient(ellipse 110% 90% at 50% 45%,rgb(var(--glow) / .035),transparent 80%)}
 .wrap{max-width:1180px;margin:0 auto;padding:22px 18px 60px}
 header{margin-bottom:12px}
-h1{font-family:var(--serif);font-size:1.5rem;font-weight:600;margin:0 0 4px;letter-spacing:-.005em}
-.sub{color:var(--dim);font-size:.9rem;margin:0;max-width:760px}
-a{color:var(--accent)}
-code{font:12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--bg);padding:1px 4px;border-radius:3px}
-.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:12px 0 14px;font-size:.82rem;color:var(--dim)}
+/* the title's line box is pinned, so its breathing never moves the page below it */
+header h1{--h1:clamp(1.3rem,5.4vw,1.85rem);font-family:var(--mono);font-size:var(--h1);font-weight:700;
+  line-height:calc(var(--h1) * 1.55);height:calc(var(--h1) * 1.55);margin:0 0 6px;letter-spacing:.02em;
+  white-space:nowrap;color:var(--accent);
+  text-shadow:0 0 4px rgb(var(--glow) / .7),0 0 14px rgb(var(--glow) / .35),0 0 32px rgb(var(--glow) / .15)}
+header h1::after{content:"";display:inline-block;width:.5em;height:.95em;margin-left:.2em;vertical-align:-.1em;
+  background:var(--accent);box-shadow:0 0 8px rgb(var(--glow) / .6)}
+.sub{color:var(--dim);font-size:.86rem;margin:0;max-width:760px}
+a{color:var(--accent);text-underline-offset:2px}
+a:hover{text-shadow:0 0 6px rgb(var(--glow) / .6)}
+code{font:12px var(--mono);background:var(--bg);border:1px solid var(--line);padding:0 4px;border-radius:2px}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:12px 0 14px;font-size:.8rem;color:var(--dim)}
 .bar b{color:var(--ink);font-weight:600}
-button,.pill{font:inherit;font-size:.8rem;color:var(--ink);background:var(--panel);border:1px solid var(--line);
-  border-radius:999px;padding:4px 11px;cursor:pointer}
-button:hover,.pill:hover{border-color:var(--accent)}
-button.primary{background:var(--accent);color:var(--panel);border-color:var(--accent);font-weight:600;padding:6px 16px}
+button,.pill{font:inherit;font-size:.78rem;letter-spacing:.03em;color:var(--ink);background:var(--panel);border:1px solid var(--line);
+  border-radius:2px;padding:4px 11px;cursor:pointer;text-shadow:inherit}
+button:hover,.pill:hover{border-color:var(--accent);color:var(--accent);box-shadow:0 0 8px rgb(var(--glow) / .25)}
+button.primary{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700;padding:6px 16px;
+  text-shadow:none;box-shadow:0 0 12px rgb(var(--glow) / .35)}
+button.primary:hover{color:var(--bg);box-shadow:0 0 18px rgb(var(--glow) / .55)}
 .grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
 .grid.lower{grid-template-columns:minmax(0,380px) minmax(0,1fr);margin-top:16px}
 @media (max-width:860px){ .grid,.grid.lower{grid-template-columns:1fr} }
-.card{background:var(--panel);border:1px solid var(--line);border-radius:4px}
-#log{padding:14px 16px;min-height:220px;max-height:62vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
-/* what you asked is a marginal entry, ruled off on the right, not a bubble */
-.turn-q{align-self:flex-end;max-width:85%;background:none;border:0;border-right:3px solid var(--line);
-  border-radius:0;padding:1px 11px 1px 0;text-align:right;color:var(--dim);font-size:.92rem;
+.card{background:var(--panel);border:1px solid var(--line);border-radius:2px;
+  box-shadow:inset 0 0 30px rgb(var(--glow) / .035),0 0 0 1px rgb(0 0 0 / .5)}
+#log{padding:14px 16px;min-height:220px;max-height:62vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin}
+/* what you asked is echoed like a line typed at the prompt */
+.turn-q{align-self:flex-start;max-width:100%;position:relative;padding:0 0 0 1.5em;color:var(--dim);font-size:.92rem;
   white-space:pre-wrap;word-break:break-word}
+.turn-q::before{content:">";position:absolute;left:0;color:var(--accent)}
 .turn-a{max-width:100%}
-/* the librarian speaks in a text face, and opens on an illuminated capital;
-   everything after it clears the float so nothing runs into the letter */
-.verdict{font-family:var(--serif);font-size:1.03rem;font-weight:600;margin-bottom:4px}
-.turn-a>.verdict:first-child::first-letter{float:left;font-size:2.3em;line-height:.86;
-  margin:.04em .1em 0 0;color:var(--accent)}
+/* the librarian's line is brighter than your echo, and opens on a lit character */
+.verdict{font-size:1rem;font-weight:700;margin-bottom:4px}
+.turn-a>.verdict:first-child::first-letter{color:var(--accent);text-shadow:0 0 6px rgb(var(--glow) / .6)}
 .grounds{list-style:none;margin:6px 0 0;padding:0 0 0 1.5em;display:flex;flex-direction:column;gap:6px;clear:left}
 .g{position:relative;border-left:3px solid var(--accent);padding:3px 0 3px 10px;font-size:.9rem}
 /* a reader's mark in the margin beside each line: said, therefore, both ways,
@@ -77,10 +90,10 @@ button.primary{background:var(--accent);color:var(--panel);border-color:var(--ac
 .g.by{margin-top:4px;font-size:1em}
 .g .qt{display:block;margin-top:2px}
 .g .cf{font-size:.72rem;color:var(--dim);margin-left:6px}
-.g q{font-family:var(--serif);color:var(--ink);font-style:italic;quotes:"\201C" "\201D"}
+.g q{color:var(--ink);font-style:italic;quotes:"\201C" "\201D"}
 .g .ep{font-size:.72rem;color:var(--dim);margin-left:6px;text-decoration:none}
 .triple{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px}
-.chip{display:inline-block;border-radius:4px;padding:0 6px;font-size:.82rem;cursor:pointer;border:1px solid transparent;
+.chip{display:inline-block;border-radius:2px;padding:0 6px;font-size:.82rem;cursor:pointer;border:1px solid transparent;
   background:none;color:inherit;line-height:1.5}
 .chip.thing{color:var(--thing);border-color:currentColor;font-variant:small-caps;letter-spacing:.015em}
 .chip.vector{color:var(--vector);border-color:currentColor;border-style:dashed;font-style:italic}
@@ -95,59 +108,93 @@ form{border-top:1px solid var(--line);padding:10px 12px 12px}
 #preview .fn{color:var(--dim)}
 #preview .t{color:var(--thing);font-variant:small-caps} #preview .v{color:var(--vector);font-style:italic} #preview .u{text-decoration:underline dotted var(--dead)}
 #mode{margin-left:auto;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
-textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:5px;
-  padding:9px 10px;resize:vertical;min-height:62px}
+textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:2px;
+  padding:9px 10px;resize:vertical;min-height:62px;caret-color:var(--accent);caret-shape:block;text-shadow:inherit}
+textarea::placeholder{color:var(--dim);opacity:.75}
+textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgb(var(--glow) / .18)}
 textarea.drop{border-color:var(--accent);border-style:dashed}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
 #spherewrap{padding:8px;display:flex;justify-content:center}
-canvas{touch-action:none;cursor:grab;width:100%;max-width:340px;aspect-ratio:1/1}
-.legend{display:flex;flex-wrap:wrap;gap:3px 12px;justify-content:center;font-size:.74rem;color:var(--dim);padding:0 10px 8px}
+canvas{touch-action:none;cursor:grab;width:100%;max-width:340px;aspect-ratio:1/1;filter:drop-shadow(0 0 10px rgb(var(--glow) / .14))}
+.legend{display:flex;flex-wrap:wrap;gap:3px 12px;justify-content:center;font-size:.72rem;color:var(--dim);padding:0 10px 8px}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:-1px}
 .terms{padding:10px 12px}
 .terms .row{margin:0 0 6px}
-input[type=search],select{font:inherit;font-size:.85rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);
-  border-radius:6px;padding:5px 8px}
-input[type=search]{flex:1;min-width:120px}
+input[type=search],select{font:inherit;font-size:.82rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);
+  border-radius:2px;padding:5px 8px}
+input[type=search]{flex:1;min-width:120px;caret-color:var(--accent)}
 #filtermeta{font-size:.74rem;color:var(--dim);margin-bottom:4px}
-#termlist{list-style:none;margin:0;padding:0;max-height:240px;overflow-y:auto;font-size:.85rem}
-#termlist li{display:flex;justify-content:space-between;gap:8px;padding:3px 4px;border-radius:4px;cursor:pointer}
+#termlist{list-style:none;margin:0;padding:0;max-height:240px;overflow-y:auto;font-size:.84rem;scrollbar-width:thin}
+#termlist li{display:flex;justify-content:space-between;gap:8px;padding:3px 4px;border-radius:2px;cursor:pointer}
 #termlist li:hover,#termlist li.sel{background:var(--bg)}
+#termlist li.sel{box-shadow:inset 2px 0 0 var(--accent)}
 #termlist .n{font-variant-numeric:tabular-nums;color:var(--dim);font-size:.75rem;white-space:nowrap}
 #panel{padding:14px 16px}
 #panel:empty{display:none}
-#panel h2{font-size:1.02rem;margin:0 0 2px}
-#panel .coord{font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--dim);margin-bottom:8px}
+#panel h2{font-size:1rem;margin:0 0 2px;color:var(--accent);text-shadow:0 0 6px rgb(var(--glow) / .45)}
+#panel .coord{font:12px/1.4 var(--mono);color:var(--dim);margin-bottom:8px}
 .ew{display:flex;align-items:center;gap:10px;margin:8px 0 12px;padding:7px 10px;background:var(--bg);border:1px solid var(--line);
-  border-radius:5px;font:12px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--dim);flex-wrap:wrap}
-.epsbar{flex:1;min-width:80px;height:7px;background:var(--line);border-radius:4px;overflow:hidden}
-.epsbar i{display:block;height:100%;background:var(--accent)}
+  border-radius:2px;font:12px/1.3 var(--mono);color:var(--dim);flex-wrap:wrap}
+.epsbar{flex:1;min-width:80px;height:7px;background:var(--line);border-radius:1px;overflow:hidden}
+.epsbar i{display:block;height:100%;background:var(--accent);box-shadow:0 0 6px rgb(var(--glow) / .6)}
 .tablewrap{overflow-x:auto;margin:.5em 0}
-#panel table{border-collapse:collapse;font-size:.82rem;min-width:100%}
+#panel table{border-collapse:collapse;font-size:.8rem;min-width:100%}
 #panel th,#panel td{border:1px solid var(--line);padding:3px 7px;text-align:left;white-space:nowrap}
 #panel th{background:var(--bg)}
-#panel .body{font-size:.9rem}
+#panel .body{font-size:.88rem}
 #panel .body p{margin:.55em 0}
 #panel .body ul,#panel .body ol{margin:.4em 0;padding-left:1.3em}
 #panel .body blockquote{margin:.5em 0;padding-left:12px;border-left:3px solid var(--line);color:var(--dim)}
-#panel pre{overflow-x:auto;background:var(--bg);padding:8px;border-radius:6px;font-size:.75rem}
+#panel pre{overflow-x:auto;background:var(--bg);border:1px solid var(--line);padding:8px;border-radius:2px;font-size:.75rem}
 .edges{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:.8rem}
 .edges b{display:block;font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
 .edges a{text-decoration:none;margin-right:4px}
 .edges .x{color:var(--dead);text-decoration:line-through;cursor:not-allowed;margin-right:4px}
 .edges em{color:var(--dim);font-style:normal}
 .said-list{font-size:.82rem;color:var(--dim);margin:4px 0 0;padding-left:1.1em}
-footer{margin-top:26px;font-size:.82rem;color:var(--dim);border-top:1px solid var(--line);padding-top:14px}
-#err{margin:14px 0;padding:12px 14px;border:1px solid var(--warn);border-radius:5px;background:var(--panel);font-size:.88rem}
+footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var(--line);padding-top:14px}
+#err{margin:14px 0;padding:12px 14px;border:1px solid var(--warn);border-radius:2px;background:var(--panel);font-size:.88rem}
 .busy{opacity:.55;pointer-events:none}
-@media (max-width:560px){ .wrap{padding:16px 16px 48px} }
+@media (max-width:560px){ .wrap{padding:16px 16px 48px} textarea{min-height:86px} }
 /* grounds arrive in the order they were reasoned, a beat apart */
 @keyframes ink{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+/* the title breathes: its size swells and settles, and on a slower tide it
+   hangs a few pixels off its line. The two periods never line up. */
+@keyframes breathe{
+  from{font-size:var(--h1);
+    text-shadow:0 0 4px rgb(var(--glow) / .6),0 0 12px rgb(var(--glow) / .28),0 0 28px rgb(var(--glow) / .1)}
+  to{font-size:calc(var(--h1) * 1.08);
+    text-shadow:0 0 5px rgb(var(--glow) / .85),0 0 18px rgb(var(--glow) / .45),0 0 40px rgb(var(--glow) / .22)}
+}
+@keyframes levitate{
+  0%,100%{transform:translate(0,0)}
+  25%{transform:translate(1px,-3px)}
+  50%{transform:translate(0,-5px)}
+  75%{transform:translate(-1px,-2px)}
+}
+@keyframes blink{50%{opacity:0}}
+/* the candle: uneven, never a strobe, and it only ever dims by a quarter */
+@keyframes candle{
+  0%{opacity:.86}  6%{opacity:.93}  9%{opacity:.8}   15%{opacity:.97} 21%{opacity:.88}
+  24%{opacity:.78} 30%{opacity:.95} 37%{opacity:.9}  41%{opacity:1}   43%{opacity:.75}
+  46%{opacity:.92} 53%{opacity:.84} 59%{opacity:.98} 64%{opacity:.87} 70%{opacity:.8}
+  76%{opacity:.94} 82%{opacity:.86} 87%{opacity:.99} 93%{opacity:.82} 100%{opacity:.86}
+}
+@keyframes sway{
+  0%,100%{transform:translate(0,0) scale(1)}
+  27%{transform:translate(-1.5%,.5%) scale(1.03)}
+  52%{transform:translate(1%,-.4%) scale(.985)}
+  78%{transform:translate(1.8%,.6%) scale(1.02)}
+}
 @media (prefers-reduced-motion:no-preference){
   .grounds>.g{animation:ink .32s ease-out both}
   .grounds>.g:nth-child(2){animation-delay:45ms}  .grounds>.g:nth-child(3){animation-delay:90ms}
   .grounds>.g:nth-child(4){animation-delay:135ms} .grounds>.g:nth-child(5){animation-delay:180ms}
   .grounds>.g:nth-child(6){animation-delay:225ms} .grounds>.g:nth-child(7){animation-delay:270ms}
   .grounds>.g:nth-child(8){animation-delay:315ms} .grounds>.g:nth-child(n+9){animation-delay:360ms}
+  header h1{animation:breathe 4.2s ease-in-out infinite alternate,levitate 9.5s ease-in-out infinite}
+  header h1::after{animation:blink 1.1s steps(1,end) infinite}
+  body::after{animation:candle 6.1s ease-in-out infinite,sway 10.3s ease-in-out infinite;will-change:opacity,transform}
 }
 </style>
 </head>
@@ -2061,7 +2108,7 @@ function draw(){
     if (on || hot){
       // a halo in the panel colour, so a label stays legible over the sphere
       // and over any label it crosses
-      ctx.font = (11.5 * dpr) + "px " + cssVar("--serif"); ctx.textAlign = "center";
+      ctx.font = (11.5 * dpr) + "px " + cssVar("--mono"); ctx.textAlign = "center";
       const lx = clamp(X, 40 * dpr, W - 40 * dpr), ly = Y - rad - 4 * dpr;
       ctx.lineWidth = 3 * dpr; ctx.lineJoin = "round"; ctx.strokeStyle = cssVar("--panel");
       ctx.strokeText(r.title, lx, ly);
