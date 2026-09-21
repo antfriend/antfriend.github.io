@@ -479,9 +479,9 @@ function loadGrammar(st, lang){
                   .sort((a, z) => (a.lang === want) - (z.lang === want));
   const G = {
     lang:want, classes:new Map(), whole:new Map(), contractions:[], sentenceEnd:new Set(), clauseBreak:new Set(),
-    questionMark:"", listSep:"", genericDet:new Set(), marks:{},
+    questionMark:"", listSep:"", genericDet:new Set(), marks:{}, headFirst:false,
     nounIrr:new Map(), nounKeep:new Set(), plural:[], pluralGuard:[], verbIrr:new Map(), verb:[], verbGuard:[],
-    doubleKeep:new Set(), minStem:NaN, seed:new Set(), progressive:[], participle:[],
+    doubleKeep:new Set(), minStem:NaN, seed:new Set(), stance:new Set(), progressive:[], participle:[],
     roles:{}, vectors:new Map(), inherits:[], phrases:[],
     whThing:new Set(), whPlace:new Map(), whReason:new Set(), about:new Set(), describeMax:NaN,
     say:{}, units:{}, num:{}, sphere:{}, maxReply:NaN, loaded:[], ruleLines:[], rules:[], ruleErrors:[]
@@ -511,6 +511,8 @@ function loadGrammar(st, lang){
         const m = words(b[key]);
         if (m.length === 2){ G.marks[m[0]] = { cls, open:true }; G.marks[m[1]] = { cls, open:false }; G.marks[cls] = m; }
       }
+      // which word of a phrase is its head: the last (the default) or the first
+      G.headFirst = String(b.head || "").trim() === "first";
     } else if (b.kind === "morphology"){
       for (const line of many(b, "noun_irregular")){ const c = cols(line); for (const w of words(c[0])) G.nounIrr.set(w, c[1]); }
       for (const w of words(b.noun_keep)) G.nounKeep.add(w);
@@ -526,6 +528,8 @@ function loadGrammar(st, lang){
       G.participle.push(...words(b.participle_ending));
     } else if (b.kind === "seed"){
       for (const line of many(b, "seed")) for (const w of words(line)) G.seed.add(w);
+      // a stance verb is a seed whose clause is held, not believed (TTG-RFC-0005 §3)
+      for (const w of words(b.stance)){ G.seed.add(w); G.stance.add(w); }
     } else if (b.kind === "vectors"){
       const algebra = !later || x.lang === first, named = x.lang === want;
       if (algebra){
@@ -700,7 +704,7 @@ function unmark(G, s){
 const synth = w => ({ w, cls:EMPTY, punct:false, synthetic:true });
 const has = (t, cls) => !!t && !t.punct && t.cls.has(cls);
 const isContent = t => !!t && !t.punct && t.cls.size === 0;
-const NP_START = ["det", "poss", "quant_all", "quant_some", "quant_none"];
+const NP_START = ["det", "poss", "quant_all", "quant_some", "quant_none", "premod"];
 const starts = t => NP_START.some(c => has(t, c));
 
 /* ---------- classify: lemmas (TTG-RFC-0002 §3) ---------------------- */
@@ -782,7 +786,8 @@ function nounPhrases(S, toks, from, to){
   return nps;
 }
 function headOf(S, np, ctx){
-  const w = np.words[np.words.length - 1];
+  // the grammar says which word heads a phrase: el gato negro is a gato, a black cat a cat
+  const ws = np.words, w = S.G.headFirst ? ws.find(x => !x.synthetic) || ws[0] : ws[ws.length - 1];
   if (!w || w.synthetic && w.w !== SLOT) return null;
   if (np.pron === "self") return S.G.sphere.self_lemma ? { lemma:S.G.sphere.self_lemma, form:w.w, self:true } : null;
   if (np.pron === "anaphor") return ctx.last ? { lemma:ctx.last, form:null } : null;
@@ -874,9 +879,12 @@ function startsWithSubject(S, toks){
 }
 function labelTokens(S, T){
   const G = S.G, L = T.map(t => t.force || "");
+  // a word that is both subord and relative is a relative between a thing and a verb (los gatos que cazan)
+  const thingy = t => !!t && !t.punct && (t.force ? t.force === "N" : has(t, "self") || has(t, "anaphor") || (isContent(t) && !isVerbish(S, t)));
+  const relAt = i => has(T[i], "relative") && thingy(T[i - 1]) && vStartTok(S, T[i + 1]);
   for (let i = 0; i < T.length; i++){
     const t = T[i];
-    if (!t.force && ((t.punct && t.w !== G.listSep) || has(t, "subord") || has(t, "filler"))) L[i] = "L";
+    if (!t.force && ((t.punct && t.w !== G.listSep) || (has(t, "subord") && !relAt(i)) || has(t, "filler"))) L[i] = "L";
   }
   // a conj splits a part only when both sides are clauses of their own (TTG-RFC-0002 §2)
   const hasPred = side => side.some(t => t.force === "V") || !!findPredicate(S, side);
@@ -905,13 +913,15 @@ function labelTokens(S, T){
  * segment rather than once per clause. What keeps them honest is the
  * alternation: a content word straight after a verbish segment is nounish,
  * and a second verb in a clause needs a cue — a relative word before it, a
- * conj, or a noun phrase after it — so "a good drink" stays a thing.       */
+ * conj, a noun phrase after it, or a stance verb before it that takes a
+ * clause — so "a good drink" stays a thing.                                */
 function labelClause(S, T, L, a, b){
   const G = S.G;
-  let prev = "", nBegun = false, vSeen = false, bareV = false, afterR = false;
+  let prev = "", nBegun = false, vSeen = false, bareV = false, afterR = false, takes = false;
   const free = j => j < b && !T[j].force;
   const hard = j => { while (j < b && !T[j].force && soft(T[j])) j++; return j; };
-  const setV = (i, j) => { for (let k = i; k < j; k++) if (!T[k].force) L[k] = "V"; prev = "V"; nBegun = false; vSeen = true; bareV = false; afterR = false; };
+  const stanceIn = (i, j) => T.slice(i, j).some(t => isContent(t) && !t.synthetic && G.stance.has(verbLemma(S, t.w).lemma));
+  const setV = (i, j) => { for (let k = i; k < j; k++) if (!T[k].force) L[k] = "V"; prev = "V"; nBegun = false; vSeen = true; bareV = false; afterR = false; takes = stanceIn(i, j); };
   // a verb after an infinitive marker: one with a thing after it, or one the owner already uses as a verb
   const verbWord = k => {
     const t = T[k], n = T[hard(k + 1)];
@@ -960,7 +970,7 @@ function labelClause(S, T, L, a, b){
     const t = T[i], j = hard(i + 1);
     if (t.force){
       L[i] = t.force;
-      if (t.force === "V"){ prev = "V"; nBegun = false; vSeen = true; }
+      if (t.force === "V"){ takes = stanceIn(i, i + 1) || (prev === "V" && takes); prev = "V"; nBegun = false; vSeen = true; }
       else if (!soft(t)){ prev = "N"; if (isContent(t) || has(t, "self") || has(t, "anaphor")) nBegun = true; }
       bareV = afterR = false; i++; continue;
     }
@@ -982,8 +992,12 @@ function labelClause(S, T, L, a, b){
     if (has(t, "cop")){ const e = copEnd(i); setV(i, e); i = e; continue; }
     if (has(t, "hav")){ const e = havEnd(i); setV(i, e); i = e; continue; }
     if (has(t, "infinitive") && prev === "N" && free(j) && verbWord(j)){ const e = tail(j); setV(i, e); i = e; continue; }
+    // a stance verb opening its clause, before a phrase or a clause of its own: "Suppose it rains", "Creo que…"
+    const n = T[j];
+    if (i === hard(a) && isContent(t) && !t.synthetic && stanceIn(i, i + 1) && n && !n.punct && !n.force &&
+        (starts(n) || has(n, "self") || has(n, "anaphor") || has(n, "subord") || has(n, "relative"))){ const e = tail(i); setV(i, e); i = e; continue; }
     if (isContent(t) && !t.synthetic && (nBegun || bareV) && !afterStart(i)){
-      const later = vSeen && !bareV && !afterR;
+      const later = vSeen && !bareV && !afterR && !takes;
       const cued = !bareV && nBegun && i + 1 < b && starts(T[i + 1]);
       const known = isVerbish(S, t) && (!later || (j < b && nStartTok(T[j]) && !has(T[j], "prep")));
       const shaped = !bareV && nBegun && !vSeen && G.participle.includes(verbLemma(S, t.w).end);
@@ -1029,11 +1043,12 @@ function predOf(S, toks){
   const h = core[i];
   const verbFrom = k => {
     const parts = [], forms = [];
+    let head = "";
     for (const t of core.slice(k)){
-      if (isContent(t)){ parts.push(t.synthetic ? t.w : verbLemma(S, t.w).lemma); forms.push(t.w); }
+      if (isContent(t)){ const l = t.synthetic ? t.w : verbLemma(S, t.w).lemma; if (!head) head = l; parts.push(l); forms.push(t.w); }
       else if (has(t, "prep") || has(t, "infinitive")){ parts.push(t.w); forms.push(t.w); }
     }
-    return { kind:"verb", vector:parts.join(J), vform:forms.join(J), neg };
+    return { kind:"verb", vector:parts.join(J), vform:forms.join(J), head, neg };
   };
   if (!h) return { kind:"", neg };
   if (has(h, "cop")){
@@ -1089,20 +1104,32 @@ function clausesOf(L){
 }
 /* Each V takes the nounish segment on its left as subject and the one on its
  * right as object: N1 V1 N2 V2 N3 is (N1 V1 N2) and (N2 V2 N3). A V with no
- * subject has an unstated one, `-`, and forms a mention, never a belief.   */
-function readClause(S, T, L, idx, ctx, inherited){
+ * subject has an unstated one, `-`, and forms a mention, never a belief.
+ * Three things bend the chain (TTG-RFC-0005 §3): a relative clause closes at
+ * the next verb, which goes back to its antecedent; a stance verb takes the
+ * clause after it rather than its first thing; and what a stance verb takes,
+ * or an alternative word joins, is held — said, never believed.           */
+function readClause(S, T, L, idx, ctx, inherited, hold){
   const G = S.G, R = G.roles;
-  const out = { percepts:[], forms:[], heads:[], pairs:[], subjects:null };
+  const out = { percepts:[], forms:[], heads:[], pairs:[], subjects:null, open:false };
   const runs = [];
+  let rel = false;
   for (const i of idx){
+    if (L[i] === "R"){ rel = true; continue; }
     if (L[i] !== "N" && L[i] !== "V") continue;
     const last = runs[runs.length - 1];
-    if (last && last.cls === L[i]) last.toks.push(T[i]); else runs.push({ cls:L[i], toks:[T[i]] });
+    if (last && last.cls === L[i]) last.toks.push(T[i]);
+    else { runs.push({ cls:L[i], toks:[T[i]], rel:rel && L[i] === "V" }); rel = false; }
   }
   const thing = h => { if (h.form) out.forms.push(["thing", h.lemma, h.form]); };
   const firstV = runs.findIndex(r => r.cls === "V");
   runs.forEach((r, k) => {
-    if (r.cls !== "N") return;
+    r.alt = r.toks.some(t => has(t, "alt"));        // cats or dogs, fly or swim: one of them, not each
+    if (r.cls === "V"){
+      r.items = verbItems(S, r.toks);
+      r.stance = r.items.some(ps => G.stance.has(ps[ps.length - 1].head));
+      return;
+    }
     const nps = nounPhrases(S, r.toks, 0, r.toks.length);
     let lead, rest;
     if (firstV < 0 || k < firstV){ lead = nps.filter(np => !np.prep); rest = nps.filter(np => np.prep); }
@@ -1118,28 +1145,42 @@ function readClause(S, T, L, idx, ctx, inherited){
   }
   const isClass = o => o.np.det || o.np.quant !== "-" || o.h.changed || S.believers.has(o.h.lemma);
   const polOf = (P, s, o) => P.neg || s.none || s.neg || (o && o.np.neg) ? "-" : "+";
+  // a stance verb before a thing and a verb takes a clause, not the thing: I doubt [cats like fish]
+  runs.forEach((r, k) => { r.takes = !!r.stance && !!runs[k + 1] && runs[k + 1].cls === "N" && !!runs[k + 2] && runs[k + 2].cls === "V"; });
+  const heldAfter = runs.findIndex(r => r.takes);
+  // a relative clause closes at the next verb, which goes back to the antecedent:
+  // cats that chase mice are fast is about cats, however deep the relatives nest
+  const subjectRun = k => {
+    let j = k - 1;
+    if (!runs[k].rel) while (j >= 2 && runs[j].cls === "N" && runs[j - 1].rel && !runs[j - 1].takes && runs[j - 2].cls === "N") j -= 2;
+    return runs[j];
+  };
   let firstObjects = null;
   runs.forEach((r, k) => {
     if (r.cls !== "V") return;
-    const left = runs[k - 1], right = runs[k + 1];
-    let subjects = left && left.cls === "N" ? left.members.map(m => ({ lemma:m.h.lemma, self:m.h.self, quant:m.np.quant, none:m.np.none, neg:m.np.neg })) : [];
+    const left = subjectRun(k), right = runs[k + 1];
+    let subjects = left && left.cls === "N" ? left.members.map(m => ({ lemma:m.h.lemma, self:m.h.self, quant:m.np.quant, none:m.np.none, neg:m.np.neg, alt:left.alt })) : [];
     if (!subjects.length && k === firstV && inherited) subjects = inherited;
     if (!subjects.length) subjects = [{ lemma:"-", quant:"-" }];
-    const objects = right && right.cls === "N" ? right.members : [];
+    const objects = right && right.cls === "N" && !r.takes ? right.members : [];
+    const held = hold || r.alt || (heldAfter >= 0 && k > heldAfter);
     if (!out.subjects){ out.subjects = subjects; firstObjects = objects; }
-    for (const preds of verbItems(S, r.toks)) preds.forEach((P, pi) => {
+    for (const preds of r.items) preds.forEach((P, pi) => {
       const os = pi === preds.length - 1 ? objects : [];
       for (const s of subjects){
+        const pol = o => held || s.alt || (o && right.alt) ? "?" : polOf(P, s, o);
         if (os.length){
           for (const o of os){
             const v = P.kind === "cop" ? (isClass(o) ? R.class_of : R.property) : P.vector;
-            if (v) out.percepts.push({ s:s.lemma, v, o:o.h.lemma, pol:polOf(P, s, o), q:s.quant });
+            if (v) out.percepts.push({ s:s.lemma, v, o:o.h.lemma, pol:pol(o), q:s.quant });
           }
-        } else if (P.kind === "verb" && P.vector) out.percepts.push({ s:s.lemma, v:P.vector, o:"-", pol:polOf(P, s, null), q:s.quant });
+        } else if (P.kind === "verb" && P.vector) out.percepts.push({ s:s.lemma, v:P.vector, o:"-", pol:pol(null), q:s.quant });
       }
       if (P.kind === "verb" && P.vector) out.forms.push(["vector", P.vector, P.vform]);
     });
   });
+  const end = runs[runs.length - 1];
+  out.open = !!end && end.cls === "V" && !!end.stance;     // I wonder | if cats bark
   // prepositional phrases are mentioned beside the first thing of their segment, or the subject
   const subj0 = out.subjects[0].lemma !== "-" ? out.subjects[0].lemma : null;
   for (const r of runs){
@@ -1156,10 +1197,14 @@ function readClause(S, T, L, idx, ctx, inherited){
 function clausePercepts(S, toks, ctx, inherited){
   const labels = labelTokens(S, toks);
   const out = { percepts:[], forms:[], heads:[], pairs:[], labels };
-  let prev = inherited, first = true;
+  let prev = inherited, first = true, open = false;
   for (const cl of clausesOf(labels)){
-    const r = readClause(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null);
-    first = false;
+    // clauses either side of an alternative word are held, and so is the clause after a
+    // subord when the clause before ends on a stance verb: "I wonder if cats bark"
+    const at = toks[cl.idx[0] - 1], next = toks[cl.idx[cl.idx.length - 1] + 1];
+    const hold = has(at, "alt") || has(next, "alt") || (open && has(at, "subord"));
+    const r = readClause(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold);
+    first = false; open = r.open;
     out.percepts.push(...r.percepts); out.forms.push(...r.forms); out.heads.push(...r.heads); out.pairs.push(...r.pairs);
     if (r.subjects && r.subjects[0].lemma !== "-") prev = r.subjects;
   }
@@ -1309,7 +1354,7 @@ function consolidate(S){
     if (am) for (const e of am.entries.values()) for (const line of e.lines) lines.push({ line, id:am.chunk.rec.id, orig:false });
     for (const { line, id, orig } of lines){
       const p = cols(line);
-      if (p.length < 6 || !/^\d+$/.test(p[0]) || !p[1] || !p[2] || !p[3] || (p[4] !== "+" && p[4] !== "-")){
+      if (p.length < 6 || !/^\d+$/.test(p[0]) || !p[1] || !p[2] || !p[3] || !["+", "-", "?"].includes(p[4])){
         malformed.push({ id, line }); continue;
       }
       if (!own || (orig && am && am.entries.has(+p[0]))) continue;
@@ -1317,7 +1362,7 @@ function consolidate(S){
       if (s !== "-") bump("thing|" + s);
       if (v !== "-") bump("vector|" + v);
       if (o !== "-") bump("thing|" + o);
-      if (s === "-" || v === "-") continue;          // a mention: seen, searchable, never believed
+      if (s === "-" || v === "-" || pol === "?") continue;   // a mention or a held saying: seen, searchable, never believed
       if (v === R.comention){
         for (const [a, z] of [[s, o], [o, s]]){ if (!com.has(a)) com.set(a, new Map()); com.get(a).set(z, (com.get(a).get(z) || 0) + 1); }
         continue;
@@ -1562,7 +1607,7 @@ function settle(S, all, now, before, retiredBefore){
   const conflicts = [];
   for (const p of all){
     const k = p.s + "|" + p.v + "|" + p.o, b = before.get(k), e = S.trips.get(k);
-    if (!b || !e || p.v === R.comention) continue;
+    if (!b || !e || p.v === R.comention || p.pol === "?") continue;
     if (b.pol !== "?" && b.pol !== p.pol && !conflicts.some(c => c.trip === e))
       conflicts.push({ trip:e, earlier:b.sources.filter(s => s.pol !== p.pol) });
   }
@@ -1570,7 +1615,8 @@ function settle(S, all, now, before, retiredBefore){
   return { conflicts, superseded };
 }
 const mentioned = w => [...new Set(w.mentions.flatMap(p => [p.s, p.v, p.o]).filter(x => x !== "-"))];
-const splitAll = (S, all) => ({ percepts:all.filter(p => p.v !== S.G.roles.comention && !isMention(p)), mentions:all.filter(isMention) });
+const splitAll = (S, all) => ({ percepts:all.filter(p => p.v !== S.G.roles.comention && !isMention(p) && p.pol !== "?"),
+  held:all.filter(p => !isMention(p) && p.pol === "?"), mentions:all.filter(isMention) });
 /* `shapes`, if given, is the owner's reading of each sentence, by position: the
    percepts come from it and the episode's shape line records it (TTG-RFC-0005 §4). */
 function perceive(S, text, source, isFile, now, shapes){
@@ -1676,7 +1722,7 @@ function amend(S, epId, n, shape, now){
     else if (entries.size) insertChunk(S.st, newChunk(id, now, relates, null, say(G, "amend_title", { n:c.rec.lon }) || id, "ttdb-amend", block));
     const { conflicts, superseded } = settle(S, all, now, before, retiredBefore);
     const res = { id, amends:c.rec.id, n, shape:r.shape, sentences:1, ...splitAll(S, all), all, created, conflicts, superseded };
-    writeCursor(S, c.rec.id, said.get(n), say(G, "amended", { percepts:unit(G, "percept", res.percepts.length) }), [c.rec.id]);
+    writeCursor(S, c.rec.id, said.get(n), say(G, "amended", { percepts:unit(G, "percept", res.percepts.length + res.held.length) }), [c.rec.id]);
     return res;
   });
 }
@@ -2077,8 +2123,9 @@ function answerIn(S, text, now, source, shapes){
     const ep = perceive(S, text, source || null, false, now, shapes);
     if (!ep) return reply;
     reply.episode = ep;
-    reply.verdict = ep.percepts.length
-      ? say(G, "noted", { percepts:unit(G, "percept", ep.percepts.length), sentences:unit(G, "sentence", ep.sentences) })
+    const told = ep.percepts.length + ep.held.length;
+    reply.verdict = told
+      ? say(G, "noted", { percepts:unit(G, "percept", told), sentences:unit(G, "sentence", ep.sentences) })
       : ep.mentions.length ? say(G, "noted_mention", { terms:mentioned(ep).join(", ") }) : say(G, "noted_nothing");
     writeGrounds(S, reply, ep, ep.id);
     reply.records = [ep.id];
@@ -2145,6 +2192,8 @@ function writeGrounds(S, reply, w, epId){
       quotes:[{ ep:epId, n:p.n, text:S.said.get(epId).get(p.n), pol:p.pol }] });
   }
   reply.items = [...byKey.values()].slice(0, G.num.answer_max_items);
+  // what was said as a choice or under a stance is named, never grounded as said
+  if (w.held.length) reply.notes.push(say(G, "noted_held", { triples:w.held.map(p => tripleText(S, p)).join("; ") }));
   for (const c of w.conflicts){
     reply.notes.push(say(G, "contradicts"));
     reply.items.push({ kind:"conflict", pol:c.trip.pol, path:[c.trip], conf:c.trip.conf, quotes:quotesFor(S, c.trip).slice(-3) });
@@ -2159,7 +2208,7 @@ function amendReply(S, epId, n, shape, now){
   if (!w) return null;
   return withGrammar(S, pickGrammar(S, said.get(n)), () => {
     const G = S.G;
-    const reply = { intent:"perceive", lang:G.lang, query:said.get(n), verdict:say(G, "amended", { percepts:unit(G, "percept", w.percepts.length) }),
+    const reply = { intent:"perceive", lang:G.lang, query:said.get(n), verdict:say(G, "amended", { percepts:unit(G, "percept", w.percepts.length + w.held.length) }),
                     head:"", items:[], notes:[], search:[], purchase:{ found:[], missing:[] }, records:[w.amends], portraits:[], episode:w };
     writeGrounds(S, reply, w, w.amends);
     if (S.amends.has(c.rec.lon)) reply.records.push(w.id);
@@ -2203,7 +2252,7 @@ function ingestFile(S, name, text, now){
     if (!ep) return null;
     const G = S.G;
     const msg = say(G, "ingested", { file:name, sentences:unit(G, "sentence", ep.sentences),
-      percepts:unit(G, "percept", ep.percepts.length), terms:unit(G, "term", ep.created.length) });
+      percepts:unit(G, "percept", ep.percepts.length + ep.held.length), terms:unit(G, "term", ep.created.length) });
     writeCursor(S, ep.id, name, msg, [ep.id]);
     return { ep, msg, lang:G.lang };
   });

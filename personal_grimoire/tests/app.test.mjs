@@ -184,6 +184,53 @@ section("shapes: alternating segments, lists and mentions (TTG-RFC-0005)");
      "every sentence of every episode has a reading, written or recomputed");
 }
 
+section("said but not asserted: relatives close, alternatives and stance are held (TTG-RFC-0005 §3)");
+{
+  const S = fresh();
+  const cases = [
+    ["Cats that chase mice are fast.",               "[cats] that {chase} [mice] {are} [fast].",                     ["cat | chase | mouse | + | -", "cat | has_property | fast | + | -"]],
+    ["Cats that chase mice that eat cheese are fast.", "[cats] that {chase} [mice] that {eat} [cheese] {are} [fast].", ["cat | chase | mouse | + | -", "mouse | eat | cheese | + | -", "cat | has_property | fast | + | -"]],
+    ["Pixel is a cat or a dog.",                     "[pixel] {is} [a cat or a dog].",                               ["pixel | is_a | cat | ? | -", "pixel | is_a | dog | ? | -"]],
+    ["Birds fly or swim.",                           "[birds] {fly or swim}.",                                       ["bird | fly | - | ? | -", "bird | swim | - | ? | -"]],
+    ["Pixel sleeps or Pixel eats.",                  "[pixel] {sleeps} or [pixel] {eats}.",                          ["pixel | sleep | - | ? | -", "pixel | eat | - | ? | -"]],
+    ["I doubt cats like fish.",                      "[i] {doubt} [cats] {like} [fish].",                            ["self | doubt | - | + | -", "cat | like | fish | ? | -"]],
+    ["I think that cats bark.",                      "[i] {think} [that cats] {bark}.",                              ["self | think | - | + | -", "cat | bark | - | ? | -"]],
+    ["I wonder if cats bark.",                       "[i] {wonder} if [cats] {bark}.",                               ["self | wonder | - | + | -", "cat | bark | - | ? | -"]],
+    ["I don't think Pixel is fast.",                 "[i] {do not think} [pixel] {is} [fast].",                      ["self | think | - | - | -", "pixel | has_property | fast | ? | -"]],
+    ["I believe you.",                               "[i] {believe} [you].",                                         ["self | believe | you | + | -"]],
+    ["Hope is good.",                                "[hope] {is} [good].",                                          ["hope | has_property | good | + | -"]],
+    ["Los gatos que cazan ratones son rápidos.",     "[los gatos] que {cazan} [ratones] {son} [rápidos].",           ["gato | cazar | ratón | + | -", "gato | is_a | rápido | + | -"]],
+    ["Creo que los gatos ladran.",                   "{creo} que [los gatos] {ladran}.",                             ["- | creer | - | + | -", "gato | ladrar | - | ? | -"]],
+    ["El gato negro duerme.",                        "[el gato negro] {duerme}.",                                    ["gato | dormir | - | + | -"]],
+    ["Tengo dos gatos.",                             "{tengo} [dos gatos].",                                         ["- | has | gato | + | -"]]
+  ];
+  for (const [text, shape, want] of cases){
+    const r = PG.shapeOf(S, text), got = r.percepts.map(pk);
+    ok(r.shape === shape && JSON.stringify(got) === JSON.stringify(want), JSON.stringify(text) + " reads " + shape, r.shape + "  " + got.join(" ; "));
+  }
+  const drift = cases.map(c => c[0]).filter(t => {
+    const a = PG.shapeOf(S, t), b = PG.shapeOf(S, a.shape);
+    return a.shape !== b.shape || a.percepts.map(pk).join() !== b.percepts.map(pk).join();
+  });
+  ok(drift.length === 0, "each of these shapes reads back to itself", drift.join(" ; "));
+  ok(S.grammars.find(G => G.lang === "es").headFirst && !S.G.headFirst, "the head's position is the grammar's: first in Spanish, last in English");
+
+  // a held saying is written, seen and searchable, and never believed or contradicting
+  const H = fresh(), fish = () => H.seenCounts.get("thing|fish") || 0, before = fish();
+  PG.answer(H, "Cats like fish.", T0);
+  const d = PG.answer(H, "I doubt cats like fish.", T0 + 60);
+  ok(d.episode.percepts.map(pk).join() === "self | doubt | - | + | -" && d.episode.held.map(pk).join() === "cat | like | fish | ? | -",
+     "the stance is the owner's, the clause it takes is held");
+  ok(PG.serializeStore(H.st).includes("percept: 1 | cat | like | fish | ? | -") && H.malformed.length === 3, "a held percept is written with ? and is well formed");
+  ok(fish() === before + 2 && H.trips.get("cat|like|fish").fr === 1 && H.trips.get("cat|like|fish").sources.length === 1,
+     "it is seen, and counts neither for nor against");
+  ok(!d.notes.includes(PG.say(H.G, "contradicts")) && d.notes.includes(PG.say(H.G, "noted_held", { triples:"cat like fish" })),
+     "it never contradicts what was said, and the reply names it as held", d.notes.join(" | "));
+  ok(d.verdict === PG.say(H.G, "noted", { percepts:"2 percepts", sentences:"1 sentence" }), "the verdict counts it", d.verdict);
+  const q = PG.answer(H, "Is Pixel a cat or a dog?", T0 + 120);
+  ok(q.intent === "verify", "a question still asks after each alternative");
+}
+
 section("amendments: the owner's reading kept beside the words (TTG-RFC-0005 §5)");
 {
   const S = fresh();

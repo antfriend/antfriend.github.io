@@ -1,6 +1,6 @@
 # TTG-RFC-0005: Shapes — Alternating Segments, Lists, Mentions and Amendments
 
-**Version:** 0.1
+**Version:** 0.2
 **Status:** Draft
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
@@ -28,6 +28,11 @@ said is an **amendment**: kept beside the episode, never in it.
 A sentence of one segment is allowed. Said as a statement it is a **mention**: the term is
 recorded and counted, and nothing is believed about it. An unknown lone word is nounish.
 
+Not everything a sentence says is asserted. A relative clause closes at the next verb, which
+returns to the thing the clause was about. What a list joined by *or* says, and the clause a
+stance verb such as *doubt* takes, is **held**: written with polarity `?`, seen and searched,
+never believed (§3).
+
 ---
 
 ## 2. Segments
@@ -40,7 +45,7 @@ Every token of a sentence receives one label:
 | `V` | verbish: part of a verbish segment |
 | `L` | a link that ends a clause: punctuation other than `list_sep`, a `subord` word, a `filler` word, or a `conj` whose both sides are clauses (TTG-RFC-0002 §2) |
 | `C` | a `conj` between a nounish segment and a verbish one: a new clause that **inherits the subject** (*cats chase mice and eat cheese*) |
-| `R` | a `relative` word between a nounish segment and a verbish one: a link the chain passes through (*mice that eat cheese*) |
+| `R` | a `relative` word between a nounish segment and a verbish one: a link the chain passes through (*mice that eat cheese*). A word that is both `relative` and `subord` (*que*) is `R` there and `L` anywhere else |
 
 Within each clause, tokens are labelled left to right. The six predicate rules of
 TTG-RFC-0002 §3 decide where a verbish segment **begins**, now applied at every position
@@ -65,8 +70,13 @@ to work* stays `go_to | work`.
 
 **The alternation is the constraint.** A content word straight after a verbish segment is
 nounish, however verb-like it is (*like fly fishing*). A second verbish segment in one clause
-needs a cue — a `relative` word before it, a `conj`, or a noun phrase after it — so *I had a
-good drink* is `[i] {had} [a good drink]`, not a drink that does something.
+needs a cue — a `relative` word before it, a `conj`, a noun phrase after it, or a `stance`
+verb before it (*I think cats bark*) — so *I had a good drink* is `[i] {had} [a good drink]`,
+not a drink that does something.
+
+A `stance` verb that opens its clause is verbish when a phrase starter, a `self` or
+`anaphor` word, or a `subord` or `relative` word follows it: *Suppose it rains*, *Creo que…*.
+Otherwise it is read like any other word, so *Hope is good* is about hope.
 
 A `conj` or `list_sep` between two verbish segments makes one verbish **list** (*fly, swim
 and sing*); between nounish ones, one nounish list (*cats, dogs and ferrets*). `neg` and
@@ -98,8 +108,10 @@ first verbish segment every non-prepositional phrase is a member (a subject list
 the leading run of phrases is (an object list), and a segment that opens with a `prep`
 phrase has none. Prepositional phrases are **adjuncts**: each is a `comention` of the
 segment's first member, or of the subject if it has none. A member's head is its last word,
-its term is that head's noun lemma, and it keeps its own quantifier and its own `neg` (*I
-like cats but not dogs* is `self like cat +` and `self like dog -`).
+or its first where the lexicon declares `head: first`; a `premod` word opens a phrase like a
+determiner and is never its head (*dos gatos* is `gato`). Its term is the head's noun lemma,
+and it keeps its own quantifier and its own `neg` (*I like cats but not dogs* is `self like
+cat +` and `self like dog -`).
 
 **Predicates.** A verbish segment is a list of items split at `conj` and `list_sep`; every
 item takes the segment's subject and object. An item is a sequence of predicates, split
@@ -117,6 +129,32 @@ vector is, in order:
 
 Polarity is `-` when the predicate, the subject member or the object member carries a `neg`,
 or the subject a `quant_none`; the quantifier is the subject member's.
+
+**Relative clauses close.** A verbish segment reached through an `R` link takes the
+antecedent as subject, as above. The next verbish segment after that clause's object is the
+antecedent's again, not the object's: *cats that chase mice are fast* is `cat chase mouse`
+and `cat has_property fast`. Nested relatives close together, back to the outermost
+antecedent (*cats that chase mice that eat cheese are fast*).
+
+**Stance.** A seed record may list `stance:` verbs: those whose complement is a clause the
+speaker does not assert (*think*, *doubt*, *hope*, *say*). When a stance verb's segment is
+followed by a nounish segment and then a verbish one, the stance verb takes the clause, not
+the thing: its own percept has no object, and every percept of the segments after it is
+held. *I doubt cats like fish* is `self doubt - +` and `cat like fish ?`. A clause that ends
+on a stance verb holds the clause after it when a `subord` word joins them: *I wonder if cats
+bark*. A stance verb with only a thing after it is an ordinary verb (*I believe you*).
+
+**Alternatives.** A list joined by an `alt` word (*or*) says one of its members, not each.
+Every percept whose subject list, object list or verb list contains one is held, and so is
+every percept of the clauses either side of an `alt` word that joins clauses: *Pixel is a cat
+or a dog* is `pixel is_a cat ?` and `pixel is_a dog ?`. Subjects carry this into a clause
+that inherits them.
+
+**Held.** A percept with polarity `?` is **held**: said, and not asserted. Like a mention it
+names terms, creates them if new, counts toward `seen` and is searchable; it never
+consolidates into a belief, never contradicts one, and a reply names it apart from the
+grounds (`noted_held`). A question still checks it: *Is Pixel a cat or a dog?* asks after
+both.
 
 **Mentions.** A percept whose subject or vector is `-` is a **mention**:
 
@@ -192,7 +230,7 @@ was read is an **amendment**:
 
 ```ttdb-amend
 shape: <n> | <shape>
-percept: <n> | <subject> | <vector> | <object or -> | <+ or -> | <quantifier>
+percept: <n> | <subject> | <vector> | <object or -> | <+, - or ?> | <quantifier>
 ```
 ```
 
@@ -224,13 +262,19 @@ form, then anything it disagrees with or retires.
 | `lexicon` | `class: relative` | Words that link a nounish segment to the verbish one after it. |
 | `lexicon` | `class: infinitive` | A marker that carries a verb on or begins one (*to*). |
 | `lexicon` | `nounish_marks`, `verbish_marks` | Two characters each: open, close. |
+| `lexicon` | `class: alt` | Words that join alternatives (*or*); what they join is held. |
+| `lexicon` | `class: premod` | Words that open a phrase and are never its head, for a head-first language (*dos*, *buen*). |
+| `lexicon` | `head` | `last` (the default) or `first`: which word of a phrase is its head. |
+| `seed` | `stance` | Verb lemmas whose clause is held; each is also a seed. |
 | `vectors` | `role: amend_edge` | The header edge type from an amendment to its episode. |
 | `numbers` | `phrase_max_words` | Longest run of words bound to a known term. |
 | `ttdb-sphere` | `amend_lane` | The latitude amendments sit on. |
 | `responses` | `noted_mention`, `amended`, `amend_title` | A mention's verdict, an amendment's verdict, an amendment's title. |
+| `responses` | `noted_held` | A note naming what a tell held, `{triples}`. |
 
-A later language may declare its own marks, `relative` and `infinitive` classes; it borrows
-the role, the number and the lane like the rest (TTG-RFC-0001 §11).
+A later language may declare its own marks, classes, `head` and `stance` verbs; it borrows
+the role, the number and the lane like the rest (TTG-RFC-0001 §11). Merging two lexicons
+merges their `head` too, which is one more reason they are kept apart.
 
 ---
 
@@ -239,24 +283,24 @@ the role, the number and the lane like the rest (TTG-RFC-0001 §11).
 A store without the keys of §6 reads as before, except that the percept rules of §3 apply to
 every clause. A runtime that predates this RFC MUST ignore `shape:` lines in episodes (unknown
 block keys, TTG-RFC-0001 §12) and the `ttdb-amend` fence (TTCP-RFC-0001 §3), and will read a
-mention as a belief about the term `-`; stores carrying mentions or amendments need a runtime
-that implements this RFC. The published bAbI outcomes (tasks 1 and 15, every condition)
+mention as a belief about the term `-` and a held percept as malformed; stores carrying
+mentions, held percepts or amendments need a runtime that implements this RFC. The published bAbI outcomes (tasks 1 and 15, every condition)
 are unchanged under the reference runtime.
 
 ---
 
 ## 8. Open Questions
 
-1. **Chains are flat.** *Cats that chase mice are fast* reads `mouse has_property fast`: the
-   chain gives the object of a relative clause the next verb. Nesting a relative clause
-   inside its noun needs a segment inside a segment, and the notation has room for it.
-2. **Disjunction.** `or` coordinates like `and`, so *Pixel is a cat or a dog* believes both.
-   A `class: alt` whose lists form mentions only would fix it in data.
-3. **Stance.** *I doubt cats like fish* believes the second link. A `stance` class could
-   hedge whatever its verb's right-hand side begins.
-4. **Head position.** A member's head is its last word — a fact about English inside the
-   runtime; *el gato negro* reads `negro`. It belongs in the grammar as `head: last | first`.
-5. **Re-reading the corpus.** A grammar change could write an amendment for every sentence
+1. **Deeper nesting.** A stance verb inside a relative clause (*the man that says cats bark is
+   tall*) holds the main clause with it, and an object relative (*the dog that the cat
+   chased*) is not read as a relative at all. Both want a segment inside a segment; the
+   notation has room for it.
+2. **Scope.** *Pixel is not a cat or a dog* denies both, and is only held. Negation over an
+   alternative, and a stance over a negation, need a scope the flat percept does not carry.
+3. **Unholding.** The owner can relabel segments but cannot yet say that a held clause was
+   meant as fact (*I think cats bark*, said as a hedge). A mark for it, or a held entry an
+   amendment may flip, would do.
+4. **Re-reading the corpus.** A grammar change could write an amendment for every sentence
    whose shape it changes, with a grammar hash per amendment, making grammar revision
    (TTG-RFC-0001 §13.3) auditable.
 
@@ -267,5 +311,6 @@ are unchanged under the reference runtime.
 | Date | Change |
 |---|---|
 | 2026-09-21 | Initial draft, from the personal_grimoire reference implementation |
+| 2026-09-21 | 0.2: relative clauses close at the next verb; `stance` verbs and `alt` lists hold what they introduce (polarity `?`); `head` and `premod` put a phrase's head where the language does; a `relative` word outranks `subord` in relative position. Open questions 1–4 of 0.1 answered or narrowed. |
 
 *License: CC0*

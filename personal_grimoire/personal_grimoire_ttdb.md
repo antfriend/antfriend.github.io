@@ -209,12 +209,14 @@ src: RFCs/TTG-RFC-0005-Shapes-and-Amendments.md §3
 A **percept** is one typed, directed claim: a THING, a VECTOR, and a THING or nothing.
 
 ```
-percept: <sentence> | <subject> | <vector> | <object or -> | <+ or -> | <* all, ~ some, or ->
+percept: <sentence> | <subject> | <vector> | <object or -> | <+, - or ?> | <* all, ~ some, or ->
 ```
 
 - **Chain** → each verbish segment takes the nounish segment on its left as subject and the
   one on its right as object: `N1 V1 N2 V2 N3` is `(N1 V1 N2)` and `(N2 V2 N3)` — *I saw
-  the man eat cheese* is `self see man` and `man eat cheese`.
+  the man eat cheese* is `self see man` and `man eat cheese`. A relative clause closes at the
+  next verb, which goes back to its antecedent: *cats that chase mice are fast* is about cats.
+  A phrase's head is its last word or its first, as the lexicon's `head:` says.
 - **Verb** → its verbs and particles joined by `phrasal_join`: *live in houses* →
   `live_in | house`, *want to eat cheese* → `want_to_eat | cheese`. No object → `-`.
 - **Copula** → a `phrase:` from [vector algebra](lat-40lon0) at the start of the complement
@@ -232,6 +234,9 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+ or -> | <* all, 
   [Mentions are not evidence](lat98lon6): they are searchable and never become beliefs.
 - **Mention** → a subject or vector of `-`. *Coffee.* is `coffee | - | -`; *Feed the cat.*
   is `- | feed | cat`. Counted in `seen`, searchable, never a belief.
+- **Held** → polarity `?`: whatever a list or clause joined by an `alt` word says (*a cat or
+  a dog*), and the clause a `stance` verb takes (*I doubt* — *cats like fish*). Said but not
+  asserted: written and seen like a mention, never a belief, never a contradiction.
 
 Percepts live in the episode that perceived them, beside the `said:` line they came from.
 An episode is written once and **never rewritten**; it is the owner's episodic memory, and
@@ -518,6 +523,7 @@ class: self | i me my mine myself
 class: anaphor | it they them he him she
 class: prep | in on at of to from by with for about into onto over under near between through after before during without within across against toward towards among inside outside behind beside beyond
 class: conj | and or but nor
+class: alt | or
 class: subord | because so if then than when while although though since unless whereas
 class: relative | that which who
 class: infinitive | to
@@ -552,6 +558,7 @@ list_sep: ,
 generic_det: a an
 nounish_marks: [ ]
 verbish_marks: { }
+head: last
 ```
 
 ---
@@ -687,6 +694,7 @@ nouns (*fly*, *play*, *work*) are resolved by position, not by membership.
 ```ttdb-grammar
 kind: seed
 seed: eat drink like love hate want need know think believe see hear feel make give take get find keep hold bring buy sell use help build write read say tell call show teach learn play work move run walk swim fly climb jump sleep live grow chase hunt catch fight fear avoid protect cause produce create contain include carry own lose win change become follow lead open close start stop begin end enjoy prefer remember forget visit meet watch wear sing cook bake drive ride travel study speak mean seem hide bite kill save pay send cut draw paint dream wish hope miss plan try purr bark smell taste lay sit stand fall wake throw lie belong depend
+stance: think believe doubt suppose guess hope wish wonder fear suspect imagine assume expect pretend dream say claim
 ```
 
 ---
@@ -784,6 +792,7 @@ no_purchase: No purchase: {words}.
 noted: Noted {percepts} from {sentences}.
 noted_nothing: Kept your words, but no percept formed — nothing to reason along yet.
 noted_mention: Noted {terms} — named, with nothing said about it yet.
+noted_held: Kept, not believed — you said it as a choice or a stance, not as fact: {triples}.
 amended: Read again as you marked it: {percepts}.
 amend_title: Amendment {n}
 contradicts: This disagrees with something you said before.
@@ -882,14 +891,17 @@ class: self | yo me mi mis mí conmigo
 class: anaphor | él ella ellos ellas
 class: prep | en de a con por para sobre sin desde hasta entre hacia bajo contra durante
 class: conj | y e o u pero ni
+class: alt | o u
 class: subord | porque cuando si aunque mientras que
+class: relative | que
+class: premod | dos tres cuatro cinco seis siete ocho nueve diez cien mil buen gran mal otro otra otros otras
 class: aux | suele suelen
 class: cop | es son soy eres somos está están estoy estás estamos era eran estaba estaban fue fueron ser estar
 class: hav | tiene tienen tengo tienes tenemos
 class: modal | puede pueden puedo puedes podemos debe deben debo
 class: neg | no nunca jamás nada nadie
 class: wh | qué quién quiénes cuál cuáles dónde cuándo cómo
-class: adverb | muy también siempre ya aún todavía casi bastante mucho poco
+class: adverb | muy también siempre ya aún todavía casi bastante mucho poco más menos tan
 class: filler | sí vale hola gracias bueno pues
 whole: del | de el
 whole: al | a el
@@ -900,6 +912,7 @@ list_sep: ,
 generic_det: un una
 nounish_marks: [ ]
 verbish_marks: { }
+head: first
 ```
 
 ---
@@ -936,6 +949,7 @@ verb_irregular: pienso piensas piensa pensamos piensan | pensar
 verb_irregular: prefiero prefieres prefiere preferimos prefieren | preferir
 verb_irregular: digo dices dice decimos dicen | decir
 verb_irregular: sé sabes sabe sabemos saben | saber
+verb_irregular: creo | creer
 verb: ando | ar
 verb: iendo | er | ir
 verb: ado | ar
@@ -966,6 +980,7 @@ src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §5
 kind: seed
 lang: es
 seed: comer beber gustar amar odiar querer necesitar saber conocer pensar creer ver oír sentir hacer dar tomar tener encontrar traer comprar vender usar ayudar construir escribir leer decir llamar enseñar aprender jugar trabajar correr caminar nadar volar saltar crecer cazar perseguir atrapar temer evitar proteger causar crear contener llevar perder ganar cambiar seguir abrir cerrar empezar terminar disfrutar preferir recordar olvidar visitar mirar cantar cocinar viajar estudiar hablar vivir dormir morder pagar dibujar pintar soñar esperar ronronear ladrar oler caer despertar pertenecer
+stance: creer pensar dudar suponer esperar desear temer sospechar imaginar soñar decir negar
 ```
 
 ---
@@ -1045,6 +1060,7 @@ no_purchase: Sin agarre: {words}.
 noted: Anotado: {percepts} de {sentences}.
 noted_nothing: Guardé tus palabras, pero no se formó ninguna percepción.
 noted_mention: Anotado {terms} — nombrado, sin que se diga nada de ello todavía.
+noted_held: Guardado, no creído — lo dijiste como opción o postura, no como hecho: {triples}.
 amended: Leído de nuevo como lo marcaste: {percepts}.
 amend_title: Enmienda {n}
 contradicts: Esto contradice algo que dijiste antes.
@@ -1921,17 +1937,20 @@ The highest EPS in the design, because every sentence goes through it and it is 
 settled thing here. Since [TTG-RFC-0005](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md) it reads
 any alternating run of nounish and verbish segments, lists of either, relative words,
 infinitives and one-word sentences — *mice that eat cheese*, *saw the man eat cheese*,
-*fly, swim and sing*. It still does not see:
+*fly, swim and sing*. A relative clause closes at the next verb, so *cats that chase mice
+are fast* is about cats. What a sentence says without asserting it is **held**, written and
+never believed: the members of an *or*, and the clause after a stance verb (*I doubt cats
+like fish*). A phrase's head is where the lexicon says: last in English, first in Spanish.
+It still does not see:
 
-- **Nesting** — a chain is flat, so the object of a relative clause takes the next verb:
-  *cats that chase mice are fast* reads `mouse has_property fast`.
+- **Deeper nesting** — a stance inside a relative (*the man that says cats bark is tall*)
+  holds the main clause with it; an object relative (*the dog that the cat chased*) is not
+  read as a relative at all.
 - **Modifiers** — *black cats* is *cats*; the adjective is dropped unless the owner binds the
   phrase into one term (`black_cat`).
 - **Tense and modality** — *birds fly*, *birds flew* and *birds might fly* are one percept.
-- **Disjunction and stance** — *a cat or a dog* believes both; *I doubt cats like fish*
-  believes the second half.
-- **Head position** — a phrase's head is its last word, which is English: *el gato negro*
-  reads *negro*.
+- **Scope** — *not a cat or a dog* denies both, and is only held. A held clause the owner
+  meant as fact (*I think cats bark*) can be said again plainly, but not yet marked so.
 - **Word order other than a chain**, and questions that invert it beyond the forms in
   [question forms](lat-50lon0).
 - **Numbers, dates and names with spaces** — *New York* is two things until the owner writes
@@ -1969,7 +1988,7 @@ down because it is a claim.
 
 ---
 
-@LAT98LON7 | created:1789257600 | updated:1789257600 | relates:supports@LAT10LON0,refines@LAT98LON5
+@LAT98LON7 | created:1789257600 | updated:1789948800 | relates:supports@LAT10LON0,refines@LAT98LON5
 [ew]
 conf:100
 rev:0
@@ -1990,7 +2009,8 @@ test.
   two vectors until the owner links them: terms with `is_a`, vectors with a
   [rule](lat-80lon0) such as `cazar X Y => chase X Y`.
 - **Why not one merged lexicon:** *a* is an article in one language and a preposition in the
-  other, *no* a quantifier and a negation. Merged, they break 2 of the fifteen English parse
+  other, *no* a quantifier and a negation, and a phrase's head is its last word in one and its
+  first in the other (*el gato negro*). Merged, they break 3 of the fifteen English parse
   cases; kept apart, none.
 - **New blind spots:** a dropped subject (*No como carne* forms nothing), a verb-first
   question (*¿Dónde duerme Pixel?*), an adjective that agrees in number (*son negros* reads

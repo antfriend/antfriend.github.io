@@ -66,9 +66,11 @@ host passed in, while a later denial of the same place stays a contradiction; an
 store's description of the runtime's surface names exactly what the runtime exports. They
 check the shapes too: fifteen readings, from *Pixel chases mice that eat cheese* to *Swim.*;
 that every reading, in either language, reads back as itself; that marks overrule the parser
-and a join makes one term; that *Coffee.* is a mention and *coffee* a look-up; and that an
-amendment stands in for a sentence without touching its episode, and is withdrawn by reading
-the sentence back the episode's way.
+and a join makes one term; that *Coffee.* is a mention and *coffee* a look-up; that a
+relative clause closes at the next verb, that a phrase's head sits where each language puts
+it, and that what *or* joins or a stance verb takes is held — seen, never believed, never a
+contradiction; and that an amendment stands in for a sentence without touching its episode,
+and is withdrawn by reading the sentence back the episode's way.
 
 And they check the claim the whole design rests on, three ways:
 
@@ -80,7 +82,7 @@ And they check the claim the whole design rests on, three ways:
    ratones. Yo no como queso.* parses to `gato | es_un | mamífero`, `gato | cazar | ratón`,
    `yo | comer | queso | -`, and *¿Los gatos cazan ratones?* is answered *Sí.* The seed
    store goes further and keeps both: every English parse case still reads as English beside
-   its Spanish grammar, and merging the two into one lexicon instead is shown to break two.
+   its Spanish grammar, and merging the two into one lexicon instead is shown to break three.
 3. **Grep for leaks.** None of the 400-odd words the grammar lists appears as a string literal
    in `index.html`, no reply phrase is copied into it, and every number the store declares is
    named in it.
@@ -198,7 +200,8 @@ Each stage is one blueprint record in the store and one section of an RFC.
 3. **Percept** — `sentence | subject | vector | object | polarity | quantifier`, one per verb,
    relating the segments either side of it. *Cats chase mice* is `cat | chase | mouse | + | -`;
    *I saw the man eat cheese* is two. Your verbs become the store's edge types. A one-word
-   statement is a mention, and every sentence's shape is written beside it.
+   statement is a mention; what *or* joins or *I doubt* takes is held, polarity `?`; and every
+   sentence's shape is written beside it.
 4. **Terms** — a THING or VECTOR record per lemma, placed on the sphere.
 5. **Consolidate** — per triple, count **episodes, not sentences**, for and against;
    conf = Laplace's rule of succession. One saying reads 170; *I like coffee* followed by *I
@@ -303,6 +306,15 @@ A sentence of one word is allowed. *Coffee.*, said as a statement, is kept as a 
 the term is counted and searchable, and nothing is believed about it. Typed bare, *coffee* is
 still a look-up.
 
+Not everything you say is something you assert. *I doubt cats like fish.* reads
+`[i] {doubt} [cats] {like} [fish]`: `self | doubt | -` is said, and `cat | like | fish | ?`
+is **held** — written, counted and searchable, never believed, and never a contradiction of
+*Cats like fish*. What *or* joins is held the same way (*Pixel is a cat or a dog*), and the
+reply names what it held. A relative clause closes at the next verb, so *Cats that chase mice
+are fast* is `cat | has_property | fast`, not a claim about mice. Which word of a phrase is
+its head is the lexicon's to say: last in English, first in Spanish, so *el gato negro* is a
+`gato`.
+
 ---
 
 ## Make your own
@@ -347,10 +359,10 @@ global_models.
 | `@LAT98LON6` | Mentions are not evidence | 215 | 150 | 24 |
 | `@LAT98LON2` | Lanes are latitudes again | 230 | 60 | 6 |
 
-**First, the parser's blind spots** — nested relative clauses, attributive adjectives, tense and
-modality, disjunction, a phrase's head that is always its last word. Every sentence passes
-through them and they are the least settled thing here, though you can now correct any
-reading they get wrong. The test for any fix is the one in `@LAT98LON5`: if it needs English in
+**First, the parser's blind spots** — nesting deeper than a relative clause, attributive
+adjectives, tense and modality, the scope of *not* over *or*. Every sentence passes through
+them and they are the least settled thing here, though you can now correct any reading they
+get wrong, and what the parser cannot tell is asserted is held rather than believed. The test for any fix is the one in `@LAT98LON5`: if it needs English in
 `index.html`, it is the wrong fix. Each is a rule kind the grammar could declare.
 
 **Second, the lemmatizer.** It is right about the words you use and wrong about the first use
@@ -382,12 +394,16 @@ no.
 
 ## Known limits
 
-- **Chains are flat.** A clause reads as alternating segments, each verb relating its
-  neighbours, so the object of a relative clause takes the next verb. Questions that invert
-  word order beyond the declared forms fall back to search. Where it reads you wrongly,
+- **Chains are nearly flat.** A clause reads as alternating segments, each verb relating its
+  neighbours; a relative clause closes at the next verb, but a stance inside a relative (*the
+  man that says cats bark is tall*) holds the main clause too, and an object relative (*the
+  dog that the cat chased*) is not read as one. Questions that invert word order beyond the
+  declared forms fall back to search. Where it reads you wrongly,
   [correct the reading](#how-it-read-you).
 - **Modifiers are dropped.** *Black cats* is *cats*, unless you make *black cats* one term.
-- **`or` is read as `and`.** *Pixel is a cat or a dog* believes both.
+- **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
+  less than you did; *not a cat or a dog* is held rather than denied; and *I think cats bark*
+  meant as fact has to be said again plainly.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.
   That is a claim about what feeding a file in means — *here is something I read* — and it is
   written down at `@LAT98LON6`.

@@ -55,10 +55,11 @@ keep such text in markup rather than in the interpreter.
 | `list_sep` | character | Survives tokenisation to separate coordinated noun phrases. |
 | `generic_det` | words | Determiners that make a noun phrase generic (quantifier `*`). |
 | `nounish_marks`, `verbish_marks` | two characters | The owner's brackets for a nounish and a verbish segment, open then close (TTG-RFC-0005 §4). |
+| `head` | `last` or `first` | Which word of a phrase is its head; `last` when absent (TTG-RFC-0005 §3). |
 
 Class keys the runtime interprets: `det`, `poss`, `quant_all`, `quant_some`, `quant_none`,
 `self`, `anaphor`, `prep`, `conj`, `subord`, `aux`, `cop`, `hav`, `modal`, `neg`, `wh`,
-`adverb`, `filler`, `relative`, `infinitive` (the last two, TTG-RFC-0005 §2). A token in no class is a **content word**.
+`adverb`, `filler`, `relative`, `infinitive`, `alt`, `premod` (the last four, TTG-RFC-0005 §2–§3). A token in no class is a **content word**.
 
 ---
 
@@ -84,6 +85,9 @@ outside `double_keep`; then the first candidate.
 
 `seed: <verb lemmas>` — repeated as needed. A head start for predicate detection only.
 A word the owner has used as a verb is recognised as a VECTOR term regardless of this list.
+
+`stance: <verb lemmas>` — seeds whose complement clause the speaker does not assert
+(*think*, *doubt*, *say*); what such a verb takes is held (TTG-RFC-0005 §3).
 
 ---
 
@@ -118,7 +122,7 @@ words fill are defined in TTG-RFC-0003 §4.
 `<key>: <phrase with {slots}>`, and `unit_<noun>: <singular> | <plural>`. Keys the runtime
 emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `superseded_by`,
 `affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `deny_superseded`, `contest`, `unknown`,
-`exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
+`exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `noted_held`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
 `objects_head`, `subjects_head`, `nothing_found`, `search_head`, `suggest`, `ingested`,
 `episode_title`, `source_typed`, `store_opened`; units `percept`, `sentence`, `term`.
 
@@ -224,5 +228,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-09-14 | `kind: rules` (defined in TTG-RFC-0003 §3.1) and `rule_max_body` in §9; rules are shared like numbers (§11); open question 2 narrowed. |
 | 2026-09-14 | The `exclusive` flag in §6 and four reply keys in §8, for supersession (TTG-RFC-0004 §3). |
 | 2026-09-21 | For shapes and amendments (TTG-RFC-0005): the `relative` and `infinitive` classes and the two mark keys in §3, the `amend_edge` role in §6, three reply keys in §8, `phrase_max_words` and `amend_lane` in §9. |
+| 2026-09-21 | For held sayings and head position (TTG-RFC-0005 0.2): the `alt` and `premod` classes and the `head` key in §3, `stance` in §5, `noted_held` in §8. |
 
 *License: CC0*

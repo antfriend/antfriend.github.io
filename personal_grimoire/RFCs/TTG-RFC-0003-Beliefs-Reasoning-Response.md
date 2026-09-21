@@ -25,8 +25,8 @@ in the corpus, and how a reply is built from grounds.
 
 ## 2. Consolidation
 
-For each triple (subject, vector, object) over all non-comention percepts of the episodes on
-the episode lane (TTG-RFC-0002 §5.1):
+For each triple (subject, vector, object) over all non-comention, non-held percepts of the
+episodes on the episode lane (TTG-RFC-0002 §5.1):
 
 - per episode, `plus` = the largest weight of its `+` percepts, `minus` = the largest weight of
   its `-` percepts, where weight is `weight_partial` for quantifier `~` and 1 otherwise;
@@ -213,5 +213,6 @@ values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
 | 2026-09-14 | §3.1 Rules: Datalog-style rules over vectors, derived to a fixpoint after each consolidation; verify, objects, subjects and describe read their conclusions. |
 | 2026-09-14 | Supersession from TTG-RFC-0004: verify step 0, facts carry when they came to hold, the `superseded` ground; inference grounds quote each step at its latest saying. |
 | 2026-09-21 | §4: a lone segment said as a statement is perceived as a mention; a question never checks a mention; `noted_mention` and `amended` verdicts (TTG-RFC-0005). |
+| 2026-09-21 | §2: held percepts (polarity `?`, TTG-RFC-0005 0.2) count for neither side; a tell names them in a `noted_held` note. |
 
 *License: CC0*

@@ -105,7 +105,8 @@ for (const [, q, intent, says] of rows){
   ok(flat.includes("*" + p.notes[0].replace(/\.$/, "") + "*"), "the penguin exception is quoted exactly", p.notes[0]);
   // 'How it read you': every reading the README quotes is the engine's
   const reads = [["Pixel chases mice that eat cheese.", "[pixel] {chases} [mice] that {eat} [cheese]."],
-                 ["Fruit flies like bananas.", "[fruit] {flies} [like bananas]."]];
+                 ["Fruit flies like bananas.", "[fruit] {flies} [like bananas]."],
+                 ["I doubt cats like fish.", "[i] {doubt} [cats] {like} [fish]."]];
   const says = [["Fruit flies like bananas.", "fruit | fly | banana"], ["[Fruit flies] {like} [bananas].", "fly | like | banana"],
                 ["[Fruit_flies] {like} [bananas].", "fruit_fly | like | banana"], ["I like fly fishing.", "self | like | fishing"],
                 ["[i] {like} [fly_fishing].", "self | like | fly_fishing"]];
@@ -114,6 +115,12 @@ for (const [, q, intent, says] of rows){
   const wrongSay = says.filter(([t, want]) => trip(t) !== want || !flat.includes("`" + want + "`"));
   ok(!wrongShape.length && !wrongSay.length, "the shapes and readings 'How it read you' quotes are the engine's",
      wrongShape.concat(wrongSay).map(x => x[0]).join(" ; "));
+  // one percept of several, quoted with its polarity where it is held
+  const among = [["I doubt cats like fish.", "self | doubt | -"], ["I doubt cats like fish.", "cat | like | fish | ?"],
+                 ["Cats that chase mice are fast.", "cat | has_property | fast"], ["El gato negro duerme.", "gato"]];
+  const wrongAmong = among.filter(([t, want]) => !flat.includes("`" + want + "`") ||
+    !PG.shapeOf(PG.openStore(store), t).percepts.some(x => (x.s + " | " + x.v + " | " + x.o + " | " + x.pol).startsWith(want)));
+  ok(!wrongAmong.length, "the held, relative and head examples it quotes are percepts the engine forms", wrongAmong.map(x => x[1]).join(" ; "));
 }
 
 console.log("\n== README roadmap matches the lane-98 weights ==");
