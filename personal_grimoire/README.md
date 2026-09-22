@@ -1,5 +1,7 @@
 # Personal Grimoire
 
+<img src="Grimoire.jpeg" alt="A tooled leather grimoire with a brass clasp and an eye set in its cover." width="360">
+
 A one-page web app: **a corpus of your own words that answers in them.** You type sentences,
 or feed in whole `.md` and `.txt` files, and the page breaks them into *percepts* — nounish
 **things** and verbish **vectors** — forms beliefs about the things, reasons along the

@@ -42,8 +42,23 @@ const THEMES = {
   },
   games: { accent: "#7cc7ff", glyph: "grid" },
   global_models: { accent: "#8fe6d2", glyph: "orbits" },
-  personal_grimoire: { accent: "#d9b978", glyph: "grimoire" },
-  RFCs: { accent: "#ff9f7c", glyph: "sheets" },
+  // The grimoire is a real book with an eye in its cover, photographed. The
+  // portrait plate slices into the card upright; glyph stays as the face if
+  // the poster goes.
+  personal_grimoire: {
+    accent: "#d9b978",
+    glyph: "grimoire",
+    poster: "personal_grimoire/Grimoire-poster.jpg",
+    tag: "ONE CORPUS",
+  },
+  // The RFC record draws its own lane chart in ASCII; the poster is that same
+  // chart, one filled block per document, so the card and the record agree.
+  RFCs: {
+    accent: "#ff9f7c",
+    glyph: "sheets",
+    poster: "RFCs/rfc-poster.jpg",
+    tag: "SIX SERIES",
+  },
   // The github deck is a shelf of repositories, and the picture GitHub keeps
   // for the account is the avatar. Square, so it slices into the card with an
   // even crop off each side.

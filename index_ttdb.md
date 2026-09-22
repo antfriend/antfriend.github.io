@@ -3,11 +3,12 @@
 The front-door deck for Toot Toot Engineering. Eight records, one per
 top-level topic, laid out on a sine-wave ribbon that wraps the globe once and
 a fifth (`lat = 34 · sin((lon + 150) · 1.2°)`, `lon ∈ [-150, 150]`), then closes
-back on itself along the equator. Most records are placeholder cards: draft
-copy, a generated SVG face, and one link out to the topic it stands for. A
-topic that already has a picture of its own wears it instead: banjo shows the
-banjo card from its own deck, ICU2 the still from the fight its deck opens on,
-and github the avatar the account is kept under.
+back on itself along the equator. Three records are still placeholder cards:
+draft copy, a generated SVG face, and one link out to the topic it stands for.
+A topic that has a picture of its own wears it instead: banjo shows the banjo
+card from its own deck, ICU2 the still from the fight its deck opens on,
+personal_grimoire the photographed book its name is taken from, RFCs the lane
+chart its own record draws, and github the avatar the account is kept under.
 
 ```mmpdb
 db_id: ttdb:tte:index:v1
