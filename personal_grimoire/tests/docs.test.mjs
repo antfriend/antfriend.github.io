@@ -21,6 +21,17 @@ for (const [src, txt, base] of [["README.md", readme, root], ["RFCs/INDEX.md", i
     const t = m[1];
     if (seen.has(t) || /^lat-?[\d.]+lon-?[\d.]+$/i.test(t) || t.startsWith("?")) continue;
     seen.add(t);
+    // a link into the root RFC reader: the reader and the RFC it asks for must both be there,
+    // by file name or by the bare id the reader resolves against the corpus
+    const q = t.indexOf("?");
+    if (q >= 0){
+      const at = path.join(base, t.slice(0, q)), ask = new URLSearchParams(t.slice(q + 1)).get("rfc");
+      const here = fs.existsSync(at), stem = String(ask || "").replace(/\.md$/i, "");
+      const dir = here && fs.statSync(at).isDirectory() ? at : path.dirname(at);
+      ok(here && (!ask || fs.readdirSync(dir).some(f => f === stem + ".md" || f.indexOf(stem + "-") === 0)),
+         src + " -> " + t);
+      continue;
+    }
     ok(fs.existsSync(path.join(base, t)), src + " -> " + t);
   }
 }

@@ -78,8 +78,8 @@ touched:1789258020
    [the rules](lat-80lon0). On the
    far side, the antimeridian, [a second language](lat-10lon180) — ask in Spanish and it
    reasons over what you said in English. East and west, the owner's own terms. Up at lat 90,
-   every episode, verbatim; at lat 91, beside each, any reading of it the owner corrected; at lat 95,
-   [the README](lat95lon0).
+   every episode, verbatim; at lat 91, beside each, any reading of it the owner corrected;
+   at lat 95, [the README](lat95lon0).
 
 **The runtime holds no words.** `index.html` knows how to split, match, strip a suffix, walk a
 typed edge and fill a slot. It does not know that *the* is a determiner, that *mice* is the
@@ -93,7 +93,8 @@ everything: *a measurement and a model output are never printed alike* becomes *
 you said and a thing that follows from what you said are never printed alike**; and *the
 file IS the model* becomes **the file IS the grammar**.
 
-Specs: [RFCs/](RFCs/). Human guide: [the README](lat95lon0), which is where the cursor starts.
+Specs: [the RFC corpus](../RFCs/index.html). Human guide: [the README](lat95lon0), which is
+where the cursor starts.
 
 ```ttdb-sphere
 thing_lon: 5 175
@@ -375,7 +376,7 @@ a time, so a later saying, or a rule conclusion from one (*Mary moved to the gar
 Verify answers a retired triple before step 1 — *no longer*, quoting what was said and what
 was said since — unless its belief is contested; no walk passes through it; nothing about it
 is written. *Later* means later in the file: the episode's place on the lane, then the
-sentence. Expansion: [TTG-RFC-0004](RFCs/TTG-RFC-0004-Time-and-the-Fleet.md).
+sentence. Expansion: [TTG-RFC-0004](../RFCs/index.html?rfc=TTG-RFC-0004-Time-and-the-Fleet.md).
 
 ---
 
@@ -726,7 +727,7 @@ VECTOR term, and the corpus recognises it without this list. Words here that are
 nouns (*fly*, *play*, *work*) are resolved by position, not by membership. `stance` verbs
 take a clause the speaker does not assert; `chain` verbs take a thing and then a bare verb
 that thing does (*saw the cat eat*), which is how a relative knows to keep such a verb
-([TTG-RFC-0005 §3](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md)). `stance_noun` lists the
+([TTG-RFC-0005 §3](../RFCs/index.html?rfc=TTG-RFC-0005-Shapes-and-Amendments.md)). `stance_noun` lists the
 nouns whose clause is held the same way (*the idea that cats bark*); they are things, not
 seeds. `intransitive` verbs take no thing, so a relative word before one never makes its
 antecedent the verb's object (*the rule that cats bark*). Both lists are head starts too: the
@@ -1997,7 +1998,7 @@ A vector the grammar declares `exclusive` holds one object at a time, so *Mary i
 garden* **retires** an earlier *Mary is in the kitchen*. That is a fourth judgement, about
 order, and it refuses to invent in the same way: the retired saying is still quoted beside
 what replaced it, and a flip of polarity (*Kim is not in the garden*) is still a
-contradiction ([TTG-RFC-0004](RFCs/TTG-RFC-0004-Time-and-the-Fleet.md)).
+contradiction ([TTG-RFC-0004](../RFCs/index.html?rfc=TTG-RFC-0004-Time-and-the-Fleet.md)).
 
 ---
 
@@ -2036,7 +2037,7 @@ touched:1790035200
 **BELIEF — What the parser cannot see, and why that list is the roadmap.**
 
 The highest EPS in the design, because every sentence goes through it and it is the least
-settled thing here. Since [TTG-RFC-0005](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md) it reads
+settled thing here. Since [TTG-RFC-0005](../RFCs/index.html?rfc=TTG-RFC-0005-Shapes-and-Amendments.md) it reads
 any alternating run of nounish and verbish segments, lists of either, relative words,
 infinitives and one-word sentences — *mice that eat cheese*, *saw the man eat cheese*,
 *fly, swim and sing*. Relative and stance clauses open inside the chain and close again:
@@ -2158,7 +2159,7 @@ wins. The chart's `scene_id` becomes a hash of the grammar, because agents readi
 different grammars are a band playing different songs.
 
 Low conf because none of it runs yet; high salience because it decides whether *personal* can
-mean more than one device. Expansion: [TTG-RFC-0004 §4](RFCs/TTG-RFC-0004-Time-and-the-Fleet.md).
+mean more than one device. Expansion: [TTG-RFC-0004 §4](../RFCs/index.html?rfc=TTG-RFC-0004-Time-and-the-Fleet.md).
 
 ---
 
@@ -2177,7 +2178,7 @@ Shapes let the owner correct it one reading at a time, and the question is where
 lives. Not in the episode: an episode is the owner's words and is never rewritten, and the
 first reading is itself a fact — what the grammar of the day made of them. Not in the grammar:
 one sentence's reading is not a rule of the language. So beside the episode, on its own lane at
-its own longitude: an **amendment** ([TTG-RFC-0005](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md) §5).
+its own longitude: an **amendment** ([TTG-RFC-0005](../RFCs/index.html?rfc=TTG-RFC-0005-Shapes-and-Amendments.md) §5).
 
 Two consequences are deliberate. An amended saying still counts, orders and quotes as the
 saying it was: a correction is not a second saying, so it can outvote nothing. And a
