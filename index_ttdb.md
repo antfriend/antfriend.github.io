@@ -108,7 +108,7 @@ preview:
 
 ---
 
-@LAT-32LON90 | created:1789689840 | updated:1790035200 | relates:prev>@LAT-20LON30,next>@LAT-20LON120,specifies>@LAT0LON-150,opens>RFCs/INDEX.md
+@LAT-32LON90 | created:1789689840 | updated:1790035200 | relates:prev>@LAT-20LON30,next>@LAT-20LON120,specifies>@LAT0LON-150,opens>RFCs/index.html
 
 ## RFCs
 
@@ -133,64 +133,65 @@ preview:
 ```
 
 Two doors per row: the **number** opens the compressed record on the RFC
-globe, the **title** opens the full RFC text. A quarter-megabyte of
-specification, folded into one TTDB file and expanded back on demand.
+globe, the **title** opens the full RFC, rendered in the RFC reader. A
+quarter-megabyte of specification, folded into one TTDB file and expanded
+back on demand.
 
 **TTDB** · `lat 10` · the file format — records, cursor, edges, weight
 
-- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon1) [File Format and Sections](RFCs/TTDB-RFC-0001-File-Format.md)
-- [`0002`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon2) [Cursor Semantics](RFCs/TTDB-RFC-0002-Cursor-Semantics.md)
-- [`0003`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon3) [Typed Edge Semantics](RFCs/TTDB-RFC-0003-Typed-Edges.md)
-- [`0004`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon4) [Event ID and Collision](RFCs/TTDB-RFC-0004-Event-ID-and-Collision.md)
-- [`0005`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon5) [Epistemic Weight (TBEW)](RFCs/TTDB-RFC-0005-Epistemic-Weight.md)
-- [`0006`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon6) [Experiential Perception as Synthetic Model](RFCs/TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md)
-- [`0007`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon7) [Locus Point and Dream Cycle](RFCs/TTDB-RFC-0007-Locus-Point-and-Dream-Cycle.md)
-- [`0008`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon8) [Narrative Metamorphosis](RFCs/TTDB-RFC-0008-Narrative-Metamorphosis.md)
+- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon1) [File Format and Sections](RFCs/index.html?rfc=TTDB-RFC-0001-File-Format.md)
+- [`0002`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon2) [Cursor Semantics](RFCs/index.html?rfc=TTDB-RFC-0002-Cursor-Semantics.md)
+- [`0003`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon3) [Typed Edge Semantics](RFCs/index.html?rfc=TTDB-RFC-0003-Typed-Edges.md)
+- [`0004`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon4) [Event ID and Collision](RFCs/index.html?rfc=TTDB-RFC-0004-Event-ID-and-Collision.md)
+- [`0005`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon5) [Epistemic Weight (TBEW)](RFCs/index.html?rfc=TTDB-RFC-0005-Epistemic-Weight.md)
+- [`0006`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon6) [Experiential Perception as Synthetic Model](RFCs/index.html?rfc=TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md)
+- [`0007`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon7) [Locus Point and Dream Cycle](RFCs/index.html?rfc=TTDB-RFC-0007-Locus-Point-and-Dream-Cycle.md)
+- [`0008`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon8) [Narrative Metamorphosis](RFCs/index.html?rfc=TTDB-RFC-0008-Narrative-Metamorphosis.md)
 
 **TTN** · `lat 20` · the mesh — packets, delivery, time, belief
 
-- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon1) [Core Semantic Mesh](RFCs/TTN-RFC-0001.md)
-- [`0002`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon2) [Typed Edge Taxonomy](RFCs/TTN-RFC-0002-Typed-Edges.md)
-- [`0003`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon3) [Reference Implementation](RFCs/TTN-RFC-0003-Reference-Implementation.md)
-- [`0004`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon4) [Semantic Compression](RFCs/TTN-RFC-0004-Semantic-Compression.md)
-- [`0005`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon5) [Trust and Reputation](RFCs/TTN-RFC-0005-Trust-and-Reputation.md)
-- [`0006`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon6) [LoRa Packet Framing](RFCs/TTN-RFC-0006-LoRa-Packet-Framing.md)
-- [`0007`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon7) [Reliable Delivery](RFCs/TTN-RFC-0007-Reliable-Delivery.md)
-- [`0008`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon8) [Fleet Time-Sync](RFCs/TTN-RFC-0008-Time-Sync.md)
-- [`0009`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon9) [TTDB Push-Back](RFCs/TTN-RFC-0009-TTDB-Push-Back.md)
-- [`0010`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon10) [Fleet Pulse](RFCs/TTN-RFC-0010-Fleet-Pulse.md)
-- [`0011`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon11) [Semantic Positioning](RFCs/TTN-RFC-0011-Semantic-Positioning.md)
+- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon1) [Core Semantic Mesh](RFCs/index.html?rfc=TTN-RFC-0001.md)
+- [`0002`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon2) [Typed Edge Taxonomy](RFCs/index.html?rfc=TTN-RFC-0002-Typed-Edges.md)
+- [`0003`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon3) [Reference Implementation](RFCs/index.html?rfc=TTN-RFC-0003-Reference-Implementation.md)
+- [`0004`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon4) [Semantic Compression](RFCs/index.html?rfc=TTN-RFC-0004-Semantic-Compression.md)
+- [`0005`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon5) [Trust and Reputation](RFCs/index.html?rfc=TTN-RFC-0005-Trust-and-Reputation.md)
+- [`0006`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon6) [LoRa Packet Framing](RFCs/index.html?rfc=TTN-RFC-0006-LoRa-Packet-Framing.md)
+- [`0007`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon7) [Reliable Delivery](RFCs/index.html?rfc=TTN-RFC-0007-Reliable-Delivery.md)
+- [`0008`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon8) [Fleet Time-Sync](RFCs/index.html?rfc=TTN-RFC-0008-Time-Sync.md)
+- [`0009`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon9) [TTDB Push-Back](RFCs/index.html?rfc=TTN-RFC-0009-TTDB-Push-Back.md)
+- [`0010`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon10) [Fleet Pulse](RFCs/index.html?rfc=TTN-RFC-0010-Fleet-Pulse.md)
+- [`0011`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon11) [Semantic Positioning](RFCs/index.html?rfc=TTN-RFC-0011-Semantic-Positioning.md)
 
 **TTCP** · `lat 30` · the reader — how a TTDB becomes a page
 
-- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat30lon1) [Record Rendering](RFCs/TTCP-RFC-0001-Record-Rendering.md)
-- [`0002`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat30lon2) [Globe and Navigation](RFCs/TTCP-RFC-0002-Globe-and-Navigation.md)
-- [`0003`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat30lon3) [Link System and Addressability](RFCs/TTCP-RFC-0003-Link-System-and-Addressability.md)
+- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat30lon1) [Record Rendering](RFCs/index.html?rfc=TTCP-RFC-0001-Record-Rendering.md)
+- [`0002`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat30lon2) [Globe and Navigation](RFCs/index.html?rfc=TTCP-RFC-0002-Globe-and-Navigation.md)
+- [`0003`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat30lon3) [Link System and Addressability](RFCs/index.html?rfc=TTCP-RFC-0003-Link-System-and-Addressability.md)
 
 **A32** · `lat 40` · the device — graph reasoning on a $5 microcontroller
 
-- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat40lon1) [Architecture Overview](RFCs/A32-RFC-0001-Architecture.md)
-- [`0002`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat40lon2) [TTDB Storage and Parsing](RFCs/A32-RFC-0002-TTDB-Storage.md)
-- [`0003`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat40lon3) [Agent Loop and Hardware Abstraction](RFCs/A32-RFC-0003-Agent-Loop.md)
-- [`0004`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat40lon4) [Claude Code Project Setup](RFCs/A32-RFC-0004-Claude-Code-Setup.md)
-- [`0002-A`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat40lon5) [TBEW Parser Extension](RFCs/A32-RFC-0002-Amendment-A-TBEW.md)
+- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat40lon1) [Architecture Overview](RFCs/index.html?rfc=A32-RFC-0001-Architecture.md)
+- [`0002`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat40lon2) [TTDB Storage and Parsing](RFCs/index.html?rfc=A32-RFC-0002-TTDB-Storage.md)
+- [`0003`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat40lon3) [Agent Loop and Hardware Abstraction](RFCs/index.html?rfc=A32-RFC-0003-Agent-Loop.md)
+- [`0004`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat40lon4) [Claude Code Project Setup](RFCs/index.html?rfc=A32-RFC-0004-Claude-Code-Setup.md)
+- [`0002-A`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat40lon5) [TBEW Parser Extension](RFCs/index.html?rfc=A32-RFC-0002-Amendment-A-TBEW.md)
 
 **ARC** · `lat 50` · the agent — one solver for ARC Prize 2026
 
-- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat50lon1) [Dynamics Solver Architecture](RFCs/ARC-RFC-0001-Dynamics-Solver-Architecture.md)
+- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat50lon1) [Dynamics Solver Architecture](RFCs/index.html?rfc=ARC-RFC-0001-Dynamics-Solver-Architecture.md)
 
 **TTG** · `lat 60` · the grammar — your own words as a store that answers
 
-- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon1) [Grammar in the Store](RFCs/TTG-RFC-0001-Grammar-in-the-Store.md)
-- [`0002`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon2) [Semantic Percepts, Episodes and Terms](RFCs/TTG-RFC-0002-Semantic-Percepts.md)
-- [`0003`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon3) [Beliefs, Vector Reasoning and Grounded Response](RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md)
-- [`0004`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon4) [Time and the Fleet](RFCs/TTG-RFC-0004-Time-and-the-Fleet.md)
-- [`0005`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon5) [Shapes and Amendments](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md)
+- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon1) [Grammar in the Store](RFCs/index.html?rfc=TTG-RFC-0001-Grammar-in-the-Store.md)
+- [`0002`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon2) [Semantic Percepts, Episodes and Terms](RFCs/index.html?rfc=TTG-RFC-0002-Semantic-Percepts.md)
+- [`0003`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon3) [Beliefs, Vector Reasoning and Grounded Response](RFCs/index.html?rfc=TTG-RFC-0003-Beliefs-Reasoning-Response.md)
+- [`0004`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon4) [Time and the Fleet](RFCs/index.html?rfc=TTG-RFC-0004-Time-and-the-Fleet.md)
+- [`0005`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon5) [Shapes and Amendments](RFCs/index.html?rfc=TTG-RFC-0005-Shapes-and-Amendments.md)
 
 Lane `lat 98` carries five consolidated beliefs — the places where the metal
 disagrees with the spec — starting at
 [`98·0`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat98lon0). Walk the whole compressed corpus in
-[rfc.ttdb.md](index_OG.html?ttdb=rfc.ttdb.md), or read the plain [RFC index](RFCs/INDEX.md).
+[rfc.ttdb.md](index_OG.html?ttdb=rfc.ttdb.md), or open the [RFC index](RFCs/index.html) in the reader.
 
 ---
 

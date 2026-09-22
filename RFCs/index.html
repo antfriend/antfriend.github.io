@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFC Reader — Toot Toot Engineering</title>
+  <meta name="description" content="The Toot Toot Engineering RFC corpus — TTDB, TTN, TTCP, A32, ARC and TTG — read as rendered markdown, beside the same table of contents the front door's RFCs record carries." />
+  <meta property="og:title" content="RFC Reader — Toot Toot Engineering" />
+  <meta property="og:description" content="Thirty-three specifications, rendered from their markdown, with the corpus contents from the front door's globe beside them." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="../favicon.ico" />
+  <link rel="stylesheet" href="../css/eyeball.css" />
+  <link rel="stylesheet" href="../css/tte-common.css" />
+  <link rel="stylesheet" href="../css/tte-core.css" />
+  <link rel="stylesheet" href="../css/index.css" />
+  <link rel="stylesheet" href="../css/index-ttdb.css" />
+  <link rel="stylesheet" href="../css/rfc-reader.css" />
+</head>
+<body>
+
+  <div class="page">
+
+    <header class="stage-header">
+
+      <a class="tagline" href="../index.html#LAT-32LON90" data-hover-preview-off>The RFC corpus, read as rendered markdown beside the contents the front door's RFCs record carries — back to the Toot Toot Engineering front door</a>
+
+      <!-- Where the front door has its globe, this page has the thing the
+           globe was pointing at: the RFCs record from index_ttdb.md, drawn the
+           way the front door draws it. Its titles open here, on the right. -->
+      <div class="header-left">
+        <nav class="record rfc-contents" id="contentsView" aria-label="RFC contents">
+          <p class="rfc-loading">loading index_ttdb.md…</p>
+        </nav>
+      </div>
+
+      <div class="header-right">
+        <article class="record" id="recordView" aria-live="polite"></article>
+        <div class="topic-links">
+          <strong id="railTitle">Series</strong>
+          <ul class="topic-rail" id="topicRail"></ul>
+          <p class="rail-note">Pick a title in the contents, follow an edge, or step through the corpus with ← and →. A number chip opens that RFC's compressed record on the RFC globe.</p>
+        </div>
+      </div>
+
+    </header>
+
+    <details class="panel record-panel info-panel">
+      <summary>Settings</summary>
+      <div class="title">
+        <span id="status">Loading the RFC corpus ...</span>
+      </div>
+      <div class="controls">
+        <a class="pill" id="sourcePill" href="INDEX.md">View INDEX.md source</a>
+        <a class="pill" href="../index_OG.html?ttdb=rfc.ttdb.md">Walk the compressed corpus on the RFC globe</a>
+        <a class="pill" href="../index_ttdb.md">View index_ttdb.md source</a>
+        <a class="pill" href="../index.html#LAT-32LON90">Back to the front door</a>
+      </div>
+      <div class="tour-note">Each RFC is fetched as markdown and rendered in the page. Link to one with <code>RFCs/?rfc=TTDB-RFC-0001</code>, or to a section by adding its heading's <code>#anchor</code>.</div>
+    </details>
+
+    <footer>
+      <span id="eyeball-foot"></span>
+      &copy; 2026 Toot Toot Engineering. All signals cleared.
+    </footer>
+  </div>
+
+  <script src="../js/link-hover-preview.js"></script>
+  <script src="../js/eyeball.js"></script>
+  <script src="../js/audio-player.js"></script>
+  <script type="module" src="../js/rfc-reader.js"></script>
+</body>
+</html>

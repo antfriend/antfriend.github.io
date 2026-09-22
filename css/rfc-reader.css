@@ -1,0 +1,340 @@
+/* rfc-reader.css — the RFC reader (RFCs/index.html), loaded last.
+   Everything else on the page is the front door's stylesheet set. The record
+   panel on the right is the front door's record panel as-is; what lives here
+   is the contents panel taking the globe's place on the left, and the type an
+   RFC needs that a record card never did: headings, real lists, tables. */
+
+/* tte-core.css clips .page with overflow:hidden, which would make .page the
+   scroller that a sticky contents panel sticks to. clip crops the same
+   decoration without becoming a scroll container. */
+.page {
+  overflow: clip;
+}
+
+/* The document gets the wider column; the contents only need a list's width. */
+@media (min-width: 1000px) {
+  header.stage-header {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+
+  .header-left {
+    position: sticky;
+    top: 12px;
+  }
+
+  .header-left .rfc-contents {
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Stacked, the document comes first and its contents follow it. */
+@media (max-width: 999px) {
+  .header-right {
+    order: 1;
+  }
+
+  .header-left {
+    order: 2;
+  }
+}
+
+/* ------------------------------------------------------ contents panel */
+
+/* index-ttdb.css draws the record panel only inside .header-right; the
+   contents panel is the same record, so it wears the same rules on the left. */
+.header-left .rfc-contents {
+  display: block;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid var(--line);
+}
+
+.rfc-contents > .rfc-loading {
+  margin: 0;
+  padding: 16px;
+  color: var(--muted);
+}
+
+.rfc-contents pre.record-ascii {
+  margin: 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  white-space: pre;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: clamp(9px, 0.9vw, 12.5px);
+  line-height: 1.35;
+  color: var(--accent);
+  background: rgba(11, 17, 18, 0.045);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.rfc-contents code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.85em;
+  letter-spacing: 0.02em;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(15, 139, 141, 0.1);
+  border: 1px solid rgba(15, 139, 141, 0.22);
+  white-space: nowrap;
+}
+
+.rfc-contents a > code {
+  color: #0f4f2d;
+}
+
+.rfc-contents a:hover > code {
+  background: rgba(15, 139, 141, 0.22);
+  border-color: rgba(15, 139, 141, 0.5);
+}
+
+.rfc-contents ul {
+  padding-left: 0;
+  list-style: none;
+  gap: 4px;
+}
+
+.rfc-contents li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+/* The row whose RFC is open on the right. */
+.rfc-contents li.is-current {
+  margin-inline: -8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(15, 139, 141, 0.14);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* --------------------------------------------------------- the document */
+
+.rfc-doc {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.rfc-doc > * {
+  min-width: 0;
+}
+
+.rfc-doc > p,
+.rfc-doc > ul,
+.rfc-doc > ol,
+.rfc-doc > blockquote {
+  max-width: 76ch;
+}
+
+.rfc-doc h1,
+.rfc-doc h2,
+.rfc-doc h3,
+.rfc-doc h4,
+.rfc-doc h5,
+.rfc-doc h6 {
+  margin: 0;
+  font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+  line-height: 1.25;
+  scroll-margin-top: 16px;
+}
+
+.rfc-doc h1 {
+  font-size: clamp(20px, 2vw, 26px);
+  color: var(--title);
+}
+
+.rfc-doc h2 {
+  margin-top: 4px;
+  font-size: 19px;
+  color: var(--title);
+}
+
+.rfc-doc h3 {
+  margin-top: 2px;
+  font-size: 16px;
+  color: var(--accent);
+}
+
+.rfc-doc h4 {
+  font-size: 14.5px;
+  color: var(--title);
+}
+
+.rfc-doc h5,
+.rfc-doc h6 {
+  font-size: 12.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* A section link, shown when its heading is pointed at. */
+.rfc-doc .heading-anchor {
+  margin-left: 4px;
+  font-size: 0.8em;
+  color: var(--muted);
+  text-shadow: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.rfc-doc :is(h1, h2, h3, h4, h5, h6):hover .heading-anchor,
+.rfc-doc .heading-anchor:focus-visible {
+  opacity: 1;
+}
+
+.rfc-doc hr {
+  width: 100%;
+  margin: 4px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+/* The **Label:** block every RFC opens with, set as the record's fields. */
+.rfc-doc dl.rfc-meta {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 6px;
+}
+
+.rfc-doc dl.rfc-meta > div {
+  min-width: 0;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid var(--line);
+}
+
+.rfc-doc dl.rfc-meta > div.is-wide {
+  grid-column: 1 / -1;
+}
+
+.rfc-doc dl.rfc-meta dt {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.rfc-doc dl.rfc-meta dd {
+  margin: 2px 0 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+/* index-ttdb.css turns every list in the panel into a row of chips, which is
+   right for a table of contents and wrong for a specification. */
+.header-right .record .rfc-doc ul,
+.header-right .record .rfc-doc ol {
+  display: block;
+  margin: 0;
+  padding-left: 1.5em;
+}
+
+.header-right .record .rfc-doc ul {
+  list-style: disc;
+}
+
+.header-right .record .rfc-doc ol {
+  list-style: decimal;
+}
+
+.header-right .record .rfc-doc ul ul {
+  list-style: circle;
+}
+
+.header-right .record .rfc-doc li {
+  display: list-item;
+}
+
+.rfc-doc li + li {
+  margin-top: 5px;
+}
+
+.rfc-doc li::marker {
+  color: var(--accent);
+}
+
+.rfc-doc li > * + *,
+.rfc-doc li > ul,
+.rfc-doc li > ol {
+  margin-top: 6px;
+}
+
+.rfc-doc blockquote {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+/* Inline code wraps in running text; a chip that cannot break pushes the
+   panel wider than the screen. */
+.header-right .record .rfc-doc code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.header-right .record .rfc-doc pre.record-ascii {
+  font-size: clamp(11px, 0.92vw, 12.5px);
+  line-height: 1.45;
+}
+
+/* A fence's info string is part of the format here (mmpdb, cursor,
+   ttdb-episode), so it rides on the block as a tab. */
+.rfc-doc figure.record-fence {
+  display: grid;
+  margin: 0;
+  min-width: 0;
+}
+
+.rfc-doc figure.record-fence > figcaption {
+  justify-self: start;
+  margin-bottom: -1px;
+  padding: 3px 10px;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: var(--muted);
+  background: rgba(11, 17, 18, 0.045);
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+}
+
+.header-right .record .rfc-doc figure.record-fence > pre.record-ascii {
+  border-top-left-radius: 0;
+}
+
+.rfc-doc .rfc-table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.rfc-doc .rfc-table table {
+  font-size: 13.5px;
+}
+
+/* ----------------------------------------------------------- the slides */
+
+/* Mid-slide, both records are clipped to the window the panel shows, so a
+   long RFC travels as one screenful rather than its whole length. */
+.record-track.is-moving > .record-slide {
+  height: var(--window-h);
+  overflow: hidden;
+}
