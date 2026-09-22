@@ -71,15 +71,18 @@ relative clause closes at the next verb, whether its antecedent is its subject o
 and a stance clause inside one closes with it, while a bare verb goes on with the relative's
 chain when the sentence's own verb is still to come or cannot agree with it, and a verb
 straight after a relative's own is the sentence's; that where two readings are both
-grammatical both are held; that an unlisted *-ly* word before a verb is an adverb and a
+grammatical both are held, each named, so a question sees one saying the owner can settle
+with a choice; that a chain verb is learned from your own sentences, and a held saying
+teaches what a verb takes; that an unlisted *-ly* word before a verb is an adverb and a
 Spanish verb in the speaker's own form needs no subject; that a phrase's head sits where each
 language puts it, and Spanish *a* marks an object except after a verb of motion; that what
 *or* joins, a stance verb or noun takes or a relative word reports is held — seen, never
 believed, never a contradiction, keeping its own *not* — unless the *or* is denied, and that
 an aside turns a hedge into a plain saying; that an amendment stands in for a sentence
 without touching its episode, and is withdrawn by reading the sentence back the episode's
-way; and that a re-reading reports what a grammar edit changes, writes nothing, and can be
-taken as an amendment that names the grammar.
+way; and that a re-reading reports what a grammar edit changes, in the context the sentences
+before it stand as, writes nothing, and can be taken as an amendment that names the grammar —
+one sentence, or all of them in order, each read again after the ones before it.
 
 And they check the claim the whole design rests on, three ways:
 
@@ -332,18 +335,34 @@ Clauses open and close inside a sentence. A relative clause closes at the next v
 that chase mice are fast* is `cat | has_property | fast`, not a claim about mice, and *The dog
 that the cat chased ran away* is `cat | chase | dog`. A verb in its bare form goes on with the
 relative instead while the sentence still waits for its own: *The man that saw the cat eat
-cheese is tall* is the cat eating and the man tall. When the thing before a relative word is
+cheese is tall* is the cat eating and the man tall. It goes on, too, after a verb that takes a
+thing and then a bare verb — *see*, *make*, *let*, and any verb you have used that way
+yourself: once you say *I spied the cat eat fish*, *I like the man that spied the cat eat
+cheese* is the cat eating, not the man. When the thing before a relative word is
 not what the verb after it acts on, the relative word was reporting a clause: *I emailed the
 man that the cat sleeps* holds `cat | sleep`, and so is a noun that holds a clause: *the idea
 that cats bark is silly* holds the barking and says the idea is silly. *Cats that hunt eat
 mice* is two verbs, hunting and eating. Which word of a phrase is its head is the lexicon's
-to say: last in English, first in Spanish, so *el gato negro* is a `gato`.
+to say: last in English, first in Spanish, so *el gato negro* is a `gato`. Whether a verb
+takes the thing before a relative word depends on what you have said of that verb, held or
+not: after *I doubt dogs bite*, *the rule that dogs bite is old* holds the biting.
+
+Where the grammar can see two readings, it holds both and says only what they share. *The men
+that saw the cats eat cheese.* says `man | see | cat` and holds `cat | eat | cheese | ? | - | a`
+and `man | eat | cheese | ? | - | b`: the last column names the reading, so the two are one
+saying, not two. The reply says it read the sentence two ways; *Do men eat cheese?* answers
+that your words don't reach that yet, and names the sentence with both its readings. Under
+the sentence, each reading has an *I meant this* button; press one and the choice is kept as
+an amendment with a `reading: 1 | b` line, and that reading is said.
 
 A grammar change reads old sentences differently, and so does your own corpus as it grows —
 a verb you come to use with a thing. An episode's panel shows the new reading under the one
 that stands, with what it would say, and *take this reading* keeps it as an amendment that
 names the grammar it came from; the store bar counts the ones you have not ruled on and takes
-them all at once. `node tools/reread.mjs` lists them under a hash of the grammar, and
+them all at once. Each is read in the context of the sentences before it as they stand, so
+what is offered is what taking it writes; taking them all goes in order and reads each again
+after the ones before it, so after *The ice cream melted* is taken as `ice_cream`, *It was
+sweet* follows it. `node tools/reread.mjs` lists them under a hash of the grammar, and
 `--accept <hash>` takes every one you have not already amended; nothing is written until you
 do, because the grammar's new opinion is not yours until you take it.
 
@@ -429,11 +448,13 @@ no.
 
 - **Relatives lean on what you have said.** Whether *the thing that X verbs* makes the thing
   the verb's object depends on whether you have used that verb with an object; until you
-  have, *I told the man that the cat bit* holds two readings, the man bitten and a bite
-  reported, and a re-reading offers the first once you have said the verb with a thing.
-  Where both readings of a sentence are grammatical and the grammar can see it, both are
-  held (*the men that saw the cats eat cheese.*); where it cannot (*Birds that sing love
-  songs.*, before *love* is a thing to you), the reading with a verb wins. Questions that
+  have, *I told the man that the cat bit* holds two readings, a bite reported and the man
+  bitten, until you say which you meant, and a re-reading offers the second once you have
+  said the verb with a thing. Where both readings of a sentence are grammatical and the
+  grammar can see it, both are held (*the men that saw the cats eat cheese.*); where it
+  cannot (*Birds that sing love songs.*, before *love* is a thing to you), the reading with a
+  verb wins. What the store learns about a verb comes from the readings that stand, its own
+  guesses included, until you amend them. Questions that
   invert word order beyond the declared forms fall back to search. Where it reads you
   wrongly, [correct the reading](#how-it-read-you).
 - **Modifiers are dropped.** *Black cats* is *cats*, unless you make *black cats* one term.

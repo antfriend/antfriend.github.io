@@ -12,7 +12,8 @@ const ok = (cond, msg, extra = "") => {
   else { fails++; console.log("  FAIL  " + msg + "  " + extra); }
 };
 const section = s => console.log("\n== " + s + " ==");
-const pk = p => [p.s, p.v, p.o, p.pol, p.q].join(" | ");
+// a percept that belongs to one reading of two carries its letter (TTG-RFC-0005 §3)
+const pk = p => [p.s, p.v, p.o, p.pol, p.q].concat(p.reading ? [p.reading] : []).join(" | ");
 
 section("the store parses and round-trips");
 {
@@ -244,7 +245,7 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
     // a bare form that cannot be finite for the antecedent stays in the relative; one that can, closes it
     ["The man that saw the cat eat cheese.",         "[the man] that {saw} [the cat] {eat} [cheese].",               ["man | see | cat | + | -", "cat | eat | cheese | + | -"]],
     // …and where both readings are grammatical, both are held: who eats is not said
-    ["The men that saw the cats eat cheese.",        "[the men] that {saw} [the cats] {eat} [cheese].",              ["man | see | cat | + | -", "cat | eat | cheese | ? | -", "man | eat | cheese | ? | -"]],
+    ["The men that saw the cats eat cheese.",        "[the men] that {saw} [the cats] {eat} [cheese].",              ["man | see | cat | + | -", "cat | eat | cheese | ? | - | a", "man | eat | cheese | ? | - | b"]],
     ["The cats that I saw eat cheese.",              "[the cats] that [i] {saw eat} [cheese].",                      ["self | see | cat | + | -", "cat | eat | cheese | + | -"]],
     ["El hombre que vio al gato comer queso.",       "[el hombre] que {vio} [a el gato] {comer} [queso].",           ["hombre | ver | gato | + | -", "gato | comer | queso | + | -"]],
     // a stranded preposition's thing is the gap, unless a stance verb's thing may be hearing a clause
@@ -255,7 +256,7 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
     // after a stance verb's thing, a verb that might is read both ways, and both are held
     ["The rule that cats bark is old.",              "[the rule] that [cats] {bark is} [old].",                      ["cat | bark | - | ? | -", "rule | has_property | old | + | -"]],
     ["I like the dog that the cat bit.",             "[i] {like} [the dog] that [the cat] {bit}.",                   ["self | like | dog | + | -", "cat | bite | dog | + | -"]],
-    ["I told the man that the cat bit.",             "[i] {told} [the man] that [the cat] {bit}.",                   ["self | tell | man | + | -", "cat | bite | - | ? | -", "cat | bite | man | ? | -"]],
+    ["I told the man that the cat bit.",             "[i] {told} [the man] that [the cat] {bit}.",                   ["self | tell | man | + | -", "cat | bite | - | ? | - | a", "cat | bite | man | ? | - | b"]],
     // an unlisted word with an adverb ending, between a thing and its verb, is the verb's; a guarded one is not
     ["The dog that the cat quickly chased ran away.", "[the dog] that [the cat] {quickly chased ran} [away].",       ["cat | chase | dog | + | -", "dog | run | away | + | -"]],
     ["Pixel's family eats fish.",                    "[pixel family] {eats} [fish].",                                ["family | eat | fish | + | -"]],
@@ -354,15 +355,82 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
   const L0 = fresh();
   ok(PG.shapeOf(L0, "Birds that sing love songs.").percepts.map(pk).join(" ; ") === "bird | sing | - | + | - ; bird | love | song | + | -", "unknown as a thing, the word is the clause's verb");
   PG.answer(L0, "Love is blind.", T0);
-  ok(PG.shapeOf(L0, "Birds that sing love songs.").percepts.map(pk).join(" ; ") === "bird | sing | - | + | - ; bird | love | song | ? | -",
-     "once the owner has used it as a thing, the singing is said and the loving is held");
+  ok(PG.shapeOf(L0, "Birds that sing love songs.").percepts.map(pk).join(" ; ") === "bird | sing | - | + | - ; bird | sing | song | ? | - | b ; bird | love | song | ? | - | a",
+     "once the owner has used it as a thing, the singing is said, and each reading of the rest is held, named");
   ok(PG.shapeOf(L0, "Cats that hunt eat mice.").percepts.map(pk).join(" ; ") === "cat | hunt | - | + | - ; cat | eat | mouse | + | -", "a word that is only a verb is still the clause's");
   // the corpus changes readings too, and re-reading finds them: a verb the owner now gives a thing takes the gap
   const C0 = fresh(), bit = PG.answer(C0, "I told the man that the cat bit.", T0);
   PG.answer(C0, "Dogs bite postmen.", T0 + 60);
   const rc = PG.reread(C0, bit.episode.id).changed[0];
-  ok(rc && rc.now.includes("1 | cat | bite | man | + | -") && rc.was.includes("1 | cat | bite | man | ? | -"),
+  ok(rc && rc.now.includes("1 | cat | bite | man | + | -") && rc.was.includes("1 | cat | bite | man | ? | - | b"),
      "once the owner has said the verb with a thing, re-reading offers the relative", rc ? rc.now.join(" ; ") : "");
+
+  // what a verb takes is learned from every saying that stands, held as well as said, but not from one reading of two
+  const B0 = fresh(), rule = () => PG.shapeOf(B0, "The rule that dogs bite is old.").percepts.map(pk).join(" ; ");
+  ok(rule() === "dog | bite | rule | + | - ; rule | has_property | old | + | -", "a verb the owner has never used takes the gap where it is sure");
+  PG.answer(B0, "I told the man that the cat bit.", T0);
+  ok(!B0.usage.has("bite") && rule() === "dog | bite | rule | + | - ; rule | has_property | old | + | -", "a sentence read two ways teaches nothing about the verb");
+  PG.answer(B0, "I doubt dogs bite.", T0 + 60);
+  ok(B0.usage.get("bite").lone === 1 && rule() === "dog | bite | - | ? | - ; rule | has_property | old | + | -",
+     "a held saying without a thing teaches that the verb takes none, so the clause is held", rule());
+  // a chain verb the owner's own words show: its thing, then a bare verb that cannot be finite for that thing
+  const K0 = fresh(), chains = S => S.chainSaid.get("en") || new Set(), spy = () => PG.shapeOf(K0, "I like the man that spied the cat eat cheese.").percepts.map(pk);
+  PG.answer(K0, "I spied the cats eat fish.", T0);
+  const liked = PG.answer(K0, "I like the man that spied the cat eat cheese.", T0 + 60).episode.id;
+  ok(spy().includes("man | eat | cheese | + | -") && !chains(K0).has("spy"), "a saying whose bare verb could be finite for its thing (the cats eat) teaches nothing");
+  PG.answer(K0, "The man that spied the cat eat cheese is tall.", T0 + 90);
+  ok(!chains(K0).has("spy"), "nor does a relative's own chain, which the grammar reads by the chain it already knows");
+  PG.answer(K0, "I spied the cat eat fish.", T0 + 120);
+  ok(chains(K0).has("spy") && spy().includes("cat | eat | cheese | + | -") && !spy().includes("man | eat | cheese | + | -"),
+     "one whose bare verb cannot be (the cat eat) makes the verb a chain verb, and a relative's bare verb stays with its thing", spy().join(" ; "));
+  const kr = PG.reread(K0, liked).changed[0];
+  ok(chains(PG.openStore(PG.serializeStore(K0.st))).has("spy") && kr && kr.was.includes("1 | man | eat | cheese | + | -") && kr.now.includes("1 | cat | eat | cheese | + | -"),
+     "what is learned is read from the episodes again on opening, and re-reading offers what it changes");
+
+  // the two readings of one saying are named, a and b, and the owner may say which was meant
+  const W0 = fresh();
+  PG.startEmpty(W0, T0);
+  const men = PG.answer(W0, "The men that saw the cats eat cheese.", T0), pair = PG.say(W0.G, "reading_pair", { a:"cat eat cheese", b:"man eat cheese" });
+  ok(PG.serializeStore(W0.st).includes("percept: 1 | cat | eat | cheese | ? | - | a\npercept: 1 | man | eat | cheese | ? | - | b") && W0.malformed.length === 3,
+     "each reading's percepts carry its letter, and are well formed");
+  ok(men.notes.includes(PG.say(W0.G, "noted_readings", { readings:pair })) && !men.notes.includes(PG.say(W0.G, "noted_held", { triples:"cat eat cheese; man eat cheese" })),
+     "the reply names them as two readings of one saying, not as a choice or a stance", men.notes.join(" | "));
+  const asked = PG.say(W0.G, "asked_readings", { text:"The men that saw the cats eat cheese.", ep:men.episode.id, readings:pair });
+  const q1 = PG.answer(W0, "Do men eat cheese?", T0 + 60), q2 = PG.answer(W0, "What eats cheese?", T0 + 90);
+  ok(q1.verdict === PG.say(W0.G, "unknown") && q1.notes.includes(asked) && q2.notes.filter(n => n === asked).length === 1,
+     "a question sees one saying with two readings, believes neither, and names the saying once", q1.notes.join(" | "));
+  const doubt = PG.answer(W0, "I doubt dogs bark.", T0 + 100).episode.id, q3 = PG.answer(W0, "Do dogs bark?", T0 + 110);
+  ok(q3.verdict === PG.say(W0.G, "unknown") && q3.notes.includes(PG.say(W0.G, "asked_held", { text:"I doubt dogs bark.", ep:doubt })),
+     "and any other held saying it meets is named as said, not as fact", q3.notes.join(" | "));
+  ok(PG.shapeOf(W0, "The men that saw the cats eat cheese.", "a").percepts.map(pk).join(" ; ") === "man | see | cat | + | - ; cat | eat | cheese | + | -" &&
+     PG.shapeOf(W0, "I told the man that the cat bit.", "b").percepts.map(pk).join(" ; ") === "self | tell | man | + | - ; cat | bite | man | + | -" &&
+     PG.shapeOf(W0, "I told the man that the cat bit.", "a").percepts.map(pk).join(" ; ") === "self | tell | man | + | - ; cat | bite | - | ? | -",
+     "a chosen reading is read alone, as the grammar would read it: said, or held for reasons of its own");
+  const picked = PG.amendReply(W0, men.episode.id, 1, "[the men] that {saw} [the cats] {eat} [cheese].", T0 + 120, null, "b");
+  const W1 = PG.openStore(PG.serializeStore(W0.st));
+  ok(picked && PG.serializeStore(W0.st).includes("shape: 1 | [the men] that {saw} [the cats] {eat} [cheese].\nreading: 1 | b\npercept: 1 | man | see | cat | + | -\npercept: 1 | man | eat | cheese | + | -") &&
+     PG.readingsOf(W1, men.episode.id)[0].reading === "b" && PG.verify(W1, "man", "eat", "cheese").verdict === "Y" && !W1.trips.has("cat|eat|cheese"),
+     "the owner says which was meant: an amendment with a reading line, and that reading is said");
+  ok(PG.reread(W1, men.episode.id).changed.every(c => c.amended && c.accepted), "re-read, the owner's choice is kept, so nothing is offered");
+
+  // a re-reading's context is the sentences before it as they stand; taking them all re-reads each after the ones before it
+  const IC = fresh(), ic = PG.answer(IC, "The ice cream melted. It was sweet.", T0).episode.id;
+  PG.answer(IC, "I like ice_cream.", T0 + 60);
+  const r1 = PG.reread(IC, ic);
+  ok(r1.changed.map(c => c.n).join() === "1" && r1.changed[0].now.join() === "1 | ice_cream | melt | - | + | -",
+     "while the first sentence stands as written, the second reads as written: only the first is offered", JSON.stringify(r1.changed.map(c => c.now)));
+  ok(PG.takeRereads(IC, "0123456789abcdef", T0 + 90) === null, "taking them under another grammar's hash is refused");
+  const tk = PG.takeRereads(IC, r1.grammar, T0 + 120);
+  ok(tk.took.map(c => c.now.join()).join(" ; ") === "1 | ice_cream | melt | - | + | - ; 2 | ice_cream | has_property | sweet | + | -" && !PG.reread(IC).changed.some(c => !c.accepted),
+     "taking them all reads each again after the ones before it: the pronoun follows the reading just taken", tk.took.map(c => c.now.join()).join(" ; "));
+  const IC2 = fresh(), ic2 = PG.answer(IC2, "The ice cream melted. It was sweet.", T0).episode.id;
+  PG.answer(IC2, "I like ice_cream.", T0 + 60);
+  PG.amend(IC2, ic2, 1, "(the ice cream) {melted}.", T0 + 90);
+  const o2 = PG.reread(IC2, ic2).changed.find(c => c.n === 2), w2 = o2 && PG.amend(IC2, ic2, 2, o2.reads, T0 + 120, PG.reread(IC2).grammar);
+  ok(o2 && w2 && w2.all.map(p => "2 | " + pk(p)).join() === o2.now.join() && o2.now.join() === "2 | - | has_property | sweet | + | -",
+     "after the owner's own reading of the sentence before it, what is offered is what taking it writes", o2 ? o2.now.join() : "");
+  const tk2 = PG.takeRereads(IC2, PG.reread(IC2).grammar, T0 + 150);
+  ok(tk2 && tk2.took.length === 0 && tk2.kept.map(c => c.n).join() === "1,2", "taking them all keeps what the owner has ruled on");
 
   // a hedge meant as fact: mark it an aside, and what it held is said
   const U = fresh(), bark = () => (U.trips.get("cat|bark|-") || { fr:0 }).fr;

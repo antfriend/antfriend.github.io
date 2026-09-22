@@ -170,7 +170,10 @@ by kind:
 | superseded | `label_superseded` | the retired fact, then `superseded_by` and the ground that retired it (TTG-RFC-0004 §3.4) |
 
 then notes: `exception`, `contradicts` (when a new percept opposes a decided belief),
-`supersedes` (when a new episode retires a fact),
+`supersedes` (when a new episode retires a fact), `noted_held` and `noted_readings` (what a
+tell held, and the readings of a sentence it read two ways), `asked_held` and
+`asked_readings` (each held saying a question meets when its grounds do not answer it — never
+a ground, and the verdict stands; TTG-RFC-0005 §3),
 `no_purchase`, and `suggest` for the purchased THING with the highest EPS at or above
 `suggest_eps_min`. Search results are ranked by Σ log(1 + N/df) over matched lemmas across
 all `said` lines.
@@ -214,5 +217,6 @@ values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
 | 2026-09-14 | Supersession from TTG-RFC-0004: verify step 0, facts carry when they came to hold, the `superseded` ground; inference grounds quote each step at its latest saying. |
 | 2026-09-21 | §4: a lone segment said as a statement is perceived as a mention; a question never checks a mention; `noted_mention` and `amended` verdicts (TTG-RFC-0005). |
 | 2026-09-21 | §2: held percepts (polarity `?`, TTG-RFC-0005 0.2) count for neither side; a tell names them in a `noted_held` note. |
+| 2026-09-22 | §4: a question its grounds cannot answer names the held sayings it meets, and a sentence's two readings together (`asked_held`, `asked_readings`, `noted_readings`; TTG-RFC-0005 0.7). |
 
 *License: CC0*

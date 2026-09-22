@@ -97,7 +97,7 @@ A word the owner has used as a verb is recognised as a VECTOR term regardless of
 
 `chain: <verb lemmas>` — seeds that take a thing and then a bare verb that thing does (*see*,
 *make*, *let*: *saw the cat eat*); inside a relative, a bare verb after one goes on with the
-relative (TTG-RFC-0005 §3).
+relative (TTG-RFC-0005 §3). A head start: the owner's own sentences add to it.
 
 `stance_noun: <noun lemmas>` — nouns whose clause is held, as a stance verb's is (*the idea
 that cats bark*). Not seeds (TTG-RFC-0005 §3).
@@ -107,7 +107,8 @@ preposition of place (*va a Madrid*), after any other it marks the verb's thing
 (TTG-RFC-0005 §2).
 
 `intransitive: <verb lemmas>` — seeds that take no thing, so a relative's gap is never their
-object (*the rule that cats bark*); the corpus can say the same of any verb (TTG-RFC-0005 §3).
+object (*the rule that cats bark*); the corpus can say the same of any verb, and outranks the
+list (TTG-RFC-0005 §3).
 
 ---
 
@@ -142,7 +143,8 @@ words fill are defined in TTG-RFC-0003 §4.
 `<key>: <phrase with {slots}>`, and `unit_<noun>: <singular> | <plural>`. Keys the runtime
 emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `superseded_by`,
 `affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `deny_superseded`, `contest`, `unknown`,
-`exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `noted_held`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
+`exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `noted_held`, `noted_readings`,
+`reading_pair`, `asked_held`, `asked_readings`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
 `objects_head`, `subjects_head`, `nothing_found`, `search_head`, `suggest`, `ingested`,
 `episode_title`, `source_typed`, `store_opened`; units `percept`, `sentence`, `term`.
 
@@ -256,5 +258,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-09-22 | `chain` in §5 (TTG-RFC-0005 0.4); open question 3 narrowed by re-reading. |
 | 2026-09-22 | `object_mark` in §3, `bare_ending` and `bare_finite` in §4, `stance_noun` and `motion` in §5 (TTG-RFC-0005 0.5); open question 3 narrowed again. |
 | 2026-09-22 | `adverb_ending`, `adverb_guard`, `self_ending` and `self_form` in §4, `intransitive` in §5 (TTG-RFC-0005 0.6). |
+| 2026-09-22 | §5: `chain` and `intransitive` are head starts the owner's words outrank; four reply keys in §8 for readings and held sayings (TTG-RFC-0005 0.7). |
 
 *License: CC0*

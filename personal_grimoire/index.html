@@ -121,6 +121,10 @@ form{border-top:1px solid var(--line);padding:10px 12px 12px}
 .shape .mk.re{color:var(--accent)}
 .shape .tools{display:inline-flex;flex-wrap:wrap;gap:4px;margin-left:4px}
 .shape .tools button{padding:0 8px;font-size:.72rem}
+/* one reading of two: its letter, what only it says, and a button to say it was meant */
+.purchase.pick{margin-top:2px;padding-left:6px;border-left:2px dotted var(--warn)}
+.purchase.pick .mk{color:var(--warn);font-style:italic;margin-right:2px}
+.purchase.pick button{padding:0 8px;font-size:.72rem}
 /* under a reply a reading takes a margin sigil like the grounds do: the sentence, as read */
 .turn-a>.shape{position:relative;padding-left:1.5em}
 .turn-a>.shape::before{content:"\00B6";position:absolute;left:0;width:1.15em;text-align:center;color:var(--dim)}
@@ -240,7 +244,7 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
   <input type="file" id="openstore" accept=".md" hidden>
   <button type="button" id="reset" data-confirm="Forget the local copy, and everything added to it, and reload the seed file?" title="Forget the local copy and reload the seed file">Reset to seed</button>
   <button type="button" id="empty" data-confirm="Delete every episode and every term, keeping the grammar and the blueprint?" title="Keep the grammar and blueprint; delete every episode and term">Start empty</button>
-  <button type="button" id="rereads" hidden data-label="↻ {n} read differently now" data-confirm="Take the grammar's new reading of {n} sentences you have not amended? Each becomes an amendment that names the grammar it came from."
+  <button type="button" id="rereads" hidden data-label="↻ {n} read differently now" data-confirm="Take the grammar's new reading of {n} sentences you have not amended? They are taken in order, each read again after the ones before it, so a later sentence may come to read differently and be taken too. Each becomes an amendment that names the grammar it came from."
     data-done="Took the grammar's reading of {n} sentences." title="The grammar and your words now read some sentences differently from when they were written">↻</button>
 </div>
 
@@ -250,7 +254,8 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
     <form id="askform" autocomplete="off">
       <div id="preview" data-nounish="thing" data-verbish="vector" data-aside="aside" data-join="one term / split" data-keep="keep this reading"
         data-amended="read as you marked it" data-reread="the grammar now reads it this way" data-accept="take this reading"
-        data-accepted="the grammar's reading, which you took"></div>
+        data-accepted="the grammar's reading, which you took" data-pick="I meant this"
+        data-reading="one of two readings: what only it says is held until you say which you meant"></div>
       <textarea id="q" rows="2" placeholder="Tell it something, or ask it something. Drop .md or .txt files here to feed them in."></textarea>
       <div class="row">
         <button type="submit" class="primary">Send</button>
@@ -913,6 +918,19 @@ const soft = t => has(t, "neg") || has(t, "adverb");
 const isMention = p => p.s === "-" || p.v === "-";
 // a held percept — said, not asserted — keeps a polarity of its own: ? says, ?- denies (TTG-RFC-0005 §3)
 const HELD = "?", HELD_NO = "?-", isHeld = p => p.pol === HELD || p.pol === HELD_NO;
+/* Where the grammar can read a sentence two ways, the two readings are named
+ * a and b at the first such place, c and d at the second, and so on; what
+ * only one reading says carries its letter, and is held. The owner may say
+ * which was meant: a choice of letters, read at each place in turn.        */
+const newPick = reading => ({ next:0, choose:new Set(String(reading || "").split(/[\s,]+/).filter(Boolean)), used:[] });
+function choice(pick){
+  const i = pick.next++, a = 2 * i < 25 ? String.fromCharCode(97 + 2 * i) : "", b = a && String.fromCharCode(98 + 2 * i);
+  const c = a && pick.choose.has(a) ? a : b && pick.choose.has(b) ? b : null;
+  if (c) pick.used.push(c);
+  return { a, b, c };
+}
+const pairOf = x => (x.charCodeAt(0) - 97) >> 1, sideOf = x => (x.charCodeAt(0) - 97) & 1;
+const NOUSE = { thing:0, lone:0 };
 const vStartTok = (S, t) => !!t && !t.punct && (t.force ? t.force === "V" :
   has(t, "aux") || has(t, "modal") || has(t, "cop") || has(t, "hav") || isVerbish(S, t));
 const nStartTok = t => !!t && !t.punct && (t.force ? t.force === "N" :
@@ -985,7 +1003,7 @@ function labelClause(S, T, L, a, b){
   const stanceIn = (i, j) => T.slice(i, j).some(t => isContent(t) && !t.synthetic && G.stance.has(verbLemma(S, t.w).lemma));
   // after an object relative's verb one more verb may follow straight on: the dog that the cat chased | ran
   // a verb the owner's words already give a thing: what follows it is more likely that thing
-  const withThingIn = (i, j) => T.slice(i, j).some(t => isContent(t) && !t.synthetic && (S.byVector.get(verbLemma(S, t.w).lemma) || []).some(e => e.o !== "-"));
+  const withThingIn = (i, j) => T.slice(i, j).some(t => isContent(t) && !t.synthetic && ((S.usage && S.usage.get(verbLemma(S, t.w).lemma)) || NOUSE).thing > 0);
   const setV = (i, j) => {
     for (let k = i; k < j; k++) if (!T[k].force) L[k] = "V";
     // a relative's own verb, on a thing before the clause has its verb: cats that {hunt}
@@ -1240,9 +1258,11 @@ function clausesOf(L){
  * which closes at the next verb, back to where it hangs; and the clause a
  * stance verb takes instead of its first thing. What a stance verb takes, or
  * an alternative word joins, is held — said, never believed.               */
-function readClause(S, T, L, idx, ctx, inherited, hold){
+function readClause(S, T, L, idx, ctx, inherited, hold, pick){
   const G = S.G, R = G.roles;
-  const out = { percepts:[], forms:[], heads:[], pairs:[], subjects:null, open:false };
+  const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], subjects:null, open:false };
+  // chain verbs: the grammar's, and those the owner's own sentences show (TTG-RFC-0005 §3)
+  const learned = (S.chainSaid && S.chainSaid.get(G.lang)) || EMPTY;
   const runs = [];
   let rel = false;
   for (const i of idx){
@@ -1260,7 +1280,7 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
       // an object relative's verbs, and a relative's own, split where a second verb follows the first
       r.items = verbItems(S, r.toks, (k > 0 && runs[k - 1].orel) || r.rel);
       r.stance = r.items.some(ps => G.stance.has(ps[ps.length - 1].head));
-      r.chain = r.items.some(ps => ps.some(p => G.chain.has(p.head)));
+      r.chain = r.items.some(ps => ps.some(p => G.chain.has(p.head) || learned.has(p.head)));
       return;
     }
     const nps = nounPhrases(S, r.toks, 0, r.toks.length);
@@ -1316,7 +1336,7 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
     const slots = Math.max(...r.items.map(ps => ps.length));
     let subj = null;
     for (let pi = 0; pi < slots; pi++){
-      let gap = null, unsure = false;
+      let gap = null, unsure = false, reading = "";
       if (pi === 0 && r.rel){ top = open("rel", top, top.last, { on:takesNow(top) ? top.lastV : null }); subj = top.last; }
       else if (pi === 0 && top.gap && !top.lastV){ subj = top.last; gap = top; }
       else if (pi === 0 && takesNow(top) && runs[k - 1] === top.last){ top = comp(top); subj = top.last; }
@@ -1328,36 +1348,56 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
         // thing, or the gap the verb before it took (the cat that I saw eat cheese is fat)
         // — and when the bare form cannot be finite for what it would close back to (the man that saw the cat eat cheese.)
         const inner = pi > 0 && top.gap ? top.gap : top.last;
-        if (bare && (needs(home) ? finiteLater(k, pi) || !agrees(home.last) : top.lastV.chain)) subj = inner;
+        const stay = bare && (needs(home) ? finiteLater(k, pi) || !agrees(home.last) : top.lastV.chain);
+        // with nothing after it, a bare verb that agrees with the antecedent, after a chain verb, is either
+        // reading: (a) saw [the cats eat cheese], or (b) the men that saw the cats | eat cheese. Unless the
+        // owner has said which, both are held, each named
+        const two = !stay && bare && needs(home) && top.lastV.chain && inner !== home.last ? choice(pick) : null;
+        if (stay || (two && two.c === two.a)) subj = inner;
         else {
-          // with nothing after it, a bare verb that agrees with the antecedent, after a chain verb, is either
-          // reading: the men that saw the cats | eat cheese, or saw [the cats eat cheese]. Both are held
-          const both = bare && needs(home) && top.lastV.chain && inner !== home.last;
-          if (both) acts.push({ r, k, pi, frame:top, subj:inner, gap:null, unsure:true });
+          if (two && !two.c) acts.push({ r, k, pi, frame:top, subj:inner, gap:null, unsure:true, reading:two.a });
           // any other verb after a relative's own closes it, and any it holds, back to what the outermost
           // hangs from: cats that chase mice are fast; the man that says cats bark is tall
           top = home;
           if (takesNow(top)) top = comp(top);
-          subj = top.last; unsure = both;
+          subj = top.last;
+          if (two && !two.c){ unsure = true; reading = two.b; }
         }
-      } else if (pi === 0) subj = top.last;
-      acts.push({ r, k, pi, frame:top, subj, gap, unsure });
+      } else if (pi === 0){
+        subj = top.last;
+        // the owner's own chain — a verb, its thing, then a bare verb that cannot be finite for that thing, in a
+        // clause no relative holds (I saw the cat eat cheese) — shows the first is a chain verb
+        const V1 = top.lastV;
+        if (V1 && !V1.stance && !r.rel && k > 1 && runs[k - 1] === top.last && runs[k - 2] === V1 && !agrees(top.last) &&
+            r.items.every(ps => ps[0].kind === "verb" && ps[0].bare))
+          for (const ps of V1.items){ const p = ps[ps.length - 1]; if (p.kind === "verb" && p.vector === p.head) out.chains.push(p.head); }
+      }
+      acts.push({ r, k, pi, frame:top, subj, gap, unsure, reading });
       top.lastV = r;
     }
   });
   // held: inside a stance's clause, a reported clause, or a relative hanging from a stance's thing that became one
   const heldIn = f => !!f && (f.kind === "comp" || !!f.reported || !!(f.on && f.on.takes) || heldIn(f.parent));
   const membersOf = run => run ? run.members.map(m => ({ lemma:m.h.lemma, self:m.h.self, quant:m.np.quant, none:m.np.none, neg:m.np.neg, alt:run.alt })) : [];
-  // what the owner's words already say of a vector: that it takes a thing, or that it never does
-  const uses = v => S.byVector.get(v) || [];
-  const withThing = v => uses(v).some(e => e.o !== "-");
+  // what the owner's words already say of a vector — said or held, for what a verb takes is the words'
+  // business, not the world's: that it takes a thing, or that it never does
+  const uses = v => (S.usage && S.usage.get(v)) || NOUSE;
+  const withThing = v => uses(v).thing > 0;
   // a verb that never takes a thing: the owner's words have it only without one, or the grammar lists it
-  const lone = (v, head) => !withThing(v) && (uses(v).length > 0 || G.intransitive.has(head));
+  const lone = (v, head) => !withThing(v) && (uses(v).lone > 0 || G.intransitive.has(head));
   // a word straight after a relative's own verb that the corpus also knows as a thing (sing | love songs)
   const thingToo = P => P.kind === "verb" && !!P.vform && !P.vform.includes(R.phrasal_join || "\u0000") && S.things.has(nounLemma(S, P.vform).lemma);
+  const thingHeld = (r, right, p) => r.rel && p > 0 && !!right && r.items.every(ps => !ps[p] || thingToo(ps[p]));
+  // where it ends each item it is in, the two readings are named: (a) sing | love songs, (b) sing [love songs]
+  const thingPlace = (r, right, p) => thingHeld(r, right, p) && r.items.some(ps => ps[p]) && r.items.every(ps => !ps[p] || p === ps.length - 1);
+  const places = new Map();
   let firstObjects = null;
   for (const a of acts){
     const { r, k, pi } = a, right = runs[k + 1] && runs[k + 1].cls === "N" ? runs[k + 1] : null;
+    // the place is named at the verb before the thing-word, which the second reading gives the object
+    if (thingPlace(r, right, pi + 1) && !places.has(r)) places.set(r, { p:pi + 1, ...choice(pick) });
+    const place = places.get(r), before = place && place.p === pi + 1 ? place : null, at = place && place.p === pi ? place : null;
+    if (at && at.c && at.c === at.b) continue;
     let subjects = membersOf(a.subj);
     if (!subjects.length && a === acts[0] && inherited) subjects = inherited;
     // a verb in the speaker's own form, with no subject said: the speaker (No como carne)
@@ -1373,7 +1413,11 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
     const reads = r.items.map(preds => {
       const P = preds[pi];
       if (!P) return null;
-      const d = { P, os:pi === preds.length - 1 ? objects : [], from:right, vector:P.vector, vform:P.vform, beside:[] };
+      const d = { P, os:pi === preds.length - 1 ? objects : [], from:right, vector:P.vector, vform:P.vform, beside:[], extra:[], reading:"" };
+      if (before && preds[pi + 1]){
+        if (before.c && before.c === before.b) d.os = objects;
+        else if (!before.c) d.extra.push({ os:objects, from:right, reading:before.b });
+      }
       if (a.gap && (P.kind === "verb" || P.kind === "hav")){
         // a preposition with nothing after it has lost its thing to the gap (the house that I live in), unless
         // the relative word may be reporting a stance verb's clause (I told the man that the cat came in)
@@ -1382,39 +1426,48 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
         let take = !d.os.length && wants(P.vector);
         if (!take && d.os.length && P.stem && wants(P.stem.vector)){ d.beside = d.os; d.vector = P.stem.vector; d.vform = P.stem.vform; take = true; }
         if (take){ d.os = a.gap.gap.members; d.from = a.gap.gap; filled = true; }
-        // after a stance verb's thing, a verb that may or may not take the gap: both readings are held
-        // (I told the man that the cat bit: the man bitten, or a bite reported)
-        else if (a.gap.on && !d.os.length && P.kind === "verb" && !lone(P.vector, P.head)) d.also = a.gap.gap.members;
+        else if (a.gap.on && !d.os.length && P.kind === "verb" && !lone(P.vector, P.head)) d.maybe = true;
       }
       return d;
     });
+    // after a stance verb's thing, a verb that may or may not take the gap is either reading: (a) a bite
+    // reported, or (b) the man bitten (I told the man that the cat bit). Unless the owner has said which, both
+    // are held, each named
+    const maybe = reads.filter(d => d && d.maybe);
+    if (maybe.length){
+      const two = choice(pick);
+      for (const d of maybe){
+        if (two.c && two.c === two.b){ d.os = a.gap.gap.members; d.from = a.gap.gap; filled = true; }
+        else if (!two.c){ d.reading = two.a; d.extra.push({ os:a.gap.gap.members, from:a.gap.gap, reading:two.b }); }
+      }
+    }
     // an object relative whose gap no verb takes was never one: it reports a clause — I emailed
     // the man that the cat sleeps — and what it says is held
     if (a.gap && !filled) a.gap.reported = true;
     // a verb the corpus also knows as a thing, straight after a relative's own, may be the start of its object:
     // birds that sing love songs. What both readings share is said; what one of them adds is held
-    const unsure = a.unsure || (r.rel && pi > 0 && !!right && r.items.every(ps => !ps[pi] || thingToo(ps[pi])));
+    const unsure = a.unsure || (at ? !at.c : thingHeld(r, right, pi));
     const held = hold || heldIn(a.frame) || unsure;
+    const named = a.reading || (at && !at.c ? at.a : "");
     // not (a or b) is neither: a denied alternative of objects or verbs is a denial of each
     const negAll = r.alt && r.items.some(ps => ps[0] && ps[0].neg);
     for (const d of reads){
       if (!d) continue;
-      const { P, os, from } = d, neg = P.neg || negAll;
+      const { P, os, from } = d, neg = P.neg || negAll, rd = named || d.reading;
+      const vOf = o => P.kind === "cop" ? (isClass(o) ? R.class_of : R.property) : d.vector;
       for (const s of subjects){
-        // held keeps its own polarity: I doubt cats don't bark holds a denial
-        const pol = o => {
-          const alt = !!(o && from && from.alt) || r.alt, denied = neg && alt && !s.alt;
+        // held keeps its own polarity: I doubt cats don't bark holds a denial. What one reading alone says is held
+        const pol = (o, fr, one) => {
+          const alt = !!(o && fr && fr.alt) || r.alt, denied = neg && alt && !s.alt;
           const no = neg || s.none || s.neg || (o && o.np.neg);
-          if (held || ((alt || s.alt) && !denied)) return no ? HELD_NO : HELD;
+          if (held || one || ((alt || s.alt) && !denied)) return no ? HELD_NO : HELD;
           return no ? "-" : "+";
         };
-        if (os.length){
-          for (const o of os){
-            const v = P.kind === "cop" ? (isClass(o) ? R.class_of : R.property) : d.vector;
-            if (v) out.percepts.push({ s:s.lemma, v, o:o.h.lemma, pol:pol(o), q:s.quant });
-          }
-        } else if (P.kind === "verb" && d.vector) out.percepts.push({ s:s.lemma, v:d.vector, o:"-", pol:pol(null), q:s.quant });
-        for (const o of d.also || []) out.percepts.push({ s:s.lemma, v:d.vector, o:o.h.lemma, pol:pol(o), q:s.quant });
+        const put = (v, o, p, reading) => { if (v) out.percepts.push(reading ? { s:s.lemma, v, o, pol:p, q:s.quant, reading } : { s:s.lemma, v, o, pol:p, q:s.quant }); };
+        if (os.length) for (const o of os) put(vOf(o), o.h.lemma, pol(o, from, !!rd), rd);
+        else if (P.kind === "verb" && d.vector) put(d.vector, "-", pol(null, from, !!rd), rd);
+        // the other reading, beside it
+        for (const x of d.extra) for (const o of x.os) put(vOf(o), o.h.lemma, pol(o, x.from, true), x.reading);
       }
       if (d.beside.length && os.length) for (const o of d.beside) out.pairs.push([os[0].h.lemma, o.h.lemma]);
       if (P.kind === "verb" && d.vector) out.forms.push(["vector", d.vector, d.vform]);
@@ -1435,9 +1488,10 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
   else if (firstObjects && firstObjects[0] && firstObjects[0].h.lemma !== SLOT) ctx.last = firstObjects[0].h.lemma;
   return out;
 }
-function clausePercepts(S, toks, ctx, inherited){
+function clausePercepts(S, toks, ctx, inherited, pick){
   const labels = labelTokens(S, toks);
-  const out = { percepts:[], forms:[], heads:[], pairs:[], labels };
+  const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], labels };
+  pick = pick || newPick();
   let prev = inherited, first = true, open = false;
   for (const cl of clausesOf(labels)){
     // clauses either side of an alternative word are held, and so is the clause after a
@@ -1445,9 +1499,9 @@ function clausePercepts(S, toks, ctx, inherited){
     const near = (i, d) => { while (labels[i] === "A") i += d; return toks[i]; };
     const at = near(cl.idx[0] - 1, -1), next = near(cl.idx[cl.idx.length - 1] + 1, 1);
     const hold = has(at, "alt") || has(next, "alt") || (open && has(at, "subord"));
-    const r = readClause(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold);
+    const r = readClause(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold, pick);
     first = false; open = r.open;
-    out.percepts.push(...r.percepts); out.forms.push(...r.forms); out.heads.push(...r.heads); out.pairs.push(...r.pairs);
+    out.percepts.push(...r.percepts); out.forms.push(...r.forms); out.heads.push(...r.heads); out.pairs.push(...r.pairs); out.chains.push(...r.chains);
     if (r.subjects && r.subjects[0].lemma !== "-") prev = r.subjects;
   }
   return out;
@@ -1474,12 +1528,14 @@ function shapeText(S, items){
 /* One sentence -> percepts. Comentions come last and are capped: they are
    searchable context, never evidence (@LAT98LON6). A sentence that names one
    thing and says nothing of it is a mention: seen, searchable, never a belief. */
-function perceiveSentence(S, sentence, ctx){
+/* `reading`, if given, is the owner's choice where the grammar reads two ways
+   (TTG-RFC-0005 §3); `res.reading` is the part of it that applied.         */
+function perceiveSentence(S, sentence, ctx, reading){
   const R = S.G.roles;
-  const toks = tokenize(S, sentence);
-  const r = clausePercepts(S, toks, ctx, null);
+  const toks = tokenize(S, sentence), pick = newPick(reading);
+  const r = clausePercepts(S, toks, ctx, null, pick);
   const items = shapeItems(toks, r.labels);
-  const res = { percepts:r.percepts, forms:r.forms, items, shape:shapeText(S, items) };
+  const res = { percepts:r.percepts, forms:r.forms, items, shape:shapeText(S, items), reading:pick.used.join(" "), chains:r.chains };
   const pairs = r.pairs.slice(), heads = r.heads;
   if (!res.percepts.length) for (let i = 0; i + 1 < heads.length; i++) pairs.push([heads[i], heads[i + 1]]);
   if (R.comention){
@@ -1490,7 +1546,7 @@ function perceiveSentence(S, sentence, ctx){
   if (!res.percepts.length && heads.length === 1) res.percepts.push({ s:heads[0], v:"-", o:"-", pol:"+", q:"-" });
   const seen = new Set();
   res.percepts = res.percepts.filter(p => {
-    const k = [p.s, p.v, p.o, p.pol, p.q].join("|");
+    const k = [p.s, p.v, p.o, p.pol, p.q, p.reading || ""].join("|");
     if (seen.has(k) || p.s === p.o && p.v === R.comention) return false;
     seen.add(k); return true;
   });
@@ -1498,10 +1554,10 @@ function perceiveSentence(S, sentence, ctx){
 }
 /* A text's reading, under the grammar it reads as: its shape, its segments and
    what it would perceive. Marks in the text overrule the parser.            */
-function shapeOf(S, text){
+function shapeOf(S, text, reading){
   return withGrammar(S, pickGrammar(S, text), () => {
-    const r = perceiveSentence(S, text, { last:null });
-    return { shape:r.shape, items:r.items, percepts:r.percepts, lang:S.G.lang };
+    const r = perceiveSentence(S, text, { last:null }, reading);
+    return { shape:r.shape, items:r.items, percepts:r.percepts, reading:r.reading, lang:S.G.lang };
   });
 }
 
@@ -1579,11 +1635,14 @@ const num2 = x => String(+(+x).toFixed(2));
 function consolidate(S){
   const G = S.G, N = G.num, R = G.roles;
   const trips = new Map(), seen = new Map(), com = new Map(), malformed = [], said = new Map();
+  const usage = new Map(), held = [], heldIn = new Map(), shapes = [], chainRe = chainShape(S);
   const bump = k => seen.set(k, (seen.get(k) || 0) + 1);
   const lane = +G.sphere.episode_lane;
   for (const c of S.episodes.concat(S.offLane)){
     const own = c.rec.lat === lane;
     const b = parseBlock(c.rec.episode);
+    // an amended sentence is read from its amendment, still as this episode's saying
+    const am = own ? S.amends.get(c.rec.lon) : null;
     if (own){
       const lines = new Map();
       for (const line of many(b, "said")){
@@ -1591,14 +1650,20 @@ function consolidate(S){
         if (i > 0) lines.set(+line.slice(0, i).trim(), line.slice(i + 1).trim());
       }
       said.set(c.rec.id, lines);
+      // a shape where a thing sits between two verbs may show a chain verb; the one that stands is read
+      const written = lineMap(many(b, "shape"));
+      if (chainRe) for (const [n, text] of lines){
+        const e = am && am.entries.get(n), shape = e ? e.shape : written.get(n);
+        if (shape && chainRe.test(shape)) shapes.push({ text, shape, reading:e ? e.reading : null });
+      }
     }
-    // an amended sentence is read from its amendment, still as this episode's saying
-    const am = own ? S.amends.get(c.rec.lon) : null;
     const lines = many(b, "percept").map(line => ({ line, id:c.rec.id, orig:true }));
     if (am) for (const e of am.entries.values()) for (const line of e.lines) lines.push({ line, id:am.chunk.rec.id, orig:false });
     for (const { line, id, orig } of lines){
-      const p = cols(line);
-      if (p.length < 6 || !/^\d+$/.test(p[0]) || !p[1] || !p[2] || !p[3] || !["+", "-", HELD, HELD_NO].includes(p[4])){
+      const p = cols(line), rd = p[6] || "";
+      // a reading's letter is held with it: a letter on a percept that is not held is malformed
+      if (p.length < 6 || !/^\d+$/.test(p[0]) || !p[1] || !p[2] || !p[3] || !["+", "-", HELD, HELD_NO].includes(p[4]) ||
+          (rd && (!/^[a-z]$/.test(rd) || !isHeld({ pol:p[4] })))){
         malformed.push({ id, line }); continue;
       }
       if (!own || (orig && am && am.entries.has(+p[0]))) continue;
@@ -1606,7 +1671,17 @@ function consolidate(S){
       if (s !== "-") bump("thing|" + s);
       if (v !== "-") bump("vector|" + v);
       if (o !== "-") bump("thing|" + o);
-      if (s === "-" || v === "-" || isHeld({ pol })) continue;   // a mention or a held saying: seen, searchable, never believed
+      if (s === "-" || v === "-") continue;                      // a mention: seen, searchable, never believed
+      // what a verb takes, from every saying that stands, said or held — but not from one reading of two
+      if (v !== R.comention && !rd){
+        if (!usage.has(v)) usage.set(v, { thing:0, lone:0 });
+        if (o === "-") usage.get(v).lone++; else usage.get(v).thing++;
+      }
+      if (isHeld({ pol })){                                        // a held saying: seen, searchable, named to a question, never believed
+        if (v !== R.comention) held.push({ s, v, o, pol, ep:c.rec.id, n:+n, reading:rd });
+        if (rd) pushTo(heldIn, c.rec.id + "#" + n, { s, v, o, pol, reading:rd });
+        continue;
+      }
       if (v === R.comention){
         for (const [a, z] of [[s, o], [o, s]]){ if (!com.has(a)) com.set(a, new Map()); com.get(a).set(z, (com.get(a).get(z) || 0) + 1); }
         continue;
@@ -1634,8 +1709,36 @@ function consolidate(S){
     S.believers.add(e.s);
   }
   S.trips = trips; S.seenCounts = seen; S.comentions = com; S.malformed = malformed; S.said = said;
+  S.usage = usage; S.held = held; S.heldIn = heldIn;
   S.sentIndex = null;
+  S.chainSaid = learnChains(S, shapes);
   deriveRules(S);
+}
+/* A chain verb the owner's own words show (TTG-RFC-0005 §3): a verb, its thing,
+ * then a bare verb that cannot be finite for that thing, in a clause no
+ * relative holds — I saw the cat eat cheese. One such saying is enough, for
+ * the bare form rules out every other reading. Each standing shape where a
+ * thing sits between two verbs is read for it, once per open store.       */
+function chainShape(S){
+  if (S.chainRe !== undefined) return S.chainRe;
+  const q = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const alts = (S.grammars || [S.G]).filter(G => G.marks.N && G.marks.V)
+    .map(G => q(G.marks.V[1]) + "\\s*" + q(G.marks.N[0]) + "[^" + q(G.marks.N[1]) + "]*" + q(G.marks.N[1]) + "\\s*" + q(G.marks.V[0]));
+  return (S.chainRe = alts.length ? new RegExp(alts.join("|")) : null);
+}
+function learnChains(S, shapes){
+  const out = new Map(), memo = S.chainMemo || (S.chainMemo = new Map());
+  for (const x of shapes){
+    const key = [x.text, x.shape, x.reading || ""].join("\u0000");
+    if (!memo.has(key)){
+      const G = pickGrammar(S, x.text);
+      memo.set(key, { lang:G.lang, heads:withGrammar(S, G, () => perceiveSentence(S, x.shape, { last:null }, x.reading).chains) });
+    }
+    const m = memo.get(key);
+    if (!out.has(m.lang)) out.set(m.lang, new Set());
+    for (const h of m.heads) out.get(m.lang).add(h);
+  }
+  return out;
 }
 
 /* Derivation (TTG-RFC-0003 §3.1). Facts are the decided beliefs; each round
@@ -1811,7 +1914,8 @@ function ensureTerm(S, lemma, cls, partnerLemma, now){
 }
 
 /* ---------- write: perceive one input as one episode ------------------ */
-const perceptLine = (n, p) => [n, p.s, p.v, p.o, p.pol, p.q].join(" | ");
+// a seventh column names the reading a percept belongs to, where the grammar read the sentence two ways
+const perceptLine = (n, p) => [n, p.s, p.v, p.o, p.pol, p.q].concat(p.reading ? [p.reading] : []).join(" | ");
 // terms for every lemma the percepts name, placed beside their partners, with their surface forms
 function landTerms(S, all, forms, now){
   const R = S.G.roles, created = [];
@@ -1920,10 +2024,10 @@ function amendEntries(block){
     const line = raw.trim(), i = line.indexOf(":");
     if (i < 0) continue;
     const k = line.slice(0, i).trim(), v = line.slice(i + 1).trim(), n = +cols(v)[0];
-    if (k !== "shape" && k !== "percept" && k !== "grammar") continue;
-    if (!m.has(n)) m.set(n, { shape:"", lines:[], grammar:null });
+    if (k !== "shape" && k !== "percept" && k !== "grammar" && k !== "reading") continue;
+    if (!m.has(n)) m.set(n, { shape:"", lines:[], grammar:null, reading:null });
     const rest = v.slice(v.indexOf("|") + 1).trim();
-    if (k === "shape") m.get(n).shape = rest; else if (k === "grammar") m.get(n).grammar = rest; else m.get(n).lines.push(v);
+    if (k === "percept") m.get(n).lines.push(v); else m.get(n)[k] = rest;
   }
   return m;
 }
@@ -1936,7 +2040,7 @@ function readingsOf(S, epId){
   const own = lineMap(many(parseBlock(c.rec.episode), "shape")), am = S.amends.get(c.rec.lon);
   return [...(S.said.get(c.rec.id) || new Map())].map(([n, text]) => {
     const e = am && am.entries.get(n);
-    return { n, text, shape:e ? e.shape : own.get(n) || shapeOf(S, text).shape, amended:!!e, grammar:e ? e.grammar : null };
+    return { n, text, shape:e ? e.shape : own.get(n) || shapeOf(S, text).shape, amended:!!e, grammar:e ? e.grammar : null, reading:e ? e.reading : null };
   });
 }
 /* The grammar a reading was made under, named by its records' text. */
@@ -1945,45 +2049,82 @@ function grammarHash(S){
   return [fnv(t), fnv(t + "#")].map(h => h.toString(16).padStart(8, "0")).join("");
 }
 /* Re-reading (TTG-RFC-0005 §5.1): every sentence of every episode (or of one)
- * read again from its words, in context, under the grammar the store holds
- * now, beside the reading the episode wrote. Nothing is written: a grammar's
- * new opinion of a sentence is not the owner's, so it stands only when the
- * owner amends with it — amend(…, grammar) records that it was the grammar's.
- * `amended` says the owner has ruled on that sentence; `accepted`, that the
- * ruling is this very reading.                                             */
-function reread(S, epId){
-  const changed = [];
+ * read again from its words under the grammar and corpus the store holds now,
+ * beside the reading the episode wrote. Its context is the sentences before it
+ * as they stand — their amendments, else their episode's reading — which is
+ * the context an amendment is read in, so what is offered is what taking it
+ * would write. Nothing is written: a grammar's new opinion of a sentence is
+ * not the owner's, so it stands only when the owner amends with it —
+ * amend(…, grammar) records that it was the grammar's. An owner's choice
+ * between two readings is kept. `amended` says the owner has ruled on the
+ * sentence; `accepted`, that the ruling is this very reading.              */
+function rereadWalk(S, epId, visit){
   let sentences = 0;
   const one = epId ? episodeOf(S, epId) : null;
-  for (const c of one ? [one] : epId ? [] : S.episodes){
+  for (const c of one ? [one] : epId ? [] : S.episodes.slice()){
     const said = S.said.get(c.rec.id);
     if (!said) continue;
-    const b = parseBlock(c.rec.episode), own = lineMap(many(b, "shape")), am = S.amends.get(c.rec.lon), ctx = { last:null };
+    const b = parseBlock(c.rec.episode), own = lineMap(many(b, "shape")), ctx = { last:null };
     for (const [n, text] of said){
       sentences++;
-      const r = withGrammar(S, pickGrammar(S, text), () => perceiveSentence(S, text, ctx));
+      const G = pickGrammar(S, text), entry = () => { const am = S.amends.get(c.rec.lon); return am ? am.entries.get(n) : null; };
+      const e = entry(), here = { last:ctx.last };
+      const r = withGrammar(S, G, () => perceiveSentence(S, text, here, e ? e.reading : null));
       const was = many(b, "percept").filter(l => +cols(l)[0] === n).map(l => cols(l).join(" | "));
       // an episode written before shapes has none to compare; its percepts still are
       const now = r.percepts.map(p => perceptLine(n, p)), shape = own.has(n) ? own.get(n) : null;
-      const e = am && am.entries.get(n);
       if ((shape !== null && r.shape !== shape) || now.join("\n") !== was.join("\n"))
-        changed.push({ episode:c.rec.id, n, text, amended:!!e, accepted:!!e && e.shape === r.shape, shape, reads:r.shape, was, now });
+        visit({ episode:c.rec.id, n, text, amended:!!e, accepted:!!e && e.shape === r.shape && e.lines.join("\n") === now.join("\n"),
+                shape, reads:r.shape, reading:r.reading || null, was, now }, { last:ctx.last });
+      // the context goes on through what now stands: an amendment (one a visit just took, too), else the episode's reading
+      const s = entry(), stands = s ? s.shape : shape;
+      if (stands === null || (stands === r.shape && (s ? s.reading || "" : "") === (r.reading || ""))) ctx.last = here.last;
+      else withGrammar(S, G, () => perceiveSentence(S, stands, ctx, s ? s.reading : null));
     }
   }
+  return sentences;
+}
+function reread(S, epId){
+  const changed = [];
+  const sentences = rereadWalk(S, epId, x => changed.push(x));
   return { grammar:grammarHash(S), sentences, changed };
 }
+/* Take the grammar's readings under a hash (§5.1), in episode order: each
+ * sentence is read again just before it is taken, after the ones before it
+ * have been, so it is taken in the context they now stand as — and one that
+ * reads differently only because an earlier one was taken is taken too. A
+ * sentence the owner has amended is kept, never taken. What a take changes
+ * about a sentence already passed is left for the next re-reading.          */
+function takeRereads(S, grammar, now){
+  if (!grammar || grammar !== grammarHash(S)) return null;
+  const took = [], kept = [];
+  rereadWalk(S, null, (x, ctx) => {
+    const c = episodeOf(S, x.episode);
+    if (x.amended) kept.push(x);
+    else if (c && amendAt(S, c, x.n, x.reads, now, grammar, null, ctx)) took.push(x);
+  });
+  return { grammar, took, kept };
+}
 /* `grammar`, if given, says the owner took the reading a re-reading offered
-   under that grammar hash (TTG-RFC-0005 §5.1); it must be the store's now.  */
-function amend(S, epId, n, shape, now, grammar){
+   under that grammar hash (TTG-RFC-0005 §5.1); it must be the store's now.
+   `reading` is the owner's choice where the grammar reads two ways (§3).    */
+function amend(S, epId, n, shape, now, grammar, reading){
   const c = episodeOf(S, epId), said = c && S.said.get(c.rec.id);
   if (!c || !said || !said.has(n) || (grammar && grammar !== grammarHash(S))) return null;
+  return amendAt(S, c, n, shape, now, grammar, reading, null);
+}
+// `ctx`, if given, is the context the sentences before it leave as they stand; else they are read again for it
+function amendAt(S, c, n, shape, now, grammar, reading, ctx){
+  const said = S.said.get(c.rec.id);
   return withGrammar(S, pickGrammar(S, said.get(n)), () => {
     const G = S.G, R = G.roles, alane = +G.sphere.amend_lane;
     if (!isFinite(alane) || !G.marks.N) return null;
     // the sentences before it, as they now read, carry the context its pronouns resolve in
-    const ctx = { last:null }, readings = readingsOf(S, c.rec.id);
-    for (const x of readings) if (x.n < n) withGrammar(S, pickGrammar(S, x.text), () => perceiveSentence(S, x.shape || x.text, ctx));
-    const r = perceiveSentence(S, shape, ctx);
+    if (!ctx){
+      ctx = { last:null };
+      for (const x of readingsOf(S, c.rec.id)) if (x.n < n) withGrammar(S, pickGrammar(S, x.text), () => perceiveSentence(S, x.shape || x.text, ctx, x.reading));
+    }
+    const r = perceiveSentence(S, shape, ctx, reading);
     const all = r.percepts.map(p => ({ ...p, n }));
     const before = beforeOf(S, all), retiredBefore = new Set(S.superseded.keys());
     const created = landTerms(S, all, r.forms, now);
@@ -1993,15 +2134,16 @@ function amend(S, epId, n, shape, now, grammar){
     const origShape = lineMap(many(parseBlock(c.rec.episode), "shape")).get(n) || withGrammar(S, G, () => perceiveSentence(S, said.get(n), { last:null }).shape);
     // reading it back the way the episode already reads it withdraws the amendment
     if (r.shape === origShape && mine.join("\n") === origLines.join("\n")) entries.delete(n);
-    else entries.set(n, { shape:r.shape, lines:mine, grammar:grammar || null });
+    else entries.set(n, { shape:r.shape, lines:mine, grammar:grammar || null, reading:r.reading || null });
     const block = [...entries].sort((x, y) => x[0] - y[0])
-      .flatMap(([k, e]) => ["shape: " + k + " | " + e.shape].concat(e.grammar ? ["grammar: " + k + " | " + e.grammar] : [], e.lines.map(l => "percept: " + l))).join("\n");
+      .flatMap(([k, e]) => ["shape: " + k + " | " + e.shape].concat(e.grammar ? ["grammar: " + k + " | " + e.grammar] : [],
+        e.reading ? ["reading: " + k + " | " + e.reading] : [], e.lines.map(l => "percept: " + l))).join("\n");
     const id = makeId(alane, c.rec.lon, 0), relates = R.amend_edge ? R.amend_edge + c.rec.id : "";
     if (had && !entries.size) S.st.chunks = S.st.chunks.filter(x => x !== had.chunk);
     else if (had) rewriteChunk(had.chunk, { updated:now, relates, tag:"ttdb-amend", block });
     else if (entries.size) insertChunk(S.st, newChunk(id, now, relates, null, say(G, "amend_title", { n:c.rec.lon }) || id, "ttdb-amend", block));
     const { conflicts, superseded } = settle(S, all, now, before, retiredBefore);
-    const res = { id, amends:c.rec.id, n, shape:r.shape, sentences:1, ...splitAll(S, all), all, created, conflicts, superseded };
+    const res = { id, amends:c.rec.id, n, shape:r.shape, reading:r.reading || null, sentences:1, ...splitAll(S, all), all, created, conflicts, superseded };
     writeCursor(S, c.rec.id, said.get(n), say(G, "amended", { percepts:unit(G, "percept", res.percepts.length + res.held.length) }), [c.rec.id]);
     return res;
   });
@@ -2419,12 +2561,16 @@ function answerIn(S, text, now, source, shapes){
     for (const { r:x } of results) for (const g of x.grounds) reply.items.push(quoted(S, g));
     for (const { p, r:x } of results) if (x.exception)
       reply.notes.push(say(G, "exception", { term:p.s, via:x.exception.via }));
+    if (r.verdict === "U") heldNotes(S, reply, h => it.checks.some(p => h.s === p.s && h.v === p.v && h.o === p.o));
   } else if (it.intent === "objectsOf" || it.intent === "subjectsOf"){
     const list = it.intent === "objectsOf" ? objectsOf(S, it.s, it.vs) : subjectsOf(S, it.v, it.o);
     reply.head = it.intent === "objectsOf" ? say(G, "objects_head", { s:it.s, v:vlabel(S, it.vs[0]) })
                                           : say(G, "subjects_head", { v:vlabel(S, it.v), o:it.o === "-" ? "" : it.o });
     reply.items = cap(list).map(g => quoted(S, g));
-    if (!list.length) reply.verdict = say(G, "nothing_found");
+    if (!list.length){
+      reply.verdict = say(G, "nothing_found");
+      heldNotes(S, reply, it.intent === "objectsOf" ? h => h.s === it.s && it.vs.includes(h.v) : h => h.v === it.v && h.o === it.o);
+    }
   } else if (it.intent === "portrait"){
     for (const lemma of it.terms){
       const pt = portrait(S, lemma);
@@ -2472,8 +2618,11 @@ function writeGrounds(S, reply, w, epId){
       quotes:[{ ep:epId, n:p.n, text:S.said.get(epId).get(p.n), pol:p.pol }] });
   }
   reply.items = [...byKey.values()].slice(0, G.num.answer_max_items);
-  // what was said as a choice or under a stance is named, never grounded as said
-  if (w.held.length) reply.notes.push(say(G, "noted_held", { triples:w.held.map(p => tripleText(S, p)).join("; ") }));
+  // what was said as a choice or under a stance is named, never grounded as said; what the grammar read
+  // two ways is named as the two readings of one saying
+  const plain = w.held.filter(p => !p.reading), two = w.held.filter(p => p.reading);
+  if (plain.length) reply.notes.push(say(G, "noted_held", { triples:plain.map(p => tripleText(S, p)).join("; ") }));
+  if (two.length) reply.notes.push(say(G, "noted_readings", { readings:readingsText(S, two) }));
   for (const c of w.conflicts){
     reply.notes.push(say(G, "contradicts"));
     reply.items.push({ kind:"conflict", pol:c.trip.pol, path:[c.trip], conf:c.trip.conf, quotes:quotesFor(S, c.trip).slice(-3) });
@@ -2481,10 +2630,35 @@ function writeGrounds(S, reply, w, epId){
   if (w.superseded.length) reply.notes.push(say(G, "supersedes"));
   for (const sup of w.superseded) reply.items.push(quoted(S, supersededGround(S, sup)));
 }
+/* The readings of one saying, pair by pair: what the first reading of each
+   place says, then what the second does (TTG-RFC-0005 §3).                  */
+function readingsText(S, held, only){
+  const pairs = new Map();
+  for (const p of held){
+    if (!p.reading || (only && pairOf(p.reading) !== pairOf(only))) continue;
+    const k = (p.n || 0) + ":" + pairOf(p.reading);
+    if (!pairs.has(k)) pairs.set(k, [[], []]);
+    pairs.get(k)[sideOf(p.reading)].push(tripleText(S, p));
+  }
+  return [...pairs.values()].map(([a, b]) => say(S.G, "reading_pair", { a:a.join(", "), b:b.join(", ") })).join("; ");
+}
+/* A question the beliefs cannot answer may still meet something said and not
+ * asserted. It is named with its saying, as a note and never as a ground, and
+ * a saying the grammar read two ways is named with both its readings.       */
+function heldNotes(S, reply, test){
+  const G = S.G, seen = new Set();
+  for (const h of S.held || []){
+    const k = h.ep + "#" + h.n, text = (S.said.get(h.ep) || new Map()).get(h.n);
+    if (!test(h) || seen.has(k) || text == null || seen.size >= G.num.answer_max_items) continue;
+    seen.add(k);
+    reply.notes.push(h.reading ? say(G, "asked_readings", { text, ep:h.ep, readings:readingsText(S, S.heldIn.get(k) || [], h.reading) })
+                               : say(G, "asked_held", { text, ep:h.ep }));
+  }
+}
 /* Amend a sentence and answer as a tell does: the verdict, then the grounds. */
-function amendReply(S, epId, n, shape, now, grammar){
+function amendReply(S, epId, n, shape, now, grammar, reading){
   const c = episodeOf(S, epId), said = c && S.said.get(c.rec.id);
-  const w = said && said.has(n) ? amend(S, epId, n, shape, now, grammar) : null;
+  const w = said && said.has(n) ? amend(S, epId, n, shape, now, grammar, reading) : null;
   if (!w) return null;
   return withGrammar(S, pickGrammar(S, said.get(n)), () => {
     const G = S.G;
@@ -2541,7 +2715,7 @@ function ingestFile(S, name, text, now){
 const PG = { parseStore, serializeStore, parseRecord, parseBlock, openStore, loadGrammar, sentencesOf, tokenize,
   nounLemma, verbLemma, perceiveSentence, perceive, consolidate, syncTerms, termState, verify, objectsOf, subjectsOf,
   portrait, searchSaid, interpret, answer, replyText, ingestFile, startEmpty, markAsked, records, epsOf, say, SLOT,
-  pickGrammar, withGrammar, shapeOf, shapeText, readingsOf, amend, amendReply, reread };
+  pickGrammar, withGrammar, shapeOf, shapeText, readingsOf, amend, amendReply, reread, takeRereads };
 
 /* ====================================================================== *
  * The page. Everything below touches the DOM; everything above does not,
@@ -2652,7 +2826,9 @@ function replyHtmlIn(r){
   if (r.intent === "perceive" && r.episode){
     const ep = r.episode.amends || r.episode.id;
     const rs = readingsOf(S, ep).filter(x => !r.episode.amends || x.n === r.episode.n).slice(0, G.num.answer_max_items);
-    if (rs.length) parts.push(readingRows(ep, rs));
+    // under each sentence the grammar read two ways, its readings, to say which was meant
+    const two = n => r.episode.all.filter(p => p.n === n && p.reading).map(p => [p.n, p.s, p.v, p.o, p.pol, p.q, p.reading]);
+    if (rs.length) parts.push(readingRows(ep, rs, two));
   }
   for (const pt of r.portraits){
     parts.push(`<div class="verdict">${esc(pt.head)}</div>`);
@@ -2726,10 +2902,11 @@ function pickTok(id, t, extend){
   row.sel = extend && sel ? [Math.min(sel[0], t), Math.max(sel[1], t)] : sel && sel[0] === t && sel[1] === t ? null : [t, t];
   redrawRow(id);
 }
-function editRow(id, op){
+function editRow(id, op, letter){
   const row = rows.get(id);
   if (!row || !S) return;
   if (op === "K") return keepRow(id);
+  if (op === "P") return pickRow(id, letter);
   if (!row.sel) return;
   const [a, b] = row.sel, G = grammarOf(S, row.lang), J = G.roles.phrasal_join || "";
   const items = row.items.map(x => ({ ...x }));
@@ -2747,7 +2924,17 @@ function editRow(id, op){
 }
 function keepRow(id){
   const row = rows.get(id);
-  const r = amendReply(S, row.ep, row.n, row.shape, unixNow(), row.offer != null && row.shape === row.offer ? row.grammar : null);
+  // the grammar's offered reading keeps the owner's earlier choice between two readings, as it was offered
+  const offered = row.offer != null && row.shape === row.offer;
+  keepAs(id, amendReply(S, row.ep, row.n, row.shape, unixNow(), offered ? row.grammar : null, offered ? row.reading : null));
+}
+// the owner says which of two readings was meant (TTG-RFC-0005 §3)
+function pickRow(id, letter){
+  const row = rows.get(id);
+  if (row && row.ep && letter) keepAs(id, amendReply(S, row.ep, row.n, row.shape, unixNow(), null, letter));
+}
+function keepAs(id, r){
+  const row = rows.get(id);
   if (!r) return;
   Object.assign(row, { orig:row.shape, amended:true });
   redrawRow(id);
@@ -2755,11 +2942,27 @@ function keepRow(id){
   appendTurn(row.text, replyHtml(r));
   after();
 }
-const readingRows = (ep, readings) => readings.map(x => rowHtml(addRow(shapeOf(S, x.shape),
-  { ep, n:x.n, text:x.text, amended:x.amended, accepted:!!x.grammar }))).join("");
+/* A sentence's percepts, as columns: what every reading says, then each
+   reading of each place the grammar read two ways, with a button to say that
+   one was meant. `lines` are percept columns with the reading, if any, last. */
+function perceptsHtml(id, lines, cls){
+  const pv = $("preview").dataset, row = id ? rows.get(id) : null;
+  const shown = lines.filter(p => p.length >= 6 && p[1] !== "-" && p[2] !== "-");
+  const trip = p => tripleHtml({ s:p[1], v:p[2], o:p[3], pol:p[4] });
+  const shared = shown.filter(p => !p[6]), by = new Map();
+  for (const p of shown) if (p[6]) pushTo(by, p[6], p);
+  return (shared.length ? `<div class="purchase${cls || ""}">${shared.map(trip).join(" ")}</div>` : "") +
+    [...by.keys()].sort().map(k => `<div class="purchase pick${cls || ""}"><span class="mk" title="${esc(pv.reading || "")}">${esc(k)}</span>` +
+      by.get(k).map(trip).join(" ") + (row && row.ep && !cls ? `<button type="button" data-row="${id}" data-op="P" data-pick="${esc(k)}">${esc(pv.pick || k)}</button>` : "") +
+      `</div>`).join("");
+}
+const readingRows = (ep, readings, linesOf) => readings.map(x => {
+  const id = addRow(shapeOf(S, x.shape, x.reading), { ep, n:x.n, text:x.text, amended:x.amended, accepted:!!x.grammar });
+  return rowHtml(id) + (linesOf ? perceptsHtml(id, linesOf(x.n)) : "");
+}).join("");
 // what the grammar reads a sentence as today, when that is not what stands: offered, never written
-const rereadRow = (ep, x, c, grammar) => rowHtml(addRow(shapeOf(S, c.reads),
-  { ep, n:x.n, text:x.text, orig:x.shape, offer:c.reads, grammar }));
+const rereadRow = (ep, x, c, grammar) => rowHtml(addRow(shapeOf(S, c.reads, c.reading),
+  { ep, n:x.n, text:x.text, orig:x.shape, offer:c.reads, grammar, reading:c.reading }));
 
 /* ---------- live grammar preview ------------------------------------------ */
 let previewTimer = 0;
@@ -2830,16 +3033,13 @@ function renderPanel(rec){
       many(b, "said").map(line => {
         const i = line.indexOf("|"), n = line.slice(0, i).trim(), text = line.slice(i + 1).trim();
         const e = am && am.entries.get(+n);
-        const mine = (e ? e.lines.map(cols) : ps.filter(p => p[0] === n)).filter(p => p.length >= 6 && p[1] !== "-" && p[2] !== "-");
+        const mine = e ? e.lines.map(cols) : ps.filter(p => p[0] === n);
         const x = readings.get(+n);
         const o = offers.get(+n);
         // the grammar's reading today, with what it would say, below what stands
-        const theirs = o ? o.now.map(cols).filter(p => p.length >= 6 && p[1] !== "-" && p[2] !== "-") : [];
-        return `<li><q>${esc(text)}</q>` + (x ? readingRows(rec.id, [x]) : "") +
-          (mine.length ? `<div class="purchase">` +
-          mine.map(p => tripleHtml({ s:p[1], v:p[2], o:p[3], pol:p[4] })).join(" ") + `</div>` : "") +
-          (x && o ? rereadRow(rec.id, x, o, rr.grammar) + (theirs.length ? `<div class="purchase re">` +
-          theirs.map(p => tripleHtml({ s:p[1], v:p[2], o:p[3], pol:p[4] })).join(" ") + `</div>` : "") : "") + `</li>`;
+        const theirs = o ? o.now.map(cols) : [];
+        return `<li><q>${esc(text)}</q>` + (x ? readingRows(rec.id, [x], () => mine) : perceptsHtml(null, mine)) +
+          (x && o ? rereadRow(rec.id, x, o, rr.grammar) + perceptsHtml(null, theirs, " re") : "") + `</li>`;
       }).join("") + `</ol>`;
   } else {
     body = `<div class="body">${md(rec.body)}</div>` +
@@ -3087,16 +3287,16 @@ function boot(){
   $("rereads").addEventListener("click", () => {
     const el = $("rereads"), p = S ? pendingRereads() : { list:[] };
     if (!p.list.length || !confirm((el.dataset.confirm || "").replace("{n}", p.list.length))) return;
-    const now = unixNow(), label = el.textContent;
-    const n = p.list.filter(c => amend(S, c.episode, c.n, c.reads, now, p.grammar)).length;
-    appendTurn(label, esc((el.dataset.done || "").replace("{n}", n)));
+    // in episode order, each re-read just before it is taken, in the context the ones before it now stand as
+    const label = el.textContent, r = takeRereads(S, p.grammar, unixNow());
+    appendTurn(label, esc((el.dataset.done || "").replace("{n}", r ? r.took.length : 0)));
     after();
   });
   document.addEventListener("click", e => {
     const rb = e.target.closest("[data-row]");
     if (rb && S){
       e.preventDefault();
-      if (rb.dataset.op) editRow(rb.dataset.row, rb.dataset.op); else pickTok(rb.dataset.row, +rb.dataset.t, e.shiftKey);
+      if (rb.dataset.op) editRow(rb.dataset.row, rb.dataset.op, rb.dataset.pick); else pickTok(rb.dataset.row, +rb.dataset.t, e.shiftKey);
       return;
     }
     const a = e.target.closest("[data-key]");

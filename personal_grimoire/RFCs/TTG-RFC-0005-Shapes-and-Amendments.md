@@ -1,6 +1,6 @@
 # TTG-RFC-0005: Shapes — Alternating Segments, Lists, Mentions and Amendments
 
-**Version:** 0.6
+**Version:** 0.7
 **Status:** Draft
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
@@ -34,10 +34,13 @@ bare and goes on with the relative's own chain. Not everything a sentence says i
 what a list joined by *or* says, the clause a stance verb such as *doubt* or a stance noun
 such as *idea* takes, a clause reported after a thing, and both readings of a sentence the
 grammar can read two ways, are **held** — written with polarity `?`, or `?-` for a held
-denial, seen and searched, never believed (§3). A hedge the
+denial, seen and searched, never believed (§3). The two readings of one sentence are named,
+so a reply and a question see one saying with two readings, and the owner may say which was
+meant (§4). A hedge the
 owner meant as fact is set aside, and what it held is said (§4). When the grammar changes,
-the sentences it now reads differently are reported, never rewritten, and the owner may take
-the grammar's new reading as an amendment that names the grammar (§5.1).
+the sentences it now reads differently are reported, never rewritten, each in the context the
+sentences before it stand as, and the owner may take the grammar's new reading as an
+amendment that names the grammar — one sentence, or all of them in order (§5.1).
 
 ---
 
@@ -183,14 +186,18 @@ nounish segment, which is the next verb's subject, and its last verb.
   after a content word begins a new predicate.
 - **Where the gap is filled.** A verb takes the gap for possession, or for a vector the
   corpus already has with an object (*I like the dog that the cat chased*, once *cats chase
-  mice* is said). The gap is **sure** before the clause's own first verb — the antecedent is
+  mice* is said). What a verb takes is learned from every saying that stands, held as well
+  as said — whether a verb takes a thing is a fact about the words, not the world — except a
+  percept of one reading of two (below), which is the grammar's guess. The gap is **sure** before the clause's own first verb — the antecedent is
   a subject, and only an object relative can follow it — when a finite verb is still to
   come for the clause the relative hangs in (*I think the man that the cat chased is fast*),
   and after any verb that is not a stance verb, which cannot hear a clause (*I like the dog
   that the cat bit* is `cat bite dog`). Where it is sure, any other verb takes the gap too,
   unless it is **lone**: the grammar lists it `intransitive`, or the corpus has its vector
   only without an object (*the rule that cats bark is old* holds `cat bark`; *the day that
-  the cat ran was hot* is not `cat run day` once *Pixel runs* is said). A verb ending on a preposition with nothing after it takes the gap as
+  the cat ran was hot* is not `cat run day` once *Pixel runs* is said, nor *the rule that dogs
+  bite is old* `dog bite rule` once *I doubt dogs bite* is). The list speaks only for verbs
+  the corpus has not met; a verb the owner says with a thing takes one, listed or not. A verb ending on a preposition with nothing after it takes the gap as
   that preposition's thing (*I like the house that I live in* is `self live_in house`),
   unless the relative hangs on a stance verb's first thing, where it may be the clause the
   stance hears (*I told the man that the cat came in* holds `cat come_in`). A verb whose own
@@ -206,8 +213,8 @@ nounish segment, which is the next verb's subject, and its last verb.
   cat chased* is `cat chase man`) and reported when it is lone (*I told the man that the cat
   sleeps* holds `cat sleep`). A verb that is neither — one the corpus has not met, and the
   grammar does not list — could be either, and both readings are held: *I told the man that
-  the cat bit* holds `cat bite -` and `cat bite man`. Once the owner says the verb with a
-  thing, a re-reading (§5.1) offers the relative. After a **stance noun** — a `stance_noun`, whose clause says
+  the cat bit* holds `cat bite - ? a`, the bite reported, and `cat bite man ? b`, the man
+  bitten. Once the owner says the verb with a thing, a re-reading (§5.1) offers the relative. After a **stance noun** — a `stance_noun`, whose clause says
   what the noun holds — it is always reported: *the idea that cats bark is silly* holds `cat
   bark` and says `idea has_property silly`.
 - A **relative closes** when a verb arrives after its own verb — the next predicate or the
@@ -231,20 +238,44 @@ nounish segment, which is the next verb's subject, and its last verb.
   finite form the lemmatiser misses (*cazaron*) is not taken for bare. When the bare form
   agrees with the thing it would close back to, the relative's verb is a chain verb, and no
   finite verb is to come, the sentence reads either way — *the men that saw the cats eat
-  cheese.* is the men eating, or the cats seen eating — and **both are held**: `man eat cheese
-  ?` and `cat eat cheese ?`, beside the said `man see cat`. If both readings give the verb the
-  same subject (*the cats that I saw eat cheese.*), there is nothing to hold. Where that
+  cheese.* is the cats seen eating, or the men eating — and **both are held**: `cat eat cheese
+  ? a` and `man eat cheese ? b`, beside the said `man see cat`. If both readings give the verb
+  the same subject (*the cats that I saw eat cheese.*), there is nothing to hold. Where that
   clause already has its verb, the bare verb stays only after a **chain**
   verb, one that takes a thing and then a bare verb the thing does (*see*, *make*, *let*):
   *I like the man that saw the cat eat cheese* is `cat eat cheese`, while *I saw the cat
   that chased the mouse run away* is `cat run away`.
+- **Chain verbs are learned.** A chain verb is one the grammar lists `chain`, or one the
+  owner's own words show: a clause no relative holds, in which the verb's thing is followed
+  by a bare verb that cannot be finite for that thing. *I spied the cat eat fish* makes *spy*
+  a chain verb — *the cat eat* is no clause, so the cat is the one eating — and then *I like
+  the man that spied the cat eat cheese* is `cat eat cheese`. One such saying is enough,
+  because the bare form rules out every other reading; *I spied the cats eat fish* teaches
+  nothing, because *the cats eat* could be a clause, and neither does a relative's own chain,
+  which may be read either way. It is learned from the shapes that stand — an amendment's,
+  else the episode's — so the owner's reading of a sentence decides what it teaches.
 - A **stance clause** opens when a verb arrives straight after a stance verb's first thing,
   or when a relative closes back onto that thing (below).
 
 **Two readings.** A verb straight after a relative's own verb (above) that the corpus also
 knows as a thing may instead begin the relative's object: *birds that sing love songs*, once
-*love* is a thing, says `bird sing -` — true on either reading — and holds `bird love song ?`.
-What both readings of a sentence share is said; what only one of them says is held.
+*love* is a thing, says `bird sing -` — true on either reading — and holds `bird love song ?
+a` (*sing | love songs*) and `bird sing song ? b` (*sing [love songs]*). What both readings
+of a sentence share is said; what only one of them says is held, and **named**: at the first
+place in a sentence the grammar reads two ways its readings are `a` and `b`, at the second
+`c` and `d`, and so on in reading order. At each kind of place, `a` is the same reading: the
+bare verb stays in its relative, the relative word reports a clause, the thing-word is a
+verb. A named percept carries its letter in a seventh column
+(TTG-RFC-0002 §4) and is always held.
+
+So a sentence the grammar reads two ways is **one saying with two readings**, not two held
+sayings. A tell's reply names the readings together (`noted_readings`, each pair through
+`reading_pair`), not as a choice or a stance. A question whose grounds cannot answer it
+names each held saying it meets as a note, never as a ground, and the verdict is unchanged:
+*Do men eat cheese?*, after *the men that saw the cats eat cheese*, is `unknown`, with
+`asked_readings` naming the sentence and both its readings; after *I doubt dogs bark*, *Do
+dogs bark?* is `unknown` with `asked_held`. A question the grounds do answer is answered by
+them alone.
 
 **Dropped subjects.** In a grammar that declares `self_ending` or `self_form`, a predicate
 with no subject whose verb is in the speaker's own form — ending in a `self_ending`, and not
@@ -284,7 +315,7 @@ believed by mistake. Like a mention it
 names terms, creates them if new, counts toward `seen` and is searchable; it never
 consolidates into a belief, never contradicts one, and a reply names it apart from the
 grounds (`noted_held`). A question still checks it: *Is Pixel a cat or a dog?* asks after
-both.
+both; and a question the grounds cannot answer names the held sayings it meets (above).
 
 **Mentions.** A percept whose subject or vector is `-` is a **mention**:
 
@@ -337,8 +368,18 @@ bound *ice cream* the words find it unmarked. Inside marks the owner's reading s
 only an explicit join binds; that is what makes a shape read back to itself. In a `said:`
 line a join between two words is written as a space.
 
-**Round trip.** Reading a sentence's shape as input MUST reproduce the same shape and the
-same percepts. A runtime SHOULD test this over its parse cases.
+**Round trip.** Reading a sentence's shape as input, with its reading letters if it has any
+(below), MUST reproduce the same shape and the same percepts. A runtime SHOULD test this over
+its parse cases.
+
+**Choosing a reading.** Where the grammar reads a sentence two ways (§3), a shape cannot always
+say which is meant: *the men that saw the cats eat cheese* has one shape whether the men eat
+or the cats do. The owner chooses by letter. A sentence read with a choice takes the chosen
+reading at each named place and is read as the grammar would read that reading alone — said,
+or held for a reason of its own: chosen `a`, *the men that saw the cats eat cheese* says `cat
+eat cheese`; chosen `b`, *I told the man that the cat bit* says `cat bite man`; chosen `a`, it
+holds `cat bite -`, for a reported clause is held in any case. Letters for a place the sentence
+does not have are dropped. A choice is made on a sentence already said, as an amendment (§5).
 
 **Before a sentence is written**, the owner may relabel its shape: a host passes one shape
 per sentence with the text, the percepts come from those shapes, and the episode records
@@ -371,13 +412,14 @@ was read is an **amendment**:
 ```ttdb-amend
 shape: <n> | <shape>
 grammar: <n> | <grammar hash>                  only when the owner took the grammar's reading
-percept: <n> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <quantifier>
+reading: <n> | <letters>                       only when the owner chose between readings
+percept: <n> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <quantifier> [| <reading>]
 ```
 ```
 
 - **One record per episode**, on `amend_lane` at the episode's longitude, so `@LAT91LON7`
-  amends `@LAT90LON7`. It holds, for each sentence it amends, the shape that stands and the
-  percepts that shape reads as. It is managed: amending again rewrites it in place and
+  amends `@LAT90LON7`. It holds, for each sentence it amends, the shape that stands, the
+  reading chosen, if any, and the percepts they read as. It is managed: amending again rewrites it in place and
   advances `updated`. Reading a sentence back the episode's own way removes its entry; an
   amendment with no entries is deleted.
 - **Consolidation** takes an amended sentence's percepts from the amendment instead of the
@@ -386,7 +428,8 @@ percept: <n> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <quantif
   amendment line is skipped and counted like an episode's, and still stands in for the
   sentence it amends.
 - **Context.** The sentence is re-read after the sentences before it in the episode, each as
-  it now reads, so its pronouns resolve as they did.
+  it now stands — its amendment with any reading chosen, else its episode's reading — so its
+  pronouns resolve as they did.
 - **Start empty** deletes the amend lane with the episode lane.
 - New terms an amendment names are placed as a tell's are. Terms it no longer names keep
   their records, with the lower `seen` the replay gives them.
@@ -398,12 +441,14 @@ form, then anything it disagrees with or retires.
 
 Episodes are read under the grammar of their day, and grammars, runtimes and corpora
 change — a verb the owner comes to use with a thing, a phrase the owner binds. A
-**re-reading** reads every sentence of every episode again from its words — each after the
-sentences before it, so its pronouns resolve — under the grammar and corpus the store holds
-now, and
+**re-reading** reads every sentence of every episode again from its words under the grammar
+and corpus the store holds now, each in the context the sentences before it **stand** as —
+their amendments, else their episodes' readings — which is the context an amendment is made in
+(§5), so what a report offers for a sentence is exactly what taking it would write. It
 reports each sentence whose shape or percepts differ from what its episode wrote: the
 episode, the sentence, both readings, whether the owner has amended it, and a hash of the
-grammar records it was read under.
+grammar records it was read under. A sentence where the owner chose between two readings is
+read with that choice.
 
 A re-reading **writes nothing**. An amendment is the owner's word about a reading; a
 grammar's changed opinion is not, and writing it would print the grammar's reading as the
@@ -416,17 +461,26 @@ entry carries a `grammar:` line naming the hash it was offered under, so what th
 from a grammar is never printed as what the owner marked. A runtime MUST refuse the hash if
 it is not the store's grammar now — the report is stale. A reading the owner marks, even one
 that started from the grammar's, carries no `grammar:` line. A report names each sentence's
-standing ruling: `amended` when the owner has one, `accepted` when it is this very reading.
+standing ruling: `amended` when the owner has one, `accepted` when it is this very reading —
+the same shape and the same percepts.
 
 A host SHOULD offer the grammar's reading beside the one that stands, with the percepts it
 would form — a reading can change what a sentence says without changing its shape (*I like
 the man that saw the cat eat cheese*: who eats is the chain's decision, not the segments').
-Taking every re-reading under one hash at once SHOULD skip sentences the owner has amended.
-The reference runtime exposes `reread(S, episode?)`, the optional `grammar` argument of
-`amend` and `amendReply`, an episode panel that offers each re-reading, a store-bar control
-that counts the re-readings the owner has not ruled on and takes them all after asking, and
-`tools/reread.mjs --accept <hash>`; the reference store's eight demo episodes read today
-exactly as written.
+**Taking every re-reading** under one hash at once MUST go in episode order and read each
+sentence again just before taking it, after the ones before it have been taken, so each is
+taken in the context they now stand as: taking *The ice cream melted* as `ice_cream melt`
+changes what *It was sweet* after it says, and the pass takes that too. A sentence that
+reads differently only because an earlier one was taken is the grammar's reading under the
+same hash, and is taken with it; one the owner has amended is kept, never taken. The pass
+goes once: what a take changes about a sentence already passed — a verb the corpus now has
+with a thing, a term now bound — is left for the next report.
+
+The reference runtime exposes `reread(S, episode?)`, `takeRereads(S, hash, now)`, the optional
+`grammar` and `reading` arguments of `amend` and `amendReply`, an episode panel that offers
+each re-reading and each of two readings, a store-bar control that counts the re-readings the
+owner has not ruled on and takes them all after asking, and `tools/reread.mjs --accept <hash>`;
+the reference store's eight demo episodes read today exactly as written.
 
 ---
 
@@ -442,10 +496,10 @@ exactly as written.
 | `lexicon` | `class: premod` | Words that open a phrase and are never its head, for a head-first language (*dos*, *buen*). |
 | `lexicon` | `head` | `last` (the default) or `first`: which word of a phrase is its head. |
 | `seed` | `stance` | Verb lemmas whose clause is held; each is also a seed. |
-| `seed` | `chain` | Verb lemmas that take a thing and then a bare verb that thing does (*see*, *make*, *let*); a relative's bare verb after one stays in the relative (§3). Each is also a seed. |
+| `seed` | `chain` | Verb lemmas that take a thing and then a bare verb that thing does (*see*, *make*, *let*); a relative's bare verb after one stays in the relative (§3). Each is also a seed. The owner's words add to the list (§3). |
 | `seed` | `stance_noun` | Noun lemmas whose clause is held, as a stance verb's is (*idea*, *news*, *hecho*). Not seeds. |
 | `seed` | `motion` | Verb lemmas that go somewhere; after one, an `object_mark` word is a preposition (*ir*, *volar*). Each is also a seed. |
-| `seed` | `intransitive` | Verb lemmas that take no thing: never a relative's gap (*sleep*, *bark*, *dormir*). Each is also a seed. |
+| `seed` | `intransitive` | Verb lemmas that take no thing: never a relative's gap (*sleep*, *bark*, *dormir*). Each is also a seed. The owner's words outrank the list (§3). |
 | `morphology` | `adverb_ending`, `adverb_guard` | An ending that makes an unlisted word between a thing and its verb an adverb (*ly*, *mente*), and the words it does not (*family*). |
 | `morphology` | `self_ending`, `self_form` | The speaker's own verb endings and forms, in a grammar that drops subjects (*o é í*; *soy vi*). Their presence lets a finite verb open a clause. |
 | `lexicon` | `object_mark` | Words that mark a verb's thing rather than a place (Spanish *a*). |
@@ -456,6 +510,8 @@ exactly as written.
 | `ttdb-sphere` | `amend_lane` | The latitude amendments sit on. |
 | `responses` | `noted_mention`, `amended`, `amend_title` | A mention's verdict, an amendment's verdict, an amendment's title. |
 | `responses` | `noted_held` | A note naming what a tell held, `{triples}`. |
+| `responses` | `noted_readings`, `reading_pair` | A note naming the readings of a sentence read two ways, `{readings}`; each pair of readings, `{a}` and `{b}`. |
+| `responses` | `asked_held`, `asked_readings` | Notes naming a held saying a question meets, `{text}` and `{ep}`, and one read two ways, with `{readings}`. |
 
 A later language may declare its own marks, classes, `head`, `stance`, `chain` and `motion`
 and `intransitive` verbs, `stance_noun` nouns, `object_mark`, and the bare, adverb and self
@@ -473,7 +529,11 @@ block keys, TTG-RFC-0001 §12) and the `ttdb-amend` fence (TTCP-RFC-0001 §3), a
 mention as a belief about the term `-` and a held percept as malformed; stores carrying
 mentions, held percepts or amendments need a runtime that implements this RFC. A runtime
 implementing 0.3 or earlier skips a `?-` percept as malformed, which never believes it, and
-one implementing 0.4 or earlier ignores an amendment's `grammar:` line. The
+one implementing 0.4 or earlier ignores an amendment's `grammar:` line. One implementing 0.6
+or earlier ignores a percept's seventh column and an amendment's `reading:` line; a named
+percept is still held, so it is still never believed, and a chosen reading's percepts are
+read as written. Held sayings now teach what a verb takes, which can change how a relative
+is read in a store that holds some. The
 published bAbI outcomes (tasks 1 and 15, every condition) are unchanged under the reference
 runtime.
 
@@ -490,15 +550,19 @@ runtime.
 3. **A word the corpus has never met as a thing**, straight after a relative's verb, is the
    clause's verb: *birds that sing love songs.* believes the birds love songs until the
    owner has used *love* as a thing.
-4. **The chain list and the intransitive list are English and Spanish words the grammar
-   declares by hand.** A store could learn both from the owner's own sentences, as it learns
-   which verbs take a thing; how many sayings make a verb a chain verb is open.
-5. **Every held ambiguity is a pair of held percepts.** Nothing links the two readings of
-   *the men that saw the cats eat cheese* to each other: a question sees two held sayings,
-   not one saying with two readings.
-6. **A reading's context is the sentences before it.** A re-reading carries pronouns forward
-   as the sentences now read, so taking one reading can change what the next one reads as;
-   the tool and the page take them in episode order and do not re-read between them.
+4. **A store learns from its own readings.** What a verb takes, and which verbs chain, are
+   learned from the readings that stand, and a reading the grammar made — a gap it filled —
+   teaches like one the owner marked. A wrong reading teaches a wrong fact about its verb
+   until the owner amends it.
+5. **A choice between readings names places by their order.** A grammar change that adds or
+   removes a place before a chosen one moves the letters, so a kept choice can land on
+   another place. Naming a place by what it is (the bare verb, the relative word) is open.
+6. **A report's hash names the grammar, not the corpus.** Readings follow the corpus too, so
+   `--accept <hash>` after new sayings takes readings the report never showed; they are
+   printed as taken and carry the hash, but no record names the corpus they were read
+   against.
+7. **Taking every re-reading passes once.** A take can change a sentence already passed; the
+   next report offers it. Whether taking to a fixed point always ends is open.
 
 ---
 
@@ -512,5 +576,6 @@ runtime.
 | 2026-09-22 | 0.4: a bare verb goes on with a relative's chain while a finite verb is still to come, or after a `chain` verb; an object relative whose gap no verb takes reports a held clause; a particle verb gives up its preposition for the gap, and a stranded preposition joins the verb; a determiner-relative before a bare thing and a verb opens an object relative; a held percept keeps its polarity (`?-`); `hav` before `cop` reads from the `cop`; §5.1 re-reading reports what a grammar now reads differently and writes nothing. 0.3's open questions answered; new ones listed. |
 | 2026-09-22 | 0.5: a verb straight after a subject relative's own verb begins the clause's; `stance_noun` clauses are reported; `bare_finite` and `bare_ending` let agreement keep a bare verb in its relative; a stranded preposition takes the gap except after a stance verb's thing, where one rule now decides relative or report and a finite verb to come makes the gap sure; `object_mark` and `motion` read Spanish personal *a*; an amendment's `grammar:` line records a re-reading the owner took, offered in the page and by `--accept`. 0.4's open questions answered; new ones listed. |
 | 2026-09-22 | 0.6: where the grammar can see two readings, both are held and what they share is said (a chain verb's bare verb that agrees; a thing-word straight after a relative's verb; a verb after a stance verb's thing that is neither known nor `intransitive`); `intransitive` verbs never take the gap, and after a verb that cannot hear a clause the gap is sure; `adverb_ending` and `adverb_guard`; `self_ending` and `self_form` read Spanish dropped subjects as the speaker; re-readings follow the corpus too, and the page takes them all from the store bar. 0.5's open questions answered; new ones listed. |
+| 2026-09-22 | 0.7: the two readings of a sentence are named (`a`, `b`; a seventh percept column) and are one saying — a reply and a question name them together, a question the grounds cannot answer names any held saying it meets, and the owner may choose one (`reading:` in an amendment); what a verb takes is learned from held sayings too, and a chain verb from the owner's own chain; a re-reading's context is the sentences before it as they stand, and taking every re-reading re-reads each just before it is taken. 0.6's open questions 4–6 answered; 1–3 stand; new ones listed. |
 
 *License: CC0*

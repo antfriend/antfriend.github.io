@@ -209,7 +209,7 @@ src: RFCs/TTG-RFC-0005-Shapes-and-Amendments.md §3
 A **percept** is one typed, directed claim: a THING, a VECTOR, and a THING or nothing.
 
 ```
-percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <* all, ~ some, or ->
+percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <* all, ~ some, or -> [| <reading>]
 ```
 
 - **Chain** → each verbish segment takes the nounish segment on its left as subject and the
@@ -217,8 +217,9 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <
   the man eat cheese* is `self see man` and `man eat cheese`. A relative clause closes at the
   next verb, which goes back to its antecedent: *cats that chase mice are fast* is about cats.
   A bare verb goes on with the relative instead while a finite verb is still to come, or
-  after a `chain` verb: *the man that saw the cat eat cheese is tall* is `cat eat cheese` and
-  a tall man. A relative with a subject of its own takes the antecedent as object (*the dog
+  after a chain verb: *the man that saw the cat eat cheese is tall* is `cat eat cheese` and
+  a tall man. A chain verb is one the seed lists `chain`, or one the owner has said with a
+  thing and then a bare verb that cannot be finite for it (*I spied the cat eat fish*). A relative with a subject of its own takes the antecedent as object (*the dog
   that the cat chased* is `cat chase dog`) when the verb takes a thing; when none does, it
   was a reported clause, and is held. A phrase's head is its last word or its first, as the
   lexicon's `head:` says.
@@ -245,6 +246,11 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <
   sleeps*). Said but not asserted: written and seen like a mention, never a belief, never a
   contradiction. A denied alternative is not held but denied, each member: *not a cat or a
   dog*.
+- **Two readings** → where the grammar can read a sentence two ways, what both say is said and
+  what only one says is held, **named** in a seventh column: `a` and `b` at the first such
+  place, `c` and `d` at the next. *The men that saw the cats eat cheese* says `man see cat`
+  and holds `cat eat cheese ? a` and `man eat cheese ? b` — one saying with two readings, which
+  a reply and a question name together, until the owner says which was meant.
 
 Percepts live in the episode that perceived them, beside the `said:` line they came from.
 An episode is written once and **never rewritten**; it is the owner's episodic memory, and
@@ -261,7 +267,8 @@ ttdb-episode block: source:, at:, said: lines, shape: lines, percept: lines
 input overrule the parser, an aside — `(i think) [cats] {bark}.` — is left out of the reading,
 and a join (`ice_cream`) makes one term. A sentence already said
 is re-read by an **amendment**: one record per episode at `@LAT91LON<n>`, beside
-`@LAT90LON<n>`, holding the shape that stands and its percepts. Consolidation takes those in
+`@LAT90LON<n>`, holding the shape that stands and its percepts — and, where the owner chose
+one of two readings, its letter (`reading: 1 | b`). Consolidation takes those in
 place of the episode's own, still as that episode's saying, and the episode is never touched.
 
 **Only the lane is the owner's words.** An episode is a `ttdb-episode` block at latitude
@@ -395,7 +402,9 @@ The intent comes from the shape of the input, using [question forms](lat-50lon0)
 A reply is a **verdict** from [replies](lat-60lon0) followed by **grounds**, each one of
 four kinds, printed four ways: `said` (the owner's sentence, quoted, with its episode),
 `inferred` (the chain, never quoted as if said), `contested` (both sayings), `no longer` (a
-retired fact, then what retired it). Every answer
+retired fact, then what retired it). A held saying is never a ground: a tell names what it held
+in a note, and a question its grounds cannot answer names each held saying it meets — with both
+readings, where the grammar read it two ways. Every answer
 increments `asked` on the terms it found purchase on, and writes `last_query`,
 `last_answer` and `answer_records` into the cursor (TTDB-RFC-0002). When a purchased term's
 EPS reaches `suggest_eps_min`, the librarian asks the owner about it: the most-used,
@@ -458,11 +467,12 @@ with `;globalThis.<name> = PG;` appended (`tools/harness.mjs` does exactly this 
 | `replyText(S, reply)` | the reply as plain text | — |
 | `serializeStore(S.st)` | the store text — persist it yourself, after every call that mutates | — |
 | `startEmpty(S, now)` | — | deletes the lane-90 episodes, the lane-91 amendments and every term but `self_lemma` |
-| `shapeOf(S, text)` | `{ shape, items, percepts, lang }`: how the text reads — marks in it overrule the parser; `items` are `{ w, cls }`, `cls` `N`, `V` or empty | — |
+| `shapeOf(S, text, reading?)` | `{ shape, items, percepts, reading, lang }`: how the text reads — marks in it overrule the parser; `items` are `{ w, cls }`, `cls` `N`, `V` or empty. Where the grammar reads it two ways, a percept of one reading carries `reading` (a letter), and `reading`, the letters of an owner's choice, reads the chosen one alone | — |
 | `shapeText(S, items)` | the shape those items make, in the grammar's marks | — |
-| `readingsOf(S, episodeId)` | `[{ n, text, shape, amended, grammar }]`: each sentence with the reading that stands; `grammar` is the hash a taken re-reading came from | — |
-| `amendReply(S, episodeId, n, shape, now, grammar?)` | a reply as for a tell, or `null` (also for a `grammar` hash that is not the store's now); `amend(…)` returns the bare write | the episode's amendment record, terms, the cursor |
-| `reread(S, episodeId?)` | `{ grammar, sentences, changed }`: each sentence (of every episode, or one) the grammar now reads differently from its episode, as `{ episode, n, text, amended, accepted, shape, reads, was, now }` (`shape` is `null` for an episode written before shapes), under a hash of the grammar records. To take one, `amendReply(S, episode, n, reads, now, grammar)` | — |
+| `readingsOf(S, episodeId)` | `[{ n, text, shape, amended, grammar, reading }]`: each sentence with the reading that stands; `grammar` is the hash a taken re-reading came from, `reading` the letters of an owner's choice between two readings | — |
+| `amendReply(S, episodeId, n, shape, now, grammar?, reading?)` | a reply as for a tell, or `null` (also for a `grammar` hash that is not the store's now); `reading` chooses between two readings by letter; `amend(…)` returns the bare write | the episode's amendment record, terms, the cursor |
+| `reread(S, episodeId?)` | `{ grammar, sentences, changed }`: each sentence (of every episode, or one) the grammar now reads differently from its episode, as `{ episode, n, text, amended, accepted, shape, reads, reading, was, now }` (`shape` is `null` for an episode written before shapes), under a hash of the grammar records, each read in the context the sentences before it stand as. To take one, `amendReply(S, episode, n, reads, now, grammar, reading)` | — |
+| `takeRereads(S, grammar, now)` | `{ grammar, took, kept }`, or `null` for a hash that is not the store's now: every sentence not amended that reads differently, taken in episode order, each re-read just before it is taken; `kept` are the ones the owner has amended | amendment records, terms |
 | `interpret(S, text)` | `{ intent, purchase, … }` without acting | — |
 | `verify(S, s, v, o)`, `objectsOf(S, s, [v])`, `subjectsOf(S, v, o)`, `portrait(S, lemma)`, `searchSaid(S, [lemma])` | raw reasoning, lemmas in | — |
 
@@ -482,7 +492,10 @@ asked }`); `episodes` (lane chunks) and `offLane` (other episode blocks, checked
 (Map `"s|v|o"` → a rule conclusion `{ s, v, o, pol, rule, proof }`, never written); `superseded` (Map
 `"s|v|o"` → `{ fact, by }`, each `{ s, v, o, t, path }`: what an `exclusive` vector retired and the later
 fact that retired it, never written); `said` (Map
-episode ID → Map sentence number → sentence); `malformed` (`{ id, line }`). `PG.records(S.st)`
+episode ID → Map sentence number → sentence); `malformed` (`{ id, line }`); `usage` (Map vector →
+`{ thing, lone }`, how many standing sayings, said or held, give it a thing or none); `held` (the
+held sayings, `{ s, v, o, pol, ep, n, reading }`) and `heldIn` (Map `"<episode>#<n>"` → the percepts
+of a sentence read two ways); `chainSaid` (Map language → the chain verbs the owner's words show). `PG.records(S.st)`
 lists records as `{ id, key, lat, lon, title, body, edges, conf, sal, eps, … }`.
 
 **A reply.** `{ intent, lang, query, verdict, head, items, portraits, search, notes, purchase:{
@@ -501,7 +514,7 @@ selects a record on click (one delegated listener); the value is `lat|lon` to fo
 `#storeinfo[data-seed|data-local|data-opened]`, `#mode[data-<intent in kebab case>]`,
 `#reset[data-confirm]`, `#empty[data-confirm]`, `#files[data-confirm-store]`, `#log[data-quota]`,
 `#rereads[data-label|data-confirm|data-done]` (the store bar's count of re-readings not yet ruled on, `{n}` filled in),
-`#preview[data-nounish|data-verbish|data-aside|data-join|data-keep|data-amended|data-reread|data-accept|data-accepted]` — the labels of a reading's
+`#preview[data-nounish|data-verbish|data-aside|data-join|data-keep|data-amended|data-reread|data-accept|data-accepted|data-pick|data-reading]` — the labels of a reading's
 controls, where each word is a button carrying `data-row`. The
 store persists under `localStorage` key `personal_grimoire:store:v1`; `?seed` ignores that copy
 and `?ask=<text>` asks on load. The page fetches `personal_grimoire_ttdb.md` beside itself.
@@ -715,7 +728,10 @@ that thing does (*saw the cat eat*), which is how a relative knows to keep such 
 ([TTG-RFC-0005 §3](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md)). `stance_noun` lists the
 nouns whose clause is held the same way (*the idea that cats bark*); they are things, not
 seeds. `intransitive` verbs take no thing, so a relative word before one never makes its
-antecedent the verb's object (*the rule that cats bark*).
+antecedent the verb's object (*the rule that cats bark*). Both lists are head starts too: the
+owner's words outrank them. A verb the owner says with a thing takes one, a verb said or held
+only without one takes none (*I doubt dogs bite*), and a verb said with a thing and then a bare
+verb that cannot be finite for it is a chain verb (*I spied the cat eat fish*).
 
 ```ttdb-grammar
 kind: seed
@@ -822,6 +838,10 @@ noted: Noted {percepts} from {sentences}.
 noted_nothing: Kept your words, but no percept formed — nothing to reason along yet.
 noted_mention: Noted {terms} — named, with nothing said about it yet.
 noted_held: Kept, not believed — you said it as a choice or a stance, not as fact: {triples}.
+noted_readings: Kept, not believed — I can read that two ways, and hold both until you say which you meant: {readings}.
+reading_pair: either {a}, or {b}
+asked_held: You said it, but not as fact: “{text}” ({ep}).
+asked_readings: You said “{text}” ({ep}), which reads two ways, and not which you meant: {readings}.
 amended: Read again as you marked it: {percepts}.
 amend_title: Amendment {n}
 contradicts: This disagrees with something you said before.
@@ -1109,6 +1129,10 @@ noted: Anotado: {percepts} de {sentences}.
 noted_nothing: Guardé tus palabras, pero no se formó ninguna percepción.
 noted_mention: Anotado {terms} — nombrado, sin que se diga nada de ello todavía.
 noted_held: Guardado, no creído — lo dijiste como opción o postura, no como hecho: {triples}.
+noted_readings: Guardado, no creído — puedo leerlo de dos maneras, y guardo ambas hasta que digas cuál querías decir: {readings}.
+reading_pair: o bien {a}, o bien {b}
+asked_held: Lo dijiste, pero no como hecho: “{text}” ({ep}).
+asked_readings: Dijiste “{text}” ({ep}), que se lee de dos maneras, sin decir cuál querías decir: {readings}.
 amended: Leído de nuevo como lo marcaste: {percepts}.
 amend_title: Enmienda {n}
 contradicts: Esto contradice algo que dijiste antes.
@@ -1992,13 +2016,15 @@ is **held**, written and never believed, keeping its own *not*: the members of a
 unless it is denied (*not a cat or a dog* is neither), the clause after a stance verb (*I
 doubt cats don't like fish*), and a clause reported after a thing (*I emailed the man that
 the cat sleeps*). A bare verb goes on with a relative's chain while the sentence still waits
-for its own (*the man that saw the cat eat cheese is tall* is a tall man). An aside is left
+for its own (*the man that saw the cat eat cheese is tall* is a tall man), or after a chain
+verb, which the owner's own sentences can teach it. An aside is left
 out of a reading, so a hedge can be said as fact. A phrase's head is where the lexicon says:
 last in English, first in Spanish. It still does not see:
 
-- **One reading or two** — where the grammar can see both, it holds both and says only what
-  they share (*the men that saw the cats eat cheese*); where it cannot, it picks the one
-  that gives the sentence a verb (*birds that sing love songs*, until *love* is a thing).
+- **One reading or two** — where the grammar can see both, it holds both, names them, and
+  says only what they share, until the owner says which was meant (*the men that saw the
+  cats eat cheese*); where it cannot, it picks the one that gives the sentence a verb
+  (*birds that sing love songs*, until *love* is a thing).
 - **Adverbs after a verb** — *she sings loudly* sings *loudly*; before a verb, *-ly* words
   are read right.
 - **Modifiers** — *black cats* is *cats*; the adjective is dropped unless the owner binds the
@@ -2106,12 +2132,12 @@ mean more than one device. Expansion: [TTG-RFC-0004 §4](RFCs/TTG-RFC-0004-Time-
 
 ---
 
-@LAT98LON9 | created:1789948800 | updated:1789948800 | relates:supports@LAT30LON0,refines@LAT98LON5,refines@LAT98LON4
+@LAT98LON9 | created:1789948800 | updated:1790035200 | relates:supports@LAT30LON0,refines@LAT98LON5,refines@LAT98LON4
 [ew]
 conf:150
 rev:0
 sal:160
-touched:1789948800
+touched:1790035200
 [/ew]
 
 **BELIEF — A reading is the parser's guess, and the owner's correction is kept beside the words.**
@@ -2133,6 +2159,12 @@ marks it never applies, so any reading can still be written back exactly as the 
 A correction can also take words out. What the reader holds rather than believes — the clause
 after *I think* — the owner can say as fact by marking *I think* an aside: the parser's caution
 is its default, and the owner's word overrules it, beside the episode like any other reading.
+
+And a correction can choose. Some sentences read two ways that no labelling of their words
+tells apart — *the men that saw the cats eat cheese* has one shape whether the men eat or the
+cats do. The grammar holds both readings and names them; the owner says which was meant by its
+letter, and the amendment keeps the choice beside the shape, so every later reading of that
+sentence keeps it too.
 
 Mid conf because the chain is new and flat; mid salience because every sentence has a reading
 and most will never be touched.
