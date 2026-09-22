@@ -78,6 +78,8 @@ Class keys the runtime interprets: `det`, `poss`, `quant_all`, `quant_some`, `qu
 | `min_stem` | integer | Shortest stem a rule may leave. |
 | `bare_ending` | endings | Endings a bare verb form wears (Spanish *ar er ir*); absent, a bare form is its lemma (TTG-RFC-0005 §3). |
 | `bare_finite` | `plural`, `self`, or `-` | The subjects a bare form is also finite for (English *cats eat*, *I eat*); `-` for none; absent, any (TTG-RFC-0005 §3). |
+| `adverb_ending`, `adverb_guard` | endings; words | An unlisted word with the ending, between a thing and its verb, is an adverb; the guard lists words that only look like one (TTG-RFC-0005 §2). |
+| `self_ending`, `self_form` | endings; words | The speaker's own verb forms, in a language that drops subjects; a subjectless predicate in one has the speaker as subject (TTG-RFC-0005 §3). |
 
 Candidate choice (normative order): a candidate that is already a term in the store; then a
 candidate in `seed`; then, for `~`, the undoubled stem if the stem really ends in a double
@@ -103,6 +105,9 @@ that cats bark*). Not seeds (TTG-RFC-0005 §3).
 `motion: <verb lemmas>` — seeds that go somewhere; after one, an `object_mark` word is a
 preposition of place (*va a Madrid*), after any other it marks the verb's thing
 (TTG-RFC-0005 §2).
+
+`intransitive: <verb lemmas>` — seeds that take no thing, so a relative's gap is never their
+object (*the rule that cats bark*); the corpus can say the same of any verb (TTG-RFC-0005 §3).
 
 ---
 
@@ -250,5 +255,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-09-21 | `aside_marks` in §3 (TTG-RFC-0005 0.3). |
 | 2026-09-22 | `chain` in §5 (TTG-RFC-0005 0.4); open question 3 narrowed by re-reading. |
 | 2026-09-22 | `object_mark` in §3, `bare_ending` and `bare_finite` in §4, `stance_noun` and `motion` in §5 (TTG-RFC-0005 0.5); open question 3 narrowed again. |
+| 2026-09-22 | `adverb_ending`, `adverb_guard`, `self_ending` and `self_form` in §4, `intransitive` in §5 (TTG-RFC-0005 0.6). |
 
 *License: CC0*

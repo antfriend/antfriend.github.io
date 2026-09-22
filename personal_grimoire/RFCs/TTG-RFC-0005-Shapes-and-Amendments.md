@@ -1,6 +1,6 @@
 # TTG-RFC-0005: Shapes — Alternating Segments, Lists, Mentions and Amendments
 
-**Version:** 0.5
+**Version:** 0.6
 **Status:** Draft
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
@@ -32,8 +32,9 @@ Clauses open inside the chain. A relative clause, with its antecedent as subject
 closes at the next verb, which returns to the thing the clause was about — unless that verb is
 bare and goes on with the relative's own chain. Not everything a sentence says is asserted:
 what a list joined by *or* says, the clause a stance verb such as *doubt* or a stance noun
-such as *idea* takes, and a clause reported after a thing, are **held** — written with
-polarity `?`, or `?-` for a held denial, seen and searched, never believed (§3). A hedge the
+such as *idea* takes, a clause reported after a thing, and both readings of a sentence the
+grammar can read two ways, are **held** — written with polarity `?`, or `?-` for a held
+denial, seen and searched, never believed (§3). A hedge the
 owner meant as fact is set aside, and what it held is said (§4). When the grammar changes,
 the sentences it now reads differently are reported, never rewritten, and the owner may take
 the grammar's new reading as an amendment that names the grammar (§5.1).
@@ -101,6 +102,16 @@ goes on or a new clause is joined: *cats that hunt eat mice* is `[cats] that {hu
 [mice]`, while *birds that sing love songs are happy* keeps `[love songs]` a thing and *people
 that like fly fishing are patient* keeps *fly* in it. The segment is split at the second verb
 as an object relative's is (§3).
+
+A content word the lexicon does not list that ends in a morphology `adverb_ending`, straight
+after a thing and straight before a verb, is an `adverb` — unless the corpus knows it as a
+term, `adverb_guard` lists it, or the owner marked it nounish: *the dog that the cat quickly
+chased ran away* is `[the dog] that [the cat] {quickly chased ran} [away]`; *Pixel's family
+eats fish* keeps *family*.
+
+Where the morphology declares `self_ending` (a grammar that drops its subjects), a finite verb
+may open its clause unless a verb follows it at once: *No como carne* is `{no como} [carne]`,
+and *Como es tarde* leaves *como* to be read otherwise.
 
 A `conj` or `list_sep` between two verbish segments makes one verbish **list** (*fly, swim
 and sing*); between nounish ones, one nounish list (*cats, dogs and ferrets*). `neg` and
@@ -173,11 +184,13 @@ nounish segment, which is the next verb's subject, and its last verb.
 - **Where the gap is filled.** A verb takes the gap for possession, or for a vector the
   corpus already has with an object (*I like the dog that the cat chased*, once *cats chase
   mice* is said). The gap is **sure** before the clause's own first verb — the antecedent is
-  a subject, and only an object relative can follow it — and when a finite verb is still to
-  come for the clause the relative hangs in (*I think the man that the cat chased is fast*);
-  where it is sure any other verb takes the gap too, unless the corpus has its vector only
-  without an object (*the day that the cat slept was hot* is not `cat sleep day` once *Pixel
-  sleeps* is said). A verb ending on a preposition with nothing after it takes the gap as
+  a subject, and only an object relative can follow it — when a finite verb is still to
+  come for the clause the relative hangs in (*I think the man that the cat chased is fast*),
+  and after any verb that is not a stance verb, which cannot hear a clause (*I like the dog
+  that the cat bit* is `cat bite dog`). Where it is sure, any other verb takes the gap too,
+  unless it is **lone**: the grammar lists it `intransitive`, or the corpus has its vector
+  only without an object (*the rule that cats bark is old* holds `cat bark`; *the day that
+  the cat ran was hot* is not `cat run day` once *Pixel runs* is said). A verb ending on a preposition with nothing after it takes the gap as
   that preposition's thing (*I like the house that I live in* is `self live_in house`),
   unless the relative hangs on a stance verb's first thing, where it may be the clause the
   stance hears (*I told the man that the cat came in* holds `cat come_in`). A verb whose own
@@ -190,8 +203,11 @@ nounish segment, which is the next verb's subject, and its last verb.
   ?`; *I emailed the man that the cat chased the mouse* holds `cat chase mouse`. After a
   stance verb's first thing this is the same rule, not a second one: the stance keeps its
   thing, and the clause is a relative when its verb takes the gap (*I told the man that the
-  cat chased* is `cat chase man`) and reported when none does (*I told the man that the cat
-  sleeps* holds `cat sleep`). After a **stance noun** — a `stance_noun`, whose clause says
+  cat chased* is `cat chase man`) and reported when it is lone (*I told the man that the cat
+  sleeps* holds `cat sleep`). A verb that is neither — one the corpus has not met, and the
+  grammar does not list — could be either, and both readings are held: *I told the man that
+  the cat bit* holds `cat bite -` and `cat bite man`. Once the owner says the verb with a
+  thing, a re-reading (§5.1) offers the relative. After a **stance noun** — a `stance_noun`, whose clause says
   what the noun holds — it is always reported: *the idea that cats bark is silly* holds `cat
   bark` and says `idea has_property silly`.
 - A **relative closes** when a verb arrives after its own verb — the next predicate or the
@@ -212,13 +228,29 @@ nounish segment, which is the next verb's subject, and its last verb.
   `self`; `-` for none, as in Spanish, whose bare form is the infinitive), so *the man that
   saw the cat eat cheese.* is the cat eating, and *the men that saw the cats eat cheese.* is
   the men. Where the morphology declares `bare_ending`, a bare form also wears one, so a
-  finite form the lemmatiser misses (*cazaron*) is not taken for bare. Where that clause
-  already has its verb, the bare verb stays only after a **chain**
+  finite form the lemmatiser misses (*cazaron*) is not taken for bare. When the bare form
+  agrees with the thing it would close back to, the relative's verb is a chain verb, and no
+  finite verb is to come, the sentence reads either way — *the men that saw the cats eat
+  cheese.* is the men eating, or the cats seen eating — and **both are held**: `man eat cheese
+  ?` and `cat eat cheese ?`, beside the said `man see cat`. If both readings give the verb the
+  same subject (*the cats that I saw eat cheese.*), there is nothing to hold. Where that
+  clause already has its verb, the bare verb stays only after a **chain**
   verb, one that takes a thing and then a bare verb the thing does (*see*, *make*, *let*):
   *I like the man that saw the cat eat cheese* is `cat eat cheese`, while *I saw the cat
   that chased the mouse run away* is `cat run away`.
 - A **stance clause** opens when a verb arrives straight after a stance verb's first thing,
   or when a relative closes back onto that thing (below).
+
+**Two readings.** A verb straight after a relative's own verb (above) that the corpus also
+knows as a thing may instead begin the relative's object: *birds that sing love songs*, once
+*love* is a thing, says `bird sing -` — true on either reading — and holds `bird love song ?`.
+What both readings of a sentence share is said; what only one of them says is held.
+
+**Dropped subjects.** In a grammar that declares `self_ending` or `self_form`, a predicate
+with no subject whose verb is in the speaker's own form — ending in a `self_ending`, and not
+its lemma, or listed in `self_form` — has the speaker as its subject: *No como carne* is
+`self comer carne -`, *Vi al gato* `self ver gato`, *Tengo dos gatos* `self has gato`. Any
+other subjectless predicate is still a mention.
 
 **Stance.** A seed record may list `stance:` verbs: those whose complement is a clause the
 speaker does not assert (*think*, *doubt*, *hope*, *say*, *email*), and `stance_noun:`
@@ -364,9 +396,11 @@ form, then anything it disagrees with or retires.
 
 ### 5.1 Re-reading
 
-Episodes are read under the grammar of their day, and grammars and runtimes change. A
+Episodes are read under the grammar of their day, and grammars, runtimes and corpora
+change — a verb the owner comes to use with a thing, a phrase the owner binds. A
 **re-reading** reads every sentence of every episode again from its words — each after the
-sentences before it, so its pronouns resolve — under the grammar the store holds now, and
+sentences before it, so its pronouns resolve — under the grammar and corpus the store holds
+now, and
 reports each sentence whose shape or percepts differ from what its episode wrote: the
 episode, the sentence, both readings, whether the owner has amended it, and a hash of the
 grammar records it was read under.
@@ -389,8 +423,10 @@ would form — a reading can change what a sentence says without changing its sh
 the man that saw the cat eat cheese*: who eats is the chain's decision, not the segments').
 Taking every re-reading under one hash at once SHOULD skip sentences the owner has amended.
 The reference runtime exposes `reread(S, episode?)`, the optional `grammar` argument of
-`amend` and `amendReply`, an episode panel that offers each re-reading, and `tools/reread.mjs
---accept <hash>`; the reference store's eight demo episodes read today exactly as written.
+`amend` and `amendReply`, an episode panel that offers each re-reading, a store-bar control
+that counts the re-readings the owner has not ruled on and takes them all after asking, and
+`tools/reread.mjs --accept <hash>`; the reference store's eight demo episodes read today
+exactly as written.
 
 ---
 
@@ -409,6 +445,9 @@ The reference runtime exposes `reread(S, episode?)`, the optional `grammar` argu
 | `seed` | `chain` | Verb lemmas that take a thing and then a bare verb that thing does (*see*, *make*, *let*); a relative's bare verb after one stays in the relative (§3). Each is also a seed. |
 | `seed` | `stance_noun` | Noun lemmas whose clause is held, as a stance verb's is (*idea*, *news*, *hecho*). Not seeds. |
 | `seed` | `motion` | Verb lemmas that go somewhere; after one, an `object_mark` word is a preposition (*ir*, *volar*). Each is also a seed. |
+| `seed` | `intransitive` | Verb lemmas that take no thing: never a relative's gap (*sleep*, *bark*, *dormir*). Each is also a seed. |
+| `morphology` | `adverb_ending`, `adverb_guard` | An ending that makes an unlisted word between a thing and its verb an adverb (*ly*, *mente*), and the words it does not (*family*). |
+| `morphology` | `self_ending`, `self_form` | The speaker's own verb endings and forms, in a grammar that drops subjects (*o é í*; *soy vi*). Their presence lets a finite verb open a clause. |
 | `lexicon` | `object_mark` | Words that mark a verb's thing rather than a place (Spanish *a*). |
 | `morphology` | `bare_finite` | The subjects a bare form is finite for: `plural`, `self`, or `-` for none. Absent: any. |
 | `morphology` | `bare_ending` | Endings a bare form wears (*ar er ir*). Absent: a bare form is its lemma. |
@@ -419,7 +458,8 @@ The reference runtime exposes `reread(S, episode?)`, the optional `grammar` argu
 | `responses` | `noted_held` | A note naming what a tell held, `{triples}`. |
 
 A later language may declare its own marks, classes, `head`, `stance`, `chain` and `motion`
-verbs, `stance_noun` nouns, `object_mark` and the two bare keys; it borrows
+and `intransitive` verbs, `stance_noun` nouns, `object_mark`, and the bare, adverb and self
+keys; it borrows
 the role, the number and the lane like the rest (TTG-RFC-0001 §11). Merging two lexicons
 merges their `head` too, which is one more reason they are kept apart.
 
@@ -441,24 +481,24 @@ runtime.
 
 ## 8. Open Questions
 
-1. **A noun phrase alone, or a sentence.** *Birds that sing love songs.* reads as birds loving
-   songs and *the men that saw the cats eat cheese.* as the men eating: where the words could
-   be a bare noun phrase or a sentence, the reading that gives the sentence a verb wins. A
-   fragment the owner meant is corrected with an aside or an amendment.
-2. **Nouns that take a clause are a list.** After an unlisted noun, before the sentence's
-   verb, the clause is read as an object relative: *the rule that cats bark is old* is `cat
-   bark rule` until the corpus has *bark* without a thing, or *rule* joins `stance_noun`.
-3. **After a stance verb's thing, the gap still needs the corpus.** *I told the man that the
-   cat bit* holds `cat bite` until the owner has said something bites something: a verb the
-   corpus has not met cannot tell a relative from a report.
-4. **Adverbs outside the lexicon.** *The dog that the cat quickly chased* reads `quickly
-   chase dog`: an unlisted *-ly* word is a thing. An `adverb_ending` would need a guard for
-   *-ly* adjectives (*lovely*, *friendly*).
-5. **Spanish without a subject.** *Vi al gato* has no thing before its verb, so the verb is
-   not found and the object mark never meets it; dropped subjects are open in the Spanish
-   grammar (TTG-RFC-0001 §13).
-6. **Taking re-readings in bulk from the page.** The page offers each re-reading in its
-   episode; taking every one under a hash is the tool's alone.
+1. **After the verb, an adverb or a name.** Only an *-ly* word between a thing and its verb is
+   read as an adverb; after a verb it may be one (*sings loudly*) or a name (*met Emily*), so
+   *she sings loudly* still makes *loudly* the thing sung.
+2. **Subjects the grammar drops, other than the speaker.** Spanish verb forms name their
+   person; only the speaker's are read (`self_ending`, `self_form`). *Come queso* has a
+   subject — someone else's — that the store could only guess.
+3. **A word the corpus has never met as a thing**, straight after a relative's verb, is the
+   clause's verb: *birds that sing love songs.* believes the birds love songs until the
+   owner has used *love* as a thing.
+4. **The chain list and the intransitive list are English and Spanish words the grammar
+   declares by hand.** A store could learn both from the owner's own sentences, as it learns
+   which verbs take a thing; how many sayings make a verb a chain verb is open.
+5. **Every held ambiguity is a pair of held percepts.** Nothing links the two readings of
+   *the men that saw the cats eat cheese* to each other: a question sees two held sayings,
+   not one saying with two readings.
+6. **A reading's context is the sentences before it.** A re-reading carries pronouns forward
+   as the sentences now read, so taking one reading can change what the next one reads as;
+   the tool and the page take them in episode order and do not re-read between them.
 
 ---
 
@@ -471,5 +511,6 @@ runtime.
 | 2026-09-21 | 0.3: a stack of open clauses — object relatives (*the dog that the cat chased*), a stance clause inside a relative, a relative inside a stance clause; a denied alternative is a denial of each; `aside_marks` let the owner leave words out of a reading, so a hedge can be said as fact; after a stance verb's thing a relative word opens a reported clause, and clause-taking verbs join the reference stance list. 0.2's open questions answered; new ones listed. |
 | 2026-09-22 | 0.4: a bare verb goes on with a relative's chain while a finite verb is still to come, or after a `chain` verb; an object relative whose gap no verb takes reports a held clause; a particle verb gives up its preposition for the gap, and a stranded preposition joins the verb; a determiner-relative before a bare thing and a verb opens an object relative; a held percept keeps its polarity (`?-`); `hav` before `cop` reads from the `cop`; §5.1 re-reading reports what a grammar now reads differently and writes nothing. 0.3's open questions answered; new ones listed. |
 | 2026-09-22 | 0.5: a verb straight after a subject relative's own verb begins the clause's; `stance_noun` clauses are reported; `bare_finite` and `bare_ending` let agreement keep a bare verb in its relative; a stranded preposition takes the gap except after a stance verb's thing, where one rule now decides relative or report and a finite verb to come makes the gap sure; `object_mark` and `motion` read Spanish personal *a*; an amendment's `grammar:` line records a re-reading the owner took, offered in the page and by `--accept`. 0.4's open questions answered; new ones listed. |
+| 2026-09-22 | 0.6: where the grammar can see two readings, both are held and what they share is said (a chain verb's bare verb that agrees; a thing-word straight after a relative's verb; a verb after a stance verb's thing that is neither known nor `intransitive`); `intransitive` verbs never take the gap, and after a verb that cannot hear a clause the gap is sure; `adverb_ending` and `adverb_guard`; `self_ending` and `self_form` read Spanish dropped subjects as the speaker; re-readings follow the corpus too, and the page takes them all from the store bar. 0.5's open questions answered; new ones listed. |
 
 *License: CC0*

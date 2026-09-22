@@ -200,9 +200,9 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
     ["I believe you.",                               "[i] {believe} [you].",                                         ["self | believe | you | + | -"]],
     ["Hope is good.",                                "[hope] {is} [good].",                                          ["hope | has_property | good | + | -"]],
     ["Los gatos que cazan ratones son rápidos.",     "[los gatos] que {cazan} [ratones] {son} [rápidos].",           ["gato | cazar | ratón | + | -", "gato | is_a | rápido | + | -"]],
-    ["Creo que los gatos ladran.",                   "{creo} que [los gatos] {ladran}.",                             ["- | creer | - | + | -", "gato | ladrar | - | ? | -"]],
+    ["Creo que los gatos ladran.",                   "{creo} que [los gatos] {ladran}.",                             ["self | creer | - | + | -", "gato | ladrar | - | ? | -"]],
     ["El gato negro duerme.",                        "[el gato negro] {duerme}.",                                    ["gato | dormir | - | + | -"]],
-    ["Tengo dos gatos.",                             "{tengo} [dos gatos].",                                         ["- | has | gato | + | -"]],
+    ["Tengo dos gatos.",                             "{tengo} [dos gatos].",                                         ["self | has | gato | + | -"]],
     // a stance inside a relative: the stance's clause is held, and the relative still closes
     ["The man that says cats bark is tall.",         "[the man] that {says} [cats] {bark is} [tall].",               ["man | say | - | + | -", "cat | bark | - | ? | -", "man | has_property | tall | + | -"]],
     ["The man that says cats like fish is tall.",    "[the man] that {says} [cats] {like} [fish] {is} [tall].",      ["man | say | - | + | -", "cat | like | fish | ? | -", "man | has_property | tall | + | -"]],
@@ -243,12 +243,27 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
     ["La idea de que los gatos ladran es tonta.",    "[la idea de] que [los gatos] {ladran es} [tonta].",            ["gato | ladrar | - | ? | -", "idea | has_property | tonta | + | -"]],
     // a bare form that cannot be finite for the antecedent stays in the relative; one that can, closes it
     ["The man that saw the cat eat cheese.",         "[the man] that {saw} [the cat] {eat} [cheese].",               ["man | see | cat | + | -", "cat | eat | cheese | + | -"]],
-    ["The men that saw the cats eat cheese.",        "[the men] that {saw} [the cats] {eat} [cheese].",              ["man | see | cat | + | -", "man | eat | cheese | + | -"]],
+    // …and where both readings are grammatical, both are held: who eats is not said
+    ["The men that saw the cats eat cheese.",        "[the men] that {saw} [the cats] {eat} [cheese].",              ["man | see | cat | + | -", "cat | eat | cheese | ? | -", "man | eat | cheese | ? | -"]],
+    ["The cats that I saw eat cheese.",              "[the cats] that [i] {saw eat} [cheese].",                      ["self | see | cat | + | -", "cat | eat | cheese | + | -"]],
     ["El hombre que vio al gato comer queso.",       "[el hombre] que {vio} [a el gato] {comer} [queso].",           ["hombre | ver | gato | + | -", "gato | comer | queso | + | -"]],
     // a stranded preposition's thing is the gap, unless a stance verb's thing may be hearing a clause
     ["I like the house that I live in.",             "[i] {like} [the house] that [i] {live in}.",                   ["self | like | house | + | -", "self | live_in | house | + | -"]],
     ["I know the man that I talked to.",             "[i] {know} [the man] that [i] {talked to}.",                   ["self | know | man | + | -", "self | talk_to | man | + | -"]],
     ["I told the man that the cat came in.",         "[i] {told} [the man] that [the cat] {came in}.",               ["self | tell | man | + | -", "cat | come_in | - | ? | -"]],
+    // a verb that takes no thing never takes the gap; after a verb that cannot hear a clause, any other one does;
+    // after a stance verb's thing, a verb that might is read both ways, and both are held
+    ["The rule that cats bark is old.",              "[the rule] that [cats] {bark is} [old].",                      ["cat | bark | - | ? | -", "rule | has_property | old | + | -"]],
+    ["I like the dog that the cat bit.",             "[i] {like} [the dog] that [the cat] {bit}.",                   ["self | like | dog | + | -", "cat | bite | dog | + | -"]],
+    ["I told the man that the cat bit.",             "[i] {told} [the man] that [the cat] {bit}.",                   ["self | tell | man | + | -", "cat | bite | - | ? | -", "cat | bite | man | ? | -"]],
+    // an unlisted word with an adverb ending, between a thing and its verb, is the verb's; a guarded one is not
+    ["The dog that the cat quickly chased ran away.", "[the dog] that [the cat] {quickly chased ran} [away].",       ["cat | chase | dog | + | -", "dog | run | away | + | -"]],
+    ["Pixel's family eats fish.",                    "[pixel family] {eats} [fish].",                                ["family | eat | fish | + | -"]],
+    ["El gato rápidamente persigue al ratón.",       "[el gato] {rápidamente persigue} [a el ratón].",               ["gato | perseguir | ratón | + | -"]],
+    // where the grammar drops subjects, the speaker's own verb form says who
+    ["Vi al gato.",                                  "{vi} [a el gato].",                                            ["self | ver | gato | + | -"]],
+    ["No como carne.",                               "{no como} [carne].",                                           ["self | comer | carne | - | -"]],
+    ["Como queso y bebo vino.",                      "{como} [queso] y {bebo} [vino].",                              ["self | comer | queso | + | -", "self | beber | vino | + | -"]],
     // after a stance verb's thing, a clause whose verb takes the gap is a relative, and a finite verb to come makes it sure
     ["I told the man that the cat chased.",          "[i] {told} [the man] that [the cat] {chased}.",                ["self | tell | man | + | -", "cat | chase | man | + | -"]],
     ["I think the man that the cat chased is fast.", "[i] {think} [the man] that [the cat] {chased is} [fast].",     ["self | think | - | + | -", "cat | chase | man | ? | -", "man | has_property | fast | ? | -"]],
@@ -331,10 +346,23 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
 
   // the gap is refused to a verb the owner's words never give a thing
   const G0 = fresh();
-  ok(PG.shapeOf(G0, "The day that the cat slept was hot.").percepts.map(pk)[0] === "cat | sleep | day | + | -", "an unused verb before the sentence's own takes the gap");
-  PG.answer(G0, "Pixel sleeps.", T0);
-  ok(PG.shapeOf(G0, "The day that the cat slept was hot.").percepts.map(pk).join(" ; ") === "cat | sleep | - | ? | - ; day | has_property | hot | + | -",
+  ok(PG.shapeOf(G0, "The day that the cat ran was hot.").percepts.map(pk)[0] === "cat | run | day | + | -", "an unused verb before the sentence's own takes the gap");
+  PG.answer(G0, "Pixel runs.", T0);
+  ok(PG.shapeOf(G0, "The day that the cat ran was hot.").percepts.map(pk).join(" ; ") === "cat | run | - | ? | - ; day | has_property | hot | + | -",
      "once the owner has said it without a thing, it does not, and the clause is held");
+  // a word straight after a relative's own verb that the owner also uses as a thing: what both readings share is said
+  const L0 = fresh();
+  ok(PG.shapeOf(L0, "Birds that sing love songs.").percepts.map(pk).join(" ; ") === "bird | sing | - | + | - ; bird | love | song | + | -", "unknown as a thing, the word is the clause's verb");
+  PG.answer(L0, "Love is blind.", T0);
+  ok(PG.shapeOf(L0, "Birds that sing love songs.").percepts.map(pk).join(" ; ") === "bird | sing | - | + | - ; bird | love | song | ? | -",
+     "once the owner has used it as a thing, the singing is said and the loving is held");
+  ok(PG.shapeOf(L0, "Cats that hunt eat mice.").percepts.map(pk).join(" ; ") === "cat | hunt | - | + | - ; cat | eat | mouse | + | -", "a word that is only a verb is still the clause's");
+  // the corpus changes readings too, and re-reading finds them: a verb the owner now gives a thing takes the gap
+  const C0 = fresh(), bit = PG.answer(C0, "I told the man that the cat bit.", T0);
+  PG.answer(C0, "Dogs bite postmen.", T0 + 60);
+  const rc = PG.reread(C0, bit.episode.id).changed[0];
+  ok(rc && rc.now.includes("1 | cat | bite | man | + | -") && rc.was.includes("1 | cat | bite | man | ? | -"),
+     "once the owner has said the verb with a thing, re-reading offers the relative", rc ? rc.now.join(" ; ") : "");
 
   // a hedge meant as fact: mark it an aside, and what it held is said
   const U = fresh(), bark = () => (U.trips.get("cat|bark|-") || { fr:0 }).fr;

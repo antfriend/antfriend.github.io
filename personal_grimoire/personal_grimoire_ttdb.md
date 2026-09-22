@@ -500,6 +500,7 @@ selects a record on click (one delegated listener); the value is `lat|lon` to fo
 **Every chrome string lives in a `data-*` attribute on the markup**, never in the script:
 `#storeinfo[data-seed|data-local|data-opened]`, `#mode[data-<intent in kebab case>]`,
 `#reset[data-confirm]`, `#empty[data-confirm]`, `#files[data-confirm-store]`, `#log[data-quota]`,
+`#rereads[data-label|data-confirm|data-done]` (the store bar's count of re-readings not yet ruled on, `{n}` filled in),
 `#preview[data-nounish|data-verbish|data-aside|data-join|data-keep|data-amended|data-reread|data-accept|data-accepted]` — the labels of a reading's
 controls, where each word is a button carrying `data-row`. The
 store persists under `localStorage` key `personal_grimoire:store:v1`; `?seed` ignores that copy
@@ -587,7 +588,9 @@ is not guarded) produces the candidates. Which candidate wins is decided in
 is to undouble only when the stem really ends in a double consonant outside `double_keep`.
 A verb in its lemma's own form is **bare**; `bare_finite` says which subjects that form is
 also finite for — *cats eat*, *I eat*, never *the cat eat* — which is how a relative knows
-that *the man that saw the cat eat cheese* is not the man eating.
+that *the man that saw the cat eat cheese* is not the man eating. A word the lexicon does not
+list that ends in `adverb_ending`, between a thing and its verb, is an adverb (*the cat
+quickly chased*); `adverb_guard` names the words that only look like one.
 
 ```ttdb-grammar
 kind: morphology
@@ -692,6 +695,8 @@ participle_ending: ed
 double_keep: l s f z
 min_stem: 2
 bare_finite: plural self
+adverb_ending: ly
+adverb_guard: family belly jelly lily ally bully fly july italy assembly anomaly
 ```
 
 ---
@@ -709,7 +714,8 @@ take a clause the speaker does not assert; `chain` verbs take a thing and then a
 that thing does (*saw the cat eat*), which is how a relative knows to keep such a verb
 ([TTG-RFC-0005 §3](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md)). `stance_noun` lists the
 nouns whose clause is held the same way (*the idea that cats bark*); they are things, not
-seeds.
+seeds. `intransitive` verbs take no thing, so a relative word before one never makes its
+antecedent the verb's object (*the rule that cats bark*).
 
 ```ttdb-grammar
 kind: seed
@@ -717,6 +723,7 @@ seed: eat drink like love hate want need know think believe see hear feel make g
 stance: think believe doubt suppose guess hope wish wonder fear suspect imagine assume expect pretend dream say claim tell show warn remind promise convince persuade inform assure email text mention explain admit announce
 chain: see hear watch feel notice make let help
 stance_noun: fact idea news claim rumor rumour story belief hope fear feeling sense notion theory chance possibility proof sign thought suspicion hunch worry
+intransitive: sleep purr bark arrive die laugh smile cry sit fall wake lie belong depend happen exist seem rest wait come go
 ```
 
 ---
@@ -947,7 +954,9 @@ object_mark: a
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §4
 
 Stem-changing verbs are irregulars; everything else is a suffix rule, and the corpus corrects
-the guesses as it does for English ([the lemmatizer belief](lat98lon4)).
+the guesses as it does for English ([the lemmatizer belief](lat98lon4)). Spanish drops its
+subjects: `self_ending` and `self_form` name the speaker's own verb forms, so *No como carne*
+and *Vi al gato* are about the speaker, and a finite verb may open a clause.
 
 ```ttdb-grammar
 kind: morphology
@@ -995,6 +1004,9 @@ participle_ending: ado ido
 min_stem: 2
 bare_ending: ar er ir
 bare_finite: -
+adverb_ending: mente
+self_ending: o é í
+self_form: soy estoy voy doy sé vi fui
 ```
 
 ---
@@ -1016,6 +1028,7 @@ stance: creer pensar dudar suponer esperar desear temer sospechar imaginar soña
 chain: ver oír mirar sentir hacer dejar ayudar
 stance_noun: hecho idea noticia rumor creencia esperanza miedo sensación posibilidad prueba duda sospecha
 motion: ir venir volver llegar viajar correr caminar volar nadar saltar subir bajar entrar salir
+intransitive: dormir ronronear ladrar llegar morir reír llorar caer pertenecer existir ir venir
 ```
 
 ---
@@ -1983,10 +1996,11 @@ for its own (*the man that saw the cat eat cheese is tall* is a tall man). An as
 out of a reading, so a hedge can be said as fact. A phrase's head is where the lexicon says:
 last in English, first in Spanish. It still does not see:
 
-- **Which verbs take a thing** — whether a relative word's antecedent is the object of the
-  verb after it leans on what the owner has already said; before that, *the rule that cats
-  bark* is a rule barked, and *I told the man that the cat bit* only reports a bite.
-- **Adverbs it was not told** — *the cat quickly chased* makes *quickly* the chaser.
+- **One reading or two** — where the grammar can see both, it holds both and says only what
+  they share (*the men that saw the cats eat cheese*); where it cannot, it picks the one
+  that gives the sentence a verb (*birds that sing love songs*, until *love* is a thing).
+- **Adverbs after a verb** — *she sings loudly* sings *loudly*; before a verb, *-ly* words
+  are read right.
 - **Modifiers** — *black cats* is *cats*; the adjective is dropped unless the owner binds the
   phrase into one term (`black_cat`).
 - **Tense and modality** — *birds fly*, *birds flew* and *birds might fly* are one percept.
@@ -2027,7 +2041,7 @@ down because it is a claim.
 
 ---
 
-@LAT98LON7 | created:1789257600 | updated:1789948800 | relates:supports@LAT10LON0,refines@LAT98LON5
+@LAT98LON7 | created:1789257600 | updated:1790035200 | relates:supports@LAT10LON0,refines@LAT98LON5
 [ew]
 conf:100
 rev:0
@@ -2051,9 +2065,11 @@ test.
   other, *no* a quantifier and a negation, and a phrase's head is its last word in one and its
   first in the other (*el gato negro*). Merged, they break 3 of the fifteen English parse
   cases; kept apart, none.
-- **New blind spots:** a dropped subject (*No como carne* forms nothing), a verb-first
-  question (*¿Dónde duerme Pixel?*), an adjective that agrees in number (*son negros* reads
-  as a class). Each would be a rule the grammar declares — never Spanish in `index.html`.
+- **New blind spots:** a verb-first question (*¿Dónde duerme Pixel?*), an adjective that
+  agrees in number (*son negros* reads as a class), a dropped subject other than the
+  speaker's (*Come queso*). The speaker's own is read: `self_ending` names its verb forms,
+  so *No como carne* is `self comer carne -`. Each is a rule the grammar declares — never
+  Spanish in `index.html`.
 
 Try it: *Un gato es un cat.* then *¿Es un gato un animal?* A third language is another set of
 records with its own `lang:`, and nothing in the runtime.

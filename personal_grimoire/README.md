@@ -70,7 +70,9 @@ and a join makes one term; that *Coffee.* is a mention and *coffee* a look-up; t
 relative clause closes at the next verb, whether its antecedent is its subject or its object,
 and a stance clause inside one closes with it, while a bare verb goes on with the relative's
 chain when the sentence's own verb is still to come or cannot agree with it, and a verb
-straight after a relative's own is the sentence's; that a phrase's head sits where each
+straight after a relative's own is the sentence's; that where two readings are both
+grammatical both are held; that an unlisted *-ly* word before a verb is an adverb and a
+Spanish verb in the speaker's own form needs no subject; that a phrase's head sits where each
 language puts it, and Spanish *a* marks an object except after a verb of motion; that what
 *or* joins, a stance verb or noun takes or a relative word reports is held — seen, never
 believed, never a contradiction, keeping its own *not* — unless the *or* is denied, and that
@@ -337,12 +339,13 @@ that cats bark is silly* holds the barking and says the idea is silly. *Cats tha
 mice* is two verbs, hunting and eating. Which word of a phrase is its head is the lexicon's
 to say: last in English, first in Spanish, so *el gato negro* is a `gato`.
 
-A grammar change reads old sentences differently. An episode's panel shows the grammar's new
-reading under the one that stands, with what it would say, and *take this reading* keeps it
-as an amendment that names the grammar it came from. `node tools/reread.mjs` lists them all
-under a hash of the grammar, and `--accept <hash>` takes every one you have not already
-amended; nothing is written until you do, because the grammar's new opinion is not yours
-until you take it.
+A grammar change reads old sentences differently, and so does your own corpus as it grows —
+a verb you come to use with a thing. An episode's panel shows the new reading under the one
+that stands, with what it would say, and *take this reading* keeps it as an amendment that
+names the grammar it came from; the store bar counts the ones you have not ruled on and takes
+them all at once. `node tools/reread.mjs` lists them under a hash of the grammar, and
+`--accept <hash>` takes every one you have not already amended; nothing is written until you
+do, because the grammar's new opinion is not yours until you take it.
 
 ---
 
@@ -388,7 +391,7 @@ global_models.
 | `@LAT98LON6` | Mentions are not evidence | 215 | 150 | 24 |
 | `@LAT98LON2` | Lanes are latitudes again | 230 | 60 | 6 |
 
-**First, the parser's blind spots** — which verbs take a thing, adverbs it was not told,
+**First, the parser's blind spots** — one reading or two, adverbs after a verb,
 attributive adjectives, tense and modality. Every sentence passes through
 them and they are the least settled thing here, though you can now correct any reading they
 get wrong, and what the parser cannot tell is asserted is held rather than believed. The test for any fix is the one in `@LAT98LON5`: if it needs English in
@@ -398,9 +401,10 @@ get wrong, and what the parser cannot tell is asserted is held rather than belie
 of anything irregular, and a wrong first lemma becomes the term later uses are matched
 against. Every merged surface form is visible on the term record's `forms:` line.
 
-**Third, the second language.** Spanish brings blind spots English never showed: dropped
-subjects (*No como carne*), verb-first questions (*¿Dónde duerme Pixel?*), and adjectives
-that agree in number (*son negros*). Verbs link across languages only one rule at a time
+**Third, the second language.** Spanish brings blind spots English never showed:
+verb-first questions (*¿Dónde duerme Pixel?*), adjectives that agree in number (*son
+negros*), and dropped subjects other than yours — *No como carne* is read as you, *Come
+queso* is not read as anyone. Verbs link across languages only one rule at a time
 (`cazar X Y => chase X Y`).
 
 **Then, time across devices** — `@LAT98LON8`, second on the list before a line of it runs. One
@@ -425,10 +429,12 @@ no.
 
 - **Relatives lean on what you have said.** Whether *the thing that X verbs* makes the thing
   the verb's object depends on whether you have used that verb with an object; until you
-  have, *the rule that cats bark is old* reads as the cats barking the rule (*fact*, *idea*
-  and the other nouns the grammar lists are read right). Where the words could be a bare
-  noun phrase or a sentence (*Birds that sing love songs.*), the sentence wins. Questions
-  that invert word order beyond the declared forms fall back to search. Where it reads you
+  have, *I told the man that the cat bit* holds two readings, the man bitten and a bite
+  reported, and a re-reading offers the first once you have said the verb with a thing.
+  Where both readings of a sentence are grammatical and the grammar can see it, both are
+  held (*the men that saw the cats eat cheese.*); where it cannot (*Birds that sing love
+  songs.*, before *love* is a thing to you), the reading with a verb wins. Questions that
+  invert word order beyond the declared forms fall back to search. Where it reads you
   wrongly, [correct the reading](#how-it-read-you).
 - **Modifiers are dropped.** *Black cats* is *cats*, unless you make *black cats* one term.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
