@@ -210,17 +210,37 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
     ["I think the cat that chased the mouse is fast.", "[i] {think} [the cat] that {chased} [the mouse] {is} [fast].", ["self | think | - | + | -", "cat | chase | mouse | ? | -", "cat | has_property | fast | ? | -"]],
     ["I believe the man that fixed the car.",        "[i] {believe} [the man] that {fixed} [the car].",              ["self | believe | man | + | -", "man | fix | car | + | -"]],
     // object relatives: the relative's verb takes the thing before the relative word as its object —
-    // always before the sentence's own verb, after it only for a verb the corpus uses with an object
+    // before the sentence's own verb, and after it for a verb the corpus uses with an object
     ["The dog that the cat chased ran away.",        "[the dog] that [the cat] {chased ran} [away].",                ["cat | chase | dog | + | -", "dog | run | away | + | -"]],
     ["I like the dog that the cat chased.",          "[i] {like} [the dog] that [the cat] {chased}.",                ["self | like | dog | + | -", "cat | chase | dog | + | -"]],
-    ["I emailed the man that the cat sleeps.",       "[i] {emailed} [the man] that [the cat] {sleeps}.",             ["self | email | man | + | -", "cat | sleep | - | + | -"]],
+    ["I emailed the man that the cat chased.",       "[i] {emailed} [the man] that [the cat] {chased}.",             ["self | email | man | + | -", "cat | chase | man | + | -"]],
+    // …and one whose gap no verb takes was never a relative: it reports a clause, which is held
+    ["I emailed the man that the cat sleeps.",       "[i] {emailed} [the man] that [the cat] {sleeps}.",             ["self | email | man | + | -", "cat | sleep | - | ? | -"]],
+    ["I emailed the man that the cat chased the mouse.", "[i] {emailed} [the man] that [the cat] {chased} [the mouse].", ["self | email | man | + | -", "cat | chase | mouse | ? | -"]],
+    // a verb whose own thing follows a preposition gives it up for the gap; a stranded one joins the verb
+    ["The cat that I saw in the garden sleeps.",     "[the cat] that [i] {saw in} [the garden] {sleeps}.",          ["self | see | cat | + | -", "cat | sleep | - | + | -", "cat | with | garden | + | -"]],
+    ["The house that I live in is big.",             "[the house] that [i] {live in is} [big].",                     ["self | live_in | house | + | -", "house | has_property | big | + | -"]],
+    // a relative word that is also a determiner, before a bare thing and a verb: an object relative
+    ["The dog that cats chase is fast.",             "[the dog] that [cats] {chase is} [fast].",                     ["cat | chase | dog | + | -", "dog | has_property | fast | + | -"]],
+    ["The cheese that Pixel has is old.",            "[the cheese] that [pixel] {has is} [old].",                    ["pixel | has | cheese | + | -", "cheese | has_property | old | + | -"]],
+    ["Pixel and that cat sleep.",                    "[pixel and that cat] {sleep}.",                                ["pixel | sleep | - | + | -", "cat | sleep | - | + | -"]],
+    ["El perro que gatos persiguen es rápido.",      "[el perro] que [gatos] {persiguen es} [rápido].",              ["gato | perseguir | perro | + | -", "perro | has_property | rápido | + | -"]],
+    // a bare verb goes on with a relative's chain while a finite verb is still to come, or after a chain verb
+    ["The man that saw the cat eat cheese is tall.", "[the man] that {saw} [the cat] {eat} [cheese] {is} [tall].",  ["man | see | cat | + | -", "cat | eat | cheese | + | -", "man | has_property | tall | + | -"]],
+    ["I like the man that saw the cat eat cheese.",  "[i] {like} [the man] that {saw} [the cat] {eat} [cheese].",    ["self | like | man | + | -", "man | see | cat | + | -", "cat | eat | cheese | + | -"]],
+    ["The cat that I saw eat cheese is fat.",        "[the cat] that [i] {saw eat} [cheese] {is} [fat].",            ["self | see | cat | + | -", "cat | eat | cheese | + | -", "cat | has_property | fat | + | -"]],
+    ["I saw the cat that chased the mouse run away.", "[i] {saw} [the cat] that {chased} [the mouse] {run} [away].", ["self | see | cat | + | -", "cat | chase | mouse | + | -", "cat | run | away | + | -"]],
+    ["Cats that chase mice eat cheese.",             "[cats] that {chase} [mice] {eat} [cheese].",                   ["cat | chase | mouse | + | -", "cat | eat | cheese | + | -"]],
+    ["Pixel has been happy.",                        "[pixel] {has been} [happy].",                                  ["pixel | has_property | happy | + | -"]],
     ["I told the man that the cat sleeps.",          "[i] {told} [the man] that [the cat] {sleeps}.",                ["self | tell | man | + | -", "cat | sleep | - | ? | -"]],
     ["I gave the dog that bone.",                    "[i] {gave} [the dog that bone].",                              ["self | give | dog | + | -", "self | give | bone | + | -"]],
     ["El perro que el gato persigue es negro.",      "[el perro] que [el gato] {persigue es} [negro].",              ["gato | perseguir | perro | + | -", "perro | has_property | negro | + | -"]],
     // not over or: neither; an alternative of subjects stays held
     ["Pixel is not a cat or a dog.",                 "[pixel] {is not} [a cat or a dog].",                           ["pixel | is_a | cat | - | -", "pixel | is_a | dog | - | -"]],
     ["Birds do not fly or swim.",                    "[birds] {do not fly or swim}.",                                ["bird | fly | - | - | -", "bird | swim | - | - | -"]],
-    ["Cats or dogs do not bark.",                    "[cats or dogs] {do not bark}.",                                ["cat | bark | - | ? | -", "dog | bark | - | ? | -"]],
+    ["Cats or dogs do not bark.",                    "[cats or dogs] {do not bark}.",                                ["cat | bark | - | ?- | -", "dog | bark | - | ?- | -"]],
+    // held keeps its own polarity
+    ["I doubt cats don't bark.",                     "[i] {doubt} [cats] {do not bark}.",                            ["self | doubt | - | + | -", "cat | bark | - | ?- | -"]],
     // an aside is left out of the reading: a hedge the owner meant as fact
     ["(I think) cats bark.",                         "(i think) [cats] {bark}.",                                     ["cat | bark | - | + | -"]],
     ["Pixel (my cat) sleeps.",                       "[pixel] (my cat) {sleeps}.",                                   ["pixel | sleep | - | + | -"]]
@@ -250,6 +270,34 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
   ok(d.verdict === PG.say(H.G, "noted", { percepts:"2 percepts", sentences:"1 sentence" }), "the verdict counts it", d.verdict);
   const q = PG.answer(H, "Is Pixel a cat or a dog?", T0 + 120);
   ok(q.intent === "verify", "a question still asks after each alternative");
+  const hn = PG.answer(H, "I doubt cats don't like fish.", T0 + 180), neg = PG.say(H.G, "noted_held", { triples:"cat " + H.G.roles.negation_prefix + "like fish" });
+  ok(PG.serializeStore(H.st).includes("percept: 1 | cat | like | fish | ?- | -") && H.malformed.length === 3 && H.trips.get("cat|like|fish").fr === 1 &&
+     !hn.notes.includes(PG.say(H.G, "contradicts")) && hn.notes.includes(neg), "a held denial is written ?-, well formed, named as a denial, and contradicts nothing", hn.notes.join(" | "));
+
+  // which verbs a relative's bare verb may follow is the store's word list, not the runtime's
+  const noChain = PG.openStore(STORE.replace(/^chain: .*\n/gm, ""));
+  ok(PG.shapeOf(noChain, "I like the man that saw the cat eat cheese.").percepts.map(pk).includes("man | eat | cheese | + | -"),
+     "without the chain line, the bare verb closes the relative, as before");
+  // re-reading: a grammar change is reported sentence by sentence, under its hash, and nothing is written
+  const RR = fresh();
+  const told = PG.answer(RR, "I like the man that saw the cat eat cheese.", T0);
+  ok(PG.reread(RR).changed.length === 0 && PG.reread(RR).sentences === 21, "under the grammar it was written in, every sentence reads as written");
+  const edited = PG.openStore(PG.serializeStore(RR.st).replace(/^chain: .*\n/gm, "")), text0 = PG.serializeStore(edited.st);
+  const rr = PG.reread(edited);
+  ok(rr.changed.length === 1 && rr.changed[0].episode === told.episode.id && rr.changed[0].n === 1 && !rr.changed[0].amended &&
+     rr.changed[0].now.includes("1 | man | eat | cheese | + | -") && rr.changed[0].was.includes("1 | cat | eat | cheese | + | -"),
+     "after a grammar edit, the one sentence it reads differently is reported with both readings", JSON.stringify(rr.changed.map(c => c.now)));
+  ok(rr.grammar !== PG.reread(RR).grammar && /^[0-9a-f]{16}$/.test(rr.grammar), "each report names the grammar that read it", rr.grammar);
+  ok(PG.serializeStore(edited.st) === text0, "a re-reading writes nothing");
+  const unshaped = PG.openStore(PG.serializeStore(RR.st).replace(/^shape: .*\n/gm, ""));
+  ok(PG.reread(unshaped).changed.length === 0, "an episode written before shapes is compared by its percepts alone");
+
+  // the gap is refused to a verb the owner's words never give a thing
+  const G0 = fresh();
+  ok(PG.shapeOf(G0, "The fact that the cat sleeps is known.").percepts.map(pk)[0] === "cat | sleep | fact | + | -", "an unused verb before the sentence's own takes the gap");
+  PG.answer(G0, "Pixel sleeps.", T0);
+  ok(PG.shapeOf(G0, "The fact that the cat sleeps is known.").percepts.map(pk).join(" ; ") === "cat | sleep | - | ? | - ; fact | has_property | known | + | -",
+     "once the owner has said it without a thing, it does not, and the clause is held");
 
   // a hedge meant as fact: mark it an aside, and what it held is said
   const U = fresh(), bark = () => (U.trips.get("cat|bark|-") || { fr:0 }).fr;

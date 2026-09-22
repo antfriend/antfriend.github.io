@@ -1,6 +1,6 @@
 # TTG-RFC-0005: Shapes — Alternating Segments, Lists, Mentions and Amendments
 
-**Version:** 0.3
+**Version:** 0.4
 **Status:** Draft
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
@@ -29,10 +29,13 @@ A sentence of one segment is allowed. Said as a statement it is a **mention**: t
 recorded and counted, and nothing is believed about it. An unknown lone word is nounish.
 
 Clauses open inside the chain. A relative clause, with its antecedent as subject or as object,
-closes at the next verb, which returns to the thing the clause was about. Not everything a
-sentence says is asserted: what a list joined by *or* says, and the clause a stance verb such
-as *doubt* takes, is **held** — written with polarity `?`, seen and searched, never believed
-(§3). A hedge the owner meant as fact is set aside, and what it held is said (§4).
+closes at the next verb, which returns to the thing the clause was about — unless that verb is
+bare and goes on with the relative's own chain. Not everything a sentence says is asserted:
+what a list joined by *or* says, the clause a stance verb such as *doubt* takes, and a clause
+reported after a thing, are **held** — written with polarity `?`, or `?-` for a held denial,
+seen and searched, never believed (§3). A hedge the owner meant as fact is set aside, and what
+it held is said (§4). When the grammar changes, the sentences it now reads differently are
+reported, never rewritten (§5.1).
 
 ---
 
@@ -46,7 +49,7 @@ Every token of a sentence receives one label:
 | `V` | verbish: part of a verbish segment |
 | `L` | a link that ends a clause: punctuation other than `list_sep`, a `subord` word, a `filler` word, or a `conj` whose both sides are clauses (TTG-RFC-0002 §2) |
 | `C` | a `conj` between a nounish segment and a verbish one: a new clause that **inherits the subject** (*cats chase mice and eat cheese*) |
-| `R` | a `relative` word between a nounish segment and a verbish one (*mice that eat cheese*), or between a nounish segment and a phrase with a verb later in the clause (*the dog that the cat chased*): a link that opens a relative clause (§3). A word that is both `relative` and `subord` (*que*) is `R` there and `L` anywhere else. A relative word that is also a `det` opens the second kind only before a phrase starter, a `self` or an `anaphor` word, so *gave the dog that bone* keeps its determiner |
+| `R` | a `relative` word between a nounish segment and a verbish one (*mice that eat cheese*), or between a nounish segment and a phrase with a verb later in the clause (*the dog that the cat chased*): a link that opens a relative clause (§3). A word that is both `relative` and `subord` (*que*) is `R` there and `L` anywhere else. A relative word that is also a `det` opens the second kind only before a phrase starter, a `self` or an `anaphor` word, or a bare word with a verb straight after it when a thing comes before the relative word: *the dog that cats chase* opens one, *gave the dog that bone* and *Pixel and that cat* keep their determiner. A `relative` and `subord` word does the same (*el perro que gatos persiguen*) |
 | `A` | an **aside**: words inside the lexicon's `aside_marks`, left out of the reading altogether (§4) |
 
 Within each clause, tokens are labelled left to right. The six predicate rules of
@@ -68,7 +71,9 @@ A verbish segment then **continues** through a `prep` that opens a noun phrase (
 verb, *live in houses*) and through an `infinitive` marker before a verb (*want to eat*). An
 infinitive marker also *begins* one after a nounish segment (*taught me to bake*). The verb
 after the marker must be followed by a thing, or be a verb the owner already uses, so *went
-to work* stays `go_to | work`.
+to work* stays `go_to | work`. In an object relative a `prep` with nothing after it — the
+clause's end, or a verb — joins the verb too, and its thing is the gap: *the house that I
+live in is big* is `[the house] that [i] {live in is} [big]`.
 
 **The alternation is the constraint.** A content word straight after a verbish segment is
 nounish, however verb-like it is (*like fly fishing*). A second verbish segment in one clause
@@ -82,7 +87,9 @@ Otherwise it is read like any other word, so *Hope is good* is about hope.
 
 After the verb of a relative with a subject of its own, a verb straight after it begins the
 next predicate: *the dog that the cat chased ran away* is `[the dog] that [the cat] {chased
-ran} [away]`, and its two predicates are split at the second verb (§3).
+ran} [away]`, and its two predicates are split at the second verb (§3). So does a `cop` or
+`hav` after the relative's own `hav` or `cop` when no verb follows it: *the cheese that Pixel
+has is old* splits `{has is}` at *is*, and *has been eating* stays one predicate.
 
 A `conj` or `list_sep` between two verbish segments makes one verbish **list** (*fly, swim
 and sing*); between nounish ones, one nounish list (*cats, dogs and ferrets*). `neg` and
@@ -128,13 +135,15 @@ vector is, in order:
 1. a declared `phrase:` after a `cop` (and optional `det`/`quant`) → its vector;
 2. `cop` + `prep` → the prep;
 3. `cop` alone → `class_of` or `property` per object, as in TTG-RFC-0002 §4;
-4. `hav` alone → the `possession` role;
+4. `hav` alone → the `possession` role; `hav` before a `cop` is read from the `cop` (*has been
+   happy* is a property, *has been sleeping* is `sleep`);
 5. otherwise its content words, as verb lemmas, and its particles (`prep`, `infinitive`) after
    the first, joined by `phrasal_join`: `sleep_in`, `move_to`, `want_to_eat`. `aux`, `modal`,
    `neg` and `adverb` words never name a vector.
 
 Polarity is `-` when the predicate, the subject member or the object member carries a `neg`,
-or the subject a `quant_none`; the quantifier is the subject member's.
+or the subject a `quant_none`; the quantifier is the subject member's. A held percept keeps
+that polarity behind its `?` (below).
 
 **Clauses inside the chain.** Reading left to right keeps a stack of open clauses: the
 sentence's own, and any relative or stance clause opened inside it. Each remembers its last
@@ -146,21 +155,40 @@ nounish segment, which is the next verb's subject, and its last verb.
   antecedent as object (the **gap**) — a verb or possession, never a copula: *the dog that the
   cat chased ran away* is `cat chase dog`. In that verbish segment a content word straight
   after a content word begins a new predicate.
-- **Where the gap is filled.** Before the clause's own first verb the antecedent is a
-  subject, and only an object relative can follow it, so the gap is always filled. After a
-  verb's object the relative word may instead begin a reported clause (*I emailed the man
-  that the cat sleeps*), so the gap is filled only for possession or a vector the corpus
-  already has with an object (*I like the dog that the cat chased*, once *cats chase mice* is
-  said); otherwise the verb stands without one (`cat sleep -`).
+- **Where the gap is filled.** A verb takes the gap for possession, or for a vector the
+  corpus already has with an object (*I like the dog that the cat chased*, once *cats chase
+  mice* is said). Before the clause's own first verb the antecedent is a subject and only an
+  object relative can follow it, so there any other verb takes the gap too — unless the
+  corpus has its vector only without an object: *the fact that the cat sleeps is known* is
+  not `cat sleep fact` once *Pixel sleeps* is said. A verb whose own object follows the
+  preposition joined to it gives the preposition up when its stem would take the gap, and
+  that object becomes an adjunct of the antecedent: *the cat that I saw in the garden
+  sleeps* is `self see cat` and `cat with garden`.
+- **A reported clause.** An object relative whose gap no verb takes was never one: after a
+  verb's object the relative word began a clause reported to that thing, and every percept
+  in it is held: *I emailed the man that the cat sleeps* is `self email man +` and `cat sleep
+  ?`; *I emailed the man that the cat chased the mouse* holds `cat chase mouse`.
 - After a **stance verb's first thing**, a relative word before a phrase opens the stance's
   clause, not a relative, and the stance keeps its thing: *I told the man that the cat
   sleeps* is `self tell man +` and `cat sleep ?`.
-- A **relative closes** when a verb arrives after its own verb: the next predicate or the
-  next verbish segment. Every relative it holds closes with it, back to the clause the
-  outermost one hangs in, and that verb takes that clause's last nounish segment — the
-  antecedent: *cats that chase mice are fast* is `cat chase mouse` and `cat has_property
-  fast`; *cats that chase mice that eat cheese are fast* is about cats; *I saw the cat that
-  chased the mouse run away* is `cat run away`.
+- A **relative closes** when a verb arrives after its own verb — the next predicate or the
+  next verbish segment — unless that verb is bare and goes on (below). Every relative it
+  holds closes with it, back to the clause the outermost one hangs in, and that verb takes
+  that clause's last nounish segment — the antecedent: *cats that chase mice are fast* is
+  `cat chase mouse` and `cat has_property fast`; *cats that chase mice that eat cheese are
+  fast* is about cats; *cats that chase mice eat cheese* is `cat eat cheese`.
+- **A bare verb goes on.** A verb in the form its lemma is written in (*eat*, *comer*), or
+  wearing a `progressive_ending` with nothing before it, is **bare**: not finite. A bare verb
+  after a relative's own verb stays in the relative — its subject is the relative's last
+  thing, or the gap when the verb before it took the gap — while the clause the relative
+  hangs in is still waiting for its verb and a finite verb is still to come outside any
+  later relative: *the man that saw the cat eat cheese is tall* is `man see cat`, `cat eat
+  cheese` and `man has_property tall`; *the cat that I saw eat cheese is fat* is about the
+  cat. Where that clause already has its verb, the bare verb stays only after a **chain**
+  verb, one that takes a thing and then a bare verb the thing does (*see*, *make*, *let*):
+  *I like the man that saw the cat eat cheese* is `cat eat cheese`, while *I saw the cat
+  that chased the mouse run away* is `cat run away`. The plural present looks bare, which
+  is why bareness alone never keeps a relative open.
 - A **stance clause** opens when a verb arrives straight after a stance verb's first thing,
   or when a relative closes back onto that thing (below).
 
@@ -185,10 +213,13 @@ that inherits them.
 **A denied alternative is neither.** When the predicate carries a `neg` and the alternative
 is in its object or verb list, each member is denied, not held: *Pixel is not a cat or a dog*
 is `pixel is_a cat -` and `pixel is_a dog -`; *birds do not fly or swim* denies both, the
-`neg` of the first verb covering the list. An alternative of subjects stays held, negated or
-not (*cats or dogs do not bark*).
+`neg` of the first verb covering the list. An alternative of subjects stays held, and negated
+it is a held denial (*cats or dogs do not bark* holds `cat bark ?-`).
 
-**Held.** A percept with polarity `?` is **held**: said, and not asserted. Like a mention it
+**Held.** A percept with polarity `?` or `?-` is **held**: said, and not asserted. `?-` is a
+held denial: *I doubt cats don't bark* holds `cat bark ?-`, and a reply names it with the
+negation prefix. A runtime that knows only `?` skips `?-` as malformed, so neither is ever
+believed by mistake. Like a mention it
 names terms, creates them if new, counts toward `seen` and is searchable; it never
 consolidates into a belief, never contradicts one, and a reply names it apart from the
 grounds (`noted_held`). A question still checks it: *Is Pixel a cat or a dog?* asks after
@@ -278,7 +309,7 @@ was read is an **amendment**:
 
 ```ttdb-amend
 shape: <n> | <shape>
-percept: <n> | <subject> | <vector> | <object or -> | <+, - or ?> | <quantifier>
+percept: <n> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <quantifier>
 ```
 ```
 
@@ -301,6 +332,22 @@ percept: <n> | <subject> | <vector> | <object or -> | <+, - or ?> | <quantifier>
 An amendment answers as a tell does: the `amended` verdict, then the grounds its percepts
 form, then anything it disagrees with or retires.
 
+### 5.1 Re-reading
+
+Episodes are read under the grammar of their day, and grammars and runtimes change. A
+**re-reading** reads every sentence of every episode again from its words — each after the
+sentences before it, so its pronouns resolve — under the grammar the store holds now, and
+reports each sentence whose shape or percepts differ from what its episode wrote: the
+episode, the sentence, both readings, whether the owner has amended it, and a hash of the
+grammar records it was read under.
+
+A re-reading **writes nothing**. An amendment is the owner's word about a reading; a
+grammar's changed opinion is not, and writing it would print the grammar's reading as the
+owner's. A re-read sentence stands only when the owner amends with it (§5), so a report under
+one grammar hash is how a grammar revision (TTG-RFC-0001 §13.3) is audited before anyone
+accepts it. The reference runtime exposes `reread(S)` and `tools/reread.mjs`; the reference
+store's eight demo episodes read today exactly as written.
+
 ---
 
 ## 6. Grammar Keys
@@ -315,13 +362,14 @@ form, then anything it disagrees with or retires.
 | `lexicon` | `class: premod` | Words that open a phrase and are never its head, for a head-first language (*dos*, *buen*). |
 | `lexicon` | `head` | `last` (the default) or `first`: which word of a phrase is its head. |
 | `seed` | `stance` | Verb lemmas whose clause is held; each is also a seed. |
+| `seed` | `chain` | Verb lemmas that take a thing and then a bare verb that thing does (*see*, *make*, *let*); a relative's bare verb after one stays in the relative (§3). Each is also a seed. |
 | `vectors` | `role: amend_edge` | The header edge type from an amendment to its episode. |
 | `numbers` | `phrase_max_words` | Longest run of words bound to a known term. |
 | `ttdb-sphere` | `amend_lane` | The latitude amendments sit on. |
 | `responses` | `noted_mention`, `amended`, `amend_title` | A mention's verdict, an amendment's verdict, an amendment's title. |
 | `responses` | `noted_held` | A note naming what a tell held, `{triples}`. |
 
-A later language may declare its own marks, classes, `head` and `stance` verbs; it borrows
+A later language may declare its own marks, classes, `head`, `stance` and `chain` verbs; it borrows
 the role, the number and the lane like the rest (TTG-RFC-0001 §11). Merging two lexicons
 merges their `head` too, which is one more reason they are kept apart.
 
@@ -333,33 +381,34 @@ A store without the keys of §6 reads as before, except that the percept rules o
 every clause. A runtime that predates this RFC MUST ignore `shape:` lines in episodes (unknown
 block keys, TTG-RFC-0001 §12) and the `ttdb-amend` fence (TTCP-RFC-0001 §3), and will read a
 mention as a belief about the term `-` and a held percept as malformed; stores carrying
-mentions, held percepts or amendments need a runtime that implements this RFC. The published
-bAbI outcomes (tasks 1 and 15, every condition) are unchanged under the reference runtime.
+mentions, held percepts or amendments need a runtime that implements this RFC. A runtime
+implementing 0.3 or earlier skips a `?-` percept as malformed, which never believes it. The
+published bAbI outcomes (tasks 1 and 15, every condition) are unchanged under the reference
+runtime.
 
 ---
 
 ## 8. Open Questions
 
-1. **Finite or bare.** A relative closes at the next verb, so a perception chain inside one is
-   read wrongly: *the man that saw the cat eat cheese is tall* gives *eat* to the man, and the
-   chain then gives *is tall* to the cheese — a false belief. Telling *eat* from *ate* needs
-   the morphology to mark finite forms, which it does not yet.
-2. **Reported clauses after unlisted verbs.** A relative word after a verb's object begins a
-   reported clause only for `stance` verbs; after any other (*emailed*, *texted*) the clause
-   is read as an object relative. The gap rule of §3 keeps that from believing `cat sleep
-   man`, but the clause is still believed as said rather than held.
-3. **Phrasal verbs lose the gap.** *The cat that I saw in the garden sleeps* reads `self see_in
-   garden`: the preposition joins the verb, which then has an object of its own and does not
-   take the antecedent.
-4. **Held keeps no polarity.** *I doubt cats don't bark* holds `cat bark ?`; the `not` inside a
-   stance's clause is not kept. A held percept could carry a polarity of its own.
-5. **Bare object relatives.** A relative word that is also a determiner opens an object
-   relative only before a phrase starter or a pronoun, so *the dog that cats chase* and *the
-   cheese that Pixel has* are not read as one (the first believes `cat has_property fast` of
-   *…is fast*); *the dog which cats chase* is.
-6. **Re-reading the corpus.** A grammar change could write an amendment for every sentence
-   whose shape it changes, with a grammar hash per amendment, making grammar revision
-   (TTG-RFC-0001 §13.3) auditable.
+1. **A verb straight after a relative's own verb, with no thing between.** *Cats that hunt eat
+   mice* reads `[cats] that {hunt} [eat mice]`, `cat hunt mouse`: a content word after a
+   verbish segment is nounish, so the sentence's verb is lost. Telling *hunt | eat mice* from
+   *sing love songs* is lexical.
+2. **Clauses that complete a noun.** *The fact that the cat sleeps is known*: before the
+   sentence's verb, a verb the corpus has not used takes the gap (`cat sleep fact`) until the
+   corpus has it without a thing. The nouns that take a clause (*fact*, *idea*, *news*) could
+   be a list, as `stance` verbs are.
+3. **The plural present is bare in form.** With no verb after it, *the men that saw the cats
+   eat cheese* closes the relative at *eat*, the men eating: the only reading that gives the
+   sentence a verb.
+4. **A stranded preposition after the sentence's verb** fills the gap only when the corpus
+   gives the joined vector an object, so *I like the house that I live in* holds `self live_in
+   - ?`.
+5. **Spanish personal *a*.** *vio al gato* reads `ver_a gato`: the preposition that marks a
+   person or animal object joins the verb as a particle does.
+6. **Accepting a re-reading.** §5.1 reports and never writes; a page control that amends with
+   the new reading — one sentence, or every sentence under one grammar hash — is not yet
+   specified.
 
 ---
 
@@ -370,5 +419,6 @@ bAbI outcomes (tasks 1 and 15, every condition) are unchanged under the referenc
 | 2026-09-21 | Initial draft, from the personal_grimoire reference implementation |
 | 2026-09-21 | 0.2: relative clauses close at the next verb; `stance` verbs and `alt` lists hold what they introduce (polarity `?`); `head` and `premod` put a phrase's head where the language does; a `relative` word outranks `subord` in relative position. Open questions 1–4 of 0.1 answered or narrowed. |
 | 2026-09-21 | 0.3: a stack of open clauses — object relatives (*the dog that the cat chased*), a stance clause inside a relative, a relative inside a stance clause; a denied alternative is a denial of each; `aside_marks` let the owner leave words out of a reading, so a hedge can be said as fact; after a stance verb's thing a relative word opens a reported clause, and clause-taking verbs join the reference stance list. 0.2's open questions answered; new ones listed. |
+| 2026-09-22 | 0.4: a bare verb goes on with a relative's chain while a finite verb is still to come, or after a `chain` verb; an object relative whose gap no verb takes reports a held clause; a particle verb gives up its preposition for the gap, and a stranded preposition joins the verb; a determiner-relative before a bare thing and a verb opens an object relative; a held percept keeps its polarity (`?-`); `hav` before `cop` reads from the `cop`; §5.1 re-reading reports what a grammar now reads differently and writes nothing. 0.3's open questions answered; new ones listed. |
 
 *License: CC0*

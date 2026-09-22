@@ -79,7 +79,7 @@ segment begins.
 ## 4. Percepts
 
 ```
-percept: <sentence> | <subject> | <vector> | <object or -> | <+, - or ?> | <*, ~ or ->
+percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <*, ~ or ->
 ```
 
 - **Subjects** are the heads of the non-prepositional noun phrases before the predicate.
@@ -101,7 +101,7 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, - or ?> | <*, ~
 
 TTG-RFC-0005 §3 reads longer shapes as a chain — each verbish segment relates the nounish
 segments either side of it — and defines **mentions**: a percept whose subject or vector is
-`-`, counted and searchable, never believed. It also defines **held** percepts, polarity `?`:
+`-`, counted and searchable, never believed. It also defines **held** percepts, polarity `?` (or `?-`, a held denial):
 what an *or* joins or a stance verb takes, said but not asserted, and never believed either.
 
 **Divergence from TTDB-RFC-0006, stated.** The pair is subject→object, not before→after, and
@@ -134,7 +134,7 @@ declares marks, a `shape` line. The ordinal is one more
 than the largest existing longitude in the lane. An episode MUST NOT be modified after it is
 written. A consumer MUST skip, count and report malformed percept lines: fewer than six
 columns, a non-integer sentence, an empty subject, vector or object, or a polarity other than
-`+`, `-` or `?`. A subject or vector of `-` is well-formed: it is a mention; a polarity of `?`
+`+`, `-`, `?` or `?-`. A subject or vector of `-` is well-formed: it is a mention; a polarity of `?` or `?-`
 is well-formed: it is held (TTG-RFC-0005 §3). A
 correction to how a sentence was read is an amendment, kept beside the episode on
 `amend_lane` (TTG-RFC-0005 §5).
@@ -223,5 +223,6 @@ wrapping inside the bands). Coordinates are written with as many decimals as `st
 | 2026-09-13 | §5.1: only episode blocks on `episode_lane` are the owner's words. The reference runtime had quoted the fixture's sentence in search; found by a third-party embedding's review. |
 | 2026-09-21 | §3–§4 generalised by TTG-RFC-0005 (shapes); §5.1 gains the `shape:` line, mentions and amendments; §7.1 answered by amendments. |
 | 2026-09-21 | §4, §5.1: polarity `?` for held percepts (TTG-RFC-0005 0.2). |
+| 2026-09-22 | §4, §5.1: polarity `?-`, a held denial (TTG-RFC-0005 0.4). |
 
 *License: CC0*

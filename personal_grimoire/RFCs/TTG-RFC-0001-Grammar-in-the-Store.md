@@ -90,6 +90,10 @@ A word the owner has used as a verb is recognised as a VECTOR term regardless of
 `stance: <verb lemmas>` — seeds whose complement clause the speaker does not assert
 (*think*, *doubt*, *say*); what such a verb takes is held (TTG-RFC-0005 §3).
 
+`chain: <verb lemmas>` — seeds that take a thing and then a bare verb that thing does (*see*,
+*make*, *let*: *saw the cat eat*); inside a relative, a bare verb after one goes on with the
+relative (TTG-RFC-0005 §3).
+
 ---
 
 ## 6. `kind: vectors`
@@ -213,9 +217,11 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 2. **Linking words across languages.** A rule links vectors (`cazar X Y => chase X Y`,
    TTG-RFC-0003 §3.1) and `is_a` links terms, one direction and one pair at a time. A store-wide
    translation table would need its own kind.
-3. **Grammar revision.** Episodes are perceived under the grammar of their day. An amendment
-   (TTG-RFC-0005 §5) is how a re-reading is recorded; whether a grammar change should write
-   one for every sentence it reads differently is open.
+3. **Grammar revision.** Episodes are perceived under the grammar of their day. A re-reading
+   (TTG-RFC-0005 §5.1) reports every sentence a changed grammar reads differently, under a
+   hash of the grammar records, and writes nothing: an amendment is the owner's, so a new
+   reading stands only when the owner amends with it. How a page offers that acceptance is
+   open.
 
 ---
 
@@ -231,5 +237,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-09-21 | For shapes and amendments (TTG-RFC-0005): the `relative` and `infinitive` classes and the two mark keys in §3, the `amend_edge` role in §6, three reply keys in §8, `phrase_max_words` and `amend_lane` in §9. |
 | 2026-09-21 | For held sayings and head position (TTG-RFC-0005 0.2): the `alt` and `premod` classes and the `head` key in §3, `stance` in §5, `noted_held` in §8. |
 | 2026-09-21 | `aside_marks` in §3 (TTG-RFC-0005 0.3). |
+| 2026-09-22 | `chain` in §5 (TTG-RFC-0005 0.4); open question 3 narrowed by re-reading. |
 
 *License: CC0*

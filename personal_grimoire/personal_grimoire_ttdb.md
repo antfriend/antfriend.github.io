@@ -209,16 +209,19 @@ src: RFCs/TTG-RFC-0005-Shapes-and-Amendments.md §3
 A **percept** is one typed, directed claim: a THING, a VECTOR, and a THING or nothing.
 
 ```
-percept: <sentence> | <subject> | <vector> | <object or -> | <+, - or ?> | <* all, ~ some, or ->
+percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <* all, ~ some, or ->
 ```
 
 - **Chain** → each verbish segment takes the nounish segment on its left as subject and the
   one on its right as object: `N1 V1 N2 V2 N3` is `(N1 V1 N2)` and `(N2 V2 N3)` — *I saw
   the man eat cheese* is `self see man` and `man eat cheese`. A relative clause closes at the
   next verb, which goes back to its antecedent: *cats that chase mice are fast* is about cats.
-  A relative with a subject of its own takes the antecedent as object: *the dog that the cat
-  chased* is `cat chase dog`. A phrase's head is its last word or its first, as the lexicon's
-  `head:` says.
+  A bare verb goes on with the relative instead while a finite verb is still to come, or
+  after a `chain` verb: *the man that saw the cat eat cheese is tall* is `cat eat cheese` and
+  a tall man. A relative with a subject of its own takes the antecedent as object (*the dog
+  that the cat chased* is `cat chase dog`) when the verb takes a thing; when none does, it
+  was a reported clause, and is held. A phrase's head is its last word or its first, as the
+  lexicon's `head:` says.
 - **Verb** → its verbs and particles joined by `phrasal_join`: *live in houses* →
   `live_in | house`, *want to eat cheese* → `want_to_eat | cheese`. No object → `-`.
 - **Copula** → a `phrase:` from [vector algebra](lat-40lon0) at the start of the complement
@@ -236,10 +239,12 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, - or ?> | <* al
   [Mentions are not evidence](lat98lon6): they are searchable and never become beliefs.
 - **Mention** → a subject or vector of `-`. *Coffee.* is `coffee | - | -`; *Feed the cat.*
   is `- | feed | cat`. Counted in `seen`, searchable, never a belief.
-- **Held** → polarity `?`: whatever a list or clause joined by an `alt` word says (*a cat or
-  a dog*), and the clause a `stance` verb takes (*I doubt* — *cats like fish*). Said but not
-  asserted: written and seen like a mention, never a belief, never a contradiction. A denied
-  alternative is not held but denied, each member: *not a cat or a dog*.
+- **Held** → polarity `?`, or `?-` for a held denial: whatever a list or clause joined by an
+  `alt` word says (*a cat or a dog*), the clause a `stance` verb takes (*I doubt* — *cats
+  like fish*), and a clause a relative word reports (*I emailed the man that* — *the cat
+  sleeps*). Said but not asserted: written and seen like a mention, never a belief, never a
+  contradiction. A denied alternative is not held but denied, each member: *not a cat or a
+  dog*.
 
 Percepts live in the episode that perceived them, beside the `said:` line they came from.
 An episode is written once and **never rewritten**; it is the owner's episodic memory, and
@@ -457,6 +462,7 @@ with `;globalThis.<name> = PG;` appended (`tools/harness.mjs` does exactly this 
 | `shapeText(S, items)` | the shape those items make, in the grammar's marks | — |
 | `readingsOf(S, episodeId)` | `[{ n, text, shape, amended }]`: each sentence with the reading that stands | — |
 | `amendReply(S, episodeId, n, shape, now)` | a reply as for a tell, or `null`; `amend(…)` returns the bare write | the episode's amendment record, terms, the cursor |
+| `reread(S)` | `{ grammar, sentences, changed }`: each sentence the grammar now reads differently from its episode, as `{ episode, n, text, amended, shape, reads, was, now }` (`shape` is `null` for an episode written before shapes), under a hash of the grammar records | — |
 | `interpret(S, text)` | `{ intent, purchase, … }` without acting | — |
 | `verify(S, s, v, o)`, `objectsOf(S, s, [v])`, `subjectsOf(S, v, o)`, `portrait(S, lemma)`, `searchSaid(S, [lemma])` | raw reasoning, lemmas in | — |
 
@@ -694,12 +700,16 @@ src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §5
 Common verb lemmas, so the parser recognises a predicate before the owner has used it
 twice. It is a head start and nothing more: once the owner uses a word as a verb it is a
 VECTOR term, and the corpus recognises it without this list. Words here that are also
-nouns (*fly*, *play*, *work*) are resolved by position, not by membership.
+nouns (*fly*, *play*, *work*) are resolved by position, not by membership. `stance` verbs
+take a clause the speaker does not assert; `chain` verbs take a thing and then a bare verb
+that thing does (*saw the cat eat*), which is how a relative knows to keep such a verb
+([TTG-RFC-0005 §3](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md)).
 
 ```ttdb-grammar
 kind: seed
 seed: eat drink like love hate want need know think believe see hear feel make give take get find keep hold bring buy sell use help build write read say tell call show teach learn play work move run walk swim fly climb jump sleep live grow chase hunt catch fight fear avoid protect cause produce create contain include carry own lose win change become follow lead open close start stop begin end enjoy prefer remember forget visit meet watch wear sing cook bake drive ride travel study speak mean seem hide bite kill save pay send cut draw paint dream wish hope miss plan try purr bark smell taste lay sit stand fall wake throw lie belong depend
 stance: think believe doubt suppose guess hope wish wonder fear suspect imagine assume expect pretend dream say claim tell show warn remind promise convince persuade inform assure
+chain: see hear watch feel notice make let help
 ```
 
 ---
@@ -957,6 +967,7 @@ verb_irregular: digo dices dice decimos dicen | decir
 verb_irregular: sé sabes sabe sabemos saben | saber
 verb_irregular: creo | creer
 verb_irregular: persigo persigues persigue perseguimos persiguen | perseguir
+verb_irregular: vi viste vio vimos vieron | ver
 verb: ando | ar
 verb: iendo | er | ir
 verb: ado | ar
@@ -988,6 +999,7 @@ kind: seed
 lang: es
 seed: comer beber gustar amar odiar querer necesitar saber conocer pensar creer ver oír sentir hacer dar tomar tener encontrar traer comprar vender usar ayudar construir escribir leer decir llamar enseñar aprender jugar trabajar correr caminar nadar volar saltar crecer cazar perseguir atrapar temer evitar proteger causar crear contener llevar perder ganar cambiar seguir abrir cerrar empezar terminar disfrutar preferir recordar olvidar visitar mirar cantar cocinar viajar estudiar hablar vivir dormir morder pagar dibujar pintar soñar esperar ronronear ladrar oler caer despertar pertenecer
 stance: creer pensar dudar suponer esperar desear temer sospechar imaginar soñar decir negar
+chain: ver oír mirar sentir hacer dejar ayudar
 ```
 
 ---
@@ -1930,12 +1942,12 @@ so a wrong merge can at least be seen.
 
 ---
 
-@LAT98LON5 | created:1789257600 | updated:1789948800 | relates:supports@LAT20LON0,supports@LAT30LON0
+@LAT98LON5 | created:1789257600 | updated:1790035200 | relates:supports@LAT20LON0,supports@LAT30LON0
 [ew]
 conf:70
 rev:1
 sal:190
-touched:1789948800
+touched:1790035200
 [/ew]
 
 **BELIEF — What the parser cannot see, and why that list is the roadmap.**
@@ -1947,17 +1959,21 @@ infinitives and one-word sentences — *mice that eat cheese*, *saw the man eat 
 *fly, swim and sing*. Relative and stance clauses open inside the chain and close again:
 *cats that chase mice are fast* is about cats, *the dog that the cat chased* is chased, and
 *the man that says cats bark is tall* is a tall man. What a sentence says without asserting it
-is **held**, written and never believed: the members of an *or*, unless it is denied (*not a
-cat or a dog* is neither), and the clause after a stance verb (*I doubt cats like fish*). An
-aside is left out of a reading, so a hedge can be said as fact. A phrase's head is where the
-lexicon says: last in English, first in Spanish. It still does not see:
+is **held**, written and never believed, keeping its own *not*: the members of an *or*,
+unless it is denied (*not a cat or a dog* is neither), the clause after a stance verb (*I
+doubt cats don't like fish*), and a clause reported after a thing (*I emailed the man that
+the cat sleeps*). A bare verb goes on with a relative's chain while the sentence still waits
+for its own (*the man that saw the cat eat cheese is tall* is a tall man). An aside is left
+out of a reading, so a hedge can be said as fact. A phrase's head is where the lexicon says:
+last in English, first in Spanish. It still does not see:
 
-- **Finite from bare** — a perception chain inside a relative (*the man that saw the cat eat
-  cheese is tall*) gives *eat* to the man and *is tall* to the cheese.
+- **Which verbs take a thing** — whether a relative word's antecedent is the object of the
+  verb after it leans on what the owner has already said; before that, *the fact that the
+  cat sleeps* is a fact slept.
+- **A verb straight after a relative's own** — *cats that hunt eat mice* hunts mice.
 - **Modifiers** — *black cats* is *cats*; the adjective is dropped unless the owner binds the
   phrase into one term (`black_cat`).
 - **Tense and modality** — *birds fly*, *birds flew* and *birds might fly* are one percept.
-- **Held polarity** — *I doubt cats don't bark* holds `cat bark`; the *not* inside is lost.
 - **Word order other than a chain**, and questions that invert it beyond the forms in
   [question forms](lat-50lon0).
 - **Numbers, dates and names with spaces** — *New York* is two things until the owner writes
