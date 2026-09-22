@@ -117,6 +117,8 @@ form{border-top:1px solid var(--line);padding:10px 12px 12px}
 .shape .tok.u{text-decoration:underline dotted var(--dead)}
 .shape .tok.sel{background:var(--accent);color:var(--bg);text-shadow:none}
 .shape .mk{color:var(--warn);margin-right:2px}
+.shape.re,.purchase.re{opacity:.85}
+.shape .mk.re{color:var(--accent)}
 .shape .tools{display:inline-flex;flex-wrap:wrap;gap:4px;margin-left:4px}
 .shape .tools button{padding:0 8px;font-size:.72rem}
 /* under a reply a reading takes a margin sigil like the grounds do: the sentence, as read */
@@ -245,7 +247,8 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
     <div id="log" aria-live="polite" data-quota="The browser refused to save the store (storage is full or blocked). Download it to keep what was added."></div>
     <form id="askform" autocomplete="off">
       <div id="preview" data-nounish="thing" data-verbish="vector" data-aside="aside" data-join="one term / split" data-keep="keep this reading"
-        data-amended="read as you marked it"></div>
+        data-amended="read as you marked it" data-reread="the grammar now reads it this way" data-accept="take this reading"
+        data-accepted="the grammar's reading, which you took"></div>
       <textarea id="q" rows="2" placeholder="Tell it something, or ask it something. Drop .md or .txt files here to feed them in."></textarea>
       <div class="row">
         <button type="submit" class="primary">Send</button>
@@ -483,6 +486,7 @@ function loadGrammar(st, lang){
     questionMark:"", listSep:"", genericDet:new Set(), marks:{}, headFirst:false,
     nounIrr:new Map(), nounKeep:new Set(), plural:[], pluralGuard:[], verbIrr:new Map(), verb:[], verbGuard:[],
     doubleKeep:new Set(), minStem:NaN, seed:new Set(), stance:new Set(), chain:new Set(), progressive:[], participle:[],
+    bareEnding:[], bareFinite:null, stanceNoun:new Set(), motion:new Set(), objectMark:new Set(),
     roles:{}, vectors:new Map(), inherits:[], phrases:[],
     whThing:new Set(), whPlace:new Map(), whReason:new Set(), about:new Set(), describeMax:NaN,
     say:{}, units:{}, num:{}, sphere:{}, maxReply:NaN, loaded:[], ruleLines:[], rules:[], ruleErrors:[]
@@ -514,6 +518,8 @@ function loadGrammar(st, lang){
       }
       // which word of a phrase is its head: the last (the default) or the first
       G.headFirst = String(b.head || "").trim() === "first";
+      // a preposition that marks a thing as a verb's object rather than a place (ve a Pixel)
+      for (const w of words(b.object_mark)) G.objectMark.add(w);
     } else if (b.kind === "morphology"){
       for (const line of many(b, "noun_irregular")){ const c = cols(line); for (const w of words(c[0])) G.nounIrr.set(w, c[1]); }
       for (const w of words(b.noun_keep)) G.nounKeep.add(w);
@@ -527,12 +533,19 @@ function loadGrammar(st, lang){
       G.minStem = +b.min_stem;
       G.progressive.push(...words(b.progressive_ending));
       G.participle.push(...words(b.participle_ending));
+      // what a bare verb ends in, and which subjects its bare form is finite for (TTG-RFC-0005 §3)
+      G.bareEnding.push(...words(b.bare_ending));
+      if (b.bare_finite != null) G.bareFinite = new Set(words(b.bare_finite).filter(w => w !== "-"));
     } else if (b.kind === "seed"){
       for (const line of many(b, "seed")) for (const w of words(line)) G.seed.add(w);
       // a stance verb is a seed whose clause is held, not believed (TTG-RFC-0005 §3)
       for (const w of words(b.stance)){ G.seed.add(w); G.stance.add(w); }
       // a chain verb takes a thing and then a bare verb that thing does: saw the cat eat (TTG-RFC-0005 §3)
       for (const w of words(b.chain)){ G.seed.add(w); G.chain.add(w); }
+      // a noun whose clause is held, as a stance verb's is: the idea that cats bark
+      for (const w of words(b.stance_noun)) G.stanceNoun.add(w);
+      // a verb that goes somewhere, after which an object mark is a preposition of place (va a Madrid)
+      for (const w of words(b.motion)){ G.seed.add(w); G.motion.add(w); }
     } else if (b.kind === "vectors"){
       const algebra = !later || x.lang === first, named = x.lang === want;
       if (algebra){
@@ -895,10 +908,13 @@ function labelTokens(S, T){
   const thingy = t => !!t && !t.punct && (t.force ? t.force === "N" : has(t, "self") || has(t, "anaphor") || (isContent(t) && !isVerbish(S, t)));
   const verbAhead = i => { for (let k = i; k < T.length && !(T[k].punct && T[k].w !== G.listSep); k++) if (vStartTok(S, T[k])) return true; return false; };
   // before a verb (los gatos que cazan), before a phrase and then a verb (el perro que el gato persigue),
-  // or before a bare thing and a verb straight after it (el perro que gatos persiguen)
-  const relAt = i => has(T[i], "relative") && thingy(T[i - 1]) && (vStartTok(S, T[i + 1]) ||
-    (!!T[i + 1] && !T[i + 1].punct && (starts(T[i + 1]) || has(T[i + 1], "self") || has(T[i + 1], "anaphor")) && verbAhead(i + 2)) ||
-    (thingy(T[i + 1]) && vStartTok(S, T[skipSoft(T, i + 2)])));
+  // or before a bare thing and a verb straight after it (el perro que gatos persiguen); after a stance
+  // noun's preposition, only before a clause of its own (la idea de que los gatos ladran)
+  const clauseAfter = i => (!!T[i + 1] && !T[i + 1].punct && (starts(T[i + 1]) || has(T[i + 1], "self") || has(T[i + 1], "anaphor")) && verbAhead(i + 2)) ||
+    (thingy(T[i + 1]) && vStartTok(S, T[skipSoft(T, i + 2)]));
+  const nounOf = t => thingy(t) && G.stanceNoun.has(nounLemma(S, t.w).lemma);
+  const relAt = i => has(T[i], "relative") && ((thingy(T[i - 1]) && (vStartTok(S, T[i + 1]) || clauseAfter(i))) ||
+    (has(T[i - 1], "prep") && nounOf(T[i - 2]) && clauseAfter(i)));
   for (let i = 0; i < T.length; i++){
     const t = T[i];
     if (!t.force && ((t.punct && t.w !== G.listSep) || (has(t, "subord") && !relAt(i)) || has(t, "filler"))) L[i] = "L";
@@ -934,12 +950,28 @@ function labelTokens(S, T){
  * clause — so "a good drink" stays a thing.                                */
 function labelClause(S, T, L, a, b){
   const G = S.G;
-  let prev = "", nBegun = false, vSeen = false, bareV = false, afterR = false, takes = false, orel = false, gapV = false;
+  let prev = "", nBegun = false, vSeen = false, bareV = false, afterR = false, takes = false, orel = false, gapV = false, relFirst = false, relV = false;
   const free = j => j < b && !T[j].force;
   const hard = j => { while (j < b && !T[j].force && soft(T[j])) j++; return j; };
   const stanceIn = (i, j) => T.slice(i, j).some(t => isContent(t) && !t.synthetic && G.stance.has(verbLemma(S, t.w).lemma));
   // after an object relative's verb one more verb may follow straight on: the dog that the cat chased | ran
-  const setV = (i, j) => { for (let k = i; k < j; k++) if (!T[k].force) L[k] = "V"; prev = "V"; nBegun = false; vSeen = true; bareV = false; afterR = false; takes = stanceIn(i, j); gapV = orel; orel = false; };
+  // a verb the owner's words already give a thing: what follows it is more likely that thing
+  const withThingIn = (i, j) => T.slice(i, j).some(t => isContent(t) && !t.synthetic && (S.byVector.get(verbLemma(S, t.w).lemma) || []).some(e => e.o !== "-"));
+  const setV = (i, j) => {
+    for (let k = i; k < j; k++) if (!T[k].force) L[k] = "V";
+    // a relative's own verb, on a thing before the clause has its verb: cats that {hunt}
+    relV = afterR && relFirst && !withThingIn(i, j);
+    prev = "V"; nBegun = false; vSeen = true; bareV = false; afterR = false; takes = stanceIn(i, j); gapV = orel; orel = false;
+  };
+  // another verb before the clause ends, a list goes on, or a new clause is joined: the one the clause is waiting for
+  const verbAfter = i => {
+    for (let k = i + 1; k < b; k++){
+      const x = T[k];
+      if (x.punct || has(x, "conj") || has(x, "relative") || has(x, "subord")) return false;
+      if (vStartTok(S, x)) return true;
+    }
+    return false;
+  };
   const verbish = k => vStartTok(S, T[k]) || (isContent(T[k]) && !T[k].synthetic && G.participle.includes(verbLemma(S, T[k].w).end));
   // a relative word before a thing and then a verb opens an object relative: the dog that [the cat] {chased}.
   // One that is also a determiner opens one before a bare word only when a thing precedes it and a verb
@@ -963,6 +995,8 @@ function labelClause(S, T, L, a, b){
       if (!free(j)) return h + 1;
       const k = hard(j + 1);
       if (has(T[j], "infinitive") && free(k) && verbWord(k)){ h = k; continue; }
+      // an object mark marks the verb's thing, unless the verb goes somewhere (persigue | a los ratones, va a Madrid)
+      if (G.objectMark.has(T[j].w) && isContent(T[h]) && !G.motion.has(verbLemma(S, T[h].w).lemma)) return h + 1;
       if (has(T[j], "prep") && j + 1 < b && nStartTok(T[j + 1])) return j + 1;
       if (orel && has(T[j], "prep") && (j + 1 >= b || T[j + 1].punct || vStartTok(S, T[j + 1]))) return j + 1;
       return h + 1;
@@ -998,12 +1032,12 @@ function labelClause(S, T, L, a, b){
     const t = T[i], j = hard(i + 1);
     if (t.force){
       L[i] = t.force;
-      if (t.force === "V"){ takes = stanceIn(i, i + 1) || (prev === "V" && takes); gapV = orel || (prev === "V" && gapV); orel = false; prev = "V"; nBegun = false; vSeen = true; }
+      if (t.force === "V"){ takes = stanceIn(i, i + 1) || (prev === "V" && takes); gapV = orel || (prev === "V" && gapV); orel = false; relV = false; prev = "V"; nBegun = false; vSeen = true; }
       else if (!soft(t)){ prev = "N"; if (isContent(t) || has(t, "self") || has(t, "anaphor")) nBegun = true; }
       bareV = afterR = false; i++; continue;
     }
     if (soft(t)){ L[i] = "?"; i++; continue; }
-    if (has(t, "relative") && prev === "N" && j < b && !T[j].punct && (T[j].force ? T[j].force === "V" : verbish(j))){ L[i] = "R"; afterR = true; i++; continue; }
+    if (has(t, "relative") && prev === "N" && j < b && !T[j].punct && (T[j].force ? T[j].force === "V" : verbish(j))){ L[i] = "R"; afterR = true; relFirst = !vSeen; i++; continue; }
     if (has(t, "relative") && prev === "N" && j < b && objRel(t, T[j], i, j)){ L[i] = "R"; orel = true; i++; continue; }
     if (has(t, "conj") || (t.punct && t.w === G.listSep)){
       if (prev === "V" && j < b && vStartTok(S, T[j])){ L[i] = "V"; bareV = true; i++; continue; }        // fly and swim
@@ -1026,6 +1060,9 @@ function labelClause(S, T, L, a, b){
     if (i === hard(a) && isContent(t) && !t.synthetic && stanceIn(i, i + 1) && n && !n.punct && !n.force &&
         (starts(n) || has(n, "self") || has(n, "anaphor") || has(n, "subord") || has(n, "relative"))){ const e = tail(i); setV(i, e); i = e; continue; }
     if (gapV && isContent(t) && !t.synthetic && isVerbish(S, t)){ const e = tail(i); setV(i, e); i = e; continue; }
+    // after a relative's own verb with no thing of its own, a verb straight after it is the clause's, when no
+    // other verb is to come: cats that {hunt} {eat} mice, but birds that {sing} [love songs] {are} happy
+    if (relV && prev === "V" && isContent(t) && !t.synthetic && isVerbish(S, t) && !verbAfter(i)){ const e = tail(i); setV(i, e); i = e; continue; }
     if (isContent(t) && !t.synthetic && (nBegun || bareV) && !afterStart(i)){
       const later = vSeen && !bareV && !afterR && !takes && !orel;
       const cued = !bareV && nBegun && i + 1 < b && starts(T[i + 1]);
@@ -1118,12 +1155,14 @@ function verbItems(S, toks, gap){
     const preds = [];
     let p = [], verbed = false;
     it.forEach((t, q) => {
-      // after an object relative's verb, a second verb straight after it is the next predicate too;
-      // so is one after its have or be, unless a verb follows that (the cheese that Pixel has | is old,
-      // but has been eating)
-      const next = gap && isContent(t) && isContent(p[p.length - 1]);
+      // after a relative's verb, a second verb straight after it is the next predicate too; so is one
+      // after its have or be, unless a verb follows that (the cheese that Pixel has | is old, but has been
+      // eating). Soft words between the two are the second's: cats that hunt | often eat mice
+      let cut = p.length;
+      while (cut > 0 && soft(p[cut - 1])) cut--;
+      const next = gap && isContent(t) && isContent(p[cut - 1]);
       const ends = verbed === true || (verbed === "light" && !isContent(it[q + 1]));
-      if (verbed && (next || (ends && (has(t, "aux") || has(t, "modal") || has(t, "cop") || has(t, "hav"))))){ preds.push(p); p = []; verbed = false; }
+      if (verbed && (next || (ends && (has(t, "aux") || has(t, "modal") || has(t, "cop") || has(t, "hav"))))){ preds.push(p.slice(0, cut)); p = p.slice(cut); verbed = false; }
       p.push(t);
       if (isContent(t)) verbed = true;
       else if (gap && !verbed && (has(t, "hav") || has(t, "cop"))) verbed = "light";
@@ -1135,13 +1174,14 @@ function verbItems(S, toks, gap){
 /* A verb in the form the store names it by — eat, comer — or wearing a
  * progressive ending with no auxiliary before it, is bare: it is not finite,
  * so it need not be a clause's own verb (TTG-RFC-0005 §3). Ate, eats and is
- * are finite. The plural present looks bare, which is why bareness alone
- * never keeps a relative open.                                             */
+ * are finite. Where the morphology declares `bare_ending`, a bare form also
+ * wears one (comer, not the unlemmatised cazaron). Whether a bare form can
+ * be finite at all, and for which subjects, is `bare_finite`.              */
 function bareOf(S, toks){
-  const t = toks.find(x => !x.punct && !soft(x) && !has(x, "infinitive"));
+  const G = S.G, t = toks.find(x => !x.punct && !soft(x) && !has(x, "infinitive"));
   if (!isContent(t) || t.synthetic) return false;
   const v = verbLemma(S, t.w);
-  return v.lemma === t.w || S.G.progressive.includes(v.end);
+  return (v.lemma === t.w && (!G.bareEnding.length || G.bareEnding.some(e => t.w.endsWith(e)))) || G.progressive.includes(v.end);
 }
 function clausesOf(L){
   const out = [];
@@ -1178,12 +1218,15 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
   runs.forEach((r, k) => {
     r.alt = r.toks.some(t => has(t, "alt"));        // cats or dogs, fly or swim: one of them, not each
     if (r.cls === "V"){
-      r.items = verbItems(S, r.toks, k > 0 && runs[k - 1].orel);
+      // an object relative's verbs, and a relative's own, split where a second verb follows the first
+      r.items = verbItems(S, r.toks, (k > 0 && runs[k - 1].orel) || r.rel);
       r.stance = r.items.some(ps => G.stance.has(ps[ps.length - 1].head));
       r.chain = r.items.some(ps => ps.some(p => G.chain.has(p.head)));
       return;
     }
     const nps = nounPhrases(S, r.toks, 0, r.toks.length);
+    // straight after a verb, an object mark is not a preposition: persigue a los ratones is about ratones
+    if (k > 0 && runs[k - 1].cls === "V" && nps.length && G.objectMark.has(nps[0].prep)) nps[0] = { ...nps[0], prep:null };
     let lead, rest;
     if (firstV < 0 || k < firstV){ lead = nps.filter(np => !np.prep); rest = nps.filter(np => np.prep); }
     else if (nps.length && nps[0].prep){ lead = []; rest = nps; }
@@ -1213,14 +1256,20 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
     const from = q === k ? pi + 1 : x.rel || runs[q - 1].orel ? 1 : 0;
     return x.items.some(ps => ps.slice(from).some(p => !p.bare));
   });
+  // the bare form is finite only for the subjects the grammar says (TTG-RFC-0005 §3): I eat, cats eat, not the cat eat
+  const agrees = run => !G.bareFinite || !!run && ((G.bareFinite.has("plural") && (run.members.length > 1 || run.members.some(m => m.h.changed))) ||
+    (G.bareFinite.has("self") && run.members.some(m => m.h.self)));
+  const stanceNoun = run => !!run && run.members.some(m => G.stanceNoun.has(m.h.lemma));
   let top = open("main", null, null);
   const acts = [];
   runs.forEach((r, k) => {
     if (r.cls === "N"){
-      // told the man that [the cat] sleeps: after a stance verb's thing the relative word opens its clause,
-      // and the stance keeps its thing; the dog that [the cat] chased: a relative with a subject of its own
-      if (r.orel && takesNow(top)) top = open("comp", top, r);
-      else if (r.orel) top = open("rel", top, r, { gap:top.last, sure:!top.lastV, on:takesNow(top) ? top.lastV : null });
+      // the dog that [the cat] chased: a relative with a subject of its own, whose gap is the antecedent. The gap
+      // is sure before the clause's own verb, or when a finite verb is still to come for it; after a stance
+      // verb's thing it may instead be the clause the stance reports (I told the man that the cat sleeps).
+      // A stance noun's clause is reported, never a relative: the idea that [cats] bark
+      if (r.orel && stanceNoun(top.last)) top = open("rel", top, r, { gap:null, reported:true, on:takesNow(top) ? top.lastV : null });
+      else if (r.orel) top = open("rel", top, r, { gap:top.last, sure:!top.lastV || finiteLater(k, 0), on:takesNow(top) ? top.lastV : null });
       else top.last = r;
       return;
     }
@@ -1237,7 +1286,8 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
         // still to come (the man that saw the cat eat cheese is tall), or has its verb and the relative's
         // is a chain verb (I like the man that saw the cat eat cheese); its subject is the relative's last
         // thing, or the gap the verb before it took (the cat that I saw eat cheese is fat)
-        if (bare && (needs(home) ? finiteLater(k, pi) : top.lastV.chain)) subj = pi > 0 && top.gap ? top.gap : top.last;
+        // — and when the bare form cannot be finite for what it would close back to (the man that saw the cat eat cheese.)
+        if (bare && (needs(home) ? finiteLater(k, pi) || !agrees(home.last) : top.lastV.chain)) subj = pi > 0 && top.gap ? top.gap : top.last;
         else {
           // any other verb after a relative's own closes it, and any it holds, back to what the outermost
           // hangs from: cats that chase mice are fast; the man that says cats bark is tall
@@ -1264,9 +1314,9 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
     if (!subjects.length) subjects = [{ lemma:"-", quant:"-" }];
     const objects = right && !r.takes ? right.members : [];
     if (!out.subjects){ out.subjects = subjects; firstObjects = objects; }
-    // the gap is the antecedent: before the sentence's own verb unless the owner's words never give the
-    // verb a thing (the dog that the cat chased ran; not the fact that the cat sleeps), after it only
-    // for a verb they already give one. A verb whose own thing comes after a preposition gives the
+    // the gap is the antecedent: where it is sure, unless the owner's words never give the verb a thing
+    // (the dog that the cat chased ran; not the fact that the cat sleeps), elsewhere for a verb they already
+    // give one or a stranded preposition. A verb whose own thing comes after a preposition gives the
     // preposition up for the gap: the cat that I saw in the garden is `see cat`, beside the garden
     let filled = false;
     const reads = r.items.map(preds => {
@@ -1274,7 +1324,10 @@ function readClause(S, T, L, idx, ctx, inherited, hold){
       if (!P) return null;
       const d = { P, os:pi === preds.length - 1 ? objects : [], from:right, vector:P.vector, vform:P.vform, beside:[] };
       if (a.gap && (P.kind === "verb" || P.kind === "hav")){
-        const wants = v => P.kind === "hav" || withThing(v) || (a.gap.sure && !without(v));
+        // a preposition with nothing after it has lost its thing to the gap (the house that I live in), unless
+        // the relative word may be reporting a stance verb's clause (I told the man that the cat came in)
+        const stranded = !d.os.length && !!P.stem && !a.gap.on;
+        const wants = v => P.kind === "hav" || withThing(v) || (a.gap.sure && !without(v)) || stranded;
         let take = !d.os.length && wants(P.vector);
         if (!take && d.os.length && P.stem && wants(P.stem.vector)){ d.beside = d.os; d.vector = P.stem.vector; d.vform = P.stem.vform; take = true; }
         if (take){ d.os = a.gap.gap.members; d.from = a.gap.gap; filled = true; }
@@ -1809,9 +1862,10 @@ function amendEntries(block){
     const line = raw.trim(), i = line.indexOf(":");
     if (i < 0) continue;
     const k = line.slice(0, i).trim(), v = line.slice(i + 1).trim(), n = +cols(v)[0];
-    if (k !== "shape" && k !== "percept") continue;
-    if (!m.has(n)) m.set(n, { shape:"", lines:[] });
-    if (k === "shape") m.get(n).shape = v.slice(v.indexOf("|") + 1).trim(); else m.get(n).lines.push(v);
+    if (k !== "shape" && k !== "percept" && k !== "grammar") continue;
+    if (!m.has(n)) m.set(n, { shape:"", lines:[], grammar:null });
+    const rest = v.slice(v.indexOf("|") + 1).trim();
+    if (k === "shape") m.get(n).shape = rest; else if (k === "grammar") m.get(n).grammar = rest; else m.get(n).lines.push(v);
   }
   return m;
 }
@@ -1824,7 +1878,7 @@ function readingsOf(S, epId){
   const own = lineMap(many(parseBlock(c.rec.episode), "shape")), am = S.amends.get(c.rec.lon);
   return [...(S.said.get(c.rec.id) || new Map())].map(([n, text]) => {
     const e = am && am.entries.get(n);
-    return { n, text, shape:e ? e.shape : own.get(n) || shapeOf(S, text).shape, amended:!!e };
+    return { n, text, shape:e ? e.shape : own.get(n) || shapeOf(S, text).shape, amended:!!e, grammar:e ? e.grammar : null };
   });
 }
 /* The grammar a reading was made under, named by its records' text. */
@@ -1832,15 +1886,18 @@ function grammarHash(S){
   const t = grammarRecords(S.st).recs.map(x => x.r.grammar).join("\n");
   return [fnv(t), fnv(t + "#")].map(h => h.toString(16).padStart(8, "0")).join("");
 }
-/* Re-reading (TTG-RFC-0005 §5.1): every sentence of every episode read again
- * from its words, in context, under the grammar the store holds now, beside
- * the reading the episode wrote. Nothing is written: a grammar's new opinion
- * of a sentence is not the owner's, so it stands only when the owner amends
- * with it. `amended` says the owner has already ruled on that sentence.     */
-function reread(S){
+/* Re-reading (TTG-RFC-0005 §5.1): every sentence of every episode (or of one)
+ * read again from its words, in context, under the grammar the store holds
+ * now, beside the reading the episode wrote. Nothing is written: a grammar's
+ * new opinion of a sentence is not the owner's, so it stands only when the
+ * owner amends with it — amend(…, grammar) records that it was the grammar's.
+ * `amended` says the owner has ruled on that sentence; `accepted`, that the
+ * ruling is this very reading.                                             */
+function reread(S, epId){
   const changed = [];
   let sentences = 0;
-  for (const c of S.episodes){
+  const one = epId ? episodeOf(S, epId) : null;
+  for (const c of one ? [one] : epId ? [] : S.episodes){
     const said = S.said.get(c.rec.id);
     if (!said) continue;
     const b = parseBlock(c.rec.episode), own = lineMap(many(b, "shape")), am = S.amends.get(c.rec.lon), ctx = { last:null };
@@ -1850,15 +1907,18 @@ function reread(S){
       const was = many(b, "percept").filter(l => +cols(l)[0] === n).map(l => cols(l).join(" | "));
       // an episode written before shapes has none to compare; its percepts still are
       const now = r.percepts.map(p => perceptLine(n, p)), shape = own.has(n) ? own.get(n) : null;
+      const e = am && am.entries.get(n);
       if ((shape !== null && r.shape !== shape) || now.join("\n") !== was.join("\n"))
-        changed.push({ episode:c.rec.id, n, text, amended:!!(am && am.entries.has(n)), shape, reads:r.shape, was, now });
+        changed.push({ episode:c.rec.id, n, text, amended:!!e, accepted:!!e && e.shape === r.shape, shape, reads:r.shape, was, now });
     }
   }
   return { grammar:grammarHash(S), sentences, changed };
 }
-function amend(S, epId, n, shape, now){
+/* `grammar`, if given, says the owner took the reading a re-reading offered
+   under that grammar hash (TTG-RFC-0005 §5.1); it must be the store's now.  */
+function amend(S, epId, n, shape, now, grammar){
   const c = episodeOf(S, epId), said = c && S.said.get(c.rec.id);
-  if (!c || !said || !said.has(n)) return null;
+  if (!c || !said || !said.has(n) || (grammar && grammar !== grammarHash(S))) return null;
   return withGrammar(S, pickGrammar(S, said.get(n)), () => {
     const G = S.G, R = G.roles, alane = +G.sphere.amend_lane;
     if (!isFinite(alane) || !G.marks.N) return null;
@@ -1875,9 +1935,9 @@ function amend(S, epId, n, shape, now){
     const origShape = lineMap(many(parseBlock(c.rec.episode), "shape")).get(n) || withGrammar(S, G, () => perceiveSentence(S, said.get(n), { last:null }).shape);
     // reading it back the way the episode already reads it withdraws the amendment
     if (r.shape === origShape && mine.join("\n") === origLines.join("\n")) entries.delete(n);
-    else entries.set(n, { shape:r.shape, lines:mine });
+    else entries.set(n, { shape:r.shape, lines:mine, grammar:grammar || null });
     const block = [...entries].sort((x, y) => x[0] - y[0])
-      .flatMap(([k, e]) => ["shape: " + k + " | " + e.shape].concat(e.lines.map(l => "percept: " + l))).join("\n");
+      .flatMap(([k, e]) => ["shape: " + k + " | " + e.shape].concat(e.grammar ? ["grammar: " + k + " | " + e.grammar] : [], e.lines.map(l => "percept: " + l))).join("\n");
     const id = makeId(alane, c.rec.lon, 0), relates = R.amend_edge ? R.amend_edge + c.rec.id : "";
     if (had && !entries.size) S.st.chunks = S.st.chunks.filter(x => x !== had.chunk);
     else if (had) rewriteChunk(had.chunk, { updated:now, relates, tag:"ttdb-amend", block });
@@ -2364,9 +2424,9 @@ function writeGrounds(S, reply, w, epId){
   for (const sup of w.superseded) reply.items.push(quoted(S, supersededGround(S, sup)));
 }
 /* Amend a sentence and answer as a tell does: the verdict, then the grounds. */
-function amendReply(S, epId, n, shape, now){
+function amendReply(S, epId, n, shape, now, grammar){
   const c = episodeOf(S, epId), said = c && S.said.get(c.rec.id);
-  const w = said && said.has(n) ? amend(S, epId, n, shape, now) : null;
+  const w = said && said.has(n) ? amend(S, epId, n, shape, now, grammar) : null;
   if (!w) return null;
   return withGrammar(S, pickGrammar(S, said.get(n)), () => {
     const G = S.G;
@@ -2592,9 +2652,12 @@ function rowHtml(id){
   if (open) html += "</span>";
   const tools = sel ? [["N", pv.nounish], ["V", pv.verbish], ["A", pv.aside], ["J", pv.join]]
     .map(([op, label]) => `<button type="button" data-row="${id}" data-op="${op}">${esc(label || op)}</button>`).join("") : "";
-  const keep = row.ep && row.shape !== row.orig ? `<button type="button" class="primary" data-row="${id}" data-op="K">${esc(pv.keep || "")}</button>` : "";
-  const mark = row.amended ? `<span class="mk" title="${esc(pv.amended || "")}">✎</span>` : "";
-  return `<div class="shape" data-rowbox="${id}">${mark}${html}${tools || keep ? `<span class="tools">${tools}${keep}</span>` : ""}</div>`;
+  // the grammar's reading, untouched, is accepted; once the owner marks it, it is the owner's own
+  const offered = row.offer != null && row.shape === row.offer;
+  const keep = row.ep && (offered || row.shape !== row.orig) ? `<button type="button" class="primary" data-row="${id}" data-op="K">${esc((offered ? pv.accept : pv.keep) || "")}</button>` : "";
+  const mark = row.offer != null ? `<span class="mk re" title="${esc(pv.reread || "")}">↻</span>`
+    : row.amended ? `<span class="mk" title="${esc((row.accepted ? pv.accepted : pv.amended) || "")}">${row.accepted ? "↻" : "✎"}</span>` : "";
+  return `<div class="shape${row.offer != null ? " re" : ""}" data-rowbox="${id}">${mark}${html}${tools || keep ? `<span class="tools">${tools}${keep}</span>` : ""}</div>`;
 }
 function redrawRow(id){
   const el = document.querySelector(`[data-rowbox="${id}"]`);
@@ -2626,7 +2689,7 @@ function editRow(id, op){
 }
 function keepRow(id){
   const row = rows.get(id);
-  const r = amendReply(S, row.ep, row.n, row.shape, unixNow());
+  const r = amendReply(S, row.ep, row.n, row.shape, unixNow(), row.offer != null && row.shape === row.offer ? row.grammar : null);
   if (!r) return;
   Object.assign(row, { orig:row.shape, amended:true });
   redrawRow(id);
@@ -2635,7 +2698,10 @@ function keepRow(id){
   after();
 }
 const readingRows = (ep, readings) => readings.map(x => rowHtml(addRow(shapeOf(S, x.shape),
-  { ep, n:x.n, text:x.text, amended:x.amended }))).join("");
+  { ep, n:x.n, text:x.text, amended:x.amended, accepted:!!x.grammar }))).join("");
+// what the grammar reads a sentence as today, when that is not what stands: offered, never written
+const rereadRow = (ep, x, c, grammar) => rowHtml(addRow(shapeOf(S, c.reads),
+  { ep, n:x.n, text:x.text, orig:x.shape, offer:c.reads, grammar }));
 
 /* ---------- live grammar preview ------------------------------------------ */
 let previewTimer = 0;
@@ -2699,6 +2765,8 @@ function renderPanel(rec){
     const b = parseBlock(rec.episode);
     const am = rec.lat === +S.G.sphere.episode_lane ? S.amends.get(rec.lon) : null;
     const readings = new Map(readingsOf(S, rec.id).map(x => [x.n, x]));
+    const rr = rec.lat === +S.G.sphere.episode_lane ? reread(S, rec.id) : { changed:[] };
+    const offers = new Map(rr.changed.filter(c => !c.accepted).map(c => [c.n, c]));
     const ps = many(b, "percept").map(cols);
     body = `<div class="coord">${esc(b.source || "")} · at ${esc(b.at || "")}</div><ol class="said-list">` +
       many(b, "said").map(line => {
@@ -2706,8 +2774,14 @@ function renderPanel(rec){
         const e = am && am.entries.get(+n);
         const mine = (e ? e.lines.map(cols) : ps.filter(p => p[0] === n)).filter(p => p.length >= 6 && p[1] !== "-" && p[2] !== "-");
         const x = readings.get(+n);
-        return `<li><q>${esc(text)}</q>` + (x ? readingRows(rec.id, [x]) : "") + (mine.length ? `<div class="purchase">` +
-          mine.map(p => tripleHtml({ s:p[1], v:p[2], o:p[3], pol:p[4] })).join(" ") + `</div>` : "") + `</li>`;
+        const o = offers.get(+n);
+        // the grammar's reading today, with what it would say, below what stands
+        const theirs = o ? o.now.map(cols).filter(p => p.length >= 6 && p[1] !== "-" && p[2] !== "-") : [];
+        return `<li><q>${esc(text)}</q>` + (x ? readingRows(rec.id, [x]) : "") +
+          (mine.length ? `<div class="purchase">` +
+          mine.map(p => tripleHtml({ s:p[1], v:p[2], o:p[3], pol:p[4] })).join(" ") + `</div>` : "") +
+          (x && o ? rereadRow(rec.id, x, o, rr.grammar) + (theirs.length ? `<div class="purchase re">` +
+          theirs.map(p => tripleHtml({ s:p[1], v:p[2], o:p[3], pol:p[4] })).join(" ") + `</div>` : "") : "") + `</li>`;
       }).join("") + `</ol>`;
   } else {
     body = `<div class="body">${md(rec.body)}</div>` +

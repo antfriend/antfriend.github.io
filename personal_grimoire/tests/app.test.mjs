@@ -232,6 +232,29 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
     ["I saw the cat that chased the mouse run away.", "[i] {saw} [the cat] that {chased} [the mouse] {run} [away].", ["self | see | cat | + | -", "cat | chase | mouse | + | -", "cat | run | away | + | -"]],
     ["Cats that chase mice eat cheese.",             "[cats] that {chase} [mice] {eat} [cheese].",                   ["cat | chase | mouse | + | -", "cat | eat | cheese | + | -"]],
     ["Pixel has been happy.",                        "[pixel] {has been} [happy].",                                  ["pixel | has_property | happy | + | -"]],
+    // a verb straight after a relative's own is the clause's, unless another verb is to come
+    ["Cats that hunt eat mice.",                     "[cats] that {hunt eat} [mice].",                               ["cat | hunt | - | + | -", "cat | eat | mouse | + | -"]],
+    ["Cats that hunt often eat mice.",               "[cats] that {hunt often eat} [mice].",                         ["cat | hunt | - | + | -", "cat | eat | mouse | + | -"]],
+    ["Dogs that bark bite.",                         "[dogs] that {bark bite}.",                                     ["dog | bark | - | + | -", "dog | bite | - | + | -"]],
+    ["Birds that sing love songs are happy.",        "[birds] that {sing} [love songs] {are} [happy].",              ["bird | sing | song | + | -", "bird | has_property | happy | + | -"]],
+    ["Los gatos que cazan comen ratones.",           "[los gatos] que {cazan comen} [ratones].",                     ["gato | cazar | - | + | -", "gato | comer | ratón | + | -"]],
+    // a stance noun's clause is held, and closes like a relative
+    ["The idea that cats bark is silly.",            "[the idea] that [cats] {bark is} [silly].",                    ["cat | bark | - | ? | -", "idea | has_property | silly | + | -"]],
+    ["La idea de que los gatos ladran es tonta.",    "[la idea de] que [los gatos] {ladran es} [tonta].",            ["gato | ladrar | - | ? | -", "idea | has_property | tonta | + | -"]],
+    // a bare form that cannot be finite for the antecedent stays in the relative; one that can, closes it
+    ["The man that saw the cat eat cheese.",         "[the man] that {saw} [the cat] {eat} [cheese].",               ["man | see | cat | + | -", "cat | eat | cheese | + | -"]],
+    ["The men that saw the cats eat cheese.",        "[the men] that {saw} [the cats] {eat} [cheese].",              ["man | see | cat | + | -", "man | eat | cheese | + | -"]],
+    ["El hombre que vio al gato comer queso.",       "[el hombre] que {vio} [a el gato] {comer} [queso].",           ["hombre | ver | gato | + | -", "gato | comer | queso | + | -"]],
+    // a stranded preposition's thing is the gap, unless a stance verb's thing may be hearing a clause
+    ["I like the house that I live in.",             "[i] {like} [the house] that [i] {live in}.",                   ["self | like | house | + | -", "self | live_in | house | + | -"]],
+    ["I know the man that I talked to.",             "[i] {know} [the man] that [i] {talked to}.",                   ["self | know | man | + | -", "self | talk_to | man | + | -"]],
+    ["I told the man that the cat came in.",         "[i] {told} [the man] that [the cat] {came in}.",               ["self | tell | man | + | -", "cat | come_in | - | ? | -"]],
+    // after a stance verb's thing, a clause whose verb takes the gap is a relative, and a finite verb to come makes it sure
+    ["I told the man that the cat chased.",          "[i] {told} [the man] that [the cat] {chased}.",                ["self | tell | man | + | -", "cat | chase | man | + | -"]],
+    ["I think the man that the cat chased is fast.", "[i] {think} [the man] that [the cat] {chased is} [fast].",     ["self | think | - | + | -", "cat | chase | man | ? | -", "man | has_property | fast | ? | -"]],
+    // an object mark is not a preposition, except after a verb that goes somewhere
+    ["Pixel persigue a los ratones.",                "[pixel] {persigue} [a los ratones].",                          ["pixel | perseguir | ratón | + | -"]],
+    ["Pixel va a la tienda.",                        "[pixel] {va a} [la tienda].",                                  ["pixel | ir_a | tienda | + | -"]],
     ["I told the man that the cat sleeps.",          "[i] {told} [the man] that [the cat] {sleeps}.",                ["self | tell | man | + | -", "cat | sleep | - | ? | -"]],
     ["I gave the dog that bone.",                    "[i] {gave} [the dog that bone].",                              ["self | give | dog | + | -", "self | give | bone | + | -"]],
     ["El perro que el gato persigue es negro.",      "[el perro] que [el gato] {persigue es} [negro].",              ["gato | perseguir | perro | + | -", "perro | has_property | negro | + | -"]],
@@ -291,12 +314,26 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
   ok(PG.serializeStore(edited.st) === text0, "a re-reading writes nothing");
   const unshaped = PG.openStore(PG.serializeStore(RR.st).replace(/^shape: .*\n/gm, ""));
   ok(PG.reread(unshaped).changed.length === 0, "an episode written before shapes is compared by its percepts alone");
+  ok(PG.reread(edited, told.episode.id).changed.length === 1 && PG.reread(edited, "@LAT90LON1").changed.length === 0 && PG.reread(edited, "@LAT1LON1").sentences === 0,
+     "a re-reading can be asked of one episode");
+
+  // accepting a re-reading: an amendment that names the grammar it took the reading from
+  ok(PG.amend(edited, told.episode.id, 1, rr.changed[0].reads, T0 + 60, "0123456789abcdef") === null, "a reading offered under another grammar is refused");
+  const took = PG.amendReply(edited, told.episode.id, 1, rr.changed[0].reads, T0 + 60, rr.grammar);
+  const back = PG.openStore(PG.serializeStore(edited.st));
+  ok(took && PG.serializeStore(edited.st).includes("grammar: 1 | " + rr.grammar) && PG.readingsOf(back, told.episode.id)[0].grammar === rr.grammar,
+     "the amendment carries a grammar line, and it reads back", rr.grammar);
+  ok(back.trips.get("man|eat|cheese") && !back.trips.has("cat|eat|cheese") && PG.reread(back).changed[0].accepted && PG.reread(back).changed[0].amended,
+     "the accepted reading stands in for the sentence, and the report says it was accepted");
+  const own = PG.amend(back, told.episode.id, 1, "[i] {like} [the man] (that saw the cat eat cheese).", T0 + 120);
+  ok(own && !PG.serializeStore(back.st).includes("grammar: 1 |") && !PG.reread(back).changed[0].accepted,
+     "a reading the owner marks is the owner's own: no grammar line");
 
   // the gap is refused to a verb the owner's words never give a thing
   const G0 = fresh();
-  ok(PG.shapeOf(G0, "The fact that the cat sleeps is known.").percepts.map(pk)[0] === "cat | sleep | fact | + | -", "an unused verb before the sentence's own takes the gap");
+  ok(PG.shapeOf(G0, "The day that the cat slept was hot.").percepts.map(pk)[0] === "cat | sleep | day | + | -", "an unused verb before the sentence's own takes the gap");
   PG.answer(G0, "Pixel sleeps.", T0);
-  ok(PG.shapeOf(G0, "The fact that the cat sleeps is known.").percepts.map(pk).join(" ; ") === "cat | sleep | - | ? | - ; fact | has_property | known | + | -",
+  ok(PG.shapeOf(G0, "The day that the cat slept was hot.").percepts.map(pk).join(" ; ") === "cat | sleep | - | ? | - ; day | has_property | hot | + | -",
      "once the owner has said it without a thing, it does not, and the clause is held");
 
   // a hedge meant as fact: mark it an aside, and what it held is said
@@ -649,7 +686,7 @@ section("the file IS the grammar");
   // block keys are schema, like a column name: the check is about the words, not the keys that hold them
   const SCHEMA = new Set(["kind", "class", "lemma", "forms", "seen", "asked", "belief", "source", "at", "said", "percept", "lang", "label"]);
   const vocab = new Set(Gs.flatMap(G => [...G.classes.keys(), ...G.whole.keys(), ...G.nounIrr.keys(), ...G.nounIrr.values(),
-    ...G.verbIrr.keys(), ...G.verbIrr.values(), ...G.seed, ...G.vectors.keys(), ...G.phrases.flatMap(p => p[0]),
+    ...G.verbIrr.keys(), ...G.verbIrr.values(), ...G.seed, ...G.stanceNoun, ...G.vectors.keys(), ...G.phrases.flatMap(p => p[0]),
     ...G.whThing, ...G.whPlace.keys(), ...G.about, ...[...G.vectors.values()].map(v => v.label)]).filter(w => w.length >= 2 && !SCHEMA.has(w)));
   const leaks = [...vocab].filter(w => new RegExp("[\"'`]" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[\"'`]").test(code));
   ok(leaks.length === 0, "no word of either language's grammar is a string literal in index.html (" + vocab.size + " checked)", leaks.join(", "));

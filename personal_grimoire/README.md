@@ -40,7 +40,7 @@ episode and term, which is how you make the corpus your own.
 | [personal_grimoire_ttdb.md](personal_grimoire_ttdb.md) | The store. The blueprint, an English grammar and a Spanish one, every reply phrase, every constant, and the corpus. |
 | [RFCs/](RFCs/) | The specs, five of them new. Start at [RFCs/INDEX.md](RFCs/INDEX.md). |
 | [tests/](tests/) | Two Node scripts and a Spanish grammar fixture. No dependencies, no test runner. |
-| [tools/](tools/) | Command-line access to the same engine: ask, feed, re-consolidate, re-read. |
+| [tools/](tools/) | Command-line access to the same engine: ask, feed, re-consolidate, re-read and take re-readings. |
 
 ---
 
@@ -69,13 +69,15 @@ that every reading, in either language, reads back as itself; that marks overrul
 and a join makes one term; that *Coffee.* is a mention and *coffee* a look-up; that a
 relative clause closes at the next verb, whether its antecedent is its subject or its object,
 and a stance clause inside one closes with it, while a bare verb goes on with the relative's
-chain when the sentence's own verb is still to come; that a phrase's head sits where each
-language puts it; that what *or* joins, a stance verb takes or a relative word reports is
-held — seen, never believed, never a contradiction, keeping its own *not* — unless the *or*
-is denied, and that an aside turns a hedge into a plain saying; that an amendment stands in
-for a sentence without touching its episode, and is withdrawn by reading the sentence back
-the episode's way; and that a re-reading reports what a grammar edit changes and writes
-nothing.
+chain when the sentence's own verb is still to come or cannot agree with it, and a verb
+straight after a relative's own is the sentence's; that a phrase's head sits where each
+language puts it, and Spanish *a* marks an object except after a verb of motion; that what
+*or* joins, a stance verb or noun takes or a relative word reports is held — seen, never
+believed, never a contradiction, keeping its own *not* — unless the *or* is denied, and that
+an aside turns a hedge into a plain saying; that an amendment stands in for a sentence
+without touching its episode, and is withdrawn by reading the sentence back the episode's
+way; and that a re-reading reports what a grammar edit changes, writes nothing, and can be
+taken as an amendment that names the grammar.
 
 And they check the claim the whole design rests on, three ways:
 
@@ -330,12 +332,17 @@ that the cat chased ran away* is `cat | chase | dog`. A verb in its bare form go
 relative instead while the sentence still waits for its own: *The man that saw the cat eat
 cheese is tall* is the cat eating and the man tall. When the thing before a relative word is
 not what the verb after it acts on, the relative word was reporting a clause: *I emailed the
-man that the cat sleeps* holds `cat | sleep`. Which word of a phrase is its head is the
-lexicon's to say: last in English, first in Spanish, so *el gato negro* is a `gato`.
+man that the cat sleeps* holds `cat | sleep`, and so is a noun that holds a clause: *the idea
+that cats bark is silly* holds the barking and says the idea is silly. *Cats that hunt eat
+mice* is two verbs, hunting and eating. Which word of a phrase is its head is the lexicon's
+to say: last in English, first in Spanish, so *el gato negro* is a `gato`.
 
-A grammar change reads old sentences differently. `node tools/reread.mjs` lists each one,
-both readings side by side, under a hash of the grammar; it writes nothing, because the
-grammar's new opinion is not yours until you amend with it.
+A grammar change reads old sentences differently. An episode's panel shows the grammar's new
+reading under the one that stands, with what it would say, and *take this reading* keeps it
+as an amendment that names the grammar it came from. `node tools/reread.mjs` lists them all
+under a hash of the grammar, and `--accept <hash>` takes every one you have not already
+amended; nothing is written until you do, because the grammar's new opinion is not yours
+until you take it.
 
 ---
 
@@ -381,8 +388,8 @@ global_models.
 | `@LAT98LON6` | Mentions are not evidence | 215 | 150 | 24 |
 | `@LAT98LON2` | Lanes are latitudes again | 230 | 60 | 6 |
 
-**First, the parser's blind spots** — which verbs take a thing, a verb straight after a
-relative's own, attributive adjectives, tense and modality. Every sentence passes through
+**First, the parser's blind spots** — which verbs take a thing, adverbs it was not told,
+attributive adjectives, tense and modality. Every sentence passes through
 them and they are the least settled thing here, though you can now correct any reading they
 get wrong, and what the parser cannot tell is asserted is held rather than believed. The test for any fix is the one in `@LAT98LON5`: if it needs English in
 `index.html`, it is the wrong fix. Each is a rule kind the grammar could declare.
@@ -418,10 +425,11 @@ no.
 
 - **Relatives lean on what you have said.** Whether *the thing that X verbs* makes the thing
   the verb's object depends on whether you have used that verb with an object; until you
-  have, *the fact that the cat sleeps is known* reads as the cat sleeping the fact. A verb
-  straight after a relative's own with no thing between is lost (*cats that hunt eat mice*
-  hunts mice). Questions that invert word order beyond the declared forms fall back to
-  search. Where it reads you wrongly, [correct the reading](#how-it-read-you).
+  have, *the rule that cats bark is old* reads as the cats barking the rule (*fact*, *idea*
+  and the other nouns the grammar lists are read right). Where the words could be a bare
+  noun phrase or a sentence (*Birds that sing love songs.*), the sentence wins. Questions
+  that invert word order beyond the declared forms fall back to search. Where it reads you
+  wrongly, [correct the reading](#how-it-read-you).
 - **Modifiers are dropped.** *Black cats* is *cats*, unless you make *black cats* one term.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
   less than you did.

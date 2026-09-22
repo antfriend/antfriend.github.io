@@ -25,7 +25,7 @@ export function args(argv = process.argv.slice(2)){
     const a = argv[i];
     if (a.startsWith("--")){
       const k = a.slice(2);
-      if (i + 1 < argv.length && !argv[i + 1].startsWith("--") && ["store", "now", "out"].includes(k)) flags[k] = argv[++i];
+      if (i + 1 < argv.length && !argv[i + 1].startsWith("--") && ["store", "now", "out", "accept"].includes(k)) flags[k] = argv[++i];
       else flags[k] = true;
     } else rest.push(a);
   }

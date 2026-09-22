@@ -57,6 +57,7 @@ keep such text in markup rather than in the interpreter.
 | `nounish_marks`, `verbish_marks` | two characters | The owner's brackets for a nounish and a verbish segment, open then close (TTG-RFC-0005 §4). |
 | `head` | `last` or `first` | Which word of a phrase is its head; `last` when absent (TTG-RFC-0005 §3). |
 | `aside_marks` | two characters | The owner's brackets for words left out of a reading, open then close (TTG-RFC-0005 §4). |
+| `object_mark` | words | Prepositions that mark a verb's thing rather than a place (Spanish *a*), except after a `motion` verb (TTG-RFC-0005 §2–§3). |
 
 Class keys the runtime interprets: `det`, `poss`, `quant_all`, `quant_some`, `quant_none`,
 `self`, `anaphor`, `prep`, `conj`, `subord`, `aux`, `cop`, `hav`, `modal`, `neg`, `wh`,
@@ -75,6 +76,8 @@ Class keys the runtime interprets: `det`, `poss`, `quant_all`, `quant_some`, `qu
 | `progressive_ending`, `participle_ending` | endings | Which verb-rule endings mark a progressive or a participle. |
 | `double_keep` | letters | Final doubles that `~` leaves alone. |
 | `min_stem` | integer | Shortest stem a rule may leave. |
+| `bare_ending` | endings | Endings a bare verb form wears (Spanish *ar er ir*); absent, a bare form is its lemma (TTG-RFC-0005 §3). |
+| `bare_finite` | `plural`, `self`, or `-` | The subjects a bare form is also finite for (English *cats eat*, *I eat*); `-` for none; absent, any (TTG-RFC-0005 §3). |
 
 Candidate choice (normative order): a candidate that is already a term in the store; then a
 candidate in `seed`; then, for `~`, the undoubled stem if the stem really ends in a double
@@ -93,6 +96,13 @@ A word the owner has used as a verb is recognised as a VECTOR term regardless of
 `chain: <verb lemmas>` — seeds that take a thing and then a bare verb that thing does (*see*,
 *make*, *let*: *saw the cat eat*); inside a relative, a bare verb after one goes on with the
 relative (TTG-RFC-0005 §3).
+
+`stance_noun: <noun lemmas>` — nouns whose clause is held, as a stance verb's is (*the idea
+that cats bark*). Not seeds (TTG-RFC-0005 §3).
+
+`motion: <verb lemmas>` — seeds that go somewhere; after one, an `object_mark` word is a
+preposition of place (*va a Madrid*), after any other it marks the verb's thing
+(TTG-RFC-0005 §2).
 
 ---
 
@@ -220,8 +230,9 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 3. **Grammar revision.** Episodes are perceived under the grammar of their day. A re-reading
    (TTG-RFC-0005 §5.1) reports every sentence a changed grammar reads differently, under a
    hash of the grammar records, and writes nothing: an amendment is the owner's, so a new
-   reading stands only when the owner amends with it. How a page offers that acceptance is
-   open.
+   reading stands only when the owner takes it, and an amendment that takes one names the
+   grammar it came from. Whether a grammar should carry a version beside its hash, so a
+   report can say which change moved which sentence, is open.
 
 ---
 
@@ -238,5 +249,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-09-21 | For held sayings and head position (TTG-RFC-0005 0.2): the `alt` and `premod` classes and the `head` key in §3, `stance` in §5, `noted_held` in §8. |
 | 2026-09-21 | `aside_marks` in §3 (TTG-RFC-0005 0.3). |
 | 2026-09-22 | `chain` in §5 (TTG-RFC-0005 0.4); open question 3 narrowed by re-reading. |
+| 2026-09-22 | `object_mark` in §3, `bare_ending` and `bare_finite` in §4, `stance_noun` and `motion` in §5 (TTG-RFC-0005 0.5); open question 3 narrowed again. |
 
 *License: CC0*

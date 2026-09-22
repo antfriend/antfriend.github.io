@@ -240,8 +240,8 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <
 - **Mention** → a subject or vector of `-`. *Coffee.* is `coffee | - | -`; *Feed the cat.*
   is `- | feed | cat`. Counted in `seen`, searchable, never a belief.
 - **Held** → polarity `?`, or `?-` for a held denial: whatever a list or clause joined by an
-  `alt` word says (*a cat or a dog*), the clause a `stance` verb takes (*I doubt* — *cats
-  like fish*), and a clause a relative word reports (*I emailed the man that* — *the cat
+  `alt` word says (*a cat or a dog*), the clause a `stance` verb or `stance_noun` takes (*I
+  doubt* — *cats like fish*; *the idea that* — *cats bark*), and a clause a relative word reports (*I emailed the man that* — *the cat
   sleeps*). Said but not asserted: written and seen like a mention, never a belief, never a
   contradiction. A denied alternative is not held but denied, each member: *not a cat or a
   dog*.
@@ -460,9 +460,9 @@ with `;globalThis.<name> = PG;` appended (`tools/harness.mjs` does exactly this 
 | `startEmpty(S, now)` | — | deletes the lane-90 episodes, the lane-91 amendments and every term but `self_lemma` |
 | `shapeOf(S, text)` | `{ shape, items, percepts, lang }`: how the text reads — marks in it overrule the parser; `items` are `{ w, cls }`, `cls` `N`, `V` or empty | — |
 | `shapeText(S, items)` | the shape those items make, in the grammar's marks | — |
-| `readingsOf(S, episodeId)` | `[{ n, text, shape, amended }]`: each sentence with the reading that stands | — |
-| `amendReply(S, episodeId, n, shape, now)` | a reply as for a tell, or `null`; `amend(…)` returns the bare write | the episode's amendment record, terms, the cursor |
-| `reread(S)` | `{ grammar, sentences, changed }`: each sentence the grammar now reads differently from its episode, as `{ episode, n, text, amended, shape, reads, was, now }` (`shape` is `null` for an episode written before shapes), under a hash of the grammar records | — |
+| `readingsOf(S, episodeId)` | `[{ n, text, shape, amended, grammar }]`: each sentence with the reading that stands; `grammar` is the hash a taken re-reading came from | — |
+| `amendReply(S, episodeId, n, shape, now, grammar?)` | a reply as for a tell, or `null` (also for a `grammar` hash that is not the store's now); `amend(…)` returns the bare write | the episode's amendment record, terms, the cursor |
+| `reread(S, episodeId?)` | `{ grammar, sentences, changed }`: each sentence (of every episode, or one) the grammar now reads differently from its episode, as `{ episode, n, text, amended, accepted, shape, reads, was, now }` (`shape` is `null` for an episode written before shapes), under a hash of the grammar records. To take one, `amendReply(S, episode, n, reads, now, grammar)` | — |
 | `interpret(S, text)` | `{ intent, purchase, … }` without acting | — |
 | `verify(S, s, v, o)`, `objectsOf(S, s, [v])`, `subjectsOf(S, v, o)`, `portrait(S, lemma)`, `searchSaid(S, [lemma])` | raw reasoning, lemmas in | — |
 
@@ -500,7 +500,7 @@ selects a record on click (one delegated listener); the value is `lat|lon` to fo
 **Every chrome string lives in a `data-*` attribute on the markup**, never in the script:
 `#storeinfo[data-seed|data-local|data-opened]`, `#mode[data-<intent in kebab case>]`,
 `#reset[data-confirm]`, `#empty[data-confirm]`, `#files[data-confirm-store]`, `#log[data-quota]`,
-`#preview[data-nounish|data-verbish|data-aside|data-join|data-keep|data-amended]` — the labels of a reading's
+`#preview[data-nounish|data-verbish|data-aside|data-join|data-keep|data-amended|data-reread|data-accept|data-accepted]` — the labels of a reading's
 controls, where each word is a button carrying `data-row`. The
 store persists under `localStorage` key `personal_grimoire:store:v1`; `?seed` ignores that copy
 and `?ask=<text>` asks on load. The page fetches `personal_grimoire_ttdb.md` beside itself.
@@ -585,6 +585,9 @@ the last consonant*; rules are tried top to bottom and the first ending that mat
 is not guarded) produces the candidates. Which candidate wins is decided in
 [Classify](lat20lon0): known term, then seed vector, then default — and the default for `~`
 is to undouble only when the stem really ends in a double consonant outside `double_keep`.
+A verb in its lemma's own form is **bare**; `bare_finite` says which subjects that form is
+also finite for — *cats eat*, *I eat*, never *the cat eat* — which is how a relative knows
+that *the man that saw the cat eat cheese* is not the man eating.
 
 ```ttdb-grammar
 kind: morphology
@@ -688,6 +691,7 @@ progressive_ending: ing
 participle_ending: ed
 double_keep: l s f z
 min_stem: 2
+bare_finite: plural self
 ```
 
 ---
@@ -703,13 +707,16 @@ VECTOR term, and the corpus recognises it without this list. Words here that are
 nouns (*fly*, *play*, *work*) are resolved by position, not by membership. `stance` verbs
 take a clause the speaker does not assert; `chain` verbs take a thing and then a bare verb
 that thing does (*saw the cat eat*), which is how a relative knows to keep such a verb
-([TTG-RFC-0005 §3](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md)).
+([TTG-RFC-0005 §3](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md)). `stance_noun` lists the
+nouns whose clause is held the same way (*the idea that cats bark*); they are things, not
+seeds.
 
 ```ttdb-grammar
 kind: seed
 seed: eat drink like love hate want need know think believe see hear feel make give take get find keep hold bring buy sell use help build write read say tell call show teach learn play work move run walk swim fly climb jump sleep live grow chase hunt catch fight fear avoid protect cause produce create contain include carry own lose win change become follow lead open close start stop begin end enjoy prefer remember forget visit meet watch wear sing cook bake drive ride travel study speak mean seem hide bite kill save pay send cut draw paint dream wish hope miss plan try purr bark smell taste lay sit stand fall wake throw lie belong depend
-stance: think believe doubt suppose guess hope wish wonder fear suspect imagine assume expect pretend dream say claim tell show warn remind promise convince persuade inform assure
+stance: think believe doubt suppose guess hope wish wonder fear suspect imagine assume expect pretend dream say claim tell show warn remind promise convince persuade inform assure email text mention explain admit announce
 chain: see hear watch feel notice make let help
+stance_noun: fact idea news claim rumor rumour story belief hope fear feeling sense notion theory chance possibility proof sign thought suspicion hunch worry
 ```
 
 ---
@@ -929,6 +936,7 @@ nounish_marks: [ ]
 verbish_marks: { }
 aside_marks: ( )
 head: first
+object_mark: a
 ```
 
 ---
@@ -967,7 +975,7 @@ verb_irregular: digo dices dice decimos dicen | decir
 verb_irregular: sé sabes sabe sabemos saben | saber
 verb_irregular: creo | creer
 verb_irregular: persigo persigues persigue perseguimos persiguen | perseguir
-verb_irregular: vi viste vio vimos vieron | ver
+verb_irregular: veo ves ve vemos ven vi viste vio vimos vieron | ver
 verb: ando | ar
 verb: iendo | er | ir
 verb: ado | ar
@@ -985,6 +993,8 @@ verb: o | ar | er ir
 progressive_ending: ando iendo
 participle_ending: ado ido
 min_stem: 2
+bare_ending: ar er ir
+bare_finite: -
 ```
 
 ---
@@ -994,12 +1004,18 @@ min_stem: 2
 **Gramática — verbos semilla (español)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §5
 
+`motion` lists the verbs that go somewhere: after one, the object mark *a* is a preposition
+of place (*va a Madrid*, `ir_a`); after any other it marks the verb's thing (*persigue a los
+ratones*, `perseguir | ratón`).
+
 ```ttdb-grammar
 kind: seed
 lang: es
 seed: comer beber gustar amar odiar querer necesitar saber conocer pensar creer ver oír sentir hacer dar tomar tener encontrar traer comprar vender usar ayudar construir escribir leer decir llamar enseñar aprender jugar trabajar correr caminar nadar volar saltar crecer cazar perseguir atrapar temer evitar proteger causar crear contener llevar perder ganar cambiar seguir abrir cerrar empezar terminar disfrutar preferir recordar olvidar visitar mirar cantar cocinar viajar estudiar hablar vivir dormir morder pagar dibujar pintar soñar esperar ronronear ladrar oler caer despertar pertenecer
-stance: creer pensar dudar suponer esperar desear temer sospechar imaginar soñar decir negar
+stance: creer pensar dudar suponer esperar desear temer sospechar imaginar soñar decir negar contar explicar mencionar
 chain: ver oír mirar sentir hacer dejar ayudar
+stance_noun: hecho idea noticia rumor creencia esperanza miedo sensación posibilidad prueba duda sospecha
+motion: ir venir volver llegar viajar correr caminar volar nadar saltar subir bajar entrar salir
 ```
 
 ---
@@ -1968,9 +1984,9 @@ out of a reading, so a hedge can be said as fact. A phrase's head is where the l
 last in English, first in Spanish. It still does not see:
 
 - **Which verbs take a thing** — whether a relative word's antecedent is the object of the
-  verb after it leans on what the owner has already said; before that, *the fact that the
-  cat sleeps* is a fact slept.
-- **A verb straight after a relative's own** — *cats that hunt eat mice* hunts mice.
+  verb after it leans on what the owner has already said; before that, *the rule that cats
+  bark* is a rule barked, and *I told the man that the cat bit* only reports a bite.
+- **Adverbs it was not told** — *the cat quickly chased* makes *quickly* the chaser.
 - **Modifiers** — *black cats* is *cats*; the adjective is dropped unless the owner binds the
   phrase into one term (`black_cat`).
 - **Tense and modality** — *birds fly*, *birds flew* and *birds might fly* are one percept.
