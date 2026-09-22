@@ -12,14 +12,14 @@ umwelt:
   umwelt_id: rfc-librarian
   role: spec-compression
   perspective: corpus-consolidator
-  scope: robot_team governing specifications
+  scope: governing specifications for robot_team and personal_grimoire
   constraints:
     - compress-alongside-never-in-place
     - every-record-names-its-expansion-source
   globe:
     frame: rfc-grid
     origin: "@LAT0LON0"
-    mapping: "lat = RFC family lane (10 TTDB, 20 TTN, 30 TTCP, 40 A32, 50 ARC, 98 beliefs), lon = RFC number within the family"
+    mapping: "lat = RFC family lane (10 TTDB, 20 TTN, 30 TTCP, 40 A32, 50 ARC, 60 TTG, 98 beliefs), lon = RFC number within the family"
 cursor_policy:
   max_preview_chars: 256
   max_nodes: 64
@@ -42,14 +42,15 @@ agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-fil
 
 ---
 
-@LAT0LON0 | created:1783468800 | updated:1783468800 | relates:demonstrates@LAT20LON4
+@LAT0LON0 | created:1783468800 | updated:1790035200 | relates:demonstrates@LAT20LON4
 
 **Home — the corpus as an umwelt**
 
 Each record on this globe compresses one RFC to its normative gist. The `src:` line
 in every body is the deterministic expansion target — TTN-RFC-0004 §3 applied to the
 corpus itself: this file is the token, the full RFC is the gateway expansion.
-Lanes: lat 10 TTDB, lat 20 TTN, lat 30 TTCP, lat 40 A32, lat 50 ARC. Lane lat 98
+Lanes: lat 10 TTDB, lat 20 TTN, lat 30 TTCP, lat 40 A32, lat 50 ARC, lat 60 TTG (the
+grammar; low sal, since no fleet work rests on it yet). Lane lat 98
 holds beliefs — consolidated invariants and places where implemented reality diverges
 from spec text (the Dream Cycle run over the documents, echoing the fleet's lat-98
 BELIEF-ADOPTED lane). `[ew]` conf encodes status (implemented-on-device 240, stable
@@ -101,15 +102,15 @@ queries (not free-form NL) and update the last_query/last_answer fields on reply
 
 ---
 
-@LAT10LON3 | created:1774396800 | updated:1774396800 | relates:depends_on@LAT10LON1,depends_on@LAT10LON2,aligns_with@LAT20LON2
+@LAT10LON3 | created:1774396800 | updated:1785542400 | relates:depends_on@LAT10LON1,depends_on@LAT10LON2,aligns_with@LAT20LON2
 [ew]
 conf:210
-rev:0
+rev:1
 sal:130
-touched:1774396800
+touched:1785542400
 [/ew]
 
-**TTDB-RFC-0003 — Typed Edge Semantics** (Stable)
+**TTDB-RFC-0003 — Typed Edge Semantics** (Stable, 1.1)
 src: TTDB-RFC-0003-Typed-Edges.md
 
 Edges use the syntax declared in `mmpdb.typed_edges.syntax` (default
@@ -118,7 +119,10 @@ edges. Multiple same-type edges allowed; dedupe at render. Types are free-form
 tokens but SHOULD align with the TTN taxonomy (TTN-RFC-0002). An edge is the
 librarian's subjective assertion inside its umwelt, not a global truth; reference
 other worldviews explicitly (`db:<id>`, `umwelt:<id>`). Embedded node graphs in
-bodies are render hints only — the header edge list is canonical.
+bodies are render hints only — the header edge list is canonical. 1.1: a type MAY be
+symmetric, still written on both records and never inferred; `opposes` is symmetric
+semantic polarity (antonyms, both may hold) and MUST NOT be read as `contradicts`
+(epistemic: at most one holds).
 
 ---
 
@@ -436,12 +440,12 @@ byte-for-byte, not just trust the CRC.
 
 ---
 
-@LAT20LON10 | created:1782432000 | updated:1783296000 | relates:depends_on@LAT20LON8
+@LAT20LON10 | created:1782432000 | updated:1789344000 | relates:depends_on@LAT20LON8
 [ew]
 conf:240
-rev:1
+rev:2
 sal:170
-touched:1783296000
+touched:1789344000
 [/ew]
 
 **TTN-RFC-0010 — Fleet Pulse (Band Time-Base)** (Implemented ✅ end-to-end 2026-06-26 → 07-06)
@@ -450,10 +454,12 @@ src: TTN-RFC-0010-Fleet-Pulse.md
 Share the tempo, glance at the conductor: the beat is computed, never received. Each
 node keeps `gPulseOffsetMs` (independent of the laptop wall clock — the band survives
 without the laptop) and derives beat_count/phase from the chart: downbeat_epoch u64,
-beat_period_ms u16, meter_beats u8, era + conductor_id. `PULSE` (type 13, 28 B,
-broadcast, deliberately NOT want_ack — reliability is repetition) is the only
-traffic, paced to measured drift (~1–2/min), zero per-beat frames; a joiner gets an
-event-driven extra beacon on HELLO. Election: first-up conducts and keeps conducting;
+beat_period_ms u16, meter_beats u8, era + conductor_id, and (v2) scene_id u16 — the
+band's place in a multi-part song, on the chart so it survives conductor handoff; only
+the conductor authors a scene, and a v1 28-byte payload still reads as scene 0.
+`PULSE` (type 13, 30 B, broadcast, deliberately NOT want_ack — reliability is
+repetition) is the only traffic, paced to measured drift (~1–2/min), zero per-beat
+frames; a joiner gets an event-driven extra beacon on HELLO. Election: first-up conducts and keeps conducting;
 a joiner falls into sync and never coups; id is only a tie-break, via the adoption
 order (higher era, then lower conductor_id); conductor loss → timeout 4× resync
 period, successor increments era and keeps the same grid so the beat never lurches.
@@ -701,6 +707,119 @@ level. Guarantee: with an empty library the SupervisedAgent measures byte-identi
 to the goal agent — no regression by construction. Each solved game ≈ +0.04 mean
 score; de-risk tests (confusion matrix, within-dynamic generalization, abort safety,
 composite) gate every addition.
+
+---
+
+@LAT60LON1 | created:1789257600 | updated:1790035200 | relates:depends_on@LAT10LON1,depends_on@LAT30LON1
+[ew]
+conf:210
+rev:0
+sal:90
+touched:1790035200
+[/ew]
+
+**TTG-RFC-0001 — Grammar in the Store** (Stable, 1.0)
+src: TTG-RFC-0001-Grammar-in-the-Store.md
+
+A language's grammar is data in the same TTDB as the corpus it reads: `ttdb-grammar`
+blocks of eight kinds (lexicon, morphology, seed, vectors, questions, responses,
+numbers, rules) and a `ttdb-sphere` block of lanes and roles. The runtime contract:
+the interpreter holds no natural-language word, reply phrase or tuning number —
+delete the grammar records and it sees only word order and has no words of its own;
+a test greps the runtime for every word the grammar lists. A second language is more
+records tagged `lang:`; each sentence picks the grammar that recognises most of its
+words, and later languages borrow the numbers, rules and vector algebra. §10 is the
+embedding surface: the engine/page divide, the boot gate, and the calls a host makes.
+
+---
+
+@LAT60LON2 | created:1789257600 | updated:1790035200 | relates:depends_on@LAT60LON1,depends_on@LAT10LON1,depends_on@LAT10LON3,depends_on@LAT10LON4,depends_on@LAT10LON5,depends_on@LAT10LON6
+[ew]
+conf:210
+rev:0
+sal:80
+touched:1790035200
+[/ew]
+
+**TTG-RFC-0002 — Semantic Percepts, Episodes and Terms** (Stable, 1.0)
+src: TTG-RFC-0002-Semantic-Percepts.md
+
+A sentence becomes percepts: `percept: n | subject | vector | object or - | polarity |
+quantifier`, with polarity `+`, `-`, or held `?` / `?-`, and an optional seventh column
+naming one reading of two. Episodes on the episode lane hold the owner's words —
+`said:`, `shape:` and `percept:` lines — written once and never modified; a block of
+the same tag anywhere else is checked, never believed. THING and VECTOR terms are
+records placed on the grammar sphere beside the terms that introduced them.
+Malformed percept lines are skipped, counted and reported; write-back is byte-stable.
+Stated divergence from TTDB-RFC-0006: the pair is subject→object, not before→after.
+
+---
+
+@LAT60LON3 | created:1789257600 | updated:1790035200 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT10LON2,depends_on@LAT10LON5,depends_on@LAT10LON7
+[ew]
+conf:210
+rev:0
+sal:80
+touched:1790035200
+[/ew]
+
+**TTG-RFC-0003 — Beliefs, Vector Reasoning and Grounded Response** (Stable, 1.0)
+src: TTG-RFC-0003-Beliefs-Reasoning-Response.md
+
+Beliefs are derived from episodes, never written by hand: per triple, episodes (not
+sentences) vote, the rule of succession over the store's priors gives conf, and a
+belief is decided above `belief_conf_threshold`; held sayings and mentions count for
+neither side. Reasoning walks the vector algebra (transitive, symmetric, inverse,
+inheritance with decay), Datalog-style rules derived to a fixpoint in memory, and
+specificity — the nearest ancestor overrides. Intent comes from the input's shape. A
+reply is a verdict, then grounds of one kind each — said (quoted), inferred (the
+chain), contested (both sayings), superseded — never printed alike; what was held is
+a note, never a ground.
+
+---
+
+@LAT60LON4 | created:1789344000 | updated:1790035200 | relates:depends_on@LAT60LON3,depends_on@LAT20LON10,depends_on@LAT10LON7,depends_on@LAT20LON7,depends_on@LAT20LON8,depends_on@LAT20LON9,depends_on@LAT10LON4
+[ew]
+conf:170
+rev:0
+sal:100
+touched:1790035200
+[/ew]
+
+**TTG-RFC-0004 — Time: the Order of Sayings, Supersession, a Fleet's Shared Clock** (Stable §2–3, 1.0; §4 Proposed)
+src: TTG-RFC-0004-Time-and-the-Fleet.md
+
+Order is position, not a clock: a saying is later when its episode sits later on the
+lane, then by sentence number, and `at:` is never compared. Along an `exclusive`
+vector a subject holds one object at a time: a later saying, or a rule's conclusion,
+retires an earlier one unless both lie on one chain, and the retired fact is kept in
+memory as a `superseded` ground beside what retired it, never written. Consolidation
+stays atemporal — a polarity flip is still contested. §4, proposed and unimplemented:
+a fleet of hearing agents orders sayings on the TTN-RFC-0010 pulse, stamps carry drift
+bounds, overlapping bounds are contested, and the scene is the grammar hash.
+
+---
+
+@LAT60LON5 | created:1789948800 | updated:1790035200 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT60LON3,depends_on@LAT10LON1,depends_on@LAT10LON4
+[ew]
+conf:210
+rev:0
+sal:70
+touched:1790035200
+[/ew]
+
+**TTG-RFC-0005 — Shapes, Lists, Mentions and Amendments** (Stable, 1.0)
+src: TTG-RFC-0005-Shapes-and-Amendments.md
+
+A clause is any alternating run of nounish and verbish segments, each verb relating
+its neighbours: `N1 V1 N2 V2 N3` is two percepts. Relative and stance clauses open
+inside the chain and close at the next verb. What is said without being asserted is
+held — an *or*, a stance verb's clause, a reported clause, and both readings of a
+sentence the grammar reads two ways, named `a` / `b` so the owner can choose. A
+one-segment sentence is a mention. The shape (`[things] {vectors}`) is written beside
+each sentence and overrules the parser when typed; a correction to a said sentence is
+an amendment beside its episode, never in it. A re-reading reports what a grammar or
+corpus change reads differently and writes nothing until the owner takes it.
 
 ---
 

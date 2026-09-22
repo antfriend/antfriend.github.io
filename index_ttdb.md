@@ -108,7 +108,7 @@ preview:
 
 ---
 
-@LAT-32LON90 | created:1789689840 | updated:1789689840 | relates:prev>@LAT-20LON30,next>@LAT-20LON120,specifies>@LAT0LON-150,opens>RFCs/INDEX.md
+@LAT-32LON90 | created:1789689840 | updated:1790035200 | relates:prev>@LAT-20LON30,next>@LAT-20LON120,specifies>@LAT0LON-150,opens>RFCs/INDEX.md
 
 ## RFCs
 
@@ -117,15 +117,16 @@ preview:
 ```
 ╭──────────────────────────────────────────────────────╮
 │  R F C   C O R P U S                                 │
-│  28 documents · 5 series · 1 bundle · 1 globe        │
+│  33 documents · 6 series · 1 bundle · 1 globe        │
 ╰──────────────────────────────────────────────────────╯
 
   lane    series  subject          lon → 1 . . . . . 11
   lat 10  TTDB    the file format  ████████···
-  lat 20  TTN     the mesh         ██████████░
+  lat 20  TTN     the mesh         ███████████
   lat 30  TTCP    the reader       ███········
   lat 40  A32     the $5 device    █████······
   lat 50  ARC     the game agent   █··········
+  lat 60  TTG     the grammar      █████······
   lat 98  —       spec vs. metal   ▒▒▒▒▒······
 
   █ compressed   ░ pending   ▒ belief, no source RFC
@@ -158,7 +159,7 @@ specification, folded into one TTDB file and expanded back on demand.
 - [`0008`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon8) [Fleet Time-Sync](RFCs/TTN-RFC-0008-Time-Sync.md)
 - [`0009`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon9) [TTDB Push-Back](RFCs/TTN-RFC-0009-TTDB-Push-Back.md)
 - [`0010`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon10) [Fleet Pulse](RFCs/TTN-RFC-0010-Fleet-Pulse.md)
-- `0011` [Semantic Positioning](RFCs/TTN-RFC-0011-Semantic-Positioning.md) · `pending`
+- [`0011`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat20lon11) [Semantic Positioning](RFCs/TTN-RFC-0011-Semantic-Positioning.md)
 
 **TTCP** · `lat 30` · the reader — how a TTDB becomes a page
 
@@ -177,6 +178,14 @@ specification, folded into one TTDB file and expanded back on demand.
 **ARC** · `lat 50` · the agent — one solver for ARC Prize 2026
 
 - [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat50lon1) [Dynamics Solver Architecture](RFCs/ARC-RFC-0001-Dynamics-Solver-Architecture.md)
+
+**TTG** · `lat 60` · the grammar — your own words as a store that answers
+
+- [`0001`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon1) [Grammar in the Store](RFCs/TTG-RFC-0001-Grammar-in-the-Store.md)
+- [`0002`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon2) [Semantic Percepts, Episodes and Terms](RFCs/TTG-RFC-0002-Semantic-Percepts.md)
+- [`0003`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon3) [Beliefs, Vector Reasoning and Grounded Response](RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md)
+- [`0004`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon4) [Time and the Fleet](RFCs/TTG-RFC-0004-Time-and-the-Fleet.md)
+- [`0005`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon5) [Shapes and Amendments](RFCs/TTG-RFC-0005-Shapes-and-Amendments.md)
 
 Lane `lat 98` carries five consolidated beliefs — the places where the metal
 disagrees with the spec — starting at

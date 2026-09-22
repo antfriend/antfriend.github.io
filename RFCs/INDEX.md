@@ -12,10 +12,10 @@ deterministic expansion target (TTN-RFC-0004 applied to the corpus itself).
 ## TTDB (Toot-Toot Database)
 - [TTDB-RFC-0001-File-Format.md](TTDB-RFC-0001-File-Format.md): File Format and Sections
 - [TTDB-RFC-0002-Cursor-Semantics.md](TTDB-RFC-0002-Cursor-Semantics.md): Cursor Semantics and Selection Rules
-- [TTDB-RFC-0003-Typed-Edges.md](TTDB-RFC-0003-Typed-Edges.md): Typed Edge Semantics
+- [TTDB-RFC-0003-Typed-Edges.md](TTDB-RFC-0003-Typed-Edges.md): Typed Edge Semantics — v1.1 adds symmetric edge types, written on both records, and `opposes` (semantic polarity, never read as `contradicts`)
 - [TTDB-RFC-0004-Event-ID-and-Collision.md](TTDB-RFC-0004-Event-ID-and-Collision.md): Event ID Assignment and Collision Handling
 - [TTDB-RFC-0005-Epistemic-Weight.md](TTDB-RFC-0005-Epistemic-Weight.md): Toot-Bit Epistemic Weight (TBEW) — optional [ew] block for confidence, revision, salience, and recency metadata
-- [TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md](TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md): Experiential Perception as Synthetic Model (Locus framework foundation)
+- [TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md](TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md): Experiential Perception as Synthetic Model (Locus framework foundation); extended into affective space by the [feelings_ttdb.md](../feelings_ttdb.md) store
 - [TTDB-RFC-0007-Locus-Point-and-Dream-Cycle.md](TTDB-RFC-0007-Locus-Point-and-Dream-Cycle.md): Locus Point and Dream Cycle — episodic-to-semantic memory consolidation via two-phase offline graph traversal; `@BELIEF:` namespace; graph compression; multi-agent belief propagation
 - [TTDB-RFC-0008-Narrative-Metamorphosis.md](TTDB-RFC-0008-Narrative-Metamorphosis.md): Narrative Metamorphosis — story-seeded life-stage transition from game-solving larva to orchestrating imago; `@IMAGO:seed` and `@META:state` namespaces; instar sequencing; eclosion predicate; ARC Prize 2026 worked example
 
@@ -29,13 +29,26 @@ deterministic expansion target (TTN-RFC-0004 applied to the corpus itself).
 - [TTN-RFC-0007-Reliable-Delivery.md](TTN-RFC-0007-Reliable-Delivery.md): Reliable Delivery — `want_ack`/ACK semantics, timeout+backoff retransmission, the dedup-vs-ACK re-ACK rule, and chunk reassembly (Implemented ✅ on-device 2026-06-22; PLAN.md Phase 2)
 - [TTN-RFC-0008-Time-Sync.md](TTN-RFC-0008-Time-Sync.md): Fleet Time-Sync — `TIME_SYNC`/`TIME_REQ`/`TIME_RESP` toots, clock-offset adoption, append-only TTDB sync log (`lat 99` lane), and NTP-lite skew verification (Implemented ✅ on-device 2026-06-22; PLAN.md Phase 2.5; builds on TTN-RFC-0007)
 - [TTN-RFC-0009-TTDB-Push-Back.md](TTN-RFC-0009-TTDB-Push-Back.md): TTDB Push-Back / Belief Distribution — `TTDB_PUT` offset-addressed belief stream, CRC-32 whole-object integrity, `belief_id` exactly-once adoption, append-only `BELIEF-ADOPTED` log (`lat 98` lane); the propagation half of the Dream Cycle (Implemented ✅ on-device 2026-06-24; PLAN.md Phase 6; builds on TTN-RFC-0007 + TTDB-RFC-0007)
-- [TTN-RFC-0010-Fleet-Pulse.md](TTN-RFC-0010-Fleet-Pulse.md): Fleet Pulse — self-synchronizing ~1 Hz heartbeat and the **band time-base**: `PULSE` (type 13) chart beacon, peer-seeded pulse clock (`gPulseOffsetMs`), first-up-conducts / lowest-id-keeps election with `era` handoff, drift-paced beacons (zero per-beat traffic), ±50 ms as musical **swing**, and a `Part`/instrument split for parts & melodies. K10 toots + RGB; **V4s get an LED pulse**. (Implemented ✅ end-to-end on-device 2026-06-26 → 2026-07-06, incl. parts/melodies and the 120 BPM duet; sibling of Phase 2.5; builds on TTN-RFC-0008)
+- [TTN-RFC-0010-Fleet-Pulse.md](TTN-RFC-0010-Fleet-Pulse.md): Fleet Pulse — self-synchronizing ~1 Hz heartbeat and the **band time-base**: `PULSE` (type 13) chart beacon (v2, 30 B: `scene_id`, the band's place in a multi-part song, carried on the chart so it survives conductor handoff; v1 28-byte payloads still accepted), peer-seeded pulse clock (`gPulseOffsetMs`), first-up-conducts / lowest-id-keeps election with `era` handoff, drift-paced beacons (zero per-beat traffic), ±50 ms as musical **swing**, and a `Part`/instrument split for parts & melodies. K10 toots + RGB; **V4s get an LED pulse**. (Implemented ✅ end-to-end on-device 2026-06-26 → 2026-07-06, incl. parts/melodies and the 120 BPM duet; sibling of Phase 2.5; builds on TTN-RFC-0008)
 - [TTN-RFC-0011-Semantic-Positioning.md](TTN-RFC-0011-Semantic-Positioning.md): Semantic Positioning — the formal/normative half of the **primary hypothesis** (`ttn-semantic-positioning.md`): position is *recoverable from* umwelt overlap, not merely *assigned*. States the SPH, the confidence-weighted overlap measure `Ω(i,j)` (over TBEW `conf`/`sal`), the MDS/spring-relaxation embedding (shape for free; one anchor fixes it to Earth), Semantic Odometry, the two failure modes (spacetime entanglement §8.1 — the blocking open problem; modal incommensurability §8.2), and a zero-cost RSSI-vs-`Ω` validation procedure for the V4-A/B/C spine. (Draft; SP0 evidence layer `LinkPercept` live on-device; PLAN.md Act II; builds on TTDB-RFC-0006/-0007 + TTN-RFC-0008)
 
 ## TTCP (Toot Toot Content Publishing)
 - [TTCP-RFC-0001-Record-Rendering.md](TTCP-RFC-0001-Record-Rendering.md): File Ingestion, Record Parsing, and HTML Rendering
 - [TTCP-RFC-0002-Globe-and-Navigation.md](TTCP-RFC-0002-Globe-and-Navigation.md): Knowledge Globe, Cursor Selection, Discovery, Tour, and Scene Playback
 - [TTCP-RFC-0003-Link-System-and-Addressability.md](TTCP-RFC-0003-Link-System-and-Addressability.md): Toot URI Scheme, URL Synchronization, and Search
+
+## TTG (Toot Toot Grammar)
+
+A person's own words as a question-answering store, where the file is the grammar: every
+grammar rule, word list and reply phrase lives in one TTDB, and the runtime that reads it
+holds no natural-language word. 1.0, stable; the reference runtime is
+[personal_grimoire](../personal_grimoire/index.html), whose tests check these RFCs against it.
+
+- [TTG-RFC-0001-Grammar-in-the-Store.md](TTG-RFC-0001-Grammar-in-the-Store.md): Grammar in the Store — the `ttdb-grammar` and `ttdb-sphere` blocks, the eight grammar kinds, the embedding surface, several languages in one store, and the **runtime contract**: no natural-language word or reply phrase in the interpreter
+- [TTG-RFC-0002-Semantic-Percepts.md](TTG-RFC-0002-Semantic-Percepts.md): Semantic Percepts, Episodes and Terms — the percept line (subject, vector, object, polarity, quantifier), episode and term records, placement on the grammar sphere, byte-stable write-back
+- [TTG-RFC-0003-Beliefs-Reasoning-Response.md](TTG-RFC-0003-Beliefs-Reasoning-Response.md): Beliefs, Vector Reasoning and Grounded Response — consolidation over episodes, vector algebra, Datalog-style rules, inference with specificity, and replies whose grounds are said, inferred, contested or superseded, never printed alike
+- [TTG-RFC-0004-Time-and-the-Fleet.md](TTG-RFC-0004-Time-and-the-Fleet.md): Time — the order of sayings without a clock, `exclusive` vectors whose later sayings retire earlier ones, the `superseded` ground (§2–3 stable); and, proposed, how a fleet orders sayings on a shared pulse (§4, builds on TTN-RFC-0010)
+- [TTG-RFC-0005-Shapes-and-Amendments.md](TTG-RFC-0005-Shapes-and-Amendments.md): Shapes and Amendments — a clause as any alternating run of nounish and verbish segments; relative and stance clauses; held sayings, never believed, including both readings of a sentence the grammar reads two ways, named so the owner can choose; the shape notation the owner overrules a reading with; amendments kept beside the episode, and re-readings that report a grammar change without writing until the owner takes them
 
 ## ARC (ARC-AGI-3 Competition Agent)
 

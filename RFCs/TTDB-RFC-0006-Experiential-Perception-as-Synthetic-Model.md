@@ -145,7 +145,7 @@ TTDB does not attempt to encode the full phenomenology of experience — the qua
 
 This is a principled limitation. The alternative — attempting to encode raw phenomenology — produces systems that are either computationally intractable or epistemically dishonest. TTDB makes a different bet: that the trace is sufficient for meaningful inference, pattern recognition, and knowledge transfer across patients.
 
-The `emotions.md` RFC (hippocampal-prefrontal emotional embedding graph) extends this model into affective space, providing valence/arousal coordinates that allow emotional transitions to be represented alongside perceptual ones. Together, they constitute a richer but still finite and inspectable representation of the experiential interior.
+The [feelings_ttdb.md](../feelings_ttdb.md) store extends this model into affective space. It maps feelings, emotions, dispositions, and intents around an experiencer at the origin — latitude carrying valence (N positive, S negative), longitude carrying the object of affect (E other-directed, W self-directed), distance carrying intensity — so that emotional transitions are representable alongside perceptual ones via the same typed-edge machinery. Together, they constitute a richer but still finite and inspectable representation of the experiential interior.
 
 ---
 
@@ -168,7 +168,7 @@ The theoretical commitments in this RFC have direct, binding implications for an
 | RFC | Relation |
 |---|---|
 | A32-RFC-0002 (TTDB Storage/Parsing) | This RFC provides the conceptual justification for the six-node structure defined there |
-| `emotions.md` | Extends the perceptual model into affective space; valence/arousal coordinates complement the transition model in §5 |
+| [feelings_ttdb.md](../feelings_ttdb.md) | Extends the perceptual model into affective space; valence/object-of-affect coordinates complement the transition model in §5 |
 | `@PERCEPT:` namespace proposal | The paired-node structure described in §5 is the formal specification of that proposal |
 
 ---

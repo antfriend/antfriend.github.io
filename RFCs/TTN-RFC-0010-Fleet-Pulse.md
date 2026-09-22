@@ -149,7 +149,7 @@ A single new type extends `toot::Type` (value **13**, the next free slot after
 |---|---|---|---|
 | `PULSE` | 13 | conductor → fleet (broadcast) | announce/maintain the chart + band time-base |
 
-### 4.1 `PULSE` payload (24 B)
+### 4.1 `PULSE` payload (30 B, v2)
 
 ```
  off  field            bytes  notes
@@ -160,10 +160,26 @@ A single new type extends `toot::Type` (value **13**, the next free slot after
   24  beat_period_ms   2      u16 LE — tempo
   26  meter_beats      1      u8     — beats per bar
   27  flags            1      u8     — bit0 LAPTOP_TIMEBASE (pulse clock == laptop epoch)
+  28  scene_id         2      u16 LE — (v2) the band's position in a multi-part song
 ```
 
-(28 B total; the leading "24 B" names the fixed prefix before the two trailing u16/u8
-fields — well within the 208-byte payload limit.)
+(30 B total — well within the 208-byte payload limit. v1 was 28 B, ending at `flags`.)
+
+**`scene_id` — the chart says WHAT to play, not only how fast.** A multi-part song
+needs the band to agree on its place in the piece, and that agreement belongs on the
+chart rather than in a message of its own, because it then inherits the chart's two
+properties for free: it propagates on the same rare drift-paced beacon (§5 — no
+per-scene chatter), and it **survives conductor handoff**, since a takeover keeps the
+chart and only bumps the era (§3.3). Kill the node that is counting and the band keeps
+its place in the song. Only the conductor may author a scene; a follower that receives
+a scene command declines it and adopts the next beacon instead, so the band cannot fork.
+A scene change bumps the era (it is a chart revision) and triggers an immediate beacon,
+so the band turns the page together rather than drifting apart for a resync period.
+
+**Version compatibility is two-way**, because a fleet is flashed one node at a time.
+A receiver MUST accept a 28-byte v1 payload and read `scene_id` as 0; a v1 receiver
+ignores the 2-byte tail, since its length check is `>= 28`. So a half-reflashed band
+still shares one time-base — it simply has no shared scene until the conductor is on v2.
 
 **Sent broadcast, NOT `want_ack`.** This is the load-bearing traffic decision: a
 `PULSE` is periodic and idempotent, so a lost one is simply superseded by the next —
@@ -314,13 +330,17 @@ python companion.py band --port COM6 [--nodes v4a_bridge,v4b_relay,k10_1] [--bou
 
 1. **Read each node's chart + phase.** Extend the STATUS `PERCEPT` (TTN-RFC-0007 era
    telemetry, `CMD_GET_STATUS`) with the node's `era`, `conductor_id`,
-   `beat_period_ms`, and current `phase_ms` (or `last_downbeat_epoch`). One status
-   request per node — not per beat.
+   `beat_period_ms`, `scene_id`, and current `phase_ms` (or `last_downbeat_epoch`). One
+   status request per node — not per beat. The tail is appended after the 15-byte STATUS
+   base and grows additively (43 B v1, 45 B with `scene_id`), so a plain STATUS reader
+   still parses the prefix and a node on older firmware simply reports scene 0.
 2. **Compute inter-node skew like `verify`.** With min-RTT compensation, compare each
    node's reported beat phase to the conductor's at a common instant; report a table
-   `node | conductor_id | era | beat_period | phase_skew_ms`. **Pass = every node's
-   phase within `--bound-ms` (default 50) of the conductor**, i.e. inside the swing
-   envelope.
+   `node | conductor_id | era | scene | beat_period | phase_skew_ms`. **Pass = every
+   node's phase within `--bound-ms` (default 50) of the conductor**, i.e. inside the
+   swing envelope, **and one shared chart** — a single conductor *and* a single scene.
+   A band split across scenes is playing different parts of the song, which is a real
+   convergence failure, not a cosmetic one.
 3. **Optional `band --watch`** prints the table live (like `monitor`), so a human can
    see the band lock as nodes join and re-tighten after a conductor handoff.
 

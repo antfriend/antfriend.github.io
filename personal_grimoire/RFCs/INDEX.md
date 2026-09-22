@@ -1,7 +1,7 @@
 # RFC Index — Personal Grimoire
 
 The subset of the [toot-toot-engineering](https://antfriend.github.io) RFC corpus this
-project depends on, copied so the folder is self-contained, plus the five drafts it adds.
+project depends on, copied so the folder is self-contained, plus the five TTG RFCs it adds (1.0, stable).
 Read them in this order.
 
 ## What this project adds — Toot Toot Grammar (TTG)
