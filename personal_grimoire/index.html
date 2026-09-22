@@ -11,7 +11,7 @@
 :root{
   color-scheme:dark;
   --bg:#0f1d13; --panel:#1a3020; --ink:#bdf8cb; --dim:#80bd8d; --line:#2f5238;
-  --accent:#3dff7a; --thing:#5fe3d0; --vector:#d6a6ff; --warn:#ffb341; --dead:#5c7f64;
+  --accent:#3dff7a; --thing:#ff9d3d; --vector:#3dff7a; --grammar:#d6a6ff; --warn:#ffb341; --dead:#5c7f64;
   --sphere:#21402a; --sphere2:#112216; --grat:#36633f;
   --glow:61 255 122;
   --mono:ui-monospace,"Cascadia Mono","Cascadia Code","SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
@@ -285,7 +285,7 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
     <div id="spherewrap"><canvas id="sphere" width="340" height="340"></canvas></div>
     <div class="legend"><span><i style="background:var(--thing)"></i>things (east)</span>
       <span><i style="background:var(--vector)"></i>vectors (west)</span>
-      <span><i style="background:var(--accent)"></i>grammars (meridian, antimeridian)</span></div>
+      <span><i style="background:var(--grammar)"></i>grammars (meridian, antimeridian)</span></div>
   </div>
 
   <div class="card" id="panel"></div>
@@ -3072,8 +3072,8 @@ function project(lat, lon){
 }
 const cssVar = v => getComputedStyle(document.body).getPropertyValue(v).trim();
 function nodeKind(r){
-  if (r.term != null) return parseBlock(r.term).class === "vector" ? "--vector" : (r.lat === 0 && r.lon === 0 ? "--accent" : "--thing");
-  return "--accent";
+  if (r.term != null) return parseBlock(r.term).class === "vector" ? "--vector" : (r.lat === 0 && r.lon === 0 ? "--grammar" : "--thing");
+  return "--grammar";
 }
 function draw(){
   const cv = $("sphere");
@@ -3109,7 +3109,7 @@ function draw(){
     line(tick, cssVar("--grat"), dpr * 1.1);
   }
   const spine = []; for (let la = -90; la <= 90; la += 3) spine.push([la, 0]);
-  line(spine, cssVar("--accent"), dpr * 1.8);
+  line(spine, cssVar("--grammar"), dpr * 1.8);
   for (const r of records(S.st)){
     if (r.lat >= 90 || r.lat <= -90) continue;
     const p = project(r.lat, r.lon);
