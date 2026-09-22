@@ -185,6 +185,10 @@ input[type=search]{flex:1;min-width:120px;caret-color:var(--accent)}
 #panel .body{font-size:.88rem}
 #panel .body p{margin:.55em 0}
 #panel .body ul,#panel .body ol{margin:.4em 0;padding-left:1.3em}
+#panel .body img{max-width:100%;height:auto;border-radius:2px;margin:.5em 0}
+#panel .body hr{border:0;border-top:1px solid var(--line);margin:1.1em 0}
+#panel .body.shown{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+#panel .shown th,#panel .shown td{white-space:normal;min-width:7em}
 #panel .body blockquote{margin:.5em 0;padding-left:12px;border-left:3px solid var(--line);color:var(--dim)}
 #panel pre{overflow-x:auto;background:var(--bg);border:1px solid var(--line);padding:8px;border-radius:2px;font-size:.75rem}
 .edges{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:.8rem}
@@ -431,6 +435,7 @@ function parseRecord(raw){
   r.special = fence(rest, "ttdb-special");
   r.sphere = fence(rest, "ttdb-sphere");
   r.grammar = fence(rest, "ttdb-grammar");
+  r.include = fence(rest, "ttdb-include");
   r.body = rest.replace(new RegExp(FENCE + "ttdb-[a-z]+\\n[\\s\\S]*?" + FENCE, "g"), "").trim();
   return r;
 }
@@ -2751,6 +2756,7 @@ const reduceMotion = () => typeof matchMedia === "function" && matchMedia("(pref
 function inline(s){
   return esc(s)
     .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (m, alt, url) => `<img src="${url}" alt="${alt}">`)
     .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, label, href) => {
       const tok = parseToken(href);
       if (tok) return `<a href="#" data-key="${tok.key}">${label}</a>`;
@@ -2775,6 +2781,7 @@ function md(src){
       out.push("<pre>" + esc(body.join("\n")) + "</pre>"); i++; continue;
     }
     if (/^\s*$/.test(L)){ flush(); i++; continue; }
+    if (/^-{3,}\s*$/.test(L)){ flush(); out.push("<hr>"); i++; continue; }
     if (/^\|/.test(L)){
       flush();
       const rows = [];
@@ -2795,7 +2802,7 @@ function md(src){
     }
     if (list && /^\s{2,}\S/.test(L)){ list[list.length - 1] += " " + L.trim(); i++; continue; }
     if (/^>\s?/.test(L)){ flush(); out.push("<blockquote>" + inline(L.replace(/^>\s?/, "")) + "</blockquote>"); i++; continue; }
-    if (/^#{2,4}\s/.test(L)){ flush(); const n = L.match(/^#+/)[0].length; out.push("<h" + n + ">" + inline(L.replace(/^#+\s/, "")) + "</h" + n + ">"); i++; continue; }
+    if (/^#{1,6}\s/.test(L)){ flush(); const n = clamp(L.match(/^#+/)[0].length, 2, 6); out.push("<h" + n + ">" + inline(L.replace(/^#+\s/, "")) + "</h" + n + ">"); i++; continue; }
     if (list) flush();
     para.push(L.trim()); i++;
   }
@@ -3025,6 +3032,37 @@ function renderTerms(){
   }).join("");
 }
 
+/* ---------- a record that shows a file (TTCP-RFC-0001 §6) ------------------ *
+ * A `ttdb-include` block names a Markdown file beside the store. It is fetched
+ * once and rendered by the same renderer record bodies use, so the record
+ * tokens written into that file are live links into this store rather than
+ * dead paths. The file keeps its own `#` title for a repository page; the panel
+ * prints the record title instead, so that line is dropped here, and a lone
+ * HTML tag is reduced to what the Markdown subset can draw. With no server to
+ * fetch from — `file://` — the record body stands on its own.               */
+const shown = new Map();
+function showable(src){
+  return String(src).replace(/\r\n?/g, "\n").replace(/^#\s[^\n]*\n/, "")
+    .replace(/^<img\b[^>]*>$/gm, tag => {
+      const u = /\bsrc="([^"]*)"/.exec(tag), q = /\balt="([^"]*)"/.exec(tag);
+      return u ? "![" + (q ? q[1] : "") + "](" + u[1] + ")" : "";
+    })
+    .replace(/^<[^>]+>$/gm, "").trim();
+}
+function shownHtml(rec){
+  const name = parseBlock(rec.include).file;
+  if (!name) return "";
+  if (!shown.has(name)){
+    shown.set(name, "");                       // in flight: one fetch per file
+    fetch(name, { cache:"no-store" })
+      .then(res => res.ok ? res.text() : Promise.reject(res.status))
+      .then(src => { shown.set(name, showable(src)); if (selectedKey === rec.key) renderPanel(rec); })
+      .catch(() => { /* no server, or no such file: the record body is the whole panel */ });
+  }
+  const text = shown.get(name);
+  return text ? `<div class="body shown">${md(text)}</div>` : "";
+}
+
 /* ---------- record panel (TTCP-RFC-0001 §11–12) ---------------------------- */
 function renderPanel(rec){
   const el = $("panel");
@@ -3063,7 +3101,8 @@ function renderPanel(rec){
       }).join("") + `</ol>`;
   } else {
     body = `<div class="body">${md(rec.body)}</div>` +
-      [rec.grammar, rec.sphere, rec.special, rec.amend].filter(x => x != null).map(x => `<pre>${esc(x)}</pre>`).join("");
+      [rec.grammar, rec.sphere, rec.special, rec.amend].filter(x => x != null).map(x => `<pre>${esc(x)}</pre>`).join("") +
+      (rec.include != null ? shownHtml(rec) : "");
   }
   const edges = rec.edges.length ? `<div class="edges"><b>relates</b>` + rec.edges.map(e => {
     const t = e.target && records(S.st).find(r => r.key === e.target.key);

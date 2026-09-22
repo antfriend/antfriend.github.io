@@ -16,6 +16,11 @@ blueprint and the data; one HTML page runs it.
 This folder is the corollary of [global_models](../global_models/) — the same corpus
 discipline pointed inward instead of at the Earth. See [Corollaries](#corollaries).
 
+The page opens on this file. [`@LAT95LON0`](lat95lon0) is a record that shows `README.md`
+itself rather than a copy of it, rendered by the same renderer every record body uses — so
+every record token below is a live link into the store when you read it there, and a plain
+coordinate when you read it here.
+
 ---
 
 ## Run it
@@ -131,17 +136,18 @@ store, south of the origin on the prime meridian:
 
 | Record | Kind | Holds |
 |---|---|---|
-| `@LAT-10LON0` | `lexicon` | closed-class words, contractions, sentence punctuation |
-| `@LAT-20LON0` | `morphology` | irregular forms, plural and verb suffix rules |
-| `@LAT-30LON0` | `seed` | common verbs, a head start for finding predicates |
-| `@LAT-40LON0` | `vectors` | structural roles, vector algebra, naming phrases |
-| `@LAT-50LON0` | `questions` | the words that open each kind of question |
-| `@LAT-60LON0` | `responses` | every phrase the librarian can say |
-| `@LAT-70LON0` | `numbers` | every constant |
-| `@LAT-80LON0` | `rules` | what follows from what, beyond the vector flags |
+| [`@LAT-10LON0`](lat-10lon0) | `lexicon` | closed-class words, contractions, sentence punctuation |
+| [`@LAT-20LON0`](lat-20lon0) | `morphology` | irregular forms, plural and verb suffix rules |
+| [`@LAT-30LON0`](lat-30lon0) | `seed` | common verbs, a head start for finding predicates |
+| [`@LAT-40LON0`](lat-40lon0) | `vectors` | structural roles, vector algebra, naming phrases |
+| [`@LAT-50LON0`](lat-50lon0) | `questions` | the words that open each kind of question |
+| [`@LAT-60LON0`](lat-60lon0) | `responses` | every phrase the librarian can say |
+| [`@LAT-70LON0`](lat-70lon0) | `numbers` | every constant |
+| [`@LAT-80LON0`](lat-80lon0) | `rules` | what follows from what, beyond the vector flags |
 
-Spanish has the same records on the antimeridian, `@LAT-10LON180` to `@LAT-60LON180`, each
-marked `lang: es`. It borrows the numbers and the vector algebra and supplies everything else.
+Spanish has the same records on the antimeridian, [`@LAT-10LON180`](lat-10lon180) to
+[`@LAT-60LON180`](lat-60lon180), each marked `lang: es`. It borrows the numbers and the vector
+algebra and supplies everything else.
 
 That is *the file IS the model, the runtime is a generic interpreter* from global_models,
 taken as literally for language as global_models took it for climate — and falsifiable the
@@ -162,17 +168,17 @@ same way. The runtime refers to grammar only by schema keys (`cop`, `class_of`,
 | EPS decides the roadmap | EPS decides what the librarian asks you about |
 | Latitude is real, so lanes need a `lane:` field | The sphere is a knowledge map, so lanes are latitudes again |
 | Beliefs sit beside their subjects | Beliefs sit *inside* their subjects, as `belief:` lines |
-| Bouvet Island holds the fixture | `@LAT99LON1` holds the fixture — with three malformed percepts |
+| Bouvet Island holds the fixture | [`@LAT99LON1`](lat99lon1) holds the fixture — with three malformed percepts |
 | The South Pole switches discovery off | The South Pole declares a kind no viewer knows, so discovery stays on |
 
 ---
 
 ## The grammar sphere
 
-The origin `@LAT0LON0` is **you** — the record your *I*, *me* and *my* resolve to. The prime
-meridian is **the grammar**: nine blueprint records north of you, eight grammar records
-south. **Things sit east, vectors west**, because the rule that decides which side a word
-falls on belongs on the line between the sides. The antimeridian is the other line between
+The origin [`@LAT0LON0`](lat0lon0) is **you** — the record your *I*, *me* and *my* resolve to.
+The prime meridian is **the grammar**: nine blueprint records north of you, eight grammar
+records south. **Things sit east, vectors west**, because the rule that decides which side a
+word falls on belongs on the line between the sides. The antimeridian is the other line between
 them, and holds **a second language**.
 
 ### Two languages
@@ -197,8 +203,9 @@ A new term sits **beside the term that first gave it meaning**: *Pixel is a cat*
 arrived. With no partner a term hashes into its hemisphere. IDs never move (TTDB-RFC-0004).
 
 Latitude 90 is the timeline — every episode, verbatim, `lon` = its ordinal. Latitude 91 holds
-your corrections to how an episode was read, at the episode's own longitude. Latitude 98 holds
-beliefs about the design, 99 the fixture, −90 the special record.
+your corrections to how an episode was read, at the episode's own longitude. Latitude 95 holds the
+documents about the store — this file is one of them — 98 beliefs about the design, 99 the
+fixture, −90 the special record.
 
 ---
 
@@ -228,9 +235,9 @@ Each stage is one blueprint record in the store and one section of an RFC.
    reply out of grounds.
 8. **Write back** — only what changed; everything else byte for byte.
 
-A ninth record, `@LAT85LON0`, is not a stage. It names the runtime's surface — where the
-engine is, the calls, the store and reply objects, the page's conventions — so the engine can
-be lifted into another app from the store alone.
+A ninth record, [`@LAT85LON0`](lat85lon0), is not a stage. It names the runtime's surface —
+where the engine is, the calls, the store and reply objects, the page's conventions — so the
+engine can be lifted into another app from the store alone.
 
 ---
 
@@ -258,8 +265,8 @@ and both sentences it rests on, labelled **inferred, not said**. *Can penguins f
 otherwise*. *Is a whale a fish?* ends *No purchase: whale, fish.*
 
 Nobody said penguins are flightless. *Are penguins flightless?* is answered by a rule in
-`@LAT-80LON0`, `not_fly X -, is_a X bird => has_property X flightless`, which joins *Penguins
-do not fly.* to *A penguin is a bird.* and names itself in the chain.
+[`@LAT-80LON0`](lat-80lon0), `not_fly X -, is_a X bird => has_property X flightless`, which
+joins *Penguins do not fly.* to *A penguin is a bird.* and names itself in the chain.
 
 ### What no longer holds
 
@@ -387,11 +394,11 @@ This file is meant to be forked, and there are four depths to fork it at.
    inference order, the intent table, the write rules. The four TTG RFCs are their expansion,
    and the `mmpdb` constraints say what a runtime may and may not contain.
 4. **This runtime, inside another app.** Point the app's developer, or its development agent,
-   at the ninth, `@LAT85LON0`: `openStore`, `answer`, render the grounds by kind, persist
-   `serializeStore(S.st)`. The first embedding by someone else found what that record now
-   covers — function names, the store object, the boot gate, the `data-*` convention — had
-   to come from this page and this README instead. `docs.test.mjs` now holds the record to
-   the runtime's real exports.
+   at the ninth, [`@LAT85LON0`](lat85lon0): `openStore`, `answer`, render the grounds by kind,
+   persist `serializeStore(S.st)`. The first embedding by someone else found what that record
+   now covers — function names, the store object, the boot gate, the `data-*` convention — had
+   to come from this page and this README instead. `docs.test.mjs` now holds the record to the
+   runtime's real exports.
 
 ---
 
@@ -402,20 +409,20 @@ global_models.
 
 | Record | Belief | conf | sal | EPS |
 |---|---|---|---|---|
-| `@LAT98LON5` | What the parser cannot see | 70 | 190 | **138** |
-| `@LAT98LON8` | Order, not clocks: a fleet shares a tempo | 90 | 180 | **116** |
-| `@LAT98LON4` | The lemmatizer is a guess the corpus corrects | 120 | 210 | **111** |
-| `@LAT98LON7` | Two languages, one sphere | 100 | 140 | **85** |
-| `@LAT98LON9` | A reading is a guess the owner can overrule | 150 | 160 | 66 |
-| `@LAT98LON3` | Said outranks inferred; a contradiction is kept | 190 | 200 | 51 |
-| `@LAT98LON1` | A verb is a vector, and the edge is the datum | 200 | 180 | 39 |
-| `@LAT98LON6` | Mentions are not evidence | 215 | 150 | 24 |
-| `@LAT98LON2` | Lanes are latitudes again | 230 | 60 | 6 |
+| [`@LAT98LON5`](lat98lon5) | What the parser cannot see | 70 | 190 | **138** |
+| [`@LAT98LON8`](lat98lon8) | Order, not clocks: a fleet shares a tempo | 90 | 180 | **116** |
+| [`@LAT98LON4`](lat98lon4) | The lemmatizer is a guess the corpus corrects | 120 | 210 | **111** |
+| [`@LAT98LON7`](lat98lon7) | Two languages, one sphere | 100 | 140 | **85** |
+| [`@LAT98LON9`](lat98lon9) | A reading is a guess the owner can overrule | 150 | 160 | 66 |
+| [`@LAT98LON3`](lat98lon3) | Said outranks inferred; a contradiction is kept | 190 | 200 | 51 |
+| [`@LAT98LON1`](lat98lon1) | A verb is a vector, and the edge is the datum | 200 | 180 | 39 |
+| [`@LAT98LON6`](lat98lon6) | Mentions are not evidence | 215 | 150 | 24 |
+| [`@LAT98LON2`](lat98lon2) | Lanes are latitudes again | 230 | 60 | 6 |
 
 **First, the parser's blind spots** — one reading or two, adverbs after a verb,
 attributive adjectives, tense and modality. Every sentence passes through
 them and they are the least settled thing here, though you can now correct any reading they
-get wrong, and what the parser cannot tell is asserted is held rather than believed. The test for any fix is the one in `@LAT98LON5`: if it needs English in
+get wrong, and what the parser cannot tell is asserted is held rather than believed. The test for any fix is the one in [`@LAT98LON5`](lat98lon5): if it needs English in
 `index.html`, it is the wrong fix. Each is a rule kind the grammar could declare.
 
 **Second, the lemmatizer.** It is right about the words you use and wrong about the first use
@@ -428,15 +435,15 @@ negros*), and dropped subjects other than yours — *No como carne* is read as y
 queso* is not read as anyone. Verbs link across languages only one rule at a time
 (`cazar X Y => chase X Y`).
 
-**Then, time across devices** — `@LAT98LON8`, second on the list before a line of it runs. One
-store orders what you said by its file. Several agents hearing you (a phone, a Pi, a badge)
-share no file and disagree about the time. The proposal is a band's: share a tempo, stamp each
-saying with how far your clock can be trusted, and call two sayings contested when their
-bounds overlap.
+**Then, time across devices** — [`@LAT98LON8`](lat98lon8), second on the list before a line of
+it runs. One store orders what you said by its file. Several agents hearing you (a phone, a Pi,
+a badge) share no file and disagree about the time. The proposal is a band's: share a tempo,
+stamp each saying with how far your clock can be trusted, and call two sayings contested when
+their bounds overlap.
 
-**And the readings you correct** — `@LAT98LON9`. A correction lives beside the episode, never
-in it, and never counts twice. But a term you bind once is found everywhere after, silently at
-parse time; the `forms:` line is the only place it shows.
+**And the readings you correct** — [`@LAT98LON9`](lat98lon9). A correction lives beside the
+episode, never in it, and never counts twice. But a term you bind once is found everywhere
+after, silently at parse time; the `forms:` line is the only place it shows.
 
 **Not on the list: a recency rule for contradictions.** *I like coffee* on Monday and *I do not
 like coffee* on Friday is a change of mind, and the store cannot tell it from a contradiction.
@@ -464,7 +471,7 @@ no.
   less than you did.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.
   That is a claim about what feeding a file in means — *here is something I read* — and it is
-  written down at `@LAT98LON6`.
+  written down at [`@LAT98LON6`](lat98lon6).
 - **Replies quote rather than generate.** Articles and agreement are whatever your sentences
   had; a chain prints as triples.
 - **`localStorage` is small.** Browsers allow a few megabytes. The page tells you if a save is
@@ -476,12 +483,12 @@ no.
 
 The store is a conformant TTDB (TTDB-RFC-0001) and exercises the failure paths on purpose:
 
-- `@LAT99LON1` carries a **dead edge**, an **unknown header field** and **no `[ew]` block**,
-  and an episode block holding **three malformed percept lines**, which the consolidator skips,
-  counts and reports (the page's status bar says *3 malformed skipped*). Its `said:` line is
-  not your words: only episode blocks at lat 90 are, so it is never quoted, searched or
-  counted — including after *Start empty*, which keeps it. An earlier version did search it,
-  and a code review of someone else's embedding caught that before this suite did.
+- [`@LAT99LON1`](lat99lon1) carries a **dead edge**, an **unknown header field** and **no
+  `[ew]` block**, and an episode block holding **three malformed percept lines**, which the
+  consolidator skips, counts and reports (the page's status bar says *3 malformed skipped*).
+  Its `said:` line is not your words: only episode blocks at lat 90 are, so it is never quoted,
+  searched or counted — including after *Start empty*, which keeps it. An earlier version did
+  search it, and a code review of someone else's embedding caught that before this suite did.
 - `@LAT-90LON0` is the South Pole special record, declaring a `kind` no viewer knows.
 - The page implements TTCP-RFC-0001 §11 (weights shown with EPS) and §12 (edges as
   navigation, dead edges visibly dead), TTCP-RFC-0002 §2 and §5–6 for the sphere, and

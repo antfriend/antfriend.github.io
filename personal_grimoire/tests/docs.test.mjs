@@ -33,10 +33,10 @@ const slug = h => h.toLowerCase().replace(/[^\w\sÀ-ɏ-]/g, "").replace(/\s/g, "
 const anchors = new Set(readme.split(/\r?\n/).filter(l => /^#{1,6}\s/.test(l)).map(l => slug(l.replace(/^#{1,6}\s+/, ""))));
 for (const m of readme.matchAll(/\]\(#([^)]+)\)/g)) ok(anchors.has(m[1]), "README -> #" + m[1]);
 
-console.log("\n== toot links and src: lines in the store ==");
+console.log("\n== toot links and src: lines in the store and the README ==");
 const S = PG.openStore(store);
 const recs = PG.records(S.st);
-for (const m of new Set([...store.matchAll(/\]\((lat-?[\d.]+lon-?[\d.]+)\)/gi)].map(x => x[1]))){
+for (const m of new Set([...(store + "\n" + readme).matchAll(/\]\((lat-?[\d.]+lon-?[\d.]+)\)/gi)].map(x => x[1]))){
   const t = /^lat(-?[\d.]+)lon(-?[\d.]+)$/i.exec(m);
   ok(recs.some(r => r.lat === +t[1] && r.lon === +t[2]), "toot link " + m + " names a record");
 }
@@ -126,7 +126,7 @@ for (const [, q, intent, says] of rows){
 }
 
 console.log("\n== README roadmap matches the lane-98 weights ==");
-const rm = [...readme.matchAll(/^\| `(@LAT98LON\d+)` \| .+? \| (\d+) \| (\d+) \| \*{0,2}(\d+)\*{0,2} \|$/gm)];
+const rm = [...readme.matchAll(/^\| \[?`(@LAT98LON\d+)`(?:\]\(lat[^)]+\))? \| .+? \| (\d+) \| (\d+) \| \*{0,2}(\d+)\*{0,2} \|$/gm)];
 const lane = recs.filter(r => r.lat === 98);
 ok(rm.length === lane.length, "one roadmap row per design belief", rm.length + " of " + lane.length);
 let prev = Infinity;

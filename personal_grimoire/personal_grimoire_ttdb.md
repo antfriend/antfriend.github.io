@@ -23,7 +23,7 @@ umwelt:
   globe:
     frame: grammar-sphere
     origin: "@LAT0LON0"
-    mapping: "A knowledge map, not the Earth. The origin is the speaker. The prime meridian is the grammar itself - the blueprint north of the origin, the language rules south of it - because the rule that decides which side a word falls on belongs on the line between the sides. A second language's grammar sits on the antimeridian, the other line between the sides. Nounish THING terms sit in the eastern hemisphere, verbish VECTOR terms in the western. A new term sits beside the term that first gave it meaning, or where its lemma hashes when nothing did. Lat 90 is the episode timeline (lon = ordinal), lat 91 the owner's amendments to how an episode was read (same lon), lat 98 holds beliefs about this design, lat 99 the fixture, lat -90 the special record."
+    mapping: "A knowledge map, not the Earth. The origin is the speaker. The prime meridian is the grammar itself - the blueprint north of the origin, the language rules south of it - because the rule that decides which side a word falls on belongs on the line between the sides. A second language's grammar sits on the antimeridian, the other line between the sides. Nounish THING terms sit in the eastern hemisphere, verbish VECTOR terms in the western. A new term sits beside the term that first gave it meaning, or where its lemma hashes when nothing did. Lat 90 is the episode timeline (lon = ordinal), lat 91 the owner's amendments to how an episode was read (same lon), lat 95 the documents about the store, lat 98 holds beliefs about this design, lat 99 the fixture, lat -90 the special record."
     note: "Latitude lanes are available here because the globe is a knowledge map again - the mechanism global_models had to replace with a lane: field. See @LAT98LON2."
 cursor_policy:
   max_preview_chars: 256
@@ -41,10 +41,10 @@ librarian:
 
 ```cursor
 selected:
-  - "@LAT90LON8"
+  - "@LAT95LON0"
 preview:
-  "@LAT90LON8": "Episode 8 — typed"
-agent_note: "Seed store, 2026-09-13. The meridian carries the blueprint (north) and the English grammar (south). Eight demo episodes (lat 90) were fed through the page's own engine from tools/seed_corpus.txt: a small bestiary for inheritance and its exception (penguins), a pet for chains (Pixel), and one deliberate change of mind (coffee) that stands as a contested belief. Start empty to make the corpus your own."
+  "@LAT95LON0": "README — the guide, shown where the reader lands. - Latitude 95 is a lane for documents about the store: north of the timeline at 90 and the corrections at 91, south of the design beliefs at 98. This is the record the cursor selects, so the page opens on …"
+agent_note: "Seed store, 2026-09-13. The meridian carries the blueprint (north) and the English grammar (south). Eight demo episodes (lat 90) were fed through the page's own engine from tools/seed_corpus.txt: a small bestiary for inheritance and its exception (penguins), a pet for chains (Pixel), and one deliberate change of mind (coffee) that stands as a contested belief. Start empty to make the corpus your own. The cursor selects @LAT95LON0, the README record at lat 95, so a reader lands on the guide; it shows README.md itself rather than a copy of it."
 last_query: "I do not like coffee."
 last_answer: "Noted 1 percept from 1 sentence. [you said] self not_like coffee — “I do not like coffee.” (@LAT90LON8) [you have said both] self like coffee — “I like coffee.” (@LAT90LON7) “I do not like coffee.” (@LAT90LON8) This disagrees with something you said before."
 answer_records: ["@LAT90LON8", "@LAT-7.4LON-174.2", "@LAT57.2LON41.5"]
@@ -78,7 +78,8 @@ touched:1789258020
    [the rules](lat-80lon0). On the
    far side, the antimeridian, [a second language](lat-10lon180) — ask in Spanish and it
    reasons over what you said in English. East and west, the owner's own terms. Up at lat 90,
-   every episode, verbatim; at lat 91, beside each, any reading of it the owner corrected.
+   every episode, verbatim; at lat 91, beside each, any reading of it the owner corrected; at lat 95,
+   [the README](lat95lon0).
 
 **The runtime holds no words.** `index.html` knows how to split, match, strip a suffix, walk a
 typed edge and fill a slot. It does not know that *the* is a determiner, that *mice* is the
@@ -92,7 +93,7 @@ everything: *a measurement and a model output are never printed alike* becomes *
 you said and a thing that follows from what you said are never printed alike**; and *the
 file IS the model* becomes **the file IS the grammar**.
 
-Specs: [RFCs/](RFCs/). Human guide: [README.md](README.md).
+Specs: [RFCs/](RFCs/). Human guide: [the README](lat95lon0), which is where the cursor starts.
 
 ```ttdb-sphere
 thing_lon: 5 175
@@ -1881,6 +1882,35 @@ at: 1789258020
 said: 1 | I do not like coffee.
 shape: 1 | [i] {do not like} [coffee].
 percept: 1 | self | like | coffee | - | -
+```
+
+---
+
+@LAT95LON0 | created:1790035200 | updated:1790035200 | relates:refines@LAT0LON0,supports@LAT85LON0
+[ew]
+conf:210
+rev:0
+sal:170
+touched:1790035200
+[/ew]
+
+**README — the guide, shown where the reader lands.**
+
+Latitude 95 is a lane for documents *about* the store: north of the timeline at 90 and the
+corrections at 91, south of the design beliefs at 98. This is the record the cursor selects,
+so the page opens on the guide rather than on the last thing anyone said.
+
+What follows below is not a copy. The panel fetches [README.md](README.md) and renders it
+with the same renderer every record body uses, so the record tokens written into the guide —
+`lat0lon0`, `lat-10lon0`, `lat99lon1` — are live links into this file. One text, in one
+place, read two ways: on a repository page as Markdown, and here as a record of the store it
+describes.
+
+Opened straight from `file://` there is no server to fetch from, and only this record shows,
+with the link above still good.
+
+```ttdb-include
+file: README.md
 ```
 
 ---
