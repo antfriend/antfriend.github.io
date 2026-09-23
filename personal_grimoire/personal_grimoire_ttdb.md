@@ -43,7 +43,7 @@ librarian:
 selected:
   - "@LAT95LON0"
 preview:
-  "@LAT95LON0": "README — the guide, shown where the reader lands. - Latitude 95 is a lane for documents about the store: north of the timeline at 90 and the corrections at 91, south of the design beliefs at 98. This is the record the cursor selects, so the page opens on …"
+  "@LAT95LON0": "README.md"
 agent_note: "Seed store, 2026-09-13. The meridian carries the blueprint (north) and the English grammar (south). Eight demo episodes (lat 90) were fed through the page's own engine from tools/seed_corpus.txt: a small bestiary for inheritance and its exception (penguins), a pet for chains (Pixel), and one deliberate change of mind (coffee) that stands as a contested belief. Start empty to make the corpus your own. The cursor selects @LAT95LON0, the README record at lat 95, so a reader lands on the guide; it shows README.md itself rather than a copy of it."
 last_query: "I do not like coffee."
 last_answer: "Noted 1 percept from 1 sentence. [you said] self not_like coffee — “I do not like coffee.” (@LAT90LON8) [you have said both] self like coffee — “I like coffee.” (@LAT90LON7) “I do not like coffee.” (@LAT90LON8) This disagrees with something you said before."
