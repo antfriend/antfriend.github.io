@@ -1,14 +1,18 @@
 # Personal Grimoire
 
-<img src="Grimoire.jpeg" alt="A tooled leather grimoire with a brass clasp and an eye set in its cover." width="360">
+<img src="Grimoire-card.jpg" alt="A tooled leather grimoire with a brass clasp and an eye set in its cover." width="360">
 
 A one-page web app: **a corpus of your own words that answers in them.** You type sentences,
 or feed in whole `.md` and `.txt` files, and the page breaks them into *percepts* — nounish
-**things** and verbish **vectors** — forms beliefs about the things, reasons along the
+**things** and verbish **vectors** — one forms beliefs about the things, reasons along the
 vectors, and answers questions the way a primitive Q/A system or an LLM chat would. The
-difference is that it can only ever say four kinds of thing: **what you said**, **what
-follows from what you said** (with the chain shown), **that you have said both**, and **what
-no longer holds** (with what you said since).
+difference is that it only knows what you've told it. 
+
+ It replies 4 ways:
+ - **what you said**
+ - **what follows from what you said** (with the chain shown)
+ -  **that you have said both**
+ - **what no longer holds** (with what you said since)
 
 Static files, no build step, no dependencies. One TTDB file is the foundation, the
 blueprint and the data; one HTML page runs it.

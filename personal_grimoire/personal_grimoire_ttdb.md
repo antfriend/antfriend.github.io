@@ -1895,21 +1895,6 @@ sal:170
 touched:1790035200
 [/ew]
 
-**README — the guide, shown where the reader lands.**
-
-Latitude 95 is a lane for documents *about* the store: north of the timeline at 90 and the
-corrections at 91, south of the design beliefs at 98. This is the record the cursor selects,
-so the page opens on the guide rather than on the last thing anyone said.
-
-What follows below is not a copy. The panel fetches [README.md](README.md) and renders it
-with the same renderer every record body uses, so the record tokens written into the guide —
-`lat0lon0`, `lat-10lon0`, `lat99lon1` — are live links into this file. One text, in one
-place, read two ways: on a repository page as Markdown, and here as a record of the store it
-describes.
-
-Opened straight from `file://` there is no server to fetch from, and only this record shows,
-with the link above still good.
-
 ```ttdb-include
 file: README.md
 ```

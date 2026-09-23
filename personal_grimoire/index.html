@@ -34,6 +34,8 @@
   --accent:#3dff7a; --thing:#ff9d3d; --vector:#3dff7a; --grammar:#d6a6ff; --warn:#ffb341; --dead:#5c7f64;
   --sphere:#21402a; --sphere2:#112216; --grat:#36633f;
   --glow:61 255 122;
+  /* every body panel is this tall, whatever it holds; each scrolls inside itself */
+  --panelh:clamp(340px,44vh,480px);
   --mono:ui-monospace,"Cascadia Mono","Cascadia Code","SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
   scrollbar-color:var(--grat) transparent;
 }
@@ -78,10 +80,11 @@ button.primary{background:var(--accent);color:var(--bg);border-color:var(--accen
 button.primary:hover{color:var(--bg);box-shadow:0 0 18px rgb(var(--glow) / .55)}
 .grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
 .grid.lower{grid-template-columns:minmax(0,380px) minmax(0,1fr);margin-top:16px}
+.grid>.card{height:var(--panelh);overflow:hidden;display:flex;flex-direction:column}
 @media (max-width:860px){ .grid,.grid.lower{grid-template-columns:1fr} }
 .card{background:var(--panel);border:1px solid var(--line);border-radius:2px;
   box-shadow:inset 0 0 30px rgb(var(--glow) / .035),0 0 0 1px rgb(0 0 0 / .5)}
-#log{padding:14px 16px;min-height:220px;max-height:62vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin}
+#log{padding:14px 16px;flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin}
 /* what you asked is echoed like a line typed at the prompt */
 .turn-q{align-self:flex-start;max-width:100%;position:relative;padding:0 0 0 1.5em;color:var(--dim);font-size:.92rem;
   white-space:pre-wrap;word-break:break-word}
@@ -123,7 +126,7 @@ button.primary:hover{color:var(--bg);box-shadow:0 0 18px rgb(var(--glow) / .55)}
 .rl{font-size:.72rem;color:var(--warn);font-style:italic;margin-left:2px}
 .note{clear:left;margin-top:8px;padding:7px 10px;border-left:3px solid var(--warn);background:var(--bg);font-size:.85rem;color:var(--dim)}
 .purchase{clear:left;margin-top:8px;font-size:.78rem;color:var(--dim);display:flex;flex-wrap:wrap;gap:4px;align-items:center}
-form{border-top:1px solid var(--line);padding:10px 12px 12px}
+form{flex:0 0 auto;border-top:1px solid var(--line);padding:10px 12px 12px}
 #preview{min-height:1.6em;margin-bottom:6px;display:flex;flex-direction:column;gap:2px}
 /* a reading: nounish segments boxed as things, verbish as vectors, links bare */
 .shape{display:flex;flex-wrap:wrap;gap:3px 4px;align-items:center;font-size:.82rem;margin-top:4px}
@@ -155,9 +158,9 @@ textarea::placeholder{color:var(--dim);opacity:.75}
 textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 10px rgb(var(--glow) / .18)}
 textarea.drop{border-color:var(--accent);border-style:dashed}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
-#spherewrap{padding:8px;display:flex;justify-content:center}
-canvas{touch-action:none;cursor:grab;width:100%;max-width:340px;aspect-ratio:1/1;filter:drop-shadow(0 0 10px rgb(var(--glow) / .14))}
-.legend{display:flex;flex-wrap:wrap;gap:3px 12px;justify-content:center;font-size:.72rem;color:var(--dim);padding:0 10px 8px}
+#spherewrap{padding:8px;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
+canvas{touch-action:none;cursor:grab;width:min(100%,340px,calc(var(--panelh) - 76px));aspect-ratio:1/1;filter:drop-shadow(0 0 10px rgb(var(--glow) / .14))}
+.legend{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:3px 12px;justify-content:center;font-size:.72rem;color:var(--dim);padding:0 10px 8px}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:-1px}
 .terms{padding:10px 12px}
 .terms .row{margin:0 0 6px}
@@ -165,13 +168,19 @@ input[type=search],select{font:inherit;font-size:.82rem;color:var(--ink);backgro
   border-radius:2px;padding:5px 8px}
 input[type=search]{flex:1;min-width:120px;caret-color:var(--accent)}
 #filtermeta{font-size:.74rem;color:var(--dim);margin-bottom:4px}
-#termlist{list-style:none;margin:0;padding:0;max-height:240px;overflow-y:auto;font-size:.84rem;scrollbar-width:thin}
+#termlist{list-style:none;margin:0;padding:0;flex:1 1 auto;min-height:0;overflow-y:auto;font-size:.84rem;scrollbar-width:thin}
 #termlist li{display:flex;justify-content:space-between;gap:8px;padding:3px 4px;border-radius:2px;cursor:pointer}
 #termlist li:hover,#termlist li.sel{background:var(--bg)}
 #termlist li.sel{box-shadow:inset 2px 0 0 var(--accent)}
 #termlist .n{font-variant-numeric:tabular-nums;color:var(--dim);font-size:.75rem;white-space:nowrap}
-#panel{padding:14px 16px}
+#panel{padding:0;display:block;position:relative;overflow:hidden}
 #panel:empty{display:none}
+/* the panel is a window onto a sheet of record slides, and the globe shifts
+   the sheet: a record leaves the way the globe turned and the next one comes
+   in behind it. Each slide is the window's size and scrolls its own record. */
+.slide-track{position:absolute;inset:0}
+.record-slide{position:absolute;inset:0;padding:14px 16px;overflow-y:auto;scrollbar-width:thin;
+  background:var(--panel);will-change:transform}
 #panel h2{font-size:1rem;margin:0 0 2px;color:var(--accent);text-shadow:0 0 6px rgb(var(--glow) / .45)}
 #panel .coord{font:12px/1.4 var(--mono);color:var(--dim);margin-bottom:8px}
 .ew{display:flex;align-items:center;gap:10px;margin:8px 0 12px;padding:7px 10px;background:var(--bg);border:1px solid var(--line);
@@ -2747,7 +2756,9 @@ const PG = { parseStore, serializeStore, parseRecord, parseBlock, openStore, loa
  * which is what lets tools/ and tests/ run the engine in Node.
  * ====================================================================== */
 let S = null, storeSource = "", selectedKey = null, lit = new Set();
-let rotLat = 0.3, rotLon = -0.9;
+let rotLat = 0.3, rotLon = -0.9;          // where the globe is turned to now
+let tgtLat = 0.3, tgtLon = -0.9;          // where it is heading
+let zoom = 1, spinEase = .16, dragging = false, ticking = false;
 const $ = id => document.getElementById(id);
 const unixNow = () => Math.floor(Date.now() / 1000);
 const reduceMotion = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -3064,9 +3075,7 @@ function shownHtml(rec){
 }
 
 /* ---------- record panel (TTCP-RFC-0001 §11–12) ---------------------------- */
-function renderPanel(rec){
-  const el = $("panel");
-  if (!rec){ el.innerHTML = ""; return; }
+function recordHtml(rec){
   const ew = rec.hasEw
     ? `<div class="ew"><span>EPS ${rec.eps}</span><span class="epsbar"><i style="width:${Math.min(100, rec.eps / 255 * 100)}%"></i></span>` +
       `<span>conf ${rec.conf} · rev ${rec.rev} · sal ${rec.sal} · touched ${rec.touched}</span></div>`
@@ -3109,15 +3118,228 @@ function renderPanel(rec){
     return `<em>${esc(e.type)}</em> ` + (t ? `<a href="#" data-key="${t.key}">${esc(t.title)}</a>`
       : `<span class="x" title="target does not exist in this store">${esc(e.target ? e.target.id : "?")}</span>`);
   }).join(" · ") + `</div>` : "";
-  el.innerHTML = `<h2>${inline(rec.title)}</h2><div class="coord">${rec.id}</div>${ew}${body}${edges}`;
+  return `<h2>${inline(rec.title)}</h2><div class="coord">${rec.id}</div>${ew}${body}${edges}`;
 }
-function select(key, spin){
-  const rec = records(S.st).find(r => r.key === key);
+
+/* ---------- the panel as a sheet of record slides -------------------------- *
+ * Ported from the site's index globe (js/index-ttdb.js, "record slides"). The
+ * panel is a window onto a sheet, and the globe drives the sheet, not a clock.
+ * Every move to another record is a leg: it starts where the globe points and
+ * ends facing the record. The new slide is laid just outside the window along
+ * the leg's direction — screen x follows longitude, screen y runs against
+ * latitude — and each frame the sheet shifts by exactly the fraction of that
+ * rotation the globe has turned. A drag is a chain of legs toward whichever
+ * record the globe is being turned to. Every slide here is the window's size,
+ * so the window never has to change height mid-leg.                         */
+const SLIDE_GAP = 20;        // px of clear panel between neighbouring slides
+const DRAG_TAKEOVER = .12;   // lead a rival record needs to take over a drag leg
+const LEG_MIN = .5 * Math.PI / 180;      // shorter than this and a leg has no direction
+const DRAG_LEG_MIN = 10 * Math.PI / 180; // a drag never heads for the record it is on
+const pan = { track:null, slides:new Map(), target:null, from:null, leg:null, t:0 };
+
+function angleDelta(target, current){
+  let d = (target - current) % (Math.PI * 2);
+  if (d > Math.PI) d -= Math.PI * 2;
+  if (d < -Math.PI) d += Math.PI * 2;
+  return d;
+}
+const recOf = key => S && records(S.st).find(r => r.key === key);
+/* The rotation that brings a record to the middle of the globe. */
+function orientFor(rec){ return { lat: clamp(rec.lat, -80, 80) * Math.PI / 180, lon: rec.lon * Math.PI / 180 }; }
+function legFor(rec){
+  const o = orientFor(rec);
+  return { lat: o.lat - pan.from.lat, lon: angleDelta(o.lon, pan.from.lon) };
+}
+/* How far the globe has turned along a leg: 0 at its start, 1 on arrival. Lat
+   and lon ease by the same factor every frame, so an eased leg is a straight
+   line in rotation space and this fraction is exact. Lon is unwrapped about
+   the leg's midpoint, so a half-turn leg cannot flip sign on the far side. */
+function legProgress(leg){
+  const len2 = leg.lat * leg.lat + leg.lon * leg.lon;
+  if (len2 < LEG_MIN * LEG_MIN) return null;
+  const mid = pan.from.lon + leg.lon / 2;
+  const lon = leg.lon / 2 + angleDelta(rotLon, mid);
+  return ((rotLat - pan.from.lat) * leg.lat + lon * leg.lon) / len2;
+}
+function ensureTrack(){
+  if (pan.track && pan.track.isConnected) return;
+  const el = $("panel");
+  el.innerHTML = "";
+  pan.track = document.createElement("div");
+  pan.track.className = "slide-track";
+  el.appendChild(pan.track);
+  pan.slides.clear(); pan.target = null; pan.leg = null; pan.t = 0;
+}
+function makeSlide(key){
+  const el = document.createElement("div");
+  el.className = "record-slide";
+  el.innerHTML = recordHtml(recOf(key));
+  pan.track.appendChild(el);
+  const slide = { el, x:0, y:0 };
+  pan.slides.set(key, slide);
+  return slide;
+}
+function dropSlide(key){
+  const slide = pan.slides.get(key);
+  if (!slide) return;
+  slide.el.remove(); pan.slides.delete(key);
+}
+function panMoving(){
+  if (pan.target) return true;
+  for (const s of pan.slides.values()) if (s.x || s.y) return true;
+  return false;
+}
+/* Only the record the cursor is on takes clicks and focus while slides move. */
+function markActive(){
+  const moving = panMoving();
+  pan.slides.forEach((slide, key) => {
+    const off = moving && key !== selectedKey;
+    if (slide.el.inert !== off) slide.el.inert = off;
+  });
+}
+function restOn(key){
+  ensureTrack();
+  for (const k of [...pan.slides.keys()]) if (k !== key) dropSlide(k);
+  const slide = pan.slides.get(key) || makeSlide(key);
+  slide.x = 0; slide.y = 0; slide.el.style.transform = "";
+  pan.target = null; pan.leg = null; pan.t = 0;
+  // A centred slide stands for the globe facing its record, so the next leg is
+  // measured from the record itself, not from wherever the globe drifted. A
+  // record off the sphere — a document at lat 95, say — is one the globe never
+  // turns to, so there the globe's own rotation is the honest starting point.
+  const rec = recOf(key);
+  pan.from = rec && rec.lat < 90 ? orientFor(rec) : { lat:rotLat, lon:rotLon };
+  markActive();
+}
+/* Freeze the leg where it stands: fold its progress into every slide's offset,
+   so the next leg starts from exactly what is on screen. */
+function bake(t){
+  const target = pan.slides.get(pan.target);
+  if (target){
+    const sx = target.x * t, sy = target.y * t;
+    pan.slides.forEach(slide => { slide.x -= sx; slide.y -= sy; });
+  }
+  pan.target = null; pan.leg = null; pan.t = 0;
+}
+/* Slides wholly outside the window will not be seen again on this leg. */
+function pruneHidden(keep){
+  const w = pan.track.clientWidth, h = pan.track.clientHeight;
+  for (const [key, s] of [...pan.slides]){
+    if (key === keep) continue;
+    if (!(s.x < w - .5 && s.x + w > .5 && s.y < h - .5 && s.y + h > .5)) dropSlide(key);
+  }
+}
+/* How far along (ux, uy) a new slide must sit to clear the window and every
+   other slide on the sheet. Two boxes are clear once they separate along
+   either axis, and the new slide has to clear all of them. */
+function clearance(ux, uy, newKey){
+  const w = pan.track.clientWidth + SLIDE_GAP, h = pan.track.clientHeight;
+  const boxes = [{ x:0, y:0 }];
+  pan.slides.forEach((s, key) => { if (key !== newKey) boxes.push({ x:s.x, y:s.y }); });
+  let reach = 0;
+  for (const b of boxes){
+    const alongX = Math.abs(ux) > 1e-6 ? (w + Math.sign(ux) * b.x) / Math.abs(ux) : Infinity;
+    let alongY = Infinity;
+    if (uy > 1e-6) alongY = (b.y + h + SLIDE_GAP) / uy;
+    else if (uy < -1e-6) alongY = (h + SLIDE_GAP - b.y) / -uy;
+    reach = Math.max(reach, Math.min(alongX, alongY));
+  }
+  return reach;
+}
+function beginLeg(key){
+  ensureTrack();
+  if (!pan.slides.size){ restOn(key); return; }
+  if (pan.target === key) return;                       // already on its way in
+  const resting = pan.slides.get(key);
+  if (!pan.target && pan.slides.size === 1 && resting && !resting.x && !resting.y) return;
+  if (pan.target){
+    // Retarget mid-leg: freeze what is on screen and measure on from here.
+    bake(pan.t);
+    pan.from = { lat:rotLat, lon:rotLon };
+  }
+  if (!pan.from) pan.from = { lat:rotLat, lon:rotLon };
+  const leg = legFor(recOf(key));
+  const len = Math.hypot(leg.lat, leg.lon);
+  if (len < LEG_MIN){ restOn(key); return; }            // the globe is already there
+  pruneHidden(key);
+  if (!pan.slides.has(key)){
+    const ux = leg.lon / len, uy = -leg.lat / len;
+    const slide = makeSlide(key);
+    const reach = clearance(ux, uy, key);
+    slide.x = ux * reach; slide.y = uy * reach;
+  }
+  pan.target = key; pan.leg = leg; pan.t = 0;
+  layoutSlides();
+}
+function layoutSlides(){
+  const target = pan.target ? pan.slides.get(pan.target) : null;
+  const t = target ? pan.t : 0;
+  const sx = target ? target.x * t : 0, sy = target ? target.y * t : 0;
+  pan.slides.forEach(slide => {
+    slide.el.style.transform =
+      `translate3d(${(slide.x - sx).toFixed(2)}px, ${(slide.y - sy).toFixed(2)}px, 0)`;
+  });
+  markActive();
+}
+/* While a hand holds the globe there is no destination, so the panel follows
+   the record the globe is being turned toward: the one with the most progress
+   from where the leg began. Passing it rests on it and starts a fresh leg;
+   backing out past the start lets it go; a rival has to lead by a clear margin
+   before it takes over, and the takeover freezes the sheet where it stands. */
+function steerDrag(){
+  if (!pan.from) pan.from = { lat:rotLat, lon:rotLon };
+  let best = null, bestT = 0;
+  for (const rec of records(S.st)){
+    if (rec.lat >= 90 || rec.lat <= -90) continue;
+    const leg = legFor(rec);
+    if (Math.hypot(leg.lat, leg.lon) < DRAG_LEG_MIN) continue;
+    const t = legProgress(leg);
+    if (t > bestT){ best = rec.key; bestT = t; }
+  }
+  if (pan.target){
+    const t = legProgress(pan.leg);
+    if (t === null) return;
+    if (t >= 1){ selectedKey = pan.target; restOn(pan.target); }
+    else if (t <= 0){ pan.t = 0; pan.target = null; pan.leg = null; }
+    else if (best !== pan.target && bestT > t + DRAG_TAKEOVER){ bake(t); pan.from = { lat:rotLat, lon:rotLon }; }
+    return;
+  }
+  // A clear lead first, so a one-pixel nudge does not load a record's panel.
+  if (best && bestT > .01) beginLeg(best);
+}
+function updatePanel(settled){
+  if (!pan.track) return;
+  if (dragging) steerDrag();
+  if (!pan.target){ if (panMoving()) layoutSlides(); return; }
+  const p = legProgress(pan.leg);
+  const t = p === null ? 1 : clamp(p, 0, 1);
+  if (!dragging && (settled || t > .9995)){ restOn(pan.target); return; }
+  pan.t = t;
+  layoutSlides();
+}
+/* Put a record in the panel with no travel: the store changed under it, or a
+   file it shows has arrived. */
+function renderPanel(rec){
+  if (!rec){
+    $("panel").innerHTML = "";
+    pan.track = null; pan.slides.clear(); pan.target = null; pan.leg = null; pan.from = null;
+    return;
+  }
+  ensureTrack();
+  const slide = pan.slides.get(rec.key);
+  if (slide) slide.el.innerHTML = recordHtml(rec); else restOn(rec.key);
+}
+function select(key, spin, ease){
+  const rec = recOf(key);
   if (!rec || rec.lat <= -90) return;
   selectedKey = key;
-  renderPanel(rec);
+  ensureTrack();
+  const shown = pan.slides.get(key);
+  if (shown && !shown.x && !shown.y) shown.el.innerHTML = recordHtml(rec);  // already up: refresh it
+  const turn = spin && rec.lat < 90;
+  if (turn) spinTo(rec, ease);
+  if (turn && !reduceMotion()) beginLeg(key); else restOn(key);
   renderTerms();
-  if (spin && rec.lat < 90) spinTo(rec);
   draw();
 }
 
@@ -3139,7 +3361,7 @@ function draw(){
   if (!cv || !S) return;
   const dpr = window.devicePixelRatio || 1, size = cv.clientWidth || 340;
   if (cv.width !== Math.round(size * dpr)){ cv.width = Math.round(size * dpr); cv.height = cv.width; }
-  const ctx = cv.getContext("2d"), W = cv.width, R = W * 0.46, cx = W / 2, cy = W / 2;
+  const ctx = cv.getContext("2d"), W = cv.width, base = W * 0.46, R = base * zoom, cx = W / 2, cy = W / 2;
   ctx.clearRect(0, 0, W, W);
   const g = ctx.createRadialGradient(cx - R * .3, cy - R * .35, R * .1, cx, cy, R);
   g.addColorStop(0, cssVar("--sphere")); g.addColorStop(1, cssVar("--sphere2"));
@@ -3169,24 +3391,25 @@ function draw(){
   }
   const spine = []; for (let la = -90; la <= 90; la += 3) spine.push([la, 0]);
   line(spine, cssVar("--grammar"), dpr * 1.8);
+  const front = frontRecord(), open = zoom >= 2, names = [];
   for (const r of records(S.st)){
     if (r.lat >= 90 || r.lat <= -90) continue;
     const p = project(r.lat, r.lon);
     if (p.z <= 0) continue;
     const X = cx + p.x * R, Y = cy - p.y * R, on = r.key === selectedKey, hot = lit.has(r.key);
-    const rad = (on ? 6 : hot ? 4.5 : 3) * dpr;
+    const near = !!front && r.key === front.key;
+    // a record swells as it turns to face the reader, the way the cards do on
+    // the site's index globe, so depth is read off the node and not the ring
+    const rad = (on ? 6 : hot ? 4.5 : 3) * (.55 * Math.pow(2.9, p.z)) * dpr;
     ctx.beginPath(); ctx.arc(X, Y, rad, 0, 7); ctx.fillStyle = cssVar(nodeKind(r)); ctx.globalAlpha = hot || on ? 1 : .75; ctx.fill(); ctx.globalAlpha = 1;
     if (hot || on){ ctx.lineWidth = dpr * 1.5; ctx.strokeStyle = cssVar("--ink"); ctx.stroke(); }
-    if (on || hot){
-      // a halo in the panel colour, so a label stays legible over the sphere
-      // and over any label it crosses
-      ctx.font = (11.5 * dpr) + "px " + cssVar("--mono"); ctx.textAlign = "center";
-      const lx = clamp(X, 40 * dpr, W - 40 * dpr), ly = Y - rad - 4 * dpr;
-      ctx.lineWidth = 3 * dpr; ctx.lineJoin = "round"; ctx.strokeStyle = cssVar("--panel");
-      ctx.strokeText(r.title, lx, ly);
-      ctx.fillStyle = cssVar("--ink"); ctx.fillText(r.title, lx, ly);
-    }
+    else if (near){ ctx.lineWidth = dpr; ctx.strokeStyle = cssVar("--dim"); ctx.stroke(); }
+    // zoomed in the crowd has spread out and every record can be named, but a
+    // name is only worth drawing where its node can be seen
+    if (!(on || hot || near || open) || X < 0 || X > W || Y < 0 || Y > W) continue;
+    names.push({ r, X, Y, rad, rank: on ? 0 : hot ? 1 : near ? 2 : 3 - p.z, bright: on || hot });
   }
+  drawNames(ctx, names, W, dpr);
   ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = dpr; ctx.stroke();
   // The limb: the rim the sphere is read against. It is screen space, not
   // sphere space, so it does not turn — graduated every fifteen degrees, long
@@ -3201,33 +3424,116 @@ function draw(){
   }
   ctx.strokeStyle = cssVar("--grat"); ctx.lineWidth = dpr * .9; ctx.stroke();
 }
-function spinTo(rec){
-  const tLat = clamp(rec.lat, -80, 80) * Math.PI / 180, tLon = rec.lon * Math.PI / 180;
-  let dn = tLon - rotLon; dn = Math.atan2(Math.sin(dn), Math.cos(dn));
-  const goal = rotLon + dn;
-  if (reduceMotion()){ rotLat = tLat; rotLon = goal; draw(); return; }
-  const step = () => {
-    const a = tLat - rotLat, b = goal - rotLon;
-    if (Math.abs(a) < .003 && Math.abs(b) < .003) return;
-    rotLat += a * .16; rotLon += b * .16; draw(); requestAnimationFrame(step);
-  };
-  step();
+/* The middle of the globe is the point facing the reader, so the record with
+   the largest z is the one nearest to landing: what a let-go snaps to. */
+function frontRecord(){
+  if (!S) return null;
+  let best = null, bz = 0;
+  for (const r of records(S.st)){
+    if (r.lat >= 90 || r.lat <= -90) continue;
+    const z = project(r.lat, r.lon).z;
+    if (z > bz){ bz = z; best = r; }
+  }
+  return best;
+}
+/* Names are laid brightest first — the selected record, then what the last
+   reply lit, then the one facing the reader, then the rest as they come round
+   — and a name that would cross one already laid is left off rather than
+   stacked on top of it. Each keeps a halo in the panel colour, so it stays
+   legible over the sphere and over anything it crosses. */
+function drawNames(ctx, names, W, dpr){
+  names.sort((a, b) => a.rank - b.rank);
+  const size = 11.5 * Math.min(1.5, Math.pow(zoom, .3)) * dpr, taken = [];
+  ctx.font = size + "px " + cssVar("--mono"); ctx.textAlign = "center"; ctx.lineJoin = "round";
+  for (const n of names){
+    const text = n.bright || n.r.title.length < 25 ? n.r.title : n.r.title.slice(0, 23) + "…";
+    const w = ctx.measureText(text).width, pad = 2 * dpr;
+    const x = clamp(n.X, w / 2 + pad, W - w / 2 - pad), y = n.Y - n.rad - 4 * dpr;
+    const box = { x0:x - w / 2 - pad, x1:x + w / 2 + pad, y0:y - size, y1:y + pad };
+    if (taken.some(b => box.x0 < b.x1 && box.x1 > b.x0 && box.y0 < b.y1 && box.y1 > b.y0)) continue;
+    taken.push(box);
+    ctx.lineWidth = 3 * dpr; ctx.strokeStyle = cssVar("--panel"); ctx.strokeText(text, x, y);
+    ctx.fillStyle = cssVar(n.bright ? "--ink" : "--dim"); ctx.fillText(text, x, y);
+  }
+}
+function spinTo(rec, ease){
+  const o = orientFor(rec);
+  tgtLat = o.lat; tgtLon = o.lon;
+  spinEase = ease || .16;
+  if (reduceMotion()){ rotLat = tgtLat; rotLon += angleDelta(tgtLon, rotLon); draw(); return; }
+  kick();
+}
+/* One clock: it turns the globe toward wherever it is heading, draws, and
+   hands the same frame to the panel, so the record slides in step with the
+   rotation rather than on a timer of its own. It stops when both are still. */
+function tick(){
+  let settled = false;
+  if (!dragging){
+    const a = tgtLat - rotLat, b = angleDelta(tgtLon, rotLon);
+    if (Math.abs(a) > .0005 || Math.abs(b) > .0005){ rotLat += a * spinEase; rotLon += b * spinEase; }
+    else { rotLat += a; rotLon += b; settled = true; }   // land exactly: the panel lands with it
+  }
+  draw();
+  updatePanel(settled);
+  if (dragging || !settled || panMoving()) requestAnimationFrame(tick); else ticking = false;
+}
+function kick(){ if (ticking) return; ticking = true; requestAnimationFrame(tick); }
+
+const ZOOM_MIN = .8, ZOOM_MAX = 12, ZOOM_STEP = 1.12;
+function setZoom(v){
+  const z = clamp(v, ZOOM_MIN, ZOOM_MAX);
+  if (Math.abs(z - zoom) < 1e-4) return false;
+  zoom = z; draw(); return true;
 }
 function wireSphere(){
   const cv = $("sphere");
-  let drag = null;
-  cv.addEventListener("pointerdown", e => { cv.setPointerCapture(e.pointerId); drag = { x:e.clientX, y:e.clientY, moved:0 }; });
+  const pts = new Map();          // pointers on the globe: one turns it, two zoom it
+  let drag = null, pinch = null;
+  cv.addEventListener("pointerdown", e => {
+    cv.setPointerCapture(e.pointerId);
+    pts.set(e.pointerId, { x:e.clientX, y:e.clientY });
+    if (pts.size === 2){
+      const [a, b] = [...pts.values()];
+      pinch = { d:Math.hypot(a.x - b.x, a.y - b.y) || 1, z:zoom };
+      drag = null; dragging = false;
+      return;
+    }
+    drag = { x:e.clientX, y:e.clientY, moved:0 };
+    dragging = true; kick();
+  });
   cv.addEventListener("pointermove", e => {
+    const pt = pts.get(e.pointerId);
+    if (pt){ pt.x = e.clientX; pt.y = e.clientY; }
+    if (pinch && pts.size >= 2){
+      const [a, b] = [...pts.values()];
+      setZoom(pinch.z * (Math.hypot(a.x - b.x, a.y - b.y) / pinch.d));
+      return;
+    }
     if (!drag) return;
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
     drag.moved += Math.abs(dx) + Math.abs(dy);
-    rotLon -= dx * .008; rotLat = clamp(rotLat + dy * .008, -1.5, 1.5);
-    drag.x = e.clientX; drag.y = e.clientY; draw();
+    // the turn is per screen pixel, so a zoomed globe turns as slowly as it looks
+    const k = .008 / zoom;
+    rotLon -= dx * k; rotLat = clamp(rotLat + dy * k, -1.5, 1.5);
+    tgtLat = rotLat; tgtLon = rotLon;
+    drag.x = e.clientX; drag.y = e.clientY;
+    kick();
   });
-  cv.addEventListener("pointerup", e => {
-    const moved = drag && drag.moved > 5; drag = null;
-    if (moved || !S) return;
-    const rect = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1, W = cv.width, R = W * .46;
+  const letGo = e => {
+    pts.delete(e.pointerId);
+    if (pinch){ if (pts.size < 2){ pinch = null; drag = null; dragging = false; } return; }
+    if (!drag) return;
+    const moved = drag.moved > 5;
+    drag = null; dragging = false;
+    if (!S){ kick(); return; }
+    if (moved){
+      // let go and the nearest record glides the rest of the way home, with
+      // the panel it was steering toward
+      const near = frontRecord();
+      if (near) select(near.key, true, .09); else kick();   // a let-go glides, a pick snaps
+      return;
+    }
+    const rect = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1, W = cv.width, R = W * .46 * zoom;
     const px = (e.clientX - rect.left) * (W / rect.width), py = (e.clientY - rect.top) * (W / rect.height);
     let best = null, bd = (e.pointerType === "touch" ? 26 : 14) * dpr;
     for (const r of records(S.st)){
@@ -3236,8 +3542,14 @@ function wireSphere(){
       const d = Math.hypot(W / 2 + p.x * R - px, W / 2 - p.y * R - py);
       if (d < bd){ bd = d; best = r; }
     }
-    if (best) select(best.key, false);
-  });
+    if (best) select(best.key, true); else kick();
+  };
+  cv.addEventListener("pointerup", letGo);
+  cv.addEventListener("pointercancel", letGo);
+  cv.addEventListener("wheel", e => {
+    e.preventDefault();
+    setZoom(zoom * (e.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP));
+  }, { passive:false });
 }
 
 /* ---------- store lifecycle ------------------------------------------------ */
