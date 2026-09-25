@@ -208,8 +208,45 @@ arrived. With no partner a term hashes into its hemisphere. IDs never move (TTDB
 
 Latitude 90 is the timeline — every episode, verbatim, `lon` = its ordinal. Latitude 91 holds
 your corrections to how an episode was read, at the episode's own longitude. Latitude 95 holds the
-documents about the store — this file is one of them — 98 beliefs about the design, 99 the
-fixture, −90 the special record.
+documents about the store — this file is one of them — 96 [a scene](lat96lon0), 98 beliefs
+about the design, 99 the fixture, −90 the special record.
+
+### Relations are drawn
+
+A term's `relates:` edges *are* its beliefs — `cat` carries `chase@<mouse>` — so the sphere
+draws them, as great circles along the surface rather than chords through it. The edges of the
+record you have open, and of anything your last answer lit, are bright and carry an arrow near
+the far end; **every relation** draws the rest, and so does zooming past 2×. A negative belief
+is dashed and amber. A belief with no object points at its vector's own record, and vectors
+live in the *other* hemisphere — so *penguins do not fly* is an arc reaching a third of the way
+round the globe. That is not decoration; it is where the store keeps the two halves of a
+sentence.
+
+When an answer is an inference, the chain it reasoned along travels as a moving dash for a few
+seconds and then settles — and never moves at all if you have asked your system for less
+motion.
+
+### Weight, and what the librarian would ask you
+
+Every record carries the four TTDB-RFC-0005 weights and the **EPS** derived from them:
+`sal × (255 − conf) / 255`, high when you lean on something and have not settled it. On the
+sphere that is a ring around each record, and under **EPS lens** it becomes the whole reading:
+the kinds fall away and what stays lit is what is unresolved. Bars are a share of the top
+weight in the record's own population — the map, or the lanes beyond it — never of the RFC's
+255, which would print every derived term at a fortieth of a bar.
+
+Salience halves every `sal_half_life` episodes a term goes unmentioned, counted in episodes and
+never in clock time, so a store nobody has added to does not decay under its own feet. That is
+what makes the top of the list a question about *now*: the term list carries it, and so does the
+one line the librarian offers unprompted, above the terms.
+
+### A scene is a walk
+
+[`@LAT96LON0`](lat96lon0) has `type: scene` in its header and a `ttdb-scene` block: seven legs
+from `pixel` to the speaker, through the chain, the exception that breaks it, and the long arc
+west. Select it and **play the scene** appears in the store bar; the globe then turns to each
+stop in turn and holds while it is read. Any hand on the globe stops it, and so does asking
+anything.
 
 ---
 
@@ -495,11 +532,17 @@ The store is a conformant TTDB (TTDB-RFC-0001) and exercises the failure paths o
   search it, and a code review of someone else's embedding caught that before this suite did.
 - `@LAT-90LON0` is the South Pole special record, declaring a `kind` no viewer knows.
 - The page implements TTCP-RFC-0001 §11 (weights shown with EPS) and §12 (edges as
-  navigation, dead edges visibly dead), TTCP-RFC-0002 §2 and §5–6 for the sphere, and
-  TTCP-RFC-0003 §2.2 record tokens and §6 search over the term list.
+  navigation, dead edges visibly dead), TTCP-RFC-0002 §2, §4 (typed edges drawn, with the
+  selected record's bright and the rest quiet), §5–6 for the sphere and §10 (scene records and
+  playback, with a control and a step indicator), and TTCP-RFC-0003 §2.2 record tokens and §6
+  search over the term list.
+- An edge is drawn only where both ends are on the map, so the episode lane's `perceives`
+  edges are left off; a dead edge has nowhere to draw to and stays a struck-through link in
+  the record, which is what §12 asks for.
 
-Not implemented: the guided tour, scene playback, side globes, URL sync (the page reads
-`?ask=` to run a question on load and `?seed` to ignore the local copy, and nothing else).
+Not implemented: the guided tour, side globes, URL sync (the page reads `?ask=` to run a
+question on load and `?seed` to ignore the local copy, and nothing else). §10's `audio_path`
+is parsed past rather than played: this page has no sound.
 
 ---
 

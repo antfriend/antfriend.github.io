@@ -5,6 +5,8 @@ const PG = await loadEngine();
 const STORE = read("personal_grimoire_ttdb.md").replace(/\r\n?/g, "\n");
 const fresh = () => PG.openStore(STORE);
 const T0 = 1789400000;
+// written without escapes so the suite can be edited by the same tools that edit the store
+const NL = String.fromCharCode(10), FENCE = "```";
 
 let fails = 0;
 const ok = (cond, msg, extra = "") => {
@@ -57,6 +59,81 @@ section("fixture, special record, lanes");
   ok(terms.every(t => t.cls === "vector" ? t.chunk.rec.lon < 0 : t.chunk.rec.lon > 0 || t.lemma === S.G.sphere.self_lemma),
      "things east, vectors west, the speaker at the origin");
   ok(S.things.get("self").chunk.rec.id === "@LAT0LON0", "self is the Home record");
+}
+
+section("weights: the score, what it is a share of, and the half-life (TTDB-RFC-0005)");
+{
+  const S = fresh(), recs = PG.records(S.st);
+  const terms = [...S.things.values(), ...S.vectors.values()];
+  const tr = terms.map(t => t.chunk.rec);
+  ok(tr.every(r => r.eps === Math.round(r.epsRaw)), "the printed EPS is the unrounded one rounded, as §3.3 defines it");
+  const rounded = new Set(tr.map(r => r.eps)), exact = new Set(tr.map(r => r.epsRaw.toFixed(6)));
+  ok(exact.size > rounded.size, "and the unrounded one separates terms the rounding puts at one number",
+     exact.size + " unrounded vs " + rounded.size + " rounded");
+  // a record is a share of its own population's top, never of the RFC's 255
+  const mapTop = PG.epsTop(S), laneTop = PG.epsTop(S, { lat:98 });
+  const laneMax = recs.filter(r => Math.abs(r.lat) >= 90).reduce((m, r) => Math.max(m, r.epsRaw), 0);
+  const mapMax = recs.filter(r => Math.abs(r.lat) < 90).reduce((m, r) => Math.max(m, r.epsRaw), 0);
+  ok(mapTop === mapMax && laneTop === laneMax, "the map and the lanes are scaled apart",
+     mapTop.toFixed(2) + " vs " + laneTop.toFixed(2));
+  ok(laneTop > mapTop * 10, "hand-written lane weights run an order of magnitude over derived ones");
+  // salience halves every sal_half_life episodes a term goes unmentioned (§3.2)
+  const half = +S.G.sphere.sal_half_life;
+  ok(half > 0, "the store declares a salience half-life", String(half));
+  const raw = t => Math.min(255, (S.seenCounts.get(t.cls + "|" + t.lemma) || 0) + t.asked);
+  const drifted = terms.filter(t => {
+    const age = S.episodes.length - (S.lastSeen.get(t.cls + "|" + t.lemma) || 0);
+    return t.chunk.rec.sal !== raw(t) >> Math.floor(age / half);
+  });
+  ok(!drifted.length, "every stored sal is that term's count, halved once per half-life since it was last said",
+     drifted.map(t => t.lemma).join(", "));
+  const fresh1 = S.things.get("coffee"), stale = S.things.get("bird");
+  ok(raw(fresh1) < raw(stale) && fresh1.chunk.rec.sal > stale.chunk.rec.sal,
+     "a term said less often but more recently outweighs one said more often long ago",
+     "coffee " + fresh1.chunk.rec.sal + " of " + raw(fresh1) + ", bird " + stale.chunk.rec.sal + " of " + raw(stale));
+  // and a store that declares no half-life does not decay at all
+  const flat = PG.openStore(STORE.split(NL + "sal_half_life: " + half).join(""));
+  const fb = flat.things.get("bird");
+  ok(flat.G.sphere.sal_half_life == null && PG.termState(flat, fb).sal === (flat.seenCounts.get("thing|bird") || 0) + fb.asked,
+     "with no half-life declared, salience is the plain count again", String(PG.termState(flat, fb).sal));
+}
+
+section("a scene is a walk over the map (TTCP-RFC-0002 §10)");
+{
+  const S = fresh(), recs = PG.records(S.st);
+  const byKey = new Map(recs.map(r => [r.key, r]));
+  const scenes = PG.scenesOf(S.st);
+  ok(scenes.length === 1 && scenes[0].id === "@LAT96LON0", "one scene record, on the tail lane beside the README",
+     scenes.map(r => r.id).join());
+  ok(scenes[0].fields.some(([k, v]) => k === "type" && v === "scene"), "declared by type: scene in its header (§10.1)");
+  const sc = PG.sceneOf(scenes[0]);
+  ok(sc && sc.edges.length === 7 && sc.loop === false && sc.start.id === "@LAT-53.1LON174",
+     "seven legs, no loop, starting on pixel", sc ? sc.edges.length + " legs from " + sc.start.id : "unparsed");
+  ok(sc.edges.every(e => e.hold > 0 && byKey.has(e.from.key) && byKey.has(e.to.key)),
+     "every leg holds for a time and both its stops exist");
+  // a leg is a relation the store holds, walked with the arrow or against it
+  const held = (a, b) => byKey.get(a).edges.some(e => e.target && e.target.key === b);
+  const real = sc.edges.filter(e => held(e.from.key, e.to.key) || held(e.to.key, e.from.key));
+  ok(real.length === 6 && sc.edges[6].name === "return_home",
+     "six legs are edges some record carries; the seventh is the return home", real.length + " of 7");
+  const neg = S.G.roles.negation_prefix;
+  ok(sc.edges.some(e => byKey.get(e.from.key).edges.some(x => x.target && x.target.key === e.to.key && x.type.indexOf(neg) === 0)),
+     "one leg walks a negative belief, which is what reaches the far hemisphere");
+  // §10.3.4: from each stop, take the next leg that starts where you stand
+  let at = sc.start.key, i = -1;
+  const stops = [byKey.get(at).title];
+  for (;;){
+    let j = i + 1;
+    while (j < sc.edges.length && sc.edges[j].from.key !== at) j++;
+    if (j >= sc.edges.length) break;
+    i = j; at = sc.edges[j].to.key; stops.push(byKey.get(at).title);
+  }
+  ok(i === sc.edges.length - 1, "walked by §10.3.4 the scene takes every leg: it is a path, not a set",
+     (i + 1) + " of " + sc.edges.length);
+  ok(stops.join(" ") === "pixel cat mammal animal bird penguin fly self", "and it ends on the speaker", stops.join(" "));
+  ok(PG.sceneOf(recs.find(r => r.id === "@LAT0LON0")) === null, "a record with no scene block has no scene");
+  ok(PG.sceneOf(PG.parseRecord(["@LAT1LON1 | created:1", "", FENCE + "ttdb-scene", "loop: true", FENCE, ""].join(NL))) === null,
+     "and a scene block with no legs is no scene either");
 }
 
 section("consolidated beliefs match their percepts (no drift)");
@@ -779,8 +856,11 @@ section("the file IS the grammar");
   // 3. No word the grammar lists appears as a string literal in the runtime.
   const code = scriptOf();
   const Gs = fresh().grammars, G = Gs[0];
-  // block keys are schema, like a column name: the check is about the words, not the keys that hold them
-  const SCHEMA = new Set(["kind", "class", "lemma", "forms", "seen", "asked", "belief", "source", "at", "said", "percept", "lang", "label"]);
+  // Block and header keys are schema, like a column name: the check is about the words, not
+  // the keys that hold them. Several collide with English on purpose — `at` is a preposition,
+  // `said` a verb form, `type` the head of the phrasal vector *a type of* — and a key the file
+  // format names (TTDB-RFC-0001 §5) is a key wherever the language also happens to use it.
+  const SCHEMA = new Set(["kind", "class", "lemma", "forms", "seen", "asked", "belief", "source", "at", "said", "percept", "lang", "label", "type"]);
   const vocab = new Set(Gs.flatMap(G => [...G.classes.keys(), ...G.whole.keys(), ...G.nounIrr.keys(), ...G.nounIrr.values(),
     ...G.verbIrr.keys(), ...G.verbIrr.values(), ...G.seed, ...G.stanceNoun, ...G.vectors.keys(), ...G.phrases.flatMap(p => p[0]),
     ...G.whThing, ...G.whPlace.keys(), ...G.about, ...[...G.vectors.values()].map(v => v.label)]).filter(w => w.length >= 2 && !SCHEMA.has(w)));

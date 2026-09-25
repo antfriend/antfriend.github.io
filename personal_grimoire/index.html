@@ -162,6 +162,13 @@ textarea.drop{border-color:var(--accent);border-style:dashed}
 canvas{touch-action:none;cursor:grab;width:min(100%,340px,calc(var(--panelh) - 76px));aspect-ratio:1/1;filter:drop-shadow(0 0 10px rgb(var(--glow) / .14))}
 .legend{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:3px 12px;justify-content:center;font-size:.72rem;color:var(--dim);padding:0 10px 8px}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.legend i.ln{width:14px;height:2px;border-radius:0;vertical-align:3px}
+.globebar{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:0 10px 6px}
+.globebar button{font-size:.72rem;padding:3px 8px}
+.globebar button[aria-pressed=true]{color:var(--bg);background:var(--accent);border-color:var(--accent)}
+/* what the librarian would put to you next, if it asked anything unprompted */
+#nudge{display:block;width:100%;text-align:left;margin-bottom:6px;font-size:.74rem;color:var(--warn);
+  border-color:var(--warn);border-style:dashed;background:var(--bg)}
 .terms{padding:10px 12px}
 .terms .row{margin:0 0 6px}
 input[type=search],select{font:inherit;font-size:.82rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);
@@ -172,7 +179,10 @@ input[type=search]{flex:1;min-width:120px;caret-color:var(--accent)}
 #termlist li{display:flex;justify-content:space-between;gap:8px;padding:3px 4px;border-radius:2px;cursor:pointer}
 #termlist li:hover,#termlist li.sel{background:var(--bg)}
 #termlist li.sel{box-shadow:inset 2px 0 0 var(--accent)}
-#termlist .n{font-variant-numeric:tabular-nums;color:var(--dim);font-size:.75rem;white-space:nowrap}
+#termlist .n{font-variant-numeric:tabular-nums;color:var(--dim);font-size:.75rem;white-space:nowrap;
+  display:flex;align-items:center;gap:6px}
+/* the same weight the panel prints, small enough to scan a column of them */
+#termlist .epsbar{flex:0 0 auto;width:34px;min-width:0;height:4px}
 #panel{padding:0;display:block;position:relative;overflow:hidden}
 #panel:empty{display:none}
 /* the panel is a window onto a sheet of record slides, and the globe shifts
@@ -200,6 +210,10 @@ input[type=search]{flex:1;min-width:120px;caret-color:var(--accent)}
 #panel .shown th,#panel .shown td{white-space:normal;min-width:7em}
 #panel .body blockquote{margin:.5em 0;padding-left:12px;border-left:3px solid var(--line);color:var(--dim)}
 #panel pre{overflow-x:auto;background:var(--bg);border:1px solid var(--line);padding:8px;border-radius:2px;font-size:.75rem}
+.scene{list-style:none;margin:10px 0 0;padding:10px 0 0;border-top:1px solid var(--line);font-size:.82rem}
+.scene li{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;padding:2px 0}
+.scene em{color:var(--dim);font-style:normal;font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;min-width:6.5em}
+.scene a{color:var(--accent);text-decoration:none}
 .edges{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:.8rem}
 .edges b{display:block;font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
 .edges a{text-decoration:none;margin-right:4px}
@@ -277,6 +291,8 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
   <input type="file" id="openstore" accept=".md" hidden>
   <button type="button" id="reset" data-confirm="Forget the local copy, and everything added to it, and reload the seed file?" title="Forget the local copy and reload the seed file">Reset to seed</button>
   <button type="button" id="empty" data-confirm="Delete every episode and every term, keeping the grammar and the blueprint?" title="Keep the grammar and blueprint; delete every episode and term">Start empty</button>
+  <button type="button" id="scene" hidden data-play="▶ play the scene" data-step="■ {n}/{total} · {name}"
+    title="Walk the scene: the globe turns to each record in turn, and any hand on it stops the walk">▶</button>
   <button type="button" id="rereads" hidden data-label="↻ {n} read differently now" data-confirm="Take the grammar's new reading of {n} sentences you have not amended? They are taken in order, each read again after the ones before it, so a later sentence may come to read differently and be taken too. Each becomes an amendment that names the grammar it came from."
     data-done="Took the grammar's reading of {n} sentences." title="The grammar and your words now read some sentences differently from when they were written">↻</button>
 </div>
@@ -309,6 +325,8 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
       </select>
     </div>
     <div id="filtermeta"></div>
+    <button type="button" id="nudge" hidden data-ask="leaned on most, settled least: {term}"
+      title="The highest epistemic priority in the store: the term you lean on most and have settled least"></button>
     <ul id="termlist"></ul>
   </aside>
 </div>
@@ -316,9 +334,17 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
 <div class="grid lower">
   <div class="card">
     <div id="spherewrap"><canvas id="sphere" width="340" height="340"></canvas></div>
+    <div class="globebar">
+      <button type="button" id="lens" aria-pressed="false" data-label="EPS lens"
+        title="Size and light every record by its epistemic priority: how hard it is leaned on, and how little it is settled">EPS lens</button>
+      <button type="button" id="web" aria-pressed="false" data-label="every relation"
+        title="Draw every relation at once, not only the ones being read. Zooming in does the same">every relation</button>
+    </div>
     <div class="legend"><span><i style="background:var(--thing)"></i>things (east)</span>
       <span><i style="background:var(--vector)"></i>vectors (west)</span>
-      <span><i style="background:var(--grammar)"></i>grammars (meridian, antimeridian)</span></div>
+      <span><i style="background:var(--grammar)"></i>grammars (meridian, antimeridian)</span>
+      <span><i class="ln" style="background:var(--accent)"></i>relations being read</span>
+      <span><i class="ln" style="background:var(--warn)"></i>negative, and EPS</span></div>
   </div>
 
   <div class="card" id="panel"></div>
@@ -331,6 +357,8 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
   <a href="https://antfriend.github.io">Reference TTDB viewer</a><br>
   Enter sends, Shift+Enter starts a new line. Tap a word in a reading, shift-tap to extend, then mark it a thing,
   a vector, an aside (left out of the reading) or one term. Drag the sphere to turn it; tap a node to open its record.
+  Relations are drawn between records: the open record's are bright, and <b>every relation</b> or a zoom past 2× draws the rest.
+  <b>EPS lens</b> reads the sphere by weight alone — what you lean on most and have settled least.
   The page chrome is English; the grammar is whatever the store says it is.
 </footer>
 </div>
@@ -421,6 +449,7 @@ function parseRecord(raw){
     r.fields.push([k, v]);
     const kl = k.toLowerCase();
     if (kl === "created" || kl === "updated") r[kl] = +v;
+    else if (kl === "type") r.type = v;
     else if (kl === "relates") r.edges = v.split(",").map(e => e.trim()).filter(Boolean).map(e => {
       const j = e.indexOf("@"); return { type:e.slice(0, j), target:parseId(e) };
     });
@@ -436,6 +465,7 @@ function parseRecord(raw){
     rest = rest.slice(ew[0].length);
   }
   r.eps = epsOf(r);
+  r.epsRaw = epsRawOf(r);
   const t = rest.match(/\*\*([^*\n]+?)\*\*/);
   r.title = t ? t[1].trim() : r.id;
   r.term = fence(rest, "ttdb-term");
@@ -443,13 +473,31 @@ function parseRecord(raw){
   r.amend = fence(rest, "ttdb-amend");
   r.special = fence(rest, "ttdb-special");
   r.sphere = fence(rest, "ttdb-sphere");
+  r.scene = fence(rest, "ttdb-scene");
   r.grammar = fence(rest, "ttdb-grammar");
   r.include = fence(rest, "ttdb-include");
   r.body = rest.replace(new RegExp(FENCE + "ttdb-[a-z]+\\n[\\s\\S]*?" + FENCE, "g"), "").trim();
   return r;
 }
 function epsOf(r){ return Math.round(r.sal * (255 - r.conf) / 255); }     // TTDB-RFC-0005 §3.3
+/* The same score before it is rounded. EPS is printed as the whole number the
+ * RFC defines, but a store of derived terms crowds into the first few whole
+ * numbers — every term sitting at 1 — and rounding would throw away the order
+ * within them. So the number is the RFC's and the ranking is this.        */
+function epsRawOf(r){ return r.sal * (255 - r.conf) / 255; }
 const records = st => st.chunks.map(c => c.rec).filter(Boolean);
+/* What a record's EPS is a share of. A record is measured against its peers:
+ * the map (|lat| < 90) is one population — the owner's terms and the grammar —
+ * and the lanes beyond it another, holding episodes, the README and the design
+ * beliefs, whose weights are written by hand and run an order of magnitude
+ * higher. Scaled to the RFC's 255 instead, every derived term would print at a
+ * fortieth of a bar and the signal would be invisible rather than small.   */
+function epsTop(S, rec){
+  const map = !rec || Math.abs(rec.lat) < 90;
+  let top = 0;
+  for (const r of records(S.st)) if ((Math.abs(r.lat) < 90) === map && r.epsRaw > top) top = r.epsRaw;
+  return top;
+}
 
 /* ---------- store: write ------------------------------------------- */
 function serializeStore(st){ return st.chunks.map(c => c.sep + c.text).join(""); }
@@ -499,6 +547,26 @@ function insertChunk(st, c){
   if (i < 0) i = st.chunks.length;
   st.chunks.splice(i, 0, c);
 }
+
+/* ---------- scenes (TTCP-RFC-0002 §10) ------------------------------ *
+ * A scene is a walk over the map, written as an ordered list of legs. Parsing
+ * belongs to the engine because it is a block of text; walking belongs to the
+ * page, because a walk needs a clock and the engine never reads one.     */
+function sceneOf(rec){
+  if (!rec || rec.scene == null) return null;
+  const b = parseBlock(rec.scene);
+  const edges = many(b, "edge").map(line => {
+    const [name, ...rest] = cols(line);
+    const f = {};
+    for (const part of rest){ const i = part.indexOf(":"); if (i > 0) f[part.slice(0, i).trim()] = part.slice(i + 1).trim(); }
+    const from = parseId(f.from || ""), to = parseId(f.to || "");
+    const hold = +f.hold_ms;
+    return name && from && to ? { name, from, to, hold: hold > 0 ? hold : 1400 } : null;
+  }).filter(Boolean);
+  if (!edges.length) return null;
+  return { start: parseId(b.start_node || "") || edges[0].from, loop: String(b.loop).trim() === "true", edges };
+}
+const scenesOf = st => records(st).filter(r => r.type === "scene" && r.scene != null);
 
 /* ---------- grammar: read every ttdb-grammar block ------------------ */
 /* Languages (TTG-RFC-0001 §11). A grammar record's language is its `lang:`;
@@ -1668,12 +1736,16 @@ const num2 = x => String(+(+x).toFixed(2));
  * rule of succession with the store's priors.                            */
 function consolidate(S){
   const G = S.G, N = G.num, R = G.roles;
-  const trips = new Map(), seen = new Map(), com = new Map(), malformed = [], said = new Map();
+  const trips = new Map(), seen = new Map(), com = new Map(), malformed = [], said = new Map(), lastSeen = new Map();
   const usage = new Map(), held = [], heldIn = new Map(), shapes = [], chainRe = chainShape(S);
-  const bump = k => seen.set(k, (seen.get(k) || 0) + 1);
+  const bump = (k, ord) => {
+    seen.set(k, (seen.get(k) || 0) + 1);
+    if (ord > (lastSeen.get(k) || 0)) lastSeen.set(k, ord);        // for the salience half-life
+  };
   const lane = +G.sphere.episode_lane;
   for (const c of S.episodes.concat(S.offLane)){
     const own = c.rec.lat === lane;
+    const ord = S.epOrder.get(c.rec.id) || 0;
     const b = parseBlock(c.rec.episode);
     // an amended sentence is read from its amendment, still as this episode's saying
     const am = own ? S.amends.get(c.rec.lon) : null;
@@ -1702,9 +1774,9 @@ function consolidate(S){
       }
       if (!own || (orig && am && am.entries.has(+p[0]))) continue;
       const [n, s, v, o, pol, q] = p;
-      if (s !== "-") bump("thing|" + s);
-      if (v !== "-") bump("vector|" + v);
-      if (o !== "-") bump("thing|" + o);
+      if (s !== "-") bump("thing|" + s, ord);
+      if (v !== "-") bump("vector|" + v, ord);
+      if (o !== "-") bump("thing|" + o, ord);
       if (s === "-" || v === "-") continue;                      // a mention: seen, searchable, never believed
       // what a verb takes, from every saying that stands, said or held — but not from one reading of two
       if (v !== R.comention && !rd){
@@ -1742,7 +1814,7 @@ function consolidate(S){
     pushTo(S.incoming, e.o === "-" ? SLOT + e.v : e.o, e);
     S.believers.add(e.s);
   }
-  S.trips = trips; S.seenCounts = seen; S.comentions = com; S.malformed = malformed; S.said = said;
+  S.trips = trips; S.seenCounts = seen; S.lastSeen = lastSeen; S.comentions = com; S.malformed = malformed; S.said = said;
   S.usage = usage; S.held = held; S.heldIn = heldIn;
   S.sentIndex = null;
   S.chainSaid = learnChains(S, shapes);
@@ -1894,12 +1966,25 @@ function placeTerm(S, lemma, cls, partner){
   }
   return { lat, lon, id:makeId(lat, lon, S.dec) };
 }
+/* Salience decays (TTDB-RFC-0005 §3.2): it halves every `sal_half_life`
+ * episodes a term goes unmentioned, so it reads as how much the term is
+ * carrying now rather than how often it has ever been said. The clock is the
+ * episode lane, not the wall — a lone store already knows what came later
+ * (TTG-RFC-0004 §2), and a store nobody has added to does not quietly decay
+ * under its own feet. With no `sal_half_life` declared, nothing decays.   */
+function salNow(S, key, raw){
+  const half = +S.G.sphere.sal_half_life;
+  if (!(half > 0)) return raw;
+  const age = S.episodes.length - (S.lastSeen.get(key) || 0);
+  return raw >> Math.min(31, Math.floor(age / half));
+}
 function termState(S, t){
   const R = S.G.roles;
   const beliefs = (t.cls === "vector" ? S.byVector.get(t.lemma) : S.beliefsBy.get(t.lemma)) || [];
   const lines = t.cls === "vector" ? [] :
     beliefs.map(e => "belief: " + e.v + " | " + e.o + " | " + e.pol + " | " + num2(e.fr) + " " + num2(e.ag) + " | " + e.conf);
-  const seen = S.seenCounts.get(t.cls + "|" + t.lemma) || 0;
+  const key = t.cls + "|" + t.lemma;
+  const seen = S.seenCounts.get(key) || 0;
   const conf = beliefs.length ? Math.round(beliefs.reduce((m, e) => m + e.conf, 0) / beliefs.length) : 128;
   const edges = [];
   if (t.cls !== "vector") for (const e of beliefs){
@@ -1910,7 +1995,7 @@ function termState(S, t){
     if (!edges.includes(edge)) edges.push(edge);
   }
   const head = ["class: " + t.cls, "lemma: " + t.lemma, "forms: " + t.forms.join(" "), "seen: " + seen];
-  return { lines, seen, conf, sal:Math.min(255, seen + t.asked), relates:edges.join(","),
+  return { lines, seen, conf, sal:salNow(S, key, Math.min(255, seen + t.asked)), relates:edges.join(","),
            block:head.concat(["asked: " + t.asked], lines).join("\n"), bodyKey:head.concat(lines).join("\n") };
 }
 /* Bring every term record in line with the consolidated beliefs. A record
@@ -2749,7 +2834,8 @@ function ingestFile(S, name, text, now){
 const PG = { parseStore, serializeStore, parseRecord, parseBlock, openStore, loadGrammar, sentencesOf, tokenize,
   nounLemma, verbLemma, perceiveSentence, perceive, consolidate, syncTerms, termState, verify, objectsOf, subjectsOf,
   portrait, searchSaid, interpret, answer, replyText, ingestFile, startEmpty, markAsked, records, epsOf, say, SLOT,
-  pickGrammar, withGrammar, shapeOf, shapeText, readingsOf, amend, amendReply, reread, takeRereads };
+  pickGrammar, withGrammar, shapeOf, shapeText, readingsOf, amend, amendReply, reread, takeRereads,
+  epsTop, sceneOf, scenesOf };
 
 /* ====================================================================== *
  * The page. Everything below touches the DOM; everything above does not,
@@ -2759,6 +2845,10 @@ let S = null, storeSource = "", selectedKey = null, lit = new Set();
 let rotLat = 0.3, rotLon = -0.9;          // where the globe is turned to now
 let tgtLat = 0.3, tgtLon = -0.9;          // where it is heading
 let zoom = 1, spinEase = .16, dragging = false, ticking = false;
+let webOn = false;                        // draw every relation, not just the ones being read
+let lensOn = false;                       // read the sphere by weight alone
+let litEdges = new Set();                 // the relations the last answer reasoned along
+let chaseUntil = 0;                       // how long the answer keeps travelling along them
 const $ = id => document.getElementById(id);
 const unixNow = () => Math.floor(Date.now() / 1000);
 const reduceMotion = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2977,6 +3067,7 @@ function keepAs(id, r){
   Object.assign(row, { orig:row.shape, amended:true });
   redrawRow(id);
   lit = new Set(r.records.map(x => parseId(x)).filter(Boolean).map(x => x.key));
+  litFrom(r);
   appendTurn(row.text, replyHtml(r));
   after();
 }
@@ -3031,16 +3122,37 @@ function renderTerms(){
   const all = [...S.things.values(), ...S.vectors.values()];
   const shown = all.filter(t => !f || t.lemma.includes(f) || t.forms.some(x => x.includes(f)));
   const seen = t => S.seenCounts.get(t.cls + "|" + t.lemma) || 0;
-  const by = { eps:(a, b) => b.chunk.rec.eps - a.chunk.rec.eps || seen(b) - seen(a),
+  const by = { eps:(a, b) => b.chunk.rec.epsRaw - a.chunk.rec.epsRaw || seen(b) - seen(a),
                seen:(a, b) => seen(b) - seen(a), alpha:(a, b) => a.lemma.localeCompare(b.lemma),
                recent:(a, b) => b.chunk.rec.touched - a.chunk.rec.touched }[sort];
   shown.sort(by);
   $("filtermeta").textContent = shown.length + " / " + all.length;
+  const top = epsTop(S);
   ul.innerHTML = shown.slice(0, 400).map(t => {
     const r = t.chunk.rec;
     return `<li data-key="${r.key}" class="${r.key === selectedKey ? "sel" : ""}"><span class="chip ${t.cls}">${esc(t.lemma)}</span>` +
-      `<span class="n">EPS ${r.eps} · seen ${seen(t)}</span></li>`;
+      `<span class="n">${epsBar(r, top)}EPS ${r.eps} · seen ${seen(t)}</span></li>`;
   }).join("");
+}
+
+/* The one thing the librarian would raise unprompted: the term carrying the
+   most epistemic priority — leaned on hardest, settled least (TTDB-RFC-0005
+   §3.3). It is the store's own reading of what is worth attending to next, and
+   it is the corollary of global_models letting EPS decide the roadmap. */
+function topTerm(){
+  let best = null;
+  for (const t of [...S.things.values(), ...S.vectors.values()]){
+    const r = t.chunk.rec;
+    if (r.epsRaw > 0 && (!best || r.epsRaw > best.rec.epsRaw)) best = { t, rec:r };
+  }
+  return best;
+}
+function refreshNudge(){
+  const el = $("nudge"), b = S ? topTerm() : null;
+  el.hidden = !b;
+  if (!b) return;
+  el.textContent = (el.dataset.ask || "").replace("{term}", b.t.lemma);
+  el.dataset.key = b.rec.key;
 }
 
 /* ---------- a record that shows a file (TTCP-RFC-0001 §6) ------------------ *
@@ -3074,10 +3186,19 @@ function shownHtml(rec){
   return text ? `<div class="body shown">${md(text)}</div>` : "";
 }
 
+/* A record's weight as a share of the top weight among the records it is
+   measured against — never of the RFC's 255, which would print every derived
+   term at a fortieth of a bar. A record that carries anything at all gets a
+   sliver of a bar, so a small weight and no weight never look alike. */
+function epsBar(rec, top){
+  const w = rec.epsRaw > 0 ? Math.max(4, Math.min(100, rec.epsRaw / (top || rec.epsRaw) * 100)) : 0;
+  return `<span class="epsbar"><i style="width:${w.toFixed(1)}%"></i></span>`;
+}
+
 /* ---------- record panel (TTCP-RFC-0001 §11–12) ---------------------------- */
 function recordHtml(rec){
   const ew = rec.hasEw
-    ? `<div class="ew"><span>EPS ${rec.eps}</span><span class="epsbar"><i style="width:${Math.min(100, rec.eps / 255 * 100)}%"></i></span>` +
+    ? `<div class="ew"><span>EPS ${rec.eps}</span>${epsBar(rec, epsTop(S, rec))}` +
       `<span>conf ${rec.conf} · rev ${rec.rev} · sal ${rec.sal} · touched ${rec.touched}</span></div>`
     : `<div class="ew"><span>EPS 0</span><span class="epsbar"><i style="width:0%"></i></span><span>[ew] — conf 128 · rev 0 · sal 0</span></div>`;
   let body = "";
@@ -3111,7 +3232,7 @@ function recordHtml(rec){
   } else {
     body = `<div class="body">${md(rec.body)}</div>` +
       [rec.grammar, rec.sphere, rec.special, rec.amend].filter(x => x != null).map(x => `<pre>${esc(x)}</pre>`).join("") +
-      (rec.include != null ? shownHtml(rec) : "");
+      sceneHtml(rec) + (rec.include != null ? shownHtml(rec) : "");
   }
   const edges = rec.edges.length ? `<div class="edges"><b>relates</b>` + rec.edges.map(e => {
     const t = e.target && records(S.st).find(r => r.key === e.target.key);
@@ -3119,6 +3240,85 @@ function recordHtml(rec){
       : `<span class="x" title="target does not exist in this store">${esc(e.target ? e.target.id : "?")}</span>`);
   }).join(" · ") + `</div>` : "";
   return `<h2>${inline(rec.title)}</h2><div class="coord">${rec.id}</div>${ew}${body}${edges}`;
+}
+
+/* A scene's legs, as the walk they are: each one the record it leaves, the
+   record it arrives at, and the name the store gave the move. Every stop is a
+   link, so the scene reads as an index even with nobody walking it. */
+function sceneHtml(rec){
+  const sc = sceneOf(rec);
+  if (!sc) return "";
+  const stop = ref => {
+    const t = recOf(ref.key);
+    return t ? `<a href="#" data-key="${t.key}">${esc(t.title)}</a>`
+             : `<span class="x" title="target does not exist in this store">${esc(ref.id)}</span>`;
+  };
+  return `<ol class="scene">` + sc.edges.map(e =>
+    `<li><em>${esc(e.name)}</em>${stop(e.from)}<span class="arrow">→</span>${stop(e.to)}</li>`).join("") + `</ol>`;
+}
+
+/* ---------- walking a scene (TTCP-RFC-0002 §10.3) -------------------------- *
+ * A scene walks the map by itself: it stands on a record, holds there while it
+ * is read, then takes the next leg that starts where it stands. A leg is a
+ * selection and a wait and nothing else — the globe's own easing does the
+ * travelling, so a walked leg and a tapped link arrive the same way. The hold
+ * is the leg's, taken at its start, as §10.2 defines it; the last record keeps
+ * the last leg's hold before the walk ends, so it is not shown and dropped in
+ * the same instant. Any hand on the globe, any other record chosen and any
+ * question asked stops the walk: it is an offer, never a thing to be caught in. */
+let playing = null;
+function sceneStop(){
+  if (!playing) return;
+  clearTimeout(playing.timer);
+  playing = null;
+  refreshScene();
+}
+function sceneStart(rec){
+  const sc = sceneOf(rec);
+  if (!sc) return;
+  sceneStop();
+  playing = { sc, i:-1, next:-1, timer:0 };
+  sceneAt(sc.start.key);
+}
+function sceneAt(key){
+  if (!playing) return;
+  const es = playing.sc.edges;
+  // which leg leaves this stop, chosen before anything is drawn, so the control
+  // names the leg about to be taken rather than the one just finished
+  let i = playing.i + 1;
+  while (i < es.length && es[i].from.key !== key) i++;
+  playing.next = i < es.length ? i : -1;
+  select(key, true);
+  refreshScene();
+  if (playing.next < 0){                                // nowhere left to go (§10.3.6)
+    const last = es[es.length - 1].hold;
+    playing.timer = setTimeout(() => {
+      if (!playing) return;
+      if (!playing.sc.loop) return sceneStop();
+      playing.i = -1; sceneAt(playing.sc.start.key);
+    }, last);
+    return;
+  }
+  playing.i = i;
+  playing.timer = setTimeout(() => { if (playing) sceneAt(es[i].to.key); }, es[i].hold);
+}
+/* The control says what it will do, or where the walk has got to. It stays up
+   while a walk is running, because by then the record showing is one of the
+   stops and not the scene that named them. */
+function refreshScene(){
+  const b = $("scene");
+  if (!b) return;
+  if (playing){
+    // on the last stop there is no leg left to name, so the walk reads as finished
+    const es = playing.sc.edges, j = playing.next >= 0 ? playing.next : es.length - 1;
+    b.hidden = false;
+    b.textContent = (b.dataset.step || "")
+      .replace("{n}", String(j + 1)).replace("{total}", String(es.length)).replace("{name}", es[j] ? es[j].name : "");
+    return;
+  }
+  const rec = S && selectedKey ? recOf(selectedKey) : null;
+  b.hidden = !(rec && sceneOf(rec));
+  b.textContent = b.dataset.play || "";
 }
 
 /* ---------- the panel as a sheet of record slides -------------------------- *
@@ -3340,7 +3540,33 @@ function select(key, spin, ease){
   if (turn) spinTo(rec, ease);
   if (turn && !reduceMotion()) beginLeg(key); else restOn(key);
   renderTerms();
+  refreshScene();
   draw();
+}
+
+/* The relations an answer reasoned along. An inference is a path through the
+   store's own edges — pixel is_a cat, cat chase mouse — so the chain the
+   librarian printed can also be watched crossing the globe. A belief with no
+   object ends on its vector's record, the same place its header edge points. */
+function pathEdges(r){
+  const out = new Set();
+  const at = (lemma, cls) => {
+    const t = (cls === "vector" ? S.vectors : S.things).get(lemma);
+    return t ? t.chunk.rec.key : null;
+  };
+  for (const it of r.items || []) for (const e of it.path || []){
+    const a = at(e.s, "thing"), b = e.o === "-" ? at(e.v, "vector") : at(e.o, "thing");
+    if (a && b && a !== b) out.add(a + ">" + b);
+  }
+  return out;
+}
+/* An answer travels: for a few seconds the relations it reasoned along are
+   drawn as a moving dash, in the order a reader would follow them. It is a
+   short animation and then it stops, so nothing is left spinning; a reader who
+   has asked for less motion gets the bright line and no movement at all. */
+function litFrom(r){
+  litEdges = pathEdges(r);
+  chaseUntil = litEdges.size && !reduceMotion() ? Date.now() + 6000 : 0;
 }
 
 /* ---------- the grammar sphere (TTCP-RFC-0002 §2, compact) ----------------- */
@@ -3352,6 +3578,109 @@ function project(lat, lon){
   return { x, y, z };
 }
 const cssVar = v => getComputedStyle(document.body).getPropertyValue(v).trim();
+
+/* ---------- relations on the sphere (TTCP-RFC-0002 §4) --------------------- *
+ * In this store a header's typed edges ARE the beliefs — cat carries
+ * chase@<mouse> — so drawing them draws the reasoning rather than an ornament
+ * over it. An edge is the great circle between its ends, the path along the
+ * sphere and not the chord through it, so a belief reaching the far hemisphere
+ * bends with the globe and is clipped by the limb like everything else. A
+ * belief with no object points at its vector's own record, which lives in the
+ * opposite hemisphere: that arc crosses a third of the world, and that is the
+ * store's geometry showing, not a stray line.                              */
+function sphereVec(lat, lon){
+  const a = lat * Math.PI / 180, b = lon * Math.PI / 180;
+  return [Math.cos(a) * Math.cos(b), Math.cos(a) * Math.sin(b), Math.sin(a)];
+}
+const EDGE_STEPS = 18;
+function edgePoints(a, b){
+  const u = sphereVec(a.lat, a.lon), v = sphereVec(b.lat, b.lon);
+  const w = Math.acos(clamp(u[0] * v[0] + u[1] * v[1] + u[2] * v[2], -1, 1)), s = Math.sin(w);
+  const out = [];
+  for (let i = 0; i <= EDGE_STEPS; i++){
+    if (s < 1e-6){ out.push([a.lat, a.lon]); continue; }
+    const t = i / EDGE_STEPS, k1 = Math.sin((1 - t) * w) / s, k2 = Math.sin(t * w) / s;
+    const p = [u[0] * k1 + v[0] * k2, u[1] * k1 + v[1] * k2, u[2] * k1 + v[2] * k2];
+    out.push([Math.asin(clamp(p[2], -1, 1)) * 180 / Math.PI, Math.atan2(p[1], p[0]) * 180 / Math.PI]);
+  }
+  return out;
+}
+/* Every edge with both ends on the map. That leaves out the episode lane's
+   perceives edges — seven an episode, with nothing drawn to attach them to —
+   without needing a rule of its own, and it leaves out a dead edge, which has
+   nowhere to draw to: the panel is where a dead edge shows as dead (§12). */
+function mapEdges(recs){
+  const on = new Map();
+  for (const r of recs) if (r.lat < 90 && r.lat > -90) on.set(r.key, r);
+  const neg = (S.G.roles && S.G.roles.negation_prefix) || "";
+  const out = [];
+  for (const r of on.values()) for (const e of r.edges){
+    const t = e.target && on.get(e.target.key);
+    if (!t || t.key === r.key) continue;
+    out.push({ from:r, to:t, type:e.type, neg: !!neg && e.type.indexOf(neg) === 0 });
+  }
+  return out;
+}
+/* Which relations are worth drawing. The whole web at once is a ball of wool,
+   so what is drawn is the neighbourhood: the edges of the selected record and
+   of whatever the last reply lit. Zoomed in, the crowd has spread out and the
+   whole web is legible, so it is all drawn. */
+const edgeShown = e => webOn || zoom >= 2 || edgeHot(e);
+const edgeHot = e => edgeLit(e) || e.from.key === selectedKey || e.to.key === selectedKey ||
+                     lit.has(e.from.key) || lit.has(e.to.key);
+const edgeLit = e => litEdges.has(e.from.key + ">" + e.to.key);
+function drawEdges(ctx, edges, line, cx, cy, R, dpr){
+  const draw = (want, color, width, dash) => {
+    ctx.setLineDash(dash || []);
+    for (const e of edges) if (want(e)) line(edgePoints(e.from, e.to), cssVar(color), width);
+    ctx.setLineDash([]);
+  };
+  // quietest first, so a relation that matters is laid over the ones that do not
+  draw(e => !edgeHot(e) && !e.neg, "--grat", dpr);
+  draw(e => !edgeHot(e) && e.neg, "--warn", dpr * .8, [dpr * 2, dpr * 3]);
+  draw(e => edgeHot(e) && !edgeLit(e) && e.neg, "--warn", dpr * 2, [dpr * 3, dpr * 3]);
+  draw(e => edgeHot(e) && !edgeLit(e) && !e.neg, "--accent", dpr * 2);
+  // the chain an answer walked, travelling along itself while it is fresh
+  ctx.lineDashOffset = Date.now() < chaseUntil ? -(Date.now() / 26) % 1e6 : 0;
+  draw(edgeLit, "--accent", dpr * 2.8, [dpr * 5, dpr * 4]);
+  ctx.lineDashOffset = 0;
+  // an arrow near the far end of the edges being read: a relation has a direction,
+  // and which way round it runs is the whole of what it claims
+  for (const e of edges){
+    if (!edgeHot(e)) continue;
+    const pts = edgePoints(e.from, e.to).map(([la, lo]) => project(la, lo));
+    for (let i = pts.length - 5; i > 0; i--){
+      const a = pts[i], b = pts[i + 1];
+      if (!b || a.z <= 0 || b.z <= 0) continue;
+      const ax = cx + a.x * R, ay = cy - a.y * R, bx = cx + b.x * R, by = cy - b.y * R;
+      const d = Math.hypot(bx - ax, by - ay);
+      if (d < 1e-3) continue;
+      const ux = (bx - ax) / d, uy = (by - ay) / d, h = 5 * dpr;
+      ctx.beginPath();
+      ctx.moveTo(bx - ux * h - uy * h * .55, by - uy * h + ux * h * .55);
+      ctx.lineTo(bx, by);
+      ctx.lineTo(bx - ux * h + uy * h * .55, by - uy * h - ux * h * .55);
+      ctx.strokeStyle = cssVar(e.neg ? "--warn" : "--accent"); ctx.lineWidth = dpr * 1.6;
+      ctx.lineCap = "round"; ctx.stroke(); ctx.lineCap = "butt";
+      break;
+    }
+  }
+}
+/* Zoomed in, an edge being read is named by its vector, which is what the
+   belief actually says. The name sits at the midpoint, haloed in the panel
+   colour like the record names are. */
+function drawEdgeNames(ctx, edges, cx, cy, R, dpr){
+  if (zoom < 2) return;
+  ctx.font = (10 * dpr) + "px " + cssVar("--mono"); ctx.textAlign = "center"; ctx.lineJoin = "round";
+  for (const e of edges){
+    if (!edgeHot(e)) continue;
+    const pts = edgePoints(e.from, e.to), m = project(...pts[pts.length >> 1]);
+    if (m.z <= 0) continue;
+    const x = cx + m.x * R, y = cy - m.y * R;
+    ctx.lineWidth = 3 * dpr; ctx.strokeStyle = cssVar("--panel"); ctx.strokeText(e.type, x, y);
+    ctx.fillStyle = cssVar(e.neg ? "--warn" : "--accent"); ctx.fillText(e.type, x, y);
+  }
+}
 function nodeKind(r){
   if (r.term != null) return parseBlock(r.term).class === "vector" ? "--vector" : (r.lat === 0 && r.lon === 0 ? "--grammar" : "--thing");
   return "--grammar";
@@ -3391,17 +3720,36 @@ function draw(){
   }
   const spine = []; for (let la = -90; la <= 90; la += 3) spine.push([la, 0]);
   line(spine, cssVar("--grammar"), dpr * 1.8);
-  const front = frontRecord(), open = zoom >= 2, names = [];
-  for (const r of records(S.st)){
+  const recs = records(S.st);
+  const edges = mapEdges(recs).filter(edgeShown);
+  drawEdges(ctx, edges, line, cx, cy, R, dpr);
+  const front = frontRecord(), open = zoom >= 2, names = [], eTop = epsTop(S);
+  for (const r of recs){
     if (r.lat >= 90 || r.lat <= -90) continue;
     const p = project(r.lat, r.lon);
     if (p.z <= 0) continue;
     const X = cx + p.x * R, Y = cy - p.y * R, on = r.key === selectedKey, hot = lit.has(r.key);
     const near = !!front && r.key === front.key;
+    // how much of the store's weight this record carries (TTDB-RFC-0005 §3.3)
+    const share = eTop > 0 ? clamp(r.epsRaw / eTop, 0, 1) : 0;
     // a record swells as it turns to face the reader, the way the cards do on
     // the site's index globe, so depth is read off the node and not the ring
-    const rad = (on ? 6 : hot ? 4.5 : 3) * (.55 * Math.pow(2.9, p.z)) * dpr;
-    ctx.beginPath(); ctx.arc(X, Y, rad, 0, 7); ctx.fillStyle = cssVar(nodeKind(r)); ctx.globalAlpha = hot || on ? 1 : .75; ctx.fill(); ctx.globalAlpha = 1;
+    const depth = .55 * Math.pow(2.9, p.z) * dpr;
+    // under the lens the kinds fall away and weight is the whole reading: what
+    // is left lit is what the owner leans on and has not settled
+    const rad = lensOn ? (1.6 + share * 7) * depth : (on ? 6 : hot ? 4.5 : 3) * depth;
+    ctx.beginPath(); ctx.arc(X, Y, rad, 0, 7);
+    ctx.fillStyle = cssVar(lensOn ? (share > 0 ? "--warn" : "--dim") : nodeKind(r));
+    ctx.globalAlpha = lensOn ? (share > 0 ? .3 + share * .65 : .16) : (hot || on ? 1 : .75);
+    ctx.fill(); ctx.globalAlpha = 1;
+    // and off the lens the same weight is a ring around the record, so the kind
+    // and the open question can be read at once
+    if (!lensOn && share > 0){
+      ctx.beginPath(); ctx.arc(X, Y, rad + (1.6 + share * 4.5) * depth, 0, 7);
+      ctx.strokeStyle = cssVar("--warn"); ctx.globalAlpha = .2 + share * .55; ctx.lineWidth = dpr * (.7 + share * .9);
+      ctx.stroke(); ctx.globalAlpha = 1;
+      ctx.beginPath(); ctx.arc(X, Y, rad, 0, 7);            // back to the node for the outlines below
+    }
     if (hot || on){ ctx.lineWidth = dpr * 1.5; ctx.strokeStyle = cssVar("--ink"); ctx.stroke(); }
     else if (near){ ctx.lineWidth = dpr; ctx.strokeStyle = cssVar("--dim"); ctx.stroke(); }
     // zoomed in the crowd has spread out and every record can be named, but a
@@ -3409,6 +3757,7 @@ function draw(){
     if (!(on || hot || near || open) || X < 0 || X > W || Y < 0 || Y > W) continue;
     names.push({ r, X, Y, rad, rank: on ? 0 : hot ? 1 : near ? 2 : 3 - p.z, bright: on || hot });
   }
+  drawEdgeNames(ctx, edges, cx, cy, R, dpr);
   drawNames(ctx, names, W, dpr);
   ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = dpr; ctx.stroke();
   // The limb: the rim the sphere is read against. It is screen space, not
@@ -3475,7 +3824,7 @@ function tick(){
   }
   draw();
   updatePanel(settled);
-  if (dragging || !settled || panMoving()) requestAnimationFrame(tick); else ticking = false;
+  if (dragging || !settled || panMoving() || Date.now() < chaseUntil) requestAnimationFrame(tick); else ticking = false;
 }
 function kick(){ if (ticking) return; ticking = true; requestAnimationFrame(tick); }
 
@@ -3490,6 +3839,7 @@ function wireSphere(){
   const pts = new Map();          // pointers on the globe: one turns it, two zoom it
   let drag = null, pinch = null;
   cv.addEventListener("pointerdown", e => {
+    sceneStop();
     cv.setPointerCapture(e.pointerId);
     pts.set(e.pointerId, { x:e.clientX, y:e.clientY });
     if (pts.size === 2){
@@ -3581,20 +3931,23 @@ function load(text, src){
   $("err").hidden = true;
   refreshInfo();
   renderTerms();
+  refreshNudge();
   const cm = /selected:\s*\n\s*-\s*"?(@LAT[^"\s]+)"?/.exec(fence(S.st.chunks[0].text, "cursor") || "");
   const first = cm && parseId(cm[1]);
   select(first ? first.key : idKey(0, 0), true);
 }
 function after(){
-  saveLocal(); refreshInfo(); renderTerms();
+  saveLocal(); refreshInfo(); renderTerms(); refreshNudge();
   if (selectedKey) renderPanel(records(S.st).find(r => r.key === selectedKey));
   draw();
 }
 function send(text){
   if (!S || !text.trim()) return;
+  sceneStop();
   const shapes = pending && pending.text === text && pending.shapes.some(Boolean) ? pending.shapes : null;
   const r = answer(S, text, unixNow(), null, shapes);
   lit = new Set(r.records.map(id => parseId(id)).filter(Boolean).map(x => x.key));
+  litFrom(r);
   appendTurn(text, replyHtml(r));
   after();
   const firstTerm = r.records.map(id => parseId(id)).find(x => x && x.lat < 90);
@@ -3614,6 +3967,7 @@ async function feedFiles(list){
     const r = ingestFile(S, file.name, text, unixNow());
     if (!r) continue;
     lit = new Set([parseId(r.ep.id).key].concat(r.ep.created.map(t => t.chunk.rec.key)));
+    litEdges = new Set();
     appendTurn(file.name, `<div class="verdict">${esc(r.msg)}</div>`);
     after();
   }
@@ -3652,7 +4006,24 @@ function boot(){
   });
   $("empty").addEventListener("click", () => {
     if (!S || !confirm($("empty").dataset.confirm || "")) return;
-    startEmpty(S, unixNow()); $("log").innerHTML = ""; lit = new Set(); after(); select(idKey(0, 0), true);
+    startEmpty(S, unixNow()); $("log").innerHTML = ""; lit = new Set(); litEdges = new Set(); after(); select(idKey(0, 0), true);
+  });
+  // the lens puts the whole page on one question: the list sorts by weight too
+  $("lens").addEventListener("click", () => {
+    lensOn = !lensOn;
+    $("lens").setAttribute("aria-pressed", String(lensOn));
+    if (lensOn && $("sort").value !== "eps"){ $("sort").value = "eps"; renderTerms(); }
+    draw();
+  });
+  $("web").addEventListener("click", () => {
+    webOn = !webOn;
+    $("web").setAttribute("aria-pressed", String(webOn));
+    draw();
+  });
+  $("scene").addEventListener("click", () => {
+    if (playing) return sceneStop();
+    const rec = S && selectedKey ? recOf(selectedKey) : null;
+    if (rec) sceneStart(rec);
   });
   // take every re-reading the owner has not ruled on, each as an amendment naming the grammar
   $("rereads").addEventListener("click", () => {
@@ -3672,7 +4043,7 @@ function boot(){
     }
     const a = e.target.closest("[data-key]");
     if (!a || !S || a.tagName === "CANVAS") return;
-    e.preventDefault(); select(a.dataset.key, true);
+    e.preventDefault(); sceneStop(); select(a.dataset.key, true);
   });
   wireSphere();
   window.addEventListener("resize", draw);

@@ -105,6 +105,7 @@ step: 0.1
 episode_lane: 90
 amend_lane: 91
 self_lemma: self
+sal_half_life: 3
 ```
 
 ```ttdb-term
@@ -483,9 +484,28 @@ than one language: `pickGrammar(S, text)` returns the grammar a text reads as, a
 `withGrammar(S, G, fn)` runs `fn` under it — `answer`, `ingestFile` and `replyText` already
 do both. Also on
 `PG`, for tools and tests: `parseStore`, `parseRecord`, `parseBlock`, `records`, `epsOf`,
+`epsTop`, `sceneOf`, `scenesOf`,
 `loadGrammar`, `say`, `sentencesOf`, `tokenize`, `nounLemma`, `verbLemma`, `perceiveSentence`,
 `perceive`, `consolidate`, `syncTerms`, `termState`, `markAsked`, and `SLOT` — the NUL
 character that stands for the hole a question asks the corpus to fill.
+
+**Weights, and what a bar is a share of.** Every record carries `eps`, the whole number
+TTDB-RFC-0005 §3.3 defines, and `epsRaw`, the same score unrounded — a store of derived terms
+crowds into the first few whole numbers, and the rounding that makes the number readable
+would throw away the order inside them, so the number is the RFC's and the ranking is
+`epsRaw`. `epsTop(S, rec)` gives the highest `epsRaw` among the records `rec` is measured
+against: the map (|lat| < 90) is one population, the lanes beyond it another, whose weights
+are written by hand and run an order of magnitude higher. A bar is a share of its own
+population's top, never of 255, or every derived term would print at a fortieth of a bar.
+Salience decays with `sal_half_life` in the `ttdb-sphere` block: it halves every that-many
+episodes a term goes unmentioned, so `sal` reads as what the term is carrying now. The clock
+is the episode lane, never the wall, so a store nobody has added to does not decay under its
+own feet — and with no `sal_half_life` declared, nothing decays.
+
+**Scenes.** `sceneOf(rec)` reads a record's `ttdb-scene` block (TTCP-RFC-0002 §10) into
+`{ start, loop, edges }`, each edge `{ name, from, to, hold }`; `scenesOf(S.st)` lists the
+records that have one. Parsing is the engine's because it is a block of text; walking is the
+page's, because a walk needs a clock and the engine never reads one.
 
 **The store object `S`.** `st` (parsed chunks; the source of truth, serialise this); `G`
 (the grammar in use, normally the first language's) and `grammars` (one per `lang:`); `things` and `vectors` (Map lemma → `{ chunk, cls, lemma, forms,
@@ -516,10 +536,26 @@ selects a record on click (one delegated listener); the value is `lat|lon` to fo
 `#storeinfo[data-seed|data-local|data-opened]`, `#mode[data-<intent in kebab case>]`,
 `#reset[data-confirm]`, `#empty[data-confirm]`, `#files[data-confirm-store]`, `#log[data-quota]`,
 `#rereads[data-label|data-confirm|data-done]` (the store bar's count of re-readings not yet ruled on, `{n}` filled in),
+`#scene[data-play|data-step]` (shown when the record selected holds a `ttdb-scene` block, and while one is
+being walked, with `{n}`, `{total}` and `{name}` filled in), `#lens[data-label]` and `#web[data-label]` (the two
+readings of the sphere, each carrying `aria-pressed`), `#nudge[data-ask]` (the term of highest weight, `{term}`
+filled in, carrying the `data-key` that selects it),
 `#preview[data-nounish|data-verbish|data-aside|data-join|data-keep|data-amended|data-reread|data-accept|data-accepted|data-pick|data-reading]` — the labels of a reading's
 controls, where each word is a button carrying `data-row`. The
 store persists under `localStorage` key `personal_grimoire:store:v1`; `?seed` ignores that copy
 and `?ask=<text>` asks on load. The page fetches `personal_grimoire_ttdb.md` beside itself.
+
+**How the sphere reads.** Nodes are records; the colour is the kind, east and west and the
+meridian. Typed edges are drawn between them as great circles — the path along the sphere,
+not the chord through it — and only where both ends are on the map, which is what keeps the
+episode lane's `perceives` edges off it. An edge of the record selected, or of anything the
+last answer lit, is drawn bright and carries an arrow near its far end; a negative belief is
+dashed and amber; every other relation is drawn only with `#web` pressed or from a zoom of 2,
+because the whole web at once is a ball of wool. The chain an answer reasoned along travels
+as a moving dash for a few seconds and then settles, and not at all for a reader who has
+asked for less motion. Weight is a ring around each record, and under `#lens` it becomes the
+whole reading: the kinds fall away and what stays lit is what the owner leans on and has not
+settled.
 
 **Embedding, in one line:** take the engine, `openStore` your copy of this file, `answer`
 each input, render grounds by `kind`, and write `serializeStore(S.st)` wherever your app keeps
@@ -1166,8 +1202,8 @@ unit_term: término | términos
 [ew]
 conf:170
 rev:1
-sal:4
-touched:1789257660
+sal:1
+touched:1790121600
 [/ew]
 
 **bird**
@@ -1189,8 +1225,8 @@ belief: has | feather | + | 1 0 | 170
 [ew]
 conf:128
 rev:0
-sal:2
-touched:1789257720
+sal:1
+touched:1790121600
 [/ew]
 
 **animal**
@@ -1209,8 +1245,8 @@ asked: 0
 [ew]
 conf:170
 rev:0
-sal:6
-touched:1789257840
+sal:3
+touched:1790121600
 [/ew]
 
 **is_a**
@@ -1229,8 +1265,8 @@ asked: 0
 [ew]
 conf:170
 rev:0
-sal:2
-touched:1789257660
+sal:0
+touched:1790121600
 [/ew]
 
 **fly**
@@ -1249,8 +1285,8 @@ asked: 0
 [ew]
 conf:128
 rev:0
-sal:1
-touched:1789257600
+sal:0
+touched:1790121600
 [/ew]
 
 **feather**
@@ -1269,8 +1305,8 @@ asked: 0
 [ew]
 conf:170
 rev:0
-sal:2
-touched:1789257720
+sal:1
+touched:1790121600
 [/ew]
 
 **has**
@@ -1309,8 +1345,8 @@ percept: 3 | bird | has | feather | + | -
 [ew]
 conf:170
 rev:1
-sal:3
-touched:1789257660
+sal:0
+touched:1790121600
 [/ew]
 
 **penguin**
@@ -1332,8 +1368,8 @@ belief: swim | - | + | 1 0 | 170
 [ew]
 conf:170
 rev:0
-sal:1
-touched:1789257660
+sal:0
+touched:1790121600
 [/ew]
 
 **swim**
@@ -1372,8 +1408,8 @@ percept: 3 | penguin | swim | - | + | -
 [ew]
 conf:170
 rev:1
-sal:4
-touched:1789257780
+sal:2
+touched:1790121600
 [/ew]
 
 **mammal**
@@ -1394,8 +1430,8 @@ belief: has | fur | + | 1 0 | 170
 [ew]
 conf:128
 rev:0
-sal:1
-touched:1789257720
+sal:0
+touched:1790121600
 [/ew]
 
 **fur**
@@ -1414,8 +1450,8 @@ asked: 0
 [ew]
 conf:170
 rev:2
-sal:3
-touched:1789257840
+sal:1
+touched:1790121600
 [/ew]
 
 **cat**
@@ -1456,8 +1492,8 @@ percept: 3 | cat | is_a | mammal | + | -
 [ew]
 conf:170
 rev:1
-sal:3
-touched:1789257780
+sal:1
+touched:1790121600
 [/ew]
 
 **mouse**
@@ -1478,8 +1514,8 @@ belief: eat | cheese | + | 1 0 | 170
 [ew]
 conf:170
 rev:0
-sal:1
-touched:1789257780
+sal:0
+touched:1790121600
 [/ew]
 
 **chase**
@@ -1498,8 +1534,8 @@ asked: 0
 [ew]
 conf:128
 rev:0
-sal:1
-touched:1789257780
+sal:0
+touched:1790121600
 [/ew]
 
 **cheese**
@@ -1518,8 +1554,8 @@ asked: 0
 [ew]
 conf:170
 rev:0
-sal:1
-touched:1789257780
+sal:0
+touched:1790121600
 [/ew]
 
 **eat**
@@ -1558,8 +1594,8 @@ percept: 3 | mouse | eat | cheese | + | -
 [ew]
 conf:170
 rev:1
-sal:3
-touched:1789257840
+sal:1
+touched:1790121600
 [/ew]
 
 **pixel**
@@ -1580,8 +1616,8 @@ belief: sleep_in | sun | + | 1 0 | 170
 [ew]
 conf:170
 rev:0
-sal:1
-touched:1789257840
+sal:0
+touched:1790121600
 [/ew]
 
 **love**
@@ -1600,8 +1636,8 @@ asked: 0
 [ew]
 conf:128
 rev:0
-sal:1
-touched:1789257840
+sal:0
+touched:1790121600
 [/ew]
 
 **sun**
@@ -1620,8 +1656,8 @@ asked: 0
 [ew]
 conf:170
 rev:0
-sal:1
-touched:1789257840
+sal:0
+touched:1790121600
 [/ew]
 
 **sleep_in**
@@ -1897,6 +1933,60 @@ touched:1790035200
 
 ```ttdb-include
 file: README.md
+```
+
+---
+
+@LAT96LON0 | created:1790121600 | updated:1790121600 | type:scene | relates:refines@LAT0LON0,depends_on@LAT40LON0
+[ew]
+conf:150
+rev:0
+sal:96
+touched:1790121600
+[/ew]
+
+**Scene — how an inference travels**
+src: RFCs/TTCP-RFC-0002-Globe-and-Navigation.md §10
+
+A record whose header says `type: scene` is a walk over the map. Press **play the scene** in
+the store bar and the globe turns to each stop in turn, holding long enough for the record to
+be read. Any hand on the globe stops it, and so does asking anything.
+
+Seven legs. Six of them are edges some record carries in its `relates:`, drawn on the sphere
+while the walk passes along them — three with the arrow and three against it — and the
+seventh is the return home, which is a move and not a claim.
+
+**Legs 1–3, the chain.** [pixel](lat-53.1lon174) → [cat](lat-52.1lon173.4) →
+[mammal](lat-53.1lon175) → [animal](lat-53.6lon175). Three `is_a` edges, each one a thing that
+was said. The fourth thing — that Pixel is an animal — was never said, and is what follows
+from the three. These legs run with the arrows.
+
+**Legs 4–5, the exception.** [animal](lat-53.6lon175) → [bird](lat-54.8lon172.6) →
+[penguin](lat-53.6lon173.8). The same kind of edge walked against its arrow, down from what
+holds in general to the thing that breaks it.
+
+**Leg 6, across the world.** [penguin](lat-53.6lon173.8) → [fly](lat-57.6lon-93.2). A belief
+with no object points at its vector's own record ([a verb is a vector](lat98lon1)), and
+vectors live in the western hemisphere — so *penguins do not fly* is an edge reaching a third
+of the way round the globe, drawn dashed and in the warning colour because it is a negative
+belief. Nothing about that arc is decoration. It is where this store keeps the two halves of
+a sentence, seen from far enough away to notice.
+
+**Leg 7, home.** [fly](lat-57.6lon-93.2) → [you](lat0lon0). The origin is the speaker, and the
+speaker's own edge `love@<pixel>` points back at the first stop, so the walk closes even with
+`loop` switched off.
+
+```ttdb-scene
+start_node: @LAT-53.1LON174
+loop: false
+
+edge: next        | from: @LAT-53.1LON174   | to: @LAT-52.1LON173.4 | hold_ms: 4200
+edge: next        | from: @LAT-52.1LON173.4 | to: @LAT-53.1LON175   | hold_ms: 4200
+edge: next        | from: @LAT-53.1LON175   | to: @LAT-53.6LON175   | hold_ms: 6000
+edge: bloom       | from: @LAT-53.6LON175   | to: @LAT-54.8LON172.6 | hold_ms: 4200
+edge: next        | from: @LAT-54.8LON172.6 | to: @LAT-53.6LON173.8 | hold_ms: 4200
+edge: bloom       | from: @LAT-53.6LON173.8 | to: @LAT-57.6LON-93.2 | hold_ms: 7000
+edge: return_home | from: @LAT-57.6LON-93.2 | to: @LAT0LON0         | hold_ms: 5000
 ```
 
 ---
