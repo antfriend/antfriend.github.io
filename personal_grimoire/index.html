@@ -210,7 +210,9 @@ input[type=search]{flex:1;min-width:120px;caret-color:var(--accent)}
 #panel .shown th,#panel .shown td{white-space:normal;min-width:7em}
 #panel .body blockquote{margin:.5em 0;padding-left:12px;border-left:3px solid var(--line);color:var(--dim)}
 #panel pre{overflow-x:auto;background:var(--bg);border:1px solid var(--line);padding:8px;border-radius:2px;font-size:.75rem}
-.scene{list-style:none;margin:10px 0 0;padding:10px 0 0;border-top:1px solid var(--line);font-size:.82rem}
+.scene-start{margin:12px 0 0;font-size:.8rem;padding:5px 12px;color:var(--bg);background:var(--accent);border-color:var(--accent)}
+.scene-start:hover{filter:brightness(1.12)}
+.scene{list-style:none;margin:8px 0 0;padding:10px 0 0;border-top:1px solid var(--line);font-size:.82rem}
 .scene li{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;padding:2px 0}
 .scene em{color:var(--dim);font-style:normal;font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;min-width:6.5em}
 .scene a{color:var(--accent);text-decoration:none}
@@ -3253,8 +3255,14 @@ function sceneHtml(rec){
     return t ? `<a href="#" data-key="${t.key}">${esc(t.title)}</a>`
              : `<span class="x" title="target does not exist in this store">${esc(ref.id)}</span>`;
   };
-  return `<ol class="scene">` + sc.edges.map(e =>
-    `<li><em>${esc(e.name)}</em>${stop(e.from)}<span class="arrow">→</span>${stop(e.to)}</li>`).join("") + `</ol>`;
+  // the walk starts from the record that describes it, where a reader is when
+  // they decide to take it; the store bar's control is the same switch, and is
+  // the one still in view once the walk has moved on to its first stop
+  const bar = $("scene");
+  const label = playing ? bar.textContent : (bar.dataset.play || "");
+  return `<button type="button" class="scene-start" data-scene="${rec.key}">${esc(label)}</button>` +
+    `<ol class="scene">` + sc.edges.map(e =>
+      `<li><em>${esc(e.name)}</em>${stop(e.from)}<span class="arrow">→</span>${stop(e.to)}</li>`).join("") + `</ol>`;
 }
 
 /* ---------- walking a scene (TTCP-RFC-0002 §10.3) -------------------------- *
@@ -4039,6 +4047,13 @@ function boot(){
     if (rb && S){
       e.preventDefault();
       if (rb.dataset.op) editRow(rb.dataset.row, rb.dataset.op, rb.dataset.pick); else pickTok(rb.dataset.row, +rb.dataset.t, e.shiftKey);
+      return;
+    }
+    const sb = e.target.closest("[data-scene]");
+    if (sb && S){
+      e.preventDefault();
+      const rec = recOf(sb.dataset.scene);
+      if (playing) sceneStop(); else if (rec) sceneStart(rec);
       return;
     }
     const a = e.target.closest("[data-key]");

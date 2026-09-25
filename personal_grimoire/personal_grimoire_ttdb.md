@@ -537,7 +537,9 @@ selects a record on click (one delegated listener); the value is `lat|lon` to fo
 `#reset[data-confirm]`, `#empty[data-confirm]`, `#files[data-confirm-store]`, `#log[data-quota]`,
 `#rereads[data-label|data-confirm|data-done]` (the store bar's count of re-readings not yet ruled on, `{n}` filled in),
 `#scene[data-play|data-step]` (shown when the record selected holds a `ttdb-scene` block, and while one is
-being walked, with `{n}`, `{total}` and `{name}` filled in), `#lens[data-label]` and `#web[data-label]` (the two
+being walked, with `{n}`, `{total}` and `{name}` filled in; a scene record's panel carries the same switch as a
+button of its own, marked `data-scene` with the record's key and labelled from these two strings, so a walk can
+be started where it is described and stopped from the bar, which is what stays in view once it has moved on), `#lens[data-label]` and `#web[data-label]` (the two
 readings of the sphere, each carrying `aria-pressed`), `#nudge[data-ask]` (the term of highest weight, `{term}`
 filled in, carrying the `data-key` that selects it),
 `#preview[data-nounish|data-verbish|data-aside|data-join|data-keep|data-amended|data-reread|data-accept|data-accepted|data-pick|data-reading]` — the labels of a reading's

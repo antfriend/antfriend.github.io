@@ -84,6 +84,10 @@ console.log("\n== the runtime's surface record matches the runtime (TTG-RFC-0001
     const attrs = (m[2] || "").split("|").map(a => a.trim()).filter(a => a.startsWith("data-") && !a.includes("<"));
     ok(el && attrs.every(a => el[0].includes(a + "=")), "chrome element #" + m[1] + (attrs.length ? " carries " + attrs.join(", ") : " exists"));
   }
+  // an attribute Blueprint 9 names on its own, not on a chrome element: the ones the
+  // page writes onto markup it generates, which is the only place a host would look
+  for (const m of new Set([...body.matchAll(/`(data-[A-Za-z-]+)`/g)].map(x => x[1])))
+    ok(app.includes(m + '="'), "the page writes the attribute Blueprint 9 names: " + m);
   const lsKey = /LS_KEY = "([^"]+)"/.exec(app);
   ok(lsKey && body.includes("`" + lsKey[1] + "`"), "the localStorage key Blueprint 9 names is the page's", lsKey && lsKey[1]);
 }

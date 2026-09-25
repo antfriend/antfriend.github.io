@@ -244,9 +244,10 @@ one line the librarian offers unprompted, above the terms.
 
 [`@LAT96LON0`](lat96lon0) has `type: scene` in its header and a `ttdb-scene` block: seven legs
 from `pixel` to the speaker, through the chain, the exception that breaks it, and the long arc
-west. Select it and **play the scene** appears in the store bar; the globe then turns to each
-stop in turn and holds while it is read. Any hand on the globe stops it, and so does asking
-anything.
+west. Open it and it lists its legs under a **play the scene** button; the same switch appears
+in the store bar, which is where it stays once the walk has moved on to its first stop. The
+globe then turns to each stop in turn and holds while it is read. Any hand on the globe stops
+it, and so does asking anything.
 
 ---
 
