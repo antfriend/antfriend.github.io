@@ -60,10 +60,18 @@ episode and term, which is how you make the corpus your own.
 ```bash
 node tests/app.test.mjs      # the engine, headless, against the real store
 node tests/docs.test.mjs     # the docs against the store and the engine
+node tests/embed.test.mjs    # the page as a host that embeds the engine sees it
 ```
 
-Both load `index.html`'s real script — the page only boots its UI when a DOM exists — so
-they exercise the shipping code. Between them they check that the store round-trips byte for
+All three load `index.html`'s real script — the page only boots its UI when a DOM exists — so
+they exercise the shipping code. `embed.test.mjs` goes further and runs it the way a host
+does: a classic script in a context of its own, with the boot gate shut, against the smallest
+DOM the page will accept (`tests/dom.mjs`, a stub with no dependencies like everything else
+here). It calls what a host calls — `load`, `after`, `select`, `renderTerms`, `preview`,
+`draw`, `send` — first with the page's own markup, then with each chrome element missing in
+turn, then with every one of them missing at once, and asserts that nothing throws: a surface
+the host leaves out costs that surface and nothing else. It also holds the list of ids in
+[Blueprint 9](lat85lon0) to the ones the code actually reaches, so the two cannot drift. Between them they check that the store round-trips byte for
 byte and that a sync with nothing new rewrites nothing; that every stored belief recomputes
 from its episodes; fifteen parses, from *Cats are mammals* to *Cats chase mice but they don't
 eat grass*; fourteen questions and their verdicts; that the penguin answer names *bird* as the
@@ -201,6 +209,15 @@ Probablemente — se sigue de lo que dijiste.
 Content words are not translated: `gato` and `cat` are two terms until you say *Un gato es un
 cat.* After that, anything said about cats in English is inherited by `gato` in Spanish.
 What doesn't cross yet is at [`@LAT98LON7`](#roadmap).
+
+A question whose subject stands behind its verb is read by agreement. English never has to
+choose — *what do cats chase* puts an auxiliary in the way, and *what chases mice* has none —
+but Spanish has no such auxiliary, so *¿qué cazan los gatos?* and *¿qué caza ratones?* differ
+only in the thing behind the verb. The object mark rules that thing out as the subject when it
+carries one (*¿qué persigue a los ratones?*), and otherwise the verb agrees with its subject
+in number, so a thing that does not agree cannot be it. Both come from the store — the
+lexicon's `object_mark` and the morphology's `plural_verb_ending` — and a grammar that
+declares no plural verb ending is saying its subject does not stand behind its verb.
 
 A new term sits **beside the term that first gave it meaning**: *Pixel is a cat* puts
 `pixel` a degree or two from `cat`, so the sphere clusters by meaning in the order meaning
@@ -540,6 +557,12 @@ The store is a conformant TTDB (TTDB-RFC-0001) and exercises the failure paths o
 - An edge is drawn only where both ends are on the map, so the episode lane's `perceives`
   edges are left off; a dead edge has nowhere to draw to and stays a struck-through link in
   the record, which is what §12 asks for.
+- **Embedding.** The page reaches for no element without finding it first, so a host that
+  takes the engine and wires its own page supplies the surfaces it wants and leaves out the
+  rest; [Blueprint 9](lat85lon0) lists them, `tests/embed.test.mjs` holds that list to the
+  code, and `#panel` is a window the host must size. `recordHtml`, `includeUrl` and
+  `saveLocal` are the functions a host replaces — every record render goes through the first,
+  so it is the one place to decorate records.
 
 Not implemented: the guided tour, side globes, URL sync (the page reads `?ask=` to run a
 question on load and `?seed` to ignore the local copy, and nothing else). §10's `audio_path`

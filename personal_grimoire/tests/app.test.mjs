@@ -810,6 +810,32 @@ section("two languages, one sphere (TTG-RFC-0001 §11)");
     ok(G.lang === "es" && JSON.stringify(got) === JSON.stringify(want), JSON.stringify(text), G.lang + ": " + got.join(" ; "));
   }
 
+  // A question whose subject stands behind its verb (TTG-RFC-0002 §3). English puts an
+  // auxiliary in the way and so never has to choose; Spanish has none, and the two
+  // questions differ only in the thing behind the verb — the object mark rules it out as
+  // the subject, and otherwise the verb agrees with it or it is not the subject.
+  const route = t => { const G = PG.pickGrammar(S, t); return PG.withGrammar(S, G, () => PG.interpret(S, t)); };
+  const asks = [
+    ["what do cats chase?",          "objectsOf",  "cat"],
+    ["what chases mice?",            "subjectsOf", "chase"],
+    ["¿qué cazan los gatos?",        "objectsOf",  "gato"],      // agrees: los gatos is the subject
+    ["¿qué comen los ratones?",      "objectsOf",  "ratón"],
+    ["¿qué come el gato?",           "objectsOf",  "gato"],
+    ["¿qué caza ratones?",           "subjectsOf", "cazar"],     // does not agree: ratones cannot be it
+    ["¿qué persigue a los ratones?", "subjectsOf", "perseguir"]  // marked an object, so the slot is the subject
+  ];
+  for (const [text, intent, key] of asks){
+    const r = route(text);
+    ok(r.intent === intent && (r.intent === "objectsOf" ? r.s : r.v) === key,
+       JSON.stringify(text) + " asks for " + (intent === "objectsOf" ? "objects" : "subjects"),
+       r.intent + " " + (r.s || r.v || ""));
+  }
+  // and a grammar that declares no plural verb ending keeps the slot in front, as before
+  const flat = PG.openStore(STORE.split(NL + "plural_verb_ending: n").join(""));
+  const fr = PG.withGrammar(flat, PG.pickGrammar(flat, "¿qué cazan los gatos?"),
+                            () => PG.interpret(flat, "¿qué cazan los gatos?"));
+  ok(fr.intent === "subjectsOf", "with no plural verb ending declared, the slot leads as it always did", fr.intent);
+
   const q = PG.answer(S, "¿Es Pixel un animal?", T0);
   ok(q.lang === "es" && q.verdict === PG.say(es, "affirm_inferred") && q.items[0].quotes[0].text === "Pixel is a cat.",
      "asked in Spanish, answered in Spanish, from English sayings quoted as said", q.verdict);

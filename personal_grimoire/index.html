@@ -598,7 +598,7 @@ function loadGrammar(st, lang){
     nounIrr:new Map(), nounKeep:new Set(), plural:[], pluralGuard:[], verbIrr:new Map(), verb:[], verbGuard:[],
     doubleKeep:new Set(), minStem:NaN, seed:new Set(), stance:new Set(), chain:new Set(), progressive:[], participle:[],
     bareEnding:[], bareFinite:null, stanceNoun:new Set(), motion:new Set(), objectMark:new Set(),
-    intransitive:new Set(), adverbEnding:[], adverbGuard:new Set(), selfEnding:[], selfForm:new Set(),
+    intransitive:new Set(), adverbEnding:[], adverbGuard:new Set(), selfEnding:[], selfForm:new Set(), pluralVerbEnding:"",
     roles:{}, vectors:new Map(), inherits:[], phrases:[],
     whThing:new Set(), whPlace:new Map(), whReason:new Set(), about:new Set(), describeMax:NaN,
     say:{}, units:{}, num:{}, sphere:{}, maxReply:NaN, loaded:[], ruleLines:[], rules:[], ruleErrors:[]
@@ -654,6 +654,9 @@ function loadGrammar(st, lang){
       // the speaker's own verb forms, in a language that drops its subjects (como, vi)
       G.selfEnding.push(...words(b.self_ending));
       for (const w of words(b.self_form)) G.selfForm.add(w);
+      // how a finite verb shows it is speaking of more than one, which is how a
+      // grammar that lets the subject follow its verb says which thing that is
+      G.pluralVerbEnding = String(b.plural_verb_ending || "").trim();
     } else if (b.kind === "seed"){
       for (const line of many(b, "seed")) for (const w of words(line)) G.seed.add(w);
       // a stance verb is a seed whose clause is held, not believed (TTG-RFC-0005 §3)
@@ -2575,7 +2578,37 @@ function whQuestion(S, wh, after, ctx){
     if (!vs.includes(place)) vs.push(place);
     return subj ? { intent:"objectsOf", s:subj, vs } : null;
   }
+  const behind = subjectAfterVerb(S, after, ctx);
+  if (behind) return behind;
   return slotQuery(S, [synth(SLOT)].concat(after), ctx);
+}
+/* A wh-word straight onto its verb. English only reaches this for *what chases
+ * mice*, where the slot is plainly the subject, because its other question puts
+ * an auxiliary in the way — *what do cats chase* — and the branch above catches
+ * it. A grammar with no such auxiliary reaches it for both: *¿qué cazan los
+ * gatos?* asks for the object and *¿qué caza ratones?* for the subject, and the
+ * two differ only in the thing standing behind the verb.
+ *
+ * So they are told apart the way a speaker tells them apart. The object mark
+ * rules that thing out as the subject outright — what is marked an object is
+ * one — and otherwise the verb agrees with its subject in number, so a thing
+ * that does not agree cannot be it. Both are the store's to declare, in the
+ * lexicon and the morphology; a grammar that declares no plural verb ending is
+ * saying its subject does not stand behind its verb, and the slot leads as
+ * before. Where the two agree and neither is marked the question really is
+ * ambiguous — *¿qué come queso?* is *what eats cheese* or *what does cheese
+ * eat* — and the thing behind the verb is read as the subject.            */
+function subjectAfterVerb(S, after, ctx){
+  const G = S.G;
+  if (!G.pluralVerbEnding) return null;
+  const vi = skipSoft(after, 0), v = after[vi];
+  if (!v || !isVerbish(S, v)) return null;
+  const rest = after.slice(vi + 1);
+  const np = nounPhrases(S, rest, 0, rest.length)[0];
+  if (!np || G.objectMark.has(np.prep)) return null;
+  const head = headOf(S, np, ctx);
+  if (!head || !!head.changed !== v.w.endsWith(G.pluralVerbEnding)) return null;
+  return slotQuery(S, rest.slice(0, np.end + 1).concat([v, synth(SLOT)]), ctx);
 }
 function interpret(S, text){
   const G = S.G;
@@ -2852,6 +2885,13 @@ let lensOn = false;                       // read the sphere by weight alone
 let litEdges = new Set();                 // the relations the last answer reasoned along
 let chaseUntil = 0;                       // how long the answer keeps travelling along them
 const $ = id => document.getElementById(id);
+/* Every surface below is the host's to offer or leave out. Nothing dereferences
+   an element without first finding it: what is absent is simply not drawn, and
+   the page goes on working around the hole. `draw()` has behaved this way since
+   the sphere became optional; this is that rule everywhere, so a host embedding
+   the engine supplies the surfaces it wants and no others. `dset` reads the
+   chrome strings off an element that may not be there.                      */
+const dset = id => { const e = $(id); return e ? e.dataset : {}; };
 const unixNow = () => Math.floor(Date.now() / 1000);
 const reduceMotion = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -2984,6 +3024,7 @@ function replyHtmlIn(r){
 }
 function appendTurn(q, html){
   const log = $("log");
+  if (!log) return;
   const qd = document.createElement("div"); qd.className = "turn-q"; qd.textContent = q;
   const ad = document.createElement("div"); ad.className = "turn-a"; ad.innerHTML = html;
   log.appendChild(qd); log.appendChild(ad);
@@ -3004,7 +3045,7 @@ function addRow(r, extra){
   return id;
 }
 function rowHtml(id){
-  const row = rows.get(id), pv = $("preview").dataset, sel = row.sel;
+  const row = rows.get(id), pv = dset("preview"), sel = row.sel;
   const on = i => !!sel && i >= sel[0] && i <= sel[1];
   let html = "", open = "";
   row.items.forEach((it, i) => {
@@ -3077,7 +3118,7 @@ function keepAs(id, r){
    reading of each place the grammar read two ways, with a button to say that
    one was meant. `lines` are percept columns with the reading, if any, last. */
 function perceptsHtml(id, lines, cls){
-  const pv = $("preview").dataset, row = id ? rows.get(id) : null;
+  const pv = dset("preview"), row = id ? rows.get(id) : null;
   const shown = lines.filter(p => p.length >= 6 && p[1] !== "-" && p[2] !== "-");
   const trip = p => tripleHtml({ s:p[1], v:p[2], o:p[3], pol:p[4] });
   const shared = shown.filter(p => !p[6]), by = new Map();
@@ -3098,9 +3139,10 @@ const rereadRow = (ep, x, c, grammar) => rowHtml(addRow(shapeOf(S, c.reads, c.re
 /* ---------- live grammar preview ------------------------------------------ */
 let previewTimer = 0;
 function preview(){
-  const text = $("q").value;
-  const pv = $("preview"), mode = $("mode");
-  if (!S || !text.trim()){ pv.innerHTML = ""; mode.textContent = ""; pending = null; return; }
+  const box = $("q"), pv = $("preview"), mode = $("mode");
+  if (!box || !pv) return;
+  const text = box.value;
+  if (!S || !text.trim()){ pv.innerHTML = ""; if (mode) mode.textContent = ""; pending = null; return; }
   if (!pending || pending.text !== text){
     // any change to the words discards the readings marked on the old ones
     if (pending) for (const id of pending.ids) rows.delete(id);
@@ -3112,7 +3154,7 @@ function preview(){
   }
   pv.innerHTML = pending.ids.map(rowHtml).join("");
   // with more than one grammar in the store, show which one the text reads as
-  withGrammar(S, pickGrammar(S, text), () => {
+  if (mode) withGrammar(S, pickGrammar(S, text), () => {
     mode.textContent = (mode.dataset[interpret(S, text).intent] || "") + (S.grammars.length > 1 ? " · " + S.G.lang : "");
   });
 }
@@ -3120,15 +3162,20 @@ function preview(){
 /* ---------- term list (TTCP-RFC-0003 §6) ----------------------------------- */
 let filterTimer = 0;
 function renderTerms(){
-  const ul = $("termlist"), f = $("filter").value.trim().toLowerCase(), sort = $("sort").value;
+  const ul = $("termlist");
+  if (!ul) return;
+  const fe = $("filter"), se = $("sort");
+  const f = (fe ? fe.value : "").trim().toLowerCase(), sort = se ? se.value : "eps";
   const all = [...S.things.values(), ...S.vectors.values()];
   const shown = all.filter(t => !f || t.lemma.includes(f) || t.forms.some(x => x.includes(f)));
   const seen = t => S.seenCounts.get(t.cls + "|" + t.lemma) || 0;
-  const by = { eps:(a, b) => b.chunk.rec.epsRaw - a.chunk.rec.epsRaw || seen(b) - seen(a),
+  const orders = { eps:(a, b) => b.chunk.rec.epsRaw - a.chunk.rec.epsRaw || seen(b) - seen(a),
                seen:(a, b) => seen(b) - seen(a), alpha:(a, b) => a.lemma.localeCompare(b.lemma),
-               recent:(a, b) => b.chunk.rec.touched - a.chunk.rec.touched }[sort];
+               recent:(a, b) => b.chunk.rec.touched - a.chunk.rec.touched };
+  const by = orders[sort] || orders.eps;
   shown.sort(by);
-  $("filtermeta").textContent = shown.length + " / " + all.length;
+  const meta = $("filtermeta");
+  if (meta) meta.textContent = shown.length + " / " + all.length;
   const top = epsTop(S);
   ul.innerHTML = shown.slice(0, 400).map(t => {
     const r = t.chunk.rec;
@@ -3150,7 +3197,9 @@ function topTerm(){
   return best;
 }
 function refreshNudge(){
-  const el = $("nudge"), b = S ? topTerm() : null;
+  const el = $("nudge");
+  if (!el) return;                       // a host that offers no nudge simply has none
+  const b = S ? topTerm() : null;
   el.hidden = !b;
   if (!b) return;
   el.textContent = (el.dataset.ask || "").replace("{term}", b.t.lemma);
@@ -3174,12 +3223,21 @@ function showable(src){
     })
     .replace(/^<[^>]+>$/gm, "").trim();
 }
+/* Where an include's file is. A `ttdb-include` names a file beside the store, and
+   the page asks for it beside itself, which is the same place whenever the page and
+   the store are served together. A host that serves them apart — the store from an
+   app, the page from somewhere else — replaces this to say where its copy lives, the
+   way it replaces `recordHtml`; returning nothing means the host serves no include
+   files at all, and then nothing is fetched and the record body stands alone. */
+function includeUrl(file){ return file; }
 function shownHtml(rec){
   const name = parseBlock(rec.include).file;
   if (!name) return "";
+  const url = includeUrl(name);
+  if (!url){ shown.set(name, ""); return ""; }  // the host serves no include files
   if (!shown.has(name)){
     shown.set(name, "");                       // in flight: one fetch per file
-    fetch(name, { cache:"no-store" })
+    fetch(url, { cache:"no-store" })
       .then(res => res.ok ? res.text() : Promise.reject(res.status))
       .then(src => { shown.set(name, showable(src)); if (selectedKey === rec.key) renderPanel(rec); })
       .catch(() => { /* no server, or no such file: the record body is the whole panel */ });
@@ -3255,12 +3313,13 @@ function sceneHtml(rec){
     return t ? `<a href="#" data-key="${t.key}">${esc(t.title)}</a>`
              : `<span class="x" title="target does not exist in this store">${esc(ref.id)}</span>`;
   };
-  // the walk starts from the record that describes it, where a reader is when
-  // they decide to take it; the store bar's control is the same switch, and is
-  // the one still in view once the walk has moved on to its first stop
+  // The walk starts from the record that describes it, where a reader is when they
+  // decide to take it; the store bar's control is the same switch, and is the one
+  // still in view once the walk has moved on to its first stop. A host that supplies
+  // no #scene offers no walk, and gets the legs as a plain index of the records.
   const bar = $("scene");
-  const label = playing ? bar.textContent : (bar.dataset.play || "");
-  return `<button type="button" class="scene-start" data-scene="${rec.key}">${esc(label)}</button>` +
+  const label = bar ? (playing ? bar.textContent : (bar.dataset.play || "")) : "";
+  return (bar ? `<button type="button" class="scene-start" data-scene="${rec.key}">${esc(label)}</button>` : "") +
     `<ol class="scene">` + sc.edges.map(e =>
       `<li><em>${esc(e.name)}</em>${stop(e.from)}<span class="arrow">→</span>${stop(e.to)}</li>`).join("") + `</ol>`;
 }
@@ -3370,13 +3429,15 @@ function legProgress(leg){
   return ((rotLat - pan.from.lat) * leg.lat + lon * leg.lon) / len2;
 }
 function ensureTrack(){
-  if (pan.track && pan.track.isConnected) return;
+  if (pan.track && pan.track.isConnected) return true;
   const el = $("panel");
+  if (!el) return false;                          // a host with no record view
   el.innerHTML = "";
   pan.track = document.createElement("div");
   pan.track.className = "slide-track";
   el.appendChild(pan.track);
   pan.slides.clear(); pan.target = null; pan.leg = null; pan.t = 0;
+  return true;
 }
 function makeSlide(key){
   const el = document.createElement("div");
@@ -3406,7 +3467,7 @@ function markActive(){
   });
 }
 function restOn(key){
-  ensureTrack();
+  if (!ensureTrack()) return;
   for (const k of [...pan.slides.keys()]) if (k !== key) dropSlide(k);
   const slide = pan.slides.get(key) || makeSlide(key);
   slide.x = 0; slide.y = 0; slide.el.style.transform = "";
@@ -3455,7 +3516,7 @@ function clearance(ux, uy, newKey){
   return reach;
 }
 function beginLeg(key){
-  ensureTrack();
+  if (!ensureTrack()) return;
   if (!pan.slides.size){ restOn(key); return; }
   if (pan.target === key) return;                       // already on its way in
   const resting = pan.slides.get(key);
@@ -3529,11 +3590,12 @@ function updatePanel(settled){
    file it shows has arrived. */
 function renderPanel(rec){
   if (!rec){
-    $("panel").innerHTML = "";
+    const el = $("panel");
+    if (el) el.innerHTML = "";
     pan.track = null; pan.slides.clear(); pan.target = null; pan.leg = null; pan.from = null;
     return;
   }
-  ensureTrack();
+  if (!ensureTrack()) return;
   const slide = pan.slides.get(rec.key);
   if (slide) slide.el.innerHTML = recordHtml(rec); else restOn(rec.key);
 }
@@ -3925,10 +3987,14 @@ function pendingRereads(){
   return { grammar:rereadMemo.r.grammar, list:rereadMemo.r.changed.filter(c => !c.amended) };
 }
 function refreshInfo(){
-  const rr = $("rereads"), pending = pendingRereads().list.length;
-  rr.hidden = !pending;
-  rr.textContent = (rr.dataset.label || "").replace("{n}", pending);
+  const rr = $("rereads");
+  if (rr){
+    const pending = pendingRereads().list.length;
+    rr.hidden = !pending;
+    rr.textContent = (rr.dataset.label || "").replace("{n}", pending);
+  }
   const info = $("storeinfo");
+  if (!info) return;
   const perc = [...S.trips.values()].reduce((m, e) => m + e.sources.length, 0);
   info.innerHTML = `<b>${esc(info.dataset[storeSource] || storeSource)}</b> · ${S.things.size} things · ${S.vectors.size} vectors · ` +
     `${S.episodes.length} episodes · ${perc} percepts` + (S.malformed.length ? ` · ${S.malformed.length} malformed skipped` : "");
@@ -3936,7 +4002,8 @@ function refreshInfo(){
 function load(text, src){
   S = openStore(text);
   storeSource = src;
-  $("err").hidden = true;
+  const err = $("err");
+  if (err) err.hidden = true;
   refreshInfo();
   renderTerms();
   refreshNudge();
@@ -3965,7 +4032,7 @@ async function feedFiles(list){
   for (const file of list){
     const text = await file.text();
     if (/^\s*```mmpdb\s*$/m.test(text)){
-      if (confirm($("files").dataset.confirmStore || file.name)){
+      if (confirm(dset("files").confirmStore || file.name)){
         try { localStorage.removeItem(LS_KEY); } catch (err){ /* nothing stored */ }
         $("log").innerHTML = ""; load(text, "opened"); saveLocal();
         appendTurn(file.name, `<div class="verdict">${esc(say(S.G, "store_opened", { file:file.name }))}</div>`);

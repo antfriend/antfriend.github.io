@@ -530,6 +530,37 @@ the first four lists of grounds. Four kinds, printed four ways — [Blueprint 7]
 is the host's job too. `records` are IDs to highlight; `search` is `{ ep, n, text, score, hit }`;
 `replyText` shows one plain rendering of all of it.
 
+**What a host replaces.** Every top-level `function` the page declares is a binding the
+engine's own callers resolve when they call it, so replacing one changes what the page does
+without touching its bytes. Two are meant to be replaced. `recordHtml(rec)` is the single
+function every record render goes through, so it is where a host decorates records.
+`includeUrl(file)` says where a `ttdb-include`'s file lives: the page asks for it beside
+itself, which is right when the page and the store are served together, and a host serving
+them apart returns its own URL — or returns nothing, and then no request is made at all and
+the record body stands alone. `saveLocal()` is the third, for a host that keeps the store
+somewhere other than this browser.
+
+**The surfaces, and which are yours to leave out.** A host that takes the engine and wires its
+own page needs to know what the page code reaches for. It reaches for these, and **for nothing
+without finding it first**: an element you do not supply costs that surface and nothing else, so
+you offer what you want and leave out the rest. The record view `#panel`; the globe's canvas
+`#sphere`; the term list `#termlist` with `#filter`, `#sort` and `#filtermeta`; the composer
+`#q` with `#preview`, `#mode` and the answer log `#log`; the store bar's `#storeinfo`,
+`#rereads`, `#scene` and `#nudge`; `#files` for the file picker's confirmation; and `#err` for
+the banner shown when the store cannot be fetched. Everything else the page names —
+`#app`, `#askform`, `#dl`, `#reset`, `#empty`, `#openstore`, `#openstore2`, `#errdetail`,
+`#lens`, `#web` — is touched only by `boot()`, which a host that wires its own page never calls.
+`tests/embed.test.mjs` runs the engine as a host does, with each of these missing in turn, so
+this list cannot drift from the code.
+
+**`#panel` is a window, not a box**, and the host must size it. The page puts a `.slide-track`
+in it and renders each record as a `.record-slide`, absolutely positioned and scrolling itself,
+because moving between two records animates one slide out and the next in. So `#panel` wants
+`position:relative; overflow:hidden; padding:0` and a height of its own; a slide is always the
+window's size, and the window never changes height mid-leg. Every record render goes through
+`recordHtml` — `makeSlide`, `select`'s refresh and `renderPanel`'s all call it — so that is the
+one function to wrap to decorate records, and wrapping `renderPanel` catches only some paths.
+
 **The page's conventions**, for a host that keeps the page. Any element with **`data-key`**
 selects a record on click (one delegated listener); the value is `lat|lon` to four decimals.
 **Every chrome string lives in a `data-*` attribute on the markup**, never in the script:
@@ -1029,6 +1060,7 @@ plural: res | r | re
 plural: nes | n | ne
 plural: des | d | de
 plural: s | -
+plural_verb_ending: n
 verb_irregular: estoy estás está estamos están | estar
 verb_irregular: tengo tienes tiene tenemos tienen | tener
 verb_irregular: voy vas va vamos van | ir
