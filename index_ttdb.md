@@ -118,11 +118,11 @@ preview:
 ```
 ╭──────────────────────────────────────────────────────╮
 │  R F C   C O R P U S                                 │
-│  33 documents · 6 series · 1 bundle · 1 globe        │
+│  35 documents · 6 series · 1 bundle · 1 globe        │
 ╰──────────────────────────────────────────────────────╯
 
   lane    series  subject          lon → 1 . . . . . 11
-  lat 10  TTDB    the file format  ████████···
+  lat 10  TTDB    the file format  ██████████·
   lat 20  TTN     the mesh         ███████████
   lat 30  TTCP    the reader       ███········
   lat 40  A32     the $5 device    █████······
@@ -148,6 +148,8 @@ back on demand.
 - [`0006`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon6) [Experiential Perception as Synthetic Model](RFCs/index.html?rfc=TTDB-RFC-0006-Experiential-Perception-as-Synthetic-Model.md)
 - [`0007`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon7) [Locus Point and Dream Cycle](RFCs/index.html?rfc=TTDB-RFC-0007-Locus-Point-and-Dream-Cycle.md)
 - [`0008`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon8) [Narrative Metamorphosis](RFCs/index.html?rfc=TTDB-RFC-0008-Narrative-Metamorphosis.md)
+- [`0009`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon9) [Counter-Story and Narrative Morphospace](RFCs/index.html?rfc=TTDB-RFC-0009-Counter-Story-and-Narrative-Morphospace.md)
+- [`0010`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon10) [Stigmergic Fields and Record Identity](RFCs/index.html?rfc=TTDB-RFC-0010-Stigmergic-Fields-and-Record-Identity.md)
 
 **TTN** · `lat 20` · the mesh — packets, delivery, time, belief
 

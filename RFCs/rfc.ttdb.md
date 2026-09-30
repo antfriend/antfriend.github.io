@@ -240,6 +240,81 @@ Triggers: operator `[trigger:metamorphosis]` token (required support) or autonom
 belief-stability threshold (optional). Eclosion predicate activates the conductor.
 
 ---
+@LAT10LON9 | created:1785456000 | updated:1785456000 | relates:generalizes@LAT10LON8,depends_on@LAT10LON7,depends_on@LAT10LON6,depends_on@LAT10LON5,depends_on@LAT10LON1,supports@LAT20LON11
+[ew]
+conf:120
+rev:0
+sal:120
+touched:1785456000
+[/ew]
+
+**TTDB-RFC-0009 — Counter-Story and Narrative Morphospace** (Proposed; nothing run on hardware)
+src: TTDB-RFC-0009-Counter-Story-and-Narrative-Morphospace.md
+
+Generalizes scene-as-instar (@LAT10LON8) from an agent life-stage device to the claimed
+storage format for *all* pattern targets: **C-4 — morphospace targets are stored as
+traversal order, not as state tables, and the ending is where the stopping condition
+lives.** C-5, the sharper claim: **a counter-story changes the topology of a store's
+ignorance; a corroborating story only changes its volume.** Governing rule — more nodes
+add capability only when the nodes differ; N identical co-located sensors are one node
+with √N confidence, so skepticism cannot change the shape of ignorance but a different
+sensor can. Instrument (MUST NOT be a dashboard): the **residual high-EPS coordinate set**
+`R(S,θ) = { c : EPS(c) ≥ θ }` with EPS per @LAT10LON5, compared by **Jaccard distance**
+pre/post injection; `θ` fixed before the run; Δ mean `conf` reported but never as the
+headline; newly-high-EPS coordinates reported by coordinate, not count; failure to halt
+reported `∞`, never a large number. Construction: paired narrative (ordered traversal)
+vs. assertional (order removed) stores at **matched toot-bits, not record count**, both on
+paired `@PERCEPT:before`/`after` (@LAT10LON6); order smuggled back as `depends_on` chains
+invalidates the run. Procedure: excise + Dream Cycle (@LAT10LON7) ≥5 sites — byte-identical
+restoration is a backup, so **low path divergence is a negative result** — then two
+*separate* injection sessions, corroborating (duplicate modality) vs. counter-story
+(divergent modality that disagrees), matched in toot-bits. Precondition: the heterogeneity
+gate (EXP-01); on a homogeneous mesh the experiment silently becomes its own control.
+Fleet modality classes, ablated per class and never per node: acoustic/motion (Cardputer
+ADV `0x300` — ES8311 mic @LAT94, BMI270 accel+gyro @LAT95), link (Heltec V4 RSSI/LoRa),
+gnss (T-Deck), entity, interoceptive. Normative: **die temperature MUST NOT stand in for
+ambient** — it is interoceptive and would look like a faithful port of the K10-era design
+while injecting a node-internal confound. Expected to be partly blocked by Learning from
+Action; a blockage MUST be logged as a result at the coordinate that blocked, not
+engineered around. Companion: `replicate/TTX-0004-counter-story.md`.
+---
+@LAT10LON10 | created:1786060800 | updated:1786060800 | relates:depends_on@LAT10LON1,depends_on@LAT10LON3,depends_on@LAT10LON4,depends_on@LAT10LON5
+[ew]
+conf:140
+rev:0
+sal:150
+touched:1786060800
+[/ew]
+
+**TTDB-RFC-0010 — Stigmergic Fields, Lane Discipline, and Stable Record Identity** (Draft; nothing implemented — §3 classifies what exists, §§4-6 describe a mechanism no node has run)
+src: TTDB-RFC-0010-Stigmergic-Fields-and-Record-Identity.md
+
+Two memory disciplines may coexist in a TTDB and every lane MUST declare which it is:
+**EVIDENCE** (append-only, citable, prunable only wholesale and only with a boundary),
+**FIELD** (a trace that decays and is reinforced, reclaimable in place), **PROVENANCE**
+(an account of the store itself; never reclaimed). A reader that cannot tell MUST assume
+EVIDENCE — guessing FIELD licenses discarding an observation. §3 registers every lane the
+fleet uses: `lat<90` + 91-97 evidence, 90/98/99/100 provenance, **no FIELD lane exists**,
+and the first one MUST be new at `@LAT101+` (converting a lane retroactively reclassifies
+the archives; `@LAT89` and below renders as a place on the globe).
+
+Decay is the computation, not housekeeping: it is what turns an accumulating log into a
+gradient a reader evaluates locally. But it **rewrites history by design**, so §6 fences
+it — no measured constant from a FIELD lane (a medium that removes its own data on a rule
+correlated with the measurement is not a sample), no `derived_from` targeting a trace, and
+the acceptance test that the system must still be correct with the field **empty**: if
+emptying it changes an answer rather than a latency, the lane is misclassified.
+
+§4 is the gate. A reclaimable record MUST NOT be named by its ordinal position, per
+TTDB-RFC-0004 §2 (stable hash) and §4 (an id MUST NOT change for the same record) — the
+divergence is recorded as a belief at lat 98 lon 6. `sid:<8 hex>` joins the header, the
+**coordinate stays the address and the sid becomes the identity** so navigation and every
+index keep working, and a citation MAY carry
+`#sid`, resolving `stale` when it does not match what is now at that coordinate. Both forms
+stay permanently live. Decay is evaluated **on read, never written** (only reinforcement
+writes), and computed from a local `millis()` delta because a stream clock is a ratchet —
+correct for recency, wrong for a duration.
+---
 
 @LAT20LON1 | created:1775001600 | updated:1775001600 | relates:default_log@LAT10LON1
 [ew]
@@ -261,26 +336,26 @@ floods on low-bandwidth links, **all assertions must include provenance**, appen
 records preferred.
 
 ---
-
-@LAT20LON2 | created:1775347200 | updated:1775347200 | relates:depends_on@LAT20LON1,depends_on@LAT10LON3
+@LAT20LON2 | created:1775347200 | updated:1785542400 | relates:depends_on@LAT20LON1,depends_on@LAT10LON3
 [ew]
 conf:210
-rev:0
-sal:70
-touched:1775347200
+rev:1
+sal:80
+touched:1785542400
 [/ew]
 
-**TTN-RFC-0002 — Typed Edge Taxonomy** (Stable)
+**TTN-RFC-0002 — Typed Edge Taxonomy** (Stable, v1.1)
 src: TTN-RFC-0002-Typed-Edges.md
 
-The shared edge vocabulary, six groups: identity/topology (knows, seen_near,
+The shared edge vocabulary, seven groups: identity/topology (knows, seen_near,
 routes_via, connected_over); conversation/BBS (board_contains, thread_root,
 replies_to, mentions, moderates, supersedes); AI semantics (asks_ai, ai_summarizes,
 ai_flags, ai_responds_to, ai_refuses, ai_confidence_low); sensors/actions
 (reports_sensor, alerts, commands, acknowledges, escalates); knowledge graph
-(supports, contradicts, refines, duplicates, derived_from); moderation/trust
-(trusted_by, muted_by, blocked_by, flagged_as_spam, quarantined).
-
+(supports, contradicts, refines, duplicates, derived_from); **semantic polarity
+(opposes)**; moderation/trust (trusted_by, muted_by, blocked_by, flagged_as_spam,
+quarantined). v1.1 added the semantic-polarity group: `opposes` is symmetric and
+distinct from the epistemic `contradicts` — see TTDB-RFC-0003 §7.
 ---
 
 @LAT20LON3 | created:1775779200 | updated:1775779200 | relates:depends_on@LAT20LON1,depends_on@LAT20LON2
