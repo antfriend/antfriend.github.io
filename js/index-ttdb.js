@@ -68,6 +68,14 @@ const THEMES = {
     poster: "https://avatars.githubusercontent.com/u/1195514?v=4&s=300",
     tag: "SIX REPOS",
   },
+  // TTDB has no directory; its home is TTDB.html. The poster is the same
+  // globe of typed links that page draws live, cut portrait for the card.
+  TTDB: {
+    accent: "#3ddc7a",
+    glyph: "orbits",
+    poster: "images/ttdb-poster.png",
+    tag: "HOME OF TTDB",
+  },
   OG: { accent: "#a6d96a", glyph: "cluster" },
 };
 const FALLBACK_THEME = { accent: "#9cb2bf", glyph: "orbits" };

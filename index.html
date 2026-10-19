@@ -26,11 +26,56 @@
       }
     })();
   </script>
-  <title>Toot Toot Engineering — TTDB · TTAI · Autonomy OS</title>
-  <meta name="description" content="Toot Toot Engineering builds TTDB (MyMentalPalaceDB), TTAI, and the autonomy OS stack — an offline-first semantic graph system for structured knowledge and AI-assisted reasoning." />
-  <meta property="og:title" content="Toot Toot Engineering — TTDB · TTAI · Autonomy OS" />
-  <meta property="og:description" content="Toot Toot Engineering is free, open-source, no dependencies software: Science, Storytelling and Semantic Data Systems by example" />
+  <title>Toot Toot Engineering — home of TTDB, the Toot Toot Database · TTAI · Autonomy OS</title>
+  <meta name="description" content="Toot Toot Engineering is the home of TTDB, the Toot Toot Database: an offline-first knowledge graph kept as one readable Markdown file, with globe-coordinate addresses, typed links, epistemic weight and a Dream Cycle. Also TTAI and the autonomy OS stack." />
+  <meta name="keywords" content="TTDB, Toot Toot Database, Toot Toot Engineering, MyMentalPalaceDB, plain text database, Markdown database, knowledge graph, typed edges, epistemic weight, Dream Cycle, Locus, TTAI, TTN, autonomy OS, ESP32" />
+  <meta name="author" content="antfriend" />
+  <link rel="canonical" href="https://antfriend.github.io/" />
+  <link rel="related" href="https://antfriend.github.io/TTDB.html" title="TTDB the Toot Toot Database" />
+  <meta property="og:site_name" content="Toot Toot Engineering" />
+  <meta property="og:title" content="Toot Toot Engineering — home of TTDB, the Toot Toot Database" />
+  <meta property="og:description" content="Free, open-source, no-dependencies software: Science, Storytelling and Semantic Data Systems by example. Home of TTDB, the Toot Toot Database." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://antfriend.github.io/" />
+  <meta property="og:image" content="https://antfriend.github.io/images/ttdb-card.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="A wireframe globe dotted with linked notes beside the title TTDB, the Toot Toot Database." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Toot Toot Engineering — home of TTDB, the Toot Toot Database" />
+  <meta name="twitter:description" content="Free, open-source, no-dependencies software: Science, Storytelling and Semantic Data Systems by example. Home of TTDB, the Toot Toot Database." />
+  <meta name="twitter:image" content="https://antfriend.github.io/images/ttdb-card.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://antfriend.github.io/#site",
+        "name": "Toot Toot Engineering",
+        "url": "https://antfriend.github.io/",
+        "publisher": { "@id": "https://antfriend.github.io/#org" },
+        "about": { "@id": "https://antfriend.github.io/TTDB.html#ttdb" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://antfriend.github.io/#org",
+        "name": "Toot Toot Engineering",
+        "url": "https://antfriend.github.io/",
+        "sameAs": ["https://github.com/antfriend"]
+      },
+      {
+        "@type": "DefinedTerm",
+        "@id": "https://antfriend.github.io/TTDB.html#ttdb",
+        "name": "TTDB",
+        "alternateName": ["Toot Toot Database", "MyMentalPalaceDB"],
+        "description": "An offline-first knowledge database kept as one readable Markdown file: records addressed by globe coordinates, joined by typed links, weighted by confidence and salience, and consolidated into beliefs by a Dream Cycle.",
+        "url": "https://antfriend.github.io/TTDB.html",
+        "subjectOf": { "@type": "TechArticle", "name": "TTDB the Toot Toot Database", "url": "https://antfriend.github.io/TTDB.html" }
+      }
+    ]
+  }
+  </script>
   <link rel="stylesheet" href="css/eyeball.css" />
   <link rel="stylesheet" href="css/tte-common.css" />
   <link rel="stylesheet" href="css/tte-core.css" />
@@ -45,12 +90,14 @@
 
       <a class="tagline" href="index.html" data-hover-preview-off>Toot Toot Engineering is open-source, runtime-dependency-free and free software: Science, Storytelling, Semiotic Semantic Data Systems by example</a>
 
+      <a class="ttdb-home" href="TTDB.html">Home of the TTDB: <strong>TTDB, the Toot Toot Database</strong>, explained with every feature running live &rarr;</a>
+
       <div class="header-left">
 
         <!-- Single globe over index_ttdb.md. The old multi-globe browser
              lives on at index_OG.html. -->
         <div class="globe-stage" id="globeStage">
-          <canvas id="globe" aria-label="Index globe: eight record cards on a sine-wave ribbon"></canvas>
+          <canvas id="globe" aria-label="Index globe: nine record cards on a sine-wave ribbon"></canvas>
           <div class="card-layer" id="cardLayer"></div>
           <div class="globe-hud">
             <b id="hudTitle">Index</b>
@@ -66,7 +113,7 @@
         <div class="topic-links">
           <strong>Card topics</strong>
           <ul class="topic-rail" id="topicRail"></ul>
-          <p class="rail-note">Eight cards on a sine-wave ribbon. Drag the globe, pick a card, or wait a minute and the ribbon walks itself.</p>
+          <p class="rail-note">Nine cards on a sine-wave ribbon. Drag the globe, pick a card, or wait a minute and the ribbon walks itself.</p>
         </div>
       </div>
 
@@ -82,6 +129,7 @@
           <input type="checkbox" id="tourToggle" checked />
           Guided tour after 60s idle
         </label>
+        <a class="pill" href="TTDB.html">Home of the TTDB</a>
         <a class="pill" href="index_OG.html">Open the OG multi-globe browser</a>
         <a class="pill" href="index_ttdb.md">View index_ttdb.md source</a>
       </div>

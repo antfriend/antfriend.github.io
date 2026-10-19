@@ -1,14 +1,18 @@
 # Index TTDB
 
-The front-door deck for Toot Toot Engineering. Eight records, one per
-top-level topic, laid out on a sine-wave ribbon that wraps the globe once and
-a fifth (`lat = 34 · sin((lon + 150) · 1.2°)`, `lon ∈ [-150, 150]`), then closes
-back on itself along the equator. Three records are still placeholder cards:
+The front-door deck for Toot Toot Engineering. Nine records, one per
+top-level topic plus one for TTDB itself, laid out on a sine-wave ribbon
+that wraps the globe once and a fifth
+(`lat = 34 · sin((lon + 150) · 1.2°)`, `lon ∈ [-150, 150]`), then closes back
+on itself along the equator. Three records are still placeholder cards:
 draft copy, a generated SVG face, and one link out to the topic it stands for.
 A topic that has a picture of its own wears it instead: banjo shows the banjo
 card from its own deck, ICU2 the still from the fight its deck opens on,
 personal_grimoire the photographed book its name is taken from, RFCs the lane
-chart its own record draws, and github the avatar the account is kept under.
+chart its own record draws, github the avatar the account is kept under, and
+TTDB the globe of linked notes its home page explains. TTDB has no directory
+of its own: its home is [TTDB.html](TTDB.html), the plain-language guide to
+the Toot Toot Database with every feature running live.
 
 ```mmpdb
 db_id: ttdb:tte:index:v1
@@ -24,14 +28,14 @@ umwelt:
   perspective: "A visitor arriving with no prior context, deciding where to go."
   scope: "One record per top-level directory of antfriend.github.io. No content, only doorways."
   constraints:
-    - "One record per topic directory."
+    - "One record per topic directory, plus one for TTDB, whose home is the single page TTDB.html."
     - "Every record's body is a single toot frame pointing at its topic."
     - "Card art is a generated placeholder unless the topic supplies a poster."
   globe:
     frame: "ribbon"
     origin: "banjo at (0, -150); the ribbon runs west to east."
-    mapping: "lat = 34 * sin((lon + 150) * 1.2deg), sampled every 60deg of lon, plus half-steps at lon -120 for ICU2 and lon 120 for github."
-    note: "A single closed circuit: eight cards forward along the sine, one dashed return arc along the equator. The two newest records were inserted at half-steps rather than respacing the ribbon, so every other record kept its coordinate and its id."
+    mapping: "lat = 34 * sin((lon + 150) * 1.2deg), sampled every 60deg of lon, plus half-steps at lon -120 for ICU2, lon 60 for TTDB, and lon 120 for github."
+    note: "A single closed circuit: nine cards forward along the sine, one dashed return arc along the equator. The three newest records were inserted at half-steps rather than respacing the ribbon, so every other record kept its coordinate and its id."
 cursor_policy:
   max_preview_chars: 260
   max_nodes: 12
@@ -99,7 +103,7 @@ preview:
 
 ---
 
-@LAT-20LON30 | created:1789689780 | updated:1789970400 | relates:prev>@LAT20LON-30,next>@LAT-32LON90,corollary_of>@LAT20LON-30,opens>personal_grimoire/index.html
+@LAT-20LON30 | created:1789689780 | updated:1792368000 | relates:prev>@LAT20LON-30,next>@LAT-32LON60,corollary_of>@LAT20LON-30,opens>personal_grimoire/index.html
 
 ## personal_grimoire
 
@@ -109,7 +113,17 @@ preview:
 
 ---
 
-@LAT-32LON90 | created:1789689840 | updated:1790035200 | relates:prev>@LAT-20LON30,next>@LAT-20LON120,specifies>@LAT0LON-150,opens>RFCs/index.html
+@LAT-32LON60 | created:1792368000 | updated:1792368000 | relates:prev>@LAT-20LON30,next>@LAT-32LON90,specified_by>@LAT-32LON90,opens>TTDB.html
+
+## TTDB
+
+### home of the TTDB, the Toot Toot Database every card here is written in
+
+![TTDB](TTDB.html)
+
+---
+
+@LAT-32LON90 | created:1789689840 | updated:1792368000 | relates:prev>@LAT-32LON60,next>@LAT-20LON120,specifies>@LAT0LON-150,specifies>@LAT-32LON60,opens>RFCs/index.html
 
 ## RFCs
 

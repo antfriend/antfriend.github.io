@@ -1,0 +1,1493 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TTDB the Toot Toot Database</title>
+<meta name="description" content="TTDB, the Toot Toot Database, explained for everyone: a database that is a readable text file, where every note has an address on a globe, links say what they mean, entries carry how sure they are, and idle time is spent dreaming up beliefs. Try every feature live.">
+<meta name="keywords" content="TTDB, Toot Toot Database, Toot Toot Engineering, knowledge graph, plain text database, Markdown database, typed edges, umwelt, epistemic weight, free energy principle, Dream Cycle, Locus Point, memory consolidation, offline-first, ESP32, Locus">
+<meta name="author" content="antfriend">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#f6f3ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1412" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://antfriend.github.io/TTDB.html">
+<link rel="icon" href="favicon.ico">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Toot Toot Engineering">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="TTDB the Toot Toot Database">
+<meta property="og:description" content="A database you can read like a notebook. Notes pinned to a globe, links that say what they mean, a sense of how sure it is, and a Dream Cycle that turns episodes into beliefs. Every example on the page runs live.">
+<meta property="og:url" content="https://antfriend.github.io/TTDB.html">
+<meta property="og:image" content="https://antfriend.github.io/images/ttdb-card.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A wireframe globe dotted with linked notes beside the title TTDB, the Toot Toot Database.">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TTDB the Toot Toot Database">
+<meta name="twitter:description" content="A database you can read like a notebook: notes on a globe, links that say what they mean, and a Dream Cycle that turns episodes into beliefs. Try it live.">
+<meta name="twitter:image" content="https://antfriend.github.io/images/ttdb-card.png">
+<meta name="twitter:image:alt" content="A wireframe globe dotted with linked notes beside the title TTDB, the Toot Toot Database.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "TTDB the Toot Toot Database",
+  "description": "A plain-language, hands-on explanation of TTDB, the Toot Toot Database: a plain-text knowledge graph with globe coordinates as record IDs, typed edges, a cursor, epistemic weight, and a Dream Cycle that consolidates episodes into beliefs.",
+  "url": "https://antfriend.github.io/TTDB.html",
+  "image": "https://antfriend.github.io/images/ttdb-card.png",
+  "inLanguage": "en",
+  "datePublished": "2026-10-19",
+  "dateModified": "2026-10-19",
+  "proficiencyLevel": "Beginner",
+  "author": { "@type": "Person", "name": "antfriend", "url": "https://github.com/antfriend" },
+  "publisher": { "@type": "Organization", "name": "Toot Toot Engineering", "url": "https://antfriend.github.io/" },
+  "isPartOf": { "@type": "WebSite", "name": "Toot Toot Engineering", "url": "https://antfriend.github.io/" },
+  "about": {
+    "@type": "SoftwareApplication",
+    "name": "TTDB (Toot Toot Database)",
+    "applicationCategory": "Database",
+    "operatingSystem": "Any",
+    "description": "An offline-first knowledge database stored as a single Markdown file.",
+    "url": "https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs"
+  },
+  "keywords": "TTDB, knowledge graph, plain text database, typed edges, umwelt, epistemic weight, Dream Cycle, Locus Point"
+}
+</script>
+
+<style>
+:root {
+  --bg: #f6f3ea; --panel: #fffdf7; --panel-2: #f0ece0; --ink: #1e2421; --muted: #5b655e; --line: #dcd5c5;
+  --accent: #1f8a45; --accent-soft: #dcefe2; --accent-ink: #ffffff;
+  --support: #2f8f5b; --against: #c4622d; --opposes: #7b5cc4; --contradicts: #c8324a; --generalizes: #2d6fc0; --other: #7a817c;
+  --conf-low: #c8324a; --conf-mid: #c0901a; --conf-high: #1f8a45;
+  --globe: #eef2ea; --grid: #cdd6cc; --walk: #e0a100;
+  --t-key: #2d6fc0; --t-meta: #8a8f86; --t-tag: #a0522d; --t-h: #1e2421; --t-fence: #9aa092;
+  --shadow: 0 1px 2px rgb(0 0 0 / .05), 0 6px 24px rgb(0 0 0 / .06);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1412; --panel: #151c18; --panel-2: #111814; --ink: #e3e8e2; --muted: #9aa59d; --line: #2a342e;
+    --accent: #3ddc7a; --accent-soft: #173523; --accent-ink: #08130c;
+    --support: #4fcf86; --against: #f08a52; --opposes: #a88bf0; --contradicts: #ff6b7f; --generalizes: #6aa8ff; --other: #8d958f;
+    --conf-low: #ff6b7f; --conf-mid: #e7b740; --conf-high: #3ddc7a;
+    --globe: #142019; --grid: #24352b; --walk: #ffc533;
+    --t-key: #6aa8ff; --t-meta: #6f7a72; --t-tag: #e09a6a; --t-h: #f2f5f1; --t-fence: #56615a;
+    --shadow: 0 1px 2px rgb(0 0 0 / .4), 0 6px 24px rgb(0 0 0 / .3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1412; --panel: #151c18; --panel-2: #111814; --ink: #e3e8e2; --muted: #9aa59d; --line: #2a342e;
+  --accent: #3ddc7a; --accent-soft: #173523; --accent-ink: #08130c;
+  --support: #4fcf86; --against: #f08a52; --opposes: #a88bf0; --contradicts: #ff6b7f; --generalizes: #6aa8ff; --other: #8d958f;
+  --conf-low: #ff6b7f; --conf-mid: #e7b740; --conf-high: #3ddc7a;
+  --globe: #142019; --grid: #24352b; --walk: #ffc533;
+  --t-key: #6aa8ff; --t-meta: #6f7a72; --t-tag: #e09a6a; --t-h: #f2f5f1; --t-fence: #56615a;
+  --shadow: 0 1px 2px rgb(0 0 0 / .4), 0 6px 24px rgb(0 0 0 / .3);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--accent); }
+code, pre, .mono { font-family: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace; }
+code { font-size: .88em; background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; padding: 0 .3em; }
+h1, h2, h3 { font-family: Georgia, "Iowan Old Style", "Times New Roman", serif; line-height: 1.2; font-weight: 700; }
+button { font: inherit; }
+
+.hero { max-width: 1240px; margin: 0 auto; padding: 56px 24px 24px; }
+.hero .kicker { font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+.hero .kicker a { color: inherit; }
+.hero h1 { font-size: clamp(34px, 6vw, 60px); margin: 0 0 16px; text-wrap: balance; }
+.hero h1 span { color: var(--accent); }
+.hero .lede { font-size: clamp(18px, 2.2vw, 21px); max-width: 46em; margin: 0 0 20px; text-wrap: pretty; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0; list-style: none; }
+.facts li { font-size: 14px; border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 4px 12px; }
+
+.layout {
+  max-width: 1240px; margin: 0 auto; padding: 0 24px 64px;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 470px); gap: 40px; align-items: start;
+}
+.prose { min-width: 0; }
+.prose section { padding: 28px 0 8px; border-top: 1px solid var(--line); }
+.prose section:first-child { border-top: 0; }
+.prose h2 { font-size: clamp(26px, 3.4vw, 34px); margin: 8px 0 12px; text-wrap: balance; }
+.prose h2 .num { color: var(--accent); font-size: .7em; vertical-align: .18em; margin-right: .3em; font-family: ui-monospace, Consolas, monospace; }
+.prose p { max-width: 40em; text-wrap: pretty; }
+.prose .aside { color: var(--muted); font-size: 15px; }
+
+.widget {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow);
+  padding: 16px; margin: 20px 0 24px;
+}
+.widget > .wtitle { font-size: 13px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; display: flex; gap: 8px; align-items: center; }
+.widget > .wtitle::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn {
+  border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); border-radius: 8px;
+  padding: 6px 12px; cursor: pointer; font-size: 14px; line-height: 1.3;
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.btn.small { padding: 3px 8px; font-size: 13px; }
+.btn[aria-pressed="false"] { opacity: .5; text-decoration: line-through; }
+input[type=text], input[type=number] {
+  font: inherit; font-size: 15px; background: var(--panel-2); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; min-width: 0;
+}
+input[type=number] { width: 5.5em; }
+input[type=range] { accent-color: var(--accent); width: 100%; }
+label.field { display: grid; gap: 2px; font-size: 13px; color: var(--muted); }
+pre.out {
+  margin: 12px 0 0; padding: 10px 12px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px;
+  font-size: 13px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; overflow: auto; max-height: 280px;
+}
+.trace { list-style: none; padding: 0; margin: 12px 0 0; font-size: 14px; }
+.trace li { padding: 3px 0; display: flex; gap: 8px; align-items: baseline; }
+.trace .mark { width: 1.2em; text-align: center; font-weight: 700; }
+.trace .taken .mark { color: var(--contradicts); }
+.trace .free .mark { color: var(--accent); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.legend .btn { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { width: 22px; height: 0; border-top: 3px solid currentColor; display: inline-block; }
+.swatch.dash { border-top-style: dashed; }
+.swatch.dot { border-top-style: dotted; }
+.g-support { color: var(--support); } .g-against { color: var(--against); } .g-opposes { color: var(--opposes); }
+.g-contradicts { color: var(--contradicts); } .g-generalizes { color: var(--generalizes); } .g-other { color: var(--other); }
+.legend .btn span.lbl { color: var(--ink); }
+
+.compare { width: 100%; border-collapse: collapse; font-size: 15px; margin: 8px 0 4px; }
+.compare th, .compare td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.compare th { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+.notes { list-style: none; padding: 0; margin: 12px 0 0; font-size: 14px; }
+.notes li { padding: 6px 10px; border-left: 3px solid var(--conf-mid); background: var(--panel-2); border-radius: 0 6px 6px 0; margin-bottom: 6px; }
+.notes li.ok { border-left-color: var(--accent); }
+
+.console-in { display: flex; gap: 8px; margin-top: 10px; }
+.console-in input { flex: 1; font-family: ui-monospace, Consolas, monospace; }
+.log { list-style: none; padding: 0; margin: 10px 0 0; font-size: 14px; max-height: 200px; overflow: auto; }
+.log li { padding: 6px 0; border-bottom: 1px dashed var(--line); }
+.log .q { font-family: ui-monospace, Consolas, monospace; color: var(--accent); }
+.log .a { display: block; }
+
+.ew-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
+.ew-grid output { font-family: ui-monospace, Consolas, monospace; color: var(--ink); font-size: 15px; }
+.prio { list-style: none; padding: 0; margin: 8px 0 0; counter-reset: p; }
+.prio li { counter-increment: p; display: grid; grid-template-columns: 1.6em 1fr auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.prio li::before { content: counter(p); color: var(--muted); font-family: ui-monospace, Consolas, monospace; }
+.prio button { background: none; border: 0; color: var(--ink); text-align: left; cursor: pointer; padding: 0; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+.prio .score { font-size: 13px; color: var(--muted); font-family: ui-monospace, Consolas, monospace; }
+.bar { height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; border: 1px solid var(--line); }
+.bar > i { display: block; height: 100%; background: var(--accent); }
+
+.pairs { list-style: none; padding: 0; margin: 8px 0 0; font-size: 14px; }
+.pairs li { display: grid; grid-template-columns: minmax(0, 1fr) 90px 2.5em; gap: 8px; align-items: center; padding: 3px 0; }
+.pairs li .n { text-align: right; font-family: ui-monospace, Consolas, monospace; color: var(--muted); }
+.pairs .bar > i { background: var(--walk); }
+.cand { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-top: 10px; }
+.cand.ok { border-color: var(--accent); }
+.cand h4 { margin: 0 0 4px; font-size: 15px; }
+.cand .why { font-size: 14px; color: var(--muted); margin: 0 0 6px; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; }
+.cards a { display: block; text-decoration: none; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.cards a:hover { border-color: var(--accent); }
+.cards strong { display: block; font-family: Georgia, serif; font-size: 18px; margin-bottom: 4px; }
+.cards span { font-size: 14px; color: var(--muted); }
+
+/* ---- the live pane ---- */
+.pane {
+  position: sticky; top: 12px; height: calc(100vh - 24px); min-height: 560px;
+  display: flex; flex-direction: column; gap: 10px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 12px;
+}
+.pane-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.pane-head .fname { font-family: ui-monospace, Consolas, monospace; font-size: 14px; font-weight: 600; margin-right: auto; display: flex; align-items: center; gap: 6px; }
+.pane-head .fname::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.globe-wrap { position: relative; display: flex; justify-content: center; }
+#globe { width: 100%; max-width: 100%; height: min(36vh, 330px); touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none; }
+#globe:active { cursor: grabbing; }
+.globe-hint { position: absolute; left: 0; bottom: 0; font-size: 12px; color: var(--muted); }
+#globe .sphere { fill: var(--globe); stroke: var(--grid); stroke-width: 1.2; }
+#globe .grat { fill: none; stroke: var(--grid); stroke-width: .7; }
+#globe .edge { fill: none; stroke-width: 1.6; opacity: .85; }
+#globe .edge.opposes { stroke-dasharray: 5 3; }
+#globe .edge.contradicts { stroke-dasharray: 1.5 3; stroke-linecap: round; stroke-width: 2.2; }
+#globe .edge.dim { opacity: .22; }
+#globe .node { cursor: pointer; }
+#globe .node circle.dot { stroke: var(--panel); stroke-width: 1.5; }
+#globe .node .halo { fill: none; stroke: var(--accent); stroke-width: 2; }
+#globe .node text { font-size: 10.5px; fill: var(--ink); paint-order: stroke; stroke: var(--globe); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+#globe .node.sel text { font-weight: 700; }
+#globe .scope { fill: var(--generalizes); fill-opacity: .08; stroke: var(--generalizes); stroke-dasharray: 4 3; stroke-width: 1.2; }
+#globe .walk { fill: none; stroke: var(--walk); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+#globe .cluster { fill: none; stroke: var(--walk); stroke-width: 2.5; stroke-dasharray: 3 2; }
+.card {
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: var(--bg);
+  max-height: 24vh; overflow: auto; font-size: 14px; line-height: 1.5;
+}
+.card .cid { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.card h3 { margin: 2px 0 4px; font-size: 18px; }
+.card p { margin: 0 0 6px; }
+.card .lab { font-size: 12px; color: var(--muted); margin: 6px 0 3px; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { border: 1px solid currentColor; background: transparent; border-radius: 999px; padding: 1px 8px; font-size: 12.5px; cursor: pointer; }
+.chip b { font-weight: 600; color: var(--ink); }
+.ewmini { display: grid; grid-template-columns: auto 1fr auto; gap: 2px 8px; align-items: center; font-size: 12px; margin-top: 6px; }
+.ewmini .bar { height: 5px; }
+.file-wrap { flex: 1; min-height: 140px; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--panel-2); }
+#fileView, #fileEdit {
+  flex: 1; margin: 0; overflow: auto; font-size: 12.5px; line-height: 1.55; padding: 8px 0; min-height: 0;
+  font-family: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace; color: var(--ink); background: transparent;
+}
+#fileEdit { border: 0; resize: none; padding: 8px 10px; outline: none; white-space: pre; display: none; }
+.file-wrap.editing #fileEdit { display: block; }
+.file-wrap.editing #fileView { display: none; }
+#fileView .ln { white-space: pre-wrap; word-break: break-word; padding: 0 10px 0 44px; text-indent: -34px; counter-increment: ln; min-height: 1.55em; }
+#fileView .ln::before { content: counter(ln); display: inline-block; width: 26px; margin-right: 8px; text-align: right; color: var(--t-fence); text-indent: 0; }
+#fileView { counter-reset: ln; }
+#fileView .rec, #fileView .blk { border-left: 3px solid transparent; transition: background-color .8s, border-color .8s; }
+#fileView .rec.sel { border-left-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, transparent); }
+#fileView .flash { background: color-mix(in srgb, var(--walk) 28%, transparent) !important; border-left-color: var(--walk) !important; transition: none; }
+.t-title, .t-h2 { color: var(--t-h); font-weight: 700; }
+.t-key { color: var(--t-key); }
+.t-meta { color: var(--t-meta); }
+.t-tag { color: var(--t-tag); font-weight: 600; }
+.t-fence, .t-rule { color: var(--t-fence); }
+.t-val { color: var(--ink); }
+.ref { color: var(--accent); cursor: pointer; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent); text-underline-offset: 2px; }
+.t-e-support { color: var(--support); } .t-e-against { color: var(--against); } .t-e-opposes { color: var(--opposes); }
+.t-e-contradicts { color: var(--contradicts); } .t-e-generalizes { color: var(--generalizes); } .t-e-other { color: var(--other); }
+.pane-foot { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+#jump { font: inherit; font-size: 13px; background: var(--panel-2); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 2px 4px; max-width: 60%; }
+
+footer { max-width: 1240px; margin: 0 auto; padding: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; }
+
+@media (max-width: 960px) {
+  .hero { padding: 36px 16px 16px; }
+  .layout { grid-template-columns: minmax(0, 1fr); padding: 0 16px 48px; gap: 16px; }
+  .pane { position: static; height: auto; min-height: 0; order: -1; }
+  #globe { height: min(70vw, 340px); }
+  .card { max-height: none; }
+  .file-wrap { height: 46vh; flex: none; }
+  .ew-grid { grid-template-columns: 1fr; }
+  footer { padding: 24px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { #fileView .rec, #fileView .blk { transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="kicker"><a href="index.html#LAT-32LON60">Toot Toot Engineering</a> · a guide for everyone</p>
+  <h1>TTDB <span>the Toot Toot Database</span></h1>
+  <p class="lede">TTDB is a database that is also a text file you can simply read. It keeps small notes, pins each one to a spot on an imaginary globe, joins them with arrows that say what kind of link they are, and records how sure it is about each one. When it has nothing else to do, it dreams. Everything on this page is running live on one small TTDB file. Click things, and watch the file change.</p>
+  <ul class="facts">
+    <li>One file</li><li>Plain Markdown</li><li>Works offline</li><li>Small enough for a $5 microcontroller</li><li>Readable by people and AIs</li>
+  </ul>
+</header>
+
+<main class="layout">
+  <div class="prose">
+
+    <section id="file">
+      <h2><span class="num">01</span>A database you can open in a text editor</h2>
+      <p>Most databases keep your data in a format only the database program understands. A TTDB is a Markdown file, the same plain format used for README files and notes apps. You can open it in Notepad, email it, print it, or look at what changed in version control. Nothing is hidden.</p>
+      <p>The example running here is the notebook of a small garden robot looking after one backyard bed. It has four parts, always in the same order:</p>
+      <ol>
+        <li><strong>A title</strong>, the line starting with <code>#</code>.</li>
+        <li><strong>A settings block</strong> (<code>mmpdb</code>). It holds the database's name, its rules, and whose point of view it is written from.</li>
+        <li><strong>A cursor block</strong>, which records what the reader is looking at right now (more on that below).</li>
+        <li><strong>Records</strong>, one note each, separated by <code>---</code> lines.</li>
+      </ol>
+      <div class="widget">
+        <p class="wtitle">Show me each part in the file</p>
+        <div class="row">
+          <button class="btn" data-show="title">The title</button>
+          <button class="btn" data-show="mmpdb">The settings</button>
+          <button class="btn" data-show="cursor">The cursor</button>
+          <button class="btn" data-show="record">A record</button>
+        </div>
+        <p class="aside" style="margin:10px 0 0">The file view is in the live panel (on a phone it's at the top). You can switch it to <strong>Edit</strong> and type straight into it. The globe and every demo below re-read the file as you type.</p>
+      </div>
+      <p>The settings block also says whose world this is. TTDB calls this the <strong>umwelt</strong>, a word biologists use for the world as one particular creature experiences it. A tick, a bat and a person standing in the same field each live in a different umwelt. A TTDB never claims to hold the objective truth. It is one librarian's view, written down, and every link in it is that librarian's claim. Here the librarian is the garden robot.</p>
+    </section>
+
+    <section id="address">
+      <h2><span class="num">02</span>Every note has an address on a globe</h2>
+      <p>Each record starts with an ID that looks like a map coordinate: <code>@LAT40LON0</code> means latitude 40, longitude 0. The globe isn't Earth. It's a <strong>map of what the librarian knows</strong>, and the settings block says how to read it. For the garden robot, <em>north is sunny and south is shady; west is down in the soil and east is up in the air</em>. Things that belong together end up near each other, and empty parts of the globe show what the librarian hasn't learned about yet.</p>
+      <p>An address never changes once it's given out. If the librarian changes its mind, it writes a new record and links it to the old one, so the history stays readable.</p>
+      <p>What if two notes want the same spot? TTDB has a fixed rule for it, called <code>southeast_step</code>: if the spot is taken, move one step on both axes and try again. Because the rule is fixed, two devices that never talk to each other will still give the same note the same address.</p>
+      <div class="widget" id="collide">
+        <p class="wtitle">Try it: add a note where one already lives</p>
+        <div class="row">
+          <label class="field" style="flex:1 1 180px">Note title<input type="text" id="cTitle" value="Cherry tomatoes"></label>
+          <label class="field">Latitude<input type="number" id="cLat" value="40"></label>
+          <label class="field">Longitude<input type="number" id="cLon" value="0"></label>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="cTry">Find its address</button>
+          <button class="btn primary" id="cWrite" disabled>Write it into the file</button>
+        </div>
+        <ul class="trace" id="cTrace" aria-live="polite"></ul>
+      </div>
+    </section>
+
+    <section id="edges">
+      <h2><span class="num">03</span>Links that say what they mean</h2>
+      <p>In many graph databases a link just means "these two are connected." In TTDB every link has a type, written right in the record's first line: <code>relates:needs&gt;@LAT60LON40</code> reads as "this <em>needs</em> that." On the globe each arrow is colored by its type. Pick a record to see its links.</p>
+      <p>Links point one way. If tomatoes <em>need</em> sun, the database does <strong>not</strong> assume the sun needs tomatoes. A few link types do work both ways, such as <code>companion</code> (plants that grow well side by side) and <code>opposes</code>. Even then, the link has to be written on both records. That keeps the file honest: nothing is in there that someone didn't actually write.</p>
+      <table class="compare">
+        <thead><tr><th></th><th><code>contradicts</code></th><th><code>opposes</code></th></tr></thead>
+        <tbody>
+          <tr><td>Means</td><td>These two claims can't both be true</td><td>These two are opposite ends of one scale</td></tr>
+          <tr><td>Both true?</td><td>At most one</td><td>Yes, easily</td></tr>
+          <tr><td>In the garden</td><td>A hunch that tomatoes want shade vs. the note that they need sun</td><td>A dry spell vs. deep watering</td></tr>
+        </tbody>
+      </table>
+      <div class="widget">
+        <p class="wtitle">Filter the arrows on the globe</p>
+        <div class="legend" id="legend"></div>
+        <p class="wtitle" style="margin-top:16px">Try it: break a two-way link</p>
+        <p style="margin:0 0 8px;font-size:15px">The dry spell and deep watering <em>oppose</em> each other, and both records say so. Remove one side and see what the checker reports.</p>
+        <div class="row"><button class="btn" id="breakSym">Delete one side of the link</button></div>
+        <ul class="notes" id="notes" aria-live="polite"></ul>
+      </div>
+    </section>
+
+    <section id="cursor">
+      <h2><span class="num">04</span>The file remembers where you were looking</h2>
+      <p>Most databases forget you the moment you close them. A TTDB keeps a <strong>cursor</strong>: a short block near the top of the file that records which record is selected, a short preview of it, and the last question asked. Pick up the file on another machine, or hand it to an AI assistant, and it opens on the same place.</p>
+      <p>Records can be looked up with a <strong>librarian</strong> that understands four short commands. They're short and fixed on purpose, so a small chip with no internet connection can answer them. The answer is written back into the cursor block.</p>
+      <div class="widget">
+        <p class="wtitle">Ask the librarian</p>
+        <div class="row">
+          <button class="btn small" data-q="STATUS">STATUS</button>
+          <button class="btn small" data-q="FIND sun">FIND sun</button>
+          <button class="btn small" data-q="EDGES @LAT40LON0">EDGES @LAT40LON0</button>
+          <button class="btn small" data-q="SELECT @LAT-20LON10">SELECT @LAT-20LON10</button>
+        </div>
+        <form class="console-in" id="consoleForm">
+          <input type="text" id="consoleIn" placeholder="@AI FIND aphids" aria-label="Librarian query" autocomplete="off" spellcheck="false">
+          <button class="btn primary">Ask</button>
+        </form>
+        <ul class="log" id="log" aria-live="polite"></ul>
+        <p class="wtitle" style="margin-top:14px">The cursor block, right now</p>
+        <pre class="out" id="cursorOut"></pre>
+      </div>
+    </section>
+
+    <section id="weight">
+      <h2><span class="num">05</span>How sure is it?</h2>
+      <p>A note about a passing temperature reading and a note about something fundamental shouldn't count the same. A record can carry a four-line <strong>epistemic weight</strong> block, <code>[ew]</code>, saying how much the librarian trusts it:</p>
+      <ul>
+        <li><code>conf</code>: confidence, 0 to 255. How settled the belief is.</li>
+        <li><code>rev</code>: how many times it has been rewritten. Something that keeps getting corrected is something the librarian keeps getting wrong.</li>
+        <li><code>sal</code>: salience, how often it gets looked up. <em>Each time you open a record on this page, its <code>sal</code> goes up by one.</em> Check the file.</li>
+        <li><code>touched</code>: when any of this last changed.</li>
+      </ul>
+      <p>The idea comes from neuroscience. The free energy principle describes brains as machines that try to reduce surprise. The notes most worth checking are the ones the librarian <strong>relies on a lot but trusts little</strong>. On the globe, a node's size shows salience and its color shows confidence (<span style="color:var(--conf-low)">●</span> low, <span style="color:var(--conf-mid)">●</span> middling, <span style="color:var(--conf-high)">●</span> high).</p>
+      <div class="widget">
+        <p class="wtitle">Adjust the selected record: <span id="ewName" style="text-transform:none;letter-spacing:0;color:var(--ink)"></span></p>
+        <div id="ewPanel"></div>
+        <p class="wtitle" style="margin-top:16px">Worth checking next (relied on × doubted)</p>
+        <ol class="prio" id="prio"></ol>
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="decay">Let a day pass (halve all salience)</button>
+        </div>
+        <p class="aside" style="margin:8px 0 0">Salience fades over time so old attention doesn't count forever. The decay button applies that half-life to every record.</p>
+      </div>
+    </section>
+
+    <section id="dream">
+      <h2><span class="num">06</span>Dreaming: turning episodes into beliefs</h2>
+      <p>The robot's notes are <em>episodes</em>: individual things it saw. To act quickly it also needs <em>beliefs</em>, general patterns it can rely on without re-reading everything. People are thought to build these while asleep, by replaying the day's memories. TTDB does something similar in its <strong>Dream Cycle</strong>.</p>
+      <p>When the device is idle, it takes many short random walks through the links. Each step favors records with high salience. It counts which records keep showing up on the same walks. A group of three or more that keep appearing together, and that the librarian trusts on average, becomes a <strong>Locus Point</strong>: a new <code>@BELIEF:</code> record with its own <code>[lp]</code> block, pinned at the middle of the group. The walks ignore dates on purpose, so a pattern only counts if it holds across the whole notebook, not just recently. A second phase (not shown here) looks at gaps surrounded by known notes and makes guesses about them, each marked clearly as a hypothesis.</p>
+      <div class="widget">
+        <p class="wtitle">Run a Dream Cycle on the garden notebook</p>
+        <div class="row" style="align-items:end">
+          <label class="field" style="flex:1 1 150px">Random walks: <output id="wN">100</output><input type="range" id="dWalks" min="20" max="300" step="10" value="100"></label>
+          <label class="field" style="flex:1 1 150px">Steps per walk: <output id="wL">6</output><input type="range" id="dLen" min="2" max="10" value="6"></label>
+          <button class="btn primary" id="dreamBtn">Dream</button>
+        </div>
+        <div id="dreamOut" aria-live="polite"><p class="aside" style="margin:12px 0 0">Watch the globe while it runs: each yellow trail is one walk.</p></div>
+      </div>
+    </section>
+
+    <section id="more">
+      <h2><span class="num">07</span>Where it goes from here</h2>
+      <p>TTDB is specified in a set of short, numbered documents (RFCs), and it's the memory layer for the rest of the Toot Toot projects: a mesh radio network, small autonomous devices, and the Locus framework for modeling experience. A few of the stranger ideas, each one link away:</p>
+      <div class="cards">
+        <a href="RFCs/?rfc=TTDB-RFC-0006"><strong>Before and after</strong><span>Record the change from one state to another, not just the states. In Locus the transition is the basic unit of experience.</span></a>
+        <a href="RFCs/?rfc=TTDB-RFC-0008"><strong>Metamorphosis</strong><span>A device reads a story about its future self and reorganizes, in saved stages, into a different kind of agent.</span></a>
+        <a href="RFCs/?rfc=TTDB-RFC-0009"><strong>Counter-stories</strong><span>An account from a genuinely different point of view changes the <em>shape</em> of what you don't know, not just how much.</span></a>
+        <a href="RFCs/?rfc=TTDB-RFC-0010"><strong>Fields that fade</strong><span>Some parts of the notebook are permanent evidence. Others are like ant trails that fade unless they're renewed.</span></a>
+        <a href="RFCs/?rfc=TTN-RFC-0001"><strong>The mesh network</strong><span>TTDB records travel between devices over long-range, low-power radio. No internet required.</span></a>
+        <a href="personal_grimoire/"><strong>Personal Grimoire</strong><span>A whole grammar and a corpus in one TTDB file that answers you in your own words.</span></a>
+      </div>
+      <p>Real TTDB files to explore on the globe browser: <a href="index_OG.html?ttdb=feelings_ttdb.md">feelings</a>, <a href="index_OG.html?ttdb=banjo_ttdb.md">banjo</a>, <a href="index_OG.html?ttdb=rfc.ttdb.md">the RFCs themselves</a>. Read the specification starting at <a href="RFCs/?rfc=TTDB-RFC-0001">TTDB-RFC-0001</a>, or the source on <a href="https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs">GitHub</a>.</p>
+    </section>
+  </div>
+
+  <aside class="pane" aria-label="Live TTDB file">
+    <div class="pane-head">
+      <span class="fname">garden_ttdb.md</span>
+      <button class="btn small" id="editBtn" aria-pressed="false" style="opacity:1;text-decoration:none">Edit</button>
+      <button class="btn small" id="saveBtn">Save</button>
+      <button class="btn small" id="resetBtn">Reset</button>
+    </div>
+    <div class="globe-wrap">
+      <svg id="globe" viewBox="-160 -160 320 320" role="img" aria-label="The garden notebook's records on a globe. Drag to turn it; click a record to select it."></svg>
+      <span class="globe-hint">drag to turn · click a note</span>
+    </div>
+    <div class="card" id="card" aria-live="polite"></div>
+    <div class="file-wrap" id="fileWrap">
+      <div id="fileView" role="document" aria-label="File contents"></div>
+      <textarea id="fileEdit" spellcheck="false" aria-label="Edit the TTDB file"></textarea>
+    </div>
+    <div class="pane-foot"><span id="stats"></span><select id="jump" aria-label="Jump to record"></select></div>
+  </aside>
+</main>
+
+<footer>
+  <span>© 2026 Toot Toot Engineering · <a href="index.html#LAT-32LON60">Back to the front door</a></span>
+  <span><a href="RFCs/">Read the RFCs</a> · <a href="https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs">Source on GitHub</a></span>
+</footer>
+
+<script type="text/plain" id="seed"># Backyard Garden
+
+The notebook of a small garden robot looking after one raised bed.
+
+```mmpdb
+db_id: ttdb:example:garden:v1
+db_name: "Backyard Garden"
+coord_increment:
+  lat: 1
+  lon: 1
+collision_policy: southeast_step
+timestamp_kind: unix_utc
+umwelt:
+  umwelt_id: umwelt:example:garden-robot:v1
+  role: garden_keeper
+  perspective: "A small garden robot keeping notes on one raised bed."
+  scope: "What helps or harms the plants in this bed, as this robot has seen it."
+  globe:
+    frame: "garden"
+    origin: "Tomatoes at (40, 0)."
+    mapping: "North is sunny, south is shady. West is down in the soil, east is up in the air."
+cursor_policy:
+  max_preview_chars: 140
+  max_nodes: 12
+typed_edges:
+  enabled: true
+  syntax: "type>@TARGET_ID"
+  symmetric: [companion, opposes]
+librarian:
+  enabled: true
+  primitive_queries:
+    - "SELECT <record_id>"
+    - "FIND <token>"
+    - "EDGES <record_id>"
+    - "STATUS"
+  max_reply_chars: 200
+  invocation_prefix: "@AI"
+```
+
+```cursor
+selected:
+  - @LAT40LON0
+preview:
+  @LAT40LON0: "Tomatoes — Four plants along the north edge of the bed, the sunniest spot."
+```
+
+---
+
+@LAT40LON0 | created:1780300000 | updated:1781000000 | relates:needs>@LAT60LON40,needs>@LAT50LON-30,companion>@LAT30LON20
+[ew]
+conf:210
+rev:2
+sal:40
+touched:1781000000
+[/ew]
+## Tomatoes
+Four plants along the north edge of the bed, the sunniest spot. Fruit set in late June.
+
+---
+
+@LAT60LON40 | created:1780300100 | updated:1780300100 | relates:feeds>@LAT40LON0,feeds>@LAT30LON20,opposes>@LAT-50LON30
+[ew]
+conf:230
+rev:0
+sal:22
+touched:1780300100
+[/ew]
+## Afternoon sun
+The bed gets direct sun from noon until about six. The tomatoes need at least six hours of it.
+
+---
+
+@LAT50LON-30 | created:1780300200 | updated:1780900000 | relates:feeds>@LAT40LON0,feeds>@LAT-30LON-60,opposes>@LAT70LON-40
+[ew]
+conf:150
+rev:5
+sal:35
+touched:1780900000
+[/ew]
+## Deep watering
+A long soak twice a week instead of a sprinkle every day. Still adjusting how long a soak should be.
+
+---
+
+@LAT70LON-40 | created:1780600000 | updated:1780600000 | relates:harms>@LAT40LON0,harms>@LAT30LON20,opposes>@LAT50LON-30
+[ew]
+conf:120
+rev:1
+sal:8
+touched:1780600000
+[/ew]
+## Dry spell
+Nine days without rain in July. The basil wilted first.
+
+---
+
+@LAT30LON20 | created:1780300300 | updated:1780700000 | relates:companion>@LAT40LON0,repels>@LAT20LON60
+[ew]
+conf:140
+rev:3
+sal:18
+touched:1780700000
+[/ew]
+## Basil
+Planted between the tomatoes. Said to keep aphids away. The jury is still out.
+
+---
+
+@LAT20LON60 | created:1780500000 | updated:1780550000 | relates:eats>@LAT40LON0,eats>@LAT30LON20
+[ew]
+conf:190
+rev:1
+sal:30
+touched:1780550000
+[/ew]
+## Aphids
+Small green insects on the undersides of the tomato leaves. Worst in early July.
+
+---
+
+@LAT10LON90 | created:1780560000 | updated:1780600000 | relates:eats>@LAT20LON60,protects>@LAT40LON0
+[ew]
+conf:170
+rev:2
+sal:20
+touched:1780600000
+[/ew]
+## Ladybugs
+Arrived a week after the aphids. Each one eats dozens a day.
+
+---
+
+@LAT-30LON-60 | created:1780400000 | updated:1780400000 | relates:eats>@LAT-40LON-20,enriches>@LAT40LON0
+[ew]
+conf:200
+rev:0
+sal:6
+touched:1780400000
+[/ew]
+## Earthworms
+Plenty of them wherever the soil stays damp. They turn compost into soil.
+
+---
+
+@LAT-40LON-20 | created:1780350000 | updated:1780450000 | relates:feeds>@LAT40LON0,feeds>@LAT-50LON30
+[ew]
+conf:180
+rev:1
+sal:10
+touched:1780450000
+[/ew]
+## Compost
+Kitchen scraps and leaves, dug in each spring. Darker soil wherever it went.
+
+---
+
+@LAT-50LON30 | created:1780320000 | updated:1780320000 | relates:opposes>@LAT60LON40,shelters>@LAT-30LON-60
+[ew]
+conf:160
+rev:0
+sal:5
+touched:1780320000
+[/ew]
+## Shade corner
+The south corner under the fence, where the lettuce lives. Cool and damp all summer.
+
+---
+
+@LAT-20LON10 | created:1780800000 | updated:1781050000 | relates:contradicts>@LAT60LON40,about>@LAT40LON0
+[ew]
+conf:35
+rev:7
+sal:28
+touched:1781050000
+[/ew]
+## Hunch: the tomatoes want shade
+The leaves curl on the hottest afternoons. Maybe they would do better with less sun? Rewritten seven times and still unsure.
+</script>
+
+<script id="core">
+/* ---- TTDB core: parse, mutate, assign, dream. No DOM. ---- */
+const ID_RE = '(?:[A-Z]+:)?LAT-?\\d+LON-?\\d+';
+const HEADER_RE = new RegExp('^@(' + ID_RE + ')\\s*\\|\\s*created:(\\d+)\\s*\\|\\s*updated:(\\d+)\\s*\\|\\s*relates:(.*)$');
+const EDGE_RE = new RegExp('([A-Za-z_][\\w-]*)>@(' + ID_RE + ')', 'g');
+const GROUPS = {
+  support: ['needs', 'feeds', 'protects', 'companion', 'enriches', 'shelters'],
+  against: ['eats', 'harms', 'repels'],
+  opposes: ['opposes'],
+  contradicts: ['contradicts'],
+  generalizes: ['generalizes'],
+};
+function groupOf(type) {
+  for (const g in GROUPS) if (GROUPS[g].includes(type)) return g;
+  return 'other';
+}
+function parseId(id) {
+  const m = /^(?:([A-Z]+):)?LAT(-?\d+)LON(-?\d+)$/.exec(id);
+  return { kind: m[1] || '', lat: +m[2], lon: +m[3] };
+}
+
+function finishRecord(r, lines) {
+  const body = lines.slice(r.start + 1, r.end);
+  r.edges = [];
+  EDGE_RE.lastIndex = 0;
+  let m;
+  while ((m = EDGE_RE.exec(r.relatesRaw))) r.edges.push({ type: m[1], target: m[2] });
+  r.ew = null; r.lp = null; r.title = '';
+  let k = 0;
+  while (k < body.length) {
+    const t = /^\[(ew|lp)\]$/.exec(body[k].trim());
+    if (!t) break;
+    const close = body.indexOf('[/' + t[1] + ']', k);
+    if (close < 0) break;
+    const obj = {};
+    for (const l of body.slice(k + 1, close)) {
+      const kv = /^\s*([\w_]+)\s*:\s*(.*?)\s*$/.exec(l);
+      if (kv) obj[kv[1]] = /^-?\d+$/.test(kv[2]) ? +kv[2] : kv[2];
+    }
+    r[t[1]] = obj;
+    r[t[1] + 'Range'] = [r.start + 1 + k, r.start + 1 + close];
+    k = close + 1;
+  }
+  const text = [];
+  for (const l of body.slice(k)) {
+    if (!r.title && /^## /.test(l)) r.title = l.slice(3).trim();
+    else text.push(l);
+  }
+  r.body = text.join('\n').trim();
+  if (!r.title) r.title = '@' + r.id;
+}
+
+function parseTTDB(text) {
+  const lines = text.replace(/\r\n?/g, '\n').split('\n');
+  const db = { lines, title: '', blocks: {}, records: [], byId: new Map(), notes: [], titleLine: -1 };
+  let fence = null, fStart = -1, cur = null;
+  const close = (end) => {
+    if (!cur) return;
+    cur.end = end; finishRecord(cur, lines); db.records.push(cur); cur = null;
+  };
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const f = /^```(\w*)\s*$/.exec(line);
+    if (fence !== null) {
+      if (f && f[1] === '') {
+        if (!fence.inRecord) db.blocks[fence.name] = { start: fStart, end: i, text: lines.slice(fStart + 1, i).join('\n') };
+        fence = null;
+      }
+      continue;
+    }
+    if (f) { fence = { name: f[1] || 'code', inRecord: !!cur }; fStart = i; continue; }
+    if (cur === null && !db.title && /^# /.test(line)) { db.title = line.slice(2).trim(); db.titleLine = i; continue; }
+    if (/^---\s*$/.test(line)) { close(i); continue; }
+    const h = HEADER_RE.exec(line);
+    if (h) {
+      close(i);
+      cur = { id: h[1], ...parseId(h[1]), created: +h[2], updated: +h[3], relatesRaw: h[4], start: i };
+      continue;
+    }
+    if (!cur && /^@/.test(line)) db.notes.push({ msg: `Line ${i + 1} starts like a record but doesn't match the header pattern.` });
+  }
+  close(lines.length);
+
+  const mm = db.blocks.mmpdb ? db.blocks.mmpdb.text : '';
+  const num = (k, d) => { const m = new RegExp(k + ':\\s*(-?\\d+)').exec(mm); return m ? +m[1] : d; };
+  const inc = /coord_increment:\s*\n\s*lat:\s*(\d+)\s*\n\s*lon:\s*(\d+)/.exec(mm);
+  const sym = /symmetric:\s*\[([^\]]*)\]/.exec(mm);
+  db.cfg = {
+    name: (/db_name:\s*"?([^"\n]+)"?/.exec(mm) || [])[1] || db.title || 'Untitled',
+    maxPreview: num('max_preview_chars', 160),
+    maxReply: num('max_reply_chars', 200),
+    latStep: inc ? +inc[1] : 1,
+    lonStep: inc ? +inc[2] : 1,
+    symmetric: sym ? sym[1].split(',').map(s => s.trim()).filter(Boolean) : [],
+  };
+
+  if (!db.title) db.notes.push({ msg: 'No title line (a line starting with "# ").' });
+  if (!db.blocks.mmpdb) db.notes.push({ msg: 'No mmpdb settings block.' });
+  if (!db.blocks.cursor) db.notes.push({ msg: 'No cursor block.' });
+  for (const r of db.records) {
+    if (db.byId.has(r.id)) db.notes.push({ msg: `Two records share the address @${r.id}. Addresses must be unique.` });
+    else db.byId.set(r.id, r);
+  }
+  for (const r of db.records) {
+    for (const e of r.edges) {
+      const t = db.byId.get(e.target);
+      if (!t) { db.notes.push({ msg: `@${r.id} (${r.title}) points ${e.type}> at @${e.target}, which isn't in this file.` }); continue; }
+      if (db.cfg.symmetric.includes(e.type) && !t.edges.some(x => x.type === e.type && x.target === r.id))
+        db.notes.push({ msg: `"${e.type}" is declared two-way, but only one side is written: ${r.title} says it ${e.type} ${t.title}; ${t.title} doesn't say it back. The checker reports it rather than guessing.` });
+    }
+  }
+  return db;
+}
+
+function readCursor(db) {
+  const t = db.blocks.cursor ? db.blocks.cursor.text : '';
+  const sel = [];
+  const selBlock = /selected:\s*\n((?:\s*-\s*@\S+\s*\n?)*)/.exec(t);
+  if (selBlock) for (const m of selBlock[1].matchAll(/@(\S+)/g)) sel.push(m[1]);
+  const str = (k) => { const m = new RegExp('^' + k + ':\\s*"((?:[^"\\\\]|\\\\.)*)"', 'm').exec(t); return m ? m[1].replace(/\\"/g, '"') : ''; };
+  const ans = [];
+  const ar = /answer_records:\s*\n((?:\s*-\s*@\S+\s*\n?)*)/.exec(t);
+  if (ar) for (const m of ar[1].matchAll(/@(\S+)/g)) ans.push(m[1]);
+  return { selected: sel, last_query: str('last_query'), last_answer: str('last_answer'), answer_records: ans };
+}
+
+function previewOf(db, id) {
+  const r = db.byId.get(id);
+  if (!r) return '';
+  const first = (r.body.split(/(?<=[.!?])\s/)[0] || '').replace(/\s+/g, ' ');
+  return clip(first ? `${r.title} — ${first}` : r.title, db.cfg.maxPreview);
+}
+function clip(s, n) { return s.length > n ? s.slice(0, Math.max(0, n - 1)).trimEnd() + '…' : s; }
+const yq = (s) => String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+
+function serializeCursor(db, cur) {
+  const out = ['selected:'];
+  for (const id of cur.selected) out.push(`  - @${id}`);
+  out.push('preview:');
+  for (const id of cur.selected) out.push(`  @${id}: "${yq(previewOf(db, id))}"`);
+  if (cur.last_query) out.push(`last_query: "${yq(cur.last_query)}"`);
+  if (cur.last_answer) out.push(`last_answer: "${yq(cur.last_answer)}"`);
+  if (cur.answer_records && cur.answer_records.length) {
+    out.push('answer_records:');
+    for (const id of cur.answer_records) out.push(`  - @${id}`);
+  }
+  return out;
+}
+
+function splice(lines, start, endExclusive, insert) {
+  return [...lines.slice(0, start), ...insert, ...lines.slice(endExclusive)].join('\n');
+}
+function withEw(db, id, ew) {
+  const r = db.byId.get(id);
+  const block = ['[ew]', `conf:${ew.conf}`, `rev:${ew.rev}`, `sal:${ew.sal}`, `touched:${ew.touched}`, '[/ew]'];
+  if (r.ewRange) return splice(db.lines, r.ewRange[0], r.ewRange[1] + 1, block);
+  return splice(db.lines, r.start + 1, r.start + 1, block);
+}
+function withCursor(db, cur) {
+  const inner = serializeCursor(db, cur);
+  const b = db.blocks.cursor;
+  if (b) return splice(db.lines, b.start + 1, b.end, inner);
+  const at = db.blocks.mmpdb ? db.blocks.mmpdb.end + 1 : (db.titleLine + 1);
+  return splice(db.lines, at, at, ['', '```cursor', ...inner, '```']);
+}
+function withEdges(db, id, edges) {
+  const r = db.byId.get(id);
+  const head = `@${r.id} | created:${r.created} | updated:${r.updated} | relates:` + edges.map(e => `${e.type}>@${e.target}`).join(',');
+  return splice(db.lines, r.start, r.start + 1, [head]);
+}
+function appendRecord(text, recLines) {
+  return text.replace(/\s+$/, '') + '\n\n---\n\n' + recLines.join('\n') + '\n';
+}
+
+/* TTDB-RFC-0004 §3: southeast_step — if taken, add one step to both lat and lon, retry. */
+function assignId(db, kind, lat, lon) {
+  const trace = [];
+  const p = kind ? kind + ':' : '';
+  let la = lat, lo = lon;
+  for (let n = 0; n < 400; n++) {
+    const id = `${p}LAT${la}LON${lo}`;
+    const taken = db.byId.has(id);
+    trace.push({ id, taken, title: taken ? db.byId.get(id).title : '' });
+    if (!taken) return { id, trace };
+    la += db.cfg.latStep; lo += db.cfg.lonStep;
+  }
+  return { id: null, trace };
+}
+
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+/* TTDB-RFC-0007 §3.2 replay: salience-weighted walks, co-occurrence, dense clusters. */
+function dreamReplay(db, { walks = 100, len = 4, seed = 1, minCluster = 3, confThreshold = 128 } = {}) {
+  const rand = mulberry32(seed);
+  const eps = db.records.filter(r => !r.kind);
+  const ok = new Set(eps.map(r => r.id));
+  const salOf = (id) => Math.max(1, (db.byId.get(id).ew || {}).sal || 1);
+  const co = new Map();
+  const key = (a, b) => a < b ? a + '|' + b : b + '|' + a;
+  const paths = [];
+  for (let w = 0; w < walks && eps.length; w++) {
+    let cur = eps[Math.floor(rand() * eps.length)];
+    const path = [cur.id];
+    for (let s = 1; s < len; s++) {
+      const outs = cur.edges.filter(e => ok.has(e.target));
+      if (!outs.length) break;
+      const weights = outs.map(e => salOf(e.target));
+      let x = rand() * weights.reduce((a, b) => a + b, 0), i = 0;
+      while (x > weights[i]) x -= weights[i++];
+      cur = db.byId.get(outs[Math.min(i, outs.length - 1)].target);
+      path.push(cur.id);
+    }
+    paths.push(path);
+    const u = [...new Set(path)];
+    for (let i = 0; i < u.length; i++) for (let j = i + 1; j < u.length; j++) {
+      const k = key(u[i], u[j]); co.set(k, (co.get(k) || 0) + 1);
+    }
+  }
+  const thr = Math.floor(walks / 4);
+  const get = (a, b) => co.get(key(a, b)) || 0;
+  const pairs = [...co.entries()].map(([k, n]) => ({ a: k.split('|')[0], b: k.split('|')[1], n })).sort((x, y) => y.n - x.n);
+  const used = new Set();
+  const clusters = [];
+  for (const p of pairs) {
+    if (p.n < thr) break;
+    if (used.has(p.a) || used.has(p.b)) continue;
+    const c = [p.a, p.b];
+    for (;;) {
+      let best = null, bestMin = -1;
+      for (const r of eps) {
+        if (c.includes(r.id) || used.has(r.id)) continue;
+        const mn = Math.min(...c.map(x => get(x, r.id)));
+        if (mn > bestMin) { bestMin = mn; best = r.id; }
+      }
+      if (best && bestMin >= thr) c.push(best); else break;
+    }
+    const meanConf = c.reduce((a, id) => a + ((db.byId.get(id).ew || {}).conf ?? 128), 0) / c.length;
+    const accepted = c.length >= minCluster && meanConf >= confThreshold;
+    clusters.push({ ids: c, meanConf: Math.round(meanConf), minCo: Math.min(...c.flatMap((x, i) => c.slice(i + 1).map(y => get(x, y)))), accepted,
+      reason: c.length < minCluster ? `only ${c.length} records; a belief needs at least ${minCluster}` : meanConf < confThreshold ? `average confidence ${Math.round(meanConf)} is under ${confThreshold}` : '' });
+    if (accepted) c.forEach(id => used.add(id));
+  }
+  return { paths, pairs, thr, clusters, walks, len, seed };
+}
+
+/* TTDB-RFC-0007 §5: a Locus Point record for an accepted cluster. */
+function beliefRecord(db, cluster, run, now) {
+  const rs = cluster.ids.map(id => db.byId.get(id));
+  const cLat = Math.round(rs.reduce((a, r) => a + r.lat, 0) / rs.length);
+  const cLon = Math.round(rs.reduce((a, r) => a + r.lon, 0) / rs.length);
+  const sLat = Math.max(...rs.map(r => Math.abs(r.lat - cLat)));
+  const sLon = Math.max(...rs.map(r => Math.abs(r.lon - cLon)));
+  const inScope = db.records.filter(r => !r.kind && Math.abs(r.lat - cLat) <= sLat && Math.abs(r.lon - cLon) <= sLon);
+  const scopeIds = new Set(inScope.map(r => r.id));
+  const contradiction = inScope.some(r => r.edges.some(e => e.type === 'contradicts' && scopeIds.has(e.target)));
+  const { id, trace } = assignId(db, 'BELIEF', cLat, cLon);
+  const names = rs.map(r => r.title);
+  const list = names.length > 1 ? names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] : names[0];
+  const lines = [
+    `@${id} | created:${now} | updated:${now} | relates:` + cluster.ids.map(x => `generalizes>@${x}`).join(','),
+    '[lp]',
+    `centroid:LAT${cLat}LON${cLon}`,
+    `confidence:${cluster.meanConf}`,
+    `scope_lat:${sLat}`,
+    `scope_lon:${sLon}`,
+    'projection_flag:false',
+    `contradiction_flag:${contradiction}`,
+    `source_count:${cluster.ids.length}`,
+    '[/lp]',
+    `## Belief: ${list} go together`,
+    `Formed in a Dream Cycle: ${run.walks} walks of ${run.len} steps. These records turned up together in at least ${cluster.minCo} walks each.` + (contradiction ? ' Something inside this belief\'s scope contradicts something else in it, so the flag is up.' : ''),
+  ];
+  return { id, trace, lines, contradiction };
+}
+</script>
+
+<script>
+/* ---- page ---- */
+const $ = (s) => document.querySelector(s);
+const SEED = $('#seed').textContent.replace(/^\n/, '');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const now = () => Math.floor(Date.now() / 1000);
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+let text = SEED;
+let db = parseTTDB(text);
+let cursor = readCursor(db);
+let selected = cursor.selected.find(id => db.byId.has(id)) || (db.records[0] && db.records[0].id);
+let editing = false;
+let flash = null;          // {rec, block} to highlight after the next render
+const hidden = new Set();   // edge groups hidden on the globe
+let dreamView = null;       // {path, clusters} overlay on the globe
+let pending = null;         // collision result waiting to be written
+let lastDream = null;
+
+function commit(newText, changed = {}, fromEditor = false) {
+  text = newText;
+  db = parseTTDB(text);
+  if (fromEditor) {
+    cursor = readCursor(db);
+    const s = cursor.selected.find(id => db.byId.has(id));
+    if (s) selected = s;
+  } else if (editing) {
+    $('#fileEdit').value = text;
+  }
+  if (!db.byId.has(selected)) selected = db.records[0] ? db.records[0].id : null;
+  flash = changed;
+  renderAll();
+}
+
+function select(id, { read = true, spin = true } = {}) {
+  if (!db.byId.has(id)) return;
+  selected = id;
+  cursor.selected = [id];
+  let r = db.byId.get(id);
+  let t = text;
+  if (read && r.ew) {
+    t = withEw(db, id, { ...r.ew, sal: Math.min(255, (r.ew.sal || 0) + 1), touched: now() });
+    db = parseTTDB(t);
+  }
+  t = withCursor(db, cursor);
+  commit(t, { rec: id, block: 'cursor' });
+  if (spin) spinTo(db.byId.get(id));
+}
+
+/* ---------- globe ---------- */
+const R = 140;
+const rot = { lon: 0, lat: 25 };
+const rad = (d) => d * Math.PI / 180;
+const deg = (r) => r * 180 / Math.PI;
+function vec(lat, lon) { const p = rad(lat), l = rad(lon); return [Math.cos(p) * Math.cos(l), Math.cos(p) * Math.sin(l), Math.sin(p)]; }
+function proj(lat, lon) {
+  const p = rad(lat), l = rad(lon), p0 = rad(rot.lat), l0 = rad(rot.lon);
+  const v = Math.sin(p0) * Math.sin(p) + Math.cos(p0) * Math.cos(p) * Math.cos(l - l0);
+  return {
+    x: R * Math.cos(p) * Math.sin(l - l0),
+    y: -R * (Math.cos(p0) * Math.sin(p) - Math.sin(p0) * Math.cos(p) * Math.cos(l - l0)),
+    v,
+  };
+}
+function runs(points) {
+  let d = '', pen = false;
+  for (const [lat, lon] of points) {
+    const p = proj(lat, lon);
+    if (p.v > 0) { d += (pen ? 'L' : 'M') + p.x.toFixed(1) + ' ' + p.y.toFixed(1); pen = true; } else pen = false;
+  }
+  return d;
+}
+function arcPoints(a, b, trimA = 0, trimB = 0) {
+  const A = vec(a.lat, a.lon), B = vec(b.lat, b.lon);
+  const dot = Math.max(-1, Math.min(1, A[0] * B[0] + A[1] * B[1] + A[2] * B[2]));
+  const om = Math.acos(dot);
+  if (om < 1e-6) return [];
+  const t0 = Math.min(.45, trimA / om), t1 = Math.max(.55, 1 - trimB / om);
+  const n = Math.max(6, Math.ceil(om / .04));
+  const pts = [];
+  for (let i = 0; i <= n; i++) {
+    const t = t0 + (t1 - t0) * i / n;
+    const s1 = Math.sin((1 - t) * om) / Math.sin(om), s2 = Math.sin(t * om) / Math.sin(om);
+    const x = s1 * A[0] + s2 * B[0], y = s1 * A[1] + s2 * B[1], z = s1 * A[2] + s2 * B[2];
+    pts.push([deg(Math.asin(Math.max(-1, Math.min(1, z)))), deg(Math.atan2(y, x))]);
+  }
+  return pts;
+}
+const confColor = (c) => c == null ? 'var(--other)' : c < 86 ? 'var(--conf-low)' : c <= 170 ? 'var(--conf-mid)' : 'var(--conf-high)';
+const nodeR = (r) => r.kind ? 6 : 3.5 + Math.min(8, ((r.ew && r.ew.sal) || 0) / 6);
+
+function renderGlobe() {
+  const out = [];
+  out.push('<defs>');
+  for (const g of ['support', 'against', 'opposes', 'contradicts', 'generalizes', 'other'])
+    out.push(`<marker id="ar-${g}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--${g})"/></marker>`);
+  out.push('</defs>');
+  out.push(`<circle class="sphere" r="${R}"/>`);
+  let g = '';
+  for (let lon = -180; lon < 180; lon += 30) { const pts = []; for (let lat = -90; lat <= 90; lat += 5) pts.push([lat, lon]); g += runs(pts); }
+  for (let lat = -60; lat <= 60; lat += 30) { const pts = []; for (let lon = -180; lon <= 180; lon += 5) pts.push([lat, lon]); g += runs(pts); }
+  out.push(`<path class="grat" d="${g}"/>`);
+
+  // Locus Point scopes
+  for (const r of db.records) if (r.kind && r.lp) {
+    const sl = +r.lp.scope_lat || 0, so = +r.lp.scope_lon || 0;
+    const pts = [];
+    for (let i = 0; i <= 10; i++) pts.push([r.lat - sl, r.lon - so + 2 * so * i / 10]);
+    for (let i = 0; i <= 10; i++) pts.push([r.lat - sl + 2 * sl * i / 10, r.lon + so]);
+    for (let i = 0; i <= 10; i++) pts.push([r.lat + sl, r.lon + so - 2 * so * i / 10]);
+    for (let i = 0; i <= 10; i++) pts.push([r.lat + sl - 2 * sl * i / 10, r.lon - so]);
+    if (pts.every(([a, b]) => proj(a, b).v > 0)) out.push(`<path class="scope" d="${runs(pts)}Z"/>`);
+  }
+
+  // edges
+  for (const r of db.records) for (const e of r.edges) {
+    const t = db.byId.get(e.target);
+    if (!t) continue;
+    const grp = groupOf(e.type);
+    if (hidden.has(grp)) continue;
+    const d = runs(arcPoints(r, t, (nodeR(r) + 1) / R, (nodeR(t) + 3) / R));
+    if (!d) continue;
+    const near = r.id === selected || t.id === selected;
+    const tv = proj(t.lat, t.lon).v > 0;
+    out.push(`<path class="edge ${grp}${selected && !near ? ' dim' : ''}" stroke="var(--${grp})" d="${d}"${tv ? ` marker-end="url(#ar-${grp})"` : ''}><title>${esc(r.title)} ${esc(e.type)} → ${esc(t.title)}</title></path>`);
+  }
+
+  // dream overlay
+  if (dreamView && dreamView.path) {
+    const pts = [];
+    for (let i = 0; i < dreamView.path.length - 1; i++) {
+      const a = db.byId.get(dreamView.path[i]), b = db.byId.get(dreamView.path[i + 1]);
+      if (a && b) pts.push(...arcPoints(a, b));
+    }
+    if (dreamView.path.length === 1) { const a = db.byId.get(dreamView.path[0]); if (a) pts.push([a.lat, a.lon]); }
+    out.push(`<path class="walk" d="${runs(pts)}"/>`);
+  }
+
+  // nodes, back to front
+  const nodes = db.records.map(r => ({ r, p: proj(r.lat, r.lon) })).filter(n => n.p.v > 0).sort((a, b) => a.p.v - b.p.v);
+  const inCluster = new Set(dreamView && dreamView.clusters ? dreamView.clusters.flat() : []);
+  for (const { r, p } of nodes) {
+    const rr = nodeR(r);
+    const sel = r.id === selected;
+    const fade = Math.min(1, .35 + p.v * 1.2).toFixed(2);
+    const shape = r.kind
+      ? `<rect class="dot" x="${-rr}" y="${-rr}" width="${rr * 2}" height="${rr * 2}" transform="rotate(45)" fill="var(--generalizes)"/>`
+      : `<circle class="dot" r="${rr}" fill="${confColor(r.ew && r.ew.conf)}"/>`;
+    out.push(`<g class="node${sel ? ' sel' : ''}" data-id="${esc(r.id)}" transform="translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})" opacity="${fade}">`
+      + (sel ? `<circle class="halo" r="${rr + 4}"/>` : '')
+      + (inCluster.has(r.id) ? `<circle class="cluster" r="${rr + 7}"/>` : '')
+      + shape
+      + `<text x="${rr + 3}" y="3.5">${esc(clip(r.title.replace(/^Belief: /, '★ '), 22))}</text>`
+      + `<title>${esc(r.title)} · @${esc(r.id)}</title></g>`);
+  }
+  $('#globe').innerHTML = out.join('');
+}
+
+let spinAnim = null;
+function spinTo(r) {
+  if (!r) return;
+  const target = { lon: r.lon, lat: Math.max(-55, Math.min(55, r.lat)) };
+  let dl = ((target.lon - rot.lon + 540) % 360) - 180;
+  const from = { ...rot };
+  cancelAnimationFrame(spinAnim);
+  if (reduceMotion) { rot.lon = target.lon; rot.lat = target.lat; renderGlobe(); return; }
+  const t0 = performance.now(), dur = 550;
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / dur), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    rot.lon = from.lon + dl * e; rot.lat = from.lat + (target.lat - from.lat) * e;
+    renderGlobe();
+    if (k < 1) spinAnim = requestAnimationFrame(step);
+  };
+  spinAnim = requestAnimationFrame(step);
+}
+
+(function globeInput() {
+  const svg = $('#globe');
+  let drag = null;
+  svg.addEventListener('pointerdown', (e) => {
+    const n = e.target.closest('[data-id]');
+    drag = { x: e.clientX, y: e.clientY, lon: rot.lon, lat: rot.lat, moved: false, id: n && n.dataset.id };
+    svg.setPointerCapture(e.pointerId);
+  });
+  svg.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.moved && Math.hypot(dx, dy) < 4) return;
+    drag.moved = true;
+    cancelAnimationFrame(spinAnim);
+    const k = 320 / svg.getBoundingClientRect().height * .55;
+    rot.lon = drag.lon - dx * k;
+    rot.lat = Math.max(-85, Math.min(85, drag.lat + dy * k));
+    renderGlobe();
+  });
+  const end = () => { if (drag && !drag.moved && drag.id) select(drag.id); drag = null; };
+  svg.addEventListener('pointerup', end);
+  svg.addEventListener('pointercancel', () => { drag = null; });
+})();
+
+/* ---------- record card ---------- */
+function chip(type, id) {
+  const t = db.byId.get(id);
+  return `<button class="chip g-${groupOf(type)}" data-goto="${esc(id)}">${esc(type)} <b>${esc(t ? clip(t.title, 26) : '@' + id)}</b></button>`;
+}
+function renderCard() {
+  const r = db.byId.get(selected);
+  const el = $('#card');
+  if (!r) { el.innerHTML = '<p>No records in the file.</p>'; return; }
+  const when = (s) => new Date(s * 1000).toISOString().slice(0, 10);
+  const incoming = [];
+  for (const o of db.records) for (const e of o.edges) if (e.target === r.id) incoming.push([e.type, o.id]);
+  let h = `<div class="cid"><span>@${esc(r.id)}</span><span>${r.kind ? 'Locus Point' : 'record'} · made ${when(r.created)}</span></div>`;
+  h += `<h3>${esc(r.title)}</h3>`;
+  if (r.body) h += `<p>${esc(r.body)}</p>`;
+  h += `<div class="lab">This record links to</div><div class="chips">${r.edges.map(e => chip(e.type, e.target)).join('') || '<span class="aside">nothing</span>'}</div>`;
+  h += `<div class="lab">Records that link here (their claims, not this one's)</div><div class="chips">${incoming.map(([t, id]) => chip(t, id)).join('') || '<span class="aside">none</span>'}</div>`;
+  if (r.ew) {
+    h += `<div class="ewmini"><span>conf</span><div class="bar"><i style="width:${(r.ew.conf / 255 * 100).toFixed(0)}%;background:${confColor(r.ew.conf)}"></i></div><span class="mono">${r.ew.conf}</span>`
+      + `<span>sal</span><div class="bar"><i style="width:${Math.min(100, r.ew.sal / 64 * 100).toFixed(0)}%"></i></div><span class="mono">${r.ew.sal}</span></div>`;
+  }
+  if (r.lp) h += `<div class="lab">Locus Point: confidence ${esc(r.lp.confidence)}, from ${esc(r.lp.source_count)} records, contradiction flag ${esc(r.lp.contradiction_flag)}</div>`;
+  el.innerHTML = h;
+}
+
+/* ---------- file view ---------- */
+const ANY_REF = new RegExp('@(' + ID_RE + ')', 'g');
+function refs(s) {
+  let out = '', last = 0, m;
+  ANY_REF.lastIndex = 0;
+  while ((m = ANY_REF.exec(s))) {
+    out += esc(s.slice(last, m.index)) + `<span class="ref" data-goto="${m[1]}">@${esc(m[1])}</span>`;
+    last = m.index + m[0].length;
+  }
+  return out + esc(s.slice(last));
+}
+function hlLine(line, inFence) {
+  if (/^```/.test(line)) return `<span class="t-fence">${esc(line)}</span>`;
+  if (inFence) {
+    const m = /^(\s*)([\w_]+)(:)(.*)$/.exec(line);
+    return m ? esc(m[1]) + `<span class="t-key">${m[2]}</span>:` + refs(m[4]) : refs(line);
+  }
+  if (/^# /.test(line)) return `<span class="t-title">${esc(line)}</span>`;
+  if (/^## /.test(line)) return `<span class="t-h2">${esc(line)}</span>`;
+  if (/^---\s*$/.test(line)) return `<span class="t-rule">${esc(line)}</span>`;
+  const h = HEADER_RE.exec(line);
+  if (h) {
+    const edges = h[4].split(',').map(part => {
+      const m = new RegExp('^(\\s*)([\\w-]+)>@(' + ID_RE + ')(.*)$').exec(part);
+      return m ? `${esc(m[1])}<span class="t-e-${groupOf(m[2])}">${esc(m[2])}</span>&gt;<span class="ref" data-goto="${m[3]}">@${esc(m[3])}</span>${esc(m[4])}` : esc(part);
+    }).join(',');
+    return `<span class="ref" data-goto="${h[1]}">@${esc(h[1])}</span><span class="t-meta"> | created:${h[2]} | updated:${h[3]} | relates:</span>${edges}`;
+  }
+  if (/^\[\/?(ew|lp)\]$/.test(line.trim())) return `<span class="t-tag">${esc(line)}</span>`;
+  const kv = /^(\w+):(.*)$/.exec(line);
+  if (kv && /^(conf|rev|sal|touched|centroid|confidence|scope_lat|scope_lon|projection_flag|contradiction_flag|source_count)$/.test(kv[1]))
+    return `<span class="t-key">${kv[1]}</span>:<span class="t-val">${esc(kv[2])}</span>`;
+  return refs(line);
+}
+function renderFile() {
+  const lines = db.lines;
+  const recAt = new Map(db.records.map(r => [r.start, r]));
+  const blockAt = new Map(Object.entries(db.blocks).map(([name, b]) => [b.start, { name, ...b }]));
+  const out = [];
+  let open = null; // {end, close}
+  let inFence = false;
+  for (let i = 0; i < lines.length; i++) {
+    if (open && i >= open.end) { out.push('</div>'); open = null; }
+    if (!open && recAt.has(i)) {
+      const r = recAt.get(i);
+      out.push(`<div class="rec${r.id === selected ? ' sel' : ''}" data-rec="${esc(r.id)}">`);
+      open = { end: r.end };
+    } else if (!open && blockAt.has(i)) {
+      const b = blockAt.get(i);
+      out.push(`<div class="blk" data-blk="${esc(b.name)}">`);
+      open = { end: b.end + 1 };
+    } else if (!open && i === db.titleLine) {
+      out.push('<div class="blk" data-blk="title">');
+      open = { end: i + 1 };
+    }
+    const line = lines[i];
+    const isFenceLine = /^```/.test(line);
+    out.push(`<div class="ln">${hlLine(line, inFence && !isFenceLine)}</div>`);
+    if (isFenceLine) inFence = !inFence;
+  }
+  if (open) out.push('</div>');
+  const view = $('#fileView');
+  view.innerHTML = out.join('');
+  const f = flash; flash = null;
+  if (f) {
+    const els = [];
+    if (f.block) els.push(view.querySelector(`[data-blk="${f.block}"]`));
+    if (f.rec) els.push(view.querySelector(`[data-rec="${CSS.escape(f.rec)}"]`));
+    const live = els.filter(Boolean);
+    live.forEach(el => { el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 60); });
+    const target = live[live.length - 1];
+    if (target && f.scroll !== false) view.scrollTo({ top: target.offsetTop - 8, behavior: reduceMotion ? 'auto' : 'smooth' });
+  }
+}
+
+/* ---------- widgets ---------- */
+function renderLegend() {
+  const labels = { support: 'helps (needs, feeds, protects…)', against: 'harms (eats, harms, repels)', opposes: 'opposes', contradicts: 'contradicts', generalizes: 'generalizes (beliefs)', other: 'other (about…)' };
+  const style = { opposes: 'dash', contradicts: 'dot' };
+  const present = new Set(db.records.flatMap(r => r.edges.map(e => groupOf(e.type))));
+  $('#legend').innerHTML = Object.keys(labels).filter(g => present.has(g)).map(g =>
+    `<button class="btn small g-${g}" data-grp="${g}" aria-pressed="${!hidden.has(g)}"><span class="swatch ${style[g] || ''}"></span><span class="lbl">${labels[g]}</span></button>`).join('');
+}
+function renderNotes() {
+  const dry = db.byId.get('LAT70LON-40');
+  const has = dry && dry.edges.some(e => e.type === 'opposes' && e.target === 'LAT50LON-30');
+  $('#breakSym').textContent = has ? 'Delete one side of the link' : 'Put it back';
+  $('#breakSym').disabled = !dry;
+  $('#notes').innerHTML = db.notes.length
+    ? db.notes.map(n => `<li>${esc(n.msg)}</li>`).join('')
+    : '<li class="ok">The checker found nothing to report. Every two-way link is written on both sides and every arrow lands on a record.</li>';
+}
+function renderEw() {
+  const r = db.byId.get(selected);
+  $('#ewName').textContent = r ? r.title : '';
+  const p = $('#ewPanel');
+  if (!r || !r.ew) {
+    p.innerHTML = '<p class="aside" style="margin:0">This record has no [ew] block. Locus Points carry their confidence in [lp] instead. Pick another record on the globe.</p>';
+  } else if (!p.querySelector('[data-ew]') || p.dataset.id !== r.id) {
+    p.dataset.id = r.id;
+    p.innerHTML = `<div class="ew-grid">
+      <label class="field">conf (confidence) <output data-o="conf">${r.ew.conf}</output><input type="range" data-ew="conf" min="0" max="255" value="${r.ew.conf}"></label>
+      <label class="field">rev (rewrites) <output data-o="rev">${r.ew.rev}</output><input type="range" data-ew="rev" min="0" max="20" value="${Math.min(20, r.ew.rev)}"></label>
+      <label class="field">sal (lookups) <output data-o="sal">${r.ew.sal}</output><input type="range" data-ew="sal" min="0" max="80" value="${Math.min(80, r.ew.sal)}"></label>
+    </div><pre class="out" id="ewOut"></pre>`;
+  } else {
+    for (const k of ['conf', 'rev', 'sal']) {
+      p.querySelector(`[data-o="${k}"]`).textContent = r.ew[k];
+      const inp = p.querySelector(`[data-ew="${k}"]`);
+      if (document.activeElement !== inp) inp.value = r.ew[k];
+    }
+  }
+  const out = $('#ewOut');
+  if (out && r && r.ew) out.textContent = db.lines.slice(r.start, r.ewRange[1] + 1).join('\n');
+
+  const scored = db.records.filter(x => x.ew).map(x => ({ r: x, s: x.ew.sal * (255 - x.ew.conf) / 255 })).sort((a, b) => b.s - a.s).slice(0, 5);
+  const max = scored[0] ? scored[0].s || 1 : 1;
+  $('#prio').innerHTML = scored.map(({ r: x, s }) =>
+    `<li><span><button data-goto="${esc(x.id)}">${esc(x.title)}</button><div class="bar" style="margin-top:4px"><i style="width:${(s / max * 100).toFixed(0)}%;background:${confColor(x.ew.conf)}"></i></div></span><span class="score">looked up ${x.ew.sal}× · conf ${x.ew.conf}</span></li>`).join('');
+}
+function renderCursorOut() {
+  $('#cursorOut').innerHTML = db.blocks.cursor
+    ? db.lines.slice(db.blocks.cursor.start, db.blocks.cursor.end + 1).map(l => hlLine(l, !/^```/.test(l))).join('\n')
+    : 'No cursor block in the file.';
+}
+function renderJump() {
+  const j = $('#jump');
+  j.innerHTML = db.records.map(r => `<option value="${esc(r.id)}"${r.id === selected ? ' selected' : ''}>${esc(clip(r.title, 34))}</option>`).join('');
+  const edges = db.records.reduce((a, r) => a + r.edges.length, 0);
+  $('#stats').textContent = `${db.records.length} records · ${edges} links`;
+}
+function renderAll() {
+  renderGlobe(); renderCard(); renderFile(); renderLegend(); renderNotes(); renderEw(); renderCursorOut(); renderJump();
+}
+
+/* navigation from anything with data-goto */
+document.addEventListener('click', (e) => {
+  const g = e.target.closest('[data-goto]');
+  if (g) { e.preventDefault(); select(g.dataset.goto); }
+});
+$('#jump').addEventListener('change', (e) => select(e.target.value));
+
+/* "show me" anatomy buttons */
+document.querySelectorAll('[data-show]').forEach(b => b.addEventListener('click', () => {
+  const what = b.dataset.show;
+  if (editing) toggleEdit();
+  if (what === 'record') { flash = { rec: selected }; renderFile(); paneIntoView(); return; }
+  flash = { block: what }; renderFile(); paneIntoView();
+}));
+function paneIntoView() {
+  if (matchMedia('(max-width: 960px)').matches) $('.pane').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+}
+
+/* edit / save / reset */
+function toggleEdit() {
+  editing = !editing;
+  $('#fileWrap').classList.toggle('editing', editing);
+  $('#editBtn').setAttribute('aria-pressed', String(editing));
+  $('#editBtn').textContent = editing ? 'Done' : 'Edit';
+  if (editing) { $('#fileEdit').value = text; $('#fileEdit').focus(); }
+  else renderFile();
+}
+$('#editBtn').addEventListener('click', toggleEdit);
+let editTimer = null;
+$('#fileEdit').addEventListener('input', (e) => {
+  clearTimeout(editTimer);
+  editTimer = setTimeout(() => commit(e.target.value, {}, true), 250);
+});
+$('#saveBtn').addEventListener('click', () => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/markdown' }));
+  a.download = 'garden_ttdb.md';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+$('#resetBtn').addEventListener('click', () => {
+  hidden.clear(); dreamView = null; pending = null; lastDream = null;
+  $('#cTrace').innerHTML = ''; $('#cWrite').disabled = true; $('#log').innerHTML = '';
+  $('#dreamOut').innerHTML = '<p class="aside" style="margin:12px 0 0">Watch the globe while it runs: each yellow trail is one walk.</p>';
+  commit(SEED, { block: 'title' });
+  cursor = readCursor(db);
+  selected = cursor.selected[0];
+  renderAll(); spinTo(db.byId.get(selected));
+});
+
+/* 02 collision */
+$('#cTry').addEventListener('click', () => {
+  const lat = parseInt($('#cLat').value, 10), lon = parseInt($('#cLon').value, 10);
+  if (Number.isNaN(lat) || Number.isNaN(lon)) return;
+  const res = assignId(db, '', lat, lon);
+  pending = { ...res, title: $('#cTitle').value.trim() || 'Untitled note' };
+  $('#cTrace').innerHTML = res.trace.map((s, i) =>
+    `<li class="${s.taken ? 'taken' : 'free'}"><span class="mark">${s.taken ? '✗' : '✓'}</span><span><code>@${esc(s.id)}</code> ${s.taken ? `is taken by <em>${esc(s.title)}</em>${i < res.trace.length - 1 ? ', so step one notch on both axes' : ''}` : 'is free. That\'s the address.'}</span></li>`).join('');
+  $('#cWrite').disabled = !res.id;
+});
+$('#cWrite').addEventListener('click', () => {
+  if (!pending || !pending.id) return;
+  const fresh = assignId(db, '', parseId(pending.trace[0].id).lat, parseId(pending.trace[0].id).lon);
+  const t = now();
+  const lines = [`@${fresh.id} | created:${t} | updated:${t} | relates:`, '[ew]', 'conf:128', 'rev:0', 'sal:0', `touched:${t}`, '[/ew]', `## ${pending.title}`, 'Added from the collision demo. New notes start at confidence 128: neither trusted nor doubted yet.'];
+  commit(appendRecord(text, lines), { rec: fresh.id });
+  $('#cWrite').disabled = true;
+  pending = null;
+  select(fresh.id, { read: false });
+});
+
+/* 03 legend + symmetric demo */
+$('#legend').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-grp]');
+  if (!b) return;
+  hidden.has(b.dataset.grp) ? hidden.delete(b.dataset.grp) : hidden.add(b.dataset.grp);
+  renderLegend(); renderGlobe();
+});
+$('#breakSym').addEventListener('click', () => {
+  const dry = db.byId.get('LAT70LON-40');
+  if (!dry) return;
+  const has = dry.edges.some(e => e.type === 'opposes' && e.target === 'LAT50LON-30');
+  const edges = has ? dry.edges.filter(e => !(e.type === 'opposes' && e.target === 'LAT50LON-30')) : [...dry.edges, { type: 'opposes', target: 'LAT50LON-30' }];
+  commit(withEdges(db, dry.id, edges), { rec: dry.id });
+});
+
+/* 04 librarian */
+function librarian(raw) {
+  let s = raw.trim();
+  if (!s) return;
+  if (/^@AI\b/i.test(s)) s = s.slice(3).trim();
+  const [verbRaw, ...rest] = s.split(/\s+/);
+  const verb = (verbRaw || '').toUpperCase();
+  const arg = rest.join(' ');
+  const idArg = arg.replace(/^@/, '').toUpperCase();
+  let answer = '', recs = [];
+  if (verb === 'SELECT') {
+    const r = db.byId.get(idArg);
+    if (r) { answer = previewOf(db, r.id); recs = [r.id]; } else answer = `No record @${idArg}.`;
+  } else if (verb === 'FIND') {
+    const tok = arg.toLowerCase();
+    const hits = tok ? db.records.filter(r => (r.title + ' ' + r.body).toLowerCase().includes(tok)) : [];
+    answer = hits.length ? `${hits.length} found: ` + hits.map(r => r.title).join('; ') : `Nothing mentions "${arg}".`;
+    recs = hits.map(r => r.id);
+  } else if (verb === 'EDGES') {
+    const r = db.byId.get(idArg);
+    if (r) { answer = r.edges.length ? r.edges.map(e => `${e.type}>@${e.target}`).join(', ') : 'No outgoing links.'; recs = [r.id]; }
+    else answer = `No record @${idArg}.`;
+  } else if (verb === 'STATUS') {
+    const weak = db.records.filter(r => r.ew).sort((a, b) => a.ew.conf - b.ew.conf)[0];
+    answer = `${db.cfg.name}: ${db.records.length} records, ${db.records.reduce((a, r) => a + r.edges.length, 0)} links. Selected @${selected}.` + (weak ? ` Least trusted: ${weak.title} (conf ${weak.ew.conf}).` : '');
+  } else {
+    answer = 'Unknown command. Try SELECT, FIND, EDGES or STATUS.';
+  }
+  answer = clip(answer, db.cfg.maxReply);
+  cursor.last_query = raw.trim();
+  cursor.last_answer = answer;
+  cursor.answer_records = recs;
+  const li = document.createElement('li');
+  li.innerHTML = `<span class="q">${esc(raw.trim())}</span><span class="a">${refs(answer)}</span>`;
+  $('#log').prepend(li);
+  if (recs[0]) select(recs[0]);
+  else commit(withCursor(db, cursor), { block: 'cursor' });
+}
+document.querySelectorAll('[data-q]').forEach(b => b.addEventListener('click', () => librarian(b.dataset.q)));
+$('#consoleForm').addEventListener('submit', (e) => { e.preventDefault(); librarian($('#consoleIn').value); $('#consoleIn').value = ''; });
+
+/* 05 epistemic weight */
+$('#ewPanel').addEventListener('input', (e) => {
+  const k = e.target.dataset.ew;
+  const r = db.byId.get(selected);
+  if (!k || !r || !r.ew) return;
+  const ew = { ...r.ew, [k]: +e.target.value, touched: now() };
+  commit(withEw(db, r.id, ew), { rec: r.id });
+});
+$('#decay').addEventListener('click', () => {
+  let t = text;
+  for (const r of db.records) if (r.ew) {
+    const cur = parseTTDB(t).byId.get(r.id);
+    t = withEw(parseTTDB(t), r.id, { ...cur.ew, sal: Math.floor(cur.ew.sal / 2), touched: now() });
+  }
+  commit(t, { rec: selected, scroll: false });
+});
+
+/* 06 dream */
+$('#dWalks').addEventListener('input', (e) => { $('#wN').textContent = e.target.value; });
+$('#dLen').addEventListener('input', (e) => { $('#wL').textContent = e.target.value; });
+let dreamSeed = 7;
+let dreamTimer = null;
+$('#dreamBtn').addEventListener('click', () => {
+  const run = dreamReplay(db, { walks: +$('#dWalks').value, len: +$('#dLen').value, seed: dreamSeed++ });
+  lastDream = run;
+  clearInterval(dreamTimer);
+  const show = Math.min(run.paths.length, 24);
+  const finish = () => {
+    clearInterval(dreamTimer);
+    dreamView = { clusters: run.clusters.filter(c => c.accepted).map(c => c.ids) };
+    renderGlobe(); renderDream(run);
+  };
+  $('#dreamOut').innerHTML = `<p class="aside" style="margin:12px 0 0">Dreaming… ${run.walks} walks.</p>`;
+  if (reduceMotion) return finish();
+  let i = 0;
+  dreamTimer = setInterval(() => {
+    if (i >= show) return finish();
+    dreamView = { path: run.paths[i++] };
+    renderGlobe();
+  }, 110);
+});
+function renderDream(run) {
+  const name = (id) => esc(db.byId.get(id) ? db.byId.get(id).title : '@' + id);
+  const top = run.pairs.slice(0, 6);
+  const max = top[0] ? top[0].n : 1;
+  let h = `<p style="margin:12px 0 4px;font-size:15px">${run.walks} walks of up to ${run.len} steps. The pairs that turned up together most often (a group needs every pair at ${run.thr} or more, a quarter of the walks):</p>`;
+  h += '<ul class="pairs">' + top.map(p => `<li><span>${name(p.a)} + ${name(p.b)}</span><div class="bar"><i style="width:${(p.n / max * 100).toFixed(0)}%"></i></div><span class="n">${p.n}</span></li>`).join('') + '</ul>';
+  if (!run.clusters.length) h += '<p class="aside">No group of records kept showing up together often enough this time. Try more steps per walk.</p>';
+  const shown = new Set([...run.clusters.filter(c => c.accepted), ...run.clusters.filter(c => !c.accepted).slice(0, 2)]);
+  run.clusters.forEach((c, i) => {
+    if (!shown.has(c)) return;
+    h += `<div class="cand${c.accepted ? ' ok' : ''}"><h4>${c.accepted ? 'Belief formed' : 'Not a belief'}: ${c.ids.map(name).join(', ')}</h4>`;
+    h += `<p class="why">Average confidence ${c.meanConf}; every pair seen together in at least ${c.minCo} walks.${c.accepted ? '' : ' Rejected: ' + esc(c.reason) + '.'}</p>`;
+    if (c.accepted) {
+      const b = beliefRecord(db, c, run, now());
+      h += `<pre class="out">${b.lines.map(l => hlLine(l, false)).join('\n')}</pre><div class="row" style="margin-top:8px"><button class="btn primary" data-belief="${i}">Write this Locus Point into the file</button></div>`;
+    }
+    h += '</div>';
+  });
+  $('#dreamOut').innerHTML = h;
+}
+$('#dreamOut').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-belief]');
+  if (!b || !lastDream) return;
+  const c = lastDream.clusters[+b.dataset.belief];
+  if (!c || !c.ids.every(id => db.byId.has(id))) return;
+  const rec = beliefRecord(db, c, lastDream, now());
+  commit(appendRecord(text, rec.lines), { rec: rec.id });
+  b.disabled = true; b.textContent = `Written as @${rec.id}`;
+  select(rec.id, { read: false });
+});
+
+renderAll();
+spinTo(db.byId.get(selected));
+</script>
+</body>
+</html>
