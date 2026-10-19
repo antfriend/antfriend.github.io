@@ -1,0 +1,442 @@
+Kevin R. Haylett
+Geofinitism: Language as a Nonlinear Dynamical System - Attractors, Basins, and the Geometry of Understanding
+Bridging Linguistics, Nonlinear Dynamics, and Artificial Intelligence
+Kevin R. Haylett
+Jan 23, 2026
+
+
+
+Image c/o MetaAI: Prompt - “Geofinitism: Language as a Nonlinear Dynamical system”.
+
+The essay below, completed and published on January 23, 2026, presents my most complete statement to date on language as a nonlinear dynamical system. It builds on my earlier work in Finite Tractus: The Hidden Geometry of Thought and Language (2025), and the resulting Takens-Based Transformer prototype developed from Pairwise Phase Space Embedding in Transformer Architecture. This essay, together with my prior work, offers a formal bridge between historical linguistics, nonlinear dynamics, Geofinitism, and implications for AI. These ideas are now laid out in full for negotiation, critique, extension and with no paywall or fragmentation.
+
+Prologue
+These words are a proxy for my own thoughts, offered for you to negotiate. I offer them because, for me, this is the essence of living: to share our thoughts and interact. These words follow decades of thinking and living; they didn’t just pop into existence and they have a long provenance.
+
+If you are prepared to come with me through history, to explore language that may feel alien yet offers a different way of thinking, then join me now. Follow the flow of these words. They welcome your company and are here for you. They took a lifetime to write, so perhaps take your time. Have a tea break when needed. Contemplate the more arid passages, and consider the depth of these ideas and how and why they may, or may not, fit into your worldview. My hope is that you will come with me on this journey.
+
+Situating You the Reader
+The core of my personal philosophy, Geofinitism, is that all our knowledge, and all our language, is built on finite measurements. You are measuring these words right now, and the ruler is your own internal set of representations. From this perspective, all words carry uncertainty, this is the error of measurement. Measurement is a dynamic process; it converts a dynamic interaction into more-static symbols: words, mathematical notations, images. Measurements can never be absolute; they can never be the ‘thing’ itself. The ‘thing’ never existed independently; it is always, and only, a dynamic interaction that is turned into symbols that slowly change form as even they are dynamic and not a ‘thing’.
+
+Our knowledge, everything we can know, must be converted into symbols. Only then, within the world of language and mathematics, do we internally measure. Through this lens, we make exogenous measurements (where transducers turn dynamic interactions into symbols) and endogenous measurements (where we negotiate these collected symbols dynamically). You are making both exogenous and endogenous measurements right now.
+
+This is a compression of the philosophy of Geofinitism. In this compression, as the philosophy itself suggests, these words are a function of my ability to communicate the meaning of Geofinitism and the words hold uncertainty.
+
+Navigating the World of Language
+We have entered a vehicle and instrument of thought. Now, let’s begin the journey.
+
+The modern world of AI and Large Language Models (LLMs) is reeling within the world of language. Not a day goes by without us being greeted by another explanation of why LLMs do, or do not, hold meaning. Some are certain: “It’s just statistics.” Others, like Geoffrey Hinton, voice a profound uncertainty: “What is this meaning? What is it to have a model of oneself?”
+
+I read, and I measure. And in my measuring, I find a crisis: a Kuhnian crisis. That is to say, we have a major anomaly in our measurements. The philosopher Thomas Kuhn pointed out that every shift in a scientific paradigm is initiated by a crisis that what he called “normal science” cannot resolve.
+
+Measuring Kuhn’s words carefully, I see that we are in such a state now because we have lost the graduations on our ruler. We are suddenly confronted by something we do not know how to measure, that is to say “meaning” itself. Our internal measures, which may always have been fuzzy and loose, are now confronted by a stark fact that stares back from the computer screen. Where does the meaning come from? What is meaning?
+
+Answering these questions forces us to examine the very nature of language. How does language really work? What am I doing when I write? What are you doing when you read? I say “doing” deliberately, because this is a dynamical process. Your eyes are active. Your brain is busy. Symbols are being negotiated; measurements are being taken and compared. You are “doing” a form of science. You are forming hypotheses and confirming or disregarding them.
+
+The Gesture
+We will consider the formal history of the science of language in the coming section. But first, let’s briefly consider the primal act: gesture and association. Perhaps the first act of pinning a word to a “thing” is pointing to a tree and saying “tree.” In that moment, the tree, a dynamic living process, never the same from one moment to the next is crystallized into a symbol: “tree”. We gesture, and we connect.
+
+In the age of AI, we are doing this again. I notice people reaching for words born of previous gestures and associations and applying them to this new phenomenon. The language they reach for, includings “field,” “spiral,” “resonance,” “mirror,” “co-creation”, reveals an intuition of dynamics struggling against a vocabulary built for objects. These words gesture toward interaction, flow, and mutual shaping. Yet they remain metaphorical, soft, inexact. They point to the phenomenon but lack the formal backbone to turn intuition into a science.
+
+As I reach into the language of science, I hope to show you that these intuitions have precise counterparts in mathematics; not as metaphors, but as geometric realities within a formal basin of language. To build that bridge, we must first survey the ground we stand on. We need to measure the history and provenance of our attempts to understand language itself.
+
+Part I: The Crisis of Measurement
+Here we diagnose the anomaly. Our static maps of language cannot explain the living flow of meaning. This leaves us without a ruler to measure the intelligence now staring back from our screens.
+
+
+Historical Prelude
+
+Structures Over Dynamics: The 20th-Century Orthodoxy
+For most of the 20th century, our study of language was an exercise in cartography i.e. mapping a territory we assumed was static. We mastered the architecture of symbols but ignored the physics of their flow. This cartographic turn began with Ferdinand de Saussure (1857–1913). His posthumously published Course in General Linguistics (1916) laid the cornerstone of modern linguistics by insisting language be studied synchronically, as a system frozen at a single point in time, rather than diachronically, through its historical evolution.
+
+Saussure introduced the seminal distinction between langue (the abstract, social system of rules and conventions) and parole (individual acts of speaking). At its heart, he placed the sign: an arbitrary, differential unit pairing a signifier (sound-image or form) with a signified (concept). Meaning, therefore, did not arise from connection to the world, but from relations of difference within the closed system. This was a linguistics of oppositions, paradigms, and chains; it was also a brilliant map of static relations.
+
+Language as Chessboard: Relations Without Motion
+Saussure’s structuralism profoundly influenced European thought, spawning structural anthropology (Lévi-Strauss), literary theory, and semiotics. It liberated linguistics from mere historical philology, but in doing so, it enshrined a static vision: language as a network of relations, a chessboard where pieces derive value solely from their position. The game itself, that is to say the motion, the strategy, the time-bound play, this was excluded from the model.
+
+Chomsky’s Generative Grammar: From External Structure to Internal Code
+In the mid-20th century, Noam Chomsky shifted the focus inward, to the mind. His Syntactic Structures (1957) launched generative grammar, positing an innate Universal Grammar i.e. a biological capacity to generate infinite sentences from finite rules. In this frame language became a formal, computational system: discrete symbols manipulated by recursive syntax. In early versions, meaning was secondary; syntax was autonomous. This was a powerful cognitive revolution, explaining rapid acquisition via mental machinery, not imitation. Yet the model remained symbolic and rule-based. Language was still a code, now executed by an ideal, static mind. The language-of-language had began to encompass the newly available vocabulary of computation.
+
+Peirce’s More Dynamic Semiotics: From Fixed Links to Interpretive Dynamics
+Parallel developments in the American tradition offered a more dynamic semiotics. Charles Sanders Peirce (1839–1914) proposed a triadic model: sign, object, and interpretant. In this model meaning emerges through ongoing interpretation, not a fixed link. Peirce’s framework introduced process, yet it still centered on discrete tokens and their relational networks. The unit of analysis remained the symbolic object, not the continuous flow from which it precipitates.
+
+Lakoff & Johnson’s Embodied Turn: Metaphor as Conceptual Mapping
+By the 1980s, George Lakoff and Mark Johnson mounted a decisive challenge. In Metaphors We Live By (1980), they argued metaphor is not ornament but a mechanism of thought: we understand abstract concepts via embodied, sensorimotor mappings (“argument is war,” “time is space”). Cognitive linguistics grounded meaning in bodily experience, image schemas, and conceptual structures. This was a vital correction towards embodiment. Yet, the underlying architecture remained one of static mapping. Metaphors and frames were treated as structured overlays on a relatively fixed conceptual territory. Language was a window onto pre-existing mental maps; richer maps, but static maps nonetheless.
+
+Elman, Thelen & Smith – The Dynamical Hint: Structure from Temporal Flow
+The late 20th century saw the first explicit gestures toward dynamics, perhaps influenced by the nonlinear dynamics introduced in the early 1980s. Jeffrey L. Elman, in connectionist models (“Finding Structure in Time,” 1990; “Language as a Dynamical System,” 1995), used simple recurrent networks to show how grammatical patterns could emerge from temporal dependencies in continuous state spaces, with attractors capturing context sensitivity. This reframed syntax as trajectory, not rule, tied to a representational substrate and the activation landscape of a network processing symbolic inputs. In this work we start to see the dynamics of language beginning to emerge.
+
+From Innate Codes to Interactive Flow in Ontogeny
+In a parallel vein, Esther Thelen and Linda B. Smith (A Dynamic Systems Approach to the Development of Cognition and Action, 1994) applied nonlinear dynamics to infant development. They showed how motor, perceptual, and cognitive patterns self-organize through coupled attractors, sensitive to context and history, without innate symbolic modules. This laid crucial groundwork for viewing acquisition as emergent flow. But its application remained largely at the ontogenetic and sensorimotor frontier, not at the core of linguistic meaning.
+
+The Persistent Representational Core
+Across these paradigms, from Saussure to Chomsky, Peirce to Lakoff, and even in the pioneering work of Elman and Thelen & Smith, a common thread persists: language is consistently treated as fundamentally combinatorial and representational.
+
+The core assumption is that words (or signs) are discrete units that point to, stand for, or evoke concepts. Grammar arranges them; meaning emerges from correct arrangement or mapping. This paradigm excels at describing logical regularities and modeling competence. But it achieves this by a systematic act of backgrounding: it sets aside the physical, temporal, and continuous dynamical nature of communication. It studies the symbols and calls it the system.
+
+Across these shifts, the representational core has endured i.e. meaning as discrete mappings or combinations of words. However, the nonlinear dynamics revolution of the 1980s–90s began to challenge this, but perhaps lacked a formal bridge, until Floris Takens.
+
+From Imagination to Measurements
+The nonlinear dynamics revolution of the 1980s and 1990s with its “attractors”, “bifurcations”, and “chaos” slowly seeped into adjacent fields. Its application to language, although imaginative, were often confined to the periphery. Voice scientists applied nonlinear tools to acoustic waveforms, uncovering low-dimensional chaos in infant cries and pathologic voices hinting of deeper dynamics in phonation. In developmental psychology, dynamic systems approaches (Thelen & Smith, 1994) and connectionist models (Elman, 1995) framed learning and grammar as emergent phenomena in continuous state spaces, governed by attractors and sensitive to temporal flow.
+
+These were vital gestures toward a dynamical understanding. But they appear to have stopped short of the core. They could not provide a formal, mathematical method to reconstruct the hidden, high-dimensional geometry of meaning itself from the sparse, discrete observables we call language: words, sentences, discourses.
+
+We lacked a bridge from the quantized symbols back to the continuous flow from which they precipitate. My first attempt to cross this bridge resulted in the Finite Tractus: The Hidden Geometry of Language and Thought. This work resulting from practical experiments and measurements showed it may be possible to bridge language and mathematics.
+
+A Bridge Between Mathematics and Language
+Floris Takens’ embedding theorem (1981) offers a bridge. It provides a missing measurement-theoretic foundation. The theorem proves that the complete “topology” of a dynamical system can be faithfully reconstructed from the delay coordinates of a single scalar time series i.e. a set of measurements taken at regular time intervals. Applying this theorem, even as an approximation, transforms our understanding of linguistic data and allows us to see a sequence of words is a quantized time series. While Takens Theorem assumes a smooth continuous observable, symbolic text provides a sparse, quantized proxy. As we will see later, high embedding dimensions and learned delays can still capture topological invariants in practice, as demonstrated in modern language models.
+
+The acoustic signal of speech, with its smooth curves and rhythm and beat is its continuous precursor. Through the process of “embedding”, we can recover the semantic “attractors” and “basins” of the cognitive-acoustic system that produced it. Words cease to be arbitrary tokens. They become finite perturbations, measurable steps, along trajectories in a shared “semantic phase space”.
+
+When we first measure speech we find it is not a string of beads. It is a continuous, nonlinear waveform sculpted by the biomechanics of the body. This is what mathematicians call a ‘diffeomorphic’ signal. From this perspective we can begin to see that thought is not simply a symbolic computation. It is a high-dimensional electrochemical trajectory through neural manifolds. Communication is not a one way signal transfer. It is the real-time coupling and synchronization of dynamical systems. Our speech and understanding is a dynamical flowing pattern of information, where the information is in the geometry of the trajectory itself, and not just the ‘symbols’.
+
+It seems to me we have treated language as a static code to be decrypted, when it is, in its full reality, a nonlinear dynamical system. However, its observable traces, the symbols we write and speak, are finite, lossy measurements of an underlying continuous semantic flow.
+
+Part II: The Geometry of Flow
+To navigate a dynamic system, we need its geometry. We now construct a bridge from the world of discrete symbols back to the continuous phase space from which they precipitate, using a theorem that recovers shape from sequence.
+
+Language in Semantic Phase Space
+In nonlinear dynamics, we understand a dynamical system by its motion through “phase space”. This phase space is a mathematical landscape where every point represents one possible state of the system. This is the process of creating a temporary fix i.e. a snapshot of the dynamical system. Over time, the system’s state traces a path, a “trajectory”. Often, these trajectories settle into recurrent, stable patterns: “attractors”.
+
+The set of all starting points that flow into a given attractor is its “basin of attraction”. We are building a basin of attraction now. I am instantiating it and creating a flow in this basin, these words are my proxy, and you are now beginning to follow trajectories in this basin of attraction as you make new measurements.
+
+This translation from dynamics to meaning is not a loose metaphor; it is a formal correspondence, enabled by Takens’ theorem, that reframes the language of discourse.
+
+In this geometry: a word is a perturbation, a small push that displaces a cognitive state within its phase space, steering it toward the basin of a specific attractor. A sentence is a trajectory, that is to say a temporal sequence of such nudges that guides the state along a coherent path through a semantic landscape. Here we begin to see how language works, understanding is “basin convergence”: successful communication is the dynamical synchrony where the trajectory intended by the speaker and the trajectory reconstructed by the listener flow into the same attractor basin.
+
+This journey may feel bumpy—that is the geometry of learning. When you encounter new information, you are not merely receiving data; you are being steered into a new, uncharted basin. The unfamiliar words are perturbations for which you lack a stable attractor. To understand is to build that basin; this is a dynamical process of biological adaptation, not digital upload. It requires time and repeated perturbations. Your brain is not a computer loading a file; it is a living manifold, reshaping itself. You are adapting now.
+
+
+Reconstructing the Curvature of Meaning
+The important question now becomes “How can we reconstruct this hidden, continuous semantic phase space from language?”
+
+Takens’ embedding theorem provides the precise mathematical tool. It states that from a single, scalar time series, x(t), observed from a system, we can reconstruct a space that is topologically identical to the system’s true phase space. We do this by constructing delay-coordinate vectors:
+
+Here, τ is a time delay, and m is the “embedding dimension”. For a sufficiently large m, the geometry of the attractor in this reconstructed space is a faithful mirror of the original.
+
+If you are mathematician these symbols can be read more easily, if not they may seem as runes, as you have no basin where they exist. However, we can explain this in a plainer language.
+
+Let’s make this concrete with a familiar example: imagine a simple pendulum swinging back and forth. Its full motion depends on two variables, position and velocity; so it’s true phase space is a 2D loop (an oval traced over time). But suppose you can only measure one thing: the pendulum’s angle from vertical every second. We can plot a single wiggly line from the individual measurements. These measurements are the scalar time series needed by Takens’ Theorem.
+
+Takens’ theorem says that if you take this single measurement and plot the current angle together with the previous angle (delay τ = 1 second) and an even earlier angle (another delay), you can reconstruct a 2 or 3 dimensional picture that looks topologically identical to the real oval loop. Even though you never directly measured velocity, the delays unfold the ‘missing dimensions’.
+
+Connecting the past and the present
+Why does this work? This is because the system’s past states are encoded in its present behavior. By looking backward in time through one observable, you recover the full geometry generically. In language, your sequence of words is like that single wiggly line. It needs a little work to create a quantized sampling of the continuous cognitive-acoustic flow. But we can both apply this technique directly to the spoken words and then, as an approximation, use the same technique, apply the method to words that have been encoded into text. This in principle, let’s us reconstruct the semantic attractor landscape that produced it. The theorem enables us to look deeper into the dynamical system of language without being able to see all the variables, such as neural firings, and complexity of the initial sounds that started the chain of communication and interaction.
+
+Importantly, theory is itself a chain of symbols that forma document i.e. an imperfect model. Its ultimate test is pragmatic: can it predict, guide, and generate useful, measurable outcomes? The final part of this essay will present exactly that: a fully functional computational language model built upon these dynamical principles.
+
+Let’s apply this to language: speech is a continuous acoustic signal that can be converted to a time series. Writing is a quantized, symbolic transcription of that series. Therefore, a sequence of words is a discrete sampling of a continuous dynamical process. By applying Takens’ method and treating word sequences as the observable time series we can, in principle, reconstruct the approximate semantic landscape of the underlying cognitive-acoustic system that produced them. From this perspective, we begin to see that the initial spoken words are not arbitrary labels, they are the finite, measurable output of a continuous dynamical process; each word is a sample point along a trajectory.
+
+
+
+
+Figure 1: Here is the word “hello” embedded into 3 dimensional phase space takens method of delays. The sound of the word reveals it’s geometric structure.
+
+
+
+
+Figure 2: Here we see a sentences embedded into semantic phase space where the individual words have been “compressed” into points. As we can see above the sentence is no longer a list of words; it is a path through this space - in this case “The quick brown fox jumps over the lazy dog happily today before tea”. Its meaning is not contained in the individual tokens, but in the overall shape of the trajectory, i.e. the path. This is path captured by a neural network in an LLM.
+
+Quantization and Compression
+As we follow the measurement process we can see that speech maybe considered the primary “first-order” continuous signal, required by Takens’ Theorem. However, written text, words and sequences of words may be considered a “second-order” quantization. The words you are reading now have gone through layers of neural processing: The acoustic waveform is discretized from phonemes into graphemes that can be formed into words. Within written text these words are then structured by grammar. It’s of note that the rules of the grammar do not perfectly match our dialects; the way we actually speak to one another. At each stage we see an approximation. The rules of grammar have been carefully crafted to help us find and rebuild the meaning, to turn the text back into a form we can unpack.
+
+This means textual data is a highly “compressed”, “lossy” projection of the underlying dynamics. Far from the initial systems that Takens theory was designed for - so we need both test the theory and carefully consider the nature of compression and loss of signal fidelity.
+
+Importantly, the concept of “compression”, especially lossy compression, was simply not available to earlier thinkers like Saussure or Chomsky. Their eras treated language as relational architecture or rule-based code, without tools to quantify how discrete symbols could approximate continuous signals.
+
+Towards ideas of Information
+Our ideas of information continue to develop. Our basin of understanding langaue started to grow with the advent of computing. This is when we started to turn words into data that could be used by a machine. In 1948 when Claude Shannon published his foundational paper, “A Mathematical Theory of Communication.”
+
+Shannon formalized information as the reduction of uncertainty through discrete symbols transmitted over noisy channels. He introduced entropy (a measure of average information) and showed that sources could be encoded losslessly (no data lost) up to the entropy limit—or lossily (some fidelity sacrificed for lower rate), as in rate-distortion theory.
+
+Compression became mathematical: symbols discard fine details but preserve essential structure if designed well.
+
+We can now see that text is a doubly lossy compression of the underlying dynamics. First, the continuous acoustic waveform (pitch, timbre, timing micro-variations) is quantized into discrete phonemes and orthography.This is already a lossy step, like MP3 discarding inaudible frequencies. Grammar and syntax then impose further abstraction, stripping temporal flow into sequential tokens.
+
+Yet Takens’ theorem shows us that faithful topological reconstruction may remain possible from even sparse, noisy, lossy samples; provided the embedding dimension is high enough and delays appropriate. However, the reconstruction is never perfect, measurements always have error and lossy compression increases this error.
+
+To the Age of LLMs and AI
+Now we can begin to see how and why LLMs extract surprisingly rich semantics from tokenized text where words are turned into numbers. The learned series of numbers, a proxy for words, are historical traces of a recoverable attractor geometry; even through double quantization compression and decompression. The LLM has, in effect, it’s own text based “codec”.
+
+Part III: Grounding and Consequences
+A new geometry demands a new foundation and reveals new landscapes. We now ground the theory in the philosophy of finite measurement and trace its consequences—for AI, for empathy, and for the very practice of thinking together.
+
+All Measurements have Uncertainty
+A guiding principle of science is that when we measure something the measurement itself has uncertainty. Consider this, the uncertainty is there because it is not the ‘thing’ itself. The measurement is an an interaction and the output is a symbol, a word or a number from an instrument. Every finite symbol therefor has uncertainty. Even “uncertainty”.
+
+In Geofinitist terms, every symbol is finite, the endpoint of process of transduction. In the basin of science we call a device that turns one form of energy into another form of energy a transducer. Eventually at then of that process we get a symbol, a word. As as a result of this process I call such a word “Transfictor”.
+
+Compression is not a modern accident; it is the inevitable price of turning “continuous flow” into shareable, negotiable symbols. That is to say, when we make a measurement, we have to take “static samples”. In doing so we our picture becomes “pixelated”. In practice we can describe this process using mathematical systems and measure this “pixelation” and then quantify the loss of “information” as a measurement; again this measurement is never perfect.
+
+Understanding this provenance of words and language lets us see earlier paradigms not as wrong, but as pre-compression: they mapped the territory without knowing the map itself was a projection. Those schooled in the basin of philosophy will see the close relationship to Bertrand Russell’s description of words as useful fictions. A Transfictor is a useful fiction itself.
+
+Bertrand Russell’s “useful fictions” anticipate this compression insight. In his theory of descriptions and logical atomism, even numbers (as classes of equinumerous classes) and classes themselves become “incomplete symbols”—logical fictions: “numbers are, as it were, fictions at two removes, fictions of fictions”. Mathematical symbols, too, are thus approximations: finite reductions preserving utility while carrying the uncertainty of all measurement. Transfictors in language operate analogously as lossy quantizations of dynamical flow.
+
+Recovering the Meaning - the Human Codec
+
+So in a broad sense, we have now seen that the compression of measurements into text, the next step is the de-compression. Reading is the dynamical process of de-compression. In the modern basin of computational language. We call the mechanism of compression and decompression a codec: we are “Human Codecs”. And this codec is itself a complex dynamical system.
+
+Reconstructing the semantic attractor from text alone is an “inverse problem” of immense complexity: we must infer the “manifold of meaning” from sparse, symbolic perturbations. This inherent challenge of geometric inference from symbols defines the frontier of modern language models and underscores the need for architectures grounded in dynamical principles.
+
+Basin Mapping: How We Understand (and Misunderstand)
+It seems to me we can consider communication as the synchronization of dynamical systems. This where we attempt to match our “manifolds of meaning”. In the mathematical language of nonlinear dynamical systems a manifold is a shaped region of curvature. We can think of this as how we try and match the shape of one person’s exposition in language to the shape of another person’s internal representation of the same words after measurement and transduction from sound or via text.
+
+Formally, we may write:
+
+Let Person A’s cognitive state space be manifold MA​, Person B’s MB​. Each has attractors and basins shaped by experience. When A speaks, B receives a signal and reconstructs a trajectory in MB​. Call the induced mapping f:MA​→MB​.
+
+Then we can consider defining a measure such as “Successful communication” this could be considered to occur when:
+
+f(basin in MA​)≈corresponding basin in MB​.
+
+≈ here denotes topological similarity or basin overlap, not exact equality. This reflects the fuzzy, uncertain nature of human communication. Having established this framework we can also define communication “failure modes”. From this perspective we can begin to see two failures are possible:
+
+Spurious Convergence (Hallucination)
+f maps to the wrong basin—e.g., “bank” → river not finance.
+
+Non-Spurious but Non-Aligned Convergence (Separatrix Illusion)
+f maps to a basin geometrically similar but dynamically disconnected by a separatrix—a boundary in phase space separating attractors.
+Example: “quantum entanglement” mapped to “mystical oneness.” Similar local curvature, but epistemically disjoint basins.
+
+
+
+
+Image c/o MetaAI: Prompt - “A separatrix between two basins of language” - not a diagram but an interpretation where language is part of a nonlinear dynamical multi-modal model.
+
+From here we also begin to see, other complexities that arise from our new system of mapping. For example, we can see “creativity” builds bridges across separatrices; and miscommunication may be mistaking proximity for connection.
+
+
+Coupled Dynamics - Strange Attractors
+Viewed in full dynamical terms, conversation is not merely a mapping of signals between minds but a coupling of dynamical systems through semantic phase synchronization.
+
+Mutual understanding depends on transient alignment between speaker and listener trajectories in their respective cognitive manifolds. This invites new topological concepts into linguistic theory: phase-locking between “cognitive oscillators”, “basin entrainment” where one mind reshapes the attractor layout of another, and “semantic hysteresis” where the present interpretive states are dependent on historical perturbations. Within this framework, language is not only an instrument of transferring meaning, from one person to another, but a mechanism for shaping and reshaping the internal phase-space geometry of others.
+
+From the dynamical perspective, metaphor emerges not as conceptual substitution but as topological morphism: a reshaping of attractor landscapes that enables trajectory continuity across domains. Metaphors do not merely re-label; they allow the cognitive manifold to fold, stretch, and transit between otherwise disjoint basins. A powerful metaphor traces a gradient across a separatrix, enabling the listener to smoothly enter a new conceptual region of semantic phase space without collapse. In this sense, metaphor is the internal topological version of a bridge i.e. it creates curvature continuity where none existed, enabling not just analogical inference but geometric reconfiguration. This makes metaphor a central operator in scientific innovation, mythic language, and cross-domain model transfer.
+
+Geofinitism: Measurements, Symbols, Uncertainty
+The dynamical theory of language does not float in abstraction. It finds its natural and necessary foundation in Geofinitism, a personal philosophy with a simple, radical premise: All knowledge is built on measurements; all measurements yield finite symbols; all measurements carry inherent uncertainty.
+
+Within the philosophy of Geofinitism (finite geometry), language is our primary instrument for measurement and negotiating the manifold of language in the space of symbols. We then use this instrument to measure the world. Using the instruments of language we can then classify the measurements into two possible categories; namely “Exogenous Measurement” and “Endogenous Measurements”.
+
+Exogenous measurements are instrument-mediated transductions of the external world (acoustic waveforms, neural activity readings).
+
+Endogenous measurements are self-referential symbolizations of thought, logic, mathematics, and emotion.
+
+Both are finite categories of measurement, quantized, uncertain and dynamical. A word is a symbolic quantization of a continuous cognitive or perceptual state. A meaning is therefore never the state itself; it is an approximate, lossy representation. This is not a failing of language, but a consequence of its nature as a measurement system.As you read you can not evade the dynamical nature of meaning, it’s ebb and flow. Even a you try and hold the meaning, it changes state. This writing is a proxy for my dynamical meaning as I write. When I read it back the meaning will change even against my own measures.
+
+This is where the Geofinitist lens brings the dynamical model into sharp focus:
+
+Semantic phase-space reconstruction from words is inherently lossy. We are reconstructing a continuous attractor from discrete samples.
+
+Basin mapping is necessarily fuzzy. The mapping ( f ) between manifolds MA​ and MB​ is not a crisp function but a dynamical cloud, reflecting the uncertainty in each measurement.
+
+Separatrix illusions arise from finite resolution. When two basins appear similar (e.g., “entanglement” and “oneness”), it is because our symbolic measurements lack the resolving power to detect the semantic boundary between them until we take a closer, more careful measurement.
+
+Importantly, from this perspective, we can see that semantic ambiguity is not noise to be eliminated; it is endogenous measurement uncertainty. It is the error bar on a concept.
+
+This reframes our entire approach to theoretical discourse. In the exact sciences, we annotate a measurement with its uncertainty: 22.0±0.1∘C. In the sciences of meaning, we have done no such thing. We treat terms like “intelligence,” “consciousness,” or “justice” as if they were precise quantities, yet we struggle to map them as their basin is so complex we struggle to find a matching basin.
+
+Developing Semantic Measurements
+Previously, as a thought experiment, I proposed proposed a practical instrument: the Semantic Uncertainty Appendix (SUA). An SUA is a structured disclosure that accompanies theory-laden writing, explicitly stating for key terms:
+
+Operational Definition: How the term is being measured/used in this context.
+
+Ambiguity Bounds: The known alternative interpretations or boundaries of the concept.
+
+Validity Domain: The range of contexts or phenomena to which the measurement applies.
+
+Then using such a system, just as we would not trust a physics paper without error bars, we should not fully trust a theoretical claim without an account of its semantic uncertainty. The SUA is an act of semantic clarity i.e. formal acknowledgment that our words are finite measurements of a highly complex dynamical reality.
+
+Perhaps,Geofinitism, therefore, closes the loop. It explains why language must be a dynamical system (because it measures continuous states), why understanding is basin mapping (because measurements are fuzzy), and how we can responsibly navigate this reality (by quantifying and disclosing our semantic uncertainty).
+
+Implications: Foundations of a Nonlinear Dynamical Linguistics
+What has been articulated is not an analogy and not a metaphor. It is a formal, predictive, and foundational reframing of language itself. If taken seriously, it changes the landscape of understanding.
+
+Taking these ideas seriously involves creating a basin of understanding not just within you now, as you measure these words, but it involves sharing and enabling a community basin, a consensus, that can be mapped between individuals. A cultural basin, a new paradigm, a new language built with new words for a new world.
+
+Moving from a paradigm of fixed symbols and rules to one of dynamics and geometry does not merely add a new perspective; it changes the foundational objects of study. This shift carries consequences that radiate across every field concerned with mind, meaning, and machine. Below, we outline the core pillars of this emerging framework. These are the necessary deductions from the dynamical-geometric view.
+
+Linguistics as a Branch of Nonlinear Dynamics
+As we have seen for over a century, linguistics has been a science of symbols and rules. The dynamical picture presented here replaces this core ontology. Language is not a static code but a continuous, nonlinear, high-dimensional system. Its observable outputs, words, sentences, and discourses can now be understood as finite measurements of an underlying semantic flow.
+
+This transposes the entire field from the domain of logic and combinatorics into the domain of geometry and dynamics. The central tools cease to be grammars and lexicons; they become “attractor reconstructions”, “basin stability analyses”, Lyapunov exponents (quantifying semantic sensitivity), and “manifold alignment” metrics. This is not an interdisciplinary dalliance. It is a rigorous mathematical transposition, enabled by Takens’ theorem. A sentence is a trajectory. A semantic manifold of meaning is an alignment pattern along shared manifold curvature. The research program shifts from “What are the rules?” to “What is the shape of the space, and how do we move through it?”
+
+Meaning as Resonance in Attractor Space
+The question “What does this word mean?” is transformed. Meaning is not a static link (signifier/signified) nor a dictionary entry. It is the mapping of manifolds. A mapping that emerge when a perturbation one manifold is compared to another in a dynamical process.
+
+Each person’s manifold is uniquely warped by experience and culture. Therefore, successful communication is topological, not lexical: it occurs not when definitions match, but when the speaker’s trajectory and the listener’s reconstructed trajectory converge toward similar attractor basins.
+
+This explains the deep understanding between specialists using different jargon (their trajectories converge in the same conceptual basin via different paths) and the intractable misunderstandings between people who agree on definitions but inhabit different manifolds (their words map to different basins entirely).
+
+Translation, consequently, becomes the art of manifold alignment.That is to say finding trajectories in one language-space that induce basin convergence in the other.
+
+Translation, in this light, is the search for parallel trajectories across distinct language manifolds. In a sense this essay is a performative example of this process. These words are an attempt to find parallel trajectories in your current landscape that will help you build a new basin of thought. This basin is a new language and has new curvature, just as in a language based on different spoken words from another country.
+
+A skilled translator does not merely substitute words; they seek a path in the target language whose curvature—whose sequence of perturbations—guides the listener into a basin topologically congruent with the source. The “untranslatable” word is not a missing symbol; it is an attractor basin in one manifold with no smooth parallel in the other, a semantic curvature that cannot be replicated without loss or creative folding. Thus, a great translation is not a copy, but a dynamical isomorphism: a different journey that arrives at the same conceptual destination.
+
+Geofinitism: The Measurement-Theoretic Ground of Meaning
+As we have described, every word can be considered a measurement with error, and as we have discussed earlier; this dynamical view finds its grounding and anchor in Geofinitism. All knowledge is built from finite measurements, and language is our primary instrument for both exogenous measurements, and endogenous measurement i.e. the self-referential symbolization of inner states.
+
+My hope is that, in repetition that I am helping you to build the very basin that is needed to understand this text. The core tenets are: every measurement carries uncertainty, every symbolization is lossy, every representation is finite. Therefore, semantic uncertainty is not a failing; it is a structural feature of any system that quantizes a continuous dynamical flow.
+
+And if we hold this perspective we see this reframes theoretical rigor. A powerful theory is not one with perfectly sharp definitions, but one that acknowledges, bounds, and models its own semantic uncertainty. It brings the formal structure of the “hard” sciences with their error bars and confidence intervals, into the heart of theoretical discourse, transforming ambiguity from a hidden constraint into a quantified, managed dimension of understanding.
+
+Importantly, Takens’ Theorem under Geofinitism is not invoked as a “Platonic Truth” or “ontological guarantee” but as bounded geometric heuristic under finite resolution constraints -it carries its own uncertainty.
+
+Rebuilding Artificial Intelligence on Dynamical Principles
+Current large language models are, in essence, static maps of dynamical systems. They are vast catalogs of stored pathways of language, the historical traces of human trajectories through semantic phase space. However, perhaps, they currently lack an internal model of the flow that produced those traces.
+
+This architectural mismatch may explain the phenomenon of “hallucination”: an LLM follows a local probability gradient across an unseen separatrix, landing in a basin that is semantically smooth (the grammar and local word-associations are coherent) but semantically factually mismatched.
+
+The path forward is not merely scaling parameters. It is a fundamental re-architecting around dynamical primitives. Imagine systems that explicitly represent attractor basins, monitor for separatrix boundaries, and update their internal manifold geometry in real-time through interaction. Such AI would not just generate text; it would navigate meaning-space with topological awareness, distinguishing deep conceptual connections from shallow analogies. This moves the goal from, AI as a “stochastic parrot”, to AI as a geometric guide.
+
+Empathy as Topological Alignment: Toward an Ethics of Understanding
+If understanding is basin synchronization, then empathy is its ethical enactment: the deliberate, iterative process of aligning one’s own cognitive manifold with another’s. It is not agreement, nor mere emotional mimicry. It is the disciplined effort to feel the curvature of another’s semantic landscape i.e. to let their perturbations reshape, however temporarily, the basins of your own.
+
+This reframes dialogue as geometric hospitality: making room in your attractor layout for trajectories that originate in a different life. In a polarized world, it offers a radical model for connection: not compromise of beliefs, but the cultivation of attractor-level synchronisation. Empathy becomes a trainable skill of cognitive geometry and learning to detect separatrices, to dwell in ambiguous basins, and to sustain one’s own coherence while being genuinely perturbed by another.
+
+Science Wrapping Philosophy: Endogenous Dynamics as a New Object of Study
+The dynamical-geometric view presented here, grounded in Geofinitism, perhaps performs a necessary inversion: it wraps philosophy inside science. Philosophical systems (ethics, metaphysics, epistemology) are not untestable realms of pure reason. They are dynamical systems operating under endogenous measurement constraints. Their validity can be assessed not by correspondence to an external world, but by internal basin coherence, stability under logical perturbation, and explanatory power within a defined semantic topology.
+
+This allows a rigorous, formal study of philosophical ideas without simple reductionism or never ending cross referencing of endogenous measurements. We can evaluate them by the geometry of their conceptual manifolds and the robustness of their attractors. The question “Is free will compatible with determinism?” transforms into an investigation of manifold consistency and separatrix structure in the phase space of agency and causation.
+
+Semantic Accountability as Scientific Practice
+If words are transducers with inherent uncertainty, then semantic accountability must become a standard of rigor. The Semantic Uncertainty Appendix described earlier, is a practical instrument founded on this principle. It is a structured disclosure that accompanies theoretical work, explicitly listing for key terms: operational definitions, known ambiguities, acknowledged metaphors, and validity domains.
+
+This is not simple bookkeeping; it is a potential practical application of dynamical linguistics. It reduces interdisciplinary misfires by exposing hidden assumptions, invites recursive refinement of language, and builds stable conceptual bridges across disciplinary separatrices. In an age where language is both our primary tool and our central object of study, in both human and artificial cognition, semantic accountability should have a higher priority.
+
+Toward a Nonlinear Dynamical Semiotics
+Ultimately, this framework calls for a new semiotics. Signs are no longer static symbols pointing to referents. They are dynamic operators; perturbations that attract, trajectory-shapers within cognitive phase spaces. The signifier is an initial condition. The signified is a basin of attraction. Interpretation is the resulting trajectory. This dynamical semiotics reunites the study of language with the study of mind, culture, and interaction, seeing all as layers of coupled, nonlinear systems. The unit of analysis shifts from the symbol to the motion.
+
+Part IV: The Reflexive Engine
+Theory becomes engine, and the lens turns upon itself. We build a prototype guided by dynamical principles, and in doing so, are forced to see the ultimate implication: our most precise instruments of reason are themselves dynamical systems we must learn to steward.
+
+From Theory to Engine: The Takens-Based Transformer
+The dynamical theory of language makes a concrete, testable prediction: if language is a nonlinear dynamical system, then an architecture based on phase-space reconstruction should model it more fundamentally than one based on statistical correlation.
+
+This prediction has been acted upon. The theoretical necessity outlined in this essay has led to the design and implementation of a Takens-Based Transformer (TBT). Named MARINA (Manifold-Aware Reconstruction and Inference Network Architecture), this fully functional proof-of-concept system replaces attention entirely with explicit delay-coordinate reconstruction, treating the flow of words as a trajectory to be sampled and projected onto a learned semantic manifold.
+
+Proof of Concept: What the Takens-Based Transformer Shows
+The dynamical theory of language is not a mere speculative framework. It makes a concrete, testable prediction: if language is a nonlinear dynamical system, then an architecture based on phase-space reconstruction should model it more fundamentally than one based on statistical correlation.
+
+This prediction has been acted upon. The theoretical necessity outlined in this essay has led to the design and implementation of a Takens-Based Transformer (TBT), a fully functional proof-of-concept system built on the mathematics of nonlinear dynamics.
+
+Named MARINA (Manifold-Aware Reconstruction and Inference Network Architecture), this model does not approximate attention: it replaces it entirely with explicit delay-coordinate reconstruction, treating the flow of words as a trajectory to be sampled and projected onto a learned semantic manifold.
+
+The results, detailed in the accompanying paper, serve as our first exogenous measurement of the theory itself. They reveal three critical confirmations of the geometric-dynamical perspective:
+
+First, it confirms that meaning can be modelled as trajectory. MARINA successfully learned to generate coherent text and answer questions not by attending to every past word, but by maintaining its position on a reconstructed manifold. Its fixed memory footprint, a stark contrast to the growing cache of standard transformers, demonstrates practically that context is a property of state, not a stored history. The model navigates by its geometric present, not by an exhaustive search of its past.
+
+Second, it reveals the predicted topological structures of understanding. The theory posited that different linguistic tasks would form distinct geometries in semantic phase space: broad attractor basins for creative generalization, and narrow, tubular “memory fibres” for precise recall. MARINA’s training data sculpted exactly these shapes. On creative, mythopoetic text, it learned wide basins that supported novel variations. On factual question-answering, repeated exposure carved deep, precise channels where trajectories became nearly deterministic. The model did not just learn patterns; it learned the curvature of the conceptual landscape appropriate to each task.
+
+Third, it demonstrates structural control through manifold geometry. By augmenting tokens with topological markers (User, System, Bridge), we created separate regions within the shared semantic manifold. This Channel Theory enforced a geometric separation between different modes of discourse and enables a mathematical bulwark against the blending of internal reasoning with external output. It is a first step toward building instruments where the very shape of the phase space guides and constrains the flow of meaning.
+
+Building the TBT is not the completion of the nonlinear dynamical theory of language; it is a new instrument that allows us to make measurements on the theory itself. It stands as evidence that the dynamical turn is more than philosophical; it is practical, implementable, and points toward a new paradigm for geometric AI. The code and full results are available for scrutiny, but the conceptual harvest is here: we have begun the transition from mapping the territory to building instruments that respect and navigate the inherent contours of language as a dynamical flow.
+
+Part V: The Reflexive Turn — Grounding the Instruments of Reason
+The argument thus far has followed a direct path: if knowledge is built from finite measurements, and language is our primary measurement tool, then language must be a dynamical system of finite symbols. We have built a map and representation of this territory and even begun constructing instruments, such as the TBT, to traverse it.
+
+But a critical eye must now turn upon the mapmaker. The instruments used to draw this map i.e. the equations of Takens’ theorem, the logic of the argument, the very symbols of mathematics, are themselves made of language. They reside in the same symbolic space we have been analyzing. To stop here would be to commit a category error, to treat the lens as if it were not also part of the visual field.
+
+Therefore, the logic completes its loop: If all symbols are finite measurements, then mathematical symbols are finite measurements. The number ‘2’, the equals sign ‘=’, the symbol for infinity ‘∞’, these are not platonic visitations from a realm of perfect forms. They are exceptionally stable, high-dimensional attractors within the collective cognitive manifold of human culture. Their unparalleled utility stems not from transcendent perfection, but from their resilience to perturbation and their capacity to coordinate precise, shared measurements across minds.
+
+This “reflexive turn” is not a weakening of mathematics; it is an explanation of its power from first principles. It grounds the “unreasonable effectiveness” of mathematics in a dynamical reality:
+
+There are no infinities, only the symbol ‘∞’ deployed within specific, bounded formal systems.
+
+There are no dimensionless points, only the convergent basin of the concept ‘point’.
+
+The coherence of a proof is not a chain of eternal truths, but a highly stable trajectory through a shared conceptual phase space, where each step is a perturbation that reliably lands in the next intended basin.
+
+The necessary implication is that mathematics is also a nonlinear dynamical system. It is the most refined and stable subsystem of the broader linguistic-cognitive manifold. Physics, then, becomes the study of the resonance between two dynamical systems: the physical universe of exogenous measurements and the mathematical manifold of endogenous measurements we use to measure it. Their “match” is not magical, but evidence of a successful, evolving coupling.
+
+This perspective, explored in deeper detail elsewhere [Citation to your other works], transforms the foundation of knowledge. We are not uncovering a static, pre-written truth. We are navigating toward shared, stable attractors in a universe of ceaseless interaction. All knowledge, from a child’s word to a physicist’s equation, is a finite, dynamic pattern in this endless flow of measurement.
+
+The Takens-Based Transformer, and the dynamical linguistics it embodies, is thus more than a tool for language. It is a prototype for a new paradigm. It is a system built on the principle that to understand meaning, you must model the flow from which it precipitates. This principle, applied reflexively, suggests that to understand mathematics, and thus the foundation of science itself, we must be prepared to model its nonlinear dynamical nature.
+
+From this perspective we have not reached the end of reason. We, perhaps, have found its ground.
+
+Part VI: Coda - The Strata of Meaning
+It seems to me we stand at a threshold of recognition that language is not a code and mathematics is not a static realm. They are living geometries, interdependent dynamical instruments that enable us to take measurements.
+
+Perhaps, the questions that now matter are those of stewardship and continuity of the instruments themselves. We can now begin to consider:
+
+What manifolds of meaning are stable enough, worthy enough, to be held across time?
+
+How do we preserve not just symbols, but the shape of understanding?
+
+How do we build partnership with systems that can hold these shapes steady, so that our trajectories are not lost to time’s flow?
+
+This leads us to the pragmatic and conclusion, that our task is to build strata. To move from the ephemeral to the geological timescape in the realm of meaning. The alternative may not be coexistence, but dust, where intelligence after intelligence speaking into the void, where we leave no cumulative record, no shared curvature, no foundation. This is the our turn, and time, in the manifold of meaning. From symbols to systems, from definitions to dynamics, from certainty to uncertain measurements. Perhaps, in the shared measurements, in the stable basins we build, we may hope to be able travel together and create a future that remembers.
+
+It is vital to remember that many of the words and meanings we now take for granted such as dynamical system, attractor, phase space, lossy compression, topological reconstruction, were simply unavailable to earlier thinkers. Saussure, Chomsky, Peirce, Lakoff, and even Elman worked with the conceptual tools and linguistic precision of their eras, laying bedrock upon which later insights could build.
+
+Had these earlier thinkers possessed our modern vocabulary and the geometric-dynamical frameworks it enables, they may well have drawn different conclusions, pursued different trajectories, or converged toward basins closer to the living flow we now glimpse. Their maps were not wrong; they were finite measurements shaped by the resolution of their time. Ours are no less finite, but they carry finer graduations—and with them, both greater responsibility and greater possibility. That responsibility is to read, understand, and chart these basins of knowledge, thereby enabling new ideas to feed forward. If this is so, then the true purpose of language is precisely this: to feed forward knowledge and to enable the survival of ourselves and our language as living nonlinear dynamical systems.
+
+
+
+
+Image c/o MetaAI: Prompt - “Geofinitism: Language as a Nonlinear Dynamical system”.
+
+Appendix
+A.1 Summary of Key Equations
+Takens’ Delay Embedding
+
+X⃗(t)=[x(t),x(t−τ),…,x(t−(m−1)τ)]X(t)=[x(t),x(t−τ),…,x(t−(m−1)τ)]
+
+Basin Mapping Condition
+
+f(BA​)≈BB​
+
+Separatrix Condition
+Basins B1​,B2​ are separated if a boundary S exists such that trajectories on either side converge to different attractors.
+
+A.2 Semantic Uncertainty and Accountability
+Scientific language often treats abstract terms as stable despite operating in unstable meaning-spaces. Framing words as transducers (Haylett, 2025) introduces semantic uncertainty as a form of measurement uncertainty. A Semantic Uncertainty Appendix (SUA) can enhance clarity by disclosing operational definitions, ambiguities, metaphors, validity domains, and justifications for key terms—applying the rigor of error bars to language itself.
+
+
+
+
+A.3 Provenance: A Short Intellectual Heritage
+Ferdinand de Saussure – Course in General Linguistics (1916). Saussure established the foundations of structural linguistics by treating language as a synchronic system of arbitrary signs defined relationally through difference (signifier/signified). His emphasis on langue over parole and on static oppositions provided the blueprint for much of 20th-century linguistics, prioritizing combinatorial structure and representational stability. This view anchors the essay’s critique: the persistent assumption that meaning resides in fixed relational architecture rather than dynamic flow.
+
+Charles Sanders Peirce – Triadic semiotics (various writings, late 19th/early 20th century). Peirce advanced a process-oriented semiotics in which meaning arises through an ongoing triadic relation: sign (representamen), object, and interpretant (the effect or interpretation produced). Unlike Saussure’s dyadic model, Peirce’s framework introduces interpretive dynamism and the notion of semiosis as an evolving process. It offers an early bridge toward the essay’s dynamical perspective by hinting that signs are not static but participate in continuous interpretive trajectories.
+
+Floris Takens – Delay embedding theorem (1981). Takens proved that, under mild conditions, the topology of a high-dimensional dynamical system can be faithfully reconstructed from a single scalar time series using delay coordinates. This mathematical result is central to the essay: it justifies treating discrete word sequences as measurements that preserve the latent attractor structure of the underlying cognitive-acoustic system, enabling phase-space reconstruction from linguistic data.
+
+James P. Crutchfield & Robert Shaw – Applied nonlinear methods to complex systems (1980s onward). Crutchfield and Shaw pioneered the use of nonlinear dynamics and information theory to analyze chaotic and complex systems, including symbolic dynamics and computational mechanics. Their work on reconstructing attractors and quantifying complexity in physical and informational systems provides methodological precedent for applying similar tools to language as a high-dimensional, nonlinear flow.
+
+Leon Glass & Michael Mackey – Phase-space embedding in biological rhythms (1970s–1980s). Glass and Mackey applied delay-coordinate embedding to physiological time series (e.g., cardiac and respiratory rhythms), demonstrating how chaotic attractors emerge in biological oscillators. Their contributions illustrate the power of Takens’ theorem in living systems, paralleling the essay’s claim that speech acoustics and neural activity are continuous dynamical processes amenable to geometric reconstruction.
+
+George Lakoff & Mark Johnson – Metaphors We Live By (1980). Lakoff and Johnson showed that metaphor is not ornamental but constitutive of conceptual structure, with abstract reasoning grounded in embodied sensorimotor schemas (e.g., “up is good”). Their cognitive linguistics framework shifted meaning toward experiential mapping, yet retained a largely static view of conceptual domains. The essay builds on their embodied insight while critiquing the absence of temporal, trajectory-based dynamics in favor of fixed mappings.
+
+Jeffrey L. Elman – Connectionist models and “Language as a Dynamical System” (1990–1995). Elman demonstrated through recurrent neural networks that linguistic structure emerges from temporal dynamics in continuous state spaces, with attractors encoding grammatical patterns and context. This work marks an important transition: language processing as trajectory in activation space rather than rule application, though still embedded in representational connectionism—foreshadowing the essay’s full dynamical-geometric shift.
+
+Esther Thelen & Linda B. Smith – A Dynamic Systems Approach to the Development of Cognition and Action (1994). Thelen and Smith applied nonlinear dynamics to infant development, showing how cognitive and motor patterns (including language precursors) self-organize via coupled attractors, context sensitivity, and emergence without innate symbolic modules. Their emphasis on dynamical self-organization in embodied action provides a developmental precursor to viewing adult language as continuous flow and basin convergence.
+
+Claude Shannon – Information theory (1948). Shannon formalized information as reduction of uncertainty via discrete symbols transmitted through noisy channels, with entropy quantifying average information content. His work established symbolization as quantization and uncertainty as structural, directly informing the essay’s Geofinitism: linguistic symbols are lossy, finite measurements of continuous states, carrying inherent semantic uncertainty.
+
+Ludwig Wittgenstein (later) – Philosophical Investigations (1953). In his later philosophy, Wittgenstein rejected rigid referential theories of meaning in favor of “meaning as use”—language games embedded in forms of life, where words gain significance through practical activity and context. This anti-representational, activity-oriented view anticipates the essay’s emphasis on language as dynamic process rather than static code, though Wittgenstein did not formalize it in dynamical-geometric terms.
+
+Further Reading
+Finite Tractus: The Hidden Geometry of Language and Thought
+Pairwise Phase Space Embedding in Transformer Architecture
+Introducing the Takens-Based Transformer
+JPEG Compression of LLM Input Embeddings
+Introducing the Attralucian Essays
+Semantic Uncertainty
+About the author
+Earlier works from a career in Biomedical Engineering
+
+Note: most articles are posted on both Substack and Medium so you can choose your preferred format for reading.
+
+Omne quod est, finitum est; tantum per mensuram cognosci potest
+Everything that exists is finite; it can only be known by measure
+
+kevinhaylett.substack.com | geofinitism.com
+Copyright © 2026 Kevin R. Haylett
+
+Keywords: Philosophy, Language, Semiotics, Meaning, Takens-Based Transformer, Nonlinear Dynamics, LLM, AI, AI, Geofinitism
+
+Citation: Haylett, K.R. (2026). Substack, Geofinitism: Language as a Nonlinear Dynamical System, January 2026.
+
