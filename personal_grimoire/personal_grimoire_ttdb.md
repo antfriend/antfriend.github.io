@@ -438,7 +438,7 @@ east/west term record except Home (the page's *Start empty* does this). To make 
 language, rewrite the records south of the origin — lexicon, morphology, seed vectors,
 algebra, questions, replies — and leave the runtime alone; the constraints in `mmpdb` say
 what a runtime may and may not contain. To make a new runtime, the nine blueprint records
-and the block formats above are the whole contract, and the four TTG RFCs are their
+and the block formats above are the whole contract, and the five TTG RFCs are their
 expansion. To put this runtime inside another app, read [the runtime's surface](lat85lon0).
 
 ---

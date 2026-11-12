@@ -1,5 +1,7 @@
 # Personal Grimoire
 
+> **Read the paper:** [Personal Grimoire — The File Is the Grammar](paper/Personal-Grimoire-The-File-Is-the-Grammar.md) — provenance-preserving question answering over a personal corpus, without a language model. Working draft.
+
 <img src="Grimoire-card.jpg" alt="A tooled leather grimoire with a brass clasp and an eye set in its cover." width="360">
 
 A one-page web app: **a corpus of your own words that answers in them.** You type sentences,
@@ -50,8 +52,9 @@ episode and term, which is how you make the corpus your own.
 | [index.html](index.html) | The app: a TTDB parser and round-trip writer, a rule interpreter, a consolidator, a reasoner, a small sphere. **No words of any language.** |
 | [personal_grimoire_ttdb.md](personal_grimoire_ttdb.md) | The store. The blueprint, an English grammar and a Spanish one, every reply phrase, every constant, and the corpus. |
 | [RFCs/](RFCs/) | The specs, five of them new. Start at [RFCs/INDEX.md](RFCs/INDEX.md). |
-| [tests/](tests/) | Two Node scripts and a Spanish grammar fixture. No dependencies, no test runner. |
-| [tools/](tools/) | Command-line access to the same engine: ask, feed, re-consolidate, re-read and take re-readings. |
+| [tests/](tests/) | Three Node scripts, a DOM stub and a Spanish grammar fixture. No dependencies, no test runner. |
+| [tools/](tools/) | Command-line access to the same engine: ask, feed, re-consolidate, re-read and take re-readings, and run a bAbI task. |
+| [paper/](paper/) | A working draft of the paper, [Personal Grimoire — The File Is the Grammar](paper/Personal-Grimoire-The-File-Is-the-Grammar.md), and the recorded bAbI results it cites. |
 
 ---
 
@@ -114,7 +117,7 @@ And they check the claim the whole design rests on, three ways:
    `yo | comer | queso | -`, and *¿Los gatos cazan ratones?* is answered *Sí.* The seed
    store goes further and keeps both: every English parse case still reads as English beside
    its Spanish grammar, and merging the two into one lexicon instead is shown to break three.
-3. **Grep for leaks.** None of the 400-odd words the grammar lists appears as a string literal
+3. **Grep for leaks.** None of the 800-odd words the two grammars list appears as a string literal
    in `index.html`, no reply phrase is copied into it, and every number the store declares is
    named in it.
 
@@ -443,14 +446,14 @@ This file is meant to be forked, and there are four depths to fork it at.
 1. **Your own corpus.** Press *Start empty*, then talk to it. Or run
    `node tools/feed.mjs notes.md journal.txt` against an emptied store. Download the store now
    and then; it is the only copy that leaves the browser.
-2. **Your own language.** Rewrite the seven records south of the origin and leave
+2. **Your own language.** Rewrite the records south of the origin — seven will do, rules are optional — and leave
    `index.html` alone. [tests/fixtures/es_ttdb.md](tests/fixtures/es_ttdb.md) is a working
    minimal example — about sixty lines of grammar. Or keep English and add yours beside it,
    as the six Spanish records do: give each one `lang:`, supply `label:` lines instead of
    vector algebra, and you can ask in either language.
 3. **Your own runtime.** The first eight blueprint records up the meridian are the whole
    contract, compressed: block formats, the percept line, placement, the conf formula, the
-   inference order, the intent table, the write rules. The four TTG RFCs are their expansion,
+   inference order, the intent table, the write rules. The five TTG RFCs are their expansion,
    and the `mmpdb` constraints say what a runtime may and may not contain.
 4. **This runtime, inside another app.** Point the app's developer, or its development agent,
    at the ninth, [`@LAT85LON0`](lat85lon0): `openStore`, `answer`, render the grounds by kind,
