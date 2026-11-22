@@ -1,10 +1,13 @@
 # TTDB-RFC-0011: Precision Weighting and the Ignition Filter
 ### Signal Precision, Gain-Scaled Belief Update, and a Decaying Workspace — the "Consciousness Filter" for TTDB Agents and the Personal Grimoire
 
-**Version:** 0.1.7
+**Version:** 0.1.8
 **Status:** Proposed — the stage-2 offline replays PW-1, PW-2 and PW-4 have been run and passed
 as pre-registered (§8.1, §8.2). PW-3 has been run and **falsified the broadcast gate as
-specified in §6.3** (§8.3); PW-5, PW-6 and all firmware stages have not been run.
+specified in §6.3** (§8.3). PW-1b, a re-run of PW-1 with `pe_span` re-derived for open
+question 6, is **INCONCLUSIVE** as pre-registered and answers that question for acoustic only
+(§8.4). Stage 1 (readers) is implemented in `robot_team` with no behaviour change; PW-5, PW-6
+and the firmware stages 3–7 have not been run.
 The arithmetic (§3–§4) is integer-only and testable offline before any firmware changes
 (§9, stage 2). The two lanes it allocates (`@LAT108`, `@LAT109`) are **unwritten**.
 **RFC Number:** 0011
@@ -629,6 +632,61 @@ Consequence: §6.3 as written MUST NOT be built. Stage 5 (§9.2) is blocked unti
 mechanism is specified and passes its own pre-registered replay; stages 3 and 4 do not depend
 on the gate and are unaffected.
 
+### 8.4 PW-1b result: open question 6 (2026-11-22)
+
+**PW-1b: INCONCLUSIVE as pre-registered.** Separation 119 (pass > 32), stability 68.8 %
+(pass ≥ 70 %, falsified < 50 %), robustness PASS. Runs not expanded: also INCONCLUSIVE
+(stability 53.3 %).
+
+PW-1b re-runs PW-1 with only `pe_span` changed, to settle §11 Q6. It is its own result,
+and §8.1 stands. Run by `robot_team/tools/pw1b/pw1b_run.py`, which imports
+`tools/pw1/pw1_fold.py` unmodified. The rule, constants and predictions were committed
+(`6fda802`) before any PW-1b code existed, the code at `799a07c`, and the report at
+`3b79a24` (`tools/pw1b/PW1B-REPORT.md`). Same archive scope and dedup as §8.1.
+
+**The rule.** `pe_span` is the smallest firmware constant at which the firmware treats the
+logged quantity as having changed state, unless that constant was derived from archive
+records; otherwise it is the full domain the firmware clamps the quantity to. A
+full-scale span (§8.1's choice) makes saturation true by construction for a quiet channel,
+so it could not answer Q6.
+
+| Channel | §8.1 span | PW-1b span | Source | §8.1 median `π` | PW-1b median `π` | Q6 (saturated iff ≥ 247) |
+|---|---|---|---|---|---|---|
+| acoustic | 32 767 | 900 | `ACOUSTICPERCEPT_TRANSIENT_FLOOR` | 255 | **241** | not saturated: the §8.1 span was too wide |
+| motion | 16 000 mg | 60 mg | `MOTIONPERCEPT_MOVING_MG` | 255 | **251** | saturated: quiet at its declared scale |
+| link | 100 dB | 90 dB | LinkPercept clamp [−100, −10] | 250 | **249** | saturated: quiet at its declared scale |
+| entity | Jaccard | unchanged | — | 132 | 132 | — |
+
+⚠ **What it does and does not show.**
+- **The verdict turns on one series.** Stability fell from 12 of 16 to 11 of 16 because
+  `v4a/link`'s split-half gap went from 23 to 28 against a tolerance of 24. A single boundary
+  case moved, and the entity channel, which carries the separation, is unchanged.
+- **The link channel's own scale could not be used.** `PERCEPTLEARN_RSSI_BAND 6` (the
+  met/violated band) is the p90 of consecutive-window |Δ `rssi_med`| measured on
+  `master/preflash-2026-08-02`, which is PW-1's link residual on this archive. Using it
+  would have put the data's own spread in the denominator. Link therefore fell back to its
+  clamp domain, which is barely narrower than §8.1's 100 dB, so the run says little about
+  link.
+- **The acoustic answer rests on the Cardputer alone.** `cardputer/acoustic` folds to 227
+  (flagged DRIFT: mean-`π` 188), while `k10/acoustic` stays at 255 on 90 residuals. The
+  channel median, 241, is their average.
+- **The predictions were written before the run** (motion and link stay saturated, no
+  prediction for acoustic), and both held. Firmware comments had already shown still motion
+  windows at `dev_mean_mg` 8–9; that prior knowledge is disclosed in the protocol.
+- **Still no pair of acoustic, motion and link is distinguishable** (largest gap 10). "Entity
+  needs a lower gain than the rest" remains the strongest reading; "every channel earns its
+  own gain" is still not shown.
+
+Consequence: stage 3 uses PW-1b's spans (acoustic 900, motion 60 mg, link 90 dB), as
+registered whatever the verdict. Q6 is answered for acoustic. Motion and link are quiet at
+the scale their firmware acts on, and a lower `PI_SCALE` (not re-derived here) is the
+remaining lever if their gains must differ.
+
+Candidate divergences (`lat 98`): the channel's firmware acceptance band (`RSSI_BAND`) and the
+`pe_span` that would suit it are the same measured quantity, so a span rule that excludes
+archive-derived constants cannot use a channel's best-calibrated constant. The K10's ear
+reads as noiseless at any span tried.
+
 ---
 
 ## 9. Adoption
@@ -637,9 +695,9 @@ on the gate and are unaffected.
 
 ```yaml
 lane_classes:
-  evidence: [0, 91, 92, 93, 94, 95, 96, 97, 103]
-  provenance: [90, 98, 99, 100]
-  field: [101, 104]
+  evidence: [0, 91, 92, 93, 94, 95, 96, 97, 103, 108]   # 105, 106: no class declared; EVIDENCE by default
+  provenance: [90, 98, 99, 100, 104]
+  field: [101, 109]
 precision:
   enabled: true
   prec_default: 128
@@ -710,7 +768,7 @@ Absent `precision`, a reader MUST behave as TTDB-RFC-0005 alone.
    whole band attends to — and if so is it elected like the Fleet Pulse conductor or emergent
    like the SOCIAL field?
 5. **Hysteresis vs half-life.** Two mechanisms keep an item in view. One may be redundant.
-6. **Saturated channels (from PW-1, §8.1).** Acoustic, motion and link all fold to `π` ≈ 250–255. Are they quiet, or is `pe_span` too wide for `rms_mean` / `dev_mean_mg` (and `PI_SCALE` too large for them)? Settle by re-deriving `pe_span` from observed residual ranges *as a new pre-registered constant*, never by tuning against PW-1.
+6. **Saturated channels (from PW-1, §8.1; partly answered by PW-1b, §8.4).** Acoustic, motion and link all fold to `π` ≈ 250–255. Are they quiet, or is `pe_span` too wide for `rms_mean` / `dev_mean_mg` (and `PI_SCALE` too large for them)? ~~Settle by re-deriving `pe_span` from observed residual ranges~~ (corrected in 0.1.8: a span taken from observed residuals would be tuning against the data). PW-1b re-derived `pe_span` from firmware state-change constants, pre-registered: acoustic is no longer saturated (241), while motion (251) and link (249) are quiet at the scale their firmware acts on. Open: whether `PI_SCALE`, not re-derived, should differ per channel.
 7. **A refresh for the broadcast gate (from PW-3, §8.3).** What keeps a gated receiver's belief from going stale: a heartbeat every `N` windows, a drift-triggered resend when cumulative `pe` against the last transmitted value exceeds `θ_tx`, or a receiver pull? Each costs airtime that the 97.9 % saving can afford; the question is which keeps disagreement under 5 %. It needs its own pre-registered replay.
 
 ---
@@ -747,6 +805,7 @@ Absent `precision`, a reader MUST behave as TTDB-RFC-0005 alone.
 | 2026-11-22 | 0.1.5 — PW-2 and PW-4 results written back (§8.2): both PASS as pre-registered; cohort mostly link, protection not immunity |
 | 2026-11-22 | 0.1.6 — wording: "kill" replaced by "falsified" in §8 (thresholds and results unchanged) |
 | 2026-11-22 | 0.1.7 — PW-3 result written back (§8.3): FALSIFIED as pre-registered (disagreement 38.1 %, airtime fall 97.9 %); §6.3 flagged, stage 5 blocked, open question 7 added |
+| 2026-11-22 | 0.1.8 — PW-1b result written back (§8.4): INCONCLUSIVE as pre-registered (stability 68.8 %, one series across the tolerance); open question 6 answered for acoustic (241) and confirmed saturated for motion (251) and link (249); Q6's "from observed residual ranges" corrected; §9.1 `lane_classes` corrected to this fleet (`@LAT104` PROVENANCE, not FIELD; `@LAT108`/`@LAT109` added); Status notes stage 1 readers implemented |
 
 ---
 
