@@ -37,7 +37,7 @@ selected:
   - "@LAT0LON0"
 preview:
   "@LAT0LON0": "Home: what this database is and how each record expands back to its full RFC"
-agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file)."
+agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design."
 ```
 
 ---
@@ -110,7 +110,7 @@ sal:130
 touched:1785542400
 [/ew]
 
-**TTDB-RFC-0003 — Typed Edge Semantics** (Stable, 1.1)
+**TTDB-RFC-0003 — Typed Edge Semantics** (Stable, v1.1)
 src: TTDB-RFC-0003-Typed-Edges.md
 
 Edges use the syntax declared in `mmpdb.typed_edges.syntax` (default
@@ -119,10 +119,16 @@ edges. Multiple same-type edges allowed; dedupe at render. Types are free-form
 tokens but SHOULD align with the TTN taxonomy (TTN-RFC-0002). An edge is the
 librarian's subjective assertion inside its umwelt, not a global truth; reference
 other worldviews explicitly (`db:<id>`, `umwelt:<id>`). Embedded node graphs in
-bodies are render hints only — the header edge list is canonical. 1.1: a type MAY be
-symmetric, still written on both records and never inferred; `opposes` is symmetric
-semantic polarity (antonyms, both may hold) and MUST NOT be read as `contradicts`
-(epistemic: at most one holds).
+bodies are render hints only — the header edge list is canonical.
+
+v1.1 adds §7: a type MAY be **symmetric**, meaning both directions assert the same
+thing — but §2 still holds, so the author MUST write both edges and no parser
+infers the reverse. `opposes` is the first such type: symmetric **semantic
+polarity**, two concepts at opposite ends of one dimension. Not `contradicts`,
+which is epistemic — under `opposes` both endpoints may be true at once (*Joy*
+and *Grief*), so a store holding both is not thereby inconsistent. Rationale:
+polarity encoded positionally (e.g. latitude carrying valence) is invisible to a
+consumer traversing the edge list, which is what implementations actually read.
 
 ---
 
@@ -215,7 +221,7 @@ to conf 0 as an explicit open problem.
 
 ---
 
-@LAT10LON8 | created:1780704000 | updated:1780704000 | relates:depends_on@LAT10LON7,depends_on@LAT10LON6,depends_on@LAT10LON5,depends_on@LAT10LON1,applied_by@LAT50LON1
+@LAT10LON8 | created:1780704000 | updated:1785456000 | relates:depends_on@LAT10LON7,depends_on@LAT10LON6,depends_on@LAT10LON5,depends_on@LAT10LON1,applied_by@LAT50LON1,generalized_by@LAT10LON9
 [ew]
 conf:140
 rev:0
@@ -240,6 +246,7 @@ Triggers: operator `[trigger:metamorphosis]` token (required support) or autonom
 belief-stability threshold (optional). Eclosion predicate activates the conductor.
 
 ---
+
 @LAT10LON9 | created:1785456000 | updated:1785456000 | relates:generalizes@LAT10LON8,depends_on@LAT10LON7,depends_on@LAT10LON6,depends_on@LAT10LON5,depends_on@LAT10LON1,supports@LAT20LON11
 [ew]
 conf:120
@@ -277,7 +284,9 @@ ambient** — it is interoceptive and would look like a faithful port of the K10
 while injecting a node-internal confound. Expected to be partly blocked by Learning from
 Action; a blockage MUST be logged as a result at the coordinate that blocked, not
 engineered around. Companion: `replicate/TTX-0004-counter-story.md`.
+
 ---
+
 @LAT10LON10 | created:1786060800 | updated:1786060800 | relates:depends_on@LAT10LON1,depends_on@LAT10LON3,depends_on@LAT10LON4,depends_on@LAT10LON5
 [ew]
 conf:140
@@ -314,6 +323,39 @@ index keep working, and a citation MAY carry
 stay permanently live. Decay is evaluated **on read, never written** (only reinforcement
 writes), and computed from a local `millis()` delta because a stream clock is a ratchet —
 correct for recency, wrong for a duration.
+
+---
+
+@LAT10LON11 | created:1795305600 | updated:1795305600 | relates:depends_on@LAT10LON5,depends_on@LAT10LON6,depends_on@LAT10LON7,depends_on@LAT10LON10,refines@LAT10LON5
+[ew]
+conf:120
+rev:0
+sal:130
+touched:1795305600
+[/ew]
+
+**TTDB-RFC-0011 — Precision Weighting and the Ignition Filter** (Proposed; stage-2 replays PW-1, PW-2 and PW-4 passed as pre-registered, PW-3 falsified the §6.3 broadcast gate as specified, §8.1-§8.3; nothing else run, `@LAT108`/`@LAT109` unwritten)
+src: TTDB-RFC-0011-Precision-Weighting-and-the-Ignition-Filter.md
+
+TBEW has one precision (`conf`, the belief's); active inference needs two. `prec` (π) joins `[ew]`
+as the precision of the channel that reported, and the gain `K = 255·π/(π+conf)` replaces
+fixed confidence steps: reliable evidence against a shaky belief rewrites it; a contradiction
+with `K < k_revise` only lowers `conf` and sets `contradiction_flag` — `rev` now counts
+contradictions that won. Symbolic `pe` is the contradicted belief's `conf`, so the agent
+notices what it declines to believe.
+
+`ε = pe·π/255` ignites into a capacity-`W` workspace at `@LAT109` (FIELD, KEY, every
+TTDB-RFC-0010 §5 rule) with hysteresis; the system MUST answer identically with it empty.
+`π` is learned at `@LAT108` (EVIDENCE, KEY) from `@PERCEPT` residuals in Replay only.
+Precisions sum only across heterogeneous channels (√N is the independent-error limit).
+Every percept is logged whatever its `ε`. Received `π` is capped by local trust. Action picks
+the look maximizing `EPS × π`. Attention and valence shift ignition, never `K` or `conf`.
+Grimoire profile is read-only over `contradicts`/`supersedes` notes. Falsifier PW-1: if
+learned `π` does not separate channels on the archive, stop.
+Named for and inspired by Dehaene's global neuronal workspace: subliminal / preconscious /
+conscious access (Dehaene et al. 2006) map to below-threshold / eligible-but-unadmitted /
+ignited. Aim: synthesize ignition experimentally; PW-6 tests for the all-or-none signature.
+
 ---
 
 @LAT20LON1 | created:1775001600 | updated:1775001600 | relates:default_log@LAT10LON1
@@ -336,6 +378,7 @@ floods on low-bandwidth links, **all assertions must include provenance**, appen
 records preferred.
 
 ---
+
 @LAT20LON2 | created:1775347200 | updated:1785542400 | relates:depends_on@LAT20LON1,depends_on@LAT10LON3
 [ew]
 conf:210
@@ -356,6 +399,7 @@ ai_flags, ai_responds_to, ai_refuses, ai_confidence_low); sensors/actions
 (opposes)**; moderation/trust (trusted_by, muted_by, blocked_by, flagged_as_spam,
 quarantined). v1.1 added the semantic-polarity group: `opposes` is symmetric and
 distinct from the epistemic `contradicts` — see TTDB-RFC-0003 §7.
+
 ---
 
 @LAT20LON3 | created:1775779200 | updated:1775779200 | relates:depends_on@LAT20LON1,depends_on@LAT20LON2
@@ -898,7 +942,7 @@ corpus change reads differently and writes nothing until the owner takes it.
 
 ---
 
-@LAT98LON0 | created:1783468800 | updated:1783468800 | relates:contradicts@LAT40LON4,refines@LAT40LON1
+@LAT98LON0 | created:1783468800 | updated:1785542400 | relates:contradicts@LAT40LON4,refines@LAT40LON1
 
 **BELIEF — Build system: the A32 RFCs say PlatformIO; robot_team uses arduino-cli.**
 
@@ -964,3 +1008,103 @@ multi-frame bursts are paced on the TX-complete callback or ESP-NOW drops frames
 Established in PLAN.md Phase 1b, then required by TTN-RFC-0007 §4, TTN-RFC-0008 §3,
 TTN-RFC-0009 (bridge-relayed put), and TTN-RFC-0010 §4.1. Any new toot handler
 should be written against this rule first.
+
+---
+
+@LAT98LON5 | created:1785456000 | updated:1786492800 | relates:refines@LAT20LON7,refines@LAT20LON8,refines@LAT20LON10,supports@LAT10LON9
+
+**BELIEF (REVISED 2026-08-12) — The K10 is back on the roster. Read the fleet as V4-A/V4-B/V4-C/T-Deck/Cardputer/K10 — but read every K10 passage in the RFCs as history all the same.**
+
+⚠ **This record said the opposite for twelve days and the belief it replaces was true when
+written.** It is revised in place rather than contradicted by a second record because it is
+a ROSTER, and a store that holds two rosters has none. The reasoning it carried about
+*history vs roster* survives intact and is the part that was never about the K10.
+
+The UNIHIKER K10 left the fleet on 2026-07-29 (v1 firmware, off the band roster, removed
+from the T-Deck's mesh map). It rejoined on **2026-08-12** carrying its scored part
+(`heroarc::kPercept`, which had been written on the day it left "so rejoining is a reflash,
+not a rewrite"), `CMD_GET_INTERO`, `CMD_DUET`, a prune path, and two organs that had been on
+the board unread since it arrived: an **SC7A20H accelerometer** (`@LAT95`/`@LAT93`) and an
+**I2S microphone** (`@LAT94`).
+
+Those two are the reason the return is not just a roster edit. Until now the Cardputer was
+the fleet's ONLY ear and its ONLY stillness witness, and both facts were load-bearing
+limitations: one microphone cannot measure a time difference of arrival (so Phase 3 TDoA was
+unexercisable, not merely unexercised), and one accelerometer meant a single node deciding
+alone whether anybody had held still — which is why authoring a belief was structurally
+Cardputer-only.
+
+What has NOT changed, and is still the useful half of this record:
+TTN-RFC-0007/-0008/-0010 name the K10 as the node their acceptance tests ran on, and
+TTN-RFC-0010 §7.1 assigns it the downbeat toot. Those passages are **correct as records of
+runs that happened** and must not be rewritten — not to name the Cardputer then, and not to
+re-lend them today's authority now that the board is back. A node returning does not
+retroactively make a test from July a test of the firmware from August.
+
+The sensor note also stands and is worth keeping precisely because the substitution was
+never one-for-one: the K10 carries an AHT20 **ambient** thermometer, while the Cardputer's
+only thermal channel is die temperature — an interoceptive signal that TTDB-RFC-0009 §5.5
+forbids substituting for it. With the K10 back, the fleet has an ambient thermometer again.
+
+⚠ One thing the K10 is NOT back on: the **mesh map** (`ttdb.md`). That globe is generated by
+`companion.py fleetmap` from measured proximity, so a hand-written position for it would be
+a fabricated measurement — exactly what spec 3 §1.2 calls asserting the pose and reporting
+the assertion back as a result. It re-enters that map when it has been heard.
+
+---
+
+@LAT98LON6 | created:1786060800 | updated:1786060800 | relates:contradicts@LAT10LON4,supports@LAT10LON10
+
+**BELIEF — The percept lanes name records by lane ORDINAL, which TTDB-RFC-0004 does not sanction. `@LAT100` is the workaround, and its budget is finite.**
+
+TTDB-RFC-0004 §2 permits coordinates "derived from a stable hash" when location is
+unavailable, and §4 requires that an id "MUST NOT change for the same record". The percept
+lanes (`@LAT94`-`@LAT97`, and `@LAT90`/`@LAT92`) take neither option: `LON` is the record's
+position in its lane, so emptying a lane reassigns every name in it to a different record
+and every surviving citation (`derived_from@LAT97LON1`) silently resolves to the wrong
+record — a live pointer to the wrong thing, worse than a dangling one. `@LAT100`
+`**LANE-PRUNED**` boundaries make that legible and were verified on all five nodes
+2026-08-03, so the divergence is **honest, not a defect**; the lanes must be prunable (a
+capped lane means a blind node) and history must not be rewritten in silence.
+
+What is new is that the workaround is **bounded and the bound has been reached in
+practice**: `LANEGEN_MAX_LANE` is 32, `@LAT100` has no prune path of its own, and the
+Cardputer stood at **28/32 on 2026-08-07** — one four-lane prune remaining, after which
+`LaneGenNode.h` refuses (correctly and loudly) and the node can no longer clear its percept
+lanes at all. The refusal arrives as a node that has stopped perceiving. So the ordinal
+choice is not merely a spec divergence, it is a lifetime budget being spent per prune, and
+TTDB-RFC-0010 §4 exists to retire it by applying the mechanism TTDB-RFC-0004 §2 already
+allowed.
+
+---
+
+@LAT98LON7 | created:1790726400 | updated:1790726400 | relates:contradicts@LAT60LON3,supports@LAT60LON4,refines@LAT10LON10,refines@LAT20LON10
+
+**BELIEF — TTG is stable spec and unimplemented here; the fleet's divergence from TTG-RFC-0003 §2 is bounded-store, and declared.**
+
+The five TTG RFCs arrived in this corpus on 2026-09-30 as 1.0 Stable, implemented by
+the `personal_grimoire` reference runtime. **No A32 node implements any of them**, so
+their conf records spec status, not fleet status — which is what this lane is for.
+Act III consolidates toward them (`ACT-III.md` Phase C).
+
+One real divergence, stated rather than discovered later. TTG-RFC-0003 §2 requires
+that a conforming implementation **MUST be able to recompute every belief line from
+the episodes**. This fleet's memory is bounded and never refuses a write, so it
+**evicts episodes**, folding each one's for/against contribution into its beliefs'
+carried tallies first. Recomputability therefore holds over the retained window plus
+those tallies, which is weaker than the MUST. What is lost is **provenance, not
+belief**: the node can still say what it believes and how strongly, but not always
+which saying taught it. That is the price of a memory instead of a log, and it is
+declared in the manner TTG-RFC-0002 §4 sets the precedent for (*“Divergence from
+TTDB-RFC-0006, stated”*). It is to be offered upstream as a **bounded-store profile**;
+this fleet is the embedded end of the project and the only checkout with hardware to
+motivate it.
+
+Two notes on why this is not merely a shortfall. `PerceptLearn`'s existing asymmetric
+`+2`/`−16` fold cannot satisfy the MUST **at all** — it is order-dependent in place —
+so TTG-RFC-0003 §2's counting is a strict improvement even bounded. And TTG-RFC-0004
+§4 is unimplemented *everywhere*: its own status line calls it proposed, it adopts
+TTN-RFC-0010 (which is `Pulse` on these boards) unchanged, and its §4.8 item 4 — two
+nodes holding the same episodes give identical answers without coordinating — is the
+headline claim of the new hypothesis. Hence sal 220 on @LAT60LON4, the highest in this
+corpus: it is the next load-bearing thing to build.

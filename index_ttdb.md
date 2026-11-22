@@ -123,7 +123,7 @@ preview:
 
 ---
 
-@LAT-32LON90 | created:1789689840 | updated:1792368000 | relates:prev>@LAT-32LON60,next>@LAT-20LON120,specifies>@LAT0LON-150,specifies>@LAT-32LON60,opens>RFCs/index.html
+@LAT-32LON90 | created:1789689840 | updated:1795305600 | relates:prev>@LAT-32LON60,next>@LAT-20LON120,specifies>@LAT0LON-150,specifies>@LAT-32LON60,opens>RFCs/index.html
 
 ## RFCs
 
@@ -132,17 +132,17 @@ preview:
 ```
 ╭──────────────────────────────────────────────────────╮
 │  R F C   C O R P U S                                 │
-│  35 documents · 6 series · 1 bundle · 1 globe        │
+│  36 documents · 6 series · 1 bundle · 1 globe        │
 ╰──────────────────────────────────────────────────────╯
 
   lane    series  subject          lon → 1 . . . . . 11
-  lat 10  TTDB    the file format  ██████████·
+  lat 10  TTDB    the file format  ███████████
   lat 20  TTN     the mesh         ███████████
   lat 30  TTCP    the reader       ███········
   lat 40  A32     the $5 device    █████······
   lat 50  ARC     the game agent   █··········
   lat 60  TTG     the grammar      █████······
-  lat 98  —       spec vs. metal   ▒▒▒▒▒······
+  lat 98  —       spec vs. metal   ▒▒▒▒▒▒▒▒···
 
   █ compressed   ░ pending   ▒ belief, no source RFC
 ```
@@ -164,6 +164,7 @@ back on demand.
 - [`0008`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon8) [Narrative Metamorphosis](RFCs/index.html?rfc=TTDB-RFC-0008-Narrative-Metamorphosis.md)
 - [`0009`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon9) [Counter-Story and Narrative Morphospace](RFCs/index.html?rfc=TTDB-RFC-0009-Counter-Story-and-Narrative-Morphospace.md)
 - [`0010`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon10) [Stigmergic Fields and Record Identity](RFCs/index.html?rfc=TTDB-RFC-0010-Stigmergic-Fields-and-Record-Identity.md)
+- [`0011`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat10lon11) [Precision Weighting and the Ignition Filter](RFCs/index.html?rfc=TTDB-RFC-0011-Precision-Weighting-and-the-Ignition-Filter.md)
 
 **TTN** · `lat 20` · the mesh — packets, delivery, time, belief
 
@@ -205,7 +206,7 @@ back on demand.
 - [`0004`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon4) [Time and the Fleet](RFCs/index.html?rfc=TTG-RFC-0004-Time-and-the-Fleet.md)
 - [`0005`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon5) [Shapes and Amendments](RFCs/index.html?rfc=TTG-RFC-0005-Shapes-and-Amendments.md)
 
-Lane `lat 98` carries five consolidated beliefs — the places where the metal
+Lane `lat 98` carries eight consolidated beliefs — the places where the metal
 disagrees with the spec — starting at
 [`98·0`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat98lon0). Walk the whole compressed corpus in
 [rfc.ttdb.md](index_OG.html?ttdb=rfc.ttdb.md), or open the [RFC index](RFCs/index.html) in the reader.
