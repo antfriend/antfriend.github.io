@@ -50,7 +50,8 @@ Every phase finishes with `node tests/app.test.mjs`, `docs.test.mjs` and
 **Status (2026-11-23): implemented in the runtime, the store and the tests.** `holds:` lines
 are written by the reader, read by consolidation (malformed ones are skipped and counted),
 compared by re-reading, carried by amendments, and answered through `asked_holds` in both
-languages. Still to do: the RFC text, upstream in toot-toot-engineering, then synced here.
+languages. RFC text: TTG-RFC-0005 1.1, -0002 1.3, -0003 1.1 and -0001 1.1, written
+upstream in toot-toot-engineering (`226bf8d`) and synced here.
 Known gap: *¿Qué dudo?* is read as a question about a subject, so in Spanish the link is
 written but this form of question doesn't reach it yet. That belongs to Phase 5.
 

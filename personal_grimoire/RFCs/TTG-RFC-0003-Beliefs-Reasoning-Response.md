@@ -1,6 +1,6 @@
 # TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
 
-**Version:** 1.0
+**Version:** 1.1
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -173,7 +173,9 @@ then notes: `exception`, `contradicts` (when a new percept opposes a decided bel
 `supersedes` (when a new episode retires a fact), `noted_held` and `noted_readings` (what a
 tell held, and the readings of a sentence it read two ways), `asked_held` and
 `asked_readings` (each held saying a question meets when its grounds do not answer it — never
-a ground, and the verdict stands; TTG-RFC-0005 §3),
+a ground, and the verdict stands; TTG-RFC-0005 §3), `asked_holds` (for an objects question
+whose subject and vector are a stance percept's, what each of its holds lines links, with the
+saying — never a ground, and `nothing_found` is not given when one is named; TTG-RFC-0005 §3),
 `no_purchase`, and `suggest` for the purchased THING with the highest EPS at or above
 `suggest_eps_min`. Search results are ranked by Σ log(1 + N/df) over matched lemmas across
 all `said` lines.
@@ -219,5 +221,6 @@ values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
 | 2026-09-21 | §2: held percepts (polarity `?`, TTG-RFC-0005 0.2) count for neither side; a tell names them in a `noted_held` note. |
 | 2026-09-22 | §4: a question its grounds cannot answer names the held sayings it meets, and a sentence's two readings together (`asked_held`, `asked_readings`, `noted_readings`; TTG-RFC-0005 0.7). |
 | 2026-09-22 | 1.0: stable. Implemented in full by the personal_grimoire reference runtime and checked by its tests; the open questions stand as open. |
+| 2026-11-23 | 1.1: §4, the `asked_holds` note: an objects question after a stance names what the stance holds (TTG-RFC-0005 1.1 §3). Implemented by the personal_grimoire reference runtime (antfriend.github.io `7071c80`). |
 
 *License: CC0*

@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.0
+**Version:** 1.1
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -144,7 +144,7 @@ words fill are defined in TTG-RFC-0003 §4.
 emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `superseded_by`,
 `affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `deny_superseded`, `contest`, `unknown`,
 `exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `noted_held`, `noted_readings`,
-`reading_pair`, `asked_held`, `asked_readings`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
+`reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
 `objects_head`, `subjects_head`, `nothing_found`, `search_head`, `suggest`, `ingested`,
 `episode_title`, `source_typed`, `store_opened`; units `percept`, `sentence`, `term`.
 
@@ -260,5 +260,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-09-22 | `adverb_ending`, `adverb_guard`, `self_ending` and `self_form` in §4, `intransitive` in §5 (TTG-RFC-0005 0.6). |
 | 2026-09-22 | §5: `chain` and `intransitive` are head starts the owner's words outrank; four reply keys in §8 for readings and held sayings (TTG-RFC-0005 0.7). |
 | 2026-09-22 | 1.0: stable. Implemented in full by the personal_grimoire reference runtime and checked by its tests; the open questions stand as open. |
+| 2026-11-23 | 1.1: `asked_holds` joins the keys the runtime emits (TTG-RFC-0005 1.1 §3). No other change. |
 
 *License: CC0*

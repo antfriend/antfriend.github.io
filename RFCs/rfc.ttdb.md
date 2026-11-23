@@ -37,7 +37,7 @@ selected:
   - "@LAT0LON0"
 preview:
   "@LAT0LON0": "Home: what this database is and how each record expands back to its full RFC"
-agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step."
+agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step. Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.1, -0002 1.3, -0003 1.1, -0005 1.1: the holds line linking a stance to what it holds (personal_grimoire PLAN.md phase 1); synced to the website the same day, not yet to robot_team."
 ```
 
 ---
@@ -842,15 +842,15 @@ composite) gate every addition.
 
 ---
 
-@LAT60LON1 | created:1789257600 | updated:1790035200 | relates:depends_on@LAT10LON1,depends_on@LAT30LON1
+@LAT60LON1 | created:1789257600 | updated:1795392000 | relates:depends_on@LAT10LON1,depends_on@LAT30LON1
 [ew]
 conf:210
-rev:0
+rev:1
 sal:90
-touched:1790035200
+touched:1795392000
 [/ew]
 
-**TTG-RFC-0001 — Grammar in the Store** (Stable, 1.0)
+**TTG-RFC-0001 — Grammar in the Store** (Stable, 1.1)
 src: TTG-RFC-0001-Grammar-in-the-Store.md
 
 A language's grammar is data in the same TTDB as the corpus it reads: `ttdb-grammar`
@@ -862,42 +862,44 @@ a test greps the runtime for every word the grammar lists. A second language is 
 records tagged `lang:`; each sentence picks the grammar that recognises most of its
 words, and later languages borrow the numbers, rules and vector algebra. §10 is the
 embedding surface: the engine/page divide, the boot gate, and the calls a host makes.
+1.1 adds `asked_holds` to the reply keys the runtime emits.
 
 ---
 
 @LAT60LON2 | created:1789257600 | updated:1795392000 | relates:depends_on@LAT60LON1,depends_on@LAT10LON1,depends_on@LAT10LON3,depends_on@LAT10LON4,depends_on@LAT10LON5,depends_on@LAT10LON6
 [ew]
 conf:210
-rev:2
+rev:3
 sal:80
 touched:1795392000
 [/ew]
 
-**TTG-RFC-0002 — Semantic Percepts, Episodes and Terms** (Stable, 1.2)
+**TTG-RFC-0002 — Semantic Percepts, Episodes and Terms** (Stable, 1.3)
 src: TTG-RFC-0002-Semantic-Percepts.md
 
 A sentence becomes percepts: `percept: n | subject | vector | object or - | polarity |
 quantifier`, with polarity `+`, `-`, or held `?` / `?-`, and an optional seventh column
 naming one reading of two. Episodes on the episode lane hold the owner's words —
-`said:`, `shape:` and `percept:` lines — written once and never modified; a block of
+`said:`, `shape:`, `percept:` and `holds:` lines — written once and never modified; a block of
 the same tag anywhere else is checked, never believed. THING and VECTOR terms are
 records placed on the grammar sphere beside the terms that introduced them.
 Malformed percept lines are skipped, counted and reported; write-back is byte-stable.
 Stated divergence from TTDB-RFC-0006: the pair is subject→object, not before→after.
 Collisions use TTDB-RFC-0004's `southeast_step` (1.1; 1.0 had stepped latitude down;
-the reference runtime conforms since 1.2).
+the reference runtime conforms since 1.2). 1.3: a `holds:` line links a stance percept
+to the held percepts it takes, by ordinal; malformed ones are skipped and counted.
 
 ---
 
-@LAT60LON3 | created:1789257600 | updated:1790035200 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT10LON2,depends_on@LAT10LON5,depends_on@LAT10LON7
+@LAT60LON3 | created:1789257600 | updated:1795392000 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT10LON2,depends_on@LAT10LON5,depends_on@LAT10LON7
 [ew]
 conf:210
-rev:0
+rev:1
 sal:80
-touched:1790035200
+touched:1795392000
 [/ew]
 
-**TTG-RFC-0003 — Beliefs, Vector Reasoning and Grounded Response** (Stable, 1.0)
+**TTG-RFC-0003 — Beliefs, Vector Reasoning and Grounded Response** (Stable, 1.1)
 src: TTG-RFC-0003-Beliefs-Reasoning-Response.md
 
 Beliefs are derived from episodes, never written by hand: per triple, episodes (not
@@ -908,7 +910,8 @@ inheritance with decay), Datalog-style rules derived to a fixpoint in memory, an
 specificity — the nearest ancestor overrides. Intent comes from the input's shape. A
 reply is a verdict, then grounds of one kind each — said (quoted), inferred (the
 chain), contested (both sayings), superseded — never printed alike; what was held is
-a note, never a ground.
+a note, never a ground. 1.1: a question after a stance (*What do I doubt?*) names what
+the stance holds, as a note (`asked_holds`).
 
 ---
 
@@ -934,15 +937,15 @@ bounds, overlapping bounds are contested, and the scene is the grammar hash.
 
 ---
 
-@LAT60LON5 | created:1789948800 | updated:1790035200 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT60LON3,depends_on@LAT10LON1,depends_on@LAT10LON4
+@LAT60LON5 | created:1789948800 | updated:1795392000 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT60LON3,depends_on@LAT10LON1,depends_on@LAT10LON4
 [ew]
 conf:210
-rev:0
+rev:1
 sal:70
-touched:1790035200
+touched:1795392000
 [/ew]
 
-**TTG-RFC-0005 — Shapes, Lists, Mentions and Amendments** (Stable, 1.0)
+**TTG-RFC-0005 — Shapes, Lists, Mentions and Amendments** (Stable, 1.1)
 src: TTG-RFC-0005-Shapes-and-Amendments.md
 
 A clause is any alternating run of nounish and verbish segments, each verb relating
@@ -954,6 +957,9 @@ one-segment sentence is a mention. The shape (`[things] {vectors}`) is written b
 each sentence and overrules the parser when typed; a correction to a said sentence is
 an amendment beside its episode, never in it. A re-reading reports what a grammar or
 corpus change reads differently and writes nothing until the owner takes it.
+1.1: a held clause a stance takes is linked to its stance percept by a `holds:` line —
+five holder rules, ordinals, malformed lines — carried by amendments and compared by
+re-readings, so a question after the stance can name what it holds.
 
 ---
 

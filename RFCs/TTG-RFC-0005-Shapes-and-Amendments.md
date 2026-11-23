@@ -1,6 +1,6 @@
 # TTG-RFC-0005: Shapes — Alternating Segments, Lists, Mentions and Amendments
 
-**Version:** 1.0
+**Version:** 1.1
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
@@ -317,6 +317,58 @@ consolidates into a belief, never contradicts one, and a reply names it apart fr
 grounds (`noted_held`). A question still checks it: *Is Pixel a cat or a dog?* asks after
 both; and a question the grounds cannot answer names the held sayings it meets (above).
 
+**What holds it.** A held percept that a stance takes is linked to that stance. Its
+**holder** is the nearest of these, from the clause it is read in outwards:
+
+1. a stance clause: the stance verb whose clause it is (*I doubt* — *cats like fish*);
+2. a clause after a `subord` word, when the clause before it ends on a stance verb: that verb
+   (*I wonder* — *if dogs bark*);
+3. a stance noun's clause: the stance noun (*the idea that* — *cats bark*);
+4. a reported clause: the stance verb whose first thing it hangs on, else the verb before the
+   relative word (*I told the man that* — *the cat sleeps*);
+5. a relative hanging on a stance verb's first thing, once that thing became the clause's
+   subject: that stance verb.
+
+A percept held only because an `alt` word joins it, or only because it is one reading of two,
+has no holder. The **stance percept** is the first of the sentence's percepts, not itself
+held by the same holder, whose verbish segment is the holder; for a stance noun, the first
+whose subject members, else whose object members, contain it. Where no percept is the stance
+percept, no link is written.
+
+A link is written beside the percepts, one line per stance percept, in the order of the first
+percept each one holds:
+
+```
+holds: <sentence> | <stance percept ordinal> | <held percept ordinals, space separated>
+```
+
+Ordinals count that sentence's `percept:` lines from 1, in the block they are written in, so
+comentions and mentions are counted too:
+
+```
+percept: 1 | self | think | - | + | -        I think you doubt cats bark.
+percept: 1 | you | doubt | - | ? | -
+percept: 1 | cat | bark | - | ? | -
+holds: 1 | 1 | 2
+holds: 1 | 2 | 3
+```
+
+A stance inside a stance holds its own clause, and is itself held by the outer one. A holds
+line names; it never asserts. What it links stays held, is never believed and never
+contradicts, and the stance percept is believed or not exactly as before.
+
+A consumer MUST skip, count and report a malformed holds line: one that does not have three
+columns; whose sentence is not an integer; whose stance ordinal is not a percept line of that
+sentence, or names one with an empty vector or a vector of `-`; or whose held ordinals are
+empty, name a line that is not a percept line of that sentence, name the stance percept, or
+name a percept that is not held. A malformed holds line links nothing; the percepts it names
+are read as if it were absent.
+
+**A question after a stance.** An objects question (TTG-RFC-0003 §4) whose subject and vector
+are a stance percept's names, for each holds line of that stance percept, what it holds, with
+its saying (`asked_holds`), as a note and never as a ground: after *I doubt cats like fish*,
+*What do I doubt?* names `cat like fish` as held, with *I doubt cats like fish.*
+
 **Mentions.** A percept whose subject or vector is `-` is a **mention**:
 
 ```
@@ -414,14 +466,17 @@ shape: <n> | <shape>
 grammar: <n> | <grammar hash>                  only when the owner took the grammar's reading
 reading: <n> | <letters>                       only when the owner chose between readings
 percept: <n> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <quantifier> [| <reading>]
+holds: <n> | <stance percept ordinal> | <held percept ordinals>     where the reading links a stance (§3)
 ```
 ```
 
 - **One record per episode**, on `amend_lane` at the episode's longitude, so `@LAT91LON7`
   amends `@LAT90LON7`. It holds, for each sentence it amends, the shape that stands, the
-  reading chosen, if any, and the percepts they read as. It is managed: amending again rewrites it in place and
-  advances `updated`. Reading a sentence back the episode's own way removes its entry; an
-  amendment with no entries is deleted.
+  reading chosen, if any, the percepts they read as, and the holds lines that link them (§3),
+  whose ordinals count the amendment's own percept lines for that sentence. It is managed: amending again rewrites it in place and
+  advances `updated`. Reading a sentence back the episode's own way — the same shape, the
+  same percepts and the same holds lines — removes its entry; an amendment with no entries is
+  deleted.
 - **Consolidation** takes an amended sentence's percepts from the amendment instead of the
   episode, attributed to the episode and sentence they amend. Counting (episodes, not
   sentences), order (TTG-RFC-0004 §2) and quotes are therefore the saying's own. A malformed
@@ -445,7 +500,7 @@ change — a verb the owner comes to use with a thing, a phrase the owner binds.
 and corpus the store holds now, each in the context the sentences before it **stand** as —
 their amendments, else their episodes' readings — which is the context an amendment is made in
 (§5), so what a report offers for a sentence is exactly what taking it would write. It
-reports each sentence whose shape or percepts differ from what its episode wrote: the
+reports each sentence whose shape, percepts or holds lines differ from what its episode wrote: the
 episode, the sentence, both readings, whether the owner has amended it, and a hash of the
 grammar records it was read under. A sentence where the owner chose between two readings is
 read with that choice.
@@ -462,7 +517,9 @@ from a grammar is never printed as what the owner marked. A runtime MUST refuse 
 it is not the store's grammar now — the report is stale. A reading the owner marks, even one
 that started from the grammar's, carries no `grammar:` line. A report names each sentence's
 standing ruling: `amended` when the owner has one, `accepted` when it is this very reading —
-the same shape and the same percepts.
+the same shape, the same percepts and the same holds lines. An episode written before holds
+lines has none, so a re-reading offers them for each sentence that links a stance, with its
+percepts unchanged; taking it writes them in an amendment.
 
 A host SHOULD offer the grammar's reading beside the one that stands, with the percepts it
 would form — a reading can change what a sentence says without changing its shape (*I like
@@ -511,6 +568,7 @@ the reference store's eight demo episodes read today exactly as written.
 | `responses` | `noted_mention`, `amended`, `amend_title` | A mention's verdict, an amendment's verdict, an amendment's title. |
 | `responses` | `noted_held` | A note naming what a tell held, `{triples}`. |
 | `responses` | `noted_readings`, `reading_pair` | A note naming the readings of a sentence read two ways, `{readings}`; each pair of readings, `{a}` and `{b}`. |
+| `responses` | `asked_holds` | A note naming what a stance holds, for a question after the stance (§3): `{s}`, `{v}`, `{triples}`, `{text}` and `{ep}`. |
 | `responses` | `asked_held`, `asked_readings` | Notes naming a held saying a question meets, `{text}` and `{ep}`, and one read two ways, with `{readings}`. |
 
 A later language may declare its own marks, classes, `head`, `stance`, `chain` and `motion`
@@ -532,7 +590,8 @@ implementing 0.3 or earlier skips a `?-` percept as malformed, which never belie
 one implementing 0.4 or earlier ignores an amendment's `grammar:` line. One implementing 0.6
 or earlier ignores a percept's seventh column and an amendment's `reading:` line; a named
 percept is still held, so it is still never believed, and a chosen reading's percepts are
-read as written. Held sayings now teach what a verb takes, which can change how a relative
+read as written. One implementing 1.0 ignores `holds:` lines in episodes and amendments
+(unknown block keys), so it reads every percept as before and only misses the links. Held sayings now teach what a verb takes, which can change how a relative
 is read in a store that holds some. The
 published bAbI outcomes (tasks 1 and 15, every condition) are unchanged under the reference
 runtime.
@@ -561,7 +620,10 @@ runtime.
    `--accept <hash>` after new sayings takes readings the report never showed; they are
    printed as taken and carry the hash, but no record names the corpus they were read
    against.
-7. **Taking every re-reading passes once.** A take can change a sentence already passed; the
+7. **A question whose verb names its subject.** The link is written in every language, but
+   a question is read by its shape: *¿Qué dudo?* reads *qué* as the subject, so it asks for
+   subjects and never meets the holds line *Dudo que los gatos ladran* wrote.
+8. **Taking every re-reading passes once.** A take can change a sentence already passed; the
    next report offers it. Whether taking to a fixed point always ends is open.
 
 ---
@@ -578,5 +640,6 @@ runtime.
 | 2026-09-22 | 0.6: where the grammar can see two readings, both are held and what they share is said (a chain verb's bare verb that agrees; a thing-word straight after a relative's verb; a verb after a stance verb's thing that is neither known nor `intransitive`); `intransitive` verbs never take the gap, and after a verb that cannot hear a clause the gap is sure; `adverb_ending` and `adverb_guard`; `self_ending` and `self_form` read Spanish dropped subjects as the speaker; re-readings follow the corpus too, and the page takes them all from the store bar. 0.5's open questions answered; new ones listed. |
 | 2026-09-22 | 0.7: the two readings of a sentence are named (`a`, `b`; a seventh percept column) and are one saying — a reply and a question name them together, a question the grounds cannot answer names any held saying it meets, and the owner may choose one (`reading:` in an amendment); what a verb takes is learned from held sayings too, and a chain verb from the owner's own chain; a re-reading's context is the sentences before it as they stand, and taking every re-reading re-reads each just before it is taken. 0.6's open questions 4–6 answered; 1–3 stand; new ones listed. |
 | 2026-09-22 | 1.0: 0.7, stable. Implemented in full by the personal_grimoire reference runtime and checked by its tests; the open questions stand as open. |
+| 2026-11-23 | 1.1: §3 **what holds it** — a held percept a stance takes is linked to its stance percept by a `holds:` line of percept ordinals; malformed holds lines are skipped and counted; an objects question after a stance names what it holds (`asked_holds`). §5 amendments carry holds lines, and reading back withdraws only when they match too; §5.1 re-reading compares them and offers them to older episodes; §6 `asked_holds`; §7 compatibility; §8.7 new. Implemented by the personal_grimoire reference runtime (antfriend.github.io `7071c80`), from its PLAN.md phase 1. |
 
 *License: CC0*
