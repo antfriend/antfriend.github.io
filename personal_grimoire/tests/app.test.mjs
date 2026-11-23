@@ -390,6 +390,43 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
   ok(PG.serializeStore(H.st).includes("percept: 1 | cat | like | fish | ?- | -") && H.malformed.length === 3 && H.trips.get("cat|like|fish").fr === 1 &&
      !hn.notes.includes(PG.say(H.G, "contradicts")) && hn.notes.includes(neg), "a held denial is written ?-, well formed, named as a denial, and contradicts nothing", hn.notes.join(" | "));
 
+  // a stance is linked to what it holds (TTG-RFC-0002 §5.1, the holds line): what do I doubt?
+  {
+  const K = fresh(), lines = () => PG.serializeStore(K.st).split(NL);
+  const dk = PG.answer(K, "I doubt cats like fish.", T0);
+  const block = id => { const i = lines().findIndex(l => l.startsWith(id + " |")); return lines().slice(i, lines().indexOf("---", i)); };
+  ok(block(dk.episode.id).includes("holds: 1 | 1 | 2"), "the stance percept is written as holding the clause it takes", block(dk.episode.id).join(" / "));
+  const wk = PG.answer(K, "What do I doubt?", T0 + 60);
+  const linkNote = PG.say(K.G, "asked_holds", { s:"self", v:"doubt", triples:"cat like fish", text:"I doubt cats like fish.", ep:dk.episode.id });
+  ok(wk.notes.includes(linkNote) && wk.verdict !== PG.say(K.G, "nothing_found") && !wk.items.length,
+     "a question after the stance names what it holds, as a note and never as a ground", wk.notes.join(" | "));
+  ok(K.trips.get("cat|like|fish") === undefined, "and what it holds is still never believed");
+  const wo = PG.answer(K, "I wonder if dogs bark.", T0 + 120), id = PG.answer(K, "The idea that cats bark is silly.", T0 + 180);
+  const nest = PG.answer(K, "I think you doubt cats bark.", T0 + 240), alt = PG.answer(K, "Pixel is a cat or a dog.", T0 + 300);
+  ok(block(wo.episode.id).includes("holds: 1 | 1 | 2"), "a clause after a stance verb and a subord word is held by that verb");
+  ok(block(id.episode.id).includes("holds: 1 | 2 | 1"), "a stance noun's clause is held by the percept the noun is the subject of");
+  ok(block(nest.episode.id).includes("holds: 1 | 1 | 2") && block(nest.episode.id).includes("holds: 1 | 2 | 3"),
+     "a stance inside a stance: each holds its own clause");
+  ok(!block(alt.episode.id).some(l => l.startsWith("holds:")), "what an or joins is held by no stance, and no holds line is written");
+  ok(K.malformed.length === 3 && PG.reread(K).changed.length === 0, "holds lines are well formed, and the sentences read back as written");
+  const es = PG.answer(K, "Dudo que los gatos ladran.", T0 + 360);
+  ok(block(es.episode.id).includes("holds: 1 | 1 | 2"), "Spanish links a stance to its clause the same way");
+  // a holds line that points at a percept that is not held is malformed: skipped, counted, and links nothing
+  const bad = PG.openStore(PG.serializeStore(K.st).replace("? | -" + NL + "holds: 1 | 1 | 2", "? | -" + NL + "holds: 1 | 1 | 1"));
+  ok(bad.malformed.length === 4 && bad.holds.length === K.holds.length - 1, "a malformed holds line is skipped and counted", bad.malformed.length + "");
+  // a store written before holds lines is offered them by a re-reading, and taking it writes them in an amendment
+  const old = PG.openStore(PG.serializeStore(K.st).split(NL).filter(l => !l.startsWith("holds:")).join(NL));
+  const rr = PG.reread(old), mine = rr.changed.find(x => x.episode === dk.episode.id);
+  ok(old.holds.length === 0 && mine && mine.now.join() === mine.was.join() && mine.holds.join() === "1 | 1 | 2",
+     "an episode with no holds line is offered one by a re-reading, with its percepts unchanged", rr.changed.length + "");
+  PG.takeRereads(old, rr.grammar, T0 + 420);
+  const wk2 = PG.answer(old, "What do I doubt?", T0 + 480);
+  ok(wk2.notes.includes(linkNote) && PG.reread(old).changed.every(x => x.accepted), "taking it links the stance, and every re-reading is accepted");
+  // reading the sentence back the episode's own way withdraws an amendment, holds line included
+  const am = PG.amend(K, dk.episode.id, 1, "[I] {doubt} [cats] {like} [fish].", T0 + 540);
+  ok(am && K.amends.size === 0, "an amendment that reads as the episode does, holds and all, is withdrawn");
+  }
+
   // which verbs a relative's bare verb may follow is the store's word list, not the runtime's
   const noChain = PG.openStore(STORE.replace(/^chain: .*\n/gm, ""));
   ok(PG.shapeOf(noChain, "I like the man that saw the cat eat cheese.").percepts.map(pk).includes("man | eat | cheese | + | -"),

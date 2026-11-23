@@ -100,7 +100,8 @@ Spanish verb in the speaker's own form needs no subject; that a phrase's head si
 language puts it, and Spanish *a* marks an object except after a verb of motion; that what
 *or* joins, a stance verb or noun takes or a relative word reports is held — seen, never
 believed, never a contradiction, keeping its own *not* — unless the *or* is denied, and that
-an aside turns a hedge into a plain saying; that an amendment stands in for a sentence
+an aside turns a hedge into a plain saying; that a held clause is linked to the stance that
+holds it, and a question after the stance names it; that an amendment stands in for a sentence
 without touching its episode, and is withdrawn by reading the sentence back the episode's
 way; and that a re-reading reports what a grammar edit changes, in the context the sentences
 before it stand as, writes nothing, and can be taken as an amendment that names the grammar —
@@ -393,8 +394,10 @@ still a look-up.
 Not everything you say is something you assert. *I doubt cats like fish.* reads
 `[i] {doubt} [cats] {like} [fish]`: `self | doubt | -` is said, and `cat | like | fish | ?`
 is **held** — written, counted and searchable, never believed, and never a contradiction of
-*Cats like fish*. What *or* joins is held the same way (*Pixel is a cat or a dog*), and the
-reply names what it held. *Pixel is not a cat or a dog*, on the other hand, is a plain
+*Cats like fish*. The episode links the two with `holds: 1 | 1 | 2`, the first percept holding
+the second, so *What do I doubt?* names *cat like fish* as held, with its sentence. What *or*
+joins is held the same way (*Pixel is a cat or a dog*), by no stance, and the reply names what
+it held. *Pixel is not a cat or a dog*, on the other hand, is a plain
 denial of each.
 
 If you meant the hedge as fact, set it aside: select *I think*, mark it an **aside**, and

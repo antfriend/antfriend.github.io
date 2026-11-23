@@ -47,6 +47,13 @@ Every phase finishes with `node tests/app.test.mjs`, `docs.test.mjs` and
 
 **From:** LFG's COMP. **Size:** small.
 
+**Status (2026-11-23): implemented in the runtime, the store and the tests.** `holds:` lines
+are written by the reader, read by consolidation (malformed ones are skipped and counted),
+compared by re-reading, carried by amendments, and answered through `asked_holds` in both
+languages. Still to do: the RFC text, upstream in toot-toot-engineering, then synced here.
+Known gap: *¿Qué dudo?* is read as a question about a subject, so in Spanish the link is
+written but this form of question doesn't reach it yet. That belongs to Phase 5.
+
 **Problem.** *I doubt cats like fish* writes `self | doubt | -` as said and
 `cat | like | fish | ?` as held, with nothing joining them. The store knows *that* you doubt,
 and *that* something is held, but not *what you doubt*. *What do I doubt?* has no answer.

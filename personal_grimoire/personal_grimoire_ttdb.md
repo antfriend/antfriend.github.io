@@ -203,7 +203,7 @@ resolve to the most recent subject head in the same episode, or drop.
 
 ---
 
-@LAT30LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT0LON0,depends_on@LAT20LON0,derived_from@LAT98LON1
+@LAT30LON0 | created:1789257600 | updated:1795392000 | relates:refines@LAT0LON0,depends_on@LAT20LON0,derived_from@LAT98LON1
 
 **Blueprint 3 — Percept: the unit of what was said**
 src: RFCs/TTG-RFC-0002-Semantic-Percepts.md §4
@@ -249,6 +249,11 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <
   sleeps*). Said but not asserted: written and seen like a mention, never a belief, never a
   contradiction. A denied alternative is not held but denied, each member: *not a cat or a
   dog*.
+- **Holds** → a held clause that a stance verb, a stance noun or a reporting verb takes is
+  linked to that stance, by the ordinals of the sentence's percept lines:
+  `holds: 1 | 1 | 2` says the first percept (`self | doubt | -`) holds the second
+  (`cat | like | fish | ?`). So *What do I doubt?* names what you doubt, as held, with its
+  sentence. An *or* is held by no stance and writes no holds line.
 - **Two readings** → where the grammar can read a sentence two ways, what both say is said and
   what only one says is held, **named** in a seventh column: `a` and `b` at the first such
   place, `c` and `d` at the next. *The men that saw the cats eat cheese* says `man see cat`
@@ -262,7 +267,7 @@ it is how every belief proves where it came from.
 ```
 @LAT90LON<n> | created | updated | relates:perceives@<term>,...
 **Episode n — source**
-ttdb-episode block: source:, at:, said: lines, shape: lines, percept: lines
+ttdb-episode block: source:, at:, said: lines, shape: lines, percept: lines, holds: lines
 ```
 
 **The owner's reading.** Each sentence's shape is written beside it in the lexicon's marks —
@@ -914,6 +919,7 @@ noted_readings: Kept, not believed — I can read that two ways, and hold both u
 reading_pair: either {a}, or {b}
 asked_held: You said it, but not as fact: “{text}” ({ep}).
 asked_readings: You said “{text}” ({ep}), which reads two ways, and not which you meant: {readings}.
+asked_holds: {s} {v}: {triples} — kept, not believed, from “{text}” ({ep}).
 amended: Read again as you marked it: {percepts}.
 amend_title: Amendment {n}
 contradicts: This disagrees with something you said before.
@@ -1206,6 +1212,7 @@ noted_readings: Guardado, no creído — puedo leerlo de dos maneras, y guardo a
 reading_pair: o bien {a}, o bien {b}
 asked_held: Lo dijiste, pero no como hecho: “{text}” ({ep}).
 asked_readings: Dijiste “{text}” ({ep}), que se lee de dos maneras, sin decir cuál querías decir: {readings}.
+asked_holds: {s} {v}: {triples} — guardado, no creído, de “{text}” ({ep}).
 amended: Leído de nuevo como lo marcaste: {percepts}.
 amend_title: Enmienda {n}
 contradicts: Esto contradice algo que dijiste antes.
@@ -2136,7 +2143,7 @@ so a wrong merge can at least be seen.
 
 ---
 
-@LAT98LON5 | created:1789257600 | updated:1790035200 | relates:supports@LAT20LON0,supports@LAT30LON0
+@LAT98LON5 | created:1789257600 | updated:1795392000 | relates:supports@LAT20LON0,supports@LAT30LON0
 [ew]
 conf:70
 rev:1
@@ -2156,7 +2163,8 @@ infinitives and one-word sentences — *mice that eat cheese*, *saw the man eat 
 is **held**, written and never believed, keeping its own *not*: the members of an *or*,
 unless it is denied (*not a cat or a dog* is neither), the clause after a stance verb (*I
 doubt cats don't like fish*), and a clause reported after a thing (*I emailed the man that
-the cat sleeps*). A bare verb goes on with a relative's chain while the sentence still waits
+the cat sleeps*); each such clause is linked to the stance that holds it, so *What do I
+doubt?* names it. A bare verb goes on with a relative's chain while the sentence still waits
 for its own (*the man that saw the cat eat cheese is tall* is a tall man), or after a chain
 verb, which the owner's own sentences can teach it. An aside is left
 out of a reading, so a hedge can be said as fact. A phrase's head is where the lexicon says:
