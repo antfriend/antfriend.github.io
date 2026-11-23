@@ -294,7 +294,8 @@ at the origin, in the `ttdb-sphere` block.
   already has a record sits `adjacent` degrees from it — so *pixel* lands beside *cat*, and
   the sphere clusters by meaning in the order meaning arrived. Otherwise FNV-1a of the lemma
   picks a spot inside `term_lat` × `thing_lon` (or `vector_lon`), in `step` increments.
-- **Collision**: `southeast_step` — one `step` south and one east until the ID is free.
+- **Collision**: `southeast_step` as TTDB-RFC-0004 §3 defines it — one `step` north and one
+  east (the name is historical) until the ID is free, wrapping inside the bands.
 - **Record**: header, `[ew]`, the lemma in bold, any prose the owner adds (preserved
   verbatim), then a `ttdb-term` block:
 
@@ -484,7 +485,7 @@ than one language: `pickGrammar(S, text)` returns the grammar a text reads as, a
 `withGrammar(S, G, fn)` runs `fn` under it — `answer`, `ingestFile` and `replyText` already
 do both. Also on
 `PG`, for tools and tests: `parseStore`, `parseRecord`, `parseBlock`, `records`, `epsOf`,
-`epsTop`, `sceneOf`, `scenesOf`,
+`epsTop`, `sceneOf`, `scenesOf`, `placeTerm`,
 `loadGrammar`, `say`, `sentencesOf`, `tokenize`, `nounLemma`, `verbLemma`, `perceiveSentence`,
 `perceive`, `consolidate`, `syncTerms`, `termState`, `markAsked`, and `SLOT` — the NUL
 character that stands for the hole a question asks the corpus to fill.
@@ -2098,7 +2099,7 @@ the most interesting thing in it, and its EPS is how the librarian finds it agai
 
 Consolidation still does not weigh *when* something was said. *I like coffee* on Monday and
 *I do not like coffee* on Friday is a change of mind, not a contradiction, and the store
-cannot tell those apart: replay is deliberately atemporal, as TTDB-RFC-0007 §3.2 requires. A
+cannot tell those apart: the count is recency-neutral, as TTG-RFC-0003 §2 defines it. A
 recency rule would be one line in the numbers record and a large claim about the owner, so it
 is not made.
 

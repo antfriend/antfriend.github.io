@@ -610,6 +610,32 @@ section("reasoning: said, inferred, contested, unknown");
   ok(withs.includes("morning") && !S.trips.has("tea|with|morning"), "a comention is searchable and never a belief");
 }
 
+section("a collision steps north-east (TTDB-RFC-0004 §3, TTG-RFC-0002 §6)");
+{
+  // Block a term's first-choice spot with a record of our own, then place the term again.
+  const block = (S, id) => PG.openStore(PG.serializeStore(S.st) + NL + "---" + NL + NL + id + " | created:" + T0 + " | updated:" + T0 + NL + NL + "blocker" + NL);
+  const near = (a, b) => Math.abs(a - b) < 1e-9;
+  const S = fresh(), sp = S.G.sphere, step = +sp.step;
+  const [latLo, latHi] = sp.term_lat.split(/\s+/).map(Number);
+  const first = PG.placeTerm(S, "zorblat", "thing");
+  const S2 = block(S, first.id);
+  ok(PG.records(S2.st).some(r => r.id === first.id), "the blocking record is in the store", first.id);
+  const moved = PG.placeTerm(S2, "zorblat", "thing");
+  ok(near(moved.lat, first.lat + step) && near(moved.lon, first.lon + step),
+     "a taken ID moves one step up in latitude and one up in longitude", first.id + " -> " + moved.id);
+  // at the top of the band, latitude wraps to the bottom rather than leaving it
+  let lemma = null, top = null;
+  for (let i = 0; i < 200000 && !top; i++){
+    const p = PG.placeTerm(S, "w" + i, "thing");
+    if (near(p.lat, latHi)) { lemma = "w" + i; top = p; }
+  }
+  ok(!!top, "some lemma's first choice sits at the top of term_lat", lemma);
+  if (top){
+    const w = PG.placeTerm(block(S, top.id), lemma, "thing");
+    ok(near(w.lat, latLo) && near(w.lon, top.lon + step), "and stepping past term_lat's top wraps to its bottom", top.id + " -> " + w.id);
+  }
+}
+
 section("writing: episodes, placement, contradiction, asked");
 {
   const S = fresh();

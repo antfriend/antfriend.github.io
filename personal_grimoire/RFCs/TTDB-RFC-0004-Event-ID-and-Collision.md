@@ -1,6 +1,6 @@
 # TTDB-RFC-0004: Event ID Assignment and Collision Handling
 
-**Version:** 1.0
+**Version:** 1.1
 **Status:** Stable
 **RFC Number:** 0004
 **Project:** toot-toot-engineering
@@ -30,6 +30,15 @@ Where `LAT` and `LON` are integer coordinates based on the configured
 - When location is available, coordinates SHOULD be derived from location.
 - When location is unavailable, coordinates MAY be derived from a stable hash.
 
+**Scope of the guarantee.** "The same inputs" include the set of IDs already present in
+the file, because §3's collision policy consults it. Two files with different histories
+can therefore assign different IDs to the same record, and two devices that never
+exchange records are **not** guaranteed to agree on an address. Only the *candidate*
+ID (before collision resolution) is a pure function of the record. Record identity
+across reclamation and across nodes is defined by TTDB-RFC-0010 §4, which keeps the
+coordinate as the address and scopes identity to `(node_id, lane, sid)`; no RFC in this
+corpus currently promises that two devices give one observation the same identity.
+
 ---
 
 ## 2.1 Globe as Knowledge Map
@@ -48,6 +57,16 @@ The `southeast_step` policy means:
 - If the candidate ID already exists, increment both lat and lon by the
   configured step and retry until unique.
 
+This definition is **normative** for every RFC that names `southeast_step`.
+
+⚠ **The name is historical and misdescribes the direction.** Incrementing both lat
+and lon moves the ID to higher latitude and higher longitude, which on a map drawn
+with latitude increasing northward (TTCP-RFC-0002, and `feelings_ttdb.md`, where
+north is positive valence) is a step to the **north-east**: `@LAT40LON0` resolves to
+`@LAT41LON1`. The token is kept unchanged because it appears in the `mmpdb` block of
+existing files; implementations MUST follow the rule above and MUST NOT infer a
+direction from the name.
+
 ---
 
 ## 4. Preservation
@@ -55,5 +74,15 @@ The `southeast_step` policy means:
 - If the umwelt changes materially, implementations SHOULD create a new record
   and link to the previous one using a typed edge (e.g., `revises@<old_id>`),
   rather than mutating the original ID.
+
+---
+
+## 5. Changelog
+- **1.1** (2026-11-23) — §2: stated that determinism holds only given the same
+  existing IDs, so addresses are not guaranteed to agree across devices; pointed
+  identity to TTDB-RFC-0010 §4. §3: declared the `southeast_step` definition
+  normative corpus-wide (TTG-RFC-0002 §6 previously defined it differently) and
+  noted that it steps north-east. No change to assignment behaviour.
+- **1.0** — Initial.
 
 End TTDB-RFC-0004

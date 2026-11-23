@@ -1,6 +1,6 @@
 # TTG-RFC-0002: Semantic Percepts, Episodes and Terms
 
-**Version:** 1.0
+**Version:** 1.1
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0002
 **Project:** toot-toot-engineering
@@ -184,8 +184,8 @@ has a record: offset latitude and longitude from the partner by a magnitude in `
 (chosen by FNV-1a of `lemma~` and `lemma~~`, in `step` increments, sign from bit 20), clamped
 to `term_lat` and `thing_lon`. Otherwise: latitude from FNV-1a(`lemma`) and longitude from
 FNV-1a(`lemma#`), each modulo the number of `step` positions in its band. VECTOR terms always
-hash, inside `vector_lon`. Collisions: `southeast_step` (latitude −step, longitude +step,
-wrapping inside the bands). Coordinates are written with as many decimals as `step` has.
+hash, inside `vector_lon`. Collisions: `southeast_step` as TTDB-RFC-0004 §3 defines it (latitude +step,
+longitude +step), wrapping inside the bands. Coordinates are written with as many decimals as `step` has.
 
 **Writing.**
 
@@ -229,5 +229,6 @@ wrapping inside the bands). Coordinates are written with as many decimals as `st
 | 2026-09-22 | §4, §5.1: polarity `?-`, a held denial (TTG-RFC-0005 0.4). |
 | 2026-09-22 | §4, §5.1: an optional seventh column, the reading a held percept belongs to (TTG-RFC-0005 0.7). |
 | 2026-09-22 | 1.0: stable. Implemented in full by the personal_grimoire reference runtime and checked by its tests; the open questions stand as open. |
+| 2026-11-23 | §6: `southeast_step` now cites TTDB-RFC-0004 §3 (latitude +step, longitude +step), which is normative; this section had defined it as latitude −step, longitude +step. ⚠ The personal_grimoire runtime must be checked against this: a runtime that steps latitude −step is now non-conformant, and stores it has already written keep their assigned IDs (TTDB-RFC-0004 §4). |
 
 *License: CC0*

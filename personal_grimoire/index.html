@@ -1964,9 +1964,9 @@ function placeTerm(S, lemma, cls, partner){
   }
   lat = round(lat); lon = round(lon);
   const used = new Set(records(S.st).map(r => r.key));
-  for (let g = 0; used.has(idKey(lat, lon)) && g < 1e6; g++){      // southeast_step
-    lat = round(lat - step); lon = round(lon + step);
-    if (lat < latLo) lat = latHi;
+  for (let g = 0; used.has(idKey(lat, lon)) && g < 1e6; g++){      // southeast_step, as TTDB-RFC-0004 §3 defines it:
+    lat = round(lat + step); lon = round(lon + step);              // both +step (a north-east step, despite the name)
+    if (lat > latHi) lat = latLo;
     if (lon > lonHi) lon = lonLo;
   }
   return { lat, lon, id:makeId(lat, lon, S.dec) };
@@ -2870,7 +2870,7 @@ const PG = { parseStore, serializeStore, parseRecord, parseBlock, openStore, loa
   nounLemma, verbLemma, perceiveSentence, perceive, consolidate, syncTerms, termState, verify, objectsOf, subjectsOf,
   portrait, searchSaid, interpret, answer, replyText, ingestFile, startEmpty, markAsked, records, epsOf, say, SLOT,
   pickGrammar, withGrammar, shapeOf, shapeText, readingsOf, amend, amendReply, reread, takeRereads,
-  epsTop, sceneOf, scenesOf };
+  epsTop, sceneOf, scenesOf, placeTerm };
 
 /* ====================================================================== *
  * The page. Everything below touches the DOM; everything above does not,
