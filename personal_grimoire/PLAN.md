@@ -150,6 +150,45 @@ one use with a thing.
 **From:** LFG's TENSE and aspect features, and the roadmap's "tense and modality" blind
 spot. **Size:** medium.
 
+**Status (2026-11-23): implemented in the runtime, the store and the tests.**
+- **Tense.** A predicate is past when one of its words is a `past_form`, or an inflected verb
+  wears a `past_ending`. A present *have* rules this out (*has moved* is not past). Past
+  percepts are marked `tense: <sentence> | <percept ordinals>`. Amendments carry the line,
+  re-reading compares it, and malformed ones are skipped and counted.
+- **Change of mind.** A past saying that a later present saying contradicts is retired: kept
+  and quoted, but no longer counted. A tell, and a question that meets it, add the
+  `changed_tense` note. Two sayings in the same tense still contest, and so does a past
+  saying after a present one.
+- **Hedges.** A `class: hedge` word holds its clause. English: *might may could maybe perhaps
+  possibly probably*. Spanish: *quizás quizá acaso posiblemente probablemente*.
+
+**Changed from the plan.**
+- **A dedicated `tense:` line**, in the same ordinal form as `gap:`, instead of a general
+  `feature: key=value` line. Only the past is marked, because nothing reads any other value yet.
+- **No `mood` for other modals.** Recording *can* or *must* would have offered a re-reading for
+  the seed store's *Birds can fly* and changed nothing anyone reads.
+- **The class is `hedge`, not `hedge_modal`.** It also covers adverbs (*maybe*), which are
+  added to `adverb` too.
+- **No `numbers` switch for the tense rule.** It fires only on opposite polarity across
+  tenses. bAbI task 1 has no negation, and task 15 is all present tense, so the rule cannot
+  change their answers. That's still unverified until the data is here.
+- **Quotes are not tense-marked.** They are verbatim, so a past saying is already quoted in
+  the past. Triples carry no tense.
+
+**Known gaps.**
+- A change inside one episode (*I hated snow. I do not hate snow.*) decides the belief
+  correctly, but the tell's reply doesn't name the change, because a reply compares against
+  what the store held before the tell.
+- Many Spanish past forms (*cazaron*, *gustaba*) are not lemmatized. This is an existing gap,
+  unchanged by Phase 3. Where the verb is recognized, its past is marked.
+
+Also fixed along the way: `tests/embed.test.mjs` now normalizes line endings as the store's
+reader does. With `core.autocrlf=true`, git rewrites working copies with CRLF on checkout, and
+the test failed on them.
+
+Still to do: the RFC text upstream (TTG-RFC-0005 §3, TTG-RFC-0004 §3, TTG-RFC-0002 §5.1,
+TTG-RFC-0001 §3–4, TTG-RFC-0003 §2 and §4), and the bAbI check.
+
 **Problem.** *Birds fly*, *birds flew* and *birds might fly* are one percept. *I liked coffee*
 followed by *I do not like coffee* is reported as a contradiction, although the owner's own
 words say it is a change.

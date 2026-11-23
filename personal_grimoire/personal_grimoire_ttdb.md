@@ -259,6 +259,12 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <
   (*the cat sleeps*) — the percept is the grammar's reading, not the owner's words:
   `gap: 1 | 2` names it by ordinal. What a verb takes is learned from both, but only the
   owner's words count in full (below).
+- **Tense** → a percept whose predicate is in the past — a `past_form` among its words
+  (*was*, *did*, *went*), or a `past_ending` on an inflected verb (*moved*), but not after a
+  present *have* (*has moved*) — is marked `tense: 1 | 1`. Only the past is marked.
+- **Hedges** → a `hedge` word in a clause (*maybe*, *might*, *quizás*) holds the clause, as a
+  stance does: *I might like opera* is `self | like | opera | ?`. Set aside — *(maybe) cats
+  purr* — it leaves a plain saying.
 - **Two readings** → where the grammar can read a sentence two ways, what both say is said and
   what only one says is held, **named** in a seventh column: `a` and `b` at the first such
   place, `c` and `d` at the next. *The men that saw the cats eat cheese* says `man see cat`
@@ -272,7 +278,7 @@ it is how every belief proves where it came from.
 ```
 @LAT90LON<n> | created | updated | relates:perceives@<term>,...
 **Episode n — source**
-ttdb-episode block: source:, at:, said: lines, shape: lines, percept: lines, holds: lines, gap: lines
+ttdb-episode block: source:, at:, said: lines, shape: lines, percept: lines, holds: lines, gap: lines, tense: lines
 ```
 
 **The owner's reading.** Each sentence's shape is written beside it in the lexicon's marks —
@@ -333,7 +339,7 @@ belief: <vector> | <object or -> | <+ - ?> | <for> <against> | <conf>
 
 ---
 
-@LAT50LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT0LON0,depends_on@LAT40LON0,derived_from@LAT98LON6
+@LAT50LON0 | created:1789257600 | updated:1795392000 | relates:refines@LAT0LON0,depends_on@LAT40LON0,derived_from@LAT98LON6
 
 **Blueprint 5 — Consolidate: from percepts to beliefs**
 src: RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md §2
@@ -342,7 +348,9 @@ A belief is the consolidation of every percept, in the episodes on the lane, wit
 subject, vector and object.
 This is TTDB-RFC-0007's Dream Cycle made deterministic for text: replay is a count, not a
 random walk, and the count runs over **episodes, not sentences** — saying a thing five times
-in one breath is one episode's worth of saying it.
+in one breath is one episode's worth of saying it. A saying in the past that a later one in
+the present contradicts is a **change**, not a contest: it is kept and quoted, and no longer
+counts (*I liked tea*, then *I do not like tea*, is a belief that you do not).
 
 - For each episode, a triple scores the largest weight of its `+` percepts and, separately,
   of its `-` percepts: 1, or `weight_partial` for a `~` (partial) percept. Sum across episodes:
@@ -648,7 +656,8 @@ class: hav | has have had having
 class: modal | can could will would shall should may might must
 class: neg | not never nothing none nobody
 class: wh | what who whom which where when why how whose
-class: adverb | very really just also only even still quite too always often usually sometimes rarely already again here there now ever
+class: adverb | very really just also only even still quite too always often usually sometimes rarely already again here there now ever maybe perhaps possibly probably
+class: hedge | might may could maybe perhaps possibly probably
 class: filler | yes ok okay oh well please thanks hello hi
 whole: can't | can not
 whole: won't | will not
@@ -796,6 +805,8 @@ verb: ing | - | e ~
 verb_guard: ss us is
 progressive_ending: ing
 participle_ending: ed
+past_ending: ed
+past_form: was were had did ate went saw made took gave knew thought found told said got came ran wrote flew grew left felt kept held brought bought caught taught fought built sent meant lost sat stood began drank swam sang spoke broke chose drove rode fell forgot hid bit led fed met slept won hung woke wore threw drew became lay
 double_keep: l s f z
 min_stem: 2
 bare_finite: plural self
@@ -934,6 +945,7 @@ reading_pair: either {a}, or {b}
 asked_held: You said it, but not as fact: “{text}” ({ep}).
 asked_readings: You said “{text}” ({ep}), which reads two ways, and not which you meant: {readings}.
 asked_holds: {s} {v}: {triples} — kept, not believed, from “{text}” ({ep}).
+changed_tense: You said “{then}” ({ep}), and since then “{now}” ({ep_now}) — a change in your words, not a contradiction.
 amended: Read again as you marked it: {percepts}.
 amend_title: Amendment {n}
 contradicts: This disagrees with something you said before.
@@ -1045,7 +1057,8 @@ class: hav | tiene tienen tengo tienes tenemos
 class: modal | puede pueden puedo puedes podemos debe deben debo
 class: neg | no nunca jamás nada nadie
 class: wh | qué quién quiénes cuál cuáles dónde cuándo cómo
-class: adverb | muy también siempre ya aún todavía casi bastante mucho poco más menos tan
+class: adverb | muy también siempre ya aún todavía casi bastante mucho poco más menos tan quizás quizá acaso posiblemente probablemente
+class: hedge | quizás quizá acaso posiblemente probablemente
 class: filler | sí vale hola gracias bueno pues
 whole: del | de el
 whole: al | a el
@@ -1123,6 +1136,8 @@ bare_finite: -
 adverb_ending: mente
 self_ending: o é í
 self_form: soy estoy voy doy sé vi fui
+past_ending: ó ió aron ieron aba aban ía ían
+past_form: era eran estaba estaban fue fueron fui vi viste vio vimos vieron tuvo tenía tenían
 ```
 
 ---
@@ -1230,6 +1245,7 @@ reading_pair: o bien {a}, o bien {b}
 asked_held: Lo dijiste, pero no como hecho: “{text}” ({ep}).
 asked_readings: Dijiste “{text}” ({ep}), que se lee de dos maneras, sin decir cuál querías decir: {readings}.
 asked_holds: {s} {v}: {triples} — guardado, no creído, de “{text}” ({ep}).
+changed_tense: Dijiste “{then}” ({ep}), y después “{now}” ({ep_now}) — un cambio en tus palabras, no una contradicción.
 amended: Leído de nuevo como lo marcaste: {percepts}.
 amend_title: Enmienda {n}
 contradicts: Esto contradice algo que dijiste antes.
@@ -2114,7 +2130,7 @@ owner, and they keep the corpus lane.
 
 ---
 
-@LAT98LON3 | created:1789257600 | updated:1789344000 | relates:supports@LAT60LON0,supports@LAT50LON0
+@LAT98LON3 | created:1789257600 | updated:1795392000 | relates:supports@LAT60LON0,supports@LAT50LON0
 [ew]
 conf:190
 rev:1
@@ -2133,10 +2149,13 @@ collapse as its two ends and no mean. A contested belief is not an error in the 
 the most interesting thing in it, and its EPS is how the librarian finds it again.
 
 Consolidation still does not weigh *when* something was said. *I like coffee* on Monday and
-*I do not like coffee* on Friday is a change of mind, not a contradiction, and the store
-cannot tell those apart: the count is recency-neutral, as TTG-RFC-0003 §2 defines it. A
-recency rule would be one line in the numbers record and a large claim about the owner, so it
-is not made.
+*I do not like coffee* on Friday may be a change of mind, but the owner's words do not say
+so, and the count is recency-neutral, as TTG-RFC-0003 §2 defines it. A recency rule would be
+one line in the numbers record and a large claim about the owner, so it is not made. What the
+owner's words *do* say is read: *I liked coffee*, then *I do not like coffee*, is a change in
+the owner's own tense, so the past saying is kept and quoted and no longer counts. That is a
+claim about the language, not about the owner, and two sayings in the same tense still
+contest.
 
 Time enters in one narrower place, as a claim about a relation rather than about the owner.
 A vector the grammar declares `exclusive` holds one object at a time, so *Mary is in the
@@ -2206,7 +2225,9 @@ last in English, first in Spanish. It still does not see:
   are read right.
 - **Modifiers** — *black cats* is *cats*; the adjective is dropped unless the owner binds the
   phrase into one term (`black_cat`).
-- **Tense and modality** — *birds fly*, *birds flew* and *birds might fly* are one percept.
+- **Tense and modality** — *birds flew* is marked past and *birds might fly* is held, but
+  only the past is told from the present: *birds will fly* and *birds can fly* read as
+  *birds fly*, and an irregular past the morphology does not list is read as present.
 - **Word order other than a chain**, and questions that invert it beyond the forms in
   [question forms](lat-50lon0).
 - **Numbers, dates and names with spaces** — *New York* is two things until the owner writes

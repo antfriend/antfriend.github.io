@@ -596,7 +596,7 @@ function loadGrammar(st, lang){
     lang:want, classes:new Map(), whole:new Map(), contractions:[], sentenceEnd:new Set(), clauseBreak:new Set(),
     questionMark:"", listSep:"", genericDet:new Set(), marks:{}, headFirst:false,
     nounIrr:new Map(), nounKeep:new Set(), plural:[], pluralGuard:[], verbIrr:new Map(), verb:[], verbGuard:[],
-    doubleKeep:new Set(), minStem:NaN, seed:new Set(), stance:new Set(), chain:new Set(), progressive:[], participle:[],
+    doubleKeep:new Set(), minStem:NaN, seed:new Set(), stance:new Set(), chain:new Set(), progressive:[], participle:[], pastForm:new Set(), pastEnding:[],
     bareEnding:[], bareFinite:null, stanceNoun:new Set(), motion:new Set(), objectMark:new Set(),
     intransitive:new Set(), adverbEnding:[], adverbGuard:new Set(), selfEnding:[], selfForm:new Set(), pluralVerbEnding:"",
     roles:{}, vectors:new Map(), inherits:[], phrases:[],
@@ -645,6 +645,9 @@ function loadGrammar(st, lang){
       G.minStem = +b.min_stem;
       G.progressive.push(...words(b.progressive_ending));
       G.participle.push(...words(b.participle_ending));
+      // what makes a verb past (TTG-RFC-0005 §3, tense): its own past forms, else a past ending on an inflected verb
+      for (const w of words(b.past_form)) G.pastForm.add(w);
+      G.pastEnding.push(...words(b.past_ending));
       // what a bare verb ends in, and which subjects its bare form is finite for (TTG-RFC-0005 §3)
       G.bareEnding.push(...words(b.bare_ending));
       if (b.bare_finite != null) G.bareFinite = new Set(words(b.bare_finite).filter(w => w !== "-"));
@@ -1027,7 +1030,8 @@ const isMention = p => p.s === "-" || p.v === "-";
 const HELD = "?", HELD_NO = "?-", isHeld = p => p.pol === HELD || p.pol === HELD_NO;
 // while a sentence is read, a percept carries the segments it came from and, if held, what holds it
 // and whether its object, or its lack of one, is the grammar's reading of a relative's gap
-const RUNS = Symbol(), BY = Symbol(), GAP = Symbol();
+// and whether it was said in the past tense
+const RUNS = Symbol(), BY = Symbol(), GAP = Symbol(), PAST = Symbol();
 /* Where the grammar can read a sentence two ways, the two readings are named
  * a and b at the first such place, c and d at the second, and so on; what
  * only one reading says carries its letter, and is held. The owner may say
@@ -1329,7 +1333,7 @@ function verbItems(S, toks, gap){
       else if (gap && !verbed && (has(t, "hav") || has(t, "cop"))) verbed = "light";
     });
     if (p.length) preds.push(p);
-    return preds.map(q => ({ ...predOf(S, q), bare:bareOf(S, q), self:selfOf(S, q) }));
+    return preds.map(q => ({ ...predOf(S, q), bare:bareOf(S, q), self:selfOf(S, q), past:pastOf(S, q) }));
   });
 }
 /* A verb in the form the store names it by — eat, comer — or wearing a
@@ -1338,6 +1342,21 @@ function verbItems(S, toks, gap){
  * are finite. Where the morphology declares `bare_ending`, a bare form also
  * wears one (comer, not the unlemmatised cazaron). Whether a bare form can
  * be finite at all, and for which subjects, is `bare_finite`.              */
+/* A predicate said in the past: a past form among its words (was, did, went,
+ * fue), or a past ending on an inflected verb (moved, cazó) — except after a
+ * have that is not itself past (has moved), which is the present perfect.  */
+function pastOf(S, toks){
+  const G = S.G;
+  if (!G.pastForm.size && !G.pastEnding.length) return false;
+  let perfect = false;
+  for (const t of toks){
+    if (t.punct || t.synthetic) continue;
+    if (G.pastForm.has(t.w)) return true;
+    if (has(t, "hav")){ perfect = true; continue; }
+    if (!perfect && isContent(t) && G.pastEnding.some(e => t.w.endsWith(e)) && verbLemma(S, t.w).lemma !== t.w) return true;
+  }
+  return false;
+}
 /* The speaker's own verb form, in a grammar that drops subjects: como, vi, tengo. */
 function selfOf(S, toks){
   const G = S.G, t = toks.find(x => !x.punct && !soft(x) && !has(x, "infinitive"));
@@ -1592,6 +1611,7 @@ function readClause(S, T, L, idx, ctx, inherited, hold, pick, holdBy){
           x[RUNS] = [r, a.subj, right];
           if (by && isHeld({ pol:p })) x[BY] = by;
           if (guess) x[GAP] = true;
+          if (P.past) x[PAST] = true;
           out.percepts.push(x);
         };
         // a gap the grammar filled, or one no verb took, is the grammar's reading — not one the owner chose
@@ -1631,7 +1651,8 @@ function clausePercepts(S, toks, ctx, inherited, pick){
     const near = (i, d) => { while (labels[i] === "A") i += d; return toks[i]; };
     const at = near(cl.idx[0] - 1, -1), next = near(cl.idx[cl.idx.length - 1] + 1, 1);
     const reported = open && has(at, "subord");
-    const hold = has(at, "alt") || has(next, "alt") || reported;
+    // a hedge word in the clause holds it too: maybe cats bark; I might like coffee
+    const hold = has(at, "alt") || has(next, "alt") || reported || cl.idx.some(i => has(toks[i], "hedge"));
     const r = readClause(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold, pick, reported ? openBy : null);
     first = false; open = r.open; openBy = r.openBy;
     out.percepts.push(...r.percepts); out.forms.push(...r.forms); out.heads.push(...r.heads); out.pairs.push(...r.pairs); out.chains.push(...r.chains);
@@ -1685,6 +1706,7 @@ function perceiveSentence(S, sentence, ctx, reading){
   });
   res.holds = holdsOf(res.percepts);
   res.gaps = res.percepts.map((p, i) => p[GAP] ? i + 1 : 0).filter(Boolean);
+  res.pasts = res.percepts.map((p, i) => p[PAST] ? i + 1 : 0).filter(Boolean);
   return res;
 }
 /* Which percept holds which (TTG-RFC-0002 §5.1, the holds line): a stance
@@ -1703,7 +1725,8 @@ function holdsOf(ps){
   return out;
 }
 const holdsLine = (n, h) => [n, h.st, h.held.join(" ")].join(" | ");
-// the percepts whose object, or lack of one, the grammar read at a gap (TTG-RFC-0005 §3, the gap line)
+// the percepts whose object, or lack of one, the grammar read at a gap (TTG-RFC-0005 §3, the gap line),
+// and those said in the past tense (the tense line): a sentence and percept ordinals
 const gapLine = (n, gaps) => gaps.length ? [n, gaps.join(" ")].join(" | ") : "";
 /* A text's reading, under the grammar it reads as: its shape, its segments and
    what it would perceive. Marks in the text overrule the parser.            */
@@ -1816,18 +1839,23 @@ function consolidate(S){
     }
     const lines = many(b, "percept").map(line => ({ line, id:c.rec.id, orig:true }));
     if (am) for (const e of am.entries.values()) for (const line of e.lines) lines.push({ line, id:am.chunk.rec.id, orig:false });
-    // which percepts of a sentence the grammar read at a gap, by ordinal: the episode's, or the amendment's
-    const gaps = new Map(), ords = new Map(), side = orig => orig ? "#" : "@";
-    const gl = many(b, "gap").map(line => ({ line, id:c.rec.id, orig:true }));
-    if (am) for (const e of am.entries.values()) if (e.gap) gl.push({ line:e.gap, id:am.chunk.rec.id, orig:false });
-    for (const { line, id, orig } of gl){
-      const g = cols(line), n = +g[0], at = String(g[1] || "").split(/\s+/).filter(Boolean);
-      const count = (orig ? many(b, "percept") : am.entries.get(n).lines).filter(l => +cols(l)[0] === n).length;
-      if (g.length !== 2 || !/^\d+$/.test(g[0]) || !at.length || at.some(x => !/^\d+$/.test(x) || +x < 1 || +x > count)){
-        malformed.push({ id, line }); continue;
+    // which percepts of a sentence the grammar read at a gap, and which were said in the past, by
+    // ordinal: the episode's lines, or the amendment's for a sentence it amends
+    const ords = new Map(), side = orig => orig ? "#" : "@";
+    const marked = k => {
+      const m = new Map(), ls = many(b, k).map(line => ({ line, id:c.rec.id, orig:true }));
+      if (am) for (const e of am.entries.values()) if (e[k]) ls.push({ line:e[k], id:am.chunk.rec.id, orig:false });
+      for (const { line, id, orig } of ls){
+        const g = cols(line), n = +g[0], at = String(g[1] || "").split(/\s+/).filter(Boolean);
+        const count = (orig ? many(b, "percept") : am.entries.get(n).lines).filter(l => +cols(l)[0] === n).length;
+        if (g.length !== 2 || !/^\d+$/.test(g[0]) || !at.length || at.some(x => !/^\d+$/.test(x) || +x < 1 || +x > count)){
+          malformed.push({ id, line }); continue;
+        }
+        m.set(side(orig) + n, new Set(at.map(Number)));
       }
-      gaps.set(side(orig) + n, new Set(at.map(Number)));
-    }
+      return m;
+    };
+    const gaps = marked("gap"), pasts = marked("tense");
     for (const { line, id, orig } of lines){
       const p = cols(line), rd = p[6] || "";
       const at = side(orig) + +p[0], nth = (ords.get(at) || 0) + 1;
@@ -1866,7 +1894,7 @@ function consolidate(S){
       const pe = e.per.get(c.rec.id) || { plus:0, minus:0 };
       if (pol === "+") pe.plus = Math.max(pe.plus, w); else pe.minus = Math.max(pe.minus, w);
       e.per.set(c.rec.id, pe);
-      e.sources.push({ ep:c.rec.id, n:+n, pol, q });
+      e.sources.push({ ep:c.rec.id, n:+n, pol, q, past:(pasts.get(at) || EMPTY).has(nth) });
     }
     // which percept holds which: a stance and the held percepts its clause says, by their ordinals
     // among the sentence's percept lines, in the episode or the amendment that stands for it
@@ -1883,6 +1911,21 @@ function consolidate(S){
       }
       if (!own || (orig && am && am.entries.has(n))) continue;
       holds.push({ s:st[1], v:st[2], o:st[3], pol:st[4], ep:c.rec.id, n, held:hs.map(p => ({ s:p[1], v:p[2], o:p[3], pol:p[4], reading:p[6] || "" })) });
+    }
+  }
+  // a change in the owner's own words: a saying in the past, then a later one in the present that says
+  // the opposite, is a change of mind, not a contradiction — the past one is kept and quoted, and no
+  // longer counts (TTG-RFC-0004 §3, by tense). Two sayings in the same tense still contest.
+  for (const e of trips.values()){
+    for (const x of e.sources)
+      x.changed = x.past && e.sources.some(y => !y.past && y.pol !== x.pol && whenSaid(S, y) > whenSaid(S, x));
+    if (!e.sources.some(x => x.changed)) continue;
+    e.per = new Map();
+    for (const x of e.sources){
+      if (x.changed) continue;
+      const w = x.q === "~" ? N.weight_partial : 1, pe = e.per.get(x.ep) || { plus:0, minus:0 };
+      if (x.pol === "+") pe.plus = Math.max(pe.plus, w); else pe.minus = Math.max(pe.minus, w);
+      e.per.set(x.ep, pe);
     }
   }
   S.beliefsBy = new Map(); S.byVector = new Map(); S.incoming = new Map(); S.believers = new Set();
@@ -2179,15 +2222,19 @@ function settle(S, all, now, before, retiredBefore){
   for (const p of all) for (const t of [S.things.get(p.s), S.vectors.get(p.v), S.things.get(p.o)]) if (t) touched.add(t);
   syncTerms(S, now, touched);
   indexTerms(S);
-  const conflicts = [];
+  const conflicts = [], changes = [];
   for (const p of all){
     const k = p.s + "|" + p.v + "|" + p.o, b = before.get(k), e = S.trips.get(k);
     if (!b || !e || p.v === R.comention || isHeld(p)) continue;
-    if (b.pol !== "?" && b.pol !== p.pol && !conflicts.some(c => c.trip === e))
-      conflicts.push({ trip:e, earlier:b.sources.filter(s => s.pol !== p.pol) });
+    if (b.pol !== "?" && b.pol !== p.pol && !conflicts.some(c => c.trip === e) && !changes.some(c => c.trip === e)){
+      // what this saying disagrees with was all said in the past: a change in the owner's words
+      const earlier = b.sources.filter(s => s.pol !== p.pol);
+      const changed = earlier.every(s => e.sources.some(x => x.ep === s.ep && x.n === s.n && x.changed));
+      (changed ? changes : conflicts).push({ trip:e, earlier });
+    }
   }
   const superseded = [...S.superseded].filter(([k]) => !retiredBefore.has(k)).map(([, sup]) => sup);
-  return { conflicts, superseded };
+  return { conflicts, changes, superseded };
 }
 const mentioned = w => [...new Set(w.mentions.flatMap(p => [p.s, p.v, p.o]).filter(x => x !== "-"))];
 const splitAll = (S, all) => ({ percepts:all.filter(p => p.v !== S.G.roles.comention && !isMention(p) && !isHeld(p)),
@@ -2198,7 +2245,7 @@ function perceive(S, text, source, isFile, now, shapes){
   const G = S.G, R = G.roles;
   const sentences = sentencesOf(S, text, isFile);
   if (!sentences.length) return null;
-  const ctx = { last:null }, saidLines = [], shapeLines = [], perceptLines = [], holdLines = [], gapLines = [], all = [], forms = [];
+  const ctx = { last:null }, saidLines = [], shapeLines = [], perceptLines = [], holdLines = [], gapLines = [], tenseLines = [], all = [], forms = [];
   const max = G.num.said_max_chars;
   sentences.forEach((sen, i) => {
     const n = i + 1, SG = pickGrammar(S, sen);
@@ -2213,6 +2260,7 @@ function perceive(S, text, source, isFile, now, shapes){
     }
     for (const h of r.holds) holdLines.push("holds: " + holdsLine(n, h));
     if (r.gaps.length) gapLines.push("gap: " + gapLine(n, r.gaps));
+    if (r.pasts.length) tenseLines.push("tense: " + gapLine(n, r.pasts));
     forms.push(...r.forms);
   });
   const before = beforeOf(S, all), retiredBefore = new Set(S.superseded.keys());
@@ -2228,11 +2276,11 @@ function perceive(S, text, source, isFile, now, shapes){
       if (t && R.episode_edge){ const e = R.episode_edge + t.chunk.rec.id; if (!refs.includes(e)) refs.push(e); }
     }
   }
-  const block = ["source: " + src, "at: " + now].concat(saidLines, shapeLines, perceptLines, holdLines, gapLines).join("\n");
+  const block = ["source: " + src, "at: " + now].concat(saidLines, shapeLines, perceptLines, holdLines, gapLines, tenseLines).join("\n");
   const ec = newChunk(epId, now, refs.join(","), null, say(G, "episode_title", { n:ord, source:src }) || epId, "ttdb-episode", block);
   insertChunk(S.st, ec);
-  const { conflicts, superseded } = settle(S, all, now, before, retiredBefore);
-  return { id:epId, ord, sentences:sentences.length, ...splitAll(S, all), all, created, conflicts, superseded };
+  const { conflicts, changes, superseded } = settle(S, all, now, before, retiredBefore);
+  return { id:epId, ord, sentences:sentences.length, ...splitAll(S, all), all, created, conflicts, changes, superseded };
 }
 
 /* ---------- amend: the owner's reading of a sentence already said ------- *
@@ -2253,11 +2301,11 @@ function amendEntries(block){
     const line = raw.trim(), i = line.indexOf(":");
     if (i < 0) continue;
     const k = line.slice(0, i).trim(), v = line.slice(i + 1).trim(), n = +cols(v)[0];
-    if (k !== "shape" && k !== "percept" && k !== "grammar" && k !== "reading" && k !== "holds" && k !== "gap") continue;
-    if (!m.has(n)) m.set(n, { shape:"", lines:[], holds:[], gap:"", grammar:null, reading:null });
+    if (k !== "shape" && k !== "percept" && k !== "grammar" && k !== "reading" && k !== "holds" && k !== "gap" && k !== "tense") continue;
+    if (!m.has(n)) m.set(n, { shape:"", lines:[], holds:[], gap:"", tense:"", grammar:null, reading:null });
     const rest = v.slice(v.indexOf("|") + 1).trim();
     if (k === "percept") m.get(n).lines.push(v); else if (k === "holds") m.get(n).holds.push(v);
-    else if (k === "gap") m.get(n).gap = cols(v).join(" | "); else m.get(n)[k] = rest;
+    else if (k === "gap" || k === "tense") m.get(n)[k] = cols(v).join(" | "); else m.get(n)[k] = rest;
   }
   return m;
 }
@@ -2305,11 +2353,12 @@ function rereadWalk(S, epId, visit){
       const now = r.percepts.map(p => perceptLine(n, p)), shape = own.has(n) ? own.get(n) : null;
       // which percept holds which is part of the reading too
       const held = many(b, "holds").filter(l => +cols(l)[0] === n).map(l => cols(l).join(" | ")), holds = r.holds.map(h => holdsLine(n, h));
-      const gapWas = many(b, "gap").filter(l => +cols(l)[0] === n).map(l => cols(l).join(" | ")).join("\n"), gap = gapLine(n, r.gaps);
-      if ((shape !== null && r.shape !== shape) || now.join("\n") !== was.join("\n") || holds.join("\n") !== held.join("\n") || gap !== gapWas)
+      const lineOf = k => many(b, k).filter(l => +cols(l)[0] === n).map(l => cols(l).join(" | ")).join("\n");
+      const gapWas = lineOf("gap"), gap = gapLine(n, r.gaps), tenseWas = lineOf("tense"), tense = gapLine(n, r.pasts);
+      if ((shape !== null && r.shape !== shape) || now.join("\n") !== was.join("\n") || holds.join("\n") !== held.join("\n") || gap !== gapWas || tense !== tenseWas)
         visit({ episode:c.rec.id, n, text, amended:!!e, accepted:!!e && e.shape === r.shape && e.lines.join("\n") === now.join("\n") &&
-                e.holds.join("\n") === holds.join("\n") && e.gap === gap, shape, reads:r.shape, reading:r.reading || null, was, now, held, holds,
-                gapWas, gap }, { last:ctx.last });
+                e.holds.join("\n") === holds.join("\n") && e.gap === gap && e.tense === tense, shape, reads:r.shape, reading:r.reading || null,
+                was, now, held, holds, gapWas, gap, tenseWas, tense }, { last:ctx.last });
       // the context goes on through what now stands: an amendment (one a visit just took, too), else the episode's reading
       const s = entry(), stands = s ? s.shape : shape;
       if (stands === null || (stands === r.shape && (s ? s.reading || "" : "") === (r.reading || ""))) ctx.last = here.last;
@@ -2363,23 +2412,24 @@ function amendAt(S, c, n, shape, now, grammar, reading, ctx){
     const before = beforeOf(S, all), retiredBefore = new Set(S.superseded.keys());
     const created = landTerms(S, all, r.forms, now);
     const had = S.amends.get(c.rec.lon), entries = new Map(had ? had.entries : []);
-    const mine = all.map(p => perceptLine(n, p)), myHolds = r.holds.map(h => holdsLine(n, h)), myGap = gapLine(n, r.gaps);
+    const mine = all.map(p => perceptLine(n, p)), myHolds = r.holds.map(h => holdsLine(n, h)), myGap = gapLine(n, r.gaps), myTense = gapLine(n, r.pasts);
     const origLines = many(parseBlock(c.rec.episode), "percept").filter(l => +cols(l)[0] === n).map(l => cols(l).join(" | "));
     const origHolds = many(parseBlock(c.rec.episode), "holds").filter(l => +cols(l)[0] === n).map(l => cols(l).join(" | "));
-    const origGap = many(parseBlock(c.rec.episode), "gap").filter(l => +cols(l)[0] === n).map(l => cols(l).join(" | ")).join("\n");
+    const origOf = k => many(parseBlock(c.rec.episode), k).filter(l => +cols(l)[0] === n).map(l => cols(l).join(" | ")).join("\n");
+    const origGap = origOf("gap"), origTense = origOf("tense");
     const origShape = lineMap(many(parseBlock(c.rec.episode), "shape")).get(n) || withGrammar(S, G, () => perceiveSentence(S, said.get(n), { last:null }).shape);
     // reading it back the way the episode already reads it withdraws the amendment
-    if (r.shape === origShape && mine.join("\n") === origLines.join("\n") && myHolds.join("\n") === origHolds.join("\n") && myGap === origGap) entries.delete(n);
-    else entries.set(n, { shape:r.shape, lines:mine, holds:myHolds, gap:myGap, grammar:grammar || null, reading:r.reading || null });
+    if (r.shape === origShape && mine.join("\n") === origLines.join("\n") && myHolds.join("\n") === origHolds.join("\n") && myGap === origGap && myTense === origTense) entries.delete(n);
+    else entries.set(n, { shape:r.shape, lines:mine, holds:myHolds, gap:myGap, tense:myTense, grammar:grammar || null, reading:r.reading || null });
     const block = [...entries].sort((x, y) => x[0] - y[0])
       .flatMap(([k, e]) => ["shape: " + k + " | " + e.shape].concat(e.grammar ? ["grammar: " + k + " | " + e.grammar] : [],
-        e.reading ? ["reading: " + k + " | " + e.reading] : [], e.lines.map(l => "percept: " + l), e.holds.map(l => "holds: " + l), e.gap ? ["gap: " + e.gap] : [])).join("\n");
+        e.reading ? ["reading: " + k + " | " + e.reading] : [], e.lines.map(l => "percept: " + l), e.holds.map(l => "holds: " + l), e.gap ? ["gap: " + e.gap] : [], e.tense ? ["tense: " + e.tense] : [])).join("\n");
     const id = makeId(alane, c.rec.lon, 0), relates = R.amend_edge ? R.amend_edge + c.rec.id : "";
     if (had && !entries.size) S.st.chunks = S.st.chunks.filter(x => x !== had.chunk);
     else if (had) rewriteChunk(had.chunk, { updated:now, relates, tag:"ttdb-amend", block });
     else if (entries.size) insertChunk(S.st, newChunk(id, now, relates, null, say(G, "amend_title", { n:c.rec.lon }) || id, "ttdb-amend", block));
-    const { conflicts, superseded } = settle(S, all, now, before, retiredBefore);
-    const res = { id, amends:c.rec.id, n, shape:r.shape, reading:r.reading || null, sentences:1, ...splitAll(S, all), all, created, conflicts, superseded };
+    const { conflicts, changes, superseded } = settle(S, all, now, before, retiredBefore);
+    const res = { id, amends:c.rec.id, n, shape:r.shape, reading:r.reading || null, sentences:1, ...splitAll(S, all), all, created, conflicts, changes, superseded };
     writeCursor(S, c.rec.id, said.get(n), say(G, "amended", { percepts:unit(G, "percept", res.percepts.length + res.held.length) }), [c.rec.id]);
     return res;
   });
@@ -2828,6 +2878,8 @@ function answerIn(S, text, now, source, shapes){
     for (const { p, r:x } of results) if (x.exception)
       reply.notes.push(say(G, "exception", { term:p.s, via:x.exception.via }));
     if (r.verdict === "U") heldNotes(S, reply, h => it.checks.some(p => h.s === p.s && h.v === p.v && h.o === p.o));
+    // a belief the owner's words changed is named with the change
+    for (const p of it.checks){ const t = changeText(S, S.trips.get(p.s + "|" + p.v + "|" + p.o)); if (t && !reply.notes.includes(t)) reply.notes.push(t); }
   } else if (it.intent === "objectsOf" || it.intent === "subjectsOf"){
     const list = it.intent === "objectsOf" ? objectsOf(S, it.s, it.vs) : subjectsOf(S, it.v, it.o);
     reply.head = it.intent === "objectsOf" ? say(G, "objects_head", { s:it.s, v:vlabel(S, it.vs[0]) })
@@ -2895,6 +2947,7 @@ function writeGrounds(S, reply, w, epId){
     reply.notes.push(say(G, "contradicts"));
     reply.items.push({ kind:"conflict", pol:c.trip.pol, path:[c.trip], conf:c.trip.conf, quotes:quotesFor(S, c.trip).slice(-3) });
   }
+  for (const c of w.changes || []){ const t = changeText(S, c.trip); if (t) reply.notes.push(t); }
   if (w.superseded.length) reply.notes.push(say(G, "supersedes"));
   for (const sup of w.superseded) reply.items.push(quoted(S, supersededGround(S, sup)));
 }
@@ -2922,6 +2975,16 @@ function heldNotes(S, reply, test){
     reply.notes.push(h.reading ? say(G, "asked_readings", { text, ep:h.ep, readings:readingsText(S, S.heldIn.get(k) || [], h.reading) })
                                : say(G, "asked_held", { text, ep:h.ep }));
   }
+}
+/* A change in the owner's own words (TTG-RFC-0004 §3, by tense): the saying in
+ * the past it retired, and the latest one in the present that retired it.  */
+function changeText(S, e){
+  if (!e || !e.sources.some(x => x.changed)) return "";
+  const then = e.sources.find(x => x.changed);
+  const now = e.sources.filter(x => !x.past && x.pol !== then.pol).sort((a, b) => whenSaid(S, b) - whenSaid(S, a))[0];
+  const text = x => (S.said.get(x.ep) || new Map()).get(x.n);
+  if (!now || text(then) == null || text(now) == null) return "";
+  return say(S.G, "changed_tense", { then:text(then), ep:then.ep, now:text(now), ep_now:now.ep });
 }
 /* A question after what someone said with a stance (I doubt, the idea that…)
  * meets the clause the stance holds: each is named, with its saying, as a note

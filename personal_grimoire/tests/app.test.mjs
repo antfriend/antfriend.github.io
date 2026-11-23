@@ -466,6 +466,50 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
        "every verb record in the seed store carries the frames its episodes give it");
   }
 
+  // tense and hedges (TTG-RFC-0005 §3): a change in the owner's words is not a contradiction
+  {
+    const many = (o, k) => o[k] == null ? [] : [].concat(o[k]);
+    const lastBlock = S => PG.parseBlock(S.episodes[S.episodes.length - 1].rec.episode);
+    const X = fresh();
+    let t = T0;
+    PG.answer(X, "I liked tea.", t += 60);
+    ok(many(lastBlock(X), "tense").join() === "1 | 1", "a percept said in the past is marked by a tense line");
+    const now = PG.answer(X, "I do not like tea.", t += 60);
+    const change = PG.say(X.G, "changed_tense", { then:"I liked tea.", ep:X.episodes[X.episodes.length - 2].rec.id, now:"I do not like tea.", ep_now:now.episode.id });
+    ok(now.notes.includes(change) && !now.notes.includes(PG.say(X.G, "contradicts")), "the past, then its opposite in the present, is named as a change, not a contradiction", now.notes.join(" | "));
+    const tea = X.trips.get("self|like|tea");
+    ok(tea.pol === "-" && tea.decided && tea.sources.length === 2 && tea.fr === 0, "the present saying decides the belief; the past one is kept, and no longer counts");
+    const q = PG.answer(X, "Do I like tea?", t += 60);
+    ok(q.verdict === PG.say(X.G, "deny") && q.notes.includes(change), "a question answers from the present saying and names the change", q.verdict);
+    PG.answer(X, "I liked jazz.", t += 60);
+    const jazz = PG.answer(X, "I did not like jazz.", t += 60);
+    ok(jazz.notes.includes(PG.say(X.G, "contradicts")) && X.trips.get("self|like|jazz").pol === "?", "two sayings in the past that disagree still contest");
+    PG.answer(X, "I like rain.", t += 60);
+    const rain = PG.answer(X, "I did not like rain.", t += 60);
+    ok(rain.notes.includes(PG.say(X.G, "contradicts")) && X.trips.get("self|like|rain").pol === "?", "and so does a past saying after a present one: only the present retires the past");
+    PG.answer(X, "I have moved to Spain.", t += 60);
+    ok(!many(lastBlock(X), "tense").length, "the present perfect is not the past");
+    PG.answer(X, "Pixel was sleeping.", t += 60);
+    ok(many(lastBlock(X), "tense").join() === "1 | 1", "a past form of be makes its predicate past");
+    const may = PG.answer(X, "Maybe cats bark.", t += 60), might = PG.answer(X, "I might like opera.", t += 60);
+    ok(may.episode.held.map(pk).join() === "cat | bark | - | ? | -" && might.episode.held.map(pk).join() === "self | like | opera | ? | -" && !X.trips.has("self|like|opera"),
+       "a hedge holds its clause: said, never believed");
+    const aside = PG.answer(X, "(Maybe) cats purr.", t += 60);
+    ok(aside.episode.percepts.map(pk).join() === "cat | purr | - | + | -", "and set aside, the hedge leaves a plain saying", aside.episode.percepts.map(pk).join());
+    const es = PG.answer(X, "Me gustaba el té.", t += 60);
+    ok(many(lastBlock(X), "tense").join() === "1 | 1" && es.lang === "es", "Spanish marks its past the same way");
+    ok(X.malformed.length === 3, "tense lines are well formed");
+    const bad = PG.openStore(PG.serializeStore(X.st).replace("I liked tea." + NL, "I liked tea." + NL).replace(/(self \| like \| tea \| \+ \| -\ntense: )1 \| 1/, "$11 | 9"));
+    ok(bad.malformed.length === 4 && bad.trips.get("self|like|tea").pol === "?", "a tense line past the sentence's percepts is malformed, and marks nothing");
+    const old = PG.openStore(PG.serializeStore(X.st).split(NL).filter(l => !l.startsWith("tense:")).join(NL));
+    const rr = PG.reread(old);
+    ok(old.trips.get("self|like|tea").pol === "?" && rr.changed.length >= 4 && rr.changed.every(x => x.tense && !x.tenseWas && x.now.join() === x.was.join()),
+       "an episode with no tense line reads as before, and a re-reading offers the line with its percepts unchanged", rr.changed.length + "");
+    PG.takeRereads(old, rr.grammar, t += 60);
+    ok(old.trips.get("self|like|tea").pol === "-" && PG.reread(old).changed.every(x => x.accepted), "taking it lets the change be read as one");
+    ok(PG.reread(fresh()).changed.length === 0, "the seed store says nothing in the past, and reads back as written");
+  }
+
   // which verbs a relative's bare verb may follow is the store's word list, not the runtime's
   const noChain = PG.openStore(STORE.replace(/^chain: .*\n/gm, ""));
   ok(PG.shapeOf(noChain, "I like the man that saw the cat eat cheese.").percepts.map(pk).includes("man | eat | cheese | + | -"),

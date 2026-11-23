@@ -114,7 +114,8 @@ section("every id is accounted for");
 {
   ok(BOOT_ONLY.length > 0, "some ids only boot() reaches", BOOT_ONLY.map(i => "#" + i).join(" "));
   // The claim Blueprint 9 makes to an embedder, checked against the code rather than trusted.
-  const surface = read("personal_grimoire_ttdb.md").match(/@LAT85LON0[\s\S]*?\n---\n/)[0];
+  // line endings normalised, as the store's own reader does (TTG-RFC-0002 §6), so a CRLF checkout reads the same
+  const surface = read("personal_grimoire_ttdb.md").replace(/\r\n?/g, String.fromCharCode(10)).match(/@LAT85LON0[\s\S]*?\n---\n/)[0];
   const named = id => surface.includes("`#" + id + "`") || surface.includes("`#" + id + "[");
   const undocumented = ALL_IDS.filter(id => !BOOT_ONLY.includes(id) && !named(id));
   ok(!undocumented.length, "every id a host can reach is named in Blueprint 9",

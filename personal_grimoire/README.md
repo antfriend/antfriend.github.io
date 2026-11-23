@@ -103,7 +103,9 @@ believed, never a contradiction, keeping its own *not* — unless the *or* is de
 an aside turns a hedge into a plain saying; that a held clause is linked to the stance that
 holds it, and a question after the stance names it; that what a verb takes is counted in
 episodes, the grammar's guesses at a gap apart from your words, under each of the three
-numbers that weigh them; that an amendment stands in for a sentence
+numbers that weigh them; that a past saying, then its opposite in the present, is a change and
+not a contradiction, while two in the same tense still contest, and that a hedge holds its
+clause; that an amendment stands in for a sentence
 without touching its episode, and is withdrawn by reading the sentence back the episode's
 way; and that a re-reading reports what a grammar edit changes, in the context the sentences
 before it stand as, writes nothing, and can be taken as an amendment that names the grammar —
@@ -402,6 +404,7 @@ joins is held the same way (*Pixel is a cat or a dog*), by no stance, and the re
 it held. *Pixel is not a cat or a dog*, on the other hand, is a plain
 denial of each.
 
+A hedge word holds its clause the same way: *Maybe cats bark* and *I might like opera* are held.
 If you meant the hedge as fact, set it aside: select *I think*, mark it an **aside**, and
 `(i think) [cats] {bark}` reads `cat | bark | - | +`, said. Parentheses you type are asides
 too, so *Pixel (my old cat) purrs.* is about Pixel purring, and the parentheses stay in your
@@ -513,10 +516,12 @@ episode, never in it, and never counts twice. But a term you bind once is found 
 after, silently at parse time; the `forms:` line is the only place it shows.
 
 **Not on the list: a recency rule for contradictions.** *I like coffee* on Monday and *I do not
-like coffee* on Friday is a change of mind, and the store cannot tell it from a contradiction.
-A recency window would be one line in the numbers record and a large claim about you. The
-`exclusive` flag is not that: it is a claim about a relation, and it never settles yes against
-no.
+like coffee* on Friday may be a change of mind, but your words don't say so, and the store
+does not guess. A recency window would be one line in the numbers record and a large claim
+about you. What your words do say is read: *I liked coffee*, then *I do not like coffee*, is
+a change in your own tense, so the past saying is kept and quoted and no longer counts, and
+the reply says it was a change. The `exclusive` flag is a claim about a relation, and it never
+settles yes against no.
 
 ---
 
