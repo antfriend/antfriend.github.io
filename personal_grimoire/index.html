@@ -2758,9 +2758,10 @@ function whQuestion(S, wh, after, ctx){
   }
   // where the verb comes before its subject (question_order: verb_subject): ¿dónde duerme Pixel? is
   // pixel duerme en ?; and a verb in the speaker's own form already has its subject: ¿qué dudo? asks what
-  if (G.questionOrder === "verb_subject" && isVerbish(S, lead)){
+  if (isVerbish(S, lead)){
     const np = nounPhrases(S, rest, 0, rest.length)[0], subj = np && !np.prep ? np : null;
-    if (place && subj){ const k = subjectEnd(S, rest, subj) + 1; return placeQuery(S, rest.slice(0, k).concat([lead], rest.slice(k)), wh, ctx); }
+    if (G.questionOrder === "verb_subject" && place && subj){ const k = subjectEnd(S, rest, subj) + 1; return placeQuery(S, rest.slice(0, k).concat([lead], rest.slice(k)), wh, ctx); }
+    // the speaker's own form is the dropped-subjects rule's, whatever the question order
     if (!subj && selfOf(S, [lead])) return place ? placeQuery(S, [lead].concat(rest), wh, ctx) : slotQuery(S, [lead, synth(SLOT)], ctx);
   }
   const behind = subjectAfterVerb(S, after, ctx);
