@@ -1,6 +1,6 @@
 # TTG-RFC-0002: Semantic Percepts, Episodes and Terms
 
-**Version:** 1.1
+**Version:** 1.2
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0002
 **Project:** toot-toot-engineering
@@ -230,5 +230,6 @@ longitude +step), wrapping inside the bands. Coordinates are written with as man
 | 2026-09-22 | §4, §5.1: an optional seventh column, the reading a held percept belongs to (TTG-RFC-0005 0.7). |
 | 2026-09-22 | 1.0: stable. Implemented in full by the personal_grimoire reference runtime and checked by its tests; the open questions stand as open. |
 | 2026-11-23 | §6: `southeast_step` now cites TTDB-RFC-0004 §3 (latitude +step, longitude +step), which is normative; this section had defined it as latitude −step, longitude +step. ⚠ The personal_grimoire runtime must be checked against this: a runtime that steps latitude −step is now non-conformant, and stores it has already written keep their assigned IDs (TTDB-RFC-0004 §4). |
+| 2026-11-23 | 1.2: the check 1.1 asked for is done. The personal_grimoire runtime had stepped latitude −step and was corrected the same day (antfriend.github.io `ae4a7fa`): `placeTerm` now steps latitude +step and longitude +step, wrapping each to the bottom of its band, and a test blocks an ID and checks both the step and the wrap. Its seed store's IDs are unchanged. The runtime again implements this RFC in full. No change to the text. |
 
 *License: CC0*

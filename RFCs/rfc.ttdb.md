@@ -37,7 +37,7 @@ selected:
   - "@LAT0LON0"
 preview:
   "@LAT0LON0": "Home: what this database is and how each record expands back to its full RFC"
-agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day."
+agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step."
 ```
 
 ---
@@ -868,12 +868,12 @@ embedding surface: the engine/page divide, the boot gate, and the calls a host m
 @LAT60LON2 | created:1789257600 | updated:1795392000 | relates:depends_on@LAT60LON1,depends_on@LAT10LON1,depends_on@LAT10LON3,depends_on@LAT10LON4,depends_on@LAT10LON5,depends_on@LAT10LON6
 [ew]
 conf:210
-rev:1
+rev:2
 sal:80
 touched:1795392000
 [/ew]
 
-**TTG-RFC-0002 — Semantic Percepts, Episodes and Terms** (Stable, 1.1)
+**TTG-RFC-0002 — Semantic Percepts, Episodes and Terms** (Stable, 1.2)
 src: TTG-RFC-0002-Semantic-Percepts.md
 
 A sentence becomes percepts: `percept: n | subject | vector | object or - | polarity |
@@ -884,7 +884,8 @@ the same tag anywhere else is checked, never believed. THING and VECTOR terms ar
 records placed on the grammar sphere beside the terms that introduced them.
 Malformed percept lines are skipped, counted and reported; write-back is byte-stable.
 Stated divergence from TTDB-RFC-0006: the pair is subject→object, not before→after.
-Collisions use TTDB-RFC-0004's `southeast_step` (1.1; 1.0 had stepped latitude down).
+Collisions use TTDB-RFC-0004's `southeast_step` (1.1; 1.0 had stepped latitude down;
+the reference runtime conforms since 1.2).
 
 ---
 
