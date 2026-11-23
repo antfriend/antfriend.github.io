@@ -1,7 +1,7 @@
 # TTDB-RFC-0011: Precision Weighting and the Ignition Filter
-### Signal Precision, Gain-Scaled Belief Update, and a Decaying Workspace — the "Consciousness Filter" for TTDB Agents and the Personal Grimoire
+### Signal Precision, Gain-Scaled Belief Update, and a Decaying Workspace for TTDB Agents and the Personal Grimoire
 
-**Version:** 0.1.9
+**Version:** 0.1.10
 **Status:** Proposed — the stage-2 offline replays PW-1, PW-2 and PW-4 have been run and passed
 as pre-registered (§8.1, §8.2). PW-3 has been run and **falsified the broadcast gate as
 specified in §6.3** (§8.3). PW-1b, a re-run of PW-1 with `pe_span` re-derived for open
@@ -62,7 +62,7 @@ This RFC defines:
    filter selects what to surface and never touches consolidation).
 
 The name **Ignition Filter** credits Stanislas Dehaene's global neuronal workspace, the
-work that inspired this RFC (§2.4). "Consciousness filter" is an informal nickname (§2.3).
+work that inspired this RFC (§2.4).
 Nothing here claims that a TTDB agent is conscious. The claim is narrower and testable: that a precision-gated, capacity-
 limited, decaying selection over prediction errors improves belief stability and mesh
 bandwidth at no cost to answer correctness (§8).
@@ -875,6 +875,7 @@ Absent `precision`, a reader MUST behave as TTDB-RFC-0005 alone.
 | 2026-11-22 | 0.1.5 — PW-2 and PW-4 results written back (§8.2): both PASS as pre-registered; cohort mostly link, protection not immunity |
 | 2026-11-22 | 0.1.6 — wording: "kill" replaced by "falsified" in §8 (thresholds and results unchanged) |
 | 2026-11-22 | 0.1.7 — PW-3 result written back (§8.3): FALSIFIED as pre-registered (disagreement 38.1 %, airtime fall 97.9 %); §6.3 flagged, stage 5 blocked, open question 7 added |
+| 2026-11-23 | 0.1.10 — wording: an informal nickname for the filter removed from the subtitle and §1 (nothing else changed) |
 | 2026-11-22 | 0.1.9 — Stage 3 result written back (§8.5): passed on the Cardputer on its third run, under a gate tool corrected after the run (as-run FAIL disclosed); runs 1–2 not passed as registered, which forced D3b, D7 and D8–D10; five `lat 98` divergences between §4 and the implementation reported, not edited into §4; open question 8 (`conf` rounding) added; Status updated, `@LAT108` now written on one node |
 | 2026-11-22 | 0.1.8 — PW-1b result written back (§8.4): INCONCLUSIVE as pre-registered (stability 68.8 %, one series across the tolerance); open question 6 answered for acoustic (241) and confirmed saturated for motion (251) and link (249); Q6's "from observed residual ranges" corrected; §9.1 `lane_classes` corrected to this fleet (`@LAT104` PROVENANCE, not FIELD; `@LAT108`/`@LAT109` added); Status notes stage 1 readers implemented |
 
