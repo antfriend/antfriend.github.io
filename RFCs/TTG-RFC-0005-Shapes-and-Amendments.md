@@ -1,6 +1,6 @@
 # TTG-RFC-0005: Shapes — Alternating Segments, Lists, Mentions and Amendments
 
-**Version:** 1.4
+**Version:** 1.5
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
@@ -335,7 +335,9 @@ them alone.
 with no subject whose verb is in the speaker's own form — ending in a `self_ending`, and not
 its lemma, or listed in `self_form` — has the speaker as its subject: *No como carne* is
 `self comer carne -`, *Vi al gato* `self ver gato`, *Tengo dos gatos* `self has gato`. Any
-other subjectless predicate is still a mention.
+other subjectless predicate is still a mention. A question whose verb is in the speaker's own
+form, with nothing after it, already has its subject: *¿Qué dudo?* asks what the speaker
+doubts (TTG-RFC-0003 §4).
 
 **Stance.** A seed record may list `stance:` verbs: those whose complement is a clause the
 speaker does not assert (*think*, *doubt*, *hope*, *say*, *email*), and `stance_noun:`
@@ -715,7 +717,9 @@ runtime.
    `--accept <hash>` after new sayings takes readings the report never showed; they are
    printed as taken and carry the hash, but no record names the corpus they were read
    against.
-7. **A question whose verb names its subject.** The link is written in every language, but
+7. **A question whose verb names its subject.** *Answered in 1.5:* a verb in the speaker's own
+   form already has its subject (dropped subjects, above), so *¿Qué dudo?* now meets the holds
+   line. As first written: the link is written in every language, but
    a question is read by its shape: *¿Qué dudo?* reads *qué* as the subject, so it asks for
    subjects and never meets the holds line *Dudo que los gatos ladran* wrote.
 8. **Tense is the past, or not.** Only the past is marked. *Birds will fly* and *birds can
@@ -745,5 +749,6 @@ runtime.
 | 2026-11-23 | 1.2: §3 **the grammar's gaps** — a percept whose object, or lack of one, the grammar decided at a gap is marked by a `gap:` line of percept ordinals; malformed gap lines are skipped and counted. §3 **verb frames** — what a verb takes is counted in episodes, the grammar's gaps apart, and weighed by `frame_min_episodes`, `frame_grammar_weight` and `frame_preempt_ratio` (reference 1, 1, 0, which read as a store declaring none); `lone` and the gap rules now say *takes a thing*. Chain verbs are not weighed. §5 amendments and §5.1 re-reading carry and compare gap lines; §6 keys; §7 compatibility; §8.4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `df9019d`), from its PLAN.md phase 2. |
 | 2026-11-23 | 1.3: §3 **hedges** — a `hedge` word holds its clause; §3 **tense** — a predicate is past by a `past_form` or a `past_ending` on an inflected verb, not after a present `hav`, and past percepts are marked by a `tense:` line of ordinals, malformed ones skipped and counted. §5 and §5.1 carry and compare tense lines; §6 `class: hedge`, `past_form`, `past_ending`, `changed_tense`; §7 compatibility; §8.8 new. The change it makes to a later saying is TTG-RFC-0004 1.1 §3.7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`), from its PLAN.md phase 3. |
 | 2026-11-23 | 1.4: §3 **modifiers** — with `modifier: subclass`, a member's modifiers join with its head into a subclass term, and the clause says its `class_of` (none for a `privative` modifier) and a `property` per modifier; over `modifier_max_words`, as under `drop`, which is the default; a question never checks the subclass percepts. §6 keys, §7 compatibility, §8.9 new. Implemented by the personal_grimoire reference runtime (antfriend.github.io `a5beef3`), from its PLAN.md phase 4; the reference store ships `drop`. |
+| 2026-11-23 | 1.5: §3, a question whose verb is in the speaker's own form already has its subject; §8.7 answered. The question rows are TTG-RFC-0003 1.5 §4. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bf261e8`), from its PLAN.md phase 5. |
 
 *License: CC0*

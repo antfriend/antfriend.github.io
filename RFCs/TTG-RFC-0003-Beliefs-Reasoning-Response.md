@@ -1,6 +1,6 @@
 # TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
 
-**Version:** 1.4
+**Version:** 1.5
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -149,13 +149,27 @@ a VECTOR begins with its verb lemma plus `phrasal_join`. Words without purchase 
 | `wh_reason` + yes/no shape | verify |
 | `wh` + `cop` + (`wh_place` → objects along the place vector) / (`prep` → subjects) / noun phrases → describe | as stated |
 | `wh` + `aux`/`modal` + subject + verb | objects; with `wh_place`, the phrasal, bare and place vectors |
+| `wh_place` + verb + subject, under `question_order: verb_subject` | objects of the subject along the phrasal, bare and place vectors, the verb moved behind the subject |
+| `wh` + a verb in the speaker's own form (TTG-RFC-0005 §3, dropped subjects) and no thing after it | objects of the speaker; with `wh_place`, along the place vectors |
+| `wh` + verb + a thing that agrees with the verb in number (`plural_verb_ending`) and is not object-marked | objects of that thing |
 | `wh` + anything else | subjects |
 | `aux`/`modal`/`cop`/`hav` first, with a percept after moving it behind the subject | verify |
+| under `question_order: verb_subject`, a verb first and a subject after it, ending in `question_mark` | verify, the verb moved behind the subject |
 | an `about` word first | describe the following noun phrases |
 | a predicate yielding percepts | verify if it ends with `question_mark` (checking no mention), else perceive — unless the input is one segment alone (TTG-RFC-0005 §3), which is perceived only as the next row says |
 | one segment, ending in a `sentence_end` that is not `question_mark` | perceive: a mention (TTG-RFC-0005 §3) |
 | no predicate, content words ≤ `describe_max_words`, some with purchase | describe |
 | otherwise | search |
+
+**A subject behind its verb.** Where a verb comes before its subject, the subject is the first
+noun phrase after it that is not prepositional; in a grammar whose phrases are headed first
+(`head: first`) it ends at its head, so what follows is the object: *¿Cazan los gatos ratones?*
+is `gato cazar ratón`. Agreement tells a subject from an object behind the verb, as the third
+`wh` row says: *¿qué cazan los gatos?* asks for the object (*gatos* agrees with *cazan*), *¿qué
+caza ratones?* for the subject (*ratones* does not agree with *caza*), and an `object_mark`
+word rules a thing out as the subject. A grammar that declares no `plural_verb_ending` never
+reads a subject behind its verb that way. These rows are the `question_order` parameter
+(TTG-RFC-0001 §11.6); under `subject_verb` the second and last rows do not apply.
 
 Question shapes are parsed by the clause parser itself, with a slot token standing for the
 asked-about thing and the moved cue word restored behind the subject.
@@ -232,5 +246,6 @@ modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`.
 | 2026-11-23 | 1.2: §5, the reference values of the three frame numbers (TTG-RFC-0005 1.2 §3). |
 | 2026-11-23 | 1.3: §2, a saying changed by a later present one does not count; §4, the `changed_tense` note; §6.1 narrowed (TTG-RFC-0004 1.1 §3.7). Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`). |
 | 2026-11-23 | 1.4: §5, the reference value of `modifier_max_words` (TTG-RFC-0005 1.4 §3). |
+| 2026-11-23 | 1.5: §4, the intent rows for a verb before its subject under `question_order: verb_subject` (place questions, yes/no questions), a verb in the speaker's own form, and agreement behind the verb — the last read by the reference runtime since TTG-RFC-0005 0.5, and stated here for the first time; a subject behind its verb ends at its head in a head-first grammar. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bf261e8`). |
 
 *License: CC0*

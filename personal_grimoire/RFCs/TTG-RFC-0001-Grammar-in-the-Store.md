@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.4
+**Version:** 1.5
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -56,6 +56,7 @@ keep such text in markup rather than in the interpreter.
 | `generic_det` | words | Determiners that make a noun phrase generic (quantifier `*`). |
 | `nounish_marks`, `verbish_marks` | two characters | The owner's brackets for a nounish and a verbish segment, open then close (TTG-RFC-0005 §4). |
 | `head` | `last` or `first` | Which word of a phrase is its head; `last` when absent (TTG-RFC-0005 §3). |
+| `question_order` | `subject_verb` or `verb_subject` | Where a question's verb stands: behind its subject, or before it; `subject_verb` when absent (TTG-RFC-0003 §4). |
 | `modifier` | `drop` or `subclass` | What a phrase's other content words do: dropped, or a subclass of its head; `drop` when absent (TTG-RFC-0005 §3). |
 | `privative` | words | Modifiers that make no subclass `class_of` (TTG-RFC-0005 §3). |
 | `aside_marks` | two characters | The owner's brackets for words left out of a reading, open then close (TTG-RFC-0005 §4). |
@@ -82,6 +83,7 @@ Class keys the runtime interprets: `det`, `poss`, `quant_all`, `quant_some`, `qu
 | `bare_finite` | `plural`, `self`, or `-` | The subjects a bare form is also finite for (English *cats eat*, *I eat*); `-` for none; absent, any (TTG-RFC-0005 §3). |
 | `adverb_ending`, `adverb_guard` | endings; words | An unlisted word with the ending, between a thing and its verb, is an adverb; the guard lists words that only look like one (TTG-RFC-0005 §2). |
 | `self_ending`, `self_form` | endings; words | The speaker's own verb forms, in a language that drops subjects; a subjectless predicate in one has the speaker as subject (TTG-RFC-0005 §3). |
+| `plural_verb_ending` | ending | The ending a verb wears for a plural subject (Spanish *n*), by which a question tells a subject behind its verb (TTG-RFC-0003 §4); absent, a subject never stands behind its verb. |
 | `past_ending`, `past_form` | endings; words | What makes a predicate past: an ending on an inflected verb, or a word among its own (TTG-RFC-0005 §3). |
 
 Candidate choice (normative order): a candidate that is already a term in the store; then a
@@ -135,7 +137,9 @@ one (TTG-RFC-0004 §3).
 
 ## 7. `kind: questions`
 
-`wh_thing` (words asking for a thing), `wh_place` (`<words> | <vector>`), `wh_reason`,
+`wh_thing` (words asking for a thing), `wh_place` (`<words> | <vector> [| <preposition>]`: the
+place vector, and the preposition that asks for it where that is not the vector's own name —
+Spanish `dónde | in | en`), `wh_reason`,
 `about` (words that request a description), `describe_max_words` (integer). The shapes these
 words fill are defined in TTG-RFC-0003 §4.
 
@@ -214,6 +218,23 @@ A store MAY hold grammars for several languages.
    in its own language while every quote stays in the language it was said in.
 5. **Terms are not translated.** A lemma is a term whatever language produced it. Two words
    for one thing are two terms until the owner relates them.
+6. **Parameters.** Most of what a second language changes is a handful of switches, each a
+   key its grammar declares; the runtime holds the principle and the store sets the
+   parameter. A key left out takes the value under *absent*.
+
+   | Parameter | Key | Absent | Reference English | Reference Spanish |
+   |---|---|---|---|---|
+   | Which word heads a phrase | `head` (§3) | `last` | `last` | `first` |
+   | Where a question's verb stands | `question_order` (§3) | `subject_verb` | `subject_verb` | `verb_subject` |
+   | A subject told behind its verb by agreement | `plural_verb_ending` (§4) | — | — | `n` |
+   | The speaker's own subject dropped | `self_ending`, `self_form` (§4) | — | — | `o é í`; `soy estoy voy …` |
+   | The subjects a bare verb is finite for | `bare_finite` (§4) | any | `plural self` | `-` |
+   | A word that marks a verb's object | `object_mark` (§3) | — | — | `a` |
+   | What a phrase's modifiers do | `modifier` (§3) | `drop` | `drop` | `drop` |
+
+   A store SHOULD carry this table where its grammar is documented, and a conforming test
+   suite SHOULD hold every cell to the grammar records; the reference store carries it in its
+   Blueprint 2.
 
 Merging two languages into one lexicon is not equivalent: a word that is closed-class in both
 with different classes (*a*, *no* across English and Spanish) changes how sentences in both
@@ -268,5 +289,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-11-23 | 1.2: the three frame numbers join `kind: numbers` in §9 (TTG-RFC-0005 1.2 §3). No other change. |
 | 2026-11-23 | 1.3: `past_ending` and `past_form` in §4, and `changed_tense` among the reply keys (TTG-RFC-0005 1.3 §3, TTG-RFC-0004 1.1 §3.7). No other change. |
 | 2026-11-23 | 1.4: `modifier` and `privative` in §3, `modifier_max_words` in §9 (TTG-RFC-0005 1.4 §3). No other change. |
+| 2026-11-23 | 1.5: §11.6, the parameters table; `question_order` in §3 and `plural_verb_ending` in §4 (the latter read by the reference runtime since TTG-RFC-0005 0.5, and listed here for the first time); `wh_place`'s optional preposition in §7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bf261e8`), from its PLAN.md phase 5. |
 
 *License: CC0*

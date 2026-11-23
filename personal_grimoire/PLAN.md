@@ -315,8 +315,8 @@ in the plan: without it, no Spanish place question could reach a phrasal vector.
 - Language detection reads *¿Qué come Pixel?* as English, because *come* is an English word.
   That's an existing problem.
 
-Still to do: the RFC text upstream (TTG-RFC-0001 §3, §7 and §11, TTG-RFC-0003 §4, TTG-RFC-0005
-§3 and §6), and the bAbI check.
+RFC text: TTG-RFC-0001 1.5, -0003 1.5 and -0005 1.5, written upstream in toot-toot-engineering
+(`3b0e72e`) and synced here. Still to do: the bAbI check.
 
 **Problem.** Several keys are already parameters in all but name: `head`, the subject drop
 implied by `self_ending`, the subject position implied by `plural_verb_ending`. Nothing lists
