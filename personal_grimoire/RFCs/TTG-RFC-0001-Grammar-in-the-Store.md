@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.1
+**Version:** 1.2
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -154,7 +154,8 @@ emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `s
 
 `numbers`: `prior_for`, `prior_against`, `weight_partial`, `belief_conf_threshold`,
 `inherit_decay`, `max_hops`, `answer_max_items`, `search_max_items`, `suggest_eps_min`,
-`with_max_pairs`, `said_max_chars`, `rule_max_body`, `phrase_max_words`.
+`with_max_pairs`, `said_max_chars`, `rule_max_body`, `phrase_max_words`, `frame_min_episodes`,
+`frame_grammar_weight`, `frame_preempt_ratio`.
 
 `kind: rules` holds `rule:` lines; its syntax, safety conditions and derivation are defined in
 TTG-RFC-0003 §3.1.
@@ -261,5 +262,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-09-22 | §5: `chain` and `intransitive` are head starts the owner's words outrank; four reply keys in §8 for readings and held sayings (TTG-RFC-0005 0.7). |
 | 2026-09-22 | 1.0: stable. Implemented in full by the personal_grimoire reference runtime and checked by its tests; the open questions stand as open. |
 | 2026-11-23 | 1.1: `asked_holds` joins the keys the runtime emits (TTG-RFC-0005 1.1 §3). No other change. |
+| 2026-11-23 | 1.2: the three frame numbers join `kind: numbers` in §9 (TTG-RFC-0005 1.2 §3). No other change. |
 
 *License: CC0*

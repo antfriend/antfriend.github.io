@@ -109,8 +109,9 @@ evidence for a chain verb is a bare verb after the verb's thing, which is in the
 words, not a guess at a gap, so discounting it would stop typed sentences teaching chains at
 all.
 
-Still to do: the RFC text upstream (TTG-RFC-0005 §3 and §6 to §8, TTG-RFC-0002 §5, TTG-RFC-0003
-§5), and the bAbI check, whose task data isn't on this machine.
+RFC text: TTG-RFC-0005 1.2, -0002 1.4, -0003 1.2 and -0001 1.2, written upstream in
+toot-toot-engineering (`671b635`) and synced here. Still to do: the bAbI check, whose task data
+isn't on this machine.
 
 **Problem.** Whether a verb takes a thing flips the first time any standing reading shows it
 with one, and never flips back. A reading the grammar made, such as a gap it filled, teaches

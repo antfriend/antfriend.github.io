@@ -1,6 +1,6 @@
 # TTG-RFC-0002: Semantic Percepts, Episodes and Terms
 
-**Version:** 1.3
+**Version:** 1.4
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0002
 **Project:** toot-toot-engineering
@@ -106,7 +106,8 @@ what an *or* joins or a stance verb takes, said but not asserted, and never beli
 Where the grammar reads a sentence two ways, a held percept that only one reading says carries
 that reading's letter in an optional seventh column (`a`, `b`, …; TTG-RFC-0005 §3). A held
 percept that a stance takes is linked to the stance percept by a `holds:` line (§5.1;
-TTG-RFC-0005 §3).
+TTG-RFC-0005 §3), and a percept whose object the grammar decided at a relative's gap is
+marked by a `gap:` line (§5.1; TTG-RFC-0005 §3).
 
 **Divergence from TTDB-RFC-0006, stated.** The pair is subject→object, not before→after, and
 an intransitive percept has no second endpoint. It is kept (object `-`), and its belief edge
@@ -131,18 +132,20 @@ said: <n> | <sentence, cut at said_max_chars>
 shape: <n> | <the sentence's shape, TTG-RFC-0005 §4>
 percept: ...
 holds: <n> | <stance percept ordinal> | <held percept ordinals>     TTG-RFC-0005 §3
+gap: <n> | <percept ordinals>                                     TTG-RFC-0005 §3
 ```
 ```
 
 Every sentence gets a `said` line whether or not it yields a percept, and, when the grammar
 declares marks, a `shape` line. A sentence that links a stance to what it holds gets a
-`holds` line for each stance percept, after all the episode's percept lines. The ordinal is one more
+`holds` line for each stance percept, after all the episode's percept lines; a sentence
+the grammar read at a gap gets one `gap` line, after the holds lines. The ordinal is one more
 than the largest existing longitude in the lane. An episode MUST NOT be modified after it is
 written. A consumer MUST skip, count and report malformed percept lines: fewer than six
 columns, a non-integer sentence, an empty subject, vector or object, a polarity other than
 `+`, `-`, `?` or `?-`, or a seventh column that is not one lowercase letter or stands on a
-percept that is not held. It MUST do the same for a malformed `holds` line, as TTG-RFC-0005
-§3 defines it. A subject or vector of `-` is well-formed: it is a mention; a polarity of `?` or `?-`
+percept that is not held. It MUST do the same for a malformed `holds` or `gap` line, as
+TTG-RFC-0005 §3 defines them. A subject or vector of `-` is well-formed: it is a mention; a polarity of `?` or `?-`
 is well-formed: it is held (TTG-RFC-0005 §3). A
 correction to how a sentence was read is an amendment, kept beside the episode on
 `amend_lane` (TTG-RFC-0005 §5).
@@ -168,12 +171,16 @@ class: thing | vector
 lemma: <lemma>
 forms: <surface forms, space separated, in order first seen>
 seen: <percept mentions>
+frames: <with a thing> <without> | <of those, only the grammar's: with> <without>     vectors
 asked: <queries that found purchase>
 belief: <vector> | <object or -> | <+ - ?> | <for> <against> | <conf>
 ```
 ```
 
-Belief lines appear on THING records only, in order of first percept. Header edges are the
+Belief lines appear on THING records only, in order of first percept. A `frames` line appears
+on a VECTOR record that a standing percept other than a comention, a mention or one reading of two names: its
+frames (TTG-RFC-0005 §3), in episodes, unweighed; it is part of the block, so a change to it
+advances `updated`. Header edges are the
 decided beliefs: `<negation_prefix if -><vector>@<object record>`, or `@<vector record>` when
 the object is `-`. `[ew]`: `conf` = rounded mean conf of the record's beliefs (for a vector,
 of beliefs along it), 128 with none; `sal` = min(255, seen + asked); `rev` += 1 when the
@@ -237,5 +244,6 @@ longitude +step), wrapping inside the bands. Coordinates are written with as man
 | 2026-11-23 | §6: `southeast_step` now cites TTDB-RFC-0004 §3 (latitude +step, longitude +step), which is normative; this section had defined it as latitude −step, longitude +step. ⚠ The personal_grimoire runtime must be checked against this: a runtime that steps latitude −step is now non-conformant, and stores it has already written keep their assigned IDs (TTDB-RFC-0004 §4). |
 | 2026-11-23 | 1.2: the check 1.1 asked for is done. The personal_grimoire runtime had stepped latitude −step and was corrected the same day (antfriend.github.io `ae4a7fa`): `placeTerm` now steps latitude +step and longitude +step, wrapping each to the bottom of its band, and a test blocks an ID and checks both the step and the wrap. Its seed store's IDs are unchanged. The runtime again implements this RFC in full. No change to the text. |
 | 2026-11-23 | 1.3: §4 and §5.1, the `holds:` line linking a stance percept to the held percepts it takes (TTG-RFC-0005 1.1 §3), written after the episode's percept lines; malformed holds lines are skipped and counted like malformed percepts. Implemented by the personal_grimoire reference runtime (antfriend.github.io `7071c80`). |
+| 2026-11-23 | 1.4: §4 and §5.1, the `gap:` line marking the percepts the grammar read at a relative's gap (TTG-RFC-0005 1.2 §3), after the holds lines; malformed gap lines are skipped and counted. §5.2, a vector record's `frames:` line. Implemented by the personal_grimoire reference runtime (antfriend.github.io `df9019d`). |
 
 *License: CC0*

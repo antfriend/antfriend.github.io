@@ -1,6 +1,6 @@
 # TTG-RFC-0005: Shapes — Alternating Segments, Lists, Mentions and Amendments
 
-**Version:** 1.1
+**Version:** 1.2
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
@@ -99,7 +99,7 @@ ran} [away]`, and its two predicates are split at the second verb (§3). So does
 has is old* splits `{has is}` at *is*, and *has been eating* stays one predicate.
 
 After a relative's own verb, when the relative hangs on a thing before the clause's own verb
-and the relative's verb is not one the corpus has with an object, a content word that is a
+and the relative's verb does not take a thing (verb frames, below), a content word that is a
 verb begins the clause's verb — unless another verb follows before the clause ends, a list
 goes on or a new clause is joined: *cats that hunt eat mice* is `[cats] that {hunt eat}
 [mice]`, while *birds that sing love songs are happy* keeps `[love songs]` a thing and *people
@@ -184,26 +184,57 @@ nounish segment, which is the next verb's subject, and its last verb.
   antecedent as object (the **gap**) — a verb or possession, never a copula: *the dog that the
   cat chased ran away* is `cat chase dog`. In that verbish segment a content word straight
   after a content word begins a new predicate.
-- **Where the gap is filled.** A verb takes the gap for possession, or for a vector the
-  corpus already has with an object (*I like the dog that the cat chased*, once *cats chase
-  mice* is said). What a verb takes is learned from every saying that stands, held as well
-  as said — whether a verb takes a thing is a fact about the words, not the world — except a
-  percept of one reading of two (below), which is the grammar's guess. The gap is **sure** before the clause's own first verb — the antecedent is
+- **Where the gap is filled.** A verb takes the gap for possession, or for a vector that
+  takes a thing (*I like the dog that the cat chased*, once *cats chase mice* is said). What
+  a verb takes is learned from every saying that stands, held as well as said — whether a
+  verb takes a thing is a fact about the words, not the world — except a percept of one
+  reading of two (below), which is the grammar's guess, and is counted as the verb's
+  **frames** (below). The gap is **sure** before the clause's own first verb — the antecedent is
   a subject, and only an object relative can follow it — when a finite verb is still to
   come for the clause the relative hangs in (*I think the man that the cat chased is fast*),
   and after any verb that is not a stance verb, which cannot hear a clause (*I like the dog
   that the cat bit* is `cat bite dog`). Where it is sure, any other verb takes the gap too,
-  unless it is **lone**: the grammar lists it `intransitive`, or the corpus has its vector
-  only without an object (*the rule that cats bark is old* holds `cat bark`; *the day that
+  unless it is **lone**: it does not take a thing, and the grammar lists it `intransitive` or
+  the corpus has its vector without an object (*the rule that cats bark is old* holds `cat bark`; *the day that
   the cat ran was hot* is not `cat run day` once *Pixel runs* is said, nor *the rule that dogs
   bite is old* `dog bite rule` once *I doubt dogs bite* is). The list speaks only for verbs
-  the corpus has not met; a verb the owner says with a thing takes one, listed or not. A verb ending on a preposition with nothing after it takes the gap as
+  the corpus has not met; a verb that takes a thing takes one, listed or not. A verb ending on a preposition with nothing after it takes the gap as
   that preposition's thing (*I like the house that I live in* is `self live_in house`),
   unless the relative hangs on a stance verb's first thing, where it may be the clause the
   stance hears (*I told the man that the cat came in* holds `cat come_in`). A verb whose own
   object follows the preposition joined to it gives the preposition up when its stem would
   take the gap, and that object becomes an adjunct of the antecedent: *the cat that I saw in
   the garden sleeps* is `self see cat` and `cat with garden`.
+- **The grammar's gaps.** A percept whose object, or lack of one, the grammar decided at a
+  gap is the grammar's reading, not the owner's words: a gap a verb took (*the dog that the
+  cat bit* is `cat bite dog`), a stranded preposition's (*the house that I live in*), and a
+  gap no verb took, whose verb then has no object (*I emailed the man that the cat sleeps*
+  holds `cat sleep`). A percept whose object follows its verb in the owner's words is not,
+  and neither is one the owner chose between two readings (`reading:`, §5). The grammar's
+  readings are written beside the percepts, one line per sentence, after any holds lines:
+
+  ```
+  gap: <sentence> | <percept ordinals, space separated>
+  ```
+
+  Ordinals count the sentence's `percept:` lines from 1, as for holds lines. A consumer MUST
+  skip, count and report a malformed gap line — not two columns, a sentence that is not an
+  integer, no ordinal, or an ordinal that is not a percept line of that sentence — which
+  marks nothing.
+- **Verb frames.** A vector's frames are the episodes whose standing percepts give it a thing
+  and those that give it none, each counted once per episode, the episodes in which only the
+  grammar's readings (above) do so apart. With the `numbers` keys:
+
+  | Key | Meaning | Absent |
+  |---|---|---|
+  | `frame_grammar_weight` | What an episode counts for when only the grammar's readings give the frame | it counts in full |
+  | `frame_min_episodes` | The weighed count of episodes with a thing a vector needs to take one | any count above 0 |
+  | `frame_preempt_ratio` | Above 0: a vector whose weighed episodes without a thing reach this many times those with one takes none | no preemption |
+
+  So a vector **takes a thing** when its weighed episodes with one are above 0 and reach
+  `frame_min_episodes`, unless it is preempted. The reference values, 1, 1 and 0, reproduce
+  a store that declares none: any episode with a thing is enough. A vector's record shows its
+  frames (TTG-RFC-0002 §5.2).
 - **A reported clause.** An object relative whose gap no verb takes was never one: after a
   verb's object the relative word began a clause reported to that thing, and every percept
   in it is held: *I emailed the man that the cat sleeps* is `self email man +` and `cat sleep
@@ -253,7 +284,9 @@ nounish segment, which is the next verb's subject, and its last verb.
   because the bare form rules out every other reading; *I spied the cats eat fish* teaches
   nothing, because *the cats eat* could be a clause, and neither does a relative's own chain,
   which may be read either way. It is learned from the shapes that stand — an amendment's,
-  else the episode's — so the owner's reading of a sentence decides what it teaches.
+  else the episode's — so the owner's reading of a sentence decides what it teaches. Chain
+  verbs are not weighed as frames are: the bare verb is in the owner's words, not a guess at
+  a gap.
 - A **stance clause** opens when a verb arrives straight after a stance verb's first thing,
   or when a relative closes back onto that thing (below).
 
@@ -467,15 +500,16 @@ grammar: <n> | <grammar hash>                  only when the owner took the gram
 reading: <n> | <letters>                       only when the owner chose between readings
 percept: <n> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <quantifier> [| <reading>]
 holds: <n> | <stance percept ordinal> | <held percept ordinals>     where the reading links a stance (§3)
+gap: <n> | <percept ordinals>                                     where the grammar read a gap (§3)
 ```
 ```
 
 - **One record per episode**, on `amend_lane` at the episode's longitude, so `@LAT91LON7`
   amends `@LAT90LON7`. It holds, for each sentence it amends, the shape that stands, the
-  reading chosen, if any, the percepts they read as, and the holds lines that link them (§3),
+  reading chosen, if any, the percepts they read as, and the holds and gap lines that mark them (§3),
   whose ordinals count the amendment's own percept lines for that sentence. It is managed: amending again rewrites it in place and
   advances `updated`. Reading a sentence back the episode's own way — the same shape, the
-  same percepts and the same holds lines — removes its entry; an amendment with no entries is
+  same percepts, the same holds lines and the same gap line — removes its entry; an amendment with no entries is
   deleted.
 - **Consolidation** takes an amended sentence's percepts from the amendment instead of the
   episode, attributed to the episode and sentence they amend. Counting (episodes, not
@@ -500,7 +534,7 @@ change — a verb the owner comes to use with a thing, a phrase the owner binds.
 and corpus the store holds now, each in the context the sentences before it **stand** as —
 their amendments, else their episodes' readings — which is the context an amendment is made in
 (§5), so what a report offers for a sentence is exactly what taking it would write. It
-reports each sentence whose shape, percepts or holds lines differ from what its episode wrote: the
+reports each sentence whose shape, percepts, holds lines or gap line differ from what its episode wrote: the
 episode, the sentence, both readings, whether the owner has amended it, and a hash of the
 grammar records it was read under. A sentence where the owner chose between two readings is
 read with that choice.
@@ -517,9 +551,10 @@ from a grammar is never printed as what the owner marked. A runtime MUST refuse 
 it is not the store's grammar now — the report is stale. A reading the owner marks, even one
 that started from the grammar's, carries no `grammar:` line. A report names each sentence's
 standing ruling: `amended` when the owner has one, `accepted` when it is this very reading —
-the same shape, the same percepts and the same holds lines. An episode written before holds
-lines has none, so a re-reading offers them for each sentence that links a stance, with its
-percepts unchanged; taking it writes them in an amendment.
+the same shape, the same percepts, the same holds lines and the same gap line. An episode
+written before holds or gap lines has none, so a re-reading offers them for each sentence
+that links a stance or reads a gap, with its percepts unchanged; taking it writes them in an
+amendment.
 
 A host SHOULD offer the grammar's reading beside the one that stands, with the percepts it
 would form — a reading can change what a sentence says without changing its shape (*I like
@@ -564,6 +599,7 @@ the reference store's eight demo episodes read today exactly as written.
 | `morphology` | `bare_ending` | Endings a bare form wears (*ar er ir*). Absent: a bare form is its lemma. |
 | `vectors` | `role: amend_edge` | The header edge type from an amendment to its episode. |
 | `numbers` | `phrase_max_words` | Longest run of words bound to a known term. |
+| `numbers` | `frame_min_episodes`, `frame_grammar_weight`, `frame_preempt_ratio` | How a vector's frames decide whether it takes a thing (§3). |
 | `ttdb-sphere` | `amend_lane` | The latitude amendments sit on. |
 | `responses` | `noted_mention`, `amended`, `amend_title` | A mention's verdict, an amendment's verdict, an amendment's title. |
 | `responses` | `noted_held` | A note naming what a tell held, `{triples}`. |
@@ -591,7 +627,11 @@ one implementing 0.4 or earlier ignores an amendment's `grammar:` line. One impl
 or earlier ignores a percept's seventh column and an amendment's `reading:` line; a named
 percept is still held, so it is still never believed, and a chosen reading's percepts are
 read as written. One implementing 1.0 ignores `holds:` lines in episodes and amendments
-(unknown block keys), so it reads every percept as before and only misses the links. Held sayings now teach what a verb takes, which can change how a relative
+(unknown block keys), so it reads every percept as before and only misses the links. One
+implementing 1.1 ignores `gap:` lines and the `frames:` line of a vector's record, and counts
+percept lines rather than weighed episodes; at the reference values of the frame numbers it
+reads every sentence the same, but it never reads those numbers, which TTG-RFC-0001 §2 counts
+as a conformance failure. Held sayings now teach what a verb takes, which can change how a relative
 is read in a store that holds some. The
 published bAbI outcomes (tasks 1 and 15, every condition) are unchanged under the reference
 runtime.
@@ -610,9 +650,11 @@ runtime.
    clause's verb: *birds that sing love songs.* believes the birds love songs until the
    owner has used *love* as a thing.
 4. **A store learns from its own readings.** What a verb takes, and which verbs chain, are
-   learned from the readings that stand, and a reading the grammar made — a gap it filled —
-   teaches like one the owner marked. A wrong reading teaches a wrong fact about its verb
-   until the owner amends it.
+   learned from the readings that stand. Since 1.2 a reading the grammar made at a gap is
+   marked and weighed (`frame_grammar_weight`), but at the reference value it still teaches
+   like one the owner marked, and the grammar's other decisions — where a relative closes,
+   which reading of a chain stands — are not marked at all. A wrong reading of those still
+   teaches a wrong fact about its verb until the owner amends it.
 5. **A choice between readings names places by their order.** A grammar change that adds or
    removes a place before a chosen one moves the letters, so a kept choice can land on
    another place. Naming a place by what it is (the bare verb, the relative word) is open.
@@ -641,5 +683,6 @@ runtime.
 | 2026-09-22 | 0.7: the two readings of a sentence are named (`a`, `b`; a seventh percept column) and are one saying — a reply and a question name them together, a question the grounds cannot answer names any held saying it meets, and the owner may choose one (`reading:` in an amendment); what a verb takes is learned from held sayings too, and a chain verb from the owner's own chain; a re-reading's context is the sentences before it as they stand, and taking every re-reading re-reads each just before it is taken. 0.6's open questions 4–6 answered; 1–3 stand; new ones listed. |
 | 2026-09-22 | 1.0: 0.7, stable. Implemented in full by the personal_grimoire reference runtime and checked by its tests; the open questions stand as open. |
 | 2026-11-23 | 1.1: §3 **what holds it** — a held percept a stance takes is linked to its stance percept by a `holds:` line of percept ordinals; malformed holds lines are skipped and counted; an objects question after a stance names what it holds (`asked_holds`). §5 amendments carry holds lines, and reading back withdraws only when they match too; §5.1 re-reading compares them and offers them to older episodes; §6 `asked_holds`; §7 compatibility; §8.7 new. Implemented by the personal_grimoire reference runtime (antfriend.github.io `7071c80`), from its PLAN.md phase 1. |
+| 2026-11-23 | 1.2: §3 **the grammar's gaps** — a percept whose object, or lack of one, the grammar decided at a gap is marked by a `gap:` line of percept ordinals; malformed gap lines are skipped and counted. §3 **verb frames** — what a verb takes is counted in episodes, the grammar's gaps apart, and weighed by `frame_min_episodes`, `frame_grammar_weight` and `frame_preempt_ratio` (reference 1, 1, 0, which read as a store declaring none); `lone` and the gap rules now say *takes a thing*. Chain verbs are not weighed. §5 amendments and §5.1 re-reading carry and compare gap lines; §6 keys; §7 compatibility; §8.4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `df9019d`), from its PLAN.md phase 2. |
 
 *License: CC0*

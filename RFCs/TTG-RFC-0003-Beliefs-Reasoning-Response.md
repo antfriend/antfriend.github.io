@@ -1,6 +1,6 @@
 # TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
 
-**Version:** 1.1
+**Version:** 1.2
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -192,7 +192,8 @@ All constants named here are keys of the `numbers` kind (TTG-RFC-0001 §9). The 
 values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
 `belief_conf_threshold 128`, `inherit_decay 0.85`, `max_hops 4`, `answer_max_items 6`,
 `search_max_items 5`, `suggest_eps_min 40`, `with_max_pairs 3`, `said_max_chars 400`,
-`rule_max_body 3`.
+`rule_max_body 3`, and, for what a verb takes (TTG-RFC-0005 §3, verb frames),
+`frame_min_episodes 1`, `frame_grammar_weight 1`, `frame_preempt_ratio 0`.
 
 ---
 
@@ -222,5 +223,6 @@ values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
 | 2026-09-22 | §4: a question its grounds cannot answer names the held sayings it meets, and a sentence's two readings together (`asked_held`, `asked_readings`, `noted_readings`; TTG-RFC-0005 0.7). |
 | 2026-09-22 | 1.0: stable. Implemented in full by the personal_grimoire reference runtime and checked by its tests; the open questions stand as open. |
 | 2026-11-23 | 1.1: §4, the `asked_holds` note: an objects question after a stance names what the stance holds (TTG-RFC-0005 1.1 §3). Implemented by the personal_grimoire reference runtime (antfriend.github.io `7071c80`). |
+| 2026-11-23 | 1.2: §5, the reference values of the three frame numbers (TTG-RFC-0005 1.2 §3). |
 
 *License: CC0*
