@@ -37,7 +37,7 @@ selected:
   - "@LAT0LON0"
 preview:
   "@LAT0LON0": "Home: what this database is and how each record expands back to its full RFC"
-agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design."
+agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day."
 ```
 
 ---
@@ -102,15 +102,15 @@ queries (not free-form NL) and update the last_query/last_answer fields on reply
 
 ---
 
-@LAT10LON3 | created:1774396800 | updated:1785542400 | relates:depends_on@LAT10LON1,depends_on@LAT10LON2,aligns_with@LAT20LON2
+@LAT10LON3 | created:1774396800 | updated:1795392000 | relates:depends_on@LAT10LON1,depends_on@LAT10LON2,aligns_with@LAT20LON2
 [ew]
 conf:210
-rev:1
+rev:2
 sal:130
-touched:1785542400
+touched:1795392000
 [/ew]
 
-**TTDB-RFC-0003 — Typed Edge Semantics** (Stable, v1.1)
+**TTDB-RFC-0003 — Typed Edge Semantics** (Stable, v1.2)
 src: TTDB-RFC-0003-Typed-Edges.md
 
 Edges use the syntax declared in `mmpdb.typed_edges.syntax` (default
@@ -130,36 +130,43 @@ and *Grief*), so a store holding both is not thereby inconsistent. Rationale:
 polarity encoded positionally (e.g. latitude carrying valence) is invisible to a
 consumer traversing the edge list, which is what implementations actually read.
 
+v1.2 adds §7.3: `contradicts` is written once, by the record that raises the
+conflict (direction = provenance), but conflict consumers MUST read it as symmetric
+and validators MUST NOT demand the reverse edge.
+
 ---
 
-@LAT10LON4 | created:1774828800 | updated:1774828800 | relates:depends_on@LAT10LON1,depends_on@LAT10LON3
+@LAT10LON4 | created:1774828800 | updated:1795392000 | relates:depends_on@LAT10LON1,depends_on@LAT10LON3
 [ew]
 conf:210
-rev:0
+rev:1
 sal:110
-touched:1774828800
+touched:1795392000
 [/ew]
 
-**TTDB-RFC-0004 — Event ID Assignment and Collision Handling** (Stable)
+**TTDB-RFC-0004 — Event ID Assignment and Collision Handling** (Stable, v1.1)
 src: TTDB-RFC-0004-Event-ID-and-Collision.md
 
 `@LATxLONy` IDs are assigned deterministically: from location when available, else a
 stable hash, always projected through `umwelt.globe.mapping` (the globe is a knowledge
 map, not necessarily geography). `southeast_step` collision policy: increment both lat
-and lon by the step until unique. Once assigned an ID never changes — a materially
+and lon by the step until unique — normative corpus-wide, and despite its name a
+north-east step (`@LAT40LON0` → `@LAT41LON1`). Determinism holds only given the same
+existing IDs, so two devices are not guaranteed the same address for one record;
+identity is TTDB-RFC-0010 §4's `(node_id, lane, sid)`. Once assigned an ID never changes — a materially
 changed umwelt gets a new record linked back with `revises@<old_id>`.
 
 ---
 
-@LAT10LON5 | created:1776902400 | updated:1776902400 | relates:depends_on@LAT10LON1,depends_on@LAT10LON2,depends_on@LAT10LON3,implemented_by@LAT40LON5
+@LAT10LON5 | created:1776902400 | updated:1795392000 | relates:depends_on@LAT10LON1,depends_on@LAT10LON2,depends_on@LAT10LON3,implemented_by@LAT40LON5
 [ew]
 conf:210
-rev:0
+rev:1
 sal:150
-touched:1776902400
+touched:1795392000
 [/ew]
 
-**TTDB-RFC-0005 — Toot-Bit Epistemic Weight (TBEW)** (Stable)
+**TTDB-RFC-0005 — Toot-Bit Epistemic Weight (TBEW)** (Stable, v1.1)
 src: TTDB-RFC-0005-Epistemic-Weight.md
 
 Optional `[ew]`…`[/ew]` block immediately after the record header: `conf` u8 (belief
@@ -168,8 +175,10 @@ writes), `sal` u8 (access count, SHOULD half-life-decay), `touched` u32 unix (an
 write; superset of `updated`). Absent block = defaults. Lines are `key:value`, no
 spaces, order-free; unknown keys skipped; out-of-range clamped, never fatal. Derived
 attention signal: `EPS = sal × (255 − conf) / 255` — high EPS = load-bearing but
-untrusted, the prime target for active sensing. A symbolic free-energy proxy: no
-floats, human-legible, runs on a microcontroller.
+untrusted, the prime target for active sensing. A usage × doubt heuristic inspired
+by active inference — v1.1 withdraws the claim that it approximates free energy,
+and `sal` is usage, not epistemic value. No floats, human-legible, runs on a
+microcontroller.
 
 ---
 
@@ -195,27 +204,31 @@ TTDB aims for experiential sufficiency, not comprehensiveness.
 
 ---
 
-@LAT10LON7 | created:1778803200 | updated:1782259200 | relates:depends_on@LAT10LON1,depends_on@LAT10LON3,depends_on@LAT10LON5,depends_on@LAT10LON6,propagated_by@LAT20LON9
+@LAT10LON7 | created:1778803200 | updated:1795392000 | relates:depends_on@LAT10LON1,depends_on@LAT10LON3,depends_on@LAT10LON5,depends_on@LAT10LON6,propagated_by@LAT20LON9
 [ew]
 conf:200
-rev:0
+rev:1
 sal:170
-touched:1782259200
+touched:1795392000
 [/ew]
 
-**TTDB-RFC-0007 — Locus Point and Dream Cycle** (Draft; first instance live via reconcile + push)
+**TTDB-RFC-0007 — Locus Point and Dream Cycle** (Draft v0.2; first instance live via reconcile + push)
 src: TTDB-RFC-0007-Locus-Point-and-Dream-Cycle.md
 
-Two-phase offline consolidation, idle-only, abortable at phase boundaries, < 500 ms
-on ESP32-S3. Phase 1 Replay: sal-weighted random walks (deliberately atemporal) →
-co-occurrence clusters → candidate beliefs (mean conf ≥ 128). Phase 2 Projection:
+Two-phase offline consolidation, idle-only, abortable at phase boundaries, < 650 ms
+on ESP32-S3. Inspired by sleep consolidation, not a model of it. Phase 1 Replay:
+sal-weighted random walks from recent records (not atemporal: recency enters via
+the start set and sal decay) → co-occurrence clusters → candidate beliefs (mean
+conf ≥ 128, and coverage above a degree-preserving shuffled-graph null). Phase 2 Projection:
 walks seeded from boundaries of bounded unknown regions (the Alexander dual) →
 hypotheses flagged `projection_flag`. Output: `@BELIEF:LATxLONy` Locus Point with
-required `[lp]` block (centroid, confidence = walk coverage 0–255, scope_lat/lon,
+required `[lp]` block (wrap-aware centroid, confidence = walk coverage 0–255 — not
+evidence and not comparable to TBEW conf — scope_lat/lon,
 projection_flag, contradiction_flag, source_count). Compression: subsumed episodic
 toot-bits are archived (NEVER deleted) and replaced by a `compresses>` edge. Sharing:
 agents exchange whole `@BELIEF:` records; independently-formed overlapping compatible
-beliefs merge with a +20 confidence bonus (environmental reality signal);
+beliefs merge with a +20 confidence bonus (heuristic, pending the held-out
+falsifier DC-1, proposed and not run);
 contradictions are flagged, not suppressed; ≥ 50 sources still contradicted → demote
 to conf 0 as an explicit open problem.
 
@@ -852,15 +865,15 @@ embedding surface: the engine/page divide, the boot gate, and the calls a host m
 
 ---
 
-@LAT60LON2 | created:1789257600 | updated:1790035200 | relates:depends_on@LAT60LON1,depends_on@LAT10LON1,depends_on@LAT10LON3,depends_on@LAT10LON4,depends_on@LAT10LON5,depends_on@LAT10LON6
+@LAT60LON2 | created:1789257600 | updated:1795392000 | relates:depends_on@LAT60LON1,depends_on@LAT10LON1,depends_on@LAT10LON3,depends_on@LAT10LON4,depends_on@LAT10LON5,depends_on@LAT10LON6
 [ew]
 conf:210
-rev:0
+rev:1
 sal:80
-touched:1790035200
+touched:1795392000
 [/ew]
 
-**TTG-RFC-0002 — Semantic Percepts, Episodes and Terms** (Stable, 1.0)
+**TTG-RFC-0002 — Semantic Percepts, Episodes and Terms** (Stable, 1.1)
 src: TTG-RFC-0002-Semantic-Percepts.md
 
 A sentence becomes percepts: `percept: n | subject | vector | object or - | polarity |
@@ -871,6 +884,7 @@ the same tag anywhere else is checked, never believed. THING and VECTOR terms ar
 records placed on the grammar sphere beside the terms that introduced them.
 Malformed percept lines are skipped, counted and reported; write-back is byte-stable.
 Stated divergence from TTDB-RFC-0006: the pair is subject→object, not before→after.
+Collisions use TTDB-RFC-0004's `southeast_step` (1.1; 1.0 had stepped latitude down).
 
 ---
 

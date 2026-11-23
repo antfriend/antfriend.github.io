@@ -1,7 +1,7 @@
 # TTDB-RFC-0007: Locus Point and Dream Cycle
 ### Consolidation and Belief Formation: Episodic-to-Semantic Memory Transfer in TTDB
 
-**Version:** 0.1
+**Version:** 0.2
 **Status:** Draft
 **RFC Number:** 0007
 **Project:** toot-toot-engineering
@@ -28,11 +28,15 @@ Episodic memory is necessary but not sufficient for action. An agent reasoning p
 
 The gap between episodic toot-bits and actionable beliefs is currently unbridged in the TTDB specification. This RFC closes that gap.
 
-### 2.2 Biological Grounding
+### 2.2 Biological Inspiration
 
-The biological analog is well-established. During waking, the hippocampus records episodic traces. During slow-wave sleep, it replays them; the cortex extracts regularities. During REM sleep, novel recombinations are run against the consolidated model, generating predictions about unobserved states. The output is cortical abstraction — stable beliefs — without the agent retaining conscious access to the specific experiences that produced them.
+The Dream Cycle is **inspired by** sleep-dependent memory consolidation. It is not a model of it, and the evidence behind the two phases it borrows from differs in strength:
 
-The Dream Cycle is Locus's implementation of this process. It is not a metaphor; it is a direct functional analog, implemented in graph-traversal primitives available on any device that can run TTDB.
+- **Slow-wave replay is well supported.** In rodents, hippocampal place-cell ensembles active during waking reactivate during slow-wave sleep (Wilson & McNaughton 1994), and do so as time-compressed, ordered sequences (Lee & Wilson 2002).
+- **The REM account is a hypothesis.** The proposal that REM sleep recombines consolidated material to produce novel associations is a model put forward for explicit testing (Lewis, Knoblich & Poe 2018), not an established finding.
+- **Episodic traces are kept.** In complementary learning systems theory the hippocampus retains episodic traces while the neocortex slowly integrates across episodes (McClelland, McNaughton & O'Reilly 1995). §6.2 follows this: subsumed episodes are archived, never deleted.
+
+**What this RFC borrows and what it does not.** It borrows the division of labour: an offline phase that re-visits recent episodes to extract what recurs across them, and a second phase that proposes hypotheses beyond what was observed. It does **not** reproduce replay's defining property, its sequential order — Phase 1's random walks discard order (§3.2) — and it makes no claim about neural mechanism. Any error in the analogy is ours.
 
 ### 2.3 Relationship to TTDB-RFC-0005 (Epistemic Weight)
 
@@ -65,12 +69,13 @@ Implementations MAY expose these parameters in the `mmpdb` block under a `dream_
 1. Select the set of episodic toot-bits written since the last Dream Cycle (or a bounded sample of *M* most-recently-touched entries if the full set exceeds `dream_replay_max`).
 2. Run *N* random walks of length *L* through the TTDB graph. Each walk begins at a randomly selected node from the selected set.
 3. Walk steps are weighted: the probability of traversing an edge is proportional to the target node's `sal` value (TBEW §3.1). Nodes with no `[ew]` block are assigned `sal = 1`.
-4. Walk steps MUST NOT be weighted by `created` or `updated` timestamp — the replay phase is deliberately atemporal. What appears frequently across walks is structurally robust, not merely recent.
+4. Walk steps MUST NOT be weighted by `created` or `updated` timestamp. This is a narrow rule about step weights, **not** a claim that replay is atemporal: recency enters twice, through the start set (step 1, recent or recently touched records) and through `sal`, which TTDB-RFC-0005 §3.2 decays periodically. What appears frequently across walks is therefore frequent *in the structure reachable from recent activity*. An implementation that needs recency-neutral replay MUST draw the start set uniformly from all episodic records and weight steps uniformly (`sal` treated as 1); the counting consolidation of TTG-RFC-0003 §2 is the recency-neutral reference.
 5. Record node co-occurrence: for each pair of nodes (A, B) that appear in the same walk, increment `cooccurrence[A][B]`.
 6. After all walks complete, extract dense subgraphs from the co-occurrence matrix. A subgraph qualifies as a **candidate belief** when:
    - It contains at least `min_cluster_size` nodes (default: 3).
    - Its minimum pairwise co-occurrence count exceeds `min_cooccurrence` (default: *N* / 4).
-   - Its constituent nodes have mean `conf` ≥ `belief_conf_threshold` (default: 128).
+   - Its constituent nodes have mean `conf` ≥ `belief_conf_threshold` (default: 128). ⚠ 128 is also the TBEW default for an *unassessed* entry (TTDB-RFC-0005 §3.2), so this criterion admits clusters of entirely unassessed nodes; it filters out contested nodes, not unsupported ones.
+   - Its coverage exceeds the null baseline of §5.2.1.
 
 Candidate beliefs are not yet written to the TTDB. They proceed to the belief formation step in §5.
 
@@ -84,6 +89,7 @@ Candidate beliefs are not yet written to the TTDB. They proceed to the belief fo
 | `min_cluster_size` | 3 | Minimum nodes for a candidate belief |
 | `min_cooccurrence` | 25 | N/4 at default N=100 |
 | `belief_conf_threshold` | 128 | TBEW `conf` midpoint |
+| `belief_excess_threshold` | 32 | Minimum coverage above the shuffled-graph null (§5.2.1) |
 
 ### 3.3 Phase 2 — Projection (REM Analog)
 
@@ -121,6 +127,7 @@ dream_cycle:
   projection_walks: 50
   projection_walk_length: 10
   belief_conf_threshold: 128
+  belief_excess_threshold: 32
   min_cluster_size: 3
   min_cooccurrence: 25
 ```
@@ -142,7 +149,8 @@ Estimated cost on ESP32-S3 with PSRAM (100 walks × length 20, 500-node graph):
 | Cluster extraction | O(nodes²) worst case | < 200 ms at 500 nodes |
 | Alexander dual approximation | O(nodes + edges) | < 50 ms |
 | Projection walks | 500 edge traversals | < 25 ms |
-| **Total** | | **< 500 ms** |
+| Null baseline (§5.2.1): one degree-preserving shuffle + repeat replay and co-occurrence | ~2× the replay and matrix rows | < 150 ms |
+| **Total** | | **< 650 ms** (< 500 ms without the null baseline, which §5.2.1 now requires before any Locus Point is written) |
 
 Implementations on severely memory-constrained devices (no PSRAM) SHOULD reduce `dream_replay_max` to 100 and `dream_replay_walks` to 20 to maintain the < 500 ms budget.
 
@@ -162,7 +170,7 @@ A Locus Point is written as a standard TTDB record with a modified coordinate ID
 @BELIEF:LAT<lat>LON<lon> | created:<unix_ts> | updated:<unix_ts> | relates:<edges>
 ```
 
-The `@BELIEF:` prefix distinguishes Locus Points from episodic `@PERCEPT:` nodes and standard `@LATxLONy` records. The lat/lon coordinates are the **centroid** of the cluster of episodic nodes that generated this belief.
+The `@BELIEF:` prefix distinguishes Locus Points from episodic `@PERCEPT:` nodes and standard `@LATxLONy` records. The lat/lon coordinates are the **centroid** of the cluster of episodic nodes that generated this belief, computed as in §5.2.
 
 Parsers that do not implement this RFC MUST silently ignore records whose coordinate ID begins with `@BELIEF:` (per TTDB-RFC-0001 §3: "unknown sections MAY appear and MUST be ignored by strict parsers").
 
@@ -185,10 +193,38 @@ source_count:<uint16>
 #### `centroid`
 The coordinate center of mass of the episodic cluster that generated this Locus Point. Expressed as `LAT<lat>LON<lon>` using the same precision as the originating TTDB coordinate space. MUST match the lat/lon in the header line.
 
-#### `confidence` (uint8, 0–255)
-The proportion of Phase 1 replay walks that contained this cluster, scaled to 0–255. A Locus Point with `confidence` = 255 appeared in every walk. Directly comparable to the TBEW `conf` field on individual toot-bits.
+Latitude does not wrap: the centroid latitude is the arithmetic mean. **Longitude wraps modulo 360**, so a plain mean is wrong for a cluster that straddles ±180 (the mean of 170 and −170 is 0, the far side of the globe). Implementations MUST compute the centroid longitude as a wrap-aware mean, which needs only integer arithmetic:
 
-Formation threshold: a candidate MUST reach `confidence` ≥ `belief_conf_threshold` (default 128) before a Locus Point is written.
+```
+lon0     = lon of the first node in the cluster
+d_i      = wrap(lon_i − lon0)          // wrap(x) maps x into [−180, 180)
+centroid = wrap(lon0 + mean(d_i))
+```
+
+`scope_lon` is computed from the same offsets `d_i`. This equals the arithmetic mean for any cluster spanning less than 180° of longitude that does not cross ±180 — every cluster in a file whose coordinates are small integer labels — so it changes no result there. A cluster spanning 180° or more has no meaningful centroid and MUST NOT form a Locus Point.
+
+#### `confidence` (uint8, 0–255)
+The proportion of Phase 1 replay walks that contained this cluster, scaled to 0–255. A Locus Point with `confidence` = 255 appeared in every walk.
+
+⚠ **This is walk coverage, not evidence.** Coverage depends on the number and length of walks and on how densely the graph is linked: on a small, densely linked graph with the default 20-step walks almost every pair of nodes co-occurs, so almost any cluster clears the threshold. It measures graph structure at least as much as observational support. It is therefore **not** comparable to the TBEW `conf` field, and coverage figures from two different graphs are not comparable to each other (this bears on §6.1 and §7.3). The counting consolidation of TTG-RFC-0003 §2, which scores a belief by evidence for and against with priors, is the evidence-based alternative.
+
+Formation threshold: a candidate MUST reach `confidence` ≥ `belief_conf_threshold` (default 128) **and** pass the null-baseline test of §5.2.1 before a Locus Point is written.
+
+#### 5.2.1 Null baseline (normative)
+
+Raw coverage MUST NOT be used on its own. For each Dream Cycle the implementation MUST also run Phase 1, with the same start set, *N* and *L*, on a **degree-preserving shuffle** of the graph: the same nodes, each with the same number of links, with endpoints rewired at random (repeated edge swaps). A candidate's **excess coverage** is its coverage on the real graph minus the coverage of the same node set on the shuffle. A candidate qualifies only if its excess coverage is at least `belief_excess_threshold` (default: 32, about 12.5 % of walks). Implementations MAY average several shuffles. Where the shuffle is too costly for the device, the cycle MUST NOT write Locus Points; it MAY still record candidates for inspection.
+
+The shuffle removes the part of coverage that link counts alone explain. It does not show that a belief is true; §5.2.2 is the test for that.
+
+#### 5.2.2 Falsifier: held-out prediction (proposed; not yet run)
+
+The claim this RFC must earn is that a Locus Point is a belief, i.e. that it says something about records not used to form it. The test, **DC-1**, is to be pre-registered (protocol and constants committed before any archive is read) before it is run:
+
+1. Split a store's episodic records by time: form Locus Points from the earlier part only.
+2. For each Locus Point, take the held-out later records that fall inside its `scope`.
+3. **PASS** if Locus Points predict the held-out records' edge types and states better than the degree-preserving shuffle baseline of §5.2.1, by a margin fixed at pre-registration. **FALSIFIED** if they do not. **INCONCLUSIVE** if too few held-out records fall inside any scope to decide.
+
+Until DC-1 passes, `confidence` is an index of structural prominence, and §6 (compression) and §7.3 (the intersection bonus) rest on an untested assumption.
 
 #### `scope_lat`, `scope_lon` (decimal degrees)
 The coordinate extent (half-width) of the cluster in the latitude and longitude dimensions respectively. The Locus Point's coverage area is the rectangle:
@@ -246,7 +282,7 @@ As Locus Points accumulate, episodic toot-bits they subsume MAY be compressed to
 
 An episodic toot-bit is eligible for compression when all of the following hold:
 
-1. Its coordinate centroid falls within the `scope` of a Locus Point with `confidence` ≥ 200 (high confidence; approximately 80% walk coverage).
+1. Its coordinate centroid falls within the `scope` of a Locus Point with `confidence` ≥ 200 (approximately 80% walk coverage) that passed the null baseline of §5.2.1. Because coverage is not evidence (§5.2), this criterion is provisional until DC-1 (§5.2.2) passes; archiving is reversible (§6.2), which is why it is tolerable meanwhile.
 2. The Locus Point's `contradiction_flag` is `false`.
 3. The Locus Point's `projection_flag` is `false` (confirmed beliefs only; hypotheses do not justify compression).
 4. The toot-bit's TBEW `conf` ≤ the Locus Point's `confidence` (the belief is at least as well-supported as the individual episode).
@@ -287,7 +323,7 @@ When two agents independently form Locus Points with:
 - Compatible beliefs (no `contradiction_flag` on either), AND
 - Both `projection_flag: false`,
 
-this constitutes strong evidence that the belief is **environmentally real** — not an artifact of one agent's traversal history. The receiving agent SHOULD merge the two Locus Points by:
+this is evidence that the belief is not an artifact of one agent's traversal history. Its strength is limited: the two `confidence` values are coverages of different graphs and are not directly comparable (§5.2), so the bonus below is a heuristic pending DC-1 (§5.2.2). The receiving agent SHOULD merge the two Locus Points by:
 
 - Setting `confidence` to `min(a.confidence, b.confidence) + 20` (capped at 255) — intersection is a confidence bonus.
 - Setting `source_count` to `a.source_count + b.source_count`.
@@ -333,7 +369,7 @@ If a Locus Point reaches `source_count` ≥ 50 with `contradiction_flag: true` s
 |---|---|
 | TTDB-RFC-0001 (File Format) | Locus Points extend the record format with the `@BELIEF:` coordinate prefix and the `[lp]` block. Backward compatible: prior parsers ignore unknown prefixes. The `dream_cycle` key extends the `mmpdb` block. |
 | TTDB-RFC-0003 (Typed Edges) | Locus Points participate in typed edges: `compresses>`, `generalizes>`, `unresolved>`, and any domain edges. The `relates:` header field applies to Locus Points identically to standard records. |
-| TTDB-RFC-0005 (Epistemic Weight) | The `[ew]` block MAY be added to Locus Points; `confidence` in `[lp]` and `conf` in `[ew]` are distinct fields (aggregate belief confidence vs. per-entry epistemic confidence). Implementations SHOULD keep them synchronized. The EPS formula in TBEW §3.3 applies to Locus Points. |
+| TTDB-RFC-0005 (Epistemic Weight) | The `[ew]` block MAY be added to Locus Points; `confidence` in `[lp]` (walk coverage, §5.2) and `conf` in `[ew]` (per-entry epistemic confidence) are distinct quantities on different scales. Implementations MUST NOT copy one into the other. The EPS formula in TBEW §3.3 applies to Locus Points. |
 | TTDB-RFC-0006 (Experiential Perception) | The Dream Cycle is the operational implementation of the episodic→semantic gap identified in RFC-0006. The 1-simplex / Alexander duality framing in RFC-0006 §5.3 provides the mathematical foundation for Phase 2 (Projection). |
 | A32-RFC-0002 (TTDB Storage on ESP32) | Graph compression (§6) directly targets the 12-byte index entry cost defined in A32-RFC-0002 §2.1 and §6. The `dream_cycle` compute budget (§4) is sized for ESP32-S3 with PSRAM. |
 | A32-RFC-0003 (Agent Loop) | The Dream Cycle runs in a new **CONSOLIDATE** phase inserted between ACT and the next SENSE. Implementations SHOULD add a `consolidate()` hook to the agent loop that triggers the Dream Cycle when idle conditions are met. |
@@ -358,11 +394,22 @@ If a Locus Point reaches `source_count` ≥ 50 with `contradiction_flag: true` s
 
 ---
 
-## 11. Changelog
+## 11. References
+
+- Wilson, M. A. & McNaughton, B. L. (1994). Reactivation of hippocampal ensemble memories during sleep. *Science* 265, 676–679.
+- Lee, A. K. & Wilson, M. A. (2002). Memory of sequential experience in the hippocampus during slow wave sleep. *Neuron* 36, 1183–1194.
+- Lewis, P. A., Knoblich, G. & Poe, G. (2018). How memory replay in sleep boosts creative problem-solving. *Trends in Cognitive Sciences* 22, 491–503.
+- McClelland, J. L., McNaughton, B. L. & O'Reilly, R. C. (1995). Why there are complementary learning systems in the hippocampus and neocortex. *Psychological Review* 102, 419–457.
+- TTG-RFC-0003 §2: counting consolidation, the evidence-based and recency-neutral counterpart of Phase 1.
+
+---
+
+## 12. Changelog
 
 | Date | Change |
 |---|---|
 | 2026-05-15 | Initial draft |
+| 2026-11-23 | **v0.2**, from an external review. §2.2 rewritten as "inspired by": slow-wave replay well supported, the REM account a hypothesis, episodic traces kept (as §6.2 already required), sequence order not reproduced; "direct functional analog" withdrawn. §3.2 step 4: the claim that replay is "deliberately atemporal" withdrawn (recency enters through the start set and `sal` decay); recency-neutral variant defined. §3.2 step 6: noted that the `conf` criterion admits unassessed nodes; added the null-baseline criterion. §5.2: wrap-aware centroid longitude; `confidence` restated as walk coverage, not comparable to TBEW `conf`; §5.2.1 degree-preserving null baseline (normative) and `belief_excess_threshold`; §5.2.2 held-out falsifier DC-1 (proposed, not run). §6.1 and §7.3 marked provisional on DC-1. §9: `[lp]` and `[ew]` confidences MUST NOT be synchronized. References added. |
 
 ---
 

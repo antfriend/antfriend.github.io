@@ -1,7 +1,7 @@
 # TTDB-RFC-0005: Toot-Bit Epistemic Weight (TBEW)
-### Lightweight Free-Energy-Adjacent Surprise and Salience Metadata for TTDB Entries
+### Lightweight Confidence, Revision and Salience Metadata for TTDB Entries
 
-**Version:** 1.0
+**Version:** 1.1
 **Status:** Stable
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
@@ -14,7 +14,7 @@
 
 ## 1. Abstract
 
-This RFC proposes the addition of a small, optional **epistemic weight header block** to TTDB toot-bit entries. The block encodes four lightweight scalar fields — `confidence`, `revision_count`, `salience`, and `last_touched` — that together provide a symbolic approximation of variational free energy as formalized in the Free Energy Principle (FEP, Friston 2006–present). No floating-point matrix math is required. The fields are human-readable, flat-file-compatible, and parseable within the constraints established by TTDB-RFC-0001. The result is a knowledge graph that carries an intrinsic signal about which beliefs are well-settled, which are uncertain, and which are worth attending to next — a rudimentary but formally grounded epistemic prioritization mechanism applicable to any TTDB implementation, from cloud-connected assistants to embedded microcontrollers.
+This RFC proposes the addition of a small, optional **epistemic weight header block** to TTDB toot-bit entries. The block encodes four lightweight scalar fields — `confidence`, `revision_count`, `salience`, and `last_touched` — that together give an agent a cheap priority signal over its own entries. The design is **inspired by** the Free Energy Principle (FEP, Friston 2006–present) and active inference; it does not approximate variational free energy or compute any quantity defined there (§2.1). No floating-point matrix math is required. The fields are human-readable, flat-file-compatible, and parseable within the constraints established by TTDB-RFC-0001. The result is a knowledge graph that carries an intrinsic signal about which beliefs are well-settled, which are uncertain, and which are worth attending to next — a rudimentary, heuristic epistemic prioritization mechanism applicable to any TTDB implementation, from cloud-connected assistants to embedded microcontrollers.
 
 ---
 
@@ -26,14 +26,16 @@ The Free Energy Principle states that adaptive agents minimize surprise — the 
 
 Current TTDB entries are epistemically flat: a toot-bit about an ambient temperature reading carries the same structural weight as a toot-bit about a core architectural invariant. Any agent using TTDB has no native signal for prioritizing which entries to query, update, or distrust.
 
-This RFC introduces that signal — not as a probabilistic inference engine but as a **symbolic proxy** for the key quantities free energy tracks:
+This RFC introduces that signal as a **heuristic**, not a probabilistic inference engine. The table below records which FEP concept motivated each field. It is a lineage, not a correspondence: none of the fields estimates the concept beside it.
 
-| FEP Concept | TTDB Proxy Field |
-|---|---|
-| Surprise (prediction error) | `revision_count` + `confidence` |
-| Epistemic value (information gain) | `salience` |
-| Model evidence (belief stability) | `confidence` |
-| Recency / temporal discount | `last_touched` |
+| FEP concept that motivated it | TTDB field | What the field actually measures |
+|---|---|---|
+| Surprise (prediction error) | `rev` + `conf` | How often the entry's body was rewritten, and an agent-assigned settledness score |
+| Epistemic value (information gain) | `sal` | How often the entry is read — **usage, not information gain**. In active inference, epistemic value is the expected information gain about hidden states, which nothing here computes. |
+| Model evidence (belief stability) | `conf` | Agent-assigned settledness, updated by fixed steps (precision-weighted in TTDB-RFC-0011) |
+| Recency / temporal discount | `touched` | Time of last write |
+
+EPS (§3.3) is accordingly a usage × doubt priority score, close in spirit to uncertainty-weighted sampling in active learning.
 
 ### 2.2 Theoretical Lineage
 
@@ -41,7 +43,7 @@ This proposal sits at the intersection of three converging research traditions:
 
 **Biosemiotics (von Uexküll):** The umwelt is not a uniform map — some signs are more salient to an organism than others. A predator's footprint and the texture of bark are not epistemically equal to a deer. TTDB should reflect this.
 
-**Active Inference (Friston / Markov blankets):** <q>The goal of the agent is to restrict itself to its preferred set of states while minimizing the ambiguity of its internal model.</q> Maximizing epistemic value — attending to high-uncertainty, high-salience entries — is how an agent makes its model more accurate over time. Epistemic weight fields make this tractable without Bayesian matrix operations.
+**Active Inference (Friston / Markov blankets):** <q>The goal of the agent is to restrict itself to its preferred set of states while minimizing the ambiguity of its internal model.</q> In active inference an agent seeks observations with high epistemic value, the expected information gain about hidden states. TBEW does not compute that quantity; it borrows the intuition that attention should go where the model is both relied on and unsettled, and approximates *that* with a usage × doubt score (§3.3) that needs no Bayesian matrix operations.
 
 **Neurophenomenology (Varela):** First-person data must *constrain* the model — not merely fill it. An entry that has been revised many times is not yet a settled belief; it is an open constraint. The agent should treat it differently from an entry that has been stable for 500 cycles.
 
@@ -241,9 +243,9 @@ The `[ew]` block is intentionally human-readable. A researcher or developer insp
 
 TBEW gives any TTDB-backed agent a claim that no existing open-source embedded agent framework can currently make:
 
-> **A human-readable, umwelt-anchored knowledge graph with a lightweight symbolic approximation of free energy minimization, requiring no floating-point matrix operations — applicable from cloud AI assistants down to microcontroller-resident agents with no cloud connectivity.**
+> **A human-readable, umwelt-anchored knowledge graph with a lightweight, FEP-inspired attention heuristic, requiring no floating-point matrix operations — applicable from cloud AI assistants down to microcontroller-resident agents with no cloud connectivity.**
 
-This is not a claim that a TTDB agent *implements* the Free Energy Principle. It is a claim that TTDB entries annotated with TBEW fields provide the agent loop with the *same functional signals* FEP provides biological agents — at a fraction of the computational cost, and in a form that remains transparent to human inspection.
+This is not a claim that a TTDB agent implements, or approximates, the Free Energy Principle, and the fields are not the signals FEP defines. The claim is narrower: TBEW gives the agent loop a transparent, integer-only signal for *which entries to look at next* — frequently used but poorly settled ones — at negligible cost and in a form a human can inspect.
 
 ---
 
@@ -278,6 +280,7 @@ This is not a claim that a TTDB agent *implements* the Free Energy Principle. It
 | Date | Change |
 |---|---|
 | 2026-04-23 | Initial draft |
+| 2026-11-23 | **v1.1**, from an external review. Wording only; no field, format or formula changes. Withdrew "symbolic approximation of variational free energy" and "formally grounded" (subtitle, §1, §2.2, §6.2); §2.1's table restated as lineage, not correspondence, with what each field measures; `sal` is usage, not epistemic value; EPS described as a usage × doubt heuristic. |
 
 ---
 

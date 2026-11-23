@@ -1,6 +1,6 @@
 # TTDB-RFC-0003: Typed Edge Semantics
 
-**Version:** 1.1
+**Version:** 1.2
 **Status:** Stable
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -89,7 +89,20 @@ contradiction, and a store containing both is not thereby inconsistent. A
 consumer computing epistemic conflict MUST ignore `opposes`; a consumer
 computing semantic structure MUST NOT read `contradicts` as polarity.
 
-### 7.3 Rationale
+### 7.3 `contradicts` is directional in the file, symmetric in meaning
+Contradiction is logically symmetric: if A cannot hold together with B, B cannot hold
+together with A. `contradicts` is nevertheless **not** declared symmetric under §7.1,
+because its direction carries provenance: the record holding the edge is the one that
+*raises* the conflict (for example, a belief pointing at the spec text it diverges from).
+Therefore:
+
+- Authors write `contradicts` once, on the record that raises the conflict. A reverse
+  edge is permitted but not expected.
+- A consumer computing epistemic conflict MUST treat `A contradicts B` as a conflict
+  between A and B in both directions, whether or not the reverse edge is present.
+- Validators MUST NOT report a one-way `contradicts` as an incomplete symmetric relation.
+
+### 7.4 Rationale
 Stores may encode polarity positionally — for example a coordinate mapping in
 which latitude carries valence. Position is not available to a consumer reading
 the edge list, which is what implementations in this corpus actually traverse.
@@ -99,6 +112,9 @@ its opposed pairs appear unrelated.
 ---
 
 ## 8. Changelog
+- **1.2** (2026-11-23) — Added §7.3: `contradicts` is written once, by the record that
+  raises the conflict, and is read as symmetric by conflict consumers; validators do
+  not expect a reverse edge. Former §7.3 renumbered §7.4. Prompted by an external review.
 - **1.1** — Added §7: symmetric types, and the `opposes` type for semantic
   polarity. No change to §§1–6; all 1.0-conformant files remain valid.
 - **1.0** — Initial.
