@@ -1,15 +1,18 @@
 # TTDB-RFC-0011: Precision Weighting and the Ignition Filter
 ### Signal Precision, Gain-Scaled Belief Update, and a Decaying Workspace — the "Consciousness Filter" for TTDB Agents and the Personal Grimoire
 
-**Version:** 0.1.8
+**Version:** 0.1.9
 **Status:** Proposed — the stage-2 offline replays PW-1, PW-2 and PW-4 have been run and passed
 as pre-registered (§8.1, §8.2). PW-3 has been run and **falsified the broadcast gate as
 specified in §6.3** (§8.3). PW-1b, a re-run of PW-1 with `pe_span` re-derived for open
 question 6, is **INCONCLUSIVE** as pre-registered and answers that question for acoustic only
-(§8.4). Stage 1 (readers) is implemented in `robot_team` with no behaviour change; PW-5, PW-6
-and the firmware stages 3–7 have not been run.
+(§8.4). Stage 1 (readers) is implemented in `robot_team` with no behaviour change. **Stage 3
+has passed on the Cardputer** (§8.5): `@LAT108` is written there, observed and not used, and
+every record a pull could check equals an independent refold. That pass needed three design
+changes and a corrected gate tool, all disclosed in §8.5. PW-5, PW-6 and stages 4–7 have not
+been run. `@LAT109` is **unwritten**.
 The arithmetic (§3–§4) is integer-only and testable offline before any firmware changes
-(§9, stage 2). The two lanes it allocates (`@LAT108`, `@LAT109`) are **unwritten**.
+(§9, stage 2).
 **RFC Number:** 0011
 **Project:** toot-toot-engineering
 **Component:** Toot-Toot Database (TTDB)
@@ -687,6 +690,68 @@ Candidate divergences (`lat 98`): the channel's firmware acceptance band (`RSSI_
 archive-derived constants cannot use a channel's best-calibrated constant. The K10's ear
 reads as noiseless at any span tried.
 
+### 8.5 Stage 3 result: one PRECISION lane on the Cardputer (2026-11-22)
+
+**Stage 3: PASSED on run 3, under a gate tool corrected after the run (below).** Runs 1 and
+2 did not pass as registered, and they stand.
+
+Stage 3 (§9.2) writes `@LAT108` on one node, folds it in the Dream Cycle, and leaves §3.4
+off: nothing on the node reads `π`. Its pass condition was registered in
+`robot_team/docs/design/rfc0011-stage3.md` (committed `59f8294`, before any code), and every
+change to it was committed before the code that met it:
+- the record must be reproducible from the node's own flash;
+- two pulls at least one rotation apart must each hold a record for all four channels;
+- every record must equal a refold computed by PW-1's own parser and arithmetic
+  (`tools/pw1/pw1_fold.py`, imported unmodified) with PW-1b's spans;
+- and the fold must stay inside a time budget.
+
+| Run | Build | Gate (two pulls) | Cost | Verdict and change it forced |
+|---|---|---|---|---|
+| 1 | synchronous fold | pull 1 MATCH ×4; pull 2 acoustic **UNVERIFIABLE** | fold 141–288 ms against a 100 ms budget: **failed** | NOT PASSED → D3b (fold as a job, ≤ 2 episodes a loop pass) and D7 (rewrite when `from` moves) |
+| 2 | D3b + D7 | pull 1 MATCH ×4; pull 2 acoustic **UNVERIFIABLE** again | worst pass 8–17 ms: **passed**; each rewrite **~3 s** | NOT PASSED → D8 (a record leaves flash only inside the episode tier's own cut), D9 (gate may read episodes from the earlier pull), D10 (port held between pulls) |
+| 3 | D8–D10 | pull 1 MATCH ×4; pull 2 **as run: acoustic FAIL**, corrected tool: MATCH ×4; independence OK ×4 | worst pass **19 ms** over 25 jobs; appends 51–186 ms (limit 200); no abort, no reset | **PASSED**, accepted by the owner under the corrected tool |
+
+⚠ **What it does and does not show.**
+- **The fold is correct where it could be checked.** Across 6 pulls and 3 builds, 22 records
+  were checkable. 21 were MATCH as run, and the 22nd is MATCH under the corrected tool. No
+  record ever disagreed with the refold on a number: the node's integer fold equals PW-1's
+  arithmetic on the node's own flash.
+- **Run 3's as-run FAIL was a gate-tool defect.** The episode it named,
+  `@LAT103LON28198`, is byte-identical in both pulls. Pull 1 ended on it, and the gate ran
+  each record to the next header, so pull 2's copy carried the following record's `---`
+  separator. The fix strips the separator, and a test reproduces the case. The pass
+  condition was not changed. The owner accepted run 3 rather than running a fourth time.
+- **Verifiability was the hard part, not arithmetic.** The acoustic tier writes about one
+  episode a minute against a quota of 24, so a record folded 12 minutes earlier could lose
+  its whole range to the quota's cut before any pull. Rewriting on a moved window (D7) made
+  a record checkable at birth but cost a whole-file rewrite, about 3 s, for each one. D8
+  removes a record in the same rewrite as its episodes, so the lane adds no rewrites of its
+  own, and a record on flash always names a range that is wholly on flash.
+- **What it costs:** flash +9.0 KB and static RAM +1.4 KB on the Cardputer (the fold state
+  became static under D3b). The worst append was 186 ms, at the run's lowest free heap
+  (15.6 KB), close to its 200 ms limit.
+- **`π` is still not used.** Stage 3 says nothing about whether gain from `π` helps; that
+  is stage 4 and PW-2 on hardware.
+
+Candidate divergences (`lat 98`): the implementation does not do what §4 says in five places.
+They are reported here, not edited into §4.
+1. **The residual.** §4.3 folds `pe` of a `@PERCEPT` pair (§3.2). The fleet's fold, like
+   PW-1's, uses the previous window as the prediction, and each record says so
+   (`predictor:previous_window`).
+2. **The source lanes.** §4.1 folds from `@LAT94`–`@LAT97`. Since ACT-III C0 those tiers
+   write `@LAT103` episodes instead, so the fold reads `@LAT103`.
+3. **RAM versus flash.** §4.3 lets a node keep the EWMA live in RAM. The stage-3 node
+   folds from flash only, from `var = 0` every time, so that a pull can reproduce the
+   record.
+4. **The write rule.** §4.3 rewrites only when `π` moves more than `prec_write_delta`.
+   Under D8 a record is also deleted whenever its episodes are cut and then re-appended,
+   and a `π` move above the threshold waits for the next cut. §4.3's rule alone let a
+   record outlive the evidence it cites.
+5. **Replay.** §4.3's fold MUST run in Replay. This firmware has no Replay or Projection
+   phase, so the fold runs in the Cardputer's Stage D reconciliation block, which only
+   reads testimony back from flash. That mapping is a decision, not something found in
+   the code.
+
 ---
 
 ## 9. Adoption
@@ -726,7 +791,7 @@ Absent `precision`, a reader MUST behave as TTDB-RFC-0005 alone.
 - **Stage 2 — offline replay.** PW-1, PW-2, PW-4 over the archive. No firmware. **Stop here
   if PW-1 fails.**
 - **Stage 3 — one PRECISION lane.** `@LAT108` on the Cardputer, folded in the Dream Cycle.
-  §3.4 still disabled; `π` observed, not used.
+  §3.4 still disabled; `π` observed, not used. **Passed** on its third run (§8.5).
 - **Stage 4 — gain on.** §3.4 on one node. PW-2 on hardware.
 - **Stage 5 — broadcast gate.** §6.3–6.4 across the V4 spine. PW-3 on air. **Blocked:** PW-3
   falsified §6.3 as specified (§8.3); needs a refresh mechanism and its own replay first.
@@ -770,6 +835,11 @@ Absent `precision`, a reader MUST behave as TTDB-RFC-0005 alone.
 5. **Hysteresis vs half-life.** Two mechanisms keep an item in view. One may be redundant.
 6. **Saturated channels (from PW-1, §8.1; partly answered by PW-1b, §8.4).** Acoustic, motion and link all fold to `π` ≈ 250–255. Are they quiet, or is `pe_span` too wide for `rms_mean` / `dev_mean_mg` (and `PI_SCALE` too large for them)? ~~Settle by re-deriving `pe_span` from observed residual ranges~~ (corrected in 0.1.8: a span taken from observed residuals would be tuning against the data). PW-1b re-derived `pe_span` from firmware state-change constants, pre-registered: acoustic is no longer saturated (241), while motion (251) and link (249) are quiet at the scale their firmware acts on. Open: whether `PI_SCALE`, not re-derived, should differ per channel.
 7. **A refresh for the broadcast gate (from PW-3, §8.3).** What keeps a gated receiver's belief from going stale: a heartbeat every `N` windows, a drift-triggered resend when cumulative `pe` against the last transmitted value exceeds `θ_tx`, or a receiver pull? Each costs airtime that the 97.9 % saving can afford; the question is which keeps disagreement under 5 %. It needs its own pre-registered replay.
+8. **How does `conf = 16 × log2(1 + n)` round (from stage 3, §8.5)?** §4.3 does not say. Stage
+   3 uses `min(240, 16 × floor(log2(1 + n)))`, because floor is exact in integers, so `conf`
+   moves in steps of 16 at `n = 1, 3, 7, 15 …`. A rounded or fixed-point log would give
+   different records for the same `n`. Two implementations that disagree here both satisfy
+   the text and fail each other's gate.
 
 ---
 
@@ -805,6 +875,7 @@ Absent `precision`, a reader MUST behave as TTDB-RFC-0005 alone.
 | 2026-11-22 | 0.1.5 — PW-2 and PW-4 results written back (§8.2): both PASS as pre-registered; cohort mostly link, protection not immunity |
 | 2026-11-22 | 0.1.6 — wording: "kill" replaced by "falsified" in §8 (thresholds and results unchanged) |
 | 2026-11-22 | 0.1.7 — PW-3 result written back (§8.3): FALSIFIED as pre-registered (disagreement 38.1 %, airtime fall 97.9 %); §6.3 flagged, stage 5 blocked, open question 7 added |
+| 2026-11-22 | 0.1.9 — Stage 3 result written back (§8.5): passed on the Cardputer on its third run, under a gate tool corrected after the run (as-run FAIL disclosed); runs 1–2 not passed as registered, which forced D3b, D7 and D8–D10; five `lat 98` divergences between §4 and the implementation reported, not edited into §4; open question 8 (`conf` rounding) added; Status updated, `@LAT108` now written on one node |
 | 2026-11-22 | 0.1.8 — PW-1b result written back (§8.4): INCONCLUSIVE as pre-registered (stability 68.8 %, one series across the tolerance); open question 6 answered for acoustic (241) and confirmed saturated for motion (251) and link (249); Q6's "from observed residual ranges" corrected; §9.1 `lane_classes` corrected to this fleet (`@LAT104` PROVENANCE, not FIELD; `@LAT108`/`@LAT109` added); Status notes stage 1 readers implemented |
 
 ---

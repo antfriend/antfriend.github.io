@@ -334,7 +334,7 @@ sal:130
 touched:1795305600
 [/ew]
 
-**TTDB-RFC-0011 — Precision Weighting and the Ignition Filter** (Proposed; stage-2 replays PW-1, PW-2 and PW-4 passed as pre-registered, PW-3 falsified the §6.3 broadcast gate as specified, PW-1b re-derived `pe_span` and was INCONCLUSIVE, §8.1-§8.4; stage 1 readers implemented; `@LAT108`/`@LAT109` unwritten)
+**TTDB-RFC-0011 — Precision Weighting and the Ignition Filter** (Proposed; stage-2 replays PW-1, PW-2 and PW-4 passed as pre-registered, PW-3 falsified the §6.3 broadcast gate as specified, PW-1b re-derived `pe_span` and was INCONCLUSIVE, §8.1-§8.4; stage 1 readers implemented; stage 3 passed on the Cardputer on its third run, under a gate tool corrected after the run, §8.5: `@LAT108` written there, observed not used; `@LAT109` unwritten)
 src: TTDB-RFC-0011-Precision-Weighting-and-the-Ignition-Filter.md
 
 TBEW has one precision (`conf`, the belief's); active inference needs two. `prec` (π) joins `[ew]`
