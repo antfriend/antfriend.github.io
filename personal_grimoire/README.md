@@ -101,7 +101,9 @@ language puts it, and Spanish *a* marks an object except after a verb of motion;
 *or* joins, a stance verb or noun takes or a relative word reports is held — seen, never
 believed, never a contradiction, keeping its own *not* — unless the *or* is denied, and that
 an aside turns a hedge into a plain saying; that a held clause is linked to the stance that
-holds it, and a question after the stance names it; that an amendment stands in for a sentence
+holds it, and a question after the stance names it; that what a verb takes is counted in
+episodes, the grammar's guesses at a gap apart from your words, under each of the three
+numbers that weigh them; that an amendment stands in for a sentence
 without touching its episode, and is withdrawn by reading the sentence back the episode's
 way; and that a re-reading reports what a grammar edit changes, in the context the sentences
 before it stand as, writes nothing, and can be taken as an amendment that names the grammar —
@@ -527,8 +529,10 @@ no.
   said the verb with a thing. Where both readings of a sentence are grammatical and the
   grammar can see it, both are held (*the men that saw the cats eat cheese.*); where it
   cannot (*Birds that sing love songs.*, before *love* is a thing to you), the reading with a
-  verb wins. What the store learns about a verb comes from the readings that stand, its own
-  guesses included, until you amend them. Questions that
+  verb wins. What the store learns about a verb comes from the readings that stand, counted
+  in episodes, its own guesses at a gap included; `frame_grammar_weight` in the numbers says
+  how much those guesses count, and `frame_preempt_ratio` lets a verb you mostly use without a
+  thing go back to taking none. Each verb's record shows its count on a `frames:` line. Questions that
   invert word order beyond the declared forms fall back to search. Where it reads you
   wrongly, [correct the reading](#how-it-read-you).
 - **Modifiers are dropped.** *Black cats* is *cats*, unless you make *black cats* one term.

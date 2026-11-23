@@ -91,6 +91,27 @@ recommendation is yes: it changes what a question can find.
 **From:** usage-based entrenchment and preemption. Also answers TTG-RFC-0005 §8.4. **Size:**
 small to medium.
 
+**Status (2026-11-23): implemented in the runtime, the store and the tests.**
+- **Gap lines.** A percept whose object, or lack of one, the grammar decided at a relative's
+  gap is written as the grammar's reading: `gap: <sentence> | <percept ordinals>`. That
+  covers a gap filled, a gap no verb took, and a stranded preposition. A reading the owner
+  chose between two readings is not marked. The lines are carried by amendments and
+  compared by re-reading. Malformed ones are skipped and counted.
+- **Episode counts.** Frames are counted in episodes, with the owner's words and the
+  grammar's gaps kept apart. The three numbers are in the store at 1, 1 and 0, and with
+  those values every test, re-read and seed reading is unchanged. A store that declares none
+  of them reads exactly as before.
+- **Visible counts.** Verb records carry `frames: <with> <without> | <gap-only with>
+  <gap-only without>`, and `node tools/consolidate.mjs` reports drift in them.
+
+**Changed from the plan.** Chain verbs do **not** take the grammar-weight discount. The
+evidence for a chain verb is a bare verb after the verb's thing, which is in the owner's
+words, not a guess at a gap, so discounting it would stop typed sentences teaching chains at
+all.
+
+Still to do: the RFC text upstream (TTG-RFC-0005 §3 and §6 to §8, TTG-RFC-0002 §5, TTG-RFC-0003
+§5), and the bAbI check, whose task data isn't on this machine.
+
 **Problem.** Whether a verb takes a thing flips the first time any standing reading shows it
 with one, and never flips back. A reading the grammar made, such as a gap it filled, teaches
 as much as one the owner marked. So one wrong guess teaches a wrong fact about a verb until

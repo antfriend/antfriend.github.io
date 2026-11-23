@@ -427,6 +427,45 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
   ok(am && K.amends.size === 0, "an amendment that reads as the episode does, holds and all, is withdrawn");
   }
 
+  // what a verb takes is counted in episodes, apart for the owner's words and the grammar's gaps (TTG-RFC-0005 §3, verb frames)
+  {
+    const many = (o, k) => o[k] == null ? [] : [].concat(o[k]);
+    const withNum = (k, v) => PG.openStore(STORE.replace(new RegExp("^" + k + ": .*$", "m"), k + ": " + v));
+    const told = S => PG.shapeOf(S, "I told the man that the cat bit.").percepts.map(pk).join(" ; ");
+    const said = "self | tell | man | + | - ; cat | bite | man | + | -", two = "self | tell | man | + | - ; cat | bite | - | ? | - | a ; cat | bite | man | ? | - | b";
+    const feed = (S, says) => { let t = T0; for (const s of says) PG.answer(S, s, t += 60); return S; };
+    const D = feed(fresh(), ["I like the dog that the cat bit."]);
+    const ep = D.episodes[D.episodes.length - 1], blk = PG.parseBlock(ep.rec.episode);
+    ok(many(blk, "gap").join() === "1 | 2", "a gap the grammar filled is written as its reading, by ordinal", many(blk, "gap").join());
+    ok(PG.parseBlock(D.vectors.get("bite").chunk.rec.term).frames === "1 0 | 1 0", "the verb's record shows its frames: one episode with a thing, read at a gap");
+    ok(told(D) === said, "with the declared numbers, a gap the grammar filled teaches as before", told(D));
+    ok(told(feed(withNum("frame_grammar_weight", 0), ["I like the dog that the cat bit."])) === two,
+       "at frame_grammar_weight 0 the grammar's own gap teaches nothing, and the sentence keeps both readings");
+    ok(told(feed(withNum("frame_grammar_weight", 0), ["Dogs bite cats."])) === said, "while the owner's own words still teach it");
+    ok(told(feed(withNum("frame_min_episodes", 2), ["Dogs bite cats."])) === two &&
+       told(feed(withNum("frame_min_episodes", 2), ["Dogs bite cats.", "Snakes bite mice."])) === said,
+       "frame_min_episodes counts episodes: one is not enough at 2, two are");
+    ok(told(feed(fresh(), ["Dogs bite cats.", "Dogs bite.", "Cats bite."])) === said, "with frame_preempt_ratio 0 nothing preempts a thing");
+    ok(told(feed(withNum("frame_preempt_ratio", 2), ["Dogs bite cats.", "Dogs bite.", "Cats bite."])) === "self | tell | man | + | - ; cat | bite | - | ? | -" &&
+       told(feed(withNum("frame_preempt_ratio", 2), ["Dogs bite cats.", "Dogs bite."])) === said,
+       "at frame_preempt_ratio 2, twice as many episodes without a thing make the verb lone, and fewer do not");
+    const E = feed(fresh(), ["I emailed the man that the cat sleeps.", "The house that I live in is old."]);
+    const gl = E.episodes.slice(-2).map(c => many(PG.parseBlock(c.rec.episode), "gap").join());
+    ok(gl.join(" ; ") === "1 | 2 ; 1 | 1", "a gap no verb took, and a stranded preposition's, are the grammar's readings too", gl.join(" ; "));
+    ok(D.malformed.length === 3 && PG.reread(D).changed.length === 0, "gap lines are well formed, and the sentences read back as written");
+    const bad = PG.openStore(PG.serializeStore(D.st).replace("dog | + | -" + NL + "gap: 1 | 2", "dog | + | -" + NL + "gap: 1 | 3"));
+    ok(bad.malformed.length === 4 && bad.usage.get("bite").frames.join() === "1,0,0,0", "a gap line past the sentence's percepts is malformed, and marks nothing");
+    const old = PG.openStore(PG.serializeStore(D.st).split(NL).filter(l => !l.startsWith("gap:")).join(NL));
+    const rr = PG.reread(old);
+    ok(rr.changed.length === 1 && rr.changed[0].gap === "1 | 2" && rr.changed[0].now.join() === rr.changed[0].was.join(),
+       "an episode with no gap line is offered one by a re-reading, with its percepts unchanged");
+    PG.takeRereads(old, rr.grammar, T0 + 600);
+    ok(PG.reread(old).changed.every(x => x.accepted) && old.usage.get("bite").frames.join() === "1,0,1,0", "taking it marks the gap");
+    const seed = fresh();
+    ok([...seed.vectors.values()].every(t => (PG.parseBlock(t.chunk.rec.term).frames || null) === (seed.usage.has(t.lemma) ? PG.termState(seed, t).block.split(NL).find(l => l.startsWith("frames: ")).slice(8) : null)),
+       "every verb record in the seed store carries the frames its episodes give it");
+  }
+
   // which verbs a relative's bare verb may follow is the store's word list, not the runtime's
   const noChain = PG.openStore(STORE.replace(/^chain: .*\n/gm, ""));
   ok(PG.shapeOf(noChain, "I like the man that saw the cat eat cheese.").percepts.map(pk).includes("man | eat | cheese | + | -"),

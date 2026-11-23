@@ -254,6 +254,11 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <
   `holds: 1 | 1 | 2` says the first percept (`self | doubt | -`) holds the second
   (`cat | like | fish | ?`). So *What do I doubt?* names what you doubt, as held, with its
   sentence. An *or* is held by no stance and writes no holds line.
+- **Gaps** → where a relative's gap decided a percept's object — the grammar filled it (*the
+  dog that the cat bit* is `cat | bite | dog`), or no verb took it and the clause was reported
+  (*the cat sleeps*) — the percept is the grammar's reading, not the owner's words:
+  `gap: 1 | 2` names it by ordinal. What a verb takes is learned from both, but only the
+  owner's words count in full (below).
 - **Two readings** → where the grammar can read a sentence two ways, what both say is said and
   what only one says is held, **named** in a seventh column: `a` and `b` at the first such
   place, `c` and `d` at the next. *The men that saw the cats eat cheese* says `man see cat`
@@ -267,7 +272,7 @@ it is how every belief proves where it came from.
 ```
 @LAT90LON<n> | created | updated | relates:perceives@<term>,...
 **Episode n — source**
-ttdb-episode block: source:, at:, said: lines, shape: lines, percept: lines, holds: lines
+ttdb-episode block: source:, at:, said: lines, shape: lines, percept: lines, holds: lines, gap: lines
 ```
 
 **The owner's reading.** Each sentence's shape is written beside it in the lexicon's marks —
@@ -286,7 +291,7 @@ lane, so reading must draw the line in the same place deleting does.
 
 ---
 
-@LAT40LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT0LON0,depends_on@LAT30LON0,derived_from@LAT98LON2
+@LAT40LON0 | created:1789257600 | updated:1795392000 | relates:refines@LAT0LON0,depends_on@LAT30LON0,derived_from@LAT98LON2
 
 **Blueprint 4 — Terms on the sphere**
 src: RFCs/TTG-RFC-0002-Semantic-Percepts.md §5
@@ -307,8 +312,17 @@ at the origin, in the `ttdb-sphere` block.
 ```
 class: thing | vector      lemma:      forms: every surface form seen
 seen: percept mentions     asked: queries that found purchase here
+frames: <with a thing> <without> | <of those, only at a gap: with> <without>     a vector's
 belief: <vector> | <object or -> | <+ - ?> | <for> <against> | <conf>
 ```
+
+- **Frames** (a vector's): what the verb takes, in **episodes** that use it — with a thing,
+  and without one — and how many of each only the grammar read, at a gap. A verb takes a
+  thing once its episodes with one reach `frame_min_episodes`, an episode only the grammar
+  gave counting at `frame_grammar_weight`, unless `frame_preempt_ratio` is set above 0 and
+  its episodes without a thing reach that many times as many. At 1, 1 and 0 (the
+  [numbers](lat-70lon0)) any episode with a thing is enough. Chain verbs are not counted
+  this way: one bare verb after the verb's thing rules out every other reading.
 
 - **Header edges** are the decided beliefs, typed by the owner's vector: `chase@<mouse>`;
   a negative one takes the `negation_prefix`: `not_fly@<fly>`. An object-less belief points
@@ -970,6 +984,9 @@ with_max_pairs: 3
 said_max_chars: 400
 rule_max_body: 3
 phrase_max_words: 4
+frame_min_episodes: 1
+frame_grammar_weight: 1
+frame_preempt_ratio: 0
 ```
 
 ---
@@ -1283,12 +1300,12 @@ asked: 0
 
 ---
 
-@LAT2.8LON-84.1 | created:1789257600 | updated:1789257840 | relates:
+@LAT2.8LON-84.1 | created:1789257600 | updated:1795392000 | relates:
 [ew]
 conf:170
 rev:0
 sal:3
-touched:1790121600
+touched:1795392000
 [/ew]
 
 **is_a**
@@ -1298,17 +1315,18 @@ class: vector
 lemma: is_a
 forms: is_a
 seen: 6
+frames: 5 0 | 0 0
 asked: 0
 ```
 
 ---
 
-@LAT-57.6LON-93.2 | created:1789257600 | updated:1789257660 | relates:
+@LAT-57.6LON-93.2 | created:1789257600 | updated:1795392000 | relates:
 [ew]
 conf:170
 rev:0
 sal:0
-touched:1790121600
+touched:1795392000
 [/ew]
 
 **fly**
@@ -1318,6 +1336,7 @@ class: vector
 lemma: fly
 forms: fly
 seen: 2
+frames: 0 2 | 0 0
 asked: 0
 ```
 
@@ -1343,12 +1362,12 @@ asked: 0
 
 ---
 
-@LAT-53.2LON-168.8 | created:1789257600 | updated:1789257720 | relates:
+@LAT-53.2LON-168.8 | created:1789257600 | updated:1795392000 | relates:
 [ew]
 conf:170
 rev:0
 sal:1
-touched:1790121600
+touched:1795392000
 [/ew]
 
 **has**
@@ -1358,6 +1377,7 @@ class: vector
 lemma: has
 forms: has
 seen: 2
+frames: 2 0 | 0 0
 asked: 0
 ```
 
@@ -1406,12 +1426,12 @@ belief: swim | - | + | 1 0 | 170
 
 ---
 
-@LAT-45LON-59.5 | created:1789257660 | updated:1789257660 | relates:
+@LAT-45LON-59.5 | created:1789257660 | updated:1795392000 | relates:
 [ew]
 conf:170
 rev:0
 sal:0
-touched:1790121600
+touched:1795392000
 [/ew]
 
 **swim**
@@ -1421,6 +1441,7 @@ class: vector
 lemma: swim
 forms: swim
 seen: 1
+frames: 0 1 | 0 0
 asked: 0
 ```
 
@@ -1552,12 +1573,12 @@ belief: eat | cheese | + | 1 0 | 170
 
 ---
 
-@LAT-42.9LON-166.4 | created:1789257780 | updated:1789257780 | relates:
+@LAT-42.9LON-166.4 | created:1789257780 | updated:1795392000 | relates:
 [ew]
 conf:170
 rev:0
 sal:0
-touched:1790121600
+touched:1795392000
 [/ew]
 
 **chase**
@@ -1567,6 +1588,7 @@ class: vector
 lemma: chase
 forms: chase
 seen: 1
+frames: 1 0 | 0 0
 asked: 0
 ```
 
@@ -1592,12 +1614,12 @@ asked: 0
 
 ---
 
-@LAT9.5LON-19.5 | created:1789257780 | updated:1789257780 | relates:
+@LAT9.5LON-19.5 | created:1789257780 | updated:1795392000 | relates:
 [ew]
 conf:170
 rev:0
 sal:0
-touched:1790121600
+touched:1795392000
 [/ew]
 
 **eat**
@@ -1607,6 +1629,7 @@ class: vector
 lemma: eat
 forms: eat
 seen: 1
+frames: 1 0 | 0 0
 asked: 0
 ```
 
@@ -1654,12 +1677,12 @@ belief: sleep_in | sun | + | 1 0 | 170
 
 ---
 
-@LAT26.2LON-90.4 | created:1789257840 | updated:1789257840 | relates:
+@LAT26.2LON-90.4 | created:1789257840 | updated:1795392000 | relates:
 [ew]
 conf:170
 rev:0
 sal:0
-touched:1790121600
+touched:1795392000
 [/ew]
 
 **love**
@@ -1669,6 +1692,7 @@ class: vector
 lemma: love
 forms: love
 seen: 1
+frames: 1 0 | 0 0
 asked: 0
 ```
 
@@ -1694,12 +1718,12 @@ asked: 0
 
 ---
 
-@LAT27.1LON-170.3 | created:1789257840 | updated:1789257840 | relates:
+@LAT27.1LON-170.3 | created:1789257840 | updated:1795392000 | relates:
 [ew]
 conf:170
 rev:0
 sal:0
-touched:1790121600
+touched:1795392000
 [/ew]
 
 **sleep_in**
@@ -1709,6 +1733,7 @@ class: vector
 lemma: sleep_in
 forms: sleeps_in
 seen: 1
+frames: 1 0 | 0 0
 asked: 0
 ```
 
@@ -1755,12 +1780,12 @@ belief: has_property | warm | + | 1 0 | 170
 
 ---
 
-@LAT-31.5LON-130 | created:1789257900 | updated:1789257900 | relates:
+@LAT-31.5LON-130 | created:1789257900 | updated:1795392000 | relates:
 [ew]
 conf:170
 rev:0
 sal:1
-touched:1789257900
+touched:1795392000
 [/ew]
 
 **drink**
@@ -1770,6 +1795,7 @@ class: vector
 lemma: drink
 forms: drink
 seen: 1
+frames: 1 0 | 0 0
 asked: 0
 ```
 
@@ -1835,12 +1861,12 @@ asked: 0
 
 ---
 
-@LAT1.9LON-17.8 | created:1789257900 | updated:1789257960 | relates:
+@LAT1.9LON-17.8 | created:1789257900 | updated:1795392000 | relates:
 [ew]
 conf:170
 rev:0
 sal:2
-touched:1789257960
+touched:1795392000
 [/ew]
 
 **has_property**
@@ -1850,6 +1876,7 @@ class: vector
 lemma: has_property
 forms: has_property
 seen: 2
+frames: 2 0 | 0 0
 asked: 0
 ```
 
@@ -1914,12 +1941,12 @@ asked: 0
 
 ---
 
-@LAT-7.4LON-174.2 | created:1789257960 | updated:1789258020 | relates:
+@LAT-7.4LON-174.2 | created:1789257960 | updated:1795392000 | relates:
 [ew]
 conf:128
 rev:0
 sal:2
-touched:1789258020
+touched:1795392000
 [/ew]
 
 **like**
@@ -1929,6 +1956,7 @@ class: vector
 lemma: like
 forms: like
 seen: 2
+frames: 2 0 | 0 0
 asked: 0
 ```
 
