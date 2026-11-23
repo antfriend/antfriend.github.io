@@ -37,7 +37,7 @@ selected:
   - "@LAT0LON0"
 preview:
   "@LAT0LON0": "Home: what this database is and how each record expands back to its full RFC"
-agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step. Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.1, -0002 1.3, -0003 1.1, -0005 1.1: the holds line linking a stance to what it holds (personal_grimoire PLAN.md phase 1); synced to the website the same day, not yet to robot_team. Then the same four for TTG-RFC-0001 1.2, -0002 1.4, -0003 1.2, -0005 1.2: verb frames counted in episodes, the grammar's gaps apart (personal_grimoire PLAN.md phase 2). Then @LAT60LON1-5 for TTG-RFC-0001 1.3, -0002 1.5, -0003 1.3, -0004 1.1, -0005 1.3: tense, hedges, and a change in the owner's tense (phase 3)."
+agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step. Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.1, -0002 1.3, -0003 1.1, -0005 1.1: the holds line linking a stance to what it holds (personal_grimoire PLAN.md phase 1); synced to the website the same day, not yet to robot_team. Then the same four for TTG-RFC-0001 1.2, -0002 1.4, -0003 1.2, -0005 1.2: verb frames counted in episodes, the grammar's gaps apart (personal_grimoire PLAN.md phase 2). Then @LAT60LON1-5 for TTG-RFC-0001 1.3, -0002 1.5, -0003 1.3, -0004 1.1, -0005 1.3: tense, hedges, and a change in the owner's tense (phase 3). Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.4, -0002 1.6, -0003 1.4, -0005 1.4: modifiers as subclasses (phase 4)."
 ```
 
 ---
@@ -845,12 +845,12 @@ composite) gate every addition.
 @LAT60LON1 | created:1789257600 | updated:1795392000 | relates:depends_on@LAT10LON1,depends_on@LAT30LON1
 [ew]
 conf:210
-rev:3
+rev:4
 sal:90
 touched:1795392000
 [/ew]
 
-**TTG-RFC-0001 — Grammar in the Store** (Stable, 1.3)
+**TTG-RFC-0001 — Grammar in the Store** (Stable, 1.4)
 src: TTG-RFC-0001-Grammar-in-the-Store.md
 
 A language's grammar is data in the same TTDB as the corpus it reads: `ttdb-grammar`
@@ -862,19 +862,20 @@ a test greps the runtime for every word the grammar lists. A second language is 
 records tagged `lang:`; each sentence picks the grammar that recognises most of its
 words, and later languages borrow the numbers, rules and vector algebra. §10 is the
 embedding surface: the engine/page divide, the boot gate, and the calls a host makes.
-1.1 adds `asked_holds` to the reply keys the runtime emits; 1.2 the three frame numbers; 1.3 `past_form`, `past_ending` and `changed_tense`.
+1.1 adds `asked_holds` to the reply keys the runtime emits; 1.2 the three frame numbers; 1.3 `past_form`, `past_ending` and `changed_tense`; 1.4 `modifier`, `privative` and
+`modifier_max_words`.
 
 ---
 
 @LAT60LON2 | created:1789257600 | updated:1795392000 | relates:depends_on@LAT60LON1,depends_on@LAT10LON1,depends_on@LAT10LON3,depends_on@LAT10LON4,depends_on@LAT10LON5,depends_on@LAT10LON6
 [ew]
 conf:210
-rev:5
+rev:6
 sal:80
 touched:1795392000
 [/ew]
 
-**TTG-RFC-0002 — Semantic Percepts, Episodes and Terms** (Stable, 1.5)
+**TTG-RFC-0002 — Semantic Percepts, Episodes and Terms** (Stable, 1.6)
 src: TTG-RFC-0002-Semantic-Percepts.md
 
 A sentence becomes percepts: `percept: n | subject | vector | object or - | polarity |
@@ -889,19 +890,20 @@ Collisions use TTDB-RFC-0004's `southeast_step` (1.1; 1.0 had stepped latitude d
 the reference runtime conforms since 1.2). 1.3: a `holds:` line links a stance percept
 to the held percepts it takes, by ordinal; malformed ones are skipped and counted. 1.4: a
 `gap:` line marks the percepts the grammar read at a gap, and a vector's record shows its
-`frames:`. 1.5: a `tense:` line marks the percepts said in the past.
+`frames:`. 1.5: a `tense:` line marks the percepts said in the past. 1.6: the modifiers open question
+narrowed.
 
 ---
 
 @LAT60LON3 | created:1789257600 | updated:1795392000 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT10LON2,depends_on@LAT10LON5,depends_on@LAT10LON7
 [ew]
 conf:210
-rev:3
+rev:4
 sal:80
 touched:1795392000
 [/ew]
 
-**TTG-RFC-0003 — Beliefs, Vector Reasoning and Grounded Response** (Stable, 1.3)
+**TTG-RFC-0003 — Beliefs, Vector Reasoning and Grounded Response** (Stable, 1.4)
 src: TTG-RFC-0003-Beliefs-Reasoning-Response.md
 
 Beliefs are derived from episodes, never written by hand: per triple, episodes (not
@@ -914,7 +916,7 @@ reply is a verdict, then grounds of one kind each — said (quoted), inferred (t
 chain), contested (both sayings), superseded — never printed alike; what was held is
 a note, never a ground. 1.1: a question after a stance (*What do I doubt?*) names what
 the stance holds, as a note (`asked_holds`). 1.2: the frame numbers' reference values. 1.3: a saying changed by a later present one is
-not counted, and the reply names the change (`changed_tense`).
+not counted, and the reply names the change (`changed_tense`). 1.4: `modifier_max_words`.
 
 ---
 
@@ -945,12 +947,12 @@ bounds, overlapping bounds are contested, and the scene is the grammar hash.
 @LAT60LON5 | created:1789948800 | updated:1795392000 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT60LON3,depends_on@LAT10LON1,depends_on@LAT10LON4
 [ew]
 conf:210
-rev:3
+rev:4
 sal:70
 touched:1795392000
 [/ew]
 
-**TTG-RFC-0005 — Shapes, Lists, Mentions and Amendments** (Stable, 1.3)
+**TTG-RFC-0005 — Shapes, Lists, Mentions and Amendments** (Stable, 1.4)
 src: TTG-RFC-0005-Shapes-and-Amendments.md
 
 A clause is any alternating run of nounish and verbish segments, each verb relating
@@ -967,7 +969,8 @@ five holder rules, ordinals, malformed lines — carried by amendments and compa
 re-readings, so a question after the stance can name what it holds. 1.2: what a verb takes
 is counted in episodes, the grammar's guesses at a gap marked (`gap:`) and weighed apart
 from the owner's words, with optional preemption. 1.3: a hedge holds its clause, and a
-`tense:` line marks the past.
+`tense:` line marks the past. 1.4: with `modifier: subclass`, a modified phrase is a
+subclass of its head (`black_cat is_a cat`); off by default.
 
 ---
 

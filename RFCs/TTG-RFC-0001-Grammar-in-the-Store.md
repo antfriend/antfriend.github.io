@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.3
+**Version:** 1.4
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -56,6 +56,8 @@ keep such text in markup rather than in the interpreter.
 | `generic_det` | words | Determiners that make a noun phrase generic (quantifier `*`). |
 | `nounish_marks`, `verbish_marks` | two characters | The owner's brackets for a nounish and a verbish segment, open then close (TTG-RFC-0005 §4). |
 | `head` | `last` or `first` | Which word of a phrase is its head; `last` when absent (TTG-RFC-0005 §3). |
+| `modifier` | `drop` or `subclass` | What a phrase's other content words do: dropped, or a subclass of its head; `drop` when absent (TTG-RFC-0005 §3). |
+| `privative` | words | Modifiers that make no subclass `class_of` (TTG-RFC-0005 §3). |
 | `aside_marks` | two characters | The owner's brackets for words left out of a reading, open then close (TTG-RFC-0005 §4). |
 | `object_mark` | words | Prepositions that mark a verb's thing rather than a place (Spanish *a*), except after a `motion` verb (TTG-RFC-0005 §2–§3). |
 
@@ -156,7 +158,7 @@ emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `s
 `numbers`: `prior_for`, `prior_against`, `weight_partial`, `belief_conf_threshold`,
 `inherit_decay`, `max_hops`, `answer_max_items`, `search_max_items`, `suggest_eps_min`,
 `with_max_pairs`, `said_max_chars`, `rule_max_body`, `phrase_max_words`, `frame_min_episodes`,
-`frame_grammar_weight`, `frame_preempt_ratio`.
+`frame_grammar_weight`, `frame_preempt_ratio`, `modifier_max_words`.
 
 `kind: rules` holds `rule:` lines; its syntax, safety conditions and derivation are defined in
 TTG-RFC-0003 §3.1.
@@ -265,5 +267,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-11-23 | 1.1: `asked_holds` joins the keys the runtime emits (TTG-RFC-0005 1.1 §3). No other change. |
 | 2026-11-23 | 1.2: the three frame numbers join `kind: numbers` in §9 (TTG-RFC-0005 1.2 §3). No other change. |
 | 2026-11-23 | 1.3: `past_ending` and `past_form` in §4, and `changed_tense` among the reply keys (TTG-RFC-0005 1.3 §3, TTG-RFC-0004 1.1 §3.7). No other change. |
+| 2026-11-23 | 1.4: `modifier` and `privative` in §3, `modifier_max_words` in §9 (TTG-RFC-0005 1.4 §3). No other change. |
 
 *License: CC0*

@@ -1,6 +1,6 @@
 # TTG-RFC-0002: Semantic Percepts, Episodes and Terms
 
-**Version:** 1.5
+**Version:** 1.6
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0002
 **Project:** toot-toot-engineering
@@ -225,8 +225,10 @@ longitude +step), wrapping inside the bands. Coordinates are written with as man
    old grammar. The amendment (TTG-RFC-0005 §5) is the record a re-reading writes, with its
    `amend_edge` to the episode; a grammar hash per amendment would make a grammar-driven
    re-reading auditable.
-2. **Modifiers.** Attributive adjectives are dropped. Emitting them as `property` percepts
-   would be cheap and wrong for compounds (*house cat*).
+2. **Modifiers.** Attributive adjectives are dropped unless the lexicon says `modifier:
+   subclass` (TTG-RFC-0005 1.4 §3), which makes each modified phrase a subclass of its head —
+   right for compounds (*house cat*), where a bare `property` would have been wrong, and wrong
+   for an unjoined name. Which one a phrase is stays open.
 3. **Placement drift.** Adjacency clusters terms by the order meaning arrived, which is not
    the order it would settle into. A Dream Cycle projection (TTDB-RFC-0007 §3.3) could
    propose moves as `revises` records without breaking ID immutability.
@@ -249,5 +251,6 @@ longitude +step), wrapping inside the bands. Coordinates are written with as man
 | 2026-11-23 | 1.3: §4 and §5.1, the `holds:` line linking a stance percept to the held percepts it takes (TTG-RFC-0005 1.1 §3), written after the episode's percept lines; malformed holds lines are skipped and counted like malformed percepts. Implemented by the personal_grimoire reference runtime (antfriend.github.io `7071c80`). |
 | 2026-11-23 | 1.4: §4 and §5.1, the `gap:` line marking the percepts the grammar read at a relative's gap (TTG-RFC-0005 1.2 §3), after the holds lines; malformed gap lines are skipped and counted. §5.2, a vector record's `frames:` line. Implemented by the personal_grimoire reference runtime (antfriend.github.io `df9019d`). |
 | 2026-11-23 | 1.5: §4 and §5.1, the `tense:` line marking the percepts said in the past (TTG-RFC-0005 1.3 §3), after the gap line; malformed tense lines are skipped and counted. Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`). |
+| 2026-11-23 | 1.6: §7.2 narrowed by TTG-RFC-0005 1.4 §3 (modifiers as subclasses). No change to the format. |
 
 *License: CC0*

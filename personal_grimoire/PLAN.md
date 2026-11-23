@@ -254,8 +254,8 @@ towards TTDB-RFC-0006's native percept, the divergence TTG-RFC-0002 §4 records.
 (*Black cats.*) makes no subclass, because a mention says nothing. Under `subclass`, re-reading
 offers the new reading to old sentences with modifiers.
 
-Still to do: the RFC text upstream (TTG-RFC-0005 §3 and §6, TTG-RFC-0002 §7.2, TTG-RFC-0001
-§3 and §9, TTG-RFC-0003 §5), and the bAbI check.
+RFC text: TTG-RFC-0005 1.4, -0002 1.6, -0003 1.4 and -0001 1.4, written upstream in
+toot-toot-engineering (`a0baba4`) and synced here. Still to do: the bAbI check.
 
 **Problem.** *Black cats chase mice* is about *cats*. Reading the adjective as
 `cat has_property black` would wrongly say all cats are black.

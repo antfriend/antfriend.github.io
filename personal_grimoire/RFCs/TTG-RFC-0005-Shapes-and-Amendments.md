@@ -1,6 +1,6 @@
 # TTG-RFC-0005: Shapes — Alternating Segments, Lists, Mentions and Amendments
 
-**Version:** 1.3
+**Version:** 1.4
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
@@ -151,6 +151,27 @@ or its first where the lexicon declares `head: first`; a `premod` word opens a p
 determiner and is never its head (*dos gatos* is `gato`). Its term is the head's noun lemma,
 and it keeps its own quantifier and its own `neg` (*I like cats but not dogs* is `self like
 cat +` and `self like dog -`).
+
+**Modifiers.** A member's other content words — every one but its head, before it under
+`head: last` and after it under `head: first` — are its **modifiers**. What they do is the
+lexicon's `modifier`:
+
+- `drop`, or absent: they are dropped, and the member's term is its head's (*black cats* is
+  `cat`).
+- `subclass`: the member's term is its words' noun lemmas joined by `phrasal_join` in the
+  phrase's own order (*black cats* is `black_cat`, *los gatos negros* `gato_negro`), and the
+  clause it is read in also says, once per such term, `<term> | <class_of> | <head> | + | -`
+  and, for each modifier, `<term> | <property> | <modifier> | + | -`. These are said
+  whatever the clause's polarity or holding: a phrase names its subclass, it does not assert
+  it. A modifier listed in the lexicon's `privative` makes no `class_of` percept (*a fake gun*
+  is not a gun). A member with more modifiers than `modifier_max_words` is read as under
+  `drop`. A clause with no verbish segment says no subclass (a mention says nothing).
+
+A subclass is a term like any other, so a later phrase that names it is bound unmarked
+(§4) and says no new `class_of`, and a longer phrase is a subclass of it (*the big old black
+cat* is `big_old_black_cat | is_a | black_cat`). Specificity (TTG-RFC-0003 §3) does the rest:
+a subclass inherits from its head, never the reverse. A question never checks the percepts a
+phrase says of its subclass: *Do black cats bite dogs?* checks only `black_cat bite dog`.
 
 **Predicates.** A verbish segment is a list of items split at `conj` and `list_sep`; every
 item takes the segment's subject and object. An item is a sequence of predicates, split
@@ -621,6 +642,9 @@ the reference store's eight demo episodes read today exactly as written.
 | `morphology` | `bare_ending` | Endings a bare form wears (*ar er ir*). Absent: a bare form is its lemma. |
 | `vectors` | `role: amend_edge` | The header edge type from an amendment to its episode. |
 | `numbers` | `phrase_max_words` | Longest run of words bound to a known term. |
+| `lexicon` | `modifier` | `drop` (the default) or `subclass`: what a member's modifiers do (§3, modifiers). |
+| `lexicon` | `privative` | Modifiers that make no `class_of` percept under `subclass` (*fake*, *toy*, *falso*). Words, not a class: a class word is not a content word, and would split the phrase. |
+| `numbers` | `modifier_max_words` | The most modifiers a member may have and still make a subclass. |
 | `lexicon` | `class: hedge` | Words that hold the clause they are in (§3, hedges). A hedge that is also an adverb (*maybe*) is listed in `adverb` too, so it is never a thing. |
 | `morphology` | `past_form`, `past_ending` | The words that make a predicate past, and the endings that do on an inflected verb (§3, tense). |
 | `responses` | `changed_tense` | A note naming a change in the owner's words (TTG-RFC-0004 §3.7): `{then}`, `{ep}`, `{now}`, `{ep_now}`. |
@@ -658,7 +682,9 @@ percept lines rather than weighed episodes; at the reference values of the frame
 reads every sentence the same, but it never reads those numbers, which TTG-RFC-0001 §2 counts
 as a conformance failure. One implementing 1.2 ignores `tense:` lines, `past_form`,
 `past_ending` and `class: hedge`: it reads a hedged clause as said, and a change in tense as a
-contest. Held sayings now teach what a verb takes, which can change how a relative
+contest. One implementing 1.3 ignores `modifier`, `privative` and `modifier_max_words`,
+so it reads as under `drop`: the same as this RFC for a store that ships `drop`, as the
+reference store does. Held sayings now teach what a verb takes, which can change how a relative
 is read in a store that holds some. The
 published bAbI outcomes (tasks 1 and 15, every condition) are unchanged under the reference
 runtime.
@@ -695,7 +721,10 @@ runtime.
 8. **Tense is the past, or not.** Only the past is marked. *Birds will fly* and *birds can
    fly* read as *birds fly*, an irregular past the morphology does not list reads as present,
    and a language whose past the lemmatiser does not reduce (*cazaron*) marks nothing for it.
-9. **Taking every re-reading passes once.** A take can change a sentence already passed; the
+9. **Names are not modifiers.** Under `subclass` a name the owner has not joined is a kind
+   of its last word (*New York* is a subclass of *york*); the lexicon cannot tell a name from
+   a modified noun, which is why `drop` is the default.
+10. **Taking every re-reading passes once.** A take can change a sentence already passed; the
    next report offers it. Whether taking to a fixed point always ends is open.
 
 ---
@@ -715,5 +744,6 @@ runtime.
 | 2026-11-23 | 1.1: §3 **what holds it** — a held percept a stance takes is linked to its stance percept by a `holds:` line of percept ordinals; malformed holds lines are skipped and counted; an objects question after a stance names what it holds (`asked_holds`). §5 amendments carry holds lines, and reading back withdraws only when they match too; §5.1 re-reading compares them and offers them to older episodes; §6 `asked_holds`; §7 compatibility; §8.7 new. Implemented by the personal_grimoire reference runtime (antfriend.github.io `7071c80`), from its PLAN.md phase 1. |
 | 2026-11-23 | 1.2: §3 **the grammar's gaps** — a percept whose object, or lack of one, the grammar decided at a gap is marked by a `gap:` line of percept ordinals; malformed gap lines are skipped and counted. §3 **verb frames** — what a verb takes is counted in episodes, the grammar's gaps apart, and weighed by `frame_min_episodes`, `frame_grammar_weight` and `frame_preempt_ratio` (reference 1, 1, 0, which read as a store declaring none); `lone` and the gap rules now say *takes a thing*. Chain verbs are not weighed. §5 amendments and §5.1 re-reading carry and compare gap lines; §6 keys; §7 compatibility; §8.4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `df9019d`), from its PLAN.md phase 2. |
 | 2026-11-23 | 1.3: §3 **hedges** — a `hedge` word holds its clause; §3 **tense** — a predicate is past by a `past_form` or a `past_ending` on an inflected verb, not after a present `hav`, and past percepts are marked by a `tense:` line of ordinals, malformed ones skipped and counted. §5 and §5.1 carry and compare tense lines; §6 `class: hedge`, `past_form`, `past_ending`, `changed_tense`; §7 compatibility; §8.8 new. The change it makes to a later saying is TTG-RFC-0004 1.1 §3.7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`), from its PLAN.md phase 3. |
+| 2026-11-23 | 1.4: §3 **modifiers** — with `modifier: subclass`, a member's modifiers join with its head into a subclass term, and the clause says its `class_of` (none for a `privative` modifier) and a `property` per modifier; over `modifier_max_words`, as under `drop`, which is the default; a question never checks the subclass percepts. §6 keys, §7 compatibility, §8.9 new. Implemented by the personal_grimoire reference runtime (antfriend.github.io `a5beef3`), from its PLAN.md phase 4; the reference store ships `drop`. |
 
 *License: CC0*
