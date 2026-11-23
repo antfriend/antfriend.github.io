@@ -230,6 +230,33 @@ towards TTDB-RFC-0006's native percept, the divergence TTG-RFC-0002 §4 records.
 
 **From:** LFG's ADJUNCT, and the "modifiers are dropped" known limit. **Size:** medium.
 
+**Status (2026-11-23): implemented in the runtime, the store and the tests.**
+- **Lexicon keys.** `modifier: drop | subclass` and `privative: <words>`. Both grammars ship
+  `modifier: drop`, so every existing reading is unchanged. Numbers: `modifier_max_words: 2`.
+- **What `subclass` does.** A phrase's other content words join with its head, in the
+  phrase's own order (`black_cat`, `gato_negro`). The sentence is about the joined term, and
+  the clause also says `<term> is_a <head>` (none for a privative modifier) and
+  `<term> has_property <modifier>` for each modifier. Once the term exists, the existing phrase
+  binding finds it unmarked, so its `is_a` isn't said again. A longer phrase chains onto it
+  (`big_old_black_cat is_a black_cat`).
+- **Questions.** A question never checks the subclass percepts a phrase made, so
+  *Do black cats bite dogs?* checks only the biting.
+
+**Changed from the plan.**
+- **`privative` is a word list, not a class.** A class word isn't a content word, so it would
+  split the phrase apart instead of modifying it.
+- **More modifiers than the cap means the whole phrase is read as if dropped,** rather than
+  keeping the nearest ones.
+- **The store ships with `drop`.** With `subclass`, an unjoined name becomes a kind of its last
+  word (*New York* is a *york*). Switching on is the owner's choice.
+
+**Known gaps.** Names aren't told apart from modifier phrases. A mention with no verb
+(*Black cats.*) makes no subclass, because a mention says nothing. Under `subclass`, re-reading
+offers the new reading to old sentences with modifiers.
+
+Still to do: the RFC text upstream (TTG-RFC-0005 §3 and §6, TTG-RFC-0002 §7.2, TTG-RFC-0001
+§3 and §9, TTG-RFC-0003 §5), and the bAbI check.
+
 **Problem.** *Black cats chase mice* is about *cats*. Reading the adjective as
 `cat has_property black` would wrongly say all cats are black.
 

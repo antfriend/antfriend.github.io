@@ -265,6 +265,14 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <
 - **Hedges** → a `hedge` word in a clause (*maybe*, *might*, *quizás*) holds the clause, as a
   stance does: *I might like opera* is `self | like | opera | ?`. Set aside — *(maybe) cats
   purr* — it leaves a plain saying.
+- **Modifiers** → a phrase's other content words are dropped (*black cats* is `cat`) while the
+  lexicon says `modifier: drop`, as this store ships. With `modifier: subclass` they make a
+  subclass of the phrase's head, joined in the phrase's own order: *black cats bite dogs* is
+  `black_cat | bite | dog`, `black_cat | is_a | cat` and `black_cat | has_property | black`, so
+  black cats inherit what cats do and cats do not inherit what black cats do. A `privative`
+  word (*fake*, *toy*) makes no `is_a`; a phrase with more than `modifier_max_words` modifiers
+  is read as if dropped; and once the subclass is a term, the phrase finds it unmarked. A
+  question never checks the `is_a` a phrase makes.
 - **Two readings** → where the grammar can read a sentence two ways, what both say is said and
   what only one says is held, **named** in a seventh column: `a` and `b` at the first such
   place, `c` and `d` at the next. *The men that saw the cats eat cheese* says `man see cat`
@@ -684,6 +692,8 @@ nounish_marks: [ ]
 verbish_marks: { }
 aside_marks: ( )
 head: last
+modifier: drop
+privative: fake former false toy pretend
 ```
 
 ---
@@ -999,6 +1009,7 @@ phrase_max_words: 4
 frame_min_episodes: 1
 frame_grammar_weight: 1
 frame_preempt_ratio: 0
+modifier_max_words: 2
 ```
 
 ---
@@ -1071,6 +1082,8 @@ nounish_marks: [ ]
 verbish_marks: { }
 aside_marks: ( )
 head: first
+modifier: drop
+privative: falso falsa falsos falsas
 object_mark: a
 ```
 
@@ -2223,8 +2236,9 @@ last in English, first in Spanish. It still does not see:
   (*birds that sing love songs*, until *love* is a thing).
 - **Adverbs after a verb** — *she sings loudly* sings *loudly*; before a verb, *-ly* words
   are read right.
-- **Modifiers** — *black cats* is *cats*; the adjective is dropped unless the owner binds the
-  phrase into one term (`black_cat`).
+- **Modifiers** — *black cats* is *cats* as the store ships (`modifier: drop`). With
+  `modifier: subclass` it is a `black_cat` that is a cat and black, which is right for *house
+  cat* and wrong for a name (*New York* is not a kind of York) until the owner joins it.
 - **Tense and modality** — *birds flew* is marked past and *birds might fly* is held, but
   only the past is told from the present: *birds will fly* and *birds can fly* read as
   *birds fly*, and an irregular past the morphology does not list is read as present.

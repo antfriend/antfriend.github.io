@@ -105,7 +105,9 @@ holds it, and a question after the stance names it; that what a verb takes is co
 episodes, the grammar's guesses at a gap apart from your words, under each of the three
 numbers that weigh them; that a past saying, then its opposite in the present, is a change and
 not a contradiction, while two in the same tense still contest, and that a hedge holds its
-clause; that an amendment stands in for a sentence
+clause; that with `modifier: subclass` a phrase is a subclass of its head, which inherits
+from it and never the reverse, a privative word makes no subclass, and a question never checks
+the subclass a phrase made; that an amendment stands in for a sentence
 without touching its episode, and is withdrawn by reading the sentence back the episode's
 way; and that a re-reading reports what a grammar edit changes, in the context the sentences
 before it stand as, writes nothing, and can be taken as an amendment that names the grammar —
@@ -540,7 +542,11 @@ settles yes against no.
   thing go back to taking none. Each verb's record shows its count on a `frames:` line. Questions that
   invert word order beyond the declared forms fall back to search. Where it reads you
   wrongly, [correct the reading](#how-it-read-you).
-- **Modifiers are dropped.** *Black cats* is *cats*, unless you make *black cats* one term.
+- **Modifiers are dropped, unless you ask.** *Black cats* is *cats*, unless you make *black cats*
+  one term, or set `modifier: subclass` in the lexicon: then *black cats* is a `black_cat`, a
+  cat that is black, which inherits from cats and never the other way round. That is right for
+  *house cat* and *fly fishing*, and wrong for a name you haven't joined (*New York* would be a
+  kind of *york*), which is why the store ships with `modifier: drop`.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
   less than you did.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.

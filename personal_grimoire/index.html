@@ -594,7 +594,7 @@ function loadGrammar(st, lang){
                   .sort((a, z) => (a.lang === want) - (z.lang === want));
   const G = {
     lang:want, classes:new Map(), whole:new Map(), contractions:[], sentenceEnd:new Set(), clauseBreak:new Set(),
-    questionMark:"", listSep:"", genericDet:new Set(), marks:{}, headFirst:false,
+    questionMark:"", listSep:"", genericDet:new Set(), marks:{}, headFirst:false, modifier:"", privative:new Set(),
     nounIrr:new Map(), nounKeep:new Set(), plural:[], pluralGuard:[], verbIrr:new Map(), verb:[], verbGuard:[],
     doubleKeep:new Set(), minStem:NaN, seed:new Set(), stance:new Set(), chain:new Set(), progressive:[], participle:[], pastForm:new Set(), pastEnding:[],
     bareEnding:[], bareFinite:null, stanceNoun:new Set(), motion:new Set(), objectMark:new Set(),
@@ -630,6 +630,9 @@ function loadGrammar(st, lang){
       }
       // which word of a phrase is its head: the last (the default) or the first
       G.headFirst = String(b.head || "").trim() === "first";
+      // what a phrase's other content words do (TTG-RFC-0005 §3, modifiers): dropped, or a subclass of its head
+      G.modifier = String(b.modifier || "").trim();
+      for (const w of words(b.privative)) G.privative.add(w);
       // a preposition that marks a thing as a verb's object rather than a place (ve a Pixel)
       for (const w of words(b.object_mark)) G.objectMark.add(w);
     } else if (b.kind === "morphology"){
@@ -952,6 +955,14 @@ function headOf(S, np, ctx){
   if (np.pron === "self") return S.G.sphere.self_lemma ? { lemma:S.G.sphere.self_lemma, form:w.w, self:true } : null;
   if (np.pron === "anaphor") return ctx.last ? { lemma:ctx.last, form:null } : null;
   const n = nounLemma(S, w.w);
+  // with modifier: subclass, a phrase's other content words make a subclass of its head: black cats are a
+  // black_cat, which is a cat and black (TTG-RFC-0005 §3). Joined in the phrase's own order: gato_negro
+  const J = S.G.roles.phrasal_join, words = ws.filter(x => !x.synthetic), mods = words.filter(x => x !== w);
+  if (S.G.modifier === "subclass" && J && w.w !== SLOT && mods.length && !(mods.length > S.G.num.modifier_max_words)){
+    const lem = x => x === w ? n.lemma : nounLemma(S, x.w).lemma;
+    return { lemma:words.map(lem).join(J), form:words.map(x => x.w).join(J), changed:n.changed,
+             sub:{ base:n.lemma, mods:mods.map(lem), privative:mods.some(x => S.G.privative.has(x.w)) } };
+  }
   return { lemma:n.lemma, form:w.w === SLOT ? null : w.w, changed:n.changed };
 }
 function skipSoft(toks, j){
@@ -1031,7 +1042,8 @@ const HELD = "?", HELD_NO = "?-", isHeld = p => p.pol === HELD || p.pol === HELD
 // while a sentence is read, a percept carries the segments it came from and, if held, what holds it
 // and whether its object, or its lack of one, is the grammar's reading of a relative's gap
 // and whether it was said in the past tense
-const RUNS = Symbol(), BY = Symbol(), GAP = Symbol(), PAST = Symbol();
+// and whether it only names a subclass a phrase made (black_cat is_a cat), which a question never checks
+const RUNS = Symbol(), BY = Symbol(), GAP = Symbol(), PAST = Symbol(), SUB = Symbol();
 /* Where the grammar can read a sentence two ways, the two readings are named
  * a and b at the first such place, c and d at the second, and so on; what
  * only one reading says carries its letter, and is held. The owner may say
@@ -1623,6 +1635,15 @@ function readClause(S, T, L, idx, ctx, inherited, hold, pick, holdBy){
       if (d.beside.length && os.length) for (const o of d.beside) out.pairs.push([os[0].h.lemma, o.h.lemma]);
       if (P.kind === "verb" && d.vector) out.forms.push(["vector", d.vector, d.vform]);
     }
+  }
+  // a subclass a phrase made is said whenever the phrase is: black_cat is_a cat, black_cat has_property black.
+  // A privative modifier (fake, former) makes no is_a: a fake gun is not a gun
+  const subs = new Map();
+  for (const r of runs) if (r.cls === "N") for (const h of r.members.map(m => m.h).concat(r.adjuncts)) if (h.sub) subs.set(h.lemma, h.sub);
+  for (const [lemma, sub] of subs){
+    const put = (v, o) => { const x = { s:lemma, v, o, pol:"+", q:"-" }; x[SUB] = true; out.percepts.push(x); };
+    if (!sub.privative) put(R.class_of, sub.base);
+    for (const m of sub.mods) put(R.property, m);
   }
   const end = runs[runs.length - 1];
   out.open = !!end && end.cls === "V" && !!end.stance;     // I wonder | if cats bark
@@ -2701,7 +2722,7 @@ function yesNo(S, toks, ctx){
   if (!(has(cue, "aux") || has(cue, "modal") || has(cue, "cop") || has(cue, "hav"))) return null;
   const rest = toks.slice(0, i).concat(toks.slice(i + 1));
   const r = clausePercepts(S, moveCue(S, rest, cue, has(cue, "cop")), ctx, null);
-  const checks = r.percepts.filter(p => p.v !== S.G.roles.comention && !isMention(p) && p.s !== SLOT && p.o !== SLOT);
+  const checks = r.percepts.filter(p => p.v !== S.G.roles.comention && !isMention(p) && !p[SUB] && p.s !== SLOT && p.o !== SLOT);
   return checks.length ? { intent:"verify", checks } : null;
 }
 const wordTok = (S, w) => ({ w, cls:S.G.classes.get(w) || EMPTY, punct:false });
@@ -2809,7 +2830,7 @@ function interpret(S, text){
   const told = !marked && G.sentenceEnd.has(Array.from(String(text).trim()).pop());
   if (P || (told && content.length)){
     const ps = perceiveSentence(S, text, { last:null }).percepts.filter(p => p.v !== G.roles.comention);
-    const checks = ps.filter(p => !isMention(p));
+    const checks = ps.filter(p => !isMention(p) && !p[SUB]);
     if (marked && checks.length) return { ...base, intent:"verify", checks };
     if (!marked && ps.length && (runs > 1 || told)) return { ...base, intent:"perceive" };
   }

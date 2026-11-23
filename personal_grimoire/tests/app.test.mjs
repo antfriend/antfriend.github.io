@@ -510,6 +510,33 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
     ok(PG.reread(fresh()).changed.length === 0, "the seed store says nothing in the past, and reads back as written");
   }
 
+  // modifiers (TTG-RFC-0005 §3): dropped, as the store ships, or a subclass of the phrase's head
+  {
+    const SUBCLASS = STORE.replace(/^modifier: drop$/gm, "modifier: subclass");
+    const told = (S, text) => PG.answer(S, text, T0 + 60 * (S.episodes.length + 1));
+    const D = fresh();
+    ok(told(D, "Black cats bite dogs.").episode.all.map(pk).join(" ; ") === "cat | bite | dog | + | -", "with modifier: drop, black cats are cats, as before");
+    const M = PG.openStore(SUBCLASS);
+    const b = told(M, "Black cats bite dogs.");
+    ok(b.episode.all.map(pk).join(" ; ") === "black_cat | bite | dog | + | - ; black_cat | is_a | cat | + | - ; black_cat | has_property | black | + | -",
+       "with modifier: subclass, the phrase is a subclass of its head, which the sentence is about", b.episode.all.map(pk).join(" ; "));
+    ok(told(M, "Do cats bite dogs?").verdict === PG.say(M.G, "unknown"), "what black cats do, cats are not said to do");
+    const bb = told(M, "Do black cats bite dogs?");
+    ok(bb.verdict === PG.say(M.G, "affirm") && bb.items.length === 1, "a question about the subclass is answered by what was said of it, and checks only that", bb.verdict);
+    ok(told(M, "Do black cats chase mice?").verdict === PG.say(M.G, "affirm_inferred"), "and inherits what was said of its head: cats chase mice");
+    ok(told(M, "Black cats sleep.").episode.all.map(pk).join(" ; ") === "black_cat | sleep | - | + | -", "once the subclass is a term, the phrase finds it, and its is_a is not said again");
+    const big = told(M, "The big old black cat sleeps.").episode.all.map(pk);
+    ok(big.includes("big_old_black_cat | is_a | black_cat | + | -"), "a longer phrase is a subclass of the term its words already name", big.join(" ; "));
+    const fake = told(M, "A fake gun is a toy.").episode.all.map(pk);
+    ok(!fake.some(p => p.startsWith("fake_gun | is_a | gun")) && fake.includes("fake_gun | has_property | fake | + | -"), "a privative modifier makes no is_a: a fake gun is not a gun");
+    const es = told(M, "Los gatos negros duermen.").episode.all.map(pk);
+    ok(es.join(" ; ") === "gato_negro | dormir | - | + | - ; gato_negro | es_un | gato | + | - ; gato_negro | has_property | negro | + | -" ||
+       es.includes("gato_negro | is_a | gato | + | -"), "Spanish joins the phrase head first: el gato negro is a gato_negro", es.join(" ; "));
+    const capped = PG.openStore(SUBCLASS.replace(/^modifier_max_words: .*$/m, "modifier_max_words: 1"));
+    ok(told(capped, "The big black dog sleeps.").episode.all.map(pk).join(" ; ") === "dog | sleep | - | + | -", "more modifiers than modifier_max_words: the phrase reads as before");
+    ok(PG.reread(PG.openStore(SUBCLASS)).changed.length === 0 && M.malformed.length === 3, "the seed store has no modifiers, and reads back as written either way");
+  }
+
   // which verbs a relative's bare verb may follow is the store's word list, not the runtime's
   const noChain = PG.openStore(STORE.replace(/^chain: .*\n/gm, ""));
   ok(PG.shapeOf(noChain, "I like the man that saw the cat eat cheese.").percepts.map(pk).includes("man | eat | cheese | + | -"),
