@@ -105,7 +105,9 @@ holds it, and a question after the stance names it; that what a verb takes is co
 episodes, the grammar's guesses at a gap apart from your words, under each of the three
 numbers that weigh them; that a past saying, then its opposite in the present, is a change and
 not a contradiction, while two in the same tense still contest, and that a hedge holds its
-clause; that with `modifier: subclass` a phrase is a subclass of its head, which inherits
+clause; that a question whose verb comes first is read where the grammar says its verb
+stands there, and a verb in the speaker's own form needs no subject; that every parameter in
+Blueprint 2's table is what each grammar declares; that with `modifier: subclass` a phrase is a subclass of its head, which inherits
 from it and never the reverse, a privative word makes no subclass, and a question never checks
 the subclass a phrase made; that an amendment stands in for a sentence
 without touching its episode, and is withdrawn by reading the sentence back the episode's
@@ -501,9 +503,11 @@ get wrong, and what the parser cannot tell is asserted is held rather than belie
 of anything irregular, and a wrong first lemma becomes the term later uses are matched
 against. Every merged surface form is visible on the term record's `forms:` line.
 
-**Third, the second language.** Spanish brings blind spots English never showed:
-verb-first questions (*¿Dónde duerme Pixel?*), adjectives that agree in number (*son
-negros*), and dropped subjects other than yours — *No como carne* is read as you, *Come
+**Third, the second language.** Spanish brings blind spots English never showed. Verb-first
+questions are read now (*¿Dónde duerme Pixel?*, *¿Duerme Pixel en el sol?*), because the
+grammar says `question_order: verb_subject` — one of the parameters
+[Blueprint 2](lat20lon0) lists, each a key a grammar sets. Still unread: adjectives that agree
+in number (*son negros*), and dropped subjects other than yours — *No como carne* is read as you, *Come
 queso* is not read as anyone. Verbs link across languages only one rule at a time
 (`cazar X Y => chase X Y`).
 

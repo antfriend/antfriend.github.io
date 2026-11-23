@@ -52,8 +52,8 @@ are written by the reader, read by consolidation (malformed ones are skipped and
 compared by re-reading, carried by amendments, and answered through `asked_holds` in both
 languages. RFC text: TTG-RFC-0005 1.1, -0002 1.3, -0003 1.1 and -0001 1.1, written
 upstream in toot-toot-engineering (`226bf8d`) and synced here.
-Known gap: *¿Qué dudo?* is read as a question about a subject, so in Spanish the link is
-written but this form of question doesn't reach it yet. That belongs to Phase 5.
+The Spanish gap this left, *¿Qué dudo?* read as a question about a subject, was closed in
+Phase 5.
 
 **Problem.** *I doubt cats like fish* writes `self | doubt | -` as said and
 `cat | like | fish | ?` as held, with nothing joining them. The store knows *that* you doubt,
@@ -284,6 +284,39 @@ eat fish?* infers through `is_a`. Spanish *los gatos negros* gives `gato_negro`,
 ## Phase 5 — Name the parameters; Spanish questions with the verb first
 
 **From:** P&P. **Size:** small, then medium.
+
+**Status (2026-11-23): implemented in the runtime, the store and the tests.**
+- **The table.** Blueprint 2 carries a **Parameters** table: head direction, question order,
+  agreement behind the verb, the speaker's dropped subject, bare-verb finiteness, the object
+  mark, and modifiers. It gives each one's key, its value when absent, and what English and
+  Spanish declare. `docs.test.mjs` holds every cell to the grammar records and checks that the
+  runtime reads every key.
+- **`question_order: subject_verb | verb_subject`.** English declares the first, Spanish the
+  second. Under `verb_subject`:
+  - a place question with its verb first is read in statement order (*¿Dónde duerme Pixel?* is
+    *Pixel duerme en ?*);
+  - a yes/no question with its verb first is read as the statement it asks after (*¿Duerme
+    Pixel en el sol?*);
+  - the subject ends at its head in a head-first grammar, so *¿Cazan los gatos ratones?* is
+    `gato cazar ratón`.
+- **A verb that names its own subject.** A verb in the speaker's own form, with nothing after
+  it, already has its subject, so *¿Qué dudo?* asks what is doubted and reaches the Phase 1
+  link. This is driven by `self_ending` and `self_form`, not by the new key.
+- **`wh_place` takes an optional third column:** the preposition that asks for the place,
+  where it isn't the vector's own name. Spanish `dónde | in | en` reaches `dormir_en`.
+
+**Changed from the plan.** The table lives in Blueprint 2 (Classify), the blueprint about
+reading, and TTG-RFC-0001 §11 will carry the same table. The `wh_place` third column wasn't
+in the plan: without it, no Spanish place question could reach a phrasal vector.
+
+**Known gaps.**
+- A verb-first subject whose phrase goes on past its head (*¿Caza el gato negro ratones?*)
+  splits at the head.
+- Language detection reads *¿Qué come Pixel?* as English, because *come* is an English word.
+  That's an existing problem.
+
+Still to do: the RFC text upstream (TTG-RFC-0001 §3, §7 and §11, TTG-RFC-0003 §4, TTG-RFC-0005
+§3 and §6), and the bAbI check.
 
 **Problem.** Several keys are already parameters in all but name: `head`, the subject drop
 implied by `self_ending`, the subject position implied by `plural_verb_ending`. Nothing lists

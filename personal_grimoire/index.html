@@ -600,7 +600,7 @@ function loadGrammar(st, lang){
     bareEnding:[], bareFinite:null, stanceNoun:new Set(), motion:new Set(), objectMark:new Set(),
     intransitive:new Set(), adverbEnding:[], adverbGuard:new Set(), selfEnding:[], selfForm:new Set(), pluralVerbEnding:"",
     roles:{}, vectors:new Map(), inherits:[], phrases:[],
-    whThing:new Set(), whPlace:new Map(), whReason:new Set(), about:new Set(), describeMax:NaN,
+    whThing:new Set(), whPlace:new Map(), whPlacePrep:new Map(), questionOrder:"", whReason:new Set(), about:new Set(), describeMax:NaN,
     say:{}, units:{}, num:{}, sphere:{}, maxReply:NaN, loaded:[], ruleLines:[], rules:[], ruleErrors:[]
   };
   const rule = s => { const c = cols(s); return [c[0], c[1] === "-" ? "" : (c[1] || ""), words(c[2])]; };
@@ -630,6 +630,8 @@ function loadGrammar(st, lang){
       }
       // which word of a phrase is its head: the last (the default) or the first
       G.headFirst = String(b.head || "").trim() === "first";
+      // where a question's verb stands: behind its subject (English), or before it (Spanish)
+      G.questionOrder = String(b.question_order || "").trim();
       // what a phrase's other content words do (TTG-RFC-0005 §3, modifiers): dropped, or a subclass of its head
       G.modifier = String(b.modifier || "").trim();
       for (const w of words(b.privative)) G.privative.add(w);
@@ -692,7 +694,8 @@ function loadGrammar(st, lang){
       }
     } else if (b.kind === "questions"){
       for (const w of words(b.wh_thing)) G.whThing.add(w);
-      for (const line of many(b, "wh_place")){ const c = cols(line); for (const w of words(c[0])) G.whPlace.set(w, c[1]); }
+      // wh_place: <words> | <the place vector> [| <the preposition that asks for it, when it is not the vector's own name>]
+      for (const line of many(b, "wh_place")){ const c = cols(line); for (const w of words(c[0])){ G.whPlace.set(w, c[1]); G.whPlacePrep.set(w, c[2] || c[1]); } }
       for (const w of words(b.wh_reason)) G.whReason.add(w);
       for (const w of words(b.about)) G.about.add(w);
       G.describeMax = +b.describe_max_words;
@@ -2751,19 +2754,43 @@ function whQuestion(S, wh, after, ctx){
   if (has(lead, "aux") || has(lead, "modal")){
     const moved = moveCue(S, rest, lead, false);
     if (!place) return slotQuery(S, moved.concat([synth(SLOT)]), ctx);
-    const vs = [];
-    for (const tail of [[wordTok(S, place), synth(SLOT)], [synth(SLOT)]]){
-      const q = slotQuery(S, moved.concat(tail), { last:ctx.last });
-      if (q && q.intent === "objectsOf") for (const v of q.vs) if (!vs.includes(v)) vs.push(v);
-      if (q && !vs.length) return q;
-      if (q) var subj = q.s;
-    }
-    if (!vs.includes(place)) vs.push(place);
-    return subj ? { intent:"objectsOf", s:subj, vs } : null;
+    return placeQuery(S, moved, wh, ctx);
+  }
+  // where the verb comes before its subject (question_order: verb_subject): ¿dónde duerme Pixel? is
+  // pixel duerme en ?; and a verb in the speaker's own form already has its subject: ¿qué dudo? asks what
+  if (G.questionOrder === "verb_subject" && isVerbish(S, lead)){
+    const np = nounPhrases(S, rest, 0, rest.length)[0], subj = np && !np.prep ? np : null;
+    if (place && subj){ const k = subjectEnd(S, rest, subj) + 1; return placeQuery(S, rest.slice(0, k).concat([lead], rest.slice(k)), wh, ctx); }
+    if (!subj && selfOf(S, [lead])) return place ? placeQuery(S, [lead].concat(rest), wh, ctx) : slotQuery(S, [lead, synth(SLOT)], ctx);
   }
   const behind = subjectAfterVerb(S, after, ctx);
   if (behind) return behind;
   return slotQuery(S, [synth(SLOT)].concat(after), ctx);
+}
+/* Where a subject standing behind its verb ends. With the verb moved out, the
+ * subject and an object after it read as one phrase (¿cazan los gatos
+ * ratones?), so in a grammar whose phrases are headed first the subject ends at
+ * its head: los gatos | ratones. Headed last, the phrase is the subject.     */
+function subjectEnd(S, toks, np){
+  if (!S.G.headFirst) return np.end;
+  const h = np.words.find(x => !x.synthetic);
+  const i = h ? toks.indexOf(h) : -1;
+  return i >= 0 ? i : np.end;
+}
+/* A place question, once its words stand in statement order: the verb with
+ * the place's preposition (sleep in ?, duerme en ?), then the verb alone,
+ * then the place vector itself — whichever the owner's words have.         */
+function placeQuery(S, moved, wh, ctx){
+  const place = S.G.whPlace.get(wh.w), prep = S.G.whPlacePrep.get(wh.w) || place, vs = [];
+  let subj = null;
+  for (const tail of [[wordTok(S, prep), synth(SLOT)], [synth(SLOT)]]){
+    const q = slotQuery(S, moved.concat(tail), { last:ctx.last });
+    if (q && q.intent === "objectsOf") for (const v of q.vs) if (!vs.includes(v)) vs.push(v);
+    if (q && !vs.length) return q;
+    if (q) subj = q.s;
+  }
+  if (!vs.includes(place)) vs.push(place);
+  return subj ? { intent:"objectsOf", s:subj, vs } : null;
 }
 /* A wh-word straight onto its verb. English only reaches this for *what chases
  * mice*, where the slot is plainly the subject, because its other question puts
@@ -2817,6 +2844,16 @@ function interpret(S, text){
   if (has(first, "aux") || has(first, "modal") || has(first, "cop") || has(first, "hav")){
     const q = yesNo(S, toks.slice(toks.indexOf(first)), ctx);
     if (q) return { ...base, ...q };
+  }
+  // a yes/no question whose verb comes before its subject reads as the statement it asks after
+  if (marked && G.questionOrder === "verb_subject" && isVerbish(S, first)){
+    const np = nounPhrases(S, after, 0, after.length)[0];
+    if (np && !np.prep){
+      const k = subjectEnd(S, after, np) + 1;
+      const r = clausePercepts(S, after.slice(0, k).concat([first], after.slice(k)), ctx, null);
+      const checks = r.percepts.filter(p => p.v !== G.roles.comention && !isMention(p) && !p[SUB]);
+      if (checks.length) return { ...base, intent:"verify", checks };
+    }
   }
   if (G.about.has(first.w)){
     const terms = nounPhrases(S, after, 0, after.length).filter(np => np.pron !== "self")

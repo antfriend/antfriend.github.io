@@ -172,5 +172,30 @@ ok(readme.includes("fourteen questions") && count(qCases) === 14, "README's 'fou
      "@LAT98LON7 quotes how many of the fifteen parses a merged lexicon breaks", broke.length + ": " + broke.join(" ; "));
 }
 
+console.log("\n== the parameters table is the grammars' ==");
+{
+  // Blueprint 2's table names, for each parameter, the key that sets it and what each language declares
+  const text = store.replace(/\r\n?/g, "\n");
+  const at = text.indexOf("**Parameters.**"), rows = text.slice(at).split("\n").filter(l => l.startsWith("| ") && !l.startsWith("| Parameter")).slice(0, 20);
+  const table = [];
+  for (const l of rows){ const c = l.split("|").slice(1, -1).map(x => x.trim()); if (c.length === 5) table.push(c); else break; }
+  // what each language's grammar records declare, key by key: a record without lang: is the first language's
+  const declared = { en:{}, es:{} };
+  for (const m of text.matchAll(/```ttdb-grammar\n([\s\S]*?)```/g)){
+    const lang = (m[1].match(/^lang: *(\S+)/m) || [])[1] || "en";
+    for (const line of m[1].split("\n")){ const i = line.indexOf(":"); if (i > 0 && declared[lang] && !(line.slice(0, i) in declared[lang])) declared[lang][line.slice(0, i)] = line.slice(i + 1).trim(); }
+  }
+  const bare = x => x.replace(/`/g, "").trim();
+  ok(at > 0 && table.length >= 7, "Blueprint 2 carries a parameters table", table.length + " rows");
+  for (const [name, key, , en, es] of table){
+    const k = bare(key);
+    for (const [lang, cell] of [["en", en], ["es", es]]){
+      const want = cell === "—" ? undefined : bare(cell), got = declared[lang][k];
+      ok(got === want, "parameter " + k + " (" + name.toLowerCase() + ") is what the " + lang + " grammar declares", JSON.stringify(got) + " vs " + JSON.stringify(want));
+    }
+    ok(app.includes(k), "and the runtime reads " + k);
+  }
+}
+
 console.log("\n" + (fails ? fails + " FAILED" : "all passed"));
 process.exit(fails ? 1 : 0);

@@ -537,6 +537,27 @@ section("said but not asserted: relatives, stance, alternatives, asides (TTG-RFC
     ok(PG.reread(PG.openStore(SUBCLASS)).changed.length === 0 && M.malformed.length === 3, "the seed store has no modifiers, and reads back as written either way");
   }
 
+  // questions whose verb stands before its subject, and a verb that names its own subject (TTG-RFC-0005 §3)
+  {
+    const Q = fresh();
+    let t = T0;
+    for (const s of ["Pixel duerme en el sol.", "Los gatos cazan ratones.", "Dudo que los gatos ladran.", "Los perros viven en casas."]) PG.answer(Q, s, t += 60);
+    const ask = q => PG.answer(Q, q, t += 60), terms = r => r.items.map(i => i.term).join(" ");
+    const donde = ask("¿Dónde duerme Pixel?");
+    ok(donde.intent === "objectsOf" && terms(donde).split(" ").includes("sol"), "¿Dónde duerme Pixel? asks where, and is answered from Pixel duerme en el sol", terms(donde));
+    ok(terms(ask("¿Dónde viven los perros?")) === "casa", "a plural subject behind its verb, too");
+    const dudo = ask("¿Qué dudo?");
+    ok(dudo.intent === "objectsOf" && dudo.notes.some(n => n.includes("gato ladrar")), "a verb in the speaker's own form already has its subject: ¿Qué dudo? meets what the stance holds", dudo.notes.join(" | "));
+    ok(ask("¿Duerme Pixel en el sol?").verdict === "Sí.", "a yes/no question with its verb first reads as the statement it asks after");
+    ok(ask("¿Cazan los gatos ratones?").verdict === "Sí.", "and its subject ends at its head, so what follows is the object");
+    ok(ask("¿Qué cazan los gatos?").intent === "objectsOf" && ask("¿Qué caza ratones?").intent === "subjectsOf", "agreement still tells the object question from the subject one");
+    ok(ask("Where does Pixel sleep?").items.map(i => i.term).includes("sun") && ask("Does Pixel sleep in the sun?").verdict === PG.say(Q.G, "affirm"),
+       "English, question_order: subject_verb, reads as before");
+    const flat = PG.openStore(STORE.replace(/^question_order: verb_subject$/m, "question_order: subject_verb"));
+    PG.answer(flat, "Pixel duerme en el sol.", T0);
+    ok(PG.answer(flat, "¿Duerme Pixel en el sol?", T0 + 60).verdict !== "Sí.", "without verb_subject, a verb-first question is not read that way");
+  }
+
   // which verbs a relative's bare verb may follow is the store's word list, not the runtime's
   const noChain = PG.openStore(STORE.replace(/^chain: .*\n/gm, ""));
   ok(PG.shapeOf(noChain, "I like the man that saw the cat eat cheese.").percepts.map(pk).includes("man | eat | cheese | + | -"),

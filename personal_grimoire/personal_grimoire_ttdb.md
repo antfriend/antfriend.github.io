@@ -156,7 +156,7 @@ what parsed.
 
 ---
 
-@LAT20LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT0LON0,depends_on@LAT10LON0
+@LAT20LON0 | created:1789257600 | updated:1795392000 | relates:refines@LAT0LON0,depends_on@LAT10LON0
 
 **Blueprint 2 — Classify: nounish or verbish**
 src: RFCs/TTG-RFC-0002-Semantic-Percepts.md §3
@@ -200,6 +200,20 @@ word only as a verb. A noun phrase is an optional `det`/`poss`/`quant`, then
 content words; its **head** is the last. A phrase introduced by a `prep` is a prepositional
 phrase, never a subject or object. `self` words resolve to `self_lemma`; `anaphor` words
 resolve to the most recent subject head in the same episode, or drop.
+
+**Parameters.** What a second language changes is mostly a handful of switches, each a key
+its grammar declares. The runtime holds the principle; the store sets the parameter, and a
+key left out takes the value in *absent*. The test suite holds this table to the grammars.
+
+| Parameter | Key | Absent | en | es |
+|---|---|---|---|---|
+| Which word heads a phrase | `head` | `last` | `last` | `first` |
+| Where a question's verb stands | `question_order` | `subject_verb` | `subject_verb` | `verb_subject` |
+| A subject told behind its verb by agreement | `plural_verb_ending` | — | — | `n` |
+| The speaker's own subject dropped | `self_ending` | — | — | `o é í` |
+| The subjects a bare verb is finite for | `bare_finite` | any | `plural self` | `-` |
+| A word that marks a verb's object | `object_mark` | — | — | `a` |
+| What a phrase's modifiers do | `modifier` | `drop` | `drop` | `drop` |
 
 ---
 
@@ -693,6 +707,7 @@ verbish_marks: { }
 aside_marks: ( )
 head: last
 modifier: drop
+question_order: subject_verb
 privative: fake former false toy pretend
 ```
 
@@ -1083,6 +1098,7 @@ verbish_marks: { }
 aside_marks: ( )
 head: first
 modifier: drop
+question_order: verb_subject
 privative: falso falsa falsos falsas
 object_mark: a
 ```
@@ -1220,7 +1236,7 @@ src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §7
 kind: questions
 lang: es
 wh_thing: qué quién quiénes cuál cuáles
-wh_place: dónde | in
+wh_place: dónde | in | en
 about: háblame cuéntame describe explica define sobre
 describe_max_words: 2
 ```
@@ -2279,7 +2295,7 @@ down because it is a claim.
 
 ---
 
-@LAT98LON7 | created:1789257600 | updated:1790035200 | relates:supports@LAT10LON0,refines@LAT98LON5
+@LAT98LON7 | created:1789257600 | updated:1795392000 | relates:supports@LAT10LON0,refines@LAT98LON5
 [ew]
 conf:100
 rev:0
@@ -2303,9 +2319,11 @@ test.
   other, *no* a quantifier and a negation, and a phrase's head is its last word in one and its
   first in the other (*el gato negro*). Merged, they break 3 of the fifteen English parse
   cases; kept apart, none.
-- **New blind spots:** a verb-first question (*¿Dónde duerme Pixel?*), an adjective that
-  agrees in number (*son negros* reads as a class), a dropped subject other than the
-  speaker's (*Come queso*). The speaker's own is read: `self_ending` names its verb forms,
+- **New blind spots:** an adjective that agrees in number (*son negros* reads as a class), a
+  dropped subject other than the speaker's (*Come queso*), and a verb-first question whose
+  subject's phrase goes on past its head (*¿Caza el gato negro ratones?*). Verb-first
+  questions are read since `question_order: verb_subject`: *¿Dónde duerme Pixel?*, *¿Duerme
+  Pixel en el sol?*, and *¿Qué dudo?*, whose verb names its own subject. The speaker's own is read: `self_ending` names its verb forms,
   so *No como carne* is `self comer carne -`. Each is a rule the grammar declares — never
   Spanish in `index.html`.
 
