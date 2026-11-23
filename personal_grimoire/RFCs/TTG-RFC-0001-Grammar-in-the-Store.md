@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.2
+**Version:** 1.3
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -80,6 +80,7 @@ Class keys the runtime interprets: `det`, `poss`, `quant_all`, `quant_some`, `qu
 | `bare_finite` | `plural`, `self`, or `-` | The subjects a bare form is also finite for (English *cats eat*, *I eat*); `-` for none; absent, any (TTG-RFC-0005 §3). |
 | `adverb_ending`, `adverb_guard` | endings; words | An unlisted word with the ending, between a thing and its verb, is an adverb; the guard lists words that only look like one (TTG-RFC-0005 §2). |
 | `self_ending`, `self_form` | endings; words | The speaker's own verb forms, in a language that drops subjects; a subjectless predicate in one has the speaker as subject (TTG-RFC-0005 §3). |
+| `past_ending`, `past_form` | endings; words | What makes a predicate past: an ending on an inflected verb, or a word among its own (TTG-RFC-0005 §3). |
 
 Candidate choice (normative order): a candidate that is already a term in the store; then a
 candidate in `seed`; then, for `~`, the undoubled stem if the stem really ends in a double
@@ -144,7 +145,7 @@ words fill are defined in TTG-RFC-0003 §4.
 emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `superseded_by`,
 `affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `deny_superseded`, `contest`, `unknown`,
 `exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `noted_held`, `noted_readings`,
-`reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
+`reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `changed_tense`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
 `objects_head`, `subjects_head`, `nothing_found`, `search_head`, `suggest`, `ingested`,
 `episode_title`, `source_typed`, `store_opened`; units `percept`, `sentence`, `term`.
 
@@ -263,5 +264,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-09-22 | 1.0: stable. Implemented in full by the personal_grimoire reference runtime and checked by its tests; the open questions stand as open. |
 | 2026-11-23 | 1.1: `asked_holds` joins the keys the runtime emits (TTG-RFC-0005 1.1 §3). No other change. |
 | 2026-11-23 | 1.2: the three frame numbers join `kind: numbers` in §9 (TTG-RFC-0005 1.2 §3). No other change. |
+| 2026-11-23 | 1.3: `past_ending` and `past_form` in §4, and `changed_tense` among the reply keys (TTG-RFC-0005 1.3 §3, TTG-RFC-0004 1.1 §3.7). No other change. |
 
 *License: CC0*

@@ -1,6 +1,6 @@
 # TTG-RFC-0004: Time — the Order of Sayings, Supersession, and a Fleet's Shared Clock
 
-**Version:** 1.0
+**Version:** 1.1
 **Status:** Stable for §2–3, implemented in the personal_grimoire reference runtime; §4 proposed, not implemented
 **RFC Number:** 0004
 **Project:** toot-toot-engineering
@@ -114,7 +114,7 @@ quoting the earliest sayings. New reply keys: `label_superseded`, `superseded_by
 
 - **The same triple, opposite polarity.** *Kim is in the garden* followed by *Kim is not in the
   garden* is still **C**, contested. Supersession compares objects; it never compares
-  polarities.
+  polarities. Only the owner's tense does (§3.7).
 - **Vectors not declared exclusive.** *I like coffee* followed by *I do not like coffee* is still
   contested (TTG-RFC-0003 §6, open question 1), and *Pixel chases mice* does not retire
   *Pixel chases birds*.
@@ -139,6 +139,27 @@ to the adverbs.
 Exact attribution means the quoted sentences are exactly the task's gold supporting facts.
 Task 15 (basic deduction) scores 100% with or without the flag. Results:
 `paper/babi_qa1_results.json`, `paper/babi_qa15_results.json`.
+
+### 3.7 A change in the owner's tense
+
+The owner's words can say that a thing changed: *I liked tea*, then *I do not like tea*. That
+is not recency, which would be a claim about the owner; it is the owner's own tense, a claim
+of the language (TTG-RFC-0005 §3, tense).
+
+- A saying of a triple in the past is **changed** when a later saying of the same triple, in
+  the order of §2, is not past and has the opposite polarity.
+- A changed saying is kept and quoted, and does not count in consolidation (TTG-RFC-0003 §2).
+  So *I liked tea*, then *I do not like tea*, is a decided `-`, not a contest.
+- Two sayings in the same tense that disagree still contest, and so does a past saying after a
+  present one: only the present changes the past.
+- **perceive:** when a new saying disagrees only with sayings it changes, the reply adds the note
+  `changed_tense` (the changed saying, `{then}` and `{ep}`, and the one that changed it, `{now}`
+  and `{ep_now}`) in place of `contradicts`. **verify:** a question about a triple with a changed
+  saying adds the same note.
+
+This compares polarities, unlike §3.3, and only across tenses. It does not retire a fact along
+an exclusive vector, and supersession does not read tense: *Pixel moved to the kitchen*
+retires *Pixel sleeps in the sun* whatever tenses they are in.
 
 ---
 
@@ -252,9 +273,10 @@ it does not identify a grammar.
    The frame problem is being decided by where a fact was computed.
 2. **Exclusivity across vectors** exists only through rules into a shared vector. A said
    `contains` does not retire an `in`, because algebra-only facts are not candidates.
-3. **Tense.** *Mary was in the kitchen* and *Mary is in the kitchen* are one percept (the
-   parser's blind spots, `@LAT98LON5`). A question about the past (*Where was Mary before the
-   garden?*, bAbI task 3) needs retired facts to be queried as history.
+3. **Tense.** Since 1.1 *Mary was in the kitchen* is marked past (TTG-RFC-0005 §3), and a past
+   saying a present one contradicts is changed (§3.7). A question about the past (*Where was
+   Mary before the garden?*, bAbI task 3) still needs retired facts to be queried as history,
+   and a change inside one episode decides the belief without the tell naming it.
 4. **Wording.** "No longer", "since" and "at about the same time" are phrases of the replies
    record, but §4's concurrent case has no reply key yet.
 
@@ -266,5 +288,6 @@ it does not identify a grammar.
 |---|---|
 | 2026-09-14 | Initial draft. §2–3 implemented: the order of sayings, `exclusive`, supersession, the `superseded` ground. §4 proposed from TTN-RFC-0010. |
 | 2026-09-22 | 1.0: §2–3 stable, as implemented by the reference runtime and checked by its tests; §4 remains a proposal. |
+| 2026-11-23 | 1.1: §3.7, a change in the owner's tense: a past saying that a later present one contradicts is changed — kept, quoted, uncounted — and named by `changed_tense`; two sayings in one tense still contest. §3.5 notes the exception; §5.3 narrowed. §2–3 remain stable. Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`). |
 
 *License: CC0*

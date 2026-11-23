@@ -1,6 +1,6 @@
 # TTG-RFC-0002: Semantic Percepts, Episodes and Terms
 
-**Version:** 1.4
+**Version:** 1.5
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0002
 **Project:** toot-toot-engineering
@@ -107,7 +107,8 @@ Where the grammar reads a sentence two ways, a held percept that only one readin
 that reading's letter in an optional seventh column (`a`, `b`, …; TTG-RFC-0005 §3). A held
 percept that a stance takes is linked to the stance percept by a `holds:` line (§5.1;
 TTG-RFC-0005 §3), and a percept whose object the grammar decided at a relative's gap is
-marked by a `gap:` line (§5.1; TTG-RFC-0005 §3).
+marked by a `gap:` line (§5.1; TTG-RFC-0005 §3), and one said in the past by a `tense:`
+line (§5.1; TTG-RFC-0005 §3).
 
 **Divergence from TTDB-RFC-0006, stated.** The pair is subject→object, not before→after, and
 an intransitive percept has no second endpoint. It is kept (object `-`), and its belief edge
@@ -133,19 +134,21 @@ shape: <n> | <the sentence's shape, TTG-RFC-0005 §4>
 percept: ...
 holds: <n> | <stance percept ordinal> | <held percept ordinals>     TTG-RFC-0005 §3
 gap: <n> | <percept ordinals>                                     TTG-RFC-0005 §3
+tense: <n> | <percept ordinals>                                   TTG-RFC-0005 §3
 ```
 ```
 
 Every sentence gets a `said` line whether or not it yields a percept, and, when the grammar
 declares marks, a `shape` line. A sentence that links a stance to what it holds gets a
 `holds` line for each stance percept, after all the episode's percept lines; a sentence
-the grammar read at a gap gets one `gap` line, after the holds lines. The ordinal is one more
+the grammar read at a gap gets one `gap` line, after the holds lines, and a sentence with a
+percept in the past one `tense` line, after that. The ordinal is one more
 than the largest existing longitude in the lane. An episode MUST NOT be modified after it is
 written. A consumer MUST skip, count and report malformed percept lines: fewer than six
 columns, a non-integer sentence, an empty subject, vector or object, a polarity other than
 `+`, `-`, `?` or `?-`, or a seventh column that is not one lowercase letter or stands on a
-percept that is not held. It MUST do the same for a malformed `holds` or `gap` line, as
-TTG-RFC-0005 §3 defines them. A subject or vector of `-` is well-formed: it is a mention; a polarity of `?` or `?-`
+percept that is not held. It MUST do the same for a malformed `holds`, `gap` or `tense`
+line, as TTG-RFC-0005 §3 defines them. A subject or vector of `-` is well-formed: it is a mention; a polarity of `?` or `?-`
 is well-formed: it is held (TTG-RFC-0005 §3). A
 correction to how a sentence was read is an amendment, kept beside the episode on
 `amend_lane` (TTG-RFC-0005 §5).
@@ -245,5 +248,6 @@ longitude +step), wrapping inside the bands. Coordinates are written with as man
 | 2026-11-23 | 1.2: the check 1.1 asked for is done. The personal_grimoire runtime had stepped latitude −step and was corrected the same day (antfriend.github.io `ae4a7fa`): `placeTerm` now steps latitude +step and longitude +step, wrapping each to the bottom of its band, and a test blocks an ID and checks both the step and the wrap. Its seed store's IDs are unchanged. The runtime again implements this RFC in full. No change to the text. |
 | 2026-11-23 | 1.3: §4 and §5.1, the `holds:` line linking a stance percept to the held percepts it takes (TTG-RFC-0005 1.1 §3), written after the episode's percept lines; malformed holds lines are skipped and counted like malformed percepts. Implemented by the personal_grimoire reference runtime (antfriend.github.io `7071c80`). |
 | 2026-11-23 | 1.4: §4 and §5.1, the `gap:` line marking the percepts the grammar read at a relative's gap (TTG-RFC-0005 1.2 §3), after the holds lines; malformed gap lines are skipped and counted. §5.2, a vector record's `frames:` line. Implemented by the personal_grimoire reference runtime (antfriend.github.io `df9019d`). |
+| 2026-11-23 | 1.5: §4 and §5.1, the `tense:` line marking the percepts said in the past (TTG-RFC-0005 1.3 §3), after the gap line; malformed tense lines are skipped and counted. Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`). |
 
 *License: CC0*

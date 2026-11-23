@@ -186,8 +186,8 @@ Also fixed along the way: `tests/embed.test.mjs` now normalizes line endings as 
 reader does. With `core.autocrlf=true`, git rewrites working copies with CRLF on checkout, and
 the test failed on them.
 
-Still to do: the RFC text upstream (TTG-RFC-0005 §3, TTG-RFC-0004 §3, TTG-RFC-0002 §5.1,
-TTG-RFC-0001 §3–4, TTG-RFC-0003 §2 and §4), and the bAbI check.
+RFC text: TTG-RFC-0005 1.3, -0004 1.1, -0003 1.3, -0002 1.5 and -0001 1.3, written upstream in
+toot-toot-engineering (`b091171`) and synced here. Still to do: the bAbI check.
 
 **Problem.** *Birds fly*, *birds flew* and *birds might fly* are one percept. *I liked coffee*
 followed by *I do not like coffee* is reported as a contradiction, although the owner's own

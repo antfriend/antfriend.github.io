@@ -1,6 +1,6 @@
 # TTG-RFC-0005: Shapes — Alternating Segments, Lists, Mentions and Amendments
 
-**Version:** 1.2
+**Version:** 1.3
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
@@ -341,6 +341,27 @@ is `pixel is_a cat -` and `pixel is_a dog -`; *birds do not fly or swim* denies 
 `neg` of the first verb covering the list. An alternative of subjects stays held, and negated
 it is a held denial (*cats or dogs do not bark* holds `cat bark ?-`).
 
+**Hedges.** A clause with a `hedge` word in it (*maybe*, *perhaps*, *might*, *quizás*) is held
+whole, as a stance's clause is: *Maybe cats bark* holds `cat bark ?`, and *I might like opera*
+holds `self like opera ?`. A hedge holds no link (§3, what holds it): no percept says it. A
+hedge the owner sets aside (§4) is out of the reading, so *(maybe) cats purr* says `cat purr`.
+
+**Tense.** A predicate is **past** when one of its words is a `past_form` (*was*, *did*,
+*went*, *fue*), or when a content word among them wears a `past_ending` and is not its own verb
+lemma (*moved*, but not *need*) — except after a `hav` word that is not itself a `past_form`,
+so the present perfect (*has moved*) is not past. A percept takes its predicate's tense. Only
+the past is marked, one line per sentence, after any gap line:
+
+```
+tense: <sentence> | <percept ordinals, space separated>
+```
+
+Ordinals count the sentence's `percept:` lines from 1, as for holds and gap lines, and a
+malformed tense line is skipped, counted and reported as a malformed gap line is, and marks
+nothing. A past percept is believed like any other; what its tense changes is how a later
+saying of the opposite reads (TTG-RFC-0004 §3.7). A grammar that declares neither key marks
+nothing past.
+
 **Held.** A percept with polarity `?` or `?-` is **held**: said, and not asserted. `?-` is a
 held denial: *I doubt cats don't bark* holds `cat bark ?-`, and a reply names it with the
 negation prefix. A runtime that knows only `?` skips `?-` as malformed, so neither is ever
@@ -501,15 +522,16 @@ reading: <n> | <letters>                       only when the owner chose between
 percept: <n> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <quantifier> [| <reading>]
 holds: <n> | <stance percept ordinal> | <held percept ordinals>     where the reading links a stance (§3)
 gap: <n> | <percept ordinals>                                     where the grammar read a gap (§3)
+tense: <n> | <percept ordinals>                                   where a percept is in the past (§3)
 ```
 ```
 
 - **One record per episode**, on `amend_lane` at the episode's longitude, so `@LAT91LON7`
   amends `@LAT90LON7`. It holds, for each sentence it amends, the shape that stands, the
-  reading chosen, if any, the percepts they read as, and the holds and gap lines that mark them (§3),
+  reading chosen, if any, the percepts they read as, and the holds, gap and tense lines that mark them (§3),
   whose ordinals count the amendment's own percept lines for that sentence. It is managed: amending again rewrites it in place and
   advances `updated`. Reading a sentence back the episode's own way — the same shape, the
-  same percepts, the same holds lines and the same gap line — removes its entry; an amendment with no entries is
+  same percepts, the same holds lines and the same gap and tense lines — removes its entry; an amendment with no entries is
   deleted.
 - **Consolidation** takes an amended sentence's percepts from the amendment instead of the
   episode, attributed to the episode and sentence they amend. Counting (episodes, not
@@ -534,7 +556,7 @@ change — a verb the owner comes to use with a thing, a phrase the owner binds.
 and corpus the store holds now, each in the context the sentences before it **stand** as —
 their amendments, else their episodes' readings — which is the context an amendment is made in
 (§5), so what a report offers for a sentence is exactly what taking it would write. It
-reports each sentence whose shape, percepts, holds lines or gap line differ from what its episode wrote: the
+reports each sentence whose shape, percepts, holds lines, gap line or tense line differ from what its episode wrote: the
 episode, the sentence, both readings, whether the owner has amended it, and a hash of the
 grammar records it was read under. A sentence where the owner chose between two readings is
 read with that choice.
@@ -551,9 +573,9 @@ from a grammar is never printed as what the owner marked. A runtime MUST refuse 
 it is not the store's grammar now — the report is stale. A reading the owner marks, even one
 that started from the grammar's, carries no `grammar:` line. A report names each sentence's
 standing ruling: `amended` when the owner has one, `accepted` when it is this very reading —
-the same shape, the same percepts, the same holds lines and the same gap line. An episode
-written before holds or gap lines has none, so a re-reading offers them for each sentence
-that links a stance or reads a gap, with its percepts unchanged; taking it writes them in an
+the same shape, the same percepts, the same holds lines and the same gap and tense lines. An
+episode written before holds, gap or tense lines has none, so a re-reading offers them for
+each sentence that links a stance, reads a gap or is said in the past, with its percepts unchanged; taking it writes them in an
 amendment.
 
 A host SHOULD offer the grammar's reading beside the one that stands, with the percepts it
@@ -599,6 +621,9 @@ the reference store's eight demo episodes read today exactly as written.
 | `morphology` | `bare_ending` | Endings a bare form wears (*ar er ir*). Absent: a bare form is its lemma. |
 | `vectors` | `role: amend_edge` | The header edge type from an amendment to its episode. |
 | `numbers` | `phrase_max_words` | Longest run of words bound to a known term. |
+| `lexicon` | `class: hedge` | Words that hold the clause they are in (§3, hedges). A hedge that is also an adverb (*maybe*) is listed in `adverb` too, so it is never a thing. |
+| `morphology` | `past_form`, `past_ending` | The words that make a predicate past, and the endings that do on an inflected verb (§3, tense). |
+| `responses` | `changed_tense` | A note naming a change in the owner's words (TTG-RFC-0004 §3.7): `{then}`, `{ep}`, `{now}`, `{ep_now}`. |
 | `numbers` | `frame_min_episodes`, `frame_grammar_weight`, `frame_preempt_ratio` | How a vector's frames decide whether it takes a thing (§3). |
 | `ttdb-sphere` | `amend_lane` | The latitude amendments sit on. |
 | `responses` | `noted_mention`, `amended`, `amend_title` | A mention's verdict, an amendment's verdict, an amendment's title. |
@@ -631,7 +656,9 @@ read as written. One implementing 1.0 ignores `holds:` lines in episodes and ame
 implementing 1.1 ignores `gap:` lines and the `frames:` line of a vector's record, and counts
 percept lines rather than weighed episodes; at the reference values of the frame numbers it
 reads every sentence the same, but it never reads those numbers, which TTG-RFC-0001 §2 counts
-as a conformance failure. Held sayings now teach what a verb takes, which can change how a relative
+as a conformance failure. One implementing 1.2 ignores `tense:` lines, `past_form`,
+`past_ending` and `class: hedge`: it reads a hedged clause as said, and a change in tense as a
+contest. Held sayings now teach what a verb takes, which can change how a relative
 is read in a store that holds some. The
 published bAbI outcomes (tasks 1 and 15, every condition) are unchanged under the reference
 runtime.
@@ -665,7 +692,10 @@ runtime.
 7. **A question whose verb names its subject.** The link is written in every language, but
    a question is read by its shape: *¿Qué dudo?* reads *qué* as the subject, so it asks for
    subjects and never meets the holds line *Dudo que los gatos ladran* wrote.
-8. **Taking every re-reading passes once.** A take can change a sentence already passed; the
+8. **Tense is the past, or not.** Only the past is marked. *Birds will fly* and *birds can
+   fly* read as *birds fly*, an irregular past the morphology does not list reads as present,
+   and a language whose past the lemmatiser does not reduce (*cazaron*) marks nothing for it.
+9. **Taking every re-reading passes once.** A take can change a sentence already passed; the
    next report offers it. Whether taking to a fixed point always ends is open.
 
 ---
@@ -684,5 +714,6 @@ runtime.
 | 2026-09-22 | 1.0: 0.7, stable. Implemented in full by the personal_grimoire reference runtime and checked by its tests; the open questions stand as open. |
 | 2026-11-23 | 1.1: §3 **what holds it** — a held percept a stance takes is linked to its stance percept by a `holds:` line of percept ordinals; malformed holds lines are skipped and counted; an objects question after a stance names what it holds (`asked_holds`). §5 amendments carry holds lines, and reading back withdraws only when they match too; §5.1 re-reading compares them and offers them to older episodes; §6 `asked_holds`; §7 compatibility; §8.7 new. Implemented by the personal_grimoire reference runtime (antfriend.github.io `7071c80`), from its PLAN.md phase 1. |
 | 2026-11-23 | 1.2: §3 **the grammar's gaps** — a percept whose object, or lack of one, the grammar decided at a gap is marked by a `gap:` line of percept ordinals; malformed gap lines are skipped and counted. §3 **verb frames** — what a verb takes is counted in episodes, the grammar's gaps apart, and weighed by `frame_min_episodes`, `frame_grammar_weight` and `frame_preempt_ratio` (reference 1, 1, 0, which read as a store declaring none); `lone` and the gap rules now say *takes a thing*. Chain verbs are not weighed. §5 amendments and §5.1 re-reading carry and compare gap lines; §6 keys; §7 compatibility; §8.4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `df9019d`), from its PLAN.md phase 2. |
+| 2026-11-23 | 1.3: §3 **hedges** — a `hedge` word holds its clause; §3 **tense** — a predicate is past by a `past_form` or a `past_ending` on an inflected verb, not after a present `hav`, and past percepts are marked by a `tense:` line of ordinals, malformed ones skipped and counted. §5 and §5.1 carry and compare tense lines; §6 `class: hedge`, `past_form`, `past_ending`, `changed_tense`; §7 compatibility; §8.8 new. The change it makes to a later saying is TTG-RFC-0004 1.1 §3.7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`), from its PLAN.md phase 3. |
 
 *License: CC0*

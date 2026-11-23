@@ -1,6 +1,6 @@
 # TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
 
-**Version:** 1.2
+**Version:** 1.3
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -28,6 +28,7 @@ in the corpus, and how a reply is built from grounds.
 For each triple (subject, vector, object) over all non-comention, non-held percepts of the
 episodes on the episode lane (TTG-RFC-0002 §5.1):
 
+- a saying changed by a later one in the present tense is not counted (TTG-RFC-0004 §3.7);
 - per episode, `plus` = the largest weight of its `+` percepts, `minus` = the largest weight of
   its `-` percepts, where weight is `weight_partial` for quantifier `~` and 1 otherwise;
 - `for` = Σ plus, `against` = Σ minus, over episodes;
@@ -38,7 +39,8 @@ episodes on the episode lane (TTG-RFC-0002 §5.1):
 
 This is TTDB-RFC-0007's replay made deterministic: counting replaces random walks, the count
 is atemporal as §3.2 there requires, and the formation threshold is the same. A contested
-belief is kept, never resolved by recency. Order enters only through `exclusive` vectors, which
+belief is kept, never resolved by recency; the owner's own tense is not recency, and a
+change it says is read (TTG-RFC-0004 §3.7). Order enters only through `exclusive` vectors, which
 retire facts without touching consolidation (TTG-RFC-0004 §3).
 
 Beliefs are derived. A conforming implementation MUST be able to recompute every belief line
@@ -176,6 +178,8 @@ tell held, and the readings of a sentence it read two ways), `asked_held` and
 a ground, and the verdict stands; TTG-RFC-0005 §3), `asked_holds` (for an objects question
 whose subject and vector are a stance percept's, what each of its holds lines links, with the
 saying — never a ground, and `nothing_found` is not given when one is named; TTG-RFC-0005 §3),
+`changed_tense` (a change in the owner's tense, in place of `contradicts` on a tell, and with a
+question's grounds; TTG-RFC-0004 §3.7),
 `no_purchase`, and `suggest` for the purchased THING with the highest EPS at or above
 `suggest_eps_min`. Search results are ranked by Σ log(1 + N/df) over matched lemmas across
 all `said` lines.
@@ -199,7 +203,8 @@ values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
 
 ## 6. Open Questions
 
-1. **Change of mind vs contradiction.** Consolidation cannot tell them apart. A recency
+1. **Change of mind vs contradiction.** Consolidation cannot tell them apart unless the
+   owner's tense does (TTG-RFC-0004 §3.7). A recency
    window would be a claim about the owner; a `revises` percept marker (*I used to…*) would
    be a claim about the language. The `exclusive` flag (TTG-RFC-0004) is a third kind, a claim
    about a relation, and settles only changes of object, never of polarity.
@@ -224,5 +229,6 @@ values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
 | 2026-09-22 | 1.0: stable. Implemented in full by the personal_grimoire reference runtime and checked by its tests; the open questions stand as open. |
 | 2026-11-23 | 1.1: §4, the `asked_holds` note: an objects question after a stance names what the stance holds (TTG-RFC-0005 1.1 §3). Implemented by the personal_grimoire reference runtime (antfriend.github.io `7071c80`). |
 | 2026-11-23 | 1.2: §5, the reference values of the three frame numbers (TTG-RFC-0005 1.2 §3). |
+| 2026-11-23 | 1.3: §2, a saying changed by a later present one does not count; §4, the `changed_tense` note; §6.1 narrowed (TTG-RFC-0004 1.1 §3.7). Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`). |
 
 *License: CC0*
