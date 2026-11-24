@@ -537,7 +537,7 @@ Known gaps: a gap can only be a nounish name, so *What did Pixel do to the napki
 the verb) isn't read; *¿De dónde tiró Pixel el vaso?*, with its preposition before the wh-word,
 still isn't.
 
-Still to do: the RFC text upstream (TTG-RFC-0006 §7 and §11.4).
+Upstream (toot-toot-engineering `28b9f86`): TTG-RFC-0006 0.8 and TTG-RFC-0003 1.7.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.7
+**Version:** 0.8
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -37,7 +37,9 @@ cannot show.
 Constructions form a network by default inheritance (§8): a construction may name parents,
 and then says all they say, overriding them where it says otherwise itself; where its parents
 disagree and it does not say, that part is held, never believed. A construction with no shape
-is abstract: never matched, it says what its descendants share.
+is abstract: never matched, it says what its descendants share. Constructions read questions too
+(§7): a wh-question is a shape with one name left for what is asked, and its answer must
+answer every atom.
 
 ---
 
@@ -194,12 +196,40 @@ the vector algebra, as for any percept.
 
 ## 7. Questions
 
-A construction reads tells, not questions. A place question asks along the verb with
-the place's preposition, the bare verb and the place vector (TTG-RFC-0003 §4). It also
-asks along every **phrasal vector** of the verb that the store already names: the verb
-joined to a particle by `phrasal_join`. So *Where did the napkin go?* reaches
-`napkin | go_off | table`, and *Where does Pixel sleep?* reaches `sleep_on`, where the
-owner's words have it, as well as `sleep_in`.
+A construction reads questions as well as tells.
+
+1. **Yes/no questions.** A yes/no question is read as the statement it asks after
+   (TTG-RFC-0003 §4), and that statement's clause is matched as a tell's is (§3), so a
+   construction reads it. Its atoms are the checks, and a construction's statement holds only
+   if every atom does: the answer is the weakest of theirs — a denial, then a contest, then
+   *unknown*, then *yes*. *Did Pixel sneeze the cap off the table?* is not *yes* because Pixel
+   sneezed the cap, unless the cap also went off the table. (A list's checks still answer with
+   the first known one.)
+2. **Wh-questions.** A wh-question is matched in statement order, without its wh-word: the
+   cue word moved behind the subject (*What did Pixel sneeze off the table?* is *Pixel did
+   sneeze off the table*), and, under `question_order: verb_subject`, the subject before the
+   verb (*¿Qué tiró Pixel de la mesa?* is *Pixel tiró de la mesa*). Against that, a shape may
+   leave **exactly one** nounish name unmatched, one with no tie (§2): the **gap**, standing
+   for what is asked. A full match with no gap is not this question's reading. A question
+   that is a place question (`wh_place`) is read as §7.4 and TTG-RFC-0003 §4 say, not by a
+   gap.
+3. **Joint answers.** Every atom of the construction that names the gap once, as its subject
+   or its object, is a query: `objectsOf` where the gap is the object, `subjectsOf` where it
+   is the subject. Held atoms (§8.2) ask nothing. The last such atom — the construction's own,
+   since inherited atoms come first — leads, and the others narrow it: an answer is a term
+   that answers every query. *What did Pixel sneeze off the table?* is what went off the table
+   (`go_off … table`) that Pixel also sneezed (`sneeze pixel …`): the napkin, not a cap Pixel
+   sneezed elsewhere nor a bone a dog dropped off the table. A question no construction
+   covers is read by the question forms, as before.
+4. **Place questions** ask along the verb with the place's preposition, the bare verb and the
+   place vector (TTG-RFC-0003 §4), and also along every **phrasal vector** of the verb that
+   the store already names: the verb joined to a particle by `phrasal_join`. So *Where did the
+   napkin go?* reaches `napkin | go_off | table`, and *Where does Pixel sleep?* reaches
+   `sleep_on`, where the owner's words have it, as well as `sleep_in`.
+
+A construction's vectors are reached by sentences no construction read only if the grammar
+reads them alike: in the reference store, *off* is an English preposition, so *The napkin went
+off the table* is `napkin | go_off | table` and *What went off the table?* finds it.
 
 ---
 
@@ -299,8 +329,10 @@ its percepts until the owner takes a re-reading.
 3. **Spanish.** *Answered in 0.7* (§5): *de* cannot be read as "off" by a shape on *de*
    alone, but it can after a tied verb, and the reference store declares one. Still open: no
    Spanish question reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*).
-4. **Questions by construction.** A question could be read by a construction too (*What
-   did Pixel sneeze off the table?*). For now, questions are read by the question forms.
+4. **Questions by construction.** *Answered in 0.8* (§7). Still open: a gap is only ever a
+   nounish name, so a question about the verb (*What did Pixel do to the napkin?*) is not read
+   by one; and a question whose preposition comes before its wh-word (*¿De dónde tiró Pixel el
+   vaso?*) is not restated so a shape can meet it.
 
 ---
 
@@ -315,5 +347,6 @@ its percepts until the owner takes a re-reading.
 | 2026-11-27 | 0.5: a verbish name tied to its verbs by lemma, `{V=knock}` or `{V=knock,push}` (§2, §3 step 2), counted as a word of the construction's own; malformed ties (§6); the §8.3 example gains *knocking off*; open questions 1 and 3 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `4951a16`). |
 | 2026-11-28 | 0.6: a nounish name tied to its things by lemma, `[X=cat]` or `[X=cat,dog]`, and under `modifier: subclass` to subclasses its phrase made, privative ones excepted (§2, §3 step 2); a bound phrase's subclass is said as the chain says it (§3 step 4); the nounish-tie rejection removed (§6); §8.3 gains an idiom; open question 1 notes ties name lemmas, not meanings. Implemented by the personal_grimoire reference runtime (antfriend.github.io `0591be9`). |
 | 2026-11-29 | 0.7: a shape that opens on a nounish name covers a clause whose subject is dropped in the speaker's own form, binding the name to the speaker (§3 step 1); the reference store's Spanish constructions, and the morphology a Spanish tie needs (§5); open question 3 answered. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fdd03dd`). |
+| 2026-11-30 | 0.8: §7, questions read by constructions — a yes/no question holds only if every atom does; a wh-question in statement order leaves one untied nounish name unmatched as the gap, and an answer must answer every atom that names it; place questions as before, now §7.4. Open question 4 answered. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fa87584`). |
 
 *License: CC0*

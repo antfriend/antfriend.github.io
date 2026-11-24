@@ -1,6 +1,6 @@
 # TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
 
-**Version:** 1.6
+**Version:** 1.7
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -180,6 +180,12 @@ reads a subject behind its verb that way. These rows are the `question_order` pa
 Question shapes are parsed by the clause parser itself, with a slot token standing for the
 asked-about thing and the moved cue word restored behind the subject.
 
+**Questions a construction reads.** Where the grammar declares constructions (TTG-RFC-0006), a
+wh-question is first matched against them in statement order, one nounish name left for what
+is asked, and is answered by what answers every atom that names it; a yes/no question a
+construction reads holds only if every atom does (TTG-RFC-0006 §7). A question no construction
+covers is read by the rows above.
+
 **Reply.** A verdict (`affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `contest`,
 `unknown`, `deny_superseded`, `noted`, `noted_nothing`, `noted_mention`, `amended`, `nothing_found`) or a head, then grounds, each rendered
 by kind:
@@ -255,5 +261,6 @@ modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`, and, for constructions
 | 2026-11-23 | 1.4: §5, the reference value of `modifier_max_words` (TTG-RFC-0005 1.4 §3). |
 | 2026-11-23 | 1.5: §4, the intent rows for a verb before its subject under `question_order: verb_subject` (place questions, yes/no questions), a verb in the speaker's own form, and agreement behind the verb — the last read by the reference runtime since TTG-RFC-0005 0.5, and stated here for the first time; a subject behind its verb ends at its head in a head-first grammar. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bf261e8`). |
 | 2026-11-24 | 1.6: §4, a place question also asks along the verb's phrasal vectors; §5, the reference value of `construction_max_words` (TTG-RFC-0006). Implemented by the personal_grimoire reference runtime (antfriend.github.io `ea1bc58`). |
+| 2026-11-30 | 1.7: §4, questions a construction reads, defined in TTG-RFC-0006 0.8 §7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fa87584`). |
 
 *License: CC0*
