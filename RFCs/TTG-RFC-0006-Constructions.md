@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.6
+**Version:** 0.7
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -85,7 +85,12 @@ Punctuation is not matched.
    consecutive nounish tokens, a verbish name one or more consecutive verbish tokens, and a
    word one token equal to it, however that token was labelled. *Off*, which the English
    lexicon does not list, is labelled verbish; *into*, a preposition, nounish. Either way it
-   matches the word.
+   matches the word. A clause whose subject is dropped because its verb is in the speaker's
+   own form (TTG-RFC-0005 §3, dropped subjects: *Tiré el vaso de la mesa*) is covered by a
+   shape that opens on a nounish name: that name binds the speaker (the sphere's
+   `self_lemma`), unless it is tied to something else, and the rest of the shape covers the
+   clause. A dropped subject that is not the speaker's (*Tiró el vaso…*) is no one's, and no
+   shape that opens on a name covers it.
 2. **Read.** A nounish name's tokens MUST read as exactly one noun phrase that has a head
    and no preposition. A verbish name's tokens MUST read as exactly one predicate whose
    kind is a verb (not the copula, *have* or a phrase). A tied verbish name's verb MUST have
@@ -144,8 +149,25 @@ did before this RFC.
 
 Constructions contain words, so each language declares its own. A later language never
 borrows the first language's constructions, as it borrows its rules and numbers
-(TTG-RFC-0001 §11). The reference store declares the English caused-motion construction
-and no Spanish one.
+(TTG-RFC-0001 §11). A language's constructions are matched only against sentences read
+under its grammar.
+
+The reference store declares English and Spanish constructions. Spanish *de* is both "off"
+and "of", so its caused motion is tied to the verbs that move a thing (§2):
+
+```ttdb-grammar
+kind: constructions
+lang: es
+construction: => V X Y | actuar sobre algo
+construction: [X] {V=tirar,empujar,sacar,echar,quitar,bajar} [Y] de [Z] => salir_de Y Z | movimiento causado | is_a actuar sobre algo
+```
+
+*Pixel tiró el vaso de la mesa* says `pixel | tirar | vaso` and `vaso | salir_de | mesa`;
+*Pixel vio el vaso de la mesa* is still the table's glass, read by its words. A tie is only as
+good as the morphology (§3, step 2): for *tiró* to be *tirar*, the Spanish morphology declares
+the preterite and imperfect endings (*aron*, *ieron*, *aban*, *ían*, *aba*, *ía*, *ió*, *ó*,
+*é*, *í*) ahead of the present ones, since a verb takes its first matching ending. The two
+languages' motions are separate vectors (`go_off`, `salir_de`) unless a rule links them.
 
 ---
 
@@ -274,10 +296,9 @@ its percepts until the owner takes a re-reading.
 2. **Part of a clause.** A shape must cover its whole clause. Matching a span inside a
    relative clause or a stance's clause (*I think Pixel knocked the cup off the shelf*,
    read now by its words) needs the walk to hand spans to the matcher.
-3. **Spanish.** *de* is both "off" and "of", so *estornudó la servilleta de la mesa* cannot
-   be read by a shape on *de* alone. A tie (0.5) gives one a condition on its verb —
-   `[X] {V=estornudar} [Y] de [Z]` — but the reference store declares no Spanish construction
-   yet.
+3. **Spanish.** *Answered in 0.7* (§5): *de* cannot be read as "off" by a shape on *de*
+   alone, but it can after a tied verb, and the reference store declares one. Still open: no
+   Spanish question reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*).
 4. **Questions by construction.** A question could be read by a construction too (*What
    did Pixel sneeze off the table?*). For now, questions are read by the question forms.
 
@@ -293,5 +314,6 @@ its percepts until the owner takes a re-reading.
 | 2026-11-26 | 0.4: abstract constructions — an empty shape is never matched, only inherited from, its names the kinds its atoms use them as (§2, §8.6); `unsafe` covers a name an abstract construction uses as two kinds (§6); the §8.3 example now has an abstract root; open question 1 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `5777b04`). |
 | 2026-11-27 | 0.5: a verbish name tied to its verbs by lemma, `{V=knock}` or `{V=knock,push}` (§2, §3 step 2), counted as a word of the construction's own; malformed ties (§6); the §8.3 example gains *knocking off*; open questions 1 and 3 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `4951a16`). |
 | 2026-11-28 | 0.6: a nounish name tied to its things by lemma, `[X=cat]` or `[X=cat,dog]`, and under `modifier: subclass` to subclasses its phrase made, privative ones excepted (§2, §3 step 2); a bound phrase's subclass is said as the chain says it (§3 step 4); the nounish-tie rejection removed (§6); §8.3 gains an idiom; open question 1 notes ties name lemmas, not meanings. Implemented by the personal_grimoire reference runtime (antfriend.github.io `0591be9`). |
+| 2026-11-29 | 0.7: a shape that opens on a nounish name covers a clause whose subject is dropped in the speaker's own form, binding the name to the speaker (§3 step 1); the reference store's Spanish constructions, and the morphology a Spanish tie needs (§5); open question 3 answered. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fdd03dd`). |
 
 *License: CC0*

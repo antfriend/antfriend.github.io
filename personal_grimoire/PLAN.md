@@ -511,7 +511,7 @@ Known gaps: Spanish has no question that reaches `salir_de` (*¿De dónde tiró 
 and English and Spanish motions are separate vectors (`go_off`, `salir_de`) until a rule links
 them.
 
-Still to do: the RFC text upstream (TTG-RFC-0006 §3 and §5, and §11.3 answered).
+Upstream (toot-toot-engineering `c4c5628`): TTG-RFC-0006 0.7.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
