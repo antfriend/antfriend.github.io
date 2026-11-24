@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.8
+**Version:** 1.9
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -61,6 +61,8 @@ keep such text in markup rather than in the interpreter.
 | `privative` | words | Modifiers that make no subclass `class_of` (TTG-RFC-0005 §3). |
 | `aside_marks` | two characters | The owner's brackets for words left out of a reading, open then close (TTG-RFC-0005 §4). |
 | `object_mark` | words | Prepositions that mark a verb's thing rather than a place (Spanish *a*), except after a `motion` verb (TTG-RFC-0005 §2–§3). |
+| `pro_verb` | words | The words a question puts in a verb's place (*do*, *hacer*): *What did Pixel do to the napkin?* asks for the verb (TTG-RFC-0003 §4, TTG-RFC-0006 §7.4). |
+| `pro_verb_object` | words | The prepositions that mark the pro-verb's thing (*to*, *a*), dropped so the thing is its object. |
 
 Class keys the runtime interprets: `det`, `poss`, `quant_all`, `quant_some`, `quant_none`,
 `self`, `anaphor`, `prep`, `conj`, `subord`, `aux`, `cop`, `hav`, `modal`, `neg`, `wh`,
@@ -151,7 +153,7 @@ words fill are defined in TTG-RFC-0003 §4.
 emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `superseded_by`,
 `affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `deny_superseded`, `contest`, `unknown`,
 `exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `noted_held`, `noted_readings`,
-`reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `changed_tense`, `read_by`, `read_by_is_a`, `construction_contested`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
+`reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `changed_tense`, `read_by`, `read_by_is_a`, `construction_contested`, `vectors_head`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
 `objects_head`, `subjects_head`, `nothing_found`, `search_head`, `suggest`, `ingested`,
 `episode_title`, `source_typed`, `store_opened`; units `percept`, `sentence`, `term`.
 
@@ -299,5 +301,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-11-24 | 1.6: the ninth grammar kind, `constructions` (TTG-RFC-0006), in §1 and §9; `construction_max_words` in §9; `read_by` among the reply keys in §8; constructions are never borrowed (§11.2). Implemented by the personal_grimoire reference runtime (antfriend.github.io `ea1bc58`), from its PLAN.md phase 6. |
 | 2026-11-24 | 1.7: `read_by_is_a` joins the reply keys in §8 (TTG-RFC-0006 0.2 §4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `8a1d9e2`). |
 | 2026-11-25 | 1.8: `construction_contested` joins the reply keys in §8 (TTG-RFC-0006 0.3 §4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fd6ef4a`). |
+| 2026-12-01 | 1.9: `pro_verb` and `pro_verb_object` in §3, `vectors_head` among the reply keys in §8 (TTG-RFC-0006 0.9 §7.4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
 
 *License: CC0*

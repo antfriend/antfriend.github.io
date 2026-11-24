@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.8
+**Version:** 0.9
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -210,9 +210,9 @@ A construction reads questions as well as tells.
    sneeze off the table*), and, under `question_order: verb_subject`, the subject before the
    verb (*¿Qué tiró Pixel de la mesa?* is *Pixel tiró de la mesa*). Against that, a shape may
    leave **exactly one** nounish name unmatched, one with no tie (§2): the **gap**, standing
-   for what is asked. A full match with no gap is not this question's reading. A question
-   that is a place question (`wh_place`) is read as §7.4 and TTG-RFC-0003 §4 say, not by a
-   gap.
+   for what is asked — or, where the question holds the grammar's pro-verb, a verbish name
+   (§7.4). A full match with no gap is not this question's reading. A question that is a
+   place question (`wh_place`) is read as §7.5 and TTG-RFC-0003 §4 say, not by a gap.
 3. **Joint answers.** Every atom of the construction that names the gap once, as its subject
    or its object, is a query: `objectsOf` where the gap is the object, `subjectsOf` where it
    is the subject. Held atoms (§8.2) ask nothing. The last such atom — the construction's own,
@@ -221,7 +221,29 @@ A construction reads questions as well as tells.
    (`go_off … table`) that Pixel also sneezed (`sneeze pixel …`): the napkin, not a cap Pixel
    sneezed elsewhere nor a bone a dog dropped off the table. A question no construction
    covers is read by the question forms, as before.
-4. **Place questions** ask along the verb with the place's preposition, the bare verb and the
+4. **A gap at the verb.** The lexicon's `pro_verb` (English *do*, Spanish *hacer*) is the word
+   a question puts in a verb's place, and its `pro_verb_object` (*to*, *a*) the preposition
+   that marks the pro-verb's thing, dropped so the thing is its object: *What did Pixel do to
+   the napkin?* is *Pixel did do the napkin*. The last word that lemmatizes to the pro-verb is
+   read as a verb, whatever class the lexicon also gives it (English *do* is an auxiliary too),
+   but only when no other verb follows it — the *did* moved behind the subject of *What did
+   Pixel sneeze?* is still a cue.
+   - **Without a construction**, the question asks for the vectors relating its subject to its
+     thing (`vectorsOf`, TTG-RFC-0003 §4): every direct, undenied, unretired belief and every
+     derived one, each answered as a vector and grounded as any answer is.
+   - **Inside a construction's shape**, the pro-verb fills a verbish name as the gap, and the
+     atom naming it asks `vectorsOf`. The construction's atoms that name no gap are
+     **conditions**: each must hold, or nothing answers; and a verb answers only if it was said
+     in a sentence that also said a condition, since that is what makes it the verb of this
+     construction. *What did Pixel do to the napkin off the table?* asks for `V pixel napkin`
+     on condition `napkin | go_off | table`, and is the sneeze that sent the napkin off, not
+     a chewing said elsewhere; *…off the shelf?*, where the napkin never went, is nothing.
+   - **A tied verbish name** is a gap only where no shape with an untied one reads the
+     question, and then a verb answers only if it is one of the tie's: English *What did Pixel
+     do to the cup off the shelf?* is caused motion's question, not *knocking off*'s, while
+     Spanish *¿Qué hizo Pixel al vaso de la mesa?*, which only the tied *movimiento causado*
+     reads, is *tirar*, not a *morder* said elsewhere.
+5. **Place questions** ask along the verb with the place's preposition, the bare verb and the
    place vector (TTG-RFC-0003 §4), and also along every **phrasal vector** of the verb that
    the store already names: the verb joined to a particle by `phrasal_join`. So *Where did the
    napkin go?* reaches `napkin | go_off | table`, and *Where does Pixel sleep?* reaches
@@ -302,6 +324,9 @@ the specific overrides the general.
 | `responses` | `read_by` | the note naming the construction that read a tell; slot `{label}` |
 | `responses` | `read_by_is_a` | the same, for a construction with ancestors; slots `{label}`, `{parents}` |
 | `responses` | `construction_contested` | the note that its parents disagree on part of it; slots `{label}`, `{parents}` |
+| `lexicon` | `pro_verb` | the words a question puts in a verb's place (§7.4) |
+| `lexicon` | `pro_verb_object` | the prepositions that mark the pro-verb's thing (§7.4) |
+| `responses` | `vectors_head` | the head of an answer listing verbs; slots `{s}`, `{o}` |
 
 ---
 
@@ -329,10 +354,11 @@ its percepts until the owner takes a re-reading.
 3. **Spanish.** *Answered in 0.7* (§5): *de* cannot be read as "off" by a shape on *de*
    alone, but it can after a tied verb, and the reference store declares one. Still open: no
    Spanish question reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*).
-4. **Questions by construction.** *Answered in 0.8* (§7). Still open: a gap is only ever a
-   nounish name, so a question about the verb (*What did Pixel do to the napkin?*) is not read
-   by one; and a question whose preposition comes before its wh-word (*¿De dónde tiró Pixel el
-   vaso?*) is not restated so a shape can meet it.
+4. **Questions by construction.** *Answered in 0.8* (§7), and a gap at the verb in 0.9
+   (§7.4). Still open: a question whose preposition comes before its wh-word (*¿De dónde tiró
+   Pixel el vaso?*) is not restated so a shape can meet it; a verb gap with no thing (*What
+   did Pixel do?*) is not read; and inside a construction only a verb the owner said can
+   answer, never a held or derived one, since only a said sentence can share a condition's.
 
 ---
 
@@ -348,5 +374,6 @@ its percepts until the owner takes a re-reading.
 | 2026-11-28 | 0.6: a nounish name tied to its things by lemma, `[X=cat]` or `[X=cat,dog]`, and under `modifier: subclass` to subclasses its phrase made, privative ones excepted (§2, §3 step 2); a bound phrase's subclass is said as the chain says it (§3 step 4); the nounish-tie rejection removed (§6); §8.3 gains an idiom; open question 1 notes ties name lemmas, not meanings. Implemented by the personal_grimoire reference runtime (antfriend.github.io `0591be9`). |
 | 2026-11-29 | 0.7: a shape that opens on a nounish name covers a clause whose subject is dropped in the speaker's own form, binding the name to the speaker (§3 step 1); the reference store's Spanish constructions, and the morphology a Spanish tie needs (§5); open question 3 answered. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fdd03dd`). |
 | 2026-11-30 | 0.8: §7, questions read by constructions — a yes/no question holds only if every atom does; a wh-question in statement order leaves one untied nounish name unmatched as the gap, and an answer must answer every atom that names it; place questions as before, now §7.4. Open question 4 answered. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fa87584`). |
+| 2026-12-01 | 0.9: §7.4, a gap at the verb — the lexicon's `pro_verb` and `pro_verb_object`; without a construction, the vectors relating subject and thing; inside one, the pro-verb fills a verbish name, the gapless atoms are conditions, and the verb answering is one said with them; a tied verb gap only where no untied shape reads the question. Place questions renumbered §7.5. Three keys in §9; open question 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
 
 *License: CC0*
