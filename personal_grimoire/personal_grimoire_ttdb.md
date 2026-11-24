@@ -1062,7 +1062,7 @@ rule: move_to X Y => in X Y | moving somewhere puts you there
 
 ---
 
-@LAT-85LON0 | created:1795478400 | updated:1795651200 | relates:refines@LAT30LON0,refines@LAT-80LON0
+@LAT-85LON0 | created:1795478400 | updated:1795737600 | relates:refines@LAT30LON0,refines@LAT-80LON0
 
 **Grammar — constructions**
 src: RFCs/TTG-RFC-0006-Constructions.md §2
@@ -1085,13 +1085,17 @@ nothing of its own: *caused motion onto* is *caused motion* and *motion onto* to
 *Pixel knocked the cup off the shelf onto the floor* is a knock, the cup going off the shelf,
 and the cup going onto the floor — the knock said once, though both parents say it. Where
 parents disagree on an atom and the child does not settle it, the atom is held, never
-believed, and the reply says so. A child's shape binds every name its inherited atoms use. Unlike rules, constructions hold words, so each language
+believed, and the reply says so. A child's shape binds every name its inherited atoms use.
+A construction with no shape is **abstract**: *acting on a thing* is never matched, but says
+`V X Y` for each construction that inherits it, so both motions take the verb's own percept
+from it, and *caused motion onto*, which inherits it twice, says it once. Unlike rules, constructions hold words, so each language
 declares its own; these are English, and Spanish declares none.
 
 ```ttdb-grammar
 kind: constructions
-construction: [X] {V} [Y] off [Z] => V X Y, go_off Y Z | caused motion
-construction: [X] {V} [Y] onto [W] => V X Y, go_onto Y W | motion onto
+construction: => V X Y | acting on a thing
+construction: [X] {V} [Y] off [Z] => go_off Y Z | caused motion | is_a acting on a thing
+construction: [X] {V} [Y] onto [W] => go_onto Y W | motion onto | is_a acting on a thing
 construction: [X] {V} [Y] off [Z] onto [W] => | caused motion onto | is_a caused motion | is_a motion onto
 ```
 

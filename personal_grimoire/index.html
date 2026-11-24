@@ -764,8 +764,10 @@ function parseRules(G){
  * construction_max_words long.
  *
  * Inheritance (§8): a construction that names parents says what they say, and
- * their ancestors, as well as its own atoms (it may have none of its own);
- * what two parents say alike it says once, and what they disagree on, unless
+ * their ancestors, as well as its own atoms (it may have none of its own).
+ * A construction with no shape is abstract: it is never matched, only
+ * inherited from, and its names are the kinds its atoms use them as.
+ * What two parents say alike it says once, and what they disagree on, unless
  * it says it itself, is contested: held, never believed. Where its own atom has the
  * vector, subject and object of an inherited one, its own stands, with its own
  * polarity: the specific overrides the general, as a penguin overrides a bird.
@@ -785,6 +787,17 @@ function parseConstructions(G){
     return no && isVar(v) ? null : { v, s:w[1], o:w[2], neg:no };
   };
   const unsafe = (atoms, binds) => atoms.some(a => (isVar(a.v) && binds.get(a.v) !== "V") || [a.s, a.o].some(x => isVar(x) && binds.get(x) !== "N"));
+  // an abstract construction has no shape, so its names are the kinds its atoms use them as: a
+  // vector's name is verbish, a subject's or object's nounish. A name used as both is unsafe
+  const kindsOf = atoms => {
+    const m = new Map();
+    for (const a of atoms) for (const [x, k] of [[a.v, "V"], [a.s, "N"], [a.o, "N"]]){
+      if (!isVar(x)) continue;
+      if (m.has(x) && m.get(x) !== k) return null;
+      m.set(x, k);
+    }
+    return m;
+  };
   G.constructions = []; G.constructionErrors = [];
   const parsed = [];
   for (const line of G.constructionLines){
@@ -805,11 +818,15 @@ function parseConstructions(G){
     // a construction with parents may add nothing of its own: it is what they are, together
     const said = arrow < 0 ? "" : main.slice(arrow + 2).trim();
     const atoms = !said && isA.length ? [] : said.split(",").map(x => atomOf(words(x)));
-    const why = bad || arrow < 0 || !binds.size || !(atoms.length || isA.length) || atoms.some(a => !a) || !label ? "shape"
+    // no shape at all: an abstract construction, never matched, only inherited from (§8)
+    const abstract = arrow >= 0 && !els.length && !bad;
+    const kinds = abstract && atoms.every(Boolean) ? kindsOf(atoms) : null;
+    const why = bad || arrow < 0 || (!binds.size && !abstract) || !(atoms.length || isA.length) || atoms.some(a => !a) || !label ? "shape"
       : isFinite(max) && els.length > max ? "length"
       : atoms.some(a => [R.comention, R.episode_edge].includes(a.v)) ? "protected"
+      : abstract ? (kinds ? "" : "unsafe")
       : unsafe(atoms, binds) ? "unsafe" : "";
-    parsed.push({ els, atoms, binds, label, isA, line, own:els.filter(e => !e.name).length, why, state:0 });
+    parsed.push({ els, atoms, binds:abstract ? kinds : binds, abstract, label, isA, line, own:els.filter(e => !e.name).length, why, state:0 });
   }
   // inheritance: each construction's whole meaning, its ancestors' first and its own over them.
   // Parents that say one atom alike say it once; parents that disagree on it, where the child
@@ -837,7 +854,8 @@ function parseConstructions(G){
       }
       const own = new Set(c.atoms.map(key));
       const full = [...from.values()].filter(a => !own.has(key(a))).concat(c.atoms);
-      if (unsafe(full, c.binds)) c.why = "unsafe";
+      // a construction with a shape binds every name it inherits; an abstract one uses each as one kind
+      if (c.abstract ? !kindsOf(full) : unsafe(full, c.binds)) c.why = "unsafe";
       else { c.full = full; c.ancestors = [...new Set(ps.map(p => p.label).concat(ps.flatMap(p => p.ancestors)))]; }
     }
     c.state = 2;
@@ -846,7 +864,7 @@ function parseConstructions(G){
   for (const c of parsed){
     if (c.why) G.constructionErrors.push({ line:c.line, why:c.why });
     else G.constructions.push({ els:c.els, atoms:c.full, label:c.label, parents:c.ancestors, line:c.line, own:c.own,
-                                contested:c.full.some(a => a.contested) });
+                                contested:c.full.some(a => a.contested), abstract:c.abstract });
   }
   G.constructions.sort((a, z) => z.own - a.own);
   // and a construction before every ancestor, wherever its own words put it
@@ -1800,6 +1818,7 @@ function construe(S, T, L, idx, ctx, hold, holdBy){
     return h && h.lemma !== SLOT ? { np, h } : null;
   };
   for (const c of G.constructions){
+    if (c.abstract) continue;
     const bnd = {};
     const go = (e, k) => {
       if (e === c.els.length) return k === toks.length;

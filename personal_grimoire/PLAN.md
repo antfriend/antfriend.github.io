@@ -428,10 +428,26 @@ Upstream (toot-toot-engineering `13b9114`): TTG-RFC-0006 0.2 §8 and TTG-RFC-000
   `caused motion onto` is now `caused motion` and `motion onto` together, with no atoms of its
   own. It reads exactly as before; the seed episodes re-read unchanged.
 
-Known gaps: a verbish name still can't be tied to one word, and an abstract construction, with
-no shape of its own, still can't be declared.
+Known gaps: a verbish name still can't be tied to one word, and ~~an abstract construction~~
+(since 2026-11-26, below).
 
 Upstream (toot-toot-engineering `e779a2d`): TTG-RFC-0006 0.3 and TTG-RFC-0001 1.8.
+
+**Abstract constructions (2026-11-26): implemented in the runtime, the store and the tests.**
+- **Syntax:** a construction with an empty shape (`construction: => V X Y | acting on a thing`).
+- **Meaning:** it is never matched against a clause; it is only inherited from. Without a
+  shape to bind them, its names are the kinds its atoms use them as: a vector's name is
+  verbish, a subject's or object's nounish. A name used as both is `unsafe`, in its own atoms
+  or in what it inherits. An abstract construction may inherit from another, and a shaped
+  child of it still has to bind every name it inherits.
+- **The store:** `acting on a thing` (`=> V X Y`) is the root. `caused motion` and `motion onto`
+  inherit `V X Y` from it and add only their own motion atom, and `caused motion onto` is a
+  diamond through it that says the verb's percept once. Every sentence reads as before, and
+  the seed episodes re-read unchanged.
+
+Known gap: a verbish name still can't be tied to one word.
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §2, §6, §8).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
