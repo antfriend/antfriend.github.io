@@ -431,8 +431,7 @@ Upstream (toot-toot-engineering `13b9114`): TTG-RFC-0006 0.2 §8 and TTG-RFC-000
 Known gaps: a verbish name still can't be tied to one word, and an abstract construction, with
 no shape of its own, still can't be declared.
 
-Still to do: the RFC text upstream (TTG-RFC-0006 §2, §6 and §8; `construction_contested` in
-TTG-RFC-0001 §8).
+Upstream (toot-toot-engineering `e779a2d`): TTG-RFC-0006 0.3 and TTG-RFC-0001 1.8.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

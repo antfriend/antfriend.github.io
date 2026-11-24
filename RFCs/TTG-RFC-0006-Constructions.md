@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.2
+**Version:** 0.3
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -34,8 +34,9 @@ can carry meaning of its own, kept to what this store can do safely: no word in 
 runtime, no meaning without the owner's words, and nothing believed that a re-reading
 cannot show.
 
-Constructions form a network by default inheritance (§8): a construction may name a parent,
-and then says all its parent says, overriding it where it says otherwise itself.
+Constructions form a network by default inheritance (§8): a construction may name parents,
+and then says all they say, overriding them where it says otherwise itself; where its parents
+disagree and it does not say, that part is held, never believed.
 
 ---
 
@@ -44,7 +45,7 @@ and then says all its parent says, overriding it where it says otherwise itself.
 A `ttdb-grammar` block of `kind: constructions` holds any number of `construction:` lines:
 
 ```
-construction: <shape> => <atom>[, <atom>…] | <label> [| is_a <parent label>]
+construction: <shape> => [<atom>[, <atom>…]] | <label> [| is_a <parent label>]…
 ```
 
 - **The shape** is a sequence of elements separated by spaces:
@@ -57,9 +58,10 @@ construction: <shape> => <atom>[, <atom>…] | <label> [| is_a <parent label>]
   object. A vector named outright that wears the `negation_prefix` role (`not_go_off`) states
   a denial: the percept is the vector without the prefix, denied (§3, step 4).
 - **The label** is the construction's name. Replies quote it (§4).
-- **The parent**, optional, is a last part after the label: the `class_of` role's value
-  (`is_a` in the reference store, so the runtime holds no word for it), then the label of
-  another construction in the same language (§8).
+- **The parents**, optional, are parts after the label, one per parent: the `class_of`
+  role's value (`is_a` in the reference store, so the runtime holds no word for it), then the
+  label of another construction in the same language (§8). A construction with at least one
+  parent may have no atoms of its own: it is what its parents are, together.
 
 A name occurs at most once in a shape. Constructions are tried most specific first: a
 construction before every one of its ancestors (§8), and otherwise the one with the most
@@ -108,7 +110,9 @@ relative word is not in the shape) does not match.
 A tell that a construction read names it in its reply, under the `responses` key
 `read_by`, with the slot `{label}`. A construction that has ancestors is named under
 `read_by_is_a`, with `{label}` and `{parents}` (its ancestors, nearest first, joined by
-commas); a store without that key uses `read_by`. The episode's lines are written as for any sentence:
+commas); a store without that key uses `read_by`. A construction with a contested atom (§8)
+adds a note under `construction_contested`, with the same slots, and its contested atoms are
+not also named as held sayings (`noted_held`), which would say the owner hedged them. The episode's lines are written as for any sentence:
 the shape line in the owner's marks, the percepts, and the holds, gap and tense lines. So
 the owner sees which construction read the sentence, and can overrule it by amending the
 sentence with marks of their own (§3, step 5).
@@ -137,12 +141,12 @@ lists each one and fails):
 
 | Reason | When |
 |---|---|
-| `shape` | no `=>`; no label; a shape with no name; a name that is not capitalised or occurs twice; a mark left inside a word; an atom that is not three items; `-` as an atom's vector or subject; the negation prefix on a verbish name; a part after the label that is not the `class_of` role and a label |
+| `shape` | no `=>`; no label; no atoms and no parent; a shape with no name; a name that is not capitalised or occurs twice; a mark left inside a word; an atom that is not three items; `-` as an atom's vector or subject; the negation prefix on a verbish name; a part after the label that is not the `class_of` role and a label; a parent named twice |
 | `length` | the shape has more elements than the `numbers` key `construction_max_words` |
 | `protected` | an atom's vector is the comention or episode edge |
 | `unsafe` | an atom uses a name its shape does not bind, or binds as the other kind: a verbish name as a subject or object, a nounish one as a vector — its own atoms, or those it inherits (§8) |
-| `parent` | its parent is not a construction of the same language, or was itself rejected |
-| `cycle` | following parents from it comes back to it |
+| `parent` | one of its parents is not a construction of the same language, or was itself rejected |
+| `cycle` | following parents from it, through any of them, comes back to it |
 
 A construction only writes percepts about the terms its clause names and the vectors its
 line names. It adds no reasoning: what follows from its percepts follows by the rules and
@@ -167,31 +171,40 @@ Constructions form a network of default inheritance, as construction grammar des
 the network is resolved by the specificity the reasoner uses for beliefs (TTG-RFC-0003 §3):
 the specific overrides the general.
 
-1. **What a child says.** A construction that names a parent says everything its parent says,
-   including what the parent inherits, and its own atoms after them. An atom of its own with
-   the same vector, subject and object as an inherited one replaces it, with its own polarity,
-   as *penguins don't fly* replaces *birds fly*. Atoms with other vectors are added, not
-   replaced.
-2. **Names.** An inherited atom's names are the child's names: a child's shape MUST bind every
+1. **What a child says.** A construction that names parents says everything they say,
+   including what they inherit, in the order its parents are named, and its own atoms after
+   them. An atom of its own with the same vector, subject and object as an inherited one
+   replaces it, with its own polarity, as *penguins don't fly* replaces *birds fly*. Atoms with
+   other vectors are added, not replaced.
+2. **Several parents.** An atom that two parents say alike, with the same vector, subject,
+   object and polarity, is said once, so a child of two parents that share an ancestor (a
+   diamond) does not double a percept. An atom they disagree on — one says it, another denies
+   it — is **contested**, unless the child says that atom itself: it is held (`?`), never
+   believed, as the reasoner keeps a contested belief (TTG-RFC-0003 §2), and the reply names
+   the parents that disagree (§4). A contested atom stays contested in every descendant that
+   does not settle it.
+3. **Names.** An inherited atom's names are the child's names: a child's shape MUST bind every
    name its inherited atoms use, as the same kind, or the child is rejected (`unsafe`). The
    usual child extends its parent's shape, as the reference store's does:
 
    ```ttdb-grammar
    construction: [X] {V} [Y] off [Z] => V X Y, go_off Y Z | caused motion
-   construction: [X] {V} [Y] off [Z] onto [W] => go_onto Y W | caused motion onto | is_a caused motion
+   construction: [X] {V} [Y] onto [W] => V X Y, go_onto Y W | motion onto
+   construction: [X] {V} [Y] off [Z] onto [W] => | caused motion onto | is_a caused motion | is_a motion onto
    ```
 
-   *Pixel knocked the cup off the shelf onto the floor* says `pixel | knock | cup`,
-   `cup | go_off | shelf` and `cup | go_onto | floor`; *Where did the cup go?* finds both
-   places. A child may also deny what its parent says: with `[X] {V} [Y] almost off [Z] =>
+   *Pixel knocked the cup off the shelf onto the floor* says `pixel | knock | cup` (once,
+   though both parents say it), `cup | go_off | shelf` and `cup | go_onto | floor`; *Where
+   did the cup go?* finds both places. A child may also deny what its parent says: with `[X] {V} [Y] almost off [Z] =>
    not_go_off Y Z | almost off | is_a caused motion`, *Pixel pushed the cup almost off the
    shelf* says the push and denies that the cup went off.
-3. **Order.** A construction is tried before every one of its ancestors, whatever their
+4. **Order.** A construction is tried before every one of its ancestors, whatever their
    words, so that wherever both match, the specific one reads the clause. The parent still
    reads every clause the child does not match.
-4. **Resolution.** Inheritance is resolved when the grammar loads, not as sentences are read:
+5. **Resolution.** Inheritance is resolved when the grammar loads, not as sentences are read:
    a construction's whole meaning is fixed before any clause is matched, and a rejected
-   ancestor rejects every descendant (`parent`).
+   ancestor rejects every descendant (`parent`). Its ancestors are listed nearest first,
+   parents in the order named, without repeats.
 
 ---
 
@@ -199,10 +212,11 @@ the specific overrides the general.
 
 | Kind | Key | Value |
 |---|---|---|
-| `constructions` | `construction` | `<shape> => <atoms> | <label>`, any number |
+| `constructions` | `construction` | `<shape> => [<atoms>] | <label> [| is_a <parent>]…`, any number |
 | `numbers` | `construction_max_words` | the most elements a shape may have |
 | `responses` | `read_by` | the note naming the construction that read a tell; slot `{label}` |
 | `responses` | `read_by_is_a` | the same, for a construction with ancestors; slots `{label}`, `{parents}` |
+| `responses` | `construction_contested` | the note that its parents disagree on part of it; slots `{label}`, `{parents}` |
 
 ---
 
@@ -217,8 +231,8 @@ its percepts until the owner takes a re-reading.
 
 ## 11. Open Questions
 
-1. **Inheritance.** *Answered in 0.2* (§8). Still open: a construction has one parent, where
-   construction grammar allows several; a verbish name cannot be tied to one word, so a child
+1. **Inheritance.** *Answered in 0.2* (§8), and several parents in 0.3. Still open: a
+   verbish name cannot be tied to one word, so a child
    whose verb is a literal (*knocked*) cannot inherit its parent's `V X Y`; and an abstract
    construction, with no shape of its own, cannot be declared.
 2. **Part of a clause.** A shape must cover its whole clause. Matching a span inside a
@@ -237,5 +251,6 @@ its percepts until the owner takes a re-reading.
 |---|---|
 | 2026-11-24 | 0.1: initial draft, from the personal_grimoire PLAN.md phase 6. §2–7 implemented by the personal_grimoire reference runtime (antfriend.github.io `ea1bc58`) and checked by its tests. |
 | 2026-11-24 | 0.2: §8, inheritance — a construction names a parent, says what its ancestors say, overrides an inherited atom on the same vector, subject and object, and is tried before its ancestors; `not_` atoms state denials, and a clause denying one holds it (§3); `parent` and `cycle` rejections (§6); `read_by_is_a` (§4, §9). §8–11 renumbered §9–12; open question 1 answered. Implemented by the personal_grimoire reference runtime (antfriend.github.io `8a1d9e2`). |
+| 2026-11-25 | 0.3: several parents — one `is_a` part each, and no atoms of a construction's own needed (§2); what parents say alike is said once, and what they dispute is contested, held unless the child says it (§8.2); `construction_contested` (§4, §9); the `shape`, `parent` and `cycle` rejections widened (§6); §8 renumbered; open question 1 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fd6ef4a`). |
 
 *License: CC0*

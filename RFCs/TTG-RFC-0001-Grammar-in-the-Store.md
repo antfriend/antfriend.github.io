@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.7
+**Version:** 1.8
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -151,7 +151,7 @@ words fill are defined in TTG-RFC-0003 §4.
 emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `superseded_by`,
 `affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `deny_superseded`, `contest`, `unknown`,
 `exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `noted_held`, `noted_readings`,
-`reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `changed_tense`, `read_by`, `read_by_is_a`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
+`reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `changed_tense`, `read_by`, `read_by_is_a`, `construction_contested`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
 `objects_head`, `subjects_head`, `nothing_found`, `search_head`, `suggest`, `ingested`,
 `episode_title`, `source_typed`, `store_opened`; units `percept`, `sentence`, `term`.
 
@@ -298,5 +298,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-11-23 | 1.5: §11.6, the parameters table; `question_order` in §3 and `plural_verb_ending` in §4 (the latter read by the reference runtime since TTG-RFC-0005 0.5, and listed here for the first time); `wh_place`'s optional preposition in §7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bf261e8`), from its PLAN.md phase 5. |
 | 2026-11-24 | 1.6: the ninth grammar kind, `constructions` (TTG-RFC-0006), in §1 and §9; `construction_max_words` in §9; `read_by` among the reply keys in §8; constructions are never borrowed (§11.2). Implemented by the personal_grimoire reference runtime (antfriend.github.io `ea1bc58`), from its PLAN.md phase 6. |
 | 2026-11-24 | 1.7: `read_by_is_a` joins the reply keys in §8 (TTG-RFC-0006 0.2 §4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `8a1d9e2`). |
+| 2026-11-25 | 1.8: `construction_contested` joins the reply keys in §8 (TTG-RFC-0006 0.3 §4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fd6ef4a`). |
 
 *License: CC0*
