@@ -486,7 +486,7 @@ Known gaps: a tie names lemmas, not meanings: `[X=animal]` doesn't bind *cat* ev
 owner has said cats are animals. Following beliefs would make a reading change whenever a
 belief does, with no re-reading to show why, so it is left open.
 
-Still to do: the RFC text upstream (TTG-RFC-0006 §2, §3, §6, §11).
+Upstream (toot-toot-engineering `4305092`): TTG-RFC-0006 0.6.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
