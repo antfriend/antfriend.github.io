@@ -184,6 +184,6 @@ its percepts until the owner takes a re-reading.
 
 | Date | Change |
 |---|---|
-| 2026-11-24 | 0.1: initial draft, from the personal_grimoire PLAN.md phase 6. §2–7 implemented by the reference runtime and checked by its tests. |
+| 2026-11-24 | 0.1: initial draft, from the personal_grimoire PLAN.md phase 6. §2–7 implemented by the personal_grimoire reference runtime (antfriend.github.io `ea1bc58`) and checked by its tests. |
 
 *License: CC0*

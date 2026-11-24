@@ -37,7 +37,7 @@ selected:
   - "@LAT0LON0"
 preview:
   "@LAT0LON0": "Home: what this database is and how each record expands back to its full RFC"
-agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step. Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.1, -0002 1.3, -0003 1.1, -0005 1.1: the holds line linking a stance to what it holds (personal_grimoire PLAN.md phase 1); synced to the website the same day, not yet to robot_team. Then the same four for TTG-RFC-0001 1.2, -0002 1.4, -0003 1.2, -0005 1.2: verb frames counted in episodes, the grammar's gaps apart (personal_grimoire PLAN.md phase 2). Then @LAT60LON1-5 for TTG-RFC-0001 1.3, -0002 1.5, -0003 1.3, -0004 1.1, -0005 1.3: tense, hedges, and a change in the owner's tense (phase 3). Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.4, -0002 1.6, -0003 1.4, -0005 1.4: modifiers as subclasses (phase 4). Then @LAT60LON1/3/5 for TTG-RFC-0001 1.5, -0003 1.5, -0005 1.5: the parameters named, and questions with the verb first (phase 5)."
+agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step. Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.1, -0002 1.3, -0003 1.1, -0005 1.1: the holds line linking a stance to what it holds (personal_grimoire PLAN.md phase 1); synced to the website the same day, not yet to robot_team. Then the same four for TTG-RFC-0001 1.2, -0002 1.4, -0003 1.2, -0005 1.2: verb frames counted in episodes, the grammar's gaps apart (personal_grimoire PLAN.md phase 2). Then @LAT60LON1-5 for TTG-RFC-0001 1.3, -0002 1.5, -0003 1.3, -0004 1.1, -0005 1.3: tense, hedges, and a change in the owner's tense (phase 3). Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.4, -0002 1.6, -0003 1.4, -0005 1.4: modifiers as subclasses (phase 4). Then @LAT60LON1/3/5 for TTG-RFC-0001 1.5, -0003 1.5, -0005 1.5: the parameters named, and questions with the verb first (phase 5). 2026-11-24: +@LAT60LON6 for TTG-RFC-0006 0.1, constructions, and @LAT60LON1/3 for TTG-RFC-0001 1.6, -0003 1.6 (phase 6)."
 ```
 
 ---
@@ -842,20 +842,20 @@ composite) gate every addition.
 
 ---
 
-@LAT60LON1 | created:1789257600 | updated:1795392000 | relates:depends_on@LAT10LON1,depends_on@LAT30LON1
+@LAT60LON1 | created:1789257600 | updated:1795478400 | relates:depends_on@LAT10LON1,depends_on@LAT30LON1
 [ew]
 conf:210
-rev:5
+rev:6
 sal:90
-touched:1795392000
+touched:1795478400
 [/ew]
 
-**TTG-RFC-0001 — Grammar in the Store** (Stable, 1.5)
+**TTG-RFC-0001 — Grammar in the Store** (Stable, 1.6)
 src: TTG-RFC-0001-Grammar-in-the-Store.md
 
 A language's grammar is data in the same TTDB as the corpus it reads: `ttdb-grammar`
-blocks of eight kinds (lexicon, morphology, seed, vectors, questions, responses,
-numbers, rules) and a `ttdb-sphere` block of lanes and roles. The runtime contract:
+blocks of nine kinds (lexicon, morphology, seed, vectors, questions, responses,
+numbers, rules, constructions) and a `ttdb-sphere` block of lanes and roles. The runtime contract:
 the interpreter holds no natural-language word, reply phrase or tuning number —
 delete the grammar records and it sees only word order and has no words of its own;
 a test greps the runtime for every word the grammar lists. A second language is more
@@ -864,7 +864,8 @@ words, and later languages borrow the numbers, rules and vector algebra. §10 is
 embedding surface: the engine/page divide, the boot gate, and the calls a host makes.
 1.1 adds `asked_holds` to the reply keys the runtime emits; 1.2 the three frame numbers; 1.3 `past_form`, `past_ending` and `changed_tense`; 1.4 `modifier`, `privative` and
 `modifier_max_words`. 1.5 the parameters table (§11.6), `question_order` and
-`plural_verb_ending`.
+`plural_verb_ending`. 1.6 the ninth kind, `constructions` (TTG-RFC-0006), never borrowed,
+with `construction_max_words` and `read_by`.
 
 ---
 
@@ -896,15 +897,15 @@ narrowed.
 
 ---
 
-@LAT60LON3 | created:1789257600 | updated:1795392000 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT10LON2,depends_on@LAT10LON5,depends_on@LAT10LON7
+@LAT60LON3 | created:1789257600 | updated:1795478400 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT10LON2,depends_on@LAT10LON5,depends_on@LAT10LON7
 [ew]
 conf:210
-rev:5
+rev:6
 sal:80
-touched:1795392000
+touched:1795478400
 [/ew]
 
-**TTG-RFC-0003 — Beliefs, Vector Reasoning and Grounded Response** (Stable, 1.5)
+**TTG-RFC-0003 — Beliefs, Vector Reasoning and Grounded Response** (Stable, 1.6)
 src: TTG-RFC-0003-Beliefs-Reasoning-Response.md
 
 Beliefs are derived from episodes, never written by hand: per triple, episodes (not
@@ -918,7 +919,7 @@ chain), contested (both sayings), superseded — never printed alike; what was h
 a note, never a ground. 1.1: a question after a stance (*What do I doubt?*) names what
 the stance holds, as a note (`asked_holds`). 1.2: the frame numbers' reference values. 1.3: a saying changed by a later present one is
 not counted, and the reply names the change (`changed_tense`). 1.4: `modifier_max_words`. 1.5: questions with the verb before its subject, under
-`question_order: verb_subject`.
+`question_order: verb_subject`. 1.6: a place question asks along the verb's phrasal vectors.
 
 ---
 
@@ -974,6 +975,32 @@ from the owner's words, with optional preemption. 1.3: a hedge holds its clause,
 `tense:` line marks the past. 1.4: with `modifier: subclass`, a modified phrase is a
 subclass of its head (`black_cat is_a cat`); off by default. 1.5: a question whose verb is
 in the speaker's own form already has its subject.
+
+---
+
+@LAT60LON6 | created:1795478400 | updated:1795478400 | relates:depends_on@LAT60LON1,depends_on@LAT60LON3,depends_on@LAT60LON5
+[ew]
+conf:140
+rev:1
+sal:60
+touched:1795478400
+[/ew]
+
+**TTG-RFC-0006 — Constructions: Shapes That Carry Meaning** (Draft, 0.1)
+src: TTG-RFC-0006-Constructions.md
+
+A pattern can mean what none of its words do. A `constructions` grammar record pairs a
+shape, written in the owner's segment marks (`[X] {V} [Y] off [Z]`), with atoms written
+as a rule's are (`V X Y, go_off Y Z | caused motion`). A clause the shape covers
+exactly is read by it instead of the chain: nounish names bind phrase heads, verbish
+names the verb, other words match themselves; the most specific shape wins, ties to the
+first written; the verb's denial, tense and hold carry to every atom; a clause the
+owner marked is never read by one. The reply names it (`read_by`); a new construction
+shows up as re-readings, never as silent rewrites. Each language declares its own and
+borrows none. Unsafe, over-long (`construction_max_words`) or protected lines are
+rejected and reported, as rules are. Place questions also ask along the verb's phrasal
+vectors, so *Where did the napkin go?* reaches `go_off`. Draft: implemented in the
+reference runtime; inheritance between constructions and matching inside a clause open.
 
 ---
 

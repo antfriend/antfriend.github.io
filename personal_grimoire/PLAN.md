@@ -372,7 +372,7 @@ them, and the Spanish blind spots on the roadmap look like parameters nobody has
   from inside the chain walk; whole clauses keep the walk untouched.
 - *sneeze* joined the English seed verbs, because the morphology read *sneezed* as *sneez*.
 - TTG-RFC-0006 was drafted in this folder (0.1) with the runtime, because the store's `src:`
-  line names it. It goes upstream with the RFC step.
+  line names it, then moved upstream.
 
 **Known gaps.**
 - A shape inside a relative or a stance's clause (*I think Pixel knocked the cup off the
@@ -381,8 +381,8 @@ them, and the Spanish blind spots on the roadmap look like parameters nobody has
 - Questions aren't read by constructions (*What did Pixel sneeze off the table?*).
 - The `is_a` inheritance between constructions is still later work.
 
-Still to do: the RFC upstream (TTG-RFC-0006, and the kind lists in TTG-RFC-0001 §2–3), and the
-bAbI check.
+Upstream (toot-toot-engineering `4795447`): TTG-RFC-0006 0.1, TTG-RFC-0001 1.6 and TTG-RFC-0003
+1.6. Still to do: the bAbI check.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

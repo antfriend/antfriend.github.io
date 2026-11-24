@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.5
+**Version:** 1.6
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -18,7 +18,7 @@ read that data: the closed-class words of a language, its morphology, a seed lis
 the algebra of the relations it reasons along, its question forms, every phrase its
 librarian may say, and every constant its consolidator uses. A TTG runtime is a **generic
 interpreter** of those blocks. This RFC defines the `ttdb-grammar` and `ttdb-sphere` fenced
-blocks, the eight grammar kinds, and the runtime contract that makes the claim *the file IS
+blocks, the nine grammar kinds, and the runtime contract that makes the claim *the file IS
 the grammar* testable.
 
 ---
@@ -151,7 +151,7 @@ words fill are defined in TTG-RFC-0003 §4.
 emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `superseded_by`,
 `affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `deny_superseded`, `contest`, `unknown`,
 `exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `noted_held`, `noted_readings`,
-`reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `changed_tense`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
+`reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `changed_tense`, `read_by`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
 `objects_head`, `subjects_head`, `nothing_found`, `search_head`, `suggest`, `ingested`,
 `episode_title`, `source_typed`, `store_opened`; units `percept`, `sentence`, `term`.
 
@@ -162,10 +162,14 @@ emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `s
 `numbers`: `prior_for`, `prior_against`, `weight_partial`, `belief_conf_threshold`,
 `inherit_decay`, `max_hops`, `answer_max_items`, `search_max_items`, `suggest_eps_min`,
 `with_max_pairs`, `said_max_chars`, `rule_max_body`, `phrase_max_words`, `frame_min_episodes`,
-`frame_grammar_weight`, `frame_preempt_ratio`, `modifier_max_words`.
+`frame_grammar_weight`, `frame_preempt_ratio`, `modifier_max_words`, `construction_max_words`.
 
 `kind: rules` holds `rule:` lines; its syntax, safety conditions and derivation are defined in
 TTG-RFC-0003 §3.1.
+
+`kind: constructions` holds `construction:` lines, each a shape in the lexicon's marks paired
+with the percepts a clause of that shape says; their syntax, matching and safety conditions are
+defined in TTG-RFC-0006. A store that declares none reads as if the kind did not exist.
 
 `ttdb-sphere` (on the Home record): `thing_lon`, `vector_lon`, `term_lat` (each `lo hi`),
 `adjacent` (`lo hi` degrees), `step`, `episode_lane`, `amend_lane`, `self_lemma`.
@@ -206,6 +210,8 @@ A store MAY hold grammars for several languages.
    belongs to the first language declared in file order.
 2. **Borrowing.** A later language supplies whole kinds. A kind it does not supply is taken
    from the first language. `numbers` and `rules` are always the first language's.
+   `constructions` are never borrowed: they hold words, so a language that declares none has
+   none (TTG-RFC-0006 §5).
 3. **One algebra.** A later language MUST NOT change roles, vector flags, inverses or
    `inherits`; the runtime takes all of them from the first language. A later language's
    `vectors` record contributes only `phrase:` lines and `label: <vector> | <label>` lines.
@@ -290,5 +296,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-11-23 | 1.3: `past_ending` and `past_form` in §4, and `changed_tense` among the reply keys (TTG-RFC-0005 1.3 §3, TTG-RFC-0004 1.1 §3.7). No other change. |
 | 2026-11-23 | 1.4: `modifier` and `privative` in §3, `modifier_max_words` in §9 (TTG-RFC-0005 1.4 §3). No other change. |
 | 2026-11-23 | 1.5: §11.6, the parameters table; `question_order` in §3 and `plural_verb_ending` in §4 (the latter read by the reference runtime since TTG-RFC-0005 0.5, and listed here for the first time); `wh_place`'s optional preposition in §7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bf261e8`), from its PLAN.md phase 5. |
+| 2026-11-24 | 1.6: the ninth grammar kind, `constructions` (TTG-RFC-0006), in §1 and §9; `construction_max_words` in §9; `read_by` among the reply keys in §8; constructions are never borrowed (§11.2). Implemented by the personal_grimoire reference runtime (antfriend.github.io `ea1bc58`), from its PLAN.md phase 6. |
 
 *License: CC0*

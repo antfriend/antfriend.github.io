@@ -1,6 +1,6 @@
 # TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
 
-**Version:** 1.5
+**Version:** 1.6
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -161,6 +161,12 @@ a VECTOR begins with its verb lemma plus `phrasal_join`. Words without purchase 
 | no predicate, content words ≤ `describe_max_words`, some with purchase | describe |
 | otherwise | search |
 
+**A verb's phrasal vectors.** A place question's vectors are, in order: the verb with the
+place's preposition, the bare verb, every vector the store names that is the verb joined to a
+particle by `phrasal_join`, and the place vector. So *Where did the napkin go?* reaches
+`napkin | go_off | table`, which a construction wrote (TTG-RFC-0006 §7). This adds answers the
+store already holds and removes none.
+
 **A subject behind its verb.** Where a verb comes before its subject, the subject is the first
 noun phrase after it that is not prepositional; in a grammar whose phrases are headed first
 (`head: first`) it ends at its head, so what follows is the object: *¿Cazan los gatos ratones?*
@@ -212,7 +218,8 @@ values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
 `search_max_items 5`, `suggest_eps_min 40`, `with_max_pairs 3`, `said_max_chars 400`,
 `rule_max_body 3`, and, for what a verb takes (TTG-RFC-0005 §3, verb frames),
 `frame_min_episodes 1`, `frame_grammar_weight 1`, `frame_preempt_ratio 0`, and, for
-modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`.
+modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`, and, for constructions
+(TTG-RFC-0006 §6), `construction_max_words 8`.
 
 ---
 
@@ -247,5 +254,6 @@ modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`.
 | 2026-11-23 | 1.3: §2, a saying changed by a later present one does not count; §4, the `changed_tense` note; §6.1 narrowed (TTG-RFC-0004 1.1 §3.7). Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`). |
 | 2026-11-23 | 1.4: §5, the reference value of `modifier_max_words` (TTG-RFC-0005 1.4 §3). |
 | 2026-11-23 | 1.5: §4, the intent rows for a verb before its subject under `question_order: verb_subject` (place questions, yes/no questions), a verb in the speaker's own form, and agreement behind the verb — the last read by the reference runtime since TTG-RFC-0005 0.5, and stated here for the first time; a subject behind its verb ends at its head in a head-first grammar. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bf261e8`). |
+| 2026-11-24 | 1.6: §4, a place question also asks along the verb's phrasal vectors; §5, the reference value of `construction_max_words` (TTG-RFC-0006). Implemented by the personal_grimoire reference runtime (antfriend.github.io `ea1bc58`). |
 
 *License: CC0*
