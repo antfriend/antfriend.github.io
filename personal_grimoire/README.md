@@ -583,7 +583,8 @@ settles yes against no.
   Pixel sneezed that also went off the table, not by everything that went off it. A question
   can ask for the verb: *What did Pixel do to the napkin?* lists every verb your words relate
   them by, and *What did Pixel do to the napkin off the table?* only the one you said sent it
-  there.
+  there. *What did Pixel do?*, with no thing, lists everything Pixel does, but not what Pixel
+  is or where.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
   less than you did.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.

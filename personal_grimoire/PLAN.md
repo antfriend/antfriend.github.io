@@ -560,10 +560,23 @@ Upstream (toot-toot-engineering `28b9f86`): TTG-RFC-0006 0.8 and TTG-RFC-0003 1.
   Pixel al vaso de la mesa?*, which only the tied *movimiento causado* reads, is *tirar* and
   not *morder*.
 
-Known gaps: a verb gap without a thing (*What did Pixel do?*) isn't read; a held or derived
+Known gaps: ~~a verb gap without a thing (*What did Pixel do?*) isn't read~~ (since 2026-12-02,
+below); a held or derived
 verb doesn't answer a verb gap inside a construction, since only said sentences can share one.
 
 Upstream (toot-toot-engineering `e8f4367`): TTG-RFC-0006 0.9, TTG-RFC-0001 1.9 and TTG-RFC-0003 1.8.
+
+**A verb gap with no thing (2026-12-02): implemented in the runtime, the store's docs and the
+tests.** *What did Pixel do?* (and *¿Qué hizo Pixel?*) asks `vectorsOf` with no object: every
+vector the owner's words have Pixel as the subject of, to anything or to nothing, each listed
+with its own saying. What the subject *is* or *where* it is isn't a doing: the structural roles
+(`class_of`, `property`, `possession`), a vector a preposition names (*in*) and a declared
+phrase's vector are left out. No new key: `vectors_head` is used with no thing.
+
+Known gap: only the subject's own sayings and derived facts answer; what it inherits from its
+kind (cats chase mice, so Pixel does) doesn't.
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §7.4 and §11.4; the TTG-RFC-0003 §4 row).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

@@ -2852,14 +2852,18 @@ function objectsOf(S, s, vs){
   }
   return [...items].map(([o, g]) => ({ term:o, ...g }));
 }
-/* The vectors the owner's words relate s to o by: what did Pixel do to the napkin. */
+/* The vectors the owner's words relate s to o by: what did Pixel do to the napkin. With no o (what did Pixel
+   do?), everything s does, to anything or to nothing — but not what s is or where: the structural roles, a
+   vector a preposition names (in) and a declared phrase's vector are relations, not doings. */
 function vectorsOf(S, s, o){
-  const R = S.G.roles, items = new Map();
-  const skip = v => [R.comention, R.episode_edge, R.amend_edge].includes(v);
-  for (const e of S.beliefsBy.get(s) || []) if (e.o === o && !skip(e.v) && e.pol !== "-" && !retired(S, e) && !items.has(e.v))
-    items.set(e.v, { kind:e.pol === "?" ? "conflict" : "direct", pol:e.pol, path:[e], conf:e.conf });
-  for (const D of S.derivedBy.get(s) || []) if (D.o === o && !items.has(D.v)) items.set(D.v, proofGround(S, D));
-  return [...items].map(([v, g]) => ({ term:vlabel(S, v), cls:"vector", ...g }));
+  const G = S.G, R = G.roles, items = new Map(), any = o == null;
+  const skip = v => [R.comention, R.episode_edge, R.amend_edge].includes(v) ||
+    (any && ([R.class_of, R.property, R.possession].includes(v) || has({ w:v, cls:G.classes.get(v) || EMPTY }, "prep") || G.phrases.some(([, pv]) => pv === v)));
+  const key = (v, x) => any ? v + "|" + x : v;
+  for (const e of S.beliefsBy.get(s) || []) if ((any || e.o === o) && !skip(e.v) && e.pol !== "-" && !retired(S, e) && !items.has(key(e.v, e.o)))
+    items.set(key(e.v, e.o), { v:e.v, g:{ kind:e.pol === "?" ? "conflict" : "direct", pol:e.pol, path:[e], conf:e.conf } });
+  for (const D of S.derivedBy.get(s) || []) if ((any || D.o === o) && !skip(D.v) && !items.has(key(D.v, D.o))) items.set(key(D.v, D.o), { v:D.v, g:proofGround(S, D) });
+  return [...items.values()].map(({ v, g }) => ({ term:vlabel(S, v), cls:"vector", ...g }));
 }
 function subjectsOf(S, v, o){
   const cands = new Set();
@@ -3031,8 +3035,9 @@ function proVerbQuestion(S, toks, ctx){
   const G = S.G;
   if (!G.proVerb.size) return null;
   const r = clausePercepts(S, dropProObject(S, toks), { last:ctx.last }, null);
-  const p = r.percepts.find(x => G.proVerb.has(x.v) && x.s !== "-" && x.o !== "-" && x.s !== SLOT && x.o !== SLOT);
-  return p ? { intent:"vectorsOf", s:p.s, o:p.o } : null;
+  const p = r.percepts.find(x => G.proVerb.has(x.v) && x.s !== "-" && x.s !== SLOT && x.o !== SLOT);
+  // with no thing (what did Pixel do?), it asks for everything the subject does, to anything or to nothing
+  return p ? { intent:"vectorsOf", s:p.s, o:p.o === "-" ? null : p.o } : null;
 }
 function whQuestion(S, wh, after, ctx){
   const G = S.G, place = G.whPlace.get(wh.w);
@@ -3270,7 +3275,7 @@ function answerIn(S, text, now, source, shapes){
     // a construction's question (TTG-RFC-0006 §7): an answer answers all of its atoms
     if (it.also && it.also.length){ const sets = it.also.map(q => new Set(ask(q).map(g => g.term))); list = list.filter(g => sets.every(s => s.has(g.term))); }
     reply.head = it.intent === "objectsOf" ? say(G, "objects_head", { s:it.s, v:vlabel(S, it.vs[0]) })
-               : it.intent === "vectorsOf" ? say(G, "vectors_head", { s:it.s, o:it.o })
+               : it.intent === "vectorsOf" ? say(G, "vectors_head", { s:it.s, o:it.o == null ? "" : it.o })
                                           : say(G, "subjects_head", { v:vlabel(S, it.v), o:it.o === "-" ? "" : it.o });
     reply.items = cap(list).map(g => quoted(S, g));
     // what a stance holds is named with its saying, never grounded as said: what do I doubt?

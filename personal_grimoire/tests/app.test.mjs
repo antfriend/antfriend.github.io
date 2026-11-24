@@ -1201,6 +1201,24 @@ section("a question gap at the verb: the pro-verb stands in the verb's place (TT
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 
+section("a verb gap with no thing: everything the subject does (TTG-RFC-0006 §7.4)");
+{
+  const S = fresh();
+  let t = T0;
+  for (const s of ["Pixel sneezed the napkin off the table.", "Pixel chewed the napkin.", "Pixel is black.", "Pixel is in the garden.",
+                   "Pixel tiró el vaso de la mesa."]) PG.answer(S, s, t += 60);
+  const ask = q => PG.answer(S, q, t += 60), said = r => r.items.map(i => i.path[0].v + " " + i.path[0].o);
+  const did = ask("What did Pixel do?");
+  ok(did.intent === "vectorsOf" && ["sneeze napkin", "chew napkin", "sleep_in sun"].every(x => said(did).includes(x)),
+     "What did Pixel do? lists what Pixel does, to anything", said(did).join(", "));
+  ok(!said(did).some(x => /^(is_a|has_property|in) /.test(x)), "but not what Pixel is, nor where: those are relations, not doings");
+  ok(did.head === PG.say(S.G, "vectors_head", { s:"pixel", o:"" }), "headed with no thing");
+  ok(said(ask("What did Pixel do to the napkin?")).join(", ") === "sneeze napkin, chew napkin", "and with a thing it still narrows to that thing");
+  ok(said(ask("What do cats do?")).includes("chase mouse"), "a kind's doings are asked the same way");
+  ok(said(ask("¿Qué hizo Pixel?")).includes("tirar vaso"), "and in Spanish");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
+}
+
 section("time: exclusive vectors and supersession (TTG-RFC-0004 §2–3)");
 {
   const empty = () => { const S = fresh(); PG.startEmpty(S, T0); return PG.openStore(PG.serializeStore(S.st)); };
