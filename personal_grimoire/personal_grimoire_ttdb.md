@@ -1062,7 +1062,7 @@ rule: move_to X Y => in X Y | moving somewhere puts you there
 
 ---
 
-@LAT-85LON0 | created:1795478400 | updated:1795824000 | relates:refines@LAT30LON0,refines@LAT-80LON0
+@LAT-85LON0 | created:1795478400 | updated:1795910400 | relates:refines@LAT30LON0,refines@LAT-80LON0
 
 **Grammar — constructions**
 src: RFCs/TTG-RFC-0006-Constructions.md §2
@@ -1093,7 +1093,11 @@ be tied to the verbs it binds, by lemma: `{V=knock}` binds *knocked*, *knocks* a
 *knocking*, and nothing else (`{V=knock,push}` binds either). So *knocking off*, a child of
 *caused motion*, reads *Pixel knocked the cup off the shelf* as a knock, the cup going off the
 shelf, and the cup falling off it, while *Pixel pushed the cup off the shelf* is only caused
-motion. A tie counts as a word of the construction's own. Unlike rules, constructions hold words, so each language
+motion. A nounish name is tied the same way, `[Y=day]`, binding a phrase whose head is that
+thing, or a subclass a phrase made of it (a *black cat* is a cat; a *toy cat* is not). So an
+idiom can say what none of its words do: *I took the day off* is `self | rest | day`, not a
+taking, while *I took the cup off* is read by its words. A tie counts as a word of the
+construction's own. Unlike rules, constructions hold words, so each language
 declares its own; these are English, and Spanish declares none.
 
 ```ttdb-grammar
@@ -1103,6 +1107,7 @@ construction: [X] {V} [Y] off [Z] => go_off Y Z | caused motion | is_a acting on
 construction: [X] {V=knock} [Y] off [Z] => fall_off Y Z | knocking off | is_a caused motion
 construction: [X] {V} [Y] onto [W] => go_onto Y W | motion onto | is_a acting on a thing
 construction: [X] {V} [Y] off [Z] onto [W] => | caused motion onto | is_a caused motion | is_a motion onto
+construction: [X] {V=take} [Y=day,week,afternoon,morning] off => rest X Y | taking time off
 ```
 
 ---

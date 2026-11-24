@@ -754,9 +754,9 @@ function parseRules(G){
 /* Constructions (TTG-RFC-0006): `construction: <shape> => <atom>, <atom> | <label>`,
  * and optionally `| <class_of role> <parent label>`, once for each parent.
  * The shape is written in the owner's own marks — a nounish segment around a
- * capitalised name, a verbish one around another, which may be tied to the
- * verbs it binds by lemma (`{V=knock}`) — and the words between them as they
- * are said; a tie counts as a word of the construction's own. Each atom is `vector subject object`, as a rule's is: a
+ * capitalised name, a verbish one around another, either of which may be tied
+ * to what it binds by lemma (`{V=knock}`, `[X=cat]`) — and the words between
+ * them as they are said; a tie counts as a word of the construction's own. Each atom is `vector subject object`, as a rule's is: a
  * nounish name stands for its segment's head, a verbish name for its verb, and
  * anything else is a term or vector named outright, `-` no object; a vector
  * wearing the negation prefix denies. A construction is kept only if its shape
@@ -808,11 +808,11 @@ function parseConstructions(G){
     for (const e of arrow < 0 ? [] : words(main.slice(0, arrow))){
       const n = inside(e, "N"), v = n == null ? inside(e, "V") : null, inner = n != null ? n : v;
       if (inner == null){ if (marked(e)) bad = true; els.push({ w:e.toLowerCase() }); continue; }
-      // a verbish name may be tied to the verbs it binds, by lemma: {V=knock} is knocked, knocks, knocking;
-      // {V=knock,push} either (§2). Only a verbish name is tied; a tie with no verb in it is malformed
+      // a name may be tied to what it binds, by lemma: {V=knock} is knocked, knocks, knocking, and
+      // [X=cat] is cat or cats; {V=knock,push} either (§2). A tie with no word in it is malformed
       const at = inner.indexOf("="), name = at < 0 ? inner : inner.slice(0, at);
       const tie = at < 0 ? null : new Set(inner.slice(at + 1).toLowerCase().split(",").filter(Boolean));
-      if (!isVar(name) || binds.has(name) || marked(name) || (tie && (n != null || !tie.size))) bad = true;
+      if (!isVar(name) || binds.has(name) || marked(name) || (tie && !tie.size)) bad = true;
       binds.set(name, n != null ? "N" : "V");
       els.push(tie ? { name, cls:binds.get(name), tie } : { name, cls:binds.get(name) });
     }
@@ -1820,7 +1820,11 @@ function construe(S, T, L, idx, ctx, hold, holdBy){
     }
     const nps = nounPhrases(S, span, 0, span.length), np = nps.length === 1 && !nps[0].prep ? nps[0] : null;
     const h = np && headOf(S, np, ctx);
-    return h && h.lemma !== SLOT ? { np, h } : null;
+    if (!h || h.lemma === SLOT) return null;
+    // a tied nounish name binds its head's lemma, or a subclass a phrase made of it: a black cat is a cat,
+    // a toy cat is not (TTG-RFC-0005 §3, modifiers)
+    if (tie && !tie.has(h.lemma) && !(h.sub && !h.sub.privative && tie.has(h.sub.base))) return null;
+    return { np, h };
   };
   for (const c of G.constructions){
     if (c.abstract) continue;
@@ -1852,6 +1856,12 @@ function construe(S, T, L, idx, ctx, hold, holdBy){
       if (contested) x[DISPUTED] = true;
       out.percepts.push(x);
       if (!out.subjects && sb) out.subjects = [{ lemma:sb.h.lemma, self:sb.h.self, quant:sb.np.quant }];
+    }
+    // a subclass a bound phrase made is said, as the chain says it: black_cat is_a cat, has_property black
+    for (const b of Object.values(bnd)) if (b.h && b.h.sub){
+      const sub = b.h.sub, put = (v, o) => { const x = { s:b.h.lemma, v, o, pol:"+", q:"-" }; x[SUB] = true; out.percepts.push(x); };
+      if (!sub.privative) put(G.roles.class_of, sub.base);
+      for (const m of sub.mods) put(G.roles.property, m);
     }
     for (const b of Object.values(bnd)){
       if (b.h && b.h.form) out.forms.push(["thing", b.h.lemma, b.h.form]);

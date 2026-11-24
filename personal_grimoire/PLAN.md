@@ -464,10 +464,29 @@ tests.**
   and the cup falling off it; *pushed* is still only caused motion. The seed episodes re-read
   unchanged.
 
-Known gaps: a nounish name can't be tied (`[X=cat]`); a tie is only as good as the morphology
+Known gaps: ~~a nounish name can't be tied~~ (since 2026-11-28, below); a tie is only as good as the morphology
 (*shoved* lemmatizes to *shov*, so `{V=shove}` misses it).
 
 Upstream (toot-toot-engineering `753126b`): TTG-RFC-0006 0.5.
+
+**A nounish name tied to its things (2026-11-28): implemented in the runtime, the store and the
+tests.**
+- **Syntax:** `[X=cat]` inside the nounish marks; `[X=cat,dog]` for several things.
+- **Meaning:** the name binds only a phrase whose head lemma is one of those words (*cat*,
+  *cats*), or, under `modifier: subclass`, a subclass a phrase made of one (a *black cat* is a
+  cat; a privative *toy cat* is not).
+- **The store:** an idiom, `[X] {V=take} [Y=day,week,afternoon,morning] off => rest X Y |
+  taking time off`. *I took the day off* is `self | rest | day`, not a taking; *I took the cup
+  off* reads by its words; a denial carries. The seed episodes re-read unchanged.
+- **Fixed along the way:** under `modifier: subclass`, a clause a construction read didn't say
+  the subclass its phrase made (`black_cat is_a cat`, `has_property black`), as the chain does.
+  It does now.
+
+Known gaps: a tie names lemmas, not meanings: `[X=animal]` doesn't bind *cat* even where the
+owner has said cats are animals. Following beliefs would make a reading change whenever a
+belief does, with no re-reading to show why, so it is left open.
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §2, §3, §6, §11).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

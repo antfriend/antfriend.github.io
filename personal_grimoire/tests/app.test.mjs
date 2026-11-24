@@ -912,8 +912,8 @@ section("constructions: a shape that says what its words do not (TTG-RFC-0006)")
   const BARE = STORE.replace(LINE, "");
   const keys = ps => ps.map(pk).join(" / ");
   const S = fresh();
-  ok(S.G.constructions.length === 5 && S.G.constructionErrors.length === 0 && S.grammars[1].constructions.length === 0,
-     "five English constructions load, none rejected, and Spanish borrows none: constructions hold words");
+  ok(S.G.constructions.length === 6 && S.G.constructionErrors.length === 0 && S.grammars[1].constructions.length === 0,
+     "six English constructions load, none rejected, and Spanish borrows none: constructions hold words");
 
   const told = PG.answer(S, "Pixel sneezed the napkin off the table.", T0 + 60);
   const ps = told.episode.all;
@@ -951,7 +951,7 @@ section("constructions: a shape that says what its words do not (TTG-RFC-0006)")
   const bad = PG.openStore(STORE.replace(LINE, LINE + ["construction: [X] {V} [Y] off [Z] => V X W | unsafe", "construction: [X] {V} [Y] => X Y Y | wrong kind",
     "construction: [X] {V} [Y] a b c d e f => V X Y | long", "construction: [X] {V} [Y] off [Z] => with Y Z | protected", "construction: [X] {V} [Y] off [Z] | no arrow",
     "construction: off the => go_off X Y | no names"].join(NL) + NL));
-  ok(bad.G.constructions.length === 5 && bad.G.constructionErrors.map(e => e.why).join() === "unsafe,unsafe,length,protected,shape,shape",
+  ok(bad.G.constructions.length === 6 && bad.G.constructionErrors.map(e => e.why).join() === "unsafe,unsafe,length,protected,shape,shape",
      "unsafe, over-long, protected and malformed constructions are rejected and reported", bad.G.constructionErrors.map(e => e.why).join());
 
   // adding a construction makes old sentences read differently: re-reading lists exactly those
@@ -1005,7 +1005,7 @@ section("constructions inherit: the specific says what the general does, and ove
     "construction: [X] {V} [Y] over [Z] => go_over Y Z | over | not a parent"].join(NL) + NL));
   ok(bad.G.constructionErrors.map(e => e.why).join() === "parent,cycle,cycle,parent,unsafe,shape",
      "a missing parent, a cycle, a rejected parent, inherited names the shape doesn't bind, and a stray part are rejected", bad.G.constructionErrors.map(e => e.why).join());
-  ok(bad.G.constructions.length === 5, "and the rest still load");
+  ok(bad.G.constructions.length === 6, "and the rest still load");
 }
 
 section("constructions with several parents: what they share is said once, what they dispute is held (TTG-RFC-0006 §8)");
@@ -1096,11 +1096,35 @@ section("a verbish name tied to its verbs, by lemma (TTG-RFC-0006 §2)");
   const two = open(["construction: [X] {V=push,pull} [Y] over [Z] => go_over Y Z | pushing over"]);
   ok(["Pixel pushed the cup over the edge.", "Pixel pulled the cup over the edge."].every(s => PG.shapeOf(two, s).percepts.some(p => p.v === "go_over")) &&
      !PG.shapeOf(two, "Pixel kicked the cup over the edge.").percepts.some(p => p.v === "go_over"), "a tie may name several verbs, and binds only those");
-  const bad = open(["construction: [X=cat] {V} [Y] up [Z] => go_up Y Z | a tied thing",
-                    "construction: [X] {V=} [Y] up [Z] => go_up Y Z | an empty tie",
+  const bad = open(["construction: [X] {V=} [Y] up [Z] => go_up Y Z | an empty tie",
                     "construction: [X] {v=knock} [Y] up [Z] => go_up Y Z | a lowercase name"]);
-  ok(bad.G.constructionErrors.map(e => e.why).join() === "shape,shape,shape", "a tied nounish name, an empty tie and an uncapitalised tied name are malformed",
+  ok(bad.G.constructionErrors.map(e => e.why).join() === "shape,shape", "an empty tie and an uncapitalised tied name are malformed",
      bad.G.constructionErrors.map(e => e.why).join());
+}
+
+section("a nounish name tied to its things, by lemma (TTG-RFC-0006 §2)");
+{
+  const IDIOM = "construction: [X] {V=take} [Y=day,week,afternoon,morning] off => rest X Y | taking time off" + NL;
+  ok(STORE.includes(IDIOM), "the seed store declares an idiom with a tied verb and a tied thing");
+  const st = PG.openStore(STORE), read = s => PG.shapeOf(st, s), keys = r => r.percepts.map(pk).join(" / ");
+  const day = read("I took the day off.");
+  ok(keys(day) === "self | rest | day | + | -" && day.constructions[0].label === "taking time off", "I took the day off is a rest, not a taking", keys(day));
+  ok(keys(read("Pixel took two weeks off.")) === "pixel | rest | week | + | -", "the tie is by lemma: weeks is week");
+  ok(!read("I took the cup off.").constructions.length, "a thing the tie does not name reads by its words", keys(read("I took the cup off.")));
+  ok(keys(read("I didn't take the afternoon off.")) === "self | rest | afternoon | - | -", "and a denied idiom is denied");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
+
+  // with modifier: subclass, a subclass a phrase made is its head's thing; a privative one is not
+  const CM = "construction: [X] {V} [Y] off [Z] => go_off Y Z | caused motion | is_a acting on a thing" + NL;
+  const sub = PG.openStore(STORE.replace(/^modifier: drop$/m, "modifier: subclass").replace(CM, CM + "construction: [X=cat] {V} [Y] off [Z] => tip_off X Y | a cat tipping | is_a caused motion" + NL));
+  const black = PG.shapeOf(sub, "The black cat pushed the cup off the shelf.");
+  ok(black.constructions[0] && black.constructions[0].label === "a cat tipping" && black.percepts.some(p => p.s === "black_cat" && p.v === "tip_off"),
+     "under modifier: subclass a black cat is a cat to a tie", keys(black));
+  const toy = PG.shapeOf(sub, "The toy cat pushed the cup off the shelf.");
+  ok(toy.constructions[0] && toy.constructions[0].label === "caused motion", "and a toy cat is not", keys(toy));
+  ok(black.percepts.some(p => pk(p) === "black_cat | is_a | cat | + | -") && black.percepts.some(p => pk(p) === "black_cat | has_property | black | + | -") &&
+     !toy.percepts.some(p => p.s === "toy_cat" && p.v === "is_a"), "and a clause a construction read says the subclass its phrase made, as the chain does");
+  ok(PG.shapeOf(sub, "The dog pushed the cup off the shelf.").constructions[0].label === "caused motion", "another thing falls to the parent");
 }
 
 section("time: exclusive vectors and supersession (TTG-RFC-0004 §2–3)");
