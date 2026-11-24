@@ -752,7 +752,7 @@ function parseRules(G){
   }
 }
 /* Constructions (TTG-RFC-0006): `construction: <shape> => <atom>, <atom> | <label>`,
- * and optionally `| <class_of role> <parent label>`.
+ * and optionally `| <class_of role> <parent label>`, once for each parent.
  * The shape is written in the owner's own marks — a nounish segment around a
  * capitalised name, a verbish one around another — and the words between them
  * as they are said. Each atom is `vector subject object`, as a rule's is: a
@@ -763,8 +763,10 @@ function parseRules(G){
  * uses it for, it says no structural edge, and its shape is at most
  * construction_max_words long.
  *
- * Inheritance (§8): a construction that names a parent says what its parent
- * says, and its ancestors, as well as its own atoms. Where its own atom has the
+ * Inheritance (§8): a construction that names parents says what they say, and
+ * their ancestors, as well as its own atoms (it may have none of its own);
+ * what two parents say alike it says once, and what they disagree on, unless
+ * it says it itself, is contested: held, never believed. Where its own atom has the
  * vector, subject and object of an inherited one, its own stands, with its own
  * polarity: the specific overrides the general, as a penguin overrides a bird.
  * A parent that is missing or rejected, a cycle, or an inherited atom naming
@@ -796,37 +798,55 @@ function parseConstructions(G){
       binds.set(name, n != null ? "N" : "V");
       els.push({ name, cls:binds.get(name) });
     }
-    const atoms = arrow < 0 ? [] : main.slice(arrow + 2).split(",").map(x => atomOf(words(x)));
-    // after the label, at most one part naming the parent: the class_of role, then the parent's label
+    // after the label, a part for each parent: the class_of role, then the parent's label
     const label = (rest[0] || "").trim(), more = rest.slice(1).map(x => words(x));
-    const isA = more.length === 1 && more[0].length > 1 && more[0][0] === R.class_of ? more[0].slice(1).join(" ") : null;
-    if (more.length && !isA) bad = true;
-    const why = bad || !binds.size || !atoms.length || atoms.some(a => !a) || !label ? "shape"
+    const isA = more.map(m => m.length > 1 && m[0] === R.class_of ? m.slice(1).join(" ") : null);
+    if (isA.some(x => x === null) || new Set(isA).size !== isA.length) bad = true;
+    // a construction with parents may add nothing of its own: it is what they are, together
+    const said = arrow < 0 ? "" : main.slice(arrow + 2).trim();
+    const atoms = !said && isA.length ? [] : said.split(",").map(x => atomOf(words(x)));
+    const why = bad || arrow < 0 || !binds.size || !(atoms.length || isA.length) || atoms.some(a => !a) || !label ? "shape"
       : isFinite(max) && els.length > max ? "length"
       : atoms.some(a => [R.comention, R.episode_edge].includes(a.v)) ? "protected"
       : unsafe(atoms, binds) ? "unsafe" : "";
-    parsed.push({ els, atoms, binds, label, parent:isA, line, own:els.filter(e => !e.name).length, why });
+    parsed.push({ els, atoms, binds, label, isA, line, own:els.filter(e => !e.name).length, why, state:0 });
   }
-  // inheritance: each construction's whole meaning, its ancestors' first and its own over them
+  // inheritance: each construction's whole meaning, its ancestors' first and its own over them.
+  // Parents that say one atom alike say it once; parents that disagree on it, where the child
+  // does not say it itself, leave it contested: held, never believed (§8)
   const byLabel = new Map();
   for (const c of parsed) if (!c.why && !byLabel.has(c.label)) byLabel.set(c.label, c);
   const key = a => [a.v, a.s, a.o].join(" ");
-  const resolve = (c, seen) => {
-    if (c.full || c.why) return;
-    if (!c.parent){ c.full = c.atoms; c.ancestors = []; return; }
-    const p = byLabel.get(c.parent);
-    if (!p || p === c || seen.has(p)){ c.why = !p ? "parent" : "cycle"; return; }
-    seen.add(c); resolve(p, seen);
-    if (p.why){ c.why = p.why === "cycle" ? "cycle" : "parent"; return; }
-    const own = new Set(c.atoms.map(key));
-    const full = p.full.filter(a => !own.has(key(a))).concat(c.atoms);
-    if (unsafe(full, c.binds)){ c.why = "unsafe"; return; }
-    c.full = full; c.ancestors = [p.label, ...p.ancestors];
+  const resolve = c => {
+    if (c.state === 2) return;
+    if (c.state === 1){ c.why = "cycle"; return; }
+    c.state = 1;
+    const ps = c.isA.map(l => byLabel.get(l));
+    if (!c.why && ps.some(p => !p)) c.why = "parent";
+    if (!c.why){
+      for (const p of ps) resolve(p);
+      if (c.why || ps.some(p => p === c || p.state === 1 || p.why === "cycle")) c.why = "cycle";
+      else if (ps.some(p => p.why)) c.why = "parent";
+    }
+    if (!c.why){
+      const from = new Map();
+      for (const p of ps) for (const a of p.full){
+        const k = key(a), had = from.get(k);
+        if (!had) from.set(k, a);
+        else if (had.neg !== a.neg || !!had.contested !== !!a.contested) from.set(k, { ...had, contested:true });
+      }
+      const own = new Set(c.atoms.map(key));
+      const full = [...from.values()].filter(a => !own.has(key(a))).concat(c.atoms);
+      if (unsafe(full, c.binds)) c.why = "unsafe";
+      else { c.full = full; c.ancestors = [...new Set(ps.map(p => p.label).concat(ps.flatMap(p => p.ancestors)))]; }
+    }
+    c.state = 2;
   };
-  for (const c of parsed) resolve(c, new Set());
+  for (const c of parsed) resolve(c);
   for (const c of parsed){
     if (c.why) G.constructionErrors.push({ line:c.line, why:c.why });
-    else G.constructions.push({ els:c.els, atoms:c.full, label:c.label, parents:c.ancestors, line:c.line, own:c.own });
+    else G.constructions.push({ els:c.els, atoms:c.full, label:c.label, parents:c.ancestors, line:c.line, own:c.own,
+                                contested:c.full.some(a => a.contested) });
   }
   G.constructions.sort((a, z) => z.own - a.own);
   // and a construction before every ancestor, wherever its own words put it
@@ -1139,7 +1159,7 @@ const HELD = "?", HELD_NO = "?-", isHeld = p => p.pol === HELD || p.pol === HELD
 // and whether its object, or its lack of one, is the grammar's reading of a relative's gap
 // and whether it was said in the past tense
 // and whether it only names a subclass a phrase made (black_cat is_a cat), which a question never checks
-const RUNS = Symbol(), BY = Symbol(), GAP = Symbol(), PAST = Symbol(), SUB = Symbol();
+const RUNS = Symbol(), BY = Symbol(), GAP = Symbol(), PAST = Symbol(), SUB = Symbol(), DISPUTED = Symbol();
 /* Where the grammar can read a sentence two ways, the two readings are named
  * a and b at the first such place, c and d at the second, and so on; what
  * only one reading says carries its letter, and is held. The owner may say
@@ -1794,16 +1814,18 @@ function construe(S, T, L, idx, ctx, hold, holdBy){
     if (!go(0, 0)) continue;
     const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], subjects:null, open:false, openBy:null, construction:c };
     const verbs = Object.values(bnd).filter(b => b.P), neg = verbs.some(b => b.P.neg), past = verbs.some(b => b.P.past);
-    for (const { v, s, o, neg:denies } of c.atoms){
+    for (const { v, s, o, neg:denies, contested } of c.atoms){
       const sb = isVar(s) ? bnd[s] : null, ob = isVar(o) ? bnd[o] : null;
       // an atom the construction states as a denial is denied; a clause that denies it again says neither
       // way (didn't push it almost off is not that it went off), so the denial is held, never believed
       const clauseNo = neg || !!(sb && (sb.np.none || sb.np.neg)) || !!(ob && ob.np.neg);
-      const no = clauseNo || denies, held = hold || (clauseNo && denies);
+      const no = clauseNo || denies, held = hold || (clauseNo && denies) || !!contested;
       const x = { s:sb ? sb.h.lemma : s, v:isVar(v) ? bnd[v].P.head : v, o:ob ? ob.h.lemma : o,
                   pol:held ? (no ? HELD_NO : HELD) : no ? "-" : "+", q:sb ? sb.np.quant : "-" };
       if (hold && holdBy) x[BY] = holdBy;
       if (past) x[PAST] = true;
+      // held because the construction's parents disagree, not because the owner hedged: its own note says so
+      if (contested) x[DISPUTED] = true;
       out.percepts.push(x);
       if (!out.subjects && sb) out.subjects = [{ lemma:sb.h.lemma, self:sb.h.self, quant:sb.np.quant }];
     }
@@ -3161,10 +3183,12 @@ function writeGrounds(S, reply, w, epId){
   for (const c of w.readBy || []){
     const parents = c.parents.join(", ");
     reply.notes.push(parents && G.say.read_by_is_a != null ? say(G, "read_by_is_a", { label:c.label, parents }) : say(G, "read_by", { label:c.label }));
+    // what its parents disagree on is held, and the reply says why
+    if (c.contested) reply.notes.push(say(G, "construction_contested", { label:c.label, parents:c.parents.join(", ") }));
   }
   // what was said as a choice or under a stance is named, never grounded as said; what the grammar read
   // two ways is named as the two readings of one saying
-  const plain = w.held.filter(p => !p.reading), two = w.held.filter(p => p.reading);
+  const plain = w.held.filter(p => !p.reading && !p[DISPUTED]), two = w.held.filter(p => p.reading);
   if (plain.length) reply.notes.push(say(G, "noted_held", { triples:plain.map(p => tripleText(S, p)).join("; ") }));
   if (two.length) reply.notes.push(say(G, "noted_readings", { readings:readingsText(S, two) }));
   for (const c of w.conflicts){

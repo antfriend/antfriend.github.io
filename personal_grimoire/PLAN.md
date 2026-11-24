@@ -406,11 +406,33 @@ specificity logic the reasoner uses for beliefs". The logic is the same (specifi
 general, on the same vector and things), but it runs when the store's grammar loads, not
 through the reasoner, because a construction's atoms are known before any sentence is read.
 
-Known gaps: one parent only (CxG allows several); a verbish name can't be tied to one word,
+Known gaps: ~~one parent only~~ (several since 2026-11-25, below); a verbish name can't be tied to one word,
 so a child whose verb is a literal (*knocked*) can't inherit a parent's `V X Y`; an abstract
 construction with no shape of its own can't be declared.
 
 Upstream (toot-toot-engineering `13b9114`): TTG-RFC-0006 0.2 §8 and TTG-RFC-0001 1.7.
+
+**Several parents (2026-11-25): implemented in the runtime, the store and the tests.**
+- **Syntax:** one `| is_a <label>` part per parent; a parent named twice is malformed. A
+  construction with parents may add no atoms of its own (`=> | <label> | is_a A | is_a B`).
+- **Meaning:** a child says every parent's atoms, recursively. An atom two parents say alike
+  is said once, so a diamond doesn't double a percept. An atom they disagree on (one says it,
+  one denies it) is **contested** unless the child says it itself: held (`?`), never believed,
+  the way the reasoner keeps a contested belief. A new reply key, `construction_contested`,
+  names the parents that disagree; the contested atom is kept out of the generic `noted_held`
+  note, which would say the owner hedged.
+- **Ancestors** are listed nearest first, without repeats; a child is tried before all of
+  them. Cycles are found through any parent, and a missing or rejected parent among several
+  still rejects the child.
+- **The store:** `motion onto` (`[X] {V} [Y] onto [W] => V X Y, go_onto Y W`) is new, and
+  `caused motion onto` is now `caused motion` and `motion onto` together, with no atoms of its
+  own. It reads exactly as before; the seed episodes re-read unchanged.
+
+Known gaps: a verbish name still can't be tied to one word, and an abstract construction, with
+no shape of its own, still can't be declared.
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §2, §6 and §8; `construction_contested` in
+TTG-RFC-0001 §8).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

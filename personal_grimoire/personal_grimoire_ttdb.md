@@ -217,7 +217,7 @@ key left out takes the value in *absent*. The test suite holds this table to the
 
 ---
 
-@LAT30LON0 | created:1789257600 | updated:1795564800 | relates:refines@LAT0LON0,depends_on@LAT20LON0,derived_from@LAT98LON1
+@LAT30LON0 | created:1789257600 | updated:1795651200 | relates:refines@LAT0LON0,depends_on@LAT20LON0,derived_from@LAT98LON1
 
 **Blueprint 3 — Percept: the unit of what was said**
 src: RFCs/TTG-RFC-0002-Semantic-Percepts.md §4
@@ -291,8 +291,8 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <
   instead of the chain (TTG-RFC-0006): `[X] {V} [Y] off [Z] => V X Y, go_off Y Z` reads *Pixel
   sneezed the napkin off the table* as a sneeze and the napkin going off the table. The shape
   covers the whole clause, the most specific shape wins, and marks the owner writes overrule
-  it. A construction can inherit from another (`| is_a caused motion`), saying all its parent
-  says and overriding what it says itself. See [constructions](lat-85lon0).
+  it. A construction can inherit from others (`| is_a caused motion`, once per parent), saying
+  all its parents say and overriding what it says itself; what its parents disagree on is held. See [constructions](lat-85lon0).
 - **Two readings** → where the grammar can read a sentence two ways, what both say is said and
   what only one says is held, **named** in a seventh column: `a` and `b` at the first such
   place, `c` and `d` at the next. *The men that saw the cats eat cheese* says `man see cat`
@@ -944,7 +944,7 @@ describe_max_words: 2
 
 ---
 
-@LAT-60LON0 | created:1789257600 | updated:1795564800 | relates:refines@LAT70LON0
+@LAT-60LON0 | created:1789257600 | updated:1795651200 | relates:refines@LAT70LON0
 
 **Grammar — replies (English)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §8
@@ -979,6 +979,7 @@ asked_holds: {s} {v}: {triples} — kept, not believed, from “{text}” ({ep})
 changed_tense: You said “{then}” ({ep}), and since then “{now}” ({ep_now}) — a change in your words, not a contradiction.
 read_by: Read by a construction: {label}. Its shape is in the episode, if you read it otherwise.
 read_by_is_a: Read by a construction: {label}, a kind of {parents}. Its shape is in the episode, if you read it otherwise.
+construction_contested: {parents} disagree about part of what {label} says, so that part is kept, not believed.
 amended: Read again as you marked it: {percepts}.
 amend_title: Amendment {n}
 contradicts: This disagrees with something you said before.
@@ -1061,7 +1062,7 @@ rule: move_to X Y => in X Y | moving somewhere puts you there
 
 ---
 
-@LAT-85LON0 | created:1795478400 | updated:1795564800 | relates:refines@LAT30LON0,refines@LAT-80LON0
+@LAT-85LON0 | created:1795478400 | updated:1795651200 | relates:refines@LAT30LON0,refines@LAT-80LON0
 
 **Grammar — constructions**
 src: RFCs/TTG-RFC-0006-Constructions.md §2
@@ -1079,15 +1080,19 @@ construction's. A construction may name a parent after its label (`| is_a caused
 it then says everything its parent says, and its parent's parents, as well as its own atoms,
 and an atom of its own with the same vector, subject and object overrides the inherited one —
 a `not_` atom denies it — as a penguin overrides a bird. A construction is tried before any
-of its ancestors. *Pixel knocked the cup off the shelf onto the floor* is a knock, the cup going off
-the shelf, and the cup going onto the floor. A child's shape binds every name its inherited
-atoms use. Unlike rules, constructions hold words, so each language
+of its ancestors. A construction may have several parents, one `| is_a` part each, and need add
+nothing of its own: *caused motion onto* is *caused motion* and *motion onto* together, so
+*Pixel knocked the cup off the shelf onto the floor* is a knock, the cup going off the shelf,
+and the cup going onto the floor — the knock said once, though both parents say it. Where
+parents disagree on an atom and the child does not settle it, the atom is held, never
+believed, and the reply says so. A child's shape binds every name its inherited atoms use. Unlike rules, constructions hold words, so each language
 declares its own; these are English, and Spanish declares none.
 
 ```ttdb-grammar
 kind: constructions
 construction: [X] {V} [Y] off [Z] => V X Y, go_off Y Z | caused motion
-construction: [X] {V} [Y] off [Z] onto [W] => go_onto Y W | caused motion onto | is_a caused motion
+construction: [X] {V} [Y] onto [W] => V X Y, go_onto Y W | motion onto
+construction: [X] {V} [Y] off [Z] onto [W] => | caused motion onto | is_a caused motion | is_a motion onto
 ```
 
 ---
@@ -1283,7 +1288,7 @@ describe_max_words: 2
 
 ---
 
-@LAT-60LON180 | created:1789257600 | updated:1795564800 | relates:translates@LAT-60LON0
+@LAT-60LON180 | created:1789257600 | updated:1795651200 | relates:translates@LAT-60LON0
 
 **Gramática — respuestas (español)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §8
@@ -1317,6 +1322,7 @@ asked_holds: {s} {v}: {triples} — guardado, no creído, de “{text}” ({ep})
 changed_tense: Dijiste “{then}” ({ep}), y después “{now}” ({ep_now}) — un cambio en tus palabras, no una contradicción.
 read_by: Leído por una construcción: {label}. Su forma está en el episodio, si lo lees de otro modo.
 read_by_is_a: Leído por una construcción: {label}, una clase de {parents}. Su forma está en el episodio, si lo lees de otro modo.
+construction_contested: {parents} no coinciden en parte de lo que dice {label}, así que esa parte se guarda, no se cree.
 amended: Leído de nuevo como lo marcaste: {percepts}.
 amend_title: Enmienda {n}
 contradicts: Esto contradice algo que dijiste antes.

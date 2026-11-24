@@ -912,8 +912,8 @@ section("constructions: a shape that says what its words do not (TTG-RFC-0006)")
   const BARE = STORE.replace(LINE, "");
   const keys = ps => ps.map(pk).join(" / ");
   const S = fresh();
-  ok(S.G.constructions.length === 2 && S.G.constructionErrors.length === 0 && S.grammars[1].constructions.length === 0,
-     "two English constructions load, none rejected, and Spanish borrows none: constructions hold words");
+  ok(S.G.constructions.length === 3 && S.G.constructionErrors.length === 0 && S.grammars[1].constructions.length === 0,
+     "three English constructions load, none rejected, and Spanish borrows none: constructions hold words");
 
   const told = PG.answer(S, "Pixel sneezed the napkin off the table.", T0 + 60);
   const ps = told.episode.all;
@@ -951,7 +951,7 @@ section("constructions: a shape that says what its words do not (TTG-RFC-0006)")
   const bad = PG.openStore(STORE.replace(LINE, LINE + ["construction: [X] {V} [Y] off [Z] => V X W | unsafe", "construction: [X] {V} [Y] => X Y Y | wrong kind",
     "construction: [X] {V} [Y] a b c d e f => V X Y | long", "construction: [X] {V} [Y] off [Z] => with Y Z | protected", "construction: [X] {V} [Y] off [Z] | no arrow",
     "construction: off the => go_off X Y | no names"].join(NL) + NL));
-  ok(bad.G.constructions.length === 2 && bad.G.constructionErrors.map(e => e.why).join() === "unsafe,unsafe,length,protected,shape,shape",
+  ok(bad.G.constructions.length === 3 && bad.G.constructionErrors.map(e => e.why).join() === "unsafe,unsafe,length,protected,shape,shape",
      "unsafe, over-long, protected and malformed constructions are rejected and reported", bad.G.constructionErrors.map(e => e.why).join());
 
   // adding a construction makes old sentences read differently: re-reading lists exactly those
@@ -968,15 +968,15 @@ section("constructions: a shape that says what its words do not (TTG-RFC-0006)")
 section("constructions inherit: the specific says what the general does, and overrides it (TTG-RFC-0006 §8)");
 {
   const LINE = "construction: [X] {V} [Y] off [Z] => V X Y, go_off Y Z | caused motion" + NL;
-  const CHILD = "construction: [X] {V} [Y] off [Z] onto [W] => go_onto Y W | caused motion onto | is_a caused motion" + NL;
-  ok(STORE.includes(CHILD), "the seed store declares a construction that inherits from caused motion");
+  const CHILD = "construction: [X] {V} [Y] off [Z] onto [W] => | caused motion onto | is_a caused motion | is_a motion onto" + NL;
+  ok(STORE.includes(CHILD), "the seed store declares a construction that inherits from caused motion and motion onto");
   const S = fresh(), cs = S.G.constructions, child = cs.find(c => c.label === "caused motion onto");
-  ok(child && child.parents.join() === "caused motion" && cs.indexOf(child) < cs.findIndex(c => c.label === "caused motion"),
-     "the child knows its ancestors and is tried before them");
+  ok(child && child.parents.join() === "caused motion,motion onto" && ["caused motion", "motion onto"].every(l => cs.indexOf(child) < cs.findIndex(c => c.label === l)),
+     "the child knows its ancestors and is tried before them", child && child.parents.join());
   const told = PG.answer(S, "Pixel knocked the cup off the shelf onto the floor.", T0 + 60);
   ok(told.episode.all.map(pk).join(" / ") === "pixel | knock | cup | + | - / cup | go_off | shelf | + | - / cup | go_onto | floor | + | -",
      "it says what its parent says, then its own", told.episode.all.map(pk).join(" / "));
-  ok(told.notes.some(n => n.includes("caused motion onto") && n.includes(", a kind of caused motion")), "the reply names it and what it is a kind of", told.notes.join(" | "));
+  ok(told.notes.some(n => n.includes("caused motion onto, a kind of caused motion, motion onto")), "the reply names it and what it is a kind of", told.notes.join(" | "));
   ok(PG.answer(S, "Where did the cup go?", T0 + 120).items.map(i => i.term).join(" ") === "shelf floor", "and Where did the cup go? finds both places");
   ok(!PG.shapeOf(PG.openStore(STORE), "Pixel knocked the cup off the shelf.").percepts.some(p => p.v === "go_onto"), "a clause only the parent covers is the parent's");
 
@@ -989,7 +989,7 @@ section("constructions inherit: the specific says what the general does, and ove
   // a grandchild says all three
   const twice = PG.openStore(STORE.replace(CHILD, CHILD + "construction: [X] {V} [Y] off [Z] onto [W] twice => again Y W | twice | is_a caused motion onto" + NL));
   const tw = twice.G.constructions.find(c => c.label === "twice");
-  ok(tw && tw.parents.join(" < ") === "caused motion onto < caused motion" && PG.shapeOf(twice, "Pixel knocked the cup off the shelf onto the floor twice.").percepts.length === 4,
+  ok(tw && tw.parents.join(", ") === "caused motion onto, caused motion, motion onto" && PG.shapeOf(twice, "Pixel knocked the cup off the shelf onto the floor twice.").percepts.length === 4,
      "inheritance goes up the chain: a grandchild says all its ancestors do");
   // a child is tried before its parent even with fewer words of its own
   const few = PG.openStore(STORE.replace(LINE, "construction: [X] {V} [Y] [Z] => V X Y | bare | is_a two off" + NL + LINE + "construction: [X] {V} [Y] off off [Z] => V X Y | two off" + NL));
@@ -1005,7 +1005,42 @@ section("constructions inherit: the specific says what the general does, and ove
     "construction: [X] {V} [Y] over [Z] => go_over Y Z | over | not a parent"].join(NL) + NL));
   ok(bad.G.constructionErrors.map(e => e.why).join() === "parent,cycle,cycle,parent,unsafe,shape",
      "a missing parent, a cycle, a rejected parent, inherited names the shape doesn't bind, and a stray part are rejected", bad.G.constructionErrors.map(e => e.why).join());
-  ok(bad.G.constructions.length === 2, "and the rest still load");
+  ok(bad.G.constructions.length === 3, "and the rest still load");
+}
+
+section("constructions with several parents: what they share is said once, what they dispute is held (TTG-RFC-0006 §8)");
+{
+  const LINE = "construction: [X] {V} [Y] off [Z] => V X Y, go_off Y Z | caused motion" + NL;
+  const S = fresh();
+  const told = PG.answer(S, "Pixel knocked the cup off the shelf onto the floor.", T0 + 60);
+  ok(told.episode.all.filter(p => p.v === "knock").length === 1 && told.episode.all.length === 3,
+     "a child of two parents that both say the verb's own percept says it once", told.episode.all.map(pk).join(" / "));
+  ok(PG.shapeOf(PG.openStore(STORE), "Pixel pushed the cup onto the table.").percepts.map(pk).join(" / ") === "pixel | push | cup | + | - / cup | go_onto | table | + | -",
+     "each parent still reads the clauses it alone covers");
+
+  const PARENTS = ["construction: [X] {V} [Y] past [Z] => V X Y, go_past Y Z | passing",
+                   "construction: [X] {V} [Y] short of [Z] => V X Y, not_go_past Y Z | stopping short"];
+  const open = lines => PG.openStore(STORE.replace(LINE, LINE + PARENTS.concat(lines).join(NL) + NL));
+  const dispute = open(["construction: [X] {V} [Y] nearly past [Z] => | nearly past | is_a passing | is_a stopping short"]);
+  const np = dispute.G.constructions.find(c => c.label === "nearly past");
+  const ps = PG.shapeOf(dispute, "Pixel pushed the cup nearly past the bowl.").percepts;
+  ok(np && np.contested && ps.map(pk).join(" / ") === "pixel | push | cup | + | - / cup | go_past | bowl | ? | -",
+     "where parents disagree and the child does not say, the atom is held: said neither way", ps.map(pk).join(" / "));
+  const r = PG.answer(dispute, "Pixel pushed the cup nearly past the bowl.", T0 + 60);
+  ok(r.notes.some(n => n.includes("passing, stopping short disagree") && n.includes("nearly past")) && !r.notes.some(n => n.includes(PG.say(dispute.G, "noted_held").split("{")[0])),
+     "and the reply says which parents disagree, not that the owner said it as a choice", r.notes.join(" | "));
+  const settled = open(["construction: [X] {V} [Y] nearly past [Z] => not_go_past Y Z | nearly past | is_a passing | is_a stopping short"]);
+  ok(PG.shapeOf(settled, "Pixel pushed the cup nearly past the bowl.").percepts.find(p => p.v === "go_past").pol === "-" && !settled.G.constructions.find(c => c.label === "nearly past").contested,
+     "a child that says the disputed atom itself settles it");
+
+  const bad = open(["construction: [X] {V} [Y] near [Z] => | twice named | is_a passing | is_a passing",
+                    "construction: [X] {V} [Y] by [Z] => | half there | is_a passing | is_a nowhere",
+                    "construction: [X] {V} [Y] from [Z] => go_from Y Z | loop a | is_a passing | is_a loop b",
+                    "construction: [X] {V} [Y] to [Z] => go_to Y Z | loop b | is_a loop a",
+                    "construction: [X] {V} [Y] at [Z] => | nothing | "]);
+  ok(bad.G.constructionErrors.map(e => e.why).join() === "shape,parent,cycle,cycle,shape",
+     "a parent named twice, one parent missing of two, a cycle through a second parent, and an empty construction with no parent are rejected", bad.G.constructionErrors.map(e => e.why).join());
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes still read the same");
 }
 
 section("time: exclusive vectors and supersession (TTG-RFC-0004 §2–3)");
