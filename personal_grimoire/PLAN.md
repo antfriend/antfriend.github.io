@@ -410,8 +410,7 @@ Known gaps: one parent only (CxG allows several); a verbish name can't be tied t
 so a child whose verb is a literal (*knocked*) can't inherit a parent's `V X Y`; an abstract
 construction with no shape of its own can't be declared.
 
-Still to do: the RFC text upstream (TTG-RFC-0006 §8, inheritance; the `read_by_is_a` key in
-TTG-RFC-0001 §8).
+Upstream (toot-toot-engineering `13b9114`): TTG-RFC-0006 0.2 §8 and TTG-RFC-0001 1.7.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
