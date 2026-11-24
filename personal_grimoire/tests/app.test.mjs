@@ -1240,6 +1240,25 @@ section("a verb gap inherits: what the subject does by being a kind of something
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 
+section("a preposition before the wh-word: carried to the end of the statement, its thing is the gap (TTG-RFC-0006 §7)");
+{
+  const S = fresh();
+  let t = T0;
+  for (const s of ["Pixel tiró el vaso de la mesa.", "Pixel tiró la pelota.", "Pixel sneezed the napkin off the table.",
+                   "The dog dropped the bone off the chair.", "Pixel duerme en la cama."]) PG.answer(S, s, t += 60);
+  const ask = q => PG.answer(S, q, t += 60), terms = r => r.items.map(i => i.term).join(" ");
+  const de = ask("¿De dónde tiró Pixel el vaso?");
+  ok(terms(de) === "mesa" && de.intent === "objectsOf", "¿De dónde tiró Pixel el vaso? is Pixel tiró el vaso de ?, which movimiento causado reads: the table", terms(de));
+  ok(terms(ask("¿De qué tiró Pixel el vaso?")) === "mesa", "whatever the wh-word: de qué asks the same");
+  ok(!ask("¿De dónde tiró Pixel la pelota?").items.length, "the ball left nothing, so nothing answers");
+  ok(terms(ask("Off what did Pixel sneeze the napkin?")) === "table" && terms(ask("Off what did the dog drop the bone?")) === "chair",
+     "in English too, after the moved auxiliary: off what did Pixel sneeze the napkin");
+  ok(!ask("Off what did Pixel sneeze the bone?").items.length, "and every atom still holds: Pixel never sneezed the bone");
+  ok(terms(ask("¿En qué duerme Pixel?")) === "cama", "with no construction, the preposition is read as the statement's words are: Pixel duerme en ?");
+  ok(terms(ask("¿Dónde duerme Pixel?")).split(" ").includes("cama"), "and a place question with no preposition is read as before");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
+}
+
 section("time: exclusive vectors and supersession (TTG-RFC-0004 §2–3)");
 {
   const empty = () => { const S = fresh(); PG.startEmpty(S, T0); return PG.openStore(PG.serializeStore(S.st)); };

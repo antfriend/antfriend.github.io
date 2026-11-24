@@ -1065,7 +1065,7 @@ rule: move_to X Y => in X Y | moving somewhere puts you there
 
 ---
 
-@LAT-85LON0 | created:1795478400 | updated:1796342400 | relates:refines@LAT30LON0,refines@LAT-80LON0
+@LAT-85LON0 | created:1795478400 | updated:1796428800 | relates:refines@LAT30LON0,refines@LAT-80LON0
 
 **Grammar — constructions**
 src: RFCs/TTG-RFC-0006-Constructions.md §2
@@ -1112,7 +1112,9 @@ Pixel do to the napkin?* asks for every verb your words relate Pixel to the napk
 With no thing, *What did Pixel do?* asks for everything Pixel does, to anything or to nothing,
 but not what Pixel is or where: the roles, a preposition's vector and a phrase's are relations.
 What Pixel does by being a cat is answered too, as an inference through `is_a`, and the
-nearest kind's word stands: Pingu, a penguin, swims and does not fly.
+nearest kind's word stands: Pingu, a penguin, swims and does not fly. A preposition before
+the wh-word goes to the end of the statement, and the gap is its thing: *Off what did Pixel
+sneeze the napkin?* is the table.
 
 ```ttdb-grammar
 kind: constructions
@@ -1391,7 +1393,7 @@ unit_term: término | términos
 ```
 
 ---
-@LAT-85LON180 | created:1795996800 | updated:1795996800 | relates:translates@LAT-85LON0
+@LAT-85LON180 | created:1795996800 | updated:1796428800 | relates:translates@LAT-85LON0
 
 **Gramática — construcciones (español)**
 src: RFCs/TTG-RFC-0006-Constructions.md §5
@@ -1401,7 +1403,9 @@ both *off* and *of*: *el vaso de la mesa* is the table's glass after *vio* and t
 the table after *tiró*. So the shape is tied to the verbs that move a thing: *Pixel tiró el
 vaso de la mesa* says the throw and `vaso | salir_de | mesa`, while *Pixel vio el vaso de la
 mesa* is read by its words. Like English, the motion inherits the verb's own percept from an
-abstract root.
+abstract root. A question's preposition before its wh-word goes back where the statement has
+it: *¿De dónde tiró Pixel el vaso?* is *Pixel tiró el vaso de* with nothing after *de*, so this
+shape reads it and asks for what the glass left: the table.
 
 ```ttdb-grammar
 kind: constructions

@@ -3052,11 +3052,21 @@ function proVerbQuestion(S, toks, ctx){
   // with no thing (what did Pixel do?), it asks for everything the subject does, to anything or to nothing
   return p ? { intent:"vectorsOf", s:p.s, o:p.o === "-" ? null : p.o } : null;
 }
-function whQuestion(S, wh, after, ctx){
+function whQuestion(S, wh, after, ctx, fronted){
   const G = S.G, place = G.whPlace.get(wh.w);
   if (!G.whThing.has(wh.w) && !place) return null;
   const li = skipSoft(after, 0), lead = after[li];
   const rest = after.slice(li + 1);
+  // with its preposition fronted, the statement ends on it, whatever the wh-word: a construction whose shape
+  // leaves the name after it empty reads it, and otherwise the preposition is read as the statement's words are
+  const atFront = said => { const s = said.concat([fronted]); return construeQuestion(S, s, ctx) || slotQuery(S, s.concat([synth(SLOT)]), ctx); };
+  if (fronted){
+    if (has(lead, "aux") || has(lead, "modal")) return atFront(moveCue(S, rest, lead, false));
+    const np = isVerbish(S, lead) && nounPhrases(S, rest, 0, rest.length)[0];
+    if (G.questionOrder !== "verb_subject" || !np || np.prep) return null;
+    const k = subjectEnd(S, rest, np) + 1;
+    return atFront(rest.slice(0, k).concat([lead], rest.slice(k)));
+  }
   if (has(lead, "cop")){
     if (place) return slotQuery(S, rest.concat([lead, wordTok(S, place), synth(SLOT)]), ctx);
     if (has(rest[skipSoft(rest, 0)], "prep")) return slotQuery(S, [synth(SLOT), lead].concat(rest), ctx);
@@ -3171,6 +3181,13 @@ function interpret(S, text){
   }
   if (has(first, "wh")){
     const q = whQuestion(S, first, after, ctx);
+    if (q) return { ...base, ...q };
+  }
+  // a preposition before the wh-word (¿de dónde tiró Pixel el vaso?, off what did Pixel knock the cup?) goes
+  // where the statement has it, at the end, and the gap is its thing (TTG-RFC-0006 §7)
+  const wi = skipSoft(after, 0), wh = after[wi];
+  if (has(first, "prep") && wh && has(wh, "wh")){
+    const q = whQuestion(S, wh, after.slice(wi + 1), ctx, first);
     if (q) return { ...base, ...q };
   }
   if (has(first, "aux") || has(first, "modal") || has(first, "cop") || has(first, "hav")){

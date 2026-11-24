@@ -585,7 +585,9 @@ settles yes against no.
   them by, and *What did Pixel do to the napkin off the table?* only the one you said sent it
   there. *What did Pixel do?*, with no thing, lists everything Pixel does, but not what Pixel
   is or where, and then what Pixel does by being a cat (chase mice), unless you've said
-  otherwise of Pixel; a penguin doesn't inherit a bird's flying.
+  otherwise of Pixel; a penguin doesn't inherit a bird's flying. A preposition before the
+  question word goes back to the end: *¿De dónde tiró Pixel el vaso?* is the table the glass
+  left, and *Off what did Pixel sneeze the napkin?* the table it went off.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
   less than you did.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.

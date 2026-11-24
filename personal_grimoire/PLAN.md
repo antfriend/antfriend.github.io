@@ -507,8 +507,8 @@ Upstream (toot-toot-engineering `4305092`): TTG-RFC-0006 0.6.
   speaker's (*Tiró el vaso…*) matches no shape.
 - The seed episodes re-read unchanged.
 
-Known gaps: Spanish has no question that reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*),
-and English and Spanish motions are separate vectors (`go_off`, `salir_de`) until a rule links
+Known gaps: ~~Spanish has no question that reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*)~~
+(since 2026-12-04, below), and English and Spanish motions are separate vectors (`go_off`, `salir_de`) until a rule links
 them.
 
 Upstream (toot-toot-engineering `c4c5628`): TTG-RFC-0006 0.7.
@@ -533,8 +533,8 @@ tests.**
   vector the construction writes, so *What went off the table?* finds both. Nothing else in
   the suites changed, and the seed episodes re-read unchanged.
 
-Known gaps: ~~a gap can only be a nounish name~~ (a gap at the verb since 2026-12-01, below); *¿De dónde tiró Pixel el vaso?*, with its preposition before the wh-word,
-still isn't.
+Known gaps: ~~a gap can only be a nounish name~~ (a gap at the verb since 2026-12-01, below); ~~*¿De dónde tiró Pixel el vaso?*, with its preposition before the wh-word,
+still isn't~~ (since 2026-12-04, below).
 
 Upstream (toot-toot-engineering `28b9f86`): TTG-RFC-0006 0.8 and TTG-RFC-0003 1.7.
 
@@ -588,6 +588,19 @@ says of itself, either way, is its own (a Pixel that doesn't chase mice doesn't 
 The same holds with a thing: *What does Pixel do to mice?* is *chase*.
 
 Upstream (toot-toot-engineering `73289dc`): TTG-RFC-0006 0.11 and TTG-RFC-0003 1.10.
+
+**A preposition before the wh-word (2026-12-04): implemented in the runtime, the store's docs
+and the tests.** A question that opens on a preposition and then a wh-word is restated as the
+others are, in statement order without the wh-word, and its preposition goes where the
+statement has it, at the end: *¿De dónde tiró Pixel el vaso?* is *Pixel tiró el vaso de*, which
+*movimiento causado* reads with nothing at `[Z]`, so it asks for what the glass left (`vaso |
+salir_de | ?`) on condition that Pixel threw it: the table. The wh-word doesn't matter (*¿De
+qué…?* asks the same). English does it after the moved auxiliary: *Off what did Pixel sneeze
+the napkin?* is the table, and *…the bone?*, which the dog dropped, is nothing. No construction
+reading it, the preposition is read as the statement's words are: *¿En qué duerme Pixel?* is
+*Pixel duerme en ?*, the bed.
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §7.2, §11.3 and §11.4).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
