@@ -1,6 +1,6 @@
 # TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
 
-**Version:** 1.8
+**Version:** 1.9
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -153,6 +153,7 @@ a VECTOR begins with its verb lemma plus `phrasal_join`. Words without purchase 
 | `wh` + a verb in the speaker's own form (TTG-RFC-0005 §3, dropped subjects) and no thing after it | objects of the speaker; with `wh_place`, along the place vectors |
 | `wh` + verb + a thing that agrees with the verb in number (`plural_verb_ending`) and is not object-marked | objects of that thing |
 | `wh` + `aux`/`modal` + subject + `pro_verb` [+ `pro_verb_object`] + thing, or under `question_order: verb_subject` `wh` + `pro_verb` + subject [+ `pro_verb_object`] + thing | the vectors relating the subject to the thing (`vectorsOf`): *What did Pixel do to the napkin?*, *¿Qué hizo Pixel al vaso?* (TTG-RFC-0006 §7.4) |
+| the same with no thing | every vector the subject is the subject of, but its structural roles, prepositions' vectors and phrases' vectors: *What did Pixel do?*, *¿Qué hizo Pixel?* (TTG-RFC-0006 §7.4) |
 | `wh` + anything else | subjects |
 | `aux`/`modal`/`cop`/`hav` first, with a percept after moving it behind the subject | verify |
 | under `question_order: verb_subject`, a verb first and a subject after it, ending in `question_mark` | verify, the verb moved behind the subject |
@@ -264,5 +265,6 @@ modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`, and, for constructions
 | 2026-11-24 | 1.6: §4, a place question also asks along the verb's phrasal vectors; §5, the reference value of `construction_max_words` (TTG-RFC-0006). Implemented by the personal_grimoire reference runtime (antfriend.github.io `ea1bc58`). |
 | 2026-11-30 | 1.7: §4, questions a construction reads, defined in TTG-RFC-0006 0.8 §7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fa87584`). |
 | 2026-12-01 | 1.8: §4, the intent row for a question whose verb is the pro-verb, answered by the vectors relating its subject and thing (TTG-RFC-0006 0.9 §7.4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
+| 2026-12-02 | 1.9: §4, the intent row for a pro-verb question with no thing (TTG-RFC-0006 0.10 §7.4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `1aaa412`). |
 
 *License: CC0*

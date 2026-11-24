@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.9
+**Version:** 0.10
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -231,6 +231,12 @@ A construction reads questions as well as tells.
    - **Without a construction**, the question asks for the vectors relating its subject to its
      thing (`vectorsOf`, TTG-RFC-0003 §4): every direct, undenied, unretired belief and every
      derived one, each answered as a vector and grounded as any answer is.
+   - **With no thing** (*What did Pixel do?*, *¿Qué hizo Pixel?*), it asks for everything the
+     subject does, to anything or to nothing: `vectorsOf` with no object, each saying listed
+     with its own thing. What the subject *is*, *has* or *where* it is is not a doing, so the
+     structural roles (`class_of`, `property`, `possession`), a vector a `prep` word names
+     (*in*) and a declared phrase's vector are left out. `vectors_head` heads it with an empty
+     `{o}`.
    - **Inside a construction's shape**, the pro-verb fills a verbish name as the gap, and the
      atom naming it asks `vectorsOf`. The construction's atoms that name no gap are
      **conditions**: each must hold, or nothing answers; and a verb answers only if it was said
@@ -356,8 +362,9 @@ its percepts until the owner takes a re-reading.
    Spanish question reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*).
 4. **Questions by construction.** *Answered in 0.8* (§7), and a gap at the verb in 0.9
    (§7.4). Still open: a question whose preposition comes before its wh-word (*¿De dónde tiró
-   Pixel el vaso?*) is not restated so a shape can meet it; a verb gap with no thing (*What
-   did Pixel do?*) is not read; and inside a construction only a verb the owner said can
+   Pixel el vaso?*) is not restated so a shape can meet it; a verb gap with no thing (0.10)
+   lists only the subject's own sayings and derived facts, not what it inherits from its kind
+   (cats chase mice, so a cat does); and inside a construction only a verb the owner said can
    answer, never a held or derived one, since only a said sentence can share a condition's.
 
 ---
@@ -375,5 +382,6 @@ its percepts until the owner takes a re-reading.
 | 2026-11-29 | 0.7: a shape that opens on a nounish name covers a clause whose subject is dropped in the speaker's own form, binding the name to the speaker (§3 step 1); the reference store's Spanish constructions, and the morphology a Spanish tie needs (§5); open question 3 answered. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fdd03dd`). |
 | 2026-11-30 | 0.8: §7, questions read by constructions — a yes/no question holds only if every atom does; a wh-question in statement order leaves one untied nounish name unmatched as the gap, and an answer must answer every atom that names it; place questions as before, now §7.4. Open question 4 answered. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fa87584`). |
 | 2026-12-01 | 0.9: §7.4, a gap at the verb — the lexicon's `pro_verb` and `pro_verb_object`; without a construction, the vectors relating subject and thing; inside one, the pro-verb fills a verbish name, the gapless atoms are conditions, and the verb answering is one said with them; a tied verb gap only where no untied shape reads the question. Place questions renumbered §7.5. Three keys in §9; open question 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
+| 2026-12-02 | 0.10: §7.4, a verb gap with no thing — everything the subject does, to anything or to nothing, the structural roles, prepositions' vectors and phrases' vectors left out. Open question 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `1aaa412`). |
 
 *License: CC0*

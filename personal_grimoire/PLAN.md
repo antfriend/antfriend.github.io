@@ -576,7 +576,7 @@ phrase's vector are left out. No new key: `vectors_head` is used with no thing.
 Known gap: only the subject's own sayings and derived facts answer; what it inherits from its
 kind (cats chase mice, so Pixel does) doesn't.
 
-Still to do: the RFC text upstream (TTG-RFC-0006 §7.4 and §11.4; the TTG-RFC-0003 §4 row).
+Upstream (toot-toot-engineering `a9b95ac`): TTG-RFC-0006 0.10 and TTG-RFC-0003 1.9.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
