@@ -445,9 +445,29 @@ Upstream (toot-toot-engineering `e779a2d`): TTG-RFC-0006 0.3 and TTG-RFC-0001 1.
   diamond through it that says the verb's percept once. Every sentence reads as before, and
   the seed episodes re-read unchanged.
 
-Known gap: a verbish name still can't be tied to one word.
+Known gap: ~~a verbish name still can't be tied to one word~~ (since 2026-11-27, below).
 
 Upstream (toot-toot-engineering `ec23b56`): TTG-RFC-0006 0.4.
+
+**A verbish name tied to its verbs (2026-11-27): implemented in the runtime, the store and the
+tests.**
+- **Syntax:** `{V=knock}` inside the verbish marks; `{V=knock,push}` for several verbs.
+- **Meaning:** the name binds only a verb whose head lemma is one of those words, so the tie
+  takes every form the morphology lemmatizes to it (*knocked*, *knocks*, *knocking*), where a
+  literal word in the shape matched one form only. The name is still a verbish name, so a
+  child with a tied verb inherits `V X Y`: this is what the rejected *knocked* example needed.
+- **Specificity:** a tie counts as a word of the construction's own.
+- **Safety:** a tie inside nounish marks, an empty tie, or a tied name that isn't capitalised
+  is malformed (`shape`).
+- **The store:** `knocking off` (`[X] {V=knock} [Y] off [Z] => fall_off Y Z | is_a caused
+  motion`). *Pixel knocked the cup off the shelf* is now a knock, the cup going off the shelf,
+  and the cup falling off it; *pushed* is still only caused motion. The seed episodes re-read
+  unchanged.
+
+Known gaps: a nounish name can't be tied (`[X=cat]`); a tie is only as good as the morphology
+(*shoved* lemmatizes to *shov*, so `{V=shove}` misses it).
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §2, §3, §6, §11).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

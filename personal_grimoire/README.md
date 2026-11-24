@@ -114,7 +114,7 @@ verb's denial, tense and hold carried to each atom, while a clause it does not c
 you marked, reads as it would without it, and an unsafe one is rejected; that a construction
 inherits what its ancestors say, from one parent or several, overrides it with its own, holds
 what its parents dispute, and is tried before them; that an abstract construction is never
-matched, only inherited; that an amendment stands in for a sentence
+matched, only inherited; that a tied verbish name binds only its own verbs, by lemma; that an amendment stands in for a sentence
 without touching its episode, and is withdrawn by reading the sentence back the episode's
 way; and that a re-reading reports what a grammar edit changes, in the context the sentences
 before it stand as, writes nothing, and can be taken as an amendment that names the grammar —
@@ -568,7 +568,9 @@ settles yes against no.
   the shelf onto the floor* is both a going-off and a going-onto, and *almost off* can say *not
   off*. Where two parents disagree and the child doesn't say, that part is held, not believed.
   A construction with no shape (`=> V X Y | acting on a thing`) is abstract: never matched,
-  only inherited from, so what several constructions share is written once.
+  only inherited from, so what several constructions share is written once. A verbish name
+  can be tied to its verbs by lemma (`{V=knock}` is *knocked*, *knocks*, *knocking*), so
+  *knocking off* adds the cup falling, while any other verb is only caused motion.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
   less than you did.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.

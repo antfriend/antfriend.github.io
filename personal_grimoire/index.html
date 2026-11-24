@@ -754,8 +754,9 @@ function parseRules(G){
 /* Constructions (TTG-RFC-0006): `construction: <shape> => <atom>, <atom> | <label>`,
  * and optionally `| <class_of role> <parent label>`, once for each parent.
  * The shape is written in the owner's own marks — a nounish segment around a
- * capitalised name, a verbish one around another — and the words between them
- * as they are said. Each atom is `vector subject object`, as a rule's is: a
+ * capitalised name, a verbish one around another, which may be tied to the
+ * verbs it binds by lemma (`{V=knock}`) — and the words between them as they
+ * are said; a tie counts as a word of the construction's own. Each atom is `vector subject object`, as a rule's is: a
  * nounish name stands for its segment's head, a verbish name for its verb, and
  * anything else is a term or vector named outright, `-` no object; a vector
  * wearing the negation prefix denies. A construction is kept only if its shape
@@ -805,11 +806,15 @@ function parseConstructions(G){
     const els = [], binds = new Map();
     let bad = arrow < 0;
     for (const e of arrow < 0 ? [] : words(main.slice(0, arrow))){
-      const n = inside(e, "N"), v = n == null ? inside(e, "V") : null, name = n != null ? n : v;
-      if (name == null){ if (marked(e)) bad = true; els.push({ w:e.toLowerCase() }); continue; }
-      if (!isVar(name) || binds.has(name) || marked(name)) bad = true;
+      const n = inside(e, "N"), v = n == null ? inside(e, "V") : null, inner = n != null ? n : v;
+      if (inner == null){ if (marked(e)) bad = true; els.push({ w:e.toLowerCase() }); continue; }
+      // a verbish name may be tied to the verbs it binds, by lemma: {V=knock} is knocked, knocks, knocking;
+      // {V=knock,push} either (§2). Only a verbish name is tied; a tie with no verb in it is malformed
+      const at = inner.indexOf("="), name = at < 0 ? inner : inner.slice(0, at);
+      const tie = at < 0 ? null : new Set(inner.slice(at + 1).toLowerCase().split(",").filter(Boolean));
+      if (!isVar(name) || binds.has(name) || marked(name) || (tie && (n != null || !tie.size))) bad = true;
       binds.set(name, n != null ? "N" : "V");
-      els.push({ name, cls:binds.get(name) });
+      els.push(tie ? { name, cls:binds.get(name), tie } : { name, cls:binds.get(name) });
     }
     // after the label, a part for each parent: the class_of role, then the parent's label
     const label = (rest[0] || "").trim(), more = rest.slice(1).map(x => words(x));
@@ -826,7 +831,7 @@ function parseConstructions(G){
       : atoms.some(a => [R.comention, R.episode_edge].includes(a.v)) ? "protected"
       : abstract ? (kinds ? "" : "unsafe")
       : unsafe(atoms, binds) ? "unsafe" : "";
-    parsed.push({ els, atoms, binds:abstract ? kinds : binds, abstract, label, isA, line, own:els.filter(e => !e.name).length, why, state:0 });
+    parsed.push({ els, atoms, binds:abstract ? kinds : binds, abstract, label, isA, line, own:els.filter(e => !e.name || e.tie).length, why, state:0 });
   }
   // inheritance: each construction's whole meaning, its ancestors' first and its own over them.
   // Parents that say one atom alike say it once; parents that disagree on it, where the child
@@ -1808,10 +1813,10 @@ function construe(S, T, L, idx, ctx, hold, holdBy){
   if (!G.constructions.length) return null;
   const at = idx.filter(i => !T[i].punct), toks = at.map(i => T[i]), labs = at.map(i => L[i]);
   if (!toks.length || toks.some(t => t.force)) return null;
-  const bindAs = (cls, span) => {
+  const bindAs = (cls, span, tie) => {
     if (cls === "V"){
       const items = verbItems(S, span, false), P = items.length === 1 && items[0].length === 1 ? items[0][0] : null;
-      return P && P.kind === "verb" && P.head ? { P } : null;
+      return P && P.kind === "verb" && P.head && (!tie || tie.has(P.head)) ? { P } : null;
     }
     const nps = nounPhrases(S, span, 0, span.length), np = nps.length === 1 && !nps[0].prep ? nps[0] : null;
     const h = np && headOf(S, np, ctx);
@@ -1825,7 +1830,7 @@ function construe(S, T, L, idx, ctx, hold, holdBy){
       const el = c.els[e];
       if (!el.name) return k < toks.length && toks[k].w === el.w && go(e + 1, k + 1);
       for (let j = k + 1; j <= toks.length && labs[j - 1] === el.cls; j++){
-        const b = bindAs(el.cls, toks.slice(k, j));
+        const b = bindAs(el.cls, toks.slice(k, j), el.tie);
         if (b){ bnd[el.name] = b; if (go(e + 1, j)) return true; }
       }
       return false;

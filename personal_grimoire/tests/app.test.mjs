@@ -912,8 +912,8 @@ section("constructions: a shape that says what its words do not (TTG-RFC-0006)")
   const BARE = STORE.replace(LINE, "");
   const keys = ps => ps.map(pk).join(" / ");
   const S = fresh();
-  ok(S.G.constructions.length === 4 && S.G.constructionErrors.length === 0 && S.grammars[1].constructions.length === 0,
-     "four English constructions load, none rejected, and Spanish borrows none: constructions hold words");
+  ok(S.G.constructions.length === 5 && S.G.constructionErrors.length === 0 && S.grammars[1].constructions.length === 0,
+     "five English constructions load, none rejected, and Spanish borrows none: constructions hold words");
 
   const told = PG.answer(S, "Pixel sneezed the napkin off the table.", T0 + 60);
   const ps = told.episode.all;
@@ -926,10 +926,10 @@ section("constructions: a shape that says what its words do not (TTG-RFC-0006)")
 
   const read = (st, s) => PG.shapeOf(PG.openStore(st), s);
   const neg = read(STORE, "The cats didn't knock the cups off the shelf.").percepts;
-  ok(neg.length === 2 && neg.some(p => p.v === "go_off") && neg.every(p => p.pol === "-"),
+  ok(neg.length === 3 && neg.some(p => p.v === "go_off") && neg.every(p => p.pol === "-"),
      "the verb's denial carries to every atom", keys(neg));
   ok(read(STORE, "Maybe Pixel sneezed the napkin off the table.").percepts.every(p => p.pol === "?"), "a hedged clause holds what the construction says");
-  const T1 = fresh(), past = PG.answer(T1, "Pixel knocked the cup off the shelf.", T0 + 60).episode;
+  const T1 = fresh(), past = PG.answer(T1, "Pixel sneezed the napkin off the table.", T0 + 60).episode;
   ok(/^tense: 1 \| 1 2$/m.test(PG.records(T1.st).find(r => r.id === past.id).episode), "a past verb marks every atom past");
   const marked = read(STORE, "[Pixel] {sneezed} [the napkin off the table].");
   ok(!marked.percepts.some(p => p.v === "go_off") && !marked.constructions.length, "the owner's marks overrule a construction, as they do the chain", keys(marked.percepts));
@@ -951,7 +951,7 @@ section("constructions: a shape that says what its words do not (TTG-RFC-0006)")
   const bad = PG.openStore(STORE.replace(LINE, LINE + ["construction: [X] {V} [Y] off [Z] => V X W | unsafe", "construction: [X] {V} [Y] => X Y Y | wrong kind",
     "construction: [X] {V} [Y] a b c d e f => V X Y | long", "construction: [X] {V} [Y] off [Z] => with Y Z | protected", "construction: [X] {V} [Y] off [Z] | no arrow",
     "construction: off the => go_off X Y | no names"].join(NL) + NL));
-  ok(bad.G.constructions.length === 4 && bad.G.constructionErrors.map(e => e.why).join() === "unsafe,unsafe,length,protected,shape,shape",
+  ok(bad.G.constructions.length === 5 && bad.G.constructionErrors.map(e => e.why).join() === "unsafe,unsafe,length,protected,shape,shape",
      "unsafe, over-long, protected and malformed constructions are rejected and reported", bad.G.constructionErrors.map(e => e.why).join());
 
   // adding a construction makes old sentences read differently: re-reading lists exactly those
@@ -1005,7 +1005,7 @@ section("constructions inherit: the specific says what the general does, and ove
     "construction: [X] {V} [Y] over [Z] => go_over Y Z | over | not a parent"].join(NL) + NL));
   ok(bad.G.constructionErrors.map(e => e.why).join() === "parent,cycle,cycle,parent,unsafe,shape",
      "a missing parent, a cycle, a rejected parent, inherited names the shape doesn't bind, and a stray part are rejected", bad.G.constructionErrors.map(e => e.why).join());
-  ok(bad.G.constructions.length === 4, "and the rest still load");
+  ok(bad.G.constructions.length === 5, "and the rest still load");
 }
 
 section("constructions with several parents: what they share is said once, what they dispute is held (TTG-RFC-0006 §8)");
@@ -1073,6 +1073,34 @@ section("abstract constructions: no shape, never matched, only inherited (TTG-RF
                     "construction: [Q] {V} [Y] => | needs X | is_a acting on a thing"]);
   ok(bad.G.constructionErrors.map(e => e.why).join() === "unsafe,parent,shape,unsafe",
      "a name used as two kinds, an undeclared parent, an empty abstract construction, and a shaped child not binding an inherited name are rejected", bad.G.constructionErrors.map(e => e.why).join());
+}
+
+section("a verbish name tied to its verbs, by lemma (TTG-RFC-0006 §2)");
+{
+  const TIED = "construction: [X] {V=knock} [Y] off [Z] => fall_off Y Z | knocking off | is_a caused motion" + NL;
+  ok(STORE.includes(TIED), "the seed store ties knocking off to the verb knock");
+  const st = PG.openStore(STORE), read = s => PG.shapeOf(st, s);
+  const keys = r => r.percepts.map(pk).join(" / ");
+  const knocked = read("Pixel knocked the cup off the shelf.");
+  ok(keys(knocked) === "pixel | knock | cup | + | - / cup | go_off | shelf | + | - / cup | fall_off | shelf | + | -" && knocked.constructions[0].label === "knocking off",
+     "a tied verb inherits V X Y, so the child of a literal verb can: a knock, the cup going off, and falling off", keys(knocked));
+  ok(["Pixel knocks the cup off the shelf.", "The cats are knocking the cups off the shelf."].every(s => read(s).percepts.some(p => p.v === "fall_off")),
+     "the tie is by lemma: knocks and knocking are knock too");
+  const pushed = read("Pixel pushed the cup off the shelf.");
+  ok(!pushed.percepts.some(p => p.v === "fall_off") && pushed.constructions[0].label === "caused motion", "another verb is not tied, and its parent reads it", keys(pushed));
+  ok(st.G.constructions.findIndex(c => c.label === "knocking off") < st.G.constructions.findIndex(c => c.label === "caused motion") &&
+     st.G.constructions.find(c => c.label === "knocking off").own === 2, "the tie counts as a word of its own");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
+
+  const open = lines => PG.openStore(STORE.replace(TIED, TIED + lines.join(NL) + NL));
+  const two = open(["construction: [X] {V=push,pull} [Y] over [Z] => go_over Y Z | pushing over"]);
+  ok(["Pixel pushed the cup over the edge.", "Pixel pulled the cup over the edge."].every(s => PG.shapeOf(two, s).percepts.some(p => p.v === "go_over")) &&
+     !PG.shapeOf(two, "Pixel kicked the cup over the edge.").percepts.some(p => p.v === "go_over"), "a tie may name several verbs, and binds only those");
+  const bad = open(["construction: [X=cat] {V} [Y] up [Z] => go_up Y Z | a tied thing",
+                    "construction: [X] {V=} [Y] up [Z] => go_up Y Z | an empty tie",
+                    "construction: [X] {v=knock} [Y] up [Z] => go_up Y Z | a lowercase name"]);
+  ok(bad.G.constructionErrors.map(e => e.why).join() === "shape,shape,shape", "a tied nounish name, an empty tie and an uncapitalised tied name are malformed",
+     bad.G.constructionErrors.map(e => e.why).join());
 }
 
 section("time: exclusive vectors and supersession (TTG-RFC-0004 §2–3)");
