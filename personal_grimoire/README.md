@@ -111,7 +111,8 @@ Blueprint 2's table is what each grammar declares; that with `modifier: subclass
 from it and never the reverse, a privative word makes no subclass, and a question never checks
 the subclass a phrase made; that a construction reads the clause its shape covers, the
 verb's denial, tense and hold carried to each atom, while a clause it does not cover, or one
-you marked, reads as it would without it, and an unsafe one is rejected; that an amendment stands in for a sentence
+you marked, reads as it would without it, and an unsafe one is rejected; that a construction
+inherits what its ancestors say, overrides it with its own, and is tried before them; that an amendment stands in for a sentence
 without touching its episode, and is withdrawn by reading the sentence back the episode's
 way; and that a re-reading reports what a grammar edit changes, in the context the sentences
 before it stand as, writes nothing, and can be taken as an amendment that names the grammar —
@@ -560,7 +561,9 @@ settles yes against no.
   off Z*, and the reply says so. A shape covers a whole clause, so *the napkin that Pixel
   sneezed off the table* and *I think Pixel knocked the cup off the shelf* read by their
   words. Add your own constructions to that record; a re-reading shows which sentences they
-  change.
+  change. A construction can inherit from another by naming it (`| is_a caused motion`): it
+  says all its parent says, and an atom of its own overrides the parent's, so *off the shelf
+  onto the floor* is both a going-off and a going-onto, and *almost off* can say *not off*.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
   less than you did.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.

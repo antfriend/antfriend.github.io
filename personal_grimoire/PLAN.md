@@ -379,10 +379,39 @@ them, and the Spanish blind spots on the roadmap look like parameters nobody has
   shelf*) isn't matched.
 - Spanish has no caused-motion construction: *de* is both *off* and *of*.
 - Questions aren't read by constructions (*What did Pixel sneeze off the table?*).
-- The `is_a` inheritance between constructions is still later work.
+- ~~The `is_a` inheritance between constructions~~: done 2026-11-24, below.
 
 Upstream (toot-toot-engineering `4795447`): TTG-RFC-0006 0.1, TTG-RFC-0001 1.6 and TTG-RFC-0003
 1.6. Still to do: the bAbI check.
+
+**Inheritance between constructions (2026-11-24): implemented in the runtime, the store and
+the tests.** The plan's "Later" item.
+- **Syntax:** an optional part after the label, `| is_a <parent label>`. The keyword is the
+  `class_of` role, so the runtime holds no word for it. One parent per construction.
+- **Meaning:** a construction says its ancestors' atoms and its own. An atom of its own with the
+  same vector, subject and object as an inherited one overrides it, and a `not_` atom states a
+  denial, as a penguin's *not fly* overrides a bird's *fly*. A clause that denies an atom the
+  construction already denies (*didn't push it almost off*) holds the denial: it says neither way.
+- **Order:** a construction is tried before every ancestor, whatever its own words; otherwise
+  the most words of its own first, ties to the order written.
+- **Safety:** a missing or rejected parent (`parent`), a cycle (`cycle`), or inherited atoms
+  naming what the child's shape doesn't bind (`unsafe`) reject the child.
+- **Reporting:** a new reply key, `read_by_is_a`, names the construction and what it is a kind
+  of; without it, `read_by` is used.
+- **The store** adds `[X] {V} [Y] off [Z] onto [W] => go_onto Y W | caused motion onto | is_a
+  caused motion`. The seed episodes still re-read unchanged.
+
+Changed from the plan: the plan suggested inheritance should "run through the same
+specificity logic the reasoner uses for beliefs". The logic is the same (specific overrides
+general, on the same vector and things), but it runs when the store's grammar loads, not
+through the reasoner, because a construction's atoms are known before any sentence is read.
+
+Known gaps: one parent only (CxG allows several); a verbish name can't be tied to one word,
+so a child whose verb is a literal (*knocked*) can't inherit a parent's `V X Y`; an abstract
+construction with no shape of its own can't be declared.
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §8, inheritance; the `read_by_is_a` key in
+TTG-RFC-0001 §8).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

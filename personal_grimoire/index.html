@@ -751,23 +751,40 @@ function parseRules(G){
     else G.rules.push({ body, head, label:rest.join("|").trim(), line });
   }
 }
-/* Constructions (TTG-RFC-0006): `construction: <shape> => <atom>, <atom> | <label>`.
+/* Constructions (TTG-RFC-0006): `construction: <shape> => <atom>, <atom> | <label>`,
+ * and optionally `| <class_of role> <parent label>`.
  * The shape is written in the owner's own marks — a nounish segment around a
  * capitalised name, a verbish one around another — and the words between them
  * as they are said. Each atom is `vector subject object`, as a rule's is: a
  * nounish name stands for its segment's head, a verbish name for its verb, and
- * anything else is a term or vector named outright, `-` no object. A
- * construction is kept only if its shape has a name, every name in its atoms
- * is one the shape binds as what the atom uses it for, it says no structural
- * edge, and its shape is at most construction_max_words long. The most
- * specific — the most words of its own — is tried first; ties keep the order
- * declared.                                                                */
+ * anything else is a term or vector named outright, `-` no object; a vector
+ * wearing the negation prefix denies. A construction is kept only if its shape
+ * has a name, every name in its atoms is one the shape binds as what the atom
+ * uses it for, it says no structural edge, and its shape is at most
+ * construction_max_words long.
+ *
+ * Inheritance (§8): a construction that names a parent says what its parent
+ * says, and its ancestors, as well as its own atoms. Where its own atom has the
+ * vector, subject and object of an inherited one, its own stands, with its own
+ * polarity: the specific overrides the general, as a penguin overrides a bird.
+ * A parent that is missing or rejected, a cycle, or an inherited atom naming
+ * what the child's shape does not bind, rejects the child. The most specific
+ * is tried first: a construction before any of its ancestors, else the one
+ * with the most words of its own; ties keep the order declared.            */
 function parseConstructions(G){
-  const R = G.roles, M = G.marks, max = G.num.construction_max_words;
+  const R = G.roles, M = G.marks, max = G.num.construction_max_words, neg = R.negation_prefix || "";
   // a mark is one character (tokenize reads it so); one left inside a word or a name is a malformed shape
   const marked = e => Object.keys(M).some(k => !!M[k].cls && e.includes(k));
   const inside = (e, c) => !!M[c] && e.length > 2 && e.startsWith(M[c][0]) && e.endsWith(M[c][1]) ? e.slice(1, -1) : null;
+  const atomOf = w => {
+    if (w.length !== 3 || w[0] === "-" || w[1] === "-") return null;
+    const no = !!neg && !isVar(w[0]) && w[0].length > neg.length && w[0].startsWith(neg);
+    const v = no ? w[0].slice(neg.length) : w[0];
+    return no && isVar(v) ? null : { v, s:w[1], o:w[2], neg:no };
+  };
+  const unsafe = (atoms, binds) => atoms.some(a => (isVar(a.v) && binds.get(a.v) !== "V") || [a.s, a.o].some(x => isVar(x) && binds.get(x) !== "N"));
   G.constructions = []; G.constructionErrors = [];
+  const parsed = [];
   for (const line of G.constructionLines){
     const [main, ...rest] = line.split("|"), arrow = main.indexOf("=>");
     const els = [], binds = new Map();
@@ -779,15 +796,48 @@ function parseConstructions(G){
       binds.set(name, n != null ? "N" : "V");
       els.push({ name, cls:binds.get(name) });
     }
-    const atoms = arrow < 0 ? [] : main.slice(arrow + 2).split(",").map(words);
-    const why = bad || !binds.size || !atoms.length || atoms.some(a => a.length !== 3 || a[0] === "-" || a[1] === "-") ? "shape"
+    const atoms = arrow < 0 ? [] : main.slice(arrow + 2).split(",").map(x => atomOf(words(x)));
+    // after the label, at most one part naming the parent: the class_of role, then the parent's label
+    const label = (rest[0] || "").trim(), more = rest.slice(1).map(x => words(x));
+    const isA = more.length === 1 && more[0].length > 1 && more[0][0] === R.class_of ? more[0].slice(1).join(" ") : null;
+    if (more.length && !isA) bad = true;
+    const why = bad || !binds.size || !atoms.length || atoms.some(a => !a) || !label ? "shape"
       : isFinite(max) && els.length > max ? "length"
-      : atoms.some(a => [R.comention, R.episode_edge].includes(a[0])) ? "protected"
-      : atoms.some(([v, s, o]) => (isVar(v) && binds.get(v) !== "V") || [s, o].some(x => isVar(x) && binds.get(x) !== "N")) ? "unsafe" : "";
-    if (why) G.constructionErrors.push({ line, why });
-    else G.constructions.push({ els, atoms, label:rest.join("|").trim(), line, own:els.filter(e => !e.name).length });
+      : atoms.some(a => [R.comention, R.episode_edge].includes(a.v)) ? "protected"
+      : unsafe(atoms, binds) ? "unsafe" : "";
+    parsed.push({ els, atoms, binds, label, parent:isA, line, own:els.filter(e => !e.name).length, why });
+  }
+  // inheritance: each construction's whole meaning, its ancestors' first and its own over them
+  const byLabel = new Map();
+  for (const c of parsed) if (!c.why && !byLabel.has(c.label)) byLabel.set(c.label, c);
+  const key = a => [a.v, a.s, a.o].join(" ");
+  const resolve = (c, seen) => {
+    if (c.full || c.why) return;
+    if (!c.parent){ c.full = c.atoms; c.ancestors = []; return; }
+    const p = byLabel.get(c.parent);
+    if (!p || p === c || seen.has(p)){ c.why = !p ? "parent" : "cycle"; return; }
+    seen.add(c); resolve(p, seen);
+    if (p.why){ c.why = p.why === "cycle" ? "cycle" : "parent"; return; }
+    const own = new Set(c.atoms.map(key));
+    const full = p.full.filter(a => !own.has(key(a))).concat(c.atoms);
+    if (unsafe(full, c.binds)){ c.why = "unsafe"; return; }
+    c.full = full; c.ancestors = [p.label, ...p.ancestors];
+  };
+  for (const c of parsed) resolve(c, new Set());
+  for (const c of parsed){
+    if (c.why) G.constructionErrors.push({ line:c.line, why:c.why });
+    else G.constructions.push({ els:c.els, atoms:c.full, label:c.label, parents:c.ancestors, line:c.line, own:c.own });
   }
   G.constructions.sort((a, z) => z.own - a.own);
+  // and a construction before every ancestor, wherever its own words put it
+  for (let moved = true, guard = 0; moved && guard < G.constructions.length * G.constructions.length; guard++){
+    moved = false;
+    const list = G.constructions;
+    for (let k = 0; k < list.length && !moved; k++){
+      const last = list.reduce((m, x, q) => x.parents.includes(list[k].label) ? q : m, -1);
+      if (last > k){ list.splice(last + 1, 0, list.splice(k, 1)[0]); moved = true; }
+    }
+  }
 }
 /* A reply phrase with its {slots} filled. A missing phrase is the empty string:
    the runtime never supplies wording of its own. */
@@ -1742,13 +1792,16 @@ function construe(S, T, L, idx, ctx, hold, holdBy){
       return false;
     };
     if (!go(0, 0)) continue;
-    const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], subjects:null, open:false, openBy:null, construction:c.label };
+    const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], subjects:null, open:false, openBy:null, construction:c };
     const verbs = Object.values(bnd).filter(b => b.P), neg = verbs.some(b => b.P.neg), past = verbs.some(b => b.P.past);
-    for (const [v, s, o] of c.atoms){
+    for (const { v, s, o, neg:denies } of c.atoms){
       const sb = isVar(s) ? bnd[s] : null, ob = isVar(o) ? bnd[o] : null;
-      const no = neg || !!(sb && (sb.np.none || sb.np.neg)) || !!(ob && ob.np.neg);
+      // an atom the construction states as a denial is denied; a clause that denies it again says neither
+      // way (didn't push it almost off is not that it went off), so the denial is held, never believed
+      const clauseNo = neg || !!(sb && (sb.np.none || sb.np.neg)) || !!(ob && ob.np.neg);
+      const no = clauseNo || denies, held = hold || (clauseNo && denies);
       const x = { s:sb ? sb.h.lemma : s, v:isVar(v) ? bnd[v].P.head : v, o:ob ? ob.h.lemma : o,
-                  pol:hold ? (no ? HELD_NO : HELD) : no ? "-" : "+", q:sb ? sb.np.quant : "-" };
+                  pol:held ? (no ? HELD_NO : HELD) : no ? "-" : "+", q:sb ? sb.np.quant : "-" };
       if (hold && holdBy) x[BY] = holdBy;
       if (past) x[PAST] = true;
       out.percepts.push(x);
@@ -3105,7 +3158,10 @@ function writeGrounds(S, reply, w, epId){
   }
   reply.items = [...byKey.values()].slice(0, G.num.answer_max_items);
   // a sentence a construction read names it, so the owner knows to look at its shape (TTG-RFC-0006 §4)
-  for (const label of w.readBy || []) reply.notes.push(say(G, "read_by", { label }));
+  for (const c of w.readBy || []){
+    const parents = c.parents.join(", ");
+    reply.notes.push(parents && G.say.read_by_is_a != null ? say(G, "read_by_is_a", { label:c.label, parents }) : say(G, "read_by", { label:c.label }));
+  }
   // what was said as a choice or under a stance is named, never grounded as said; what the grammar read
   // two ways is named as the two readings of one saying
   const plain = w.held.filter(p => !p.reading), two = w.held.filter(p => p.reading);
