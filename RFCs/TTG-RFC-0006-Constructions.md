@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.4
+**Version:** 0.5
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -52,7 +52,9 @@ construction: <shape> => [<atom>[, <atom>…]] | <label> [| is_a <parent label>]
 - **The shape** is a sequence of elements separated by spaces, or nothing at all, which makes
   the construction **abstract** (§8.6):
   - a **nounish name**, a capitalised name inside the lexicon's `nounish_marks` (`[X]`);
-  - a **verbish name**, a capitalised name inside its `verbish_marks` (`{V}`);
+  - a **verbish name**, a capitalised name inside its `verbish_marks` (`{V}`), which may be
+    **tied** to the verbs it binds: `{V=knock}` binds only a verb whose head lemma is *knock*,
+    and `{V=knock,push}` either (§3, step 2);
   - a **word**, anything else, matched as itself (lowercased, as tokens are).
 - **An atom** is `vector subject object`, as a rule's atom is (TTG-RFC-0003 §3.1). A nounish
   name stands for the head lemma of the phrase it matched; a verbish name for the verb's
@@ -67,7 +69,8 @@ construction: <shape> => [<atom>[, <atom>…]] | <label> [| is_a <parent label>]
 
 A name occurs at most once in a shape. Constructions are tried most specific first: a
 construction before every one of its ancestors (§8), and otherwise the one with the most
-words of its own. Ties go to the order the constructions are written.
+words of its own, a tie counting as one. Constructions equal on both go in the order they
+are written.
 
 ---
 
@@ -84,8 +87,12 @@ Punctuation is not matched.
    matches the word.
 2. **Read.** A nounish name's tokens MUST read as exactly one noun phrase that has a head
    and no preposition. A verbish name's tokens MUST read as exactly one predicate whose
-   kind is a verb (not the copula, *have* or a phrase). A span that does not read is not a
-   match, and other spans are tried.
+   kind is a verb (not the copula, *have* or a phrase); a tied verbish name's verb MUST have
+   one of its tie's words as its head lemma. The tie is by lemma, not by form, so it takes
+   every form the morphology reads as that verb — `{V=knock}` binds *knocked*, *knocks* and
+   *knocking* — where a word in the shape matches one form only; and it is only as good as
+   the morphology (a verb the morphology lemmatizes wrongly misses its tie). A span that does
+   not read is not a match, and other spans are tried.
 3. **Replace.** The first construction that matches supplies the clause's percepts, one per
    atom, in place of the chain's. Its subjects are the clause's subjects for what follows
    (the next clause's inherited subject, and the anaphor context).
@@ -143,7 +150,7 @@ lists each one and fails):
 
 | Reason | When |
 |---|---|
-| `shape` | no `=>`; no label; no atoms and no parent; a shape with words but no name; a name that is not capitalised or occurs twice; a mark left inside a word; an atom that is not three items; `-` as an atom's vector or subject; the negation prefix on a verbish name; a part after the label that is not the `class_of` role and a label; a parent named twice |
+| `shape` | no `=>`; no label; no atoms and no parent; a shape with words but no name; a name that is not capitalised or occurs twice; a mark left inside a word; an atom that is not three items; `-` as an atom's vector or subject; the negation prefix on a verbish name; a tie on a nounish name, or a tie with no word in it; a part after the label that is not the `class_of` role and a label; a parent named twice |
 | `length` | the shape has more elements than the `numbers` key `construction_max_words` |
 | `protected` | an atom's vector is the comention or episode edge |
 | `unsafe` | an atom uses a name its shape does not bind, or binds as the other kind: a verbish name as a subject or object, a nounish one as a vector — its own atoms, or those it inherits (§8); for an abstract construction, which has no shape, a name its atoms use both as a vector and as a subject or object (§8.6) |
@@ -201,7 +208,10 @@ the specific overrides the general.
    the floor* says `pixel | knock | cup` (once, though it comes through both parents), `cup | go_off | shelf` and `cup | go_onto | floor`; *Where
    did the cup go?* finds both places. A child may also deny what its parent says: with `[X] {V} [Y] almost off [Z] =>
    not_go_off Y Z | almost off | is_a caused motion`, *Pixel pushed the cup almost off the
-   shelf* says the push and denies that the cup went off.
+   shelf* says the push and denies that the cup went off. And a child may be tied to one verb
+   (§2): the reference store's `[X] {V=knock} [Y] off [Z] => fall_off Y Z | knocking off |
+   is_a caused motion` reads *Pixel knocked the cup off the shelf* as the knock, the cup going
+   off and the cup falling off, while *pushed* is caused motion alone.
 4. **Order.** A construction is tried before every one of its ancestors, whatever their
    words, so that wherever both match, the specific one reads the clause. The parent still
    reads every clause the child does not match.
@@ -243,15 +253,16 @@ its percepts until the owner takes a re-reading.
 
 ## 11. Open Questions
 
-1. **Inheritance.** *Answered in 0.2* (§8), and several parents in 0.3. Still open: a
-   verbish name cannot be tied to one word, so a child
-   whose verb is a literal (*knocked*) cannot inherit its parent's `V X Y`. Abstract
-   constructions were answered in 0.4 (§8.6).
+1. **Inheritance.** *Answered:* in 0.2 (§8), several parents in 0.3, abstract constructions in
+   0.4 (§8.6), and in 0.5 a verbish name tied to its verbs (§2), so a child whose verb is one
+   word inherits its parent's `V X Y`. A nounish name cannot yet be tied (`[X=cat]`).
 2. **Part of a clause.** A shape must cover its whole clause. Matching a span inside a
    relative clause or a stance's clause (*I think Pixel knocked the cup off the shelf*,
    read now by its words) needs the walk to hand spans to the matcher.
 3. **Spanish.** *de* is both "off" and "of", so *estornudó la servilleta de la mesa* cannot
-   be read by a shape on *de* alone. A construction may need a condition on its verb.
+   be read by a shape on *de* alone. A tie (0.5) gives one a condition on its verb —
+   `[X] {V=estornudar} [Y] de [Z]` — but the reference store declares no Spanish construction
+   yet.
 4. **Questions by construction.** A question could be read by a construction too (*What
    did Pixel sneeze off the table?*). For now, questions are read by the question forms.
 
@@ -265,5 +276,6 @@ its percepts until the owner takes a re-reading.
 | 2026-11-24 | 0.2: §8, inheritance — a construction names a parent, says what its ancestors say, overrides an inherited atom on the same vector, subject and object, and is tried before its ancestors; `not_` atoms state denials, and a clause denying one holds it (§3); `parent` and `cycle` rejections (§6); `read_by_is_a` (§4, §9). §8–11 renumbered §9–12; open question 1 answered. Implemented by the personal_grimoire reference runtime (antfriend.github.io `8a1d9e2`). |
 | 2026-11-25 | 0.3: several parents — one `is_a` part each, and no atoms of a construction's own needed (§2); what parents say alike is said once, and what they dispute is contested, held unless the child says it (§8.2); `construction_contested` (§4, §9); the `shape`, `parent` and `cycle` rejections widened (§6); §8 renumbered; open question 1 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fd6ef4a`). |
 | 2026-11-26 | 0.4: abstract constructions — an empty shape is never matched, only inherited from, its names the kinds its atoms use them as (§2, §8.6); `unsafe` covers a name an abstract construction uses as two kinds (§6); the §8.3 example now has an abstract root; open question 1 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `5777b04`). |
+| 2026-11-27 | 0.5: a verbish name tied to its verbs by lemma, `{V=knock}` or `{V=knock,push}` (§2, §3 step 2), counted as a word of the construction's own; malformed ties (§6); the §8.3 example gains *knocking off*; open questions 1 and 3 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `4951a16`). |
 
 *License: CC0*

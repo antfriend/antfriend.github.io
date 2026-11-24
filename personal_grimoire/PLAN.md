@@ -467,7 +467,7 @@ tests.**
 Known gaps: a nounish name can't be tied (`[X=cat]`); a tie is only as good as the morphology
 (*shoved* lemmatizes to *shov*, so `{V=shove}` misses it).
 
-Still to do: the RFC text upstream (TTG-RFC-0006 §2, §3, §6, §11).
+Upstream (toot-toot-engineering `753126b`): TTG-RFC-0006 0.5.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
