@@ -2854,7 +2854,8 @@ function objectsOf(S, s, vs){
 }
 /* The vectors the owner's words relate s to o by: what did Pixel do to the napkin. With no o (what did Pixel
    do?), everything s does, to anything or to nothing — but not what s is or where: the structural roles, a
-   vector a preposition names (in) and a declared phrase's vector are relations, not doings. */
+   vector a preposition names (in) and a declared phrase's vector are relations, not doings. Said first, then
+   derived, then inherited from what s is a kind of. */
 function vectorsOf(S, s, o){
   const G = S.G, R = G.roles, items = new Map(), any = o == null;
   const skip = v => [R.comention, R.episode_edge, R.amend_edge].includes(v) ||
@@ -2863,6 +2864,18 @@ function vectorsOf(S, s, o){
   for (const e of S.beliefsBy.get(s) || []) if ((any || e.o === o) && !skip(e.v) && e.pol !== "-" && !retired(S, e) && !items.has(key(e.v, e.o)))
     items.set(key(e.v, e.o), { v:e.v, g:{ kind:e.pol === "?" ? "conflict" : "direct", pol:e.pol, path:[e], conf:e.conf } });
   for (const D of S.derivedBy.get(s) || []) if ((any || D.o === o) && !skip(D.v) && !items.has(key(D.v, D.o))) items.set(key(D.v, D.o), { v:D.v, g:proofGround(S, D) });
+  // and what s does by being a kind of something (TTG-RFC-0006 §7.4): Pixel is a cat and cats chase mice. Each
+  // pair an ancestor says is asked of s by inheritance, so the nearest ancestor's word stands and a denial
+  // nearer s blocks it (a penguin does not fly, whatever birds do); what s says itself, either way, is its own
+  const asked = new Set();
+  for (const anc of ancestors(S, s)) for (const e of factsOf(S, anc.lemma)){
+    const k = e.v + "|" + e.o;
+    if ((!any && e.o !== o) || skip(e.v) || asked.has(k)) continue;
+    asked.add(k);
+    if (tripOf(S, s, e.v, e.o) || derivedOf(S, s, e.v, e.o) || items.has(key(e.v, e.o))) continue;
+    const h = inherited(S, s, e.v, e.o);
+    if (h && h.pol === "+") items.set(key(e.v, e.o), { v:e.v, g:{ kind:"inference", pol:"+", path:h.path, via:h.via, conf:chainConf(S, h.path) } });
+  }
   return [...items.values()].map(({ v, g }) => ({ term:vlabel(S, v), cls:"vector", ...g }));
 }
 function subjectsOf(S, v, o){

@@ -573,10 +573,21 @@ with its own saying. What the subject *is* or *where* it is isn't a doing: the s
 (`class_of`, `property`, `possession`), a vector a preposition names (*in*) and a declared
 phrase's vector are left out. No new key: `vectors_head` is used with no thing.
 
-Known gap: only the subject's own sayings and derived facts answer; what it inherits from its
-kind (cats chase mice, so Pixel does) doesn't.
+Known gap: ~~only the subject's own sayings and derived facts answer~~ (inherited doings since
+2026-12-03, below).
 
 Upstream (toot-toot-engineering `a9b95ac`): TTG-RFC-0006 0.10 and TTG-RFC-0003 1.9.
+
+**Inherited doings for a verb gap (2026-12-03): implemented in the runtime, the store's docs and
+the tests.** After its own sayings and derived facts, `vectorsOf` asks every vector-and-thing
+pair the subject's ancestors say of the subject by inheritance, through the reasoner's own
+`inherited`, so the nearest ancestor's decided word stands. *What did Pixel do?* now also lists
+*chase mouse*, grounded as an inference through `pixel is_a cat`; Pingu, a penguin, swims and
+does not fly, since the penguins' denial is nearer than the birds' flying; a pair the subject
+says of itself, either way, is its own (a Pixel that doesn't chase mice doesn't inherit it).
+The same holds with a thing: *What does Pixel do to mice?* is *chase*.
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §7.4 and §11.4).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

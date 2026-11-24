@@ -1065,7 +1065,7 @@ rule: move_to X Y => in X Y | moving somewhere puts you there
 
 ---
 
-@LAT-85LON0 | created:1795478400 | updated:1796256000 | relates:refines@LAT30LON0,refines@LAT-80LON0
+@LAT-85LON0 | created:1795478400 | updated:1796342400 | relates:refines@LAT30LON0,refines@LAT-80LON0
 
 **Grammar — constructions**
 src: RFCs/TTG-RFC-0006-Constructions.md §2
@@ -1111,6 +1111,8 @@ Pixel do to the napkin?* asks for every verb your words relate Pixel to the napk
 *What did Pixel do to the napkin off the table?* asks only if the napkin went off the table.
 With no thing, *What did Pixel do?* asks for everything Pixel does, to anything or to nothing,
 but not what Pixel is or where: the roles, a preposition's vector and a phrase's are relations.
+What Pixel does by being a cat is answered too, as an inference through `is_a`, and the
+nearest kind's word stands: Pingu, a penguin, swims and does not fly.
 
 ```ttdb-grammar
 kind: constructions

@@ -584,7 +584,8 @@ settles yes against no.
   can ask for the verb: *What did Pixel do to the napkin?* lists every verb your words relate
   them by, and *What did Pixel do to the napkin off the table?* only the one you said sent it
   there. *What did Pixel do?*, with no thing, lists everything Pixel does, but not what Pixel
-  is or where.
+  is or where, and then what Pixel does by being a cat (chase mice), unless you've said
+  otherwise of Pixel; a penguin doesn't inherit a bird's flying.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
   less than you did.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.

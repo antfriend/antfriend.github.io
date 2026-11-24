@@ -1207,7 +1207,8 @@ section("a verb gap with no thing: everything the subject does (TTG-RFC-0006 §7
   let t = T0;
   for (const s of ["Pixel sneezed the napkin off the table.", "Pixel chewed the napkin.", "Pixel is black.", "Pixel is in the garden.",
                    "Pixel tiró el vaso de la mesa."]) PG.answer(S, s, t += 60);
-  const ask = q => PG.answer(S, q, t += 60), said = r => r.items.map(i => i.path[0].v + " " + i.path[0].o);
+  // each answer's doing is the last link of its ground: the saying itself, or the end of an is_a chain
+  const ask = q => PG.answer(S, q, t += 60), said = r => r.items.map(i => i.path[i.path.length - 1].v + " " + i.path[i.path.length - 1].o);
   const did = ask("What did Pixel do?");
   ok(did.intent === "vectorsOf" && ["sneeze napkin", "chew napkin", "sleep_in sun"].every(x => said(did).includes(x)),
      "What did Pixel do? lists what Pixel does, to anything", said(did).join(", "));
@@ -1216,6 +1217,26 @@ section("a verb gap with no thing: everything the subject does (TTG-RFC-0006 §7
   ok(said(ask("What did Pixel do to the napkin?")).join(", ") === "sneeze napkin, chew napkin", "and with a thing it still narrows to that thing");
   ok(said(ask("What do cats do?")).includes("chase mouse"), "a kind's doings are asked the same way");
   ok(said(ask("¿Qué hizo Pixel?")).includes("tirar vaso"), "and in Spanish");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
+}
+
+section("a verb gap inherits: what the subject does by being a kind of something (TTG-RFC-0006 §7.4)");
+{
+  const S = fresh();
+  let t = T0;
+  for (const s of ["Pixel chewed the napkin.", "Pingu is a penguin.", "Tweety is a bird."]) PG.answer(S, s, t += 60);
+  const ask = q => PG.answer(S, q, t += 60), last = i => i.path[i.path.length - 1];
+  const doing = r => r.items.map(i => last(i).v + " " + last(i).o);
+  const pixel = ask("What did Pixel do?");
+  const chase = pixel.items.find(i => last(i).v === "chase");
+  ok(chase && chase.kind === "inference" && chase.via === "cat" && chase.path[0].v === "is_a",
+     "Pixel is a cat and cats chase mice, so Pixel does: an inference through is_a, not a saying", doing(pixel).join(", "));
+  ok(doing(pixel).includes("chew napkin") && pixel.items.findIndex(i => last(i).v === "chew") < pixel.items.indexOf(chase), "what Pixel itself did comes first");
+  ok(doing(ask("What does Pixel do to mice?")).join() === "chase mouse", "with a thing, inheritance narrows to it too");
+  ok(doing(ask("What does Pingu do?")).join() === "swim -", "a nearer denial blocks what is farther: Pingu swims, as penguins do, and does not fly, as birds do", doing(ask("What does Pingu do?")).join());
+  ok(doing(ask("What does Tweety do?")).includes("fly -"), "while a bird that is no penguin flies");
+  PG.answer(S, "Pixel doesn't chase mice.", t += 60);
+  ok(!doing(ask("What does Pixel do?")).includes("chase mouse"), "and what the subject says of itself, either way, is its own: a Pixel that does not chase mice does not inherit it");
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 
