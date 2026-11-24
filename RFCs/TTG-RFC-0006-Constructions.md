@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.3
+**Version:** 0.4
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -36,7 +36,8 @@ cannot show.
 
 Constructions form a network by default inheritance (§8): a construction may name parents,
 and then says all they say, overriding them where it says otherwise itself; where its parents
-disagree and it does not say, that part is held, never believed.
+disagree and it does not say, that part is held, never believed. A construction with no shape
+is abstract: never matched, it says what its descendants share.
 
 ---
 
@@ -48,7 +49,8 @@ A `ttdb-grammar` block of `kind: constructions` holds any number of `constructio
 construction: <shape> => [<atom>[, <atom>…]] | <label> [| is_a <parent label>]…
 ```
 
-- **The shape** is a sequence of elements separated by spaces:
+- **The shape** is a sequence of elements separated by spaces, or nothing at all, which makes
+  the construction **abstract** (§8.6):
   - a **nounish name**, a capitalised name inside the lexicon's `nounish_marks` (`[X]`);
   - a **verbish name**, a capitalised name inside its `verbish_marks` (`{V}`);
   - a **word**, anything else, matched as itself (lowercased, as tokens are).
@@ -141,10 +143,10 @@ lists each one and fails):
 
 | Reason | When |
 |---|---|
-| `shape` | no `=>`; no label; no atoms and no parent; a shape with no name; a name that is not capitalised or occurs twice; a mark left inside a word; an atom that is not three items; `-` as an atom's vector or subject; the negation prefix on a verbish name; a part after the label that is not the `class_of` role and a label; a parent named twice |
+| `shape` | no `=>`; no label; no atoms and no parent; a shape with words but no name; a name that is not capitalised or occurs twice; a mark left inside a word; an atom that is not three items; `-` as an atom's vector or subject; the negation prefix on a verbish name; a part after the label that is not the `class_of` role and a label; a parent named twice |
 | `length` | the shape has more elements than the `numbers` key `construction_max_words` |
 | `protected` | an atom's vector is the comention or episode edge |
-| `unsafe` | an atom uses a name its shape does not bind, or binds as the other kind: a verbish name as a subject or object, a nounish one as a vector — its own atoms, or those it inherits (§8) |
+| `unsafe` | an atom uses a name its shape does not bind, or binds as the other kind: a verbish name as a subject or object, a nounish one as a vector — its own atoms, or those it inherits (§8); for an abstract construction, which has no shape, a name its atoms use both as a vector and as a subject or object (§8.6) |
 | `parent` | one of its parents is not a construction of the same language, or was itself rejected |
 | `cycle` | following parents from it, through any of them, comes back to it |
 
@@ -188,13 +190,15 @@ the specific overrides the general.
    usual child extends its parent's shape, as the reference store's does:
 
    ```ttdb-grammar
-   construction: [X] {V} [Y] off [Z] => V X Y, go_off Y Z | caused motion
-   construction: [X] {V} [Y] onto [W] => V X Y, go_onto Y W | motion onto
+   construction: => V X Y | acting on a thing
+   construction: [X] {V} [Y] off [Z] => go_off Y Z | caused motion | is_a acting on a thing
+   construction: [X] {V} [Y] onto [W] => go_onto Y W | motion onto | is_a acting on a thing
    construction: [X] {V} [Y] off [Z] onto [W] => | caused motion onto | is_a caused motion | is_a motion onto
    ```
 
-   *Pixel knocked the cup off the shelf onto the floor* says `pixel | knock | cup` (once,
-   though both parents say it), `cup | go_off | shelf` and `cup | go_onto | floor`; *Where
+   *Pixel sneezed the napkin off the table* says `pixel | sneeze | napkin`, from *acting on a
+   thing*, and `napkin | go_off | table`, its own. *Pixel knocked the cup off the shelf onto
+   the floor* says `pixel | knock | cup` (once, though it comes through both parents), `cup | go_off | shelf` and `cup | go_onto | floor`; *Where
    did the cup go?* finds both places. A child may also deny what its parent says: with `[X] {V} [Y] almost off [Z] =>
    not_go_off Y Z | almost off | is_a caused motion`, *Pixel pushed the cup almost off the
    shelf* says the push and denies that the cup went off.
@@ -205,6 +209,14 @@ the specific overrides the general.
    a construction's whole meaning is fixed before any clause is matched, and a rejected
    ancestor rejects every descendant (`parent`). Its ancestors are listed nearest first,
    parents in the order named, without repeats.
+6. **Abstract constructions.** A construction whose shape is empty (`=> V X Y | acting on a
+   thing`) is abstract. It is never matched against a clause, so it reads nothing itself; it
+   says what its descendants share, written once. Without a shape to bind them, its names are
+   the kinds its atoms use them as: a name in an atom's vector place is verbish, one in a
+   subject or object place nounish, and a name used both ways, in its own atoms or in what it
+   inherits, rejects it (`unsafe`). An abstract construction may inherit, including from
+   another abstract one, and may have no atoms of its own if it has a parent. A child with a
+   shape binds every name it inherits from it, as from any parent (item 3).
 
 ---
 
@@ -233,8 +245,8 @@ its percepts until the owner takes a re-reading.
 
 1. **Inheritance.** *Answered in 0.2* (§8), and several parents in 0.3. Still open: a
    verbish name cannot be tied to one word, so a child
-   whose verb is a literal (*knocked*) cannot inherit its parent's `V X Y`; and an abstract
-   construction, with no shape of its own, cannot be declared.
+   whose verb is a literal (*knocked*) cannot inherit its parent's `V X Y`. Abstract
+   constructions were answered in 0.4 (§8.6).
 2. **Part of a clause.** A shape must cover its whole clause. Matching a span inside a
    relative clause or a stance's clause (*I think Pixel knocked the cup off the shelf*,
    read now by its words) needs the walk to hand spans to the matcher.
@@ -252,5 +264,6 @@ its percepts until the owner takes a re-reading.
 | 2026-11-24 | 0.1: initial draft, from the personal_grimoire PLAN.md phase 6. §2–7 implemented by the personal_grimoire reference runtime (antfriend.github.io `ea1bc58`) and checked by its tests. |
 | 2026-11-24 | 0.2: §8, inheritance — a construction names a parent, says what its ancestors say, overrides an inherited atom on the same vector, subject and object, and is tried before its ancestors; `not_` atoms state denials, and a clause denying one holds it (§3); `parent` and `cycle` rejections (§6); `read_by_is_a` (§4, §9). §8–11 renumbered §9–12; open question 1 answered. Implemented by the personal_grimoire reference runtime (antfriend.github.io `8a1d9e2`). |
 | 2026-11-25 | 0.3: several parents — one `is_a` part each, and no atoms of a construction's own needed (§2); what parents say alike is said once, and what they dispute is contested, held unless the child says it (§8.2); `construction_contested` (§4, §9); the `shape`, `parent` and `cycle` rejections widened (§6); §8 renumbered; open question 1 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fd6ef4a`). |
+| 2026-11-26 | 0.4: abstract constructions — an empty shape is never matched, only inherited from, its names the kinds its atoms use them as (§2, §8.6); `unsafe` covers a name an abstract construction uses as two kinds (§6); the §8.3 example now has an abstract root; open question 1 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `5777b04`). |
 
 *License: CC0*

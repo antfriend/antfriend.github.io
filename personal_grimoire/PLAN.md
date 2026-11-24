@@ -447,7 +447,7 @@ Upstream (toot-toot-engineering `e779a2d`): TTG-RFC-0006 0.3 and TTG-RFC-0001 1.
 
 Known gap: a verbish name still can't be tied to one word.
 
-Still to do: the RFC text upstream (TTG-RFC-0006 §2, §6, §8).
+Upstream (toot-toot-engineering `ec23b56`): TTG-RFC-0006 0.4.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
