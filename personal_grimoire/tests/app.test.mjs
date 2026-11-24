@@ -1151,6 +1151,32 @@ section("a Spanish construction: de is off only after a verb that moves a thing 
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 
+section("questions a construction reads: the gap is what is asked, every atom narrows it (TTG-RFC-0006 §7)");
+{
+  const S = fresh();
+  let t = T0;
+  for (const s of ["Pixel sneezed the napkin off the table.", "Pixel sneezed the cap.", "The dog dropped the bone off the table.",
+                   "Pixel knocked the cup off the shelf.", "Pixel tiró el vaso de la mesa.", "Pixel tiró la pelota."]) PG.answer(S, s, t += 60);
+  const ask = q => PG.answer(S, q, t += 60), terms = r => r.items.map(i => i.term).join(" ");
+  const q1 = PG.interpret(S, "What did Pixel sneeze off the table?");
+  ok(q1.construction && q1.construction.label === "caused motion" && q1.also.length === 1, "What did Pixel sneeze off the table? is read by caused motion, with the slot where its shape has nothing");
+  ok(terms(ask("What did Pixel sneeze off the table?")) === "napkin",
+     "and is answered by what answers every atom: sneezed by Pixel and gone off the table, so not the cap, nor the dog's bone", terms(ask("What did Pixel sneeze off the table?")));
+  ok(terms(ask("What sneezed the napkin off the table?")) === "pixel", "a subject question: the gap is the shape's first name");
+  ok(terms(ask("What did Pixel knock off the shelf?")) === "cup" && PG.interpret(S, "What did Pixel knock off the shelf?").also.length === 2,
+     "a tied child's question checks all three of its atoms");
+  ok(terms(ask("What went off the table?")) === "napkin bone", "a plain verb with off reaches the construction's vector too, now off is a preposition");
+  ok(terms(ask("What did Pixel sneeze?")) === "napkin cap" && !PG.interpret(S, "What did Pixel sneeze?").also, "a question no construction covers is read as before");
+  ok(ask("Did Pixel sneeze the napkin off the table?").verdict === PG.say(S.G, "affirm") && ask("Did Pixel sneeze the cap off the table?").verdict !== PG.say(S.G, "affirm"),
+     "a yes/no question is the construction's statement: every atom is checked");
+  ok(terms(ask("¿Qué tiró Pixel de la mesa?")) === "vaso" && terms(ask("¿Qué tiró Pixel?")) === "vaso pelota",
+     "in Spanish too: ¿Qué tiró Pixel de la mesa? is the glass, not the ball");
+  // without constructions, the same question is read the old way: no joint query
+  const bare = PG.openStore(STORE.replace(/^construction: .*\n/gm, ""));
+  ok(!PG.interpret(bare, "What did Pixel sneeze off the table?").also, "with no constructions declared, questions read as they did");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
+}
+
 section("time: exclusive vectors and supersession (TTG-RFC-0004 §2–3)");
 {
   const empty = () => { const S = fresh(); PG.startEmpty(S, T0); return PG.openStore(PG.serializeStore(S.st)); };

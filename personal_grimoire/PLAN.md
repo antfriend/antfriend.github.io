@@ -513,6 +513,32 @@ them.
 
 Upstream (toot-toot-engineering `c4c5628`): TTG-RFC-0006 0.7.
 
+**Questions read by constructions (2026-11-30): implemented in the runtime, the store and the
+tests.**
+- **Wh-questions:** the question's words, in statement order and without the wh-word, are
+  matched against each construction with exactly one untied nounish name left unmatched: the
+  gap is what is asked. *What did Pixel sneeze off the table?* is caused motion with nothing at
+  `[Y]`; *What sneezed the napkin off the table?* has nothing at `[X]`. Spanish verb-first
+  questions are restated with the subject before the verb first, as place questions are:
+  *¿Qué tiró Pixel de la mesa?*
+- **Joint answers:** every atom that names the gap is a query, and an answer must answer them
+  all. The atom the construction says itself leads; the inherited ones narrow it. So *What
+  did Pixel sneeze off the table?* is what Pixel sneezed **and** what went off the table: not
+  the cap Pixel sneezed elsewhere, nor the bone the dog dropped off it.
+- **Yes/no questions** were already read by constructions, but `verify` answered with the
+  first atom it knew. A construction's statement now holds only if every atom does: the
+  weakest answer of its atoms is the answer (a denial, then a contest, then unknown).
+- **The lexicon:** *off* is now an English preposition. Before, *The napkin went off the table*
+  was `napkin | go | off` and `napkin | go | table`; now it is `napkin | go_off | table`, the
+  vector the construction writes, so *What went off the table?* finds both. Nothing else in
+  the suites changed, and the seed episodes re-read unchanged.
+
+Known gaps: a gap can only be a nounish name, so *What did Pixel do to the napkin?* (a gap at
+the verb) isn't read; *¿De dónde tiró Pixel el vaso?*, with its preposition before the wh-word,
+still isn't.
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §7 and §11.4).
+
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
 *X V Y off Z* means Y moves off Z.

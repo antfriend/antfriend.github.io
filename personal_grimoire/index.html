@@ -1808,7 +1808,7 @@ function readClause(S, T, L, idx, ctx, inherited, hold, pick, holdBy){
  * clause's percepts, in place of the walk's: the verb's polarity and tense, the
  * subject's quantifier, held where the clause is. A clause any word of which
  * the owner marked is the owner's reading, and no construction reads it.    */
-function construe(S, T, L, idx, ctx, hold, holdBy){
+function construe(S, T, L, idx, ctx, hold, holdBy, asking){
   const G = S.G;
   if (!G.constructions.length) return null;
   const at = idx.filter(i => !T[i].punct), toks = at.map(i => T[i]), labs = at.map(i => L[i]);
@@ -1829,13 +1829,20 @@ function construe(S, T, L, idx, ctx, hold, holdBy){
   for (const c of G.constructions){
     if (c.abstract) continue;
     const bnd = {};
+    // asking (§7): exactly one nounish name, untied, may match nothing; it is what the question asks for
+    let gap = null;
     const go = (e, k) => {
-      if (e === c.els.length) return k === toks.length;
+      if (e === c.els.length) return k === toks.length && (!asking || !!gap);
       const el = c.els[e];
       if (!el.name) return k < toks.length && toks[k].w === el.w && go(e + 1, k + 1);
       for (let j = k + 1; j <= toks.length && labs[j - 1] === el.cls; j++){
         const b = bindAs(el.cls, toks.slice(k, j), el.tie);
         if (b){ bnd[el.name] = b; if (go(e + 1, j)) return true; }
+      }
+      if (asking && !gap && el.cls === "N" && !el.tie){
+        gap = el.name; bnd[el.name] = { np:{ quant:"-", none:false, neg:false }, h:{ lemma:SLOT, form:null } };
+        if (go(e + 1, k)) return true;
+        gap = null;
       }
       return false;
     };
@@ -1847,7 +1854,7 @@ function construe(S, T, L, idx, ctx, hold, holdBy){
       bnd[first.name] = { np:{ quant:"-", none:false, neg:false }, h:{ lemma:me, self:true, form:null } };
       return go(1, 0) && Object.values(bnd).some(b => b.P && b.P.self);
     };
-    if (!go(0, 0) && !dropped()) continue;
+    if (!go(0, 0) && (asking || !dropped())) continue;
     const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], subjects:null, open:false, openBy:null, construction:c };
     const verbs = Object.values(bnd).filter(b => b.P), neg = verbs.some(b => b.P.neg), past = verbs.some(b => b.P.past);
     for (const { v, s, o, neg:denies, contested } of c.atoms){
@@ -2947,7 +2954,8 @@ function yesNo(S, toks, ctx){
   const rest = toks.slice(0, i).concat(toks.slice(i + 1));
   const r = clausePercepts(S, moveCue(S, rest, cue, has(cue, "cop")), ctx, null);
   const checks = r.percepts.filter(p => p.v !== S.G.roles.comention && !isMention(p) && !p[SUB] && p.s !== SLOT && p.o !== SLOT);
-  return checks.length ? { intent:"verify", checks } : null;
+  // a construction's statement holds only if every atom does (TTG-RFC-0006 §7)
+  return checks.length ? (r.constructions.length ? { intent:"verify", checks, all:true } : { intent:"verify", checks }) : null;
 }
 const wordTok = (S, w) => ({ w, cls:S.G.classes.get(w) || EMPTY, punct:false });
 function slotQuery(S, toks, ctx){
@@ -2955,6 +2963,23 @@ function slotQuery(S, toks, ctx){
   const p = r.percepts.find(x => x.s === SLOT || x.o === SLOT);
   if (!p) return null;
   return p.o === SLOT ? { intent:"objectsOf", s:p.s, vs:[p.v] } : { intent:"subjectsOf", v:p.v, o:p.o };
+}
+/* A question a construction reads (TTG-RFC-0006 §7): the question's words, in
+ * statement order and without its wh-word, against each construction, one
+ * nounish name left unmatched for what is asked. Every atom that names the gap
+ * is a query, and an answer is what answers them all: what did Pixel sneeze
+ * off the table is what Pixel sneezed and what went off the table. The atom
+ * the construction says itself leads, its inherited ones narrow it.        */
+function construeQuestion(S, toks, ctx){
+  if (!S.G.constructions.length || !toks.length) return null;
+  const labels = labelTokens(S, toks);
+  const r = construe(S, toks, labels, toks.map((t, i) => i), { last:ctx.last }, false, null, true);
+  if (!r) return null;
+  const qs = r.percepts.filter(p => !p[SUB] && (p.s === SLOT) !== (p.o === SLOT) && p.pol !== HELD && p.pol !== HELD_NO)
+    .map(p => p.o === SLOT ? { intent:"objectsOf", s:p.s, vs:[p.v] } : { intent:"subjectsOf", v:p.v, o:p.o });
+  if (!qs.length) return null;
+  const lead = qs[qs.length - 1];
+  return { ...lead, also:qs.slice(0, -1), construction:r.construction };
 }
 function whQuestion(S, wh, after, ctx){
   const G = S.G, place = G.whPlace.get(wh.w);
@@ -2974,6 +2999,9 @@ function whQuestion(S, wh, after, ctx){
   }
   if (has(lead, "aux") || has(lead, "modal")){
     const moved = moveCue(S, rest, lead, false);
+    // a construction reads the question first, where one covers it: what did Pixel sneeze off the table
+    const cq = !place && construeQuestion(S, moved, ctx);
+    if (cq) return cq;
     if (!place) return slotQuery(S, moved.concat([synth(SLOT)]), ctx);
     return placeQuery(S, moved, wh, ctx);
   }
@@ -2982,11 +3010,18 @@ function whQuestion(S, wh, after, ctx){
   if (isVerbish(S, lead)){
     const np = nounPhrases(S, rest, 0, rest.length)[0], subj = np && !np.prep ? np : null;
     if (G.questionOrder === "verb_subject" && place && subj){ const k = subjectEnd(S, rest, subj) + 1; return placeQuery(S, rest.slice(0, k).concat([lead], rest.slice(k)), wh, ctx); }
+    // ¿qué tiró Pixel de la mesa? is Pixel tiró … de la mesa, a construction's question
+    if (G.questionOrder === "verb_subject" && !place && subj){
+      const k = subjectEnd(S, rest, subj) + 1, cq = construeQuestion(S, rest.slice(0, k).concat([lead], rest.slice(k)), ctx);
+      if (cq) return cq;
+    }
     // the speaker's own form is the dropped-subjects rule's, whatever the question order
     if (!subj && selfOf(S, [lead])) return place ? placeQuery(S, [lead].concat(rest), wh, ctx) : slotQuery(S, [lead, synth(SLOT)], ctx);
   }
   const behind = subjectAfterVerb(S, after, ctx);
   if (behind) return behind;
+  const cq = !place && construeQuestion(S, after, ctx);
+  if (cq) return cq;
   return slotQuery(S, [synth(SLOT)].concat(after), ctx);
 }
 /* Where a subject standing behind its verb ends. With the verb moved out, the
@@ -3152,7 +3187,9 @@ function answerIn(S, text, now, source, shapes){
     reply.records = [ep.id];
   } else if (it.intent === "verify"){
     const results = it.checks.map(p => ({ p, r:verify(S, p.s, p.v, p.o) }));
-    const lead = results.find(x => x.r.verdict !== "U") || results[0];
+    // the first answer the words give; for a construction's atoms, the weakest of them, since all must hold
+    const weakest = ["N", "C", "U", "Y"], rank = x => { const i = weakest.indexOf(x.r.verdict); return i < 0 ? weakest.length : i; };
+    const lead = it.all ? results.slice().sort((a, z) => rank(a) - rank(z))[0] : results.find(x => x.r.verdict !== "U") || results[0];
     const r = lead.r;
     reply.verdict = r.verdict === "C" ? say(G, "contest") :
       r.verdict === "U" ? say(G, "unknown") : r.superseded ? say(G, "deny_superseded") :
@@ -3164,7 +3201,10 @@ function answerIn(S, text, now, source, shapes){
     // a belief the owner's words changed is named with the change
     for (const p of it.checks){ const t = changeText(S, S.trips.get(p.s + "|" + p.v + "|" + p.o)); if (t && !reply.notes.includes(t)) reply.notes.push(t); }
   } else if (it.intent === "objectsOf" || it.intent === "subjectsOf"){
-    const list = it.intent === "objectsOf" ? objectsOf(S, it.s, it.vs) : subjectsOf(S, it.v, it.o);
+    const ask = q => q.intent === "objectsOf" ? objectsOf(S, q.s, q.vs) : subjectsOf(S, q.v, q.o);
+    let list = ask(it);
+    // a construction's question (TTG-RFC-0006 §7): an answer answers all of its atoms
+    if (it.also && it.also.length){ const sets = it.also.map(q => new Set(ask(q).map(g => g.term))); list = list.filter(g => sets.every(s => s.has(g.term))); }
     reply.head = it.intent === "objectsOf" ? say(G, "objects_head", { s:it.s, v:vlabel(S, it.vs[0]) })
                                           : say(G, "subjects_head", { v:vlabel(S, it.v), o:it.o === "-" ? "" : it.o });
     reply.items = cap(list).map(g => quoted(S, g));

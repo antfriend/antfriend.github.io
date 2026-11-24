@@ -652,7 +652,7 @@ data. The grammar and every reply word come with the store; your app supplies on
 
 ---
 
-@LAT-10LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT20LON0
+@LAT-10LON0 | created:1789257600 | updated:1796083200 | relates:refines@LAT20LON0
 
 **Grammar — closed-class words (English)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §3
@@ -672,7 +672,7 @@ class: quant_some | some many most few several
 class: quant_none | no
 class: self | i me my mine myself
 class: anaphor | it they them he him she
-class: prep | in on at of to from by with for about into onto over under near between through after before during without within across against toward towards among inside outside behind beside beyond
+class: prep | in on at of to from by with for about into onto over under near between through after before during without within across against toward towards among inside outside behind beside beyond off
 class: conj | and or but nor
 class: alt | or
 class: subord | because so if then than when while although though since unless whereas
@@ -1062,7 +1062,7 @@ rule: move_to X Y => in X Y | moving somewhere puts you there
 
 ---
 
-@LAT-85LON0 | created:1795478400 | updated:1795996800 | relates:refines@LAT30LON0,refines@LAT-80LON0
+@LAT-85LON0 | created:1795478400 | updated:1796083200 | relates:refines@LAT30LON0,refines@LAT-80LON0
 
 **Grammar — constructions**
 src: RFCs/TTG-RFC-0006-Constructions.md §2
@@ -1099,6 +1099,10 @@ idiom can say what none of its words do: *I took the day off* is `self | rest | 
 taking, while *I took the cup off* is read by its words. A tie counts as a word of the
 construction's own. Unlike rules, constructions hold words, so each language
 declares its own; these are English, and Spanish declares [its own](lat-85lon180).
+Constructions read questions too: *What did Pixel sneeze off the table?* is the shape with
+nothing where `[Y]` stands, so it asks for what Pixel sneezed **and** what went off the table,
+and an answer has to be both; *Did Pixel sneeze the cap off the table?* is yes only if every
+atom is.
 
 ```ttdb-grammar
 kind: constructions
