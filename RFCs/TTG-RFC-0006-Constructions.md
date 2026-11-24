@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.10
+**Version:** 0.11
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -237,6 +237,15 @@ A construction reads questions as well as tells.
      structural roles (`class_of`, `property`, `possession`), a vector a `prep` word names
      (*in*) and a declared phrase's vector are left out. `vectors_head` heads it with an empty
      `{o}`.
+   - **What it inherits.** With or without a thing, after the subject's own sayings and its
+     derived facts, every vector-and-thing pair the subject's ancestors (along `class_of`) say
+     is asked of the subject by inheritance (TTG-RFC-0003 §3), so the nearest ancestor's decided
+     word stands and a denial nearer the subject blocks an affirmation farther off. A pair that
+     inheritance affirms answers, grounded as an inference through the `class_of` chain: *What
+     did Pixel do?* lists *chase mouse* because Pixel is a cat and cats chase mice; *What does
+     Pingu do?*, of a penguin, is *swim*, not *fly*, since penguins do not fly though birds do. A
+     pair the subject has a saying or a derived fact of, either way, is never inherited: what
+     the owner said of the subject itself is its own.
    - **Inside a construction's shape**, the pro-verb fills a verbish name as the gap, and the
      atom naming it asks `vectorsOf`. The construction's atoms that name no gap are
      **conditions**: each must hold, or nothing answers; and a verb answers only if it was said
@@ -362,10 +371,9 @@ its percepts until the owner takes a re-reading.
    Spanish question reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*).
 4. **Questions by construction.** *Answered in 0.8* (§7), and a gap at the verb in 0.9
    (§7.4). Still open: a question whose preposition comes before its wh-word (*¿De dónde tiró
-   Pixel el vaso?*) is not restated so a shape can meet it; a verb gap with no thing (0.10)
-   lists only the subject's own sayings and derived facts, not what it inherits from its kind
-   (cats chase mice, so a cat does); and inside a construction only a verb the owner said can
-   answer, never a held or derived one, since only a said sentence can share a condition's.
+   Pixel el vaso?*) is not restated so a shape can meet it; and inside a construction only a
+   verb the owner said can answer, never a held, derived or inherited one, since only a said
+   sentence can share a condition's. A verb gap's inherited doings were answered in 0.11.
 
 ---
 
@@ -383,5 +391,6 @@ its percepts until the owner takes a re-reading.
 | 2026-11-30 | 0.8: §7, questions read by constructions — a yes/no question holds only if every atom does; a wh-question in statement order leaves one untied nounish name unmatched as the gap, and an answer must answer every atom that names it; place questions as before, now §7.4. Open question 4 answered. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fa87584`). |
 | 2026-12-01 | 0.9: §7.4, a gap at the verb — the lexicon's `pro_verb` and `pro_verb_object`; without a construction, the vectors relating subject and thing; inside one, the pro-verb fills a verbish name, the gapless atoms are conditions, and the verb answering is one said with them; a tied verb gap only where no untied shape reads the question. Place questions renumbered §7.5. Three keys in §9; open question 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
 | 2026-12-02 | 0.10: §7.4, a verb gap with no thing — everything the subject does, to anything or to nothing, the structural roles, prepositions' vectors and phrases' vectors left out. Open question 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `1aaa412`). |
+| 2026-12-03 | 0.11: §7.4, a verb gap answers what the subject inherits, through the reasoner's specificity: the nearest ancestor's decided word stands, and the subject's own sayings are never overridden. Open question 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `3743744`). |
 
 *License: CC0*

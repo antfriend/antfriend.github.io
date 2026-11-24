@@ -587,7 +587,7 @@ does not fly, since the penguins' denial is nearer than the birds' flying; a pai
 says of itself, either way, is its own (a Pixel that doesn't chase mice doesn't inherit it).
 The same holds with a thing: *What does Pixel do to mice?* is *chase*.
 
-Still to do: the RFC text upstream (TTG-RFC-0006 §7.4 and §11.4).
+Upstream (toot-toot-engineering `73289dc`): TTG-RFC-0006 0.11 and TTG-RFC-0003 1.10.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
