@@ -344,6 +344,46 @@ them, and the Spanish blind spots on the roadmap look like parameters nobody has
 
 **From:** Construction Grammar, the largest gap the comparison found. **Size:** large.
 
+**Status (2026-11-24): implemented in the runtime, the store and the tests.**
+- **`kind: constructions`**, the ninth grammar kind, at [`@LAT-85LON0`](personal_grimoire_ttdb.md).
+  The store declares one English construction:
+  `[X] {V} [Y] off [Z] => V X Y, go_off Y Z | caused motion`. Spanish declares none and
+  borrows none.
+- **Matching** covers a whole clause, after labelling and before the chain. A nounish name
+  takes nounish tokens that read as one headed phrase; a verbish name, verbish tokens that
+  read as one verb; a word matches itself however it was labelled. The most specific wins,
+  ties to the first written. The verb's denial, the subject's quantifier, the past and a held
+  clause carry to every atom. A clause the owner marked is never read by a construction.
+- **Safety:** `shape`, `length` (`construction_max_words: 8`), `protected` and `unsafe` lines
+  are rejected, and `tools/consolidate.mjs` reports them and fails.
+- **Reporting:** `read_by` in both languages names the construction in a tell's reply.
+- **Questions:** a place question also asks along the verb's phrasal vectors the store
+  names, so *Where did the napkin go?* reaches `go_off`.
+- **Tests:** the caused-motion tell, the question, denial, hedge and tense; marks overrule;
+  sentences no construction matches read as without one; the seed episodes re-read
+  unchanged; specificity and ties; every rejection reason; and adding a construction makes
+  re-reading list exactly the sentence it changes.
+
+**Changed from the plan.**
+- The head atom is `go_off Y Z`, not `move_off Y Z`, so that *Where did the napkin go?*
+  reaches it through the verb it asks with. Place questions gained the verb's phrasal vectors
+  for this.
+- A shape covers a whole clause instead of a span in one. Spans would have to be handed out
+  from inside the chain walk; whole clauses keep the walk untouched.
+- *sneeze* joined the English seed verbs, because the morphology read *sneezed* as *sneez*.
+- TTG-RFC-0006 was drafted in this folder (0.1) with the runtime, because the store's `src:`
+  line names it. It goes upstream with the RFC step.
+
+**Known gaps.**
+- A shape inside a relative or a stance's clause (*I think Pixel knocked the cup off the
+  shelf*) isn't matched.
+- Spanish has no caused-motion construction: *de* is both *off* and *of*.
+- Questions aren't read by constructions (*What did Pixel sneeze off the table?*).
+- The `is_a` inheritance between constructions is still later work.
+
+Still to do: the RFC upstream (TTG-RFC-0006, and the kind lists in TTG-RFC-0001 §2–3), and the
+bAbI check.
+
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
 *X V Y off Z* means Y moves off Z.

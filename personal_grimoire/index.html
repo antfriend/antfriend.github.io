@@ -589,8 +589,9 @@ function loadGrammar(st, lang){
   const { recs, langs } = grammarRecords(st);
   const first = langs[0], want = lang == null ? first : lang, later = want !== first;
   const own = new Set(recs.filter(x => x.lang === want && !SHARED_KINDS.includes(x.b.kind)).map(x => x.b.kind));
+  // constructions hold words, so a language never borrows another's (TTG-RFC-0006 §5)
   const use = recs.filter(x => x.lang === want ? !later || !SHARED_KINDS.includes(x.b.kind)
-                                               : x.lang === first && (!own.has(x.b.kind) || x.b.kind === "vectors"))
+                                               : x.lang === first && x.b.kind !== "constructions" && (!own.has(x.b.kind) || x.b.kind === "vectors"))
                   .sort((a, z) => (a.lang === want) - (z.lang === want));
   const G = {
     lang:want, classes:new Map(), whole:new Map(), contractions:[], sentenceEnd:new Set(), clauseBreak:new Set(),
@@ -601,7 +602,8 @@ function loadGrammar(st, lang){
     intransitive:new Set(), adverbEnding:[], adverbGuard:new Set(), selfEnding:[], selfForm:new Set(), pluralVerbEnding:"",
     roles:{}, vectors:new Map(), inherits:[], phrases:[],
     whThing:new Set(), whPlace:new Map(), whPlacePrep:new Map(), questionOrder:"", whReason:new Set(), about:new Set(), describeMax:NaN,
-    say:{}, units:{}, num:{}, sphere:{}, maxReply:NaN, loaded:[], ruleLines:[], rules:[], ruleErrors:[]
+    say:{}, units:{}, num:{}, sphere:{}, maxReply:NaN, loaded:[], ruleLines:[], rules:[], ruleErrors:[],
+    constructionLines:[], constructions:[], constructionErrors:[]
   };
   const rule = s => { const c = cols(s); return [c[0], c[1] === "-" ? "" : (c[1] || ""), words(c[2])]; };
   for (const r of records(st)) if (r.sphere){
@@ -709,9 +711,12 @@ function loadGrammar(st, lang){
       for (const k of Object.keys(b)) if (k !== "kind") G.num[k] = +b[k];
     } else if (b.kind === "rules"){
       G.ruleLines.push(...many(b, "rule").map(String));
+    } else if (b.kind === "constructions"){
+      G.constructionLines.push(...many(b, "construction").map(String));
     }
   }
   parseRules(G);
+  parseConstructions(G);
   // parseBlock flattens the mmpdb YAML, so the librarian's nested key reads directly
   G.maxReply = +st.meta.max_reply_chars;
   return G;
@@ -745,6 +750,44 @@ function parseRules(G){
     if (why) G.ruleErrors.push({ line, why });
     else G.rules.push({ body, head, label:rest.join("|").trim(), line });
   }
+}
+/* Constructions (TTG-RFC-0006): `construction: <shape> => <atom>, <atom> | <label>`.
+ * The shape is written in the owner's own marks — a nounish segment around a
+ * capitalised name, a verbish one around another — and the words between them
+ * as they are said. Each atom is `vector subject object`, as a rule's is: a
+ * nounish name stands for its segment's head, a verbish name for its verb, and
+ * anything else is a term or vector named outright, `-` no object. A
+ * construction is kept only if its shape has a name, every name in its atoms
+ * is one the shape binds as what the atom uses it for, it says no structural
+ * edge, and its shape is at most construction_max_words long. The most
+ * specific — the most words of its own — is tried first; ties keep the order
+ * declared.                                                                */
+function parseConstructions(G){
+  const R = G.roles, M = G.marks, max = G.num.construction_max_words;
+  // a mark is one character (tokenize reads it so); one left inside a word or a name is a malformed shape
+  const marked = e => Object.keys(M).some(k => !!M[k].cls && e.includes(k));
+  const inside = (e, c) => !!M[c] && e.length > 2 && e.startsWith(M[c][0]) && e.endsWith(M[c][1]) ? e.slice(1, -1) : null;
+  G.constructions = []; G.constructionErrors = [];
+  for (const line of G.constructionLines){
+    const [main, ...rest] = line.split("|"), arrow = main.indexOf("=>");
+    const els = [], binds = new Map();
+    let bad = arrow < 0;
+    for (const e of arrow < 0 ? [] : words(main.slice(0, arrow))){
+      const n = inside(e, "N"), v = n == null ? inside(e, "V") : null, name = n != null ? n : v;
+      if (name == null){ if (marked(e)) bad = true; els.push({ w:e.toLowerCase() }); continue; }
+      if (!isVar(name) || binds.has(name) || marked(name)) bad = true;
+      binds.set(name, n != null ? "N" : "V");
+      els.push({ name, cls:binds.get(name) });
+    }
+    const atoms = arrow < 0 ? [] : main.slice(arrow + 2).split(",").map(words);
+    const why = bad || !binds.size || !atoms.length || atoms.some(a => a.length !== 3 || a[0] === "-" || a[1] === "-") ? "shape"
+      : isFinite(max) && els.length > max ? "length"
+      : atoms.some(a => [R.comention, R.episode_edge].includes(a[0])) ? "protected"
+      : atoms.some(([v, s, o]) => (isVar(v) && binds.get(v) !== "V") || [s, o].some(x => isVar(x) && binds.get(x) !== "N")) ? "unsafe" : "";
+    if (why) G.constructionErrors.push({ line, why });
+    else G.constructions.push({ els, atoms, label:rest.join("|").trim(), line, own:els.filter(e => !e.name).length });
+  }
+  G.constructions.sort((a, z) => z.own - a.own);
 }
 /* A reply phrase with its {slots} filled. A missing phrase is the empty string:
    the runtime never supplies wording of its own. */
@@ -1664,9 +1707,67 @@ function readClause(S, T, L, idx, ctx, inherited, hold, pick, holdBy){
   else if (firstObjects && firstObjects[0] && firstObjects[0].h.lemma !== SLOT) ctx.last = firstObjects[0].h.lemma;
   return out;
 }
+/* A clause read by a construction (TTG-RFC-0006 §3): its words, after the
+ * segments are labelled, against each construction's shape in turn. A nounish
+ * name takes one or more nounish words that read as one phrase with a head; a
+ * verbish name one or more verbish words that read as one verb; a word, itself,
+ * however it was labelled. The shape covers the whole clause. Its atoms are the
+ * clause's percepts, in place of the walk's: the verb's polarity and tense, the
+ * subject's quantifier, held where the clause is. A clause any word of which
+ * the owner marked is the owner's reading, and no construction reads it.    */
+function construe(S, T, L, idx, ctx, hold, holdBy){
+  const G = S.G;
+  if (!G.constructions.length) return null;
+  const at = idx.filter(i => !T[i].punct), toks = at.map(i => T[i]), labs = at.map(i => L[i]);
+  if (!toks.length || toks.some(t => t.force)) return null;
+  const bindAs = (cls, span) => {
+    if (cls === "V"){
+      const items = verbItems(S, span, false), P = items.length === 1 && items[0].length === 1 ? items[0][0] : null;
+      return P && P.kind === "verb" && P.head ? { P } : null;
+    }
+    const nps = nounPhrases(S, span, 0, span.length), np = nps.length === 1 && !nps[0].prep ? nps[0] : null;
+    const h = np && headOf(S, np, ctx);
+    return h && h.lemma !== SLOT ? { np, h } : null;
+  };
+  for (const c of G.constructions){
+    const bnd = {};
+    const go = (e, k) => {
+      if (e === c.els.length) return k === toks.length;
+      const el = c.els[e];
+      if (!el.name) return k < toks.length && toks[k].w === el.w && go(e + 1, k + 1);
+      for (let j = k + 1; j <= toks.length && labs[j - 1] === el.cls; j++){
+        const b = bindAs(el.cls, toks.slice(k, j));
+        if (b){ bnd[el.name] = b; if (go(e + 1, j)) return true; }
+      }
+      return false;
+    };
+    if (!go(0, 0)) continue;
+    const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], subjects:null, open:false, openBy:null, construction:c.label };
+    const verbs = Object.values(bnd).filter(b => b.P), neg = verbs.some(b => b.P.neg), past = verbs.some(b => b.P.past);
+    for (const [v, s, o] of c.atoms){
+      const sb = isVar(s) ? bnd[s] : null, ob = isVar(o) ? bnd[o] : null;
+      const no = neg || !!(sb && (sb.np.none || sb.np.neg)) || !!(ob && ob.np.neg);
+      const x = { s:sb ? sb.h.lemma : s, v:isVar(v) ? bnd[v].P.head : v, o:ob ? ob.h.lemma : o,
+                  pol:hold ? (no ? HELD_NO : HELD) : no ? "-" : "+", q:sb ? sb.np.quant : "-" };
+      if (hold && holdBy) x[BY] = holdBy;
+      if (past) x[PAST] = true;
+      out.percepts.push(x);
+      if (!out.subjects && sb) out.subjects = [{ lemma:sb.h.lemma, self:sb.h.self, quant:sb.np.quant }];
+    }
+    for (const b of Object.values(bnd)){
+      if (b.h && b.h.form) out.forms.push(["thing", b.h.lemma, b.h.form]);
+      if (b.P && b.P.vector === b.P.head) out.forms.push(["vector", b.P.head, b.P.vform]);
+    }
+    if (!out.subjects) out.subjects = [{ lemma:"-", quant:"-" }];
+    const own = out.subjects.find(s => !s.self && s.lemma !== "-");
+    if (own) ctx.last = own.lemma;
+    return out;
+  }
+  return null;
+}
 function clausePercepts(S, toks, ctx, inherited, pick){
   const labels = labelTokens(S, toks);
-  const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], labels };
+  const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], labels, constructions:[] };
   pick = pick || newPick();
   let prev = inherited, first = true, open = false, openBy = null;
   for (const cl of clausesOf(labels)){
@@ -1677,7 +1778,9 @@ function clausePercepts(S, toks, ctx, inherited, pick){
     const reported = open && has(at, "subord");
     // a hedge word in the clause holds it too: maybe cats bark; I might like coffee
     const hold = has(at, "alt") || has(next, "alt") || reported || cl.idx.some(i => has(toks[i], "hedge"));
-    const r = readClause(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold, pick, reported ? openBy : null);
+    const r = construe(S, toks, labels, cl.idx, ctx, hold, reported ? openBy : null)
+           || readClause(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold, pick, reported ? openBy : null);
+    if (r.construction) out.constructions.push(r.construction);
     first = false; open = r.open; openBy = r.openBy;
     out.percepts.push(...r.percepts); out.forms.push(...r.forms); out.heads.push(...r.heads); out.pairs.push(...r.pairs); out.chains.push(...r.chains);
     if (r.subjects && r.subjects[0].lemma !== "-") prev = r.subjects;
@@ -1713,7 +1816,7 @@ function perceiveSentence(S, sentence, ctx, reading){
   const toks = tokenize(S, sentence), pick = newPick(reading);
   const r = clausePercepts(S, toks, ctx, null, pick);
   const items = shapeItems(toks, r.labels);
-  const res = { percepts:r.percepts, forms:r.forms, items, shape:shapeText(S, items), reading:pick.used.join(" "), chains:r.chains };
+  const res = { percepts:r.percepts, forms:r.forms, items, shape:shapeText(S, items), reading:pick.used.join(" "), chains:r.chains, constructions:r.constructions };
   const pairs = r.pairs.slice(), heads = r.heads;
   if (!res.percepts.length) for (let i = 0; i + 1 < heads.length; i++) pairs.push([heads[i], heads[i + 1]]);
   if (R.comention){
@@ -1757,7 +1860,7 @@ const gapLine = (n, gaps) => gaps.length ? [n, gaps.join(" ")].join(" | ") : "";
 function shapeOf(S, text, reading){
   return withGrammar(S, pickGrammar(S, text), () => {
     const r = perceiveSentence(S, text, { last:null }, reading);
-    return { shape:r.shape, items:r.items, percepts:r.percepts, reading:r.reading, lang:S.G.lang };
+    return { shape:r.shape, items:r.items, percepts:r.percepts, reading:r.reading, lang:S.G.lang, constructions:r.constructions };
   });
 }
 
@@ -2269,7 +2372,7 @@ function perceive(S, text, source, isFile, now, shapes){
   const G = S.G, R = G.roles;
   const sentences = sentencesOf(S, text, isFile);
   if (!sentences.length) return null;
-  const ctx = { last:null }, saidLines = [], shapeLines = [], perceptLines = [], holdLines = [], gapLines = [], tenseLines = [], all = [], forms = [];
+  const ctx = { last:null }, saidLines = [], shapeLines = [], perceptLines = [], holdLines = [], gapLines = [], tenseLines = [], all = [], forms = [], readBy = [];
   const max = G.num.said_max_chars;
   sentences.forEach((sen, i) => {
     const n = i + 1, SG = pickGrammar(S, sen);
@@ -2286,6 +2389,7 @@ function perceive(S, text, source, isFile, now, shapes){
     if (r.gaps.length) gapLines.push("gap: " + gapLine(n, r.gaps));
     if (r.pasts.length) tenseLines.push("tense: " + gapLine(n, r.pasts));
     forms.push(...r.forms);
+    for (const c of r.constructions) if (!readBy.includes(c)) readBy.push(c);
   });
   const before = beforeOf(S, all), retiredBefore = new Set(S.superseded.keys());
   const created = landTerms(S, all, forms, now);
@@ -2304,7 +2408,7 @@ function perceive(S, text, source, isFile, now, shapes){
   const ec = newChunk(epId, now, refs.join(","), null, say(G, "episode_title", { n:ord, source:src }) || epId, "ttdb-episode", block);
   insertChunk(S.st, ec);
   const { conflicts, changes, superseded } = settle(S, all, now, before, retiredBefore);
-  return { id:epId, ord, sentences:sentences.length, ...splitAll(S, all), all, created, conflicts, changes, superseded };
+  return { id:epId, ord, sentences:sentences.length, ...splitAll(S, all), all, created, conflicts, changes, superseded, readBy };
 }
 
 /* ---------- amend: the owner's reading of a sentence already said ------- *
@@ -2790,6 +2894,9 @@ function placeQuery(S, moved, wh, ctx){
     if (q && !vs.length) return q;
     if (q) subj = q.s;
   }
+  // then the verb with any particle the owner's words have joined to it: where did the napkin go? reaches go_off
+  const J = S.G.roles.phrasal_join;
+  if (J) for (const v of vs.slice()) if (!v.includes(J)) for (const k of S.vectors.keys()) if (k.startsWith(v + J) && !vs.includes(k)) vs.push(k);
   if (!vs.includes(place)) vs.push(place);
   return subj ? { intent:"objectsOf", s:subj, vs } : null;
 }
@@ -2997,6 +3104,8 @@ function writeGrounds(S, reply, w, epId){
       quotes:[{ ep:epId, n:p.n, text:S.said.get(epId).get(p.n), pol:p.pol }] });
   }
   reply.items = [...byKey.values()].slice(0, G.num.answer_max_items);
+  // a sentence a construction read names it, so the owner knows to look at its shape (TTG-RFC-0006 §4)
+  for (const label of w.readBy || []) reply.notes.push(say(G, "read_by", { label }));
   // what was said as a choice or under a stance is named, never grounded as said; what the grammar read
   // two ways is named as the two readings of one saying
   const plain = w.held.filter(p => !p.reading), two = w.held.filter(p => p.reading);

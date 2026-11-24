@@ -34,6 +34,12 @@ console.log(S.G.rules.length + " rules, " + S.derived.size + " conclusions held 
   S.superseded.size + " facts retired along exclusive vectors");
 for (const e of S.G.ruleErrors) console.log("  rejected rule (" + e.why + "): " + e.line);
 if (S.G.ruleErrors.length) process.exitCode = 1;
+// constructions are each language's own (TTG-RFC-0006), so each grammar's are checked
+for (const G of S.grammars){
+  console.log(G.constructions.length + " constructions (" + G.lang + ")");
+  for (const e of G.constructionErrors) console.log("  rejected construction (" + e.why + "): " + e.line);
+  if (G.constructionErrors.length) process.exitCode = 1;
+}
 if (!drift.length){ console.log("no drift"); process.exit(process.exitCode || 0); }
 for (const d of drift) console.log("  drift  " + d);
 if (flags.write){

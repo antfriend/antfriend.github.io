@@ -26,8 +26,8 @@ section("the store parses and round-trips");
   ok(PG.serializeStore(S.st) === STORE, "parse then write reproduces the file byte for byte");
   PG.syncTerms(S, T0, new Set());
   ok(PG.serializeStore(S.st) === STORE, "a sync with nothing new rewrites nothing");
-  const kinds = ["lexicon", "morphology", "seed", "vectors", "questions", "responses", "numbers", "rules"];
-  ok(kinds.every(k => S.G.loaded.includes(k)), "all eight grammar kinds load", S.G.loaded.join(","));
+  const kinds = ["lexicon", "morphology", "seed", "vectors", "questions", "responses", "numbers", "rules", "constructions"];
+  ok(kinds.every(k => S.G.loaded.includes(k)), "all nine grammar kinds load", S.G.loaded.join(","));
   ok(!STORE.includes("@@"), "no doubled @ in any edge");
 }
 
@@ -849,7 +849,7 @@ section("start empty keeps the kit");
   const recs = PG.records(S.st);
   ok(!recs.some(r => r.lat === 90), "no episodes left");
   ok(S.things.size === 1 && S.things.has("self") && S.vectors.size === 0, "only the speaker remains as a term");
-  ok(recs.filter(r => r.lon === 0 && r.lat > -90 && r.lat < 90).length === 18, "home, nine blueprint and eight grammar records kept");
+  ok(recs.filter(r => r.lon === 0 && r.lat > -90 && r.lat < 90).length === 19, "home, nine blueprint and nine grammar records kept");
   ok(recs.some(r => r.id === "@LAT99LON1") && recs.some(r => r.lat === 98) && recs.some(r => r.lat === -90), "lanes 98, 99 and the special record kept");
   ok(recs.filter(r => r.lon === 180 && r.grammar != null).length === 6 && S.grammars.length === 2, "the second language on the antimeridian kept");
   const r = PG.answer(S, "I like tea.", T0 + 60);
@@ -903,6 +903,66 @@ section("rules: Datalog-style, over vectors (TTG-RFC-0003 §3.1)");
                        "rule: chase X Y => with X Y | protected", "rule: chase X Y | no arrow"]);
   ok(bad.G.rules.length === 4 && bad.G.ruleErrors.map(e => e.why).join() === "unsafe,length,protected,shape", "unsafe, over-long, protected and malformed rules are rejected and reported",
      bad.G.ruleErrors.map(e => e.why).join());
+}
+
+section("constructions: a shape that says what its words do not (TTG-RFC-0006)");
+{
+  const LINE = "construction: [X] {V} [Y] off [Z] => V X Y, go_off Y Z | caused motion" + NL;
+  ok(STORE.includes(LINE), "the seed store declares the caused-motion construction");
+  const BARE = STORE.replace(LINE, "");
+  const keys = ps => ps.map(pk).join(" / ");
+  const S = fresh();
+  ok(S.G.constructions.length === 1 && S.G.constructionErrors.length === 0 && S.grammars[1].constructions.length === 0,
+     "one English construction loads, none rejected, and Spanish borrows none: constructions hold words");
+
+  const told = PG.answer(S, "Pixel sneezed the napkin off the table.", T0 + 60);
+  const ps = told.episode.all;
+  ok(ps.some(p => pk(p) === "pixel | sneeze | napkin | + | -") && ps.some(p => pk(p) === "napkin | go_off | table | + | -") && ps.length === 2,
+     "Pixel sneezed the napkin off the table says the sneeze and the napkin going off the table, and nothing else", keys(ps));
+  ok(told.notes.some(n => n.includes("caused motion")), "the reply names the construction that read it", told.notes.join(" | "));
+  const where = PG.answer(S, "Where did the napkin go?", T0 + 120);
+  ok(where.items.map(i => i.term).includes("table"), "Where did the napkin go? answers from it", where.items.map(i => i.term).join(" "));
+  ok(PG.answer(S, "Did Pixel sneeze the napkin?", T0 + 180).verdict === PG.say(S.G, "affirm"), "and the verb's own percept is believed as any is");
+
+  const read = (st, s) => PG.shapeOf(PG.openStore(st), s);
+  const neg = read(STORE, "The cats didn't knock the cups off the shelf.").percepts;
+  ok(neg.length === 2 && neg.some(p => p.v === "go_off") && neg.every(p => p.pol === "-"),
+     "the verb's denial carries to every atom", keys(neg));
+  ok(read(STORE, "Maybe Pixel sneezed the napkin off the table.").percepts.every(p => p.pol === "?"), "a hedged clause holds what the construction says");
+  const T1 = fresh(), past = PG.answer(T1, "Pixel knocked the cup off the shelf.", T0 + 60).episode;
+  ok(/^tense: 1 \| 1 2$/m.test(PG.records(T1.st).find(r => r.id === past.id).episode), "a past verb marks every atom past");
+  const marked = read(STORE, "[Pixel] {sneezed} [the napkin off the table].");
+  ok(!marked.percepts.some(p => p.v === "go_off") && !marked.constructions.length, "the owner's marks overrule a construction, as they do the chain", keys(marked.percepts));
+  ok(!read(STORE, "The napkin that Pixel sneezed off the table is wet.").percepts.some(p => p.v === "go_off"), "a shape that is only part of its clause reads by its words");
+
+  // a sentence no construction matches reads exactly as it did without any
+  const plain = ["Cats chase mice.", "Pixel sleeps in the sun.", "I doubt that cats like fish.", "The dog that the cat bit ran.", "Birds that sing love songs fly.",
+                 "Pixel pushed the napkin into the bowl.", "Los gatos cazan ratones.", "Pixel sneezed."];
+  ok(plain.every(s => keys(read(STORE, s).percepts) === keys(read(BARE, s).percepts)), "a sentence matching no construction reads as it does without one");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same with the construction as without it");
+
+  // the most specific shape wins; ties go to the one written first
+  const more = STORE.replace(LINE, LINE + "construction: [X] knocked [Y] off [Z] => knock X Y, fall_off Y Z | knocked off" + NL +
+                                    "construction: [X] {V} [Y] off [Z] => V X Y, leave Y Z | written second" + NL);
+  ok(read(more, "Pixel knocked the cup off the shelf.").percepts.some(p => p.v === "fall_off") && read(more, "Pixel sneezed the napkin off the table.").percepts.some(p => p.v === "go_off"),
+     "a shape with more words of its own wins, and of two alike the first written does");
+
+  // safety, as for rules: each rejected and reported
+  const bad = PG.openStore(STORE.replace(LINE, LINE + ["construction: [X] {V} [Y] off [Z] => V X W | unsafe", "construction: [X] {V} [Y] => X Y Y | wrong kind",
+    "construction: [X] {V} [Y] a b c d e f => V X Y | long", "construction: [X] {V} [Y] off [Z] => with Y Z | protected", "construction: [X] {V} [Y] off [Z] | no arrow",
+    "construction: off the => go_off X Y | no names"].join(NL) + NL));
+  ok(bad.G.constructions.length === 1 && bad.G.constructionErrors.map(e => e.why).join() === "unsafe,unsafe,length,protected,shape,shape",
+     "unsafe, over-long, protected and malformed constructions are rejected and reported", bad.G.constructionErrors.map(e => e.why).join());
+
+  // adding a construction makes old sentences read differently: re-reading lists exactly those
+  const S0 = PG.openStore(BARE);
+  PG.answer(S0, "Pixel sneezed the napkin off the table.", T0 + 60);
+  PG.answer(S0, "Pixel sleeps on the sofa.", T0 + 120);
+  ok(PG.reread(S0).changed.length === 0, "without the construction, nothing to re-read");
+  const S1 = PG.openStore(PG.serializeStore(S0.st).replace("kind: constructions" + NL, "kind: constructions" + NL + LINE));
+  const ch = PG.reread(S1).changed;
+  ok(ch.length === 1 && ch[0].text.startsWith("Pixel sneezed") && ch[0].now.some(l => l.includes("go_off")), "with it, re-read lists exactly the sentence that changed",
+     ch.map(c => c.text).join(" / "));
 }
 
 section("time: exclusive vectors and supersession (TTG-RFC-0004 §2–3)");

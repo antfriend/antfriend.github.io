@@ -52,7 +52,7 @@ answer_records: ["@LAT90LON8", "@LAT-7.4LON-174.2", "@LAT57.2LON41.5"]
 
 ---
 
-@LAT0LON0 | created:1789257600 | updated:1789258020 | relates:love@LAT-53.1LON174,drink@LAT-2.8LON5
+@LAT0LON0 | created:1789257600 | updated:1795478400 | relates:love@LAT-53.1LON174,drink@LAT-2.8LON5
 [ew]
 conf:156
 rev:4
@@ -74,8 +74,8 @@ touched:1789258020
    a new runtime from the first eight, and embed this one from the ninth.
 3. **The data.** South of here, the language: [closed-class words](lat-10lon0),
    [morphology](lat-20lon0), [seed vectors](lat-30lon0), [vector algebra](lat-40lon0),
-   [question forms](lat-50lon0), [replies](lat-60lon0), [the numbers](lat-70lon0) and
-   [the rules](lat-80lon0). On the
+   [question forms](lat-50lon0), [replies](lat-60lon0), [the numbers](lat-70lon0),
+   [the rules](lat-80lon0) and [the constructions](lat-85lon0). On the
    far side, the antimeridian, [a second language](lat-10lon180) — ask in Spanish and it
    reasons over what you said in English. East and west, the owner's own terms. Up at lat 90,
    every episode, verbatim; at lat 91, beside each, any reading of it the owner corrected;
@@ -217,7 +217,7 @@ key left out takes the value in *absent*. The test suite holds this table to the
 
 ---
 
-@LAT30LON0 | created:1789257600 | updated:1795392000 | relates:refines@LAT0LON0,depends_on@LAT20LON0,derived_from@LAT98LON1
+@LAT30LON0 | created:1789257600 | updated:1795478400 | relates:refines@LAT0LON0,depends_on@LAT20LON0,derived_from@LAT98LON1
 
 **Blueprint 3 — Percept: the unit of what was said**
 src: RFCs/TTG-RFC-0002-Semantic-Percepts.md §4
@@ -287,6 +287,11 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <
   word (*fake*, *toy*) makes no `is_a`; a phrase with more than `modifier_max_words` modifiers
   is read as if dropped; and once the subclass is a term, the phrase finds it unmarked. A
   question never checks the `is_a` a phrase makes.
+- **Constructions** → a clause whose words fit a shape the grammar declares is read by it
+  instead of the chain (TTG-RFC-0006): `[X] {V} [Y] off [Z] => V X Y, go_off Y Z` reads *Pixel
+  sneezed the napkin off the table* as a sneeze and the napkin going off the table. The shape
+  covers the whole clause, the most specific shape wins, and marks the owner writes overrule
+  it. See [constructions](lat-85lon0).
 - **Two readings** → where the grammar can read a sentence two ways, what both say is said and
   what only one says is held, **named** in a seventh column: `a` and `b` at the first such
   place, `c` and `d` at the next. *The men that saw the cats eat cheese* says `man see cat`
@@ -862,7 +867,7 @@ verb that cannot be finite for it is a chain verb (*I spied the cat eat fish*).
 
 ```ttdb-grammar
 kind: seed
-seed: eat drink like love hate want need know think believe see hear feel make give take get find keep hold bring buy sell use help build write read say tell call show teach learn play work move run walk swim fly climb jump sleep live grow chase hunt catch fight fear avoid protect cause produce create contain include carry own lose win change become follow lead open close start stop begin end enjoy prefer remember forget visit meet watch wear sing cook bake drive ride travel study speak mean seem hide bite kill save pay send cut draw paint dream wish hope miss plan try purr bark smell taste lay sit stand fall wake throw lie belong depend
+seed: eat drink like love hate want need know think believe see hear feel make give take get find keep hold bring buy sell use help build write read say tell call show teach learn play work move run walk swim fly climb jump sleep live grow chase hunt catch fight fear avoid protect cause produce create contain include carry own lose win change become follow lead open close start stop begin end enjoy prefer remember forget visit meet watch wear sing cook bake drive ride travel study speak mean seem hide bite kill save pay send cut draw paint dream wish hope miss plan try purr bark sneeze smell taste lay sit stand fall wake throw lie belong depend
 stance: think believe doubt suppose guess hope wish wonder fear suspect imagine assume expect pretend dream say claim tell show warn remind promise convince persuade inform assure email text mention explain admit announce
 chain: see hear watch feel notice make let help
 stance_noun: fact idea news claim rumor rumour story belief hope fear feeling sense notion theory chance possibility proof sign thought suspicion hunch worry
@@ -938,7 +943,7 @@ describe_max_words: 2
 
 ---
 
-@LAT-60LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT70LON0
+@LAT-60LON0 | created:1789257600 | updated:1795478400 | relates:refines@LAT70LON0
 
 **Grammar — replies (English)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §8
@@ -971,6 +976,7 @@ asked_held: You said it, but not as fact: “{text}” ({ep}).
 asked_readings: You said “{text}” ({ep}), which reads two ways, and not which you meant: {readings}.
 asked_holds: {s} {v}: {triples} — kept, not believed, from “{text}” ({ep}).
 changed_tense: You said “{then}” ({ep}), and since then “{now}” ({ep_now}) — a change in your words, not a contradiction.
+read_by: Read by a construction: {label}. Its shape is in the episode, if you read it otherwise.
 amended: Read again as you marked it: {percepts}.
 amend_title: Amendment {n}
 contradicts: This disagrees with something you said before.
@@ -998,7 +1004,7 @@ unit_term: term | terms
 
 ---
 
-@LAT-70LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT50LON0,refines@LAT60LON0,refines@LAT70LON0
+@LAT-70LON0 | created:1789257600 | updated:1795478400 | relates:refines@LAT50LON0,refines@LAT60LON0,refines@LAT70LON0
 
 **Grammar — the numbers**
 src: RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md §5
@@ -1025,6 +1031,7 @@ frame_min_episodes: 1
 frame_grammar_weight: 1
 frame_preempt_ratio: 0
 modifier_max_words: 2
+construction_max_words: 8
 ```
 
 ---
@@ -1048,6 +1055,30 @@ rule: sleep_in X Y => in X Y | sleeping somewhere is being there
 rule: not_fly X -, is_a X bird => has_property X flightless | a bird that does not fly
 rule: cazar X Y => chase X Y | cazar is chase
 rule: move_to X Y => in X Y | moving somewhere puts you there
+```
+
+---
+
+@LAT-85LON0 | created:1795478400 | updated:1795478400 | relates:refines@LAT30LON0,refines@LAT-80LON0
+
+**Grammar — constructions**
+src: RFCs/TTG-RFC-0006-Constructions.md §2
+
+Meaning a pattern carries that none of its words do. A construction pairs a shape, written in
+the owner's own marks, with the percepts a clause of that shape says: `[X]` is a nounish
+segment and stands for its head, `{V}` a verbish one and stands for its verb, and the words
+between them are themselves, as said. The atoms on the right are written as a rule's are.
+*Pixel sneezed the napkin off the table* says `pixel | sneeze | napkin` and `napkin | go_off |
+table`, so *Where did the napkin go?* finds the table. A clause the shape covers exactly is
+read by it instead of the chain, keeping the verb's polarity and tense; the shape with the
+most words of its own wins, ties to the first written. The reply names it, the shape line is
+written as usual, and a clause the owner has marked is the owner's reading, never a
+construction's. Unlike rules, constructions hold words, so each language declares its own;
+these are English, and Spanish declares none.
+
+```ttdb-grammar
+kind: constructions
+construction: [X] {V} [Y] off [Z] => V X Y, go_off Y Z | caused motion
 ```
 
 ---
@@ -1243,7 +1274,7 @@ describe_max_words: 2
 
 ---
 
-@LAT-60LON180 | created:1789257600 | updated:1789257600 | relates:translates@LAT-60LON0
+@LAT-60LON180 | created:1789257600 | updated:1795478400 | relates:translates@LAT-60LON0
 
 **Gramática — respuestas (español)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §8
@@ -1275,6 +1306,7 @@ asked_held: Lo dijiste, pero no como hecho: “{text}” ({ep}).
 asked_readings: Dijiste “{text}” ({ep}), que se lee de dos maneras, sin decir cuál querías decir: {readings}.
 asked_holds: {s} {v}: {triples} — guardado, no creído, de “{text}” ({ep}).
 changed_tense: Dijiste “{then}” ({ep}), y después “{now}” ({ep_now}) — un cambio en tus palabras, no una contradicción.
+read_by: Leído por una construcción: {label}. Su forma está en el episodio, si lo lees de otro modo.
 amended: Leído de nuevo como lo marcaste: {percepts}.
 amend_title: Enmienda {n}
 contradicts: Esto contradice algo que dijiste antes.
@@ -2219,7 +2251,7 @@ so a wrong merge can at least be seen.
 
 ---
 
-@LAT98LON5 | created:1789257600 | updated:1795392000 | relates:supports@LAT20LON0,supports@LAT30LON0
+@LAT98LON5 | created:1789257600 | updated:1795478400 | relates:supports@LAT20LON0,supports@LAT30LON0
 [ew]
 conf:70
 rev:1
@@ -2260,6 +2292,10 @@ last in English, first in Spanish. It still does not see:
   *birds fly*, and an irregular past the morphology does not list is read as present.
 - **Word order other than a chain**, and questions that invert it beyond the forms in
   [question forms](lat-50lon0).
+- **Meaning no word carries** — *sneezed the napkin off the table* moves the napkin only
+  because English declares that [construction](lat-85lon0); a pattern no construction names,
+  or one that is only part of its clause (*the napkin that Pixel sneezed off the table*),
+  reads by its words.
 - **Numbers, dates and names with spaces** — *New York* is two things until the owner writes
   `new_york` once.
 

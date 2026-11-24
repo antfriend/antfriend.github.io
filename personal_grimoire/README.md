@@ -109,7 +109,9 @@ clause; that a question whose verb comes first is read where the grammar says it
 stands there, and a verb in the speaker's own form needs no subject; that every parameter in
 Blueprint 2's table is what each grammar declares; that with `modifier: subclass` a phrase is a subclass of its head, which inherits
 from it and never the reverse, a privative word makes no subclass, and a question never checks
-the subclass a phrase made; that an amendment stands in for a sentence
+the subclass a phrase made; that a construction reads the clause its shape covers, the
+verb's denial, tense and hold carried to each atom, while a clause it does not cover, or one
+you marked, reads as it would without it, and an unsafe one is rejected; that an amendment stands in for a sentence
 without touching its episode, and is withdrawn by reading the sentence back the episode's
 way; and that a re-reading reports what a grammar edit changes, in the context the sentences
 before it stand as, writes nothing, and can be taken as an amendment that names the grammar —
@@ -168,10 +170,12 @@ store, south of the origin on the prime meridian:
 | [`@LAT-60LON0`](lat-60lon0) | `responses` | every phrase the librarian can say |
 | [`@LAT-70LON0`](lat-70lon0) | `numbers` | every constant |
 | [`@LAT-80LON0`](lat-80lon0) | `rules` | what follows from what, beyond the vector flags |
+| [`@LAT-85LON0`](lat-85lon0) | `constructions` | shapes that say what their words do not: *X V Y off Z* |
 
 Spanish has the same records on the antimeridian, [`@LAT-10LON180`](lat-10lon180) to
 [`@LAT-60LON180`](lat-60lon180), each marked `lang: es`. It borrows the numbers and the vector
-algebra and supplies everything else.
+algebra and supplies everything else, except constructions: those hold words, and Spanish
+declares none.
 
 That is *the file IS the model, the runtime is a generic interpreter* from global_models,
 taken as literally for language as global_models took it for climate — and falsifiable the
@@ -200,7 +204,7 @@ same way. The runtime refers to grammar only by schema keys (`cop`, `class_of`,
 ## The grammar sphere
 
 The origin [`@LAT0LON0`](lat0lon0) is **you** — the record your *I*, *me* and *my* resolve to.
-The prime meridian is **the grammar**: nine blueprint records north of you, eight grammar
+The prime meridian is **the grammar**: nine blueprint records north of you, nine grammar
 records south. **Things sit east, vectors west**, because the rule that decides which side a
 word falls on belongs on the line between the sides. The antimeridian is the other line between
 them, and holds **a second language**.
@@ -551,6 +555,12 @@ settles yes against no.
   cat that is black, which inherits from cats and never the other way round. That is right for
   *house cat* and *fly fishing*, and wrong for a name you haven't joined (*New York* would be a
   kind of *york*), which is why the store ships with `modifier: drop`.
+- **A pattern means only what a construction says.** *Pixel sneezed the napkin off the table*
+  moves the napkin because the English grammar declares one [construction](lat-85lon0), *X V Y
+  off Z*, and the reply says so. A shape covers a whole clause, so *the napkin that Pixel
+  sneezed off the table* and *I think Pixel knocked the cup off the shelf* read by their
+  words. Add your own constructions to that record; a re-reading shows which sentences they
+  change.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
   less than you did.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.
