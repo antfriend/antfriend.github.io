@@ -533,11 +533,38 @@ tests.**
   vector the construction writes, so *What went off the table?* finds both. Nothing else in
   the suites changed, and the seed episodes re-read unchanged.
 
-Known gaps: a gap can only be a nounish name, so *What did Pixel do to the napkin?* (a gap at
-the verb) isn't read; *¿De dónde tiró Pixel el vaso?*, with its preposition before the wh-word,
+Known gaps: ~~a gap can only be a nounish name~~ (a gap at the verb since 2026-12-01, below); *¿De dónde tiró Pixel el vaso?*, with its preposition before the wh-word,
 still isn't.
 
 Upstream (toot-toot-engineering `28b9f86`): TTG-RFC-0006 0.8 and TTG-RFC-0003 1.7.
+
+**A question gap at the verb (2026-12-01): implemented in the runtime, the store and the tests.**
+- **The lexicon:** two keys per language, `pro_verb` (the word a question puts in a verb's
+  place: English *do*, Spanish *hacer*) and `pro_verb_object` (the preposition that marks its
+  thing: *to*, *a*). The Spanish morphology also gained *hacer*'s preterite (*hice … hicieron*),
+  which no ending rule derives. A new reply key in both languages, `vectors_head`
+  (`{s} … {o}`), heads the answer.
+- **Without a construction:** *What did Pixel do to the napkin?* is a new intent, `vectorsOf`:
+  every vector the owner's words relate the subject to the thing by, each grounded as any
+  answer is (*sneeze*, *chew*). The pro-verb is read as a verb even where the lexicon also
+  lists it as an auxiliary (*do*), but only when no other verb follows it, so the *did* moved
+  behind the subject in *What did Pixel sneeze?* is still a cue.
+- **With a construction:** the pro-verb fills a verbish name as the gap, and the
+  construction's atoms that name no gap become conditions. *What did Pixel do to the napkin
+  off the table?* asks for `V pixel napkin` on condition `napkin | go_off | table`, and the
+  answer is a verb said **in the same sentence** as the condition, so the sneeze that sent the
+  napkin off, not a chewing said elsewhere. A condition that doesn't hold leaves nothing.
+- **Tied verbs:** a tied verbish name can be a verb gap only where no untied shape reads the
+  question, and then the answer is among the tie's verbs. So English *…to the cup off the
+  shelf?* is read by caused motion, not narrowed by *knocking off*, while Spanish *¿Qué hizo
+  Pixel al vaso de la mesa?*, which only the tied *movimiento causado* reads, is *tirar* and
+  not *morder*.
+
+Known gaps: a verb gap without a thing (*What did Pixel do?*) isn't read; a held or derived
+verb doesn't answer a verb gap inside a construction, since only said sentences can share one.
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §7 and §11.4; `pro_verb`, `pro_verb_object`
+and `vectors_head` in TTG-RFC-0001; a question row in TTG-RFC-0003 §4).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

@@ -601,7 +601,7 @@ function loadGrammar(st, lang){
     bareEnding:[], bareFinite:null, stanceNoun:new Set(), motion:new Set(), objectMark:new Set(),
     intransitive:new Set(), adverbEnding:[], adverbGuard:new Set(), selfEnding:[], selfForm:new Set(), pluralVerbEnding:"",
     roles:{}, vectors:new Map(), inherits:[], phrases:[],
-    whThing:new Set(), whPlace:new Map(), whPlacePrep:new Map(), questionOrder:"", whReason:new Set(), about:new Set(), describeMax:NaN,
+    proVerb:new Set(), proVerbObject:new Set(), whThing:new Set(), whPlace:new Map(), whPlacePrep:new Map(), questionOrder:"", whReason:new Set(), about:new Set(), describeMax:NaN,
     say:{}, units:{}, num:{}, sphere:{}, maxReply:NaN, loaded:[], ruleLines:[], rules:[], ruleErrors:[],
     constructionLines:[], constructions:[], constructionErrors:[]
   };
@@ -639,6 +639,10 @@ function loadGrammar(st, lang){
       for (const w of words(b.privative)) G.privative.add(w);
       // a preposition that marks a thing as a verb's object rather than a place (ve a Pixel)
       for (const w of words(b.object_mark)) G.objectMark.add(w);
+      // the word a question puts in a verb's place (what did Pixel do to the napkin), and the preposition
+      // that marks its thing (TTG-RFC-0006 §7, a gap at the verb)
+      for (const w of words(b.pro_verb)) G.proVerb.add(w);
+      for (const w of words(b.pro_verb_object)) G.proVerbObject.add(w);
     } else if (b.kind === "morphology"){
       for (const line of many(b, "noun_irregular")){ const c = cols(line); for (const w of words(c[0])) G.nounIrr.set(w, c[1]); }
       for (const w of words(b.noun_keep)) G.nounKeep.add(w);
@@ -1830,14 +1834,25 @@ function construe(S, T, L, idx, ctx, hold, holdBy, asking){
     if (c.abstract) continue;
     const bnd = {};
     // asking (§7): exactly one nounish name, untied, may match nothing; it is what the question asks for
-    let gap = null;
+    let gap = null, gapTie = null;
     const go = (e, k) => {
       if (e === c.els.length) return k === toks.length && (!asking || !!gap);
       const el = c.els[e];
       if (!el.name) return k < toks.length && toks[k].w === el.w && go(e + 1, k + 1);
       for (let j = k + 1; j <= toks.length && labs[j - 1] === el.cls; j++){
-        const b = bindAs(el.cls, toks.slice(k, j), el.tie);
-        if (b){ bnd[el.name] = b; if (go(e + 1, j)) return true; }
+        const b = bindAs(el.cls, toks.slice(k, j), asking && el.cls === "V" ? null : el.tie);
+        if (!b) continue;
+        // asking, a verbish name whose verb is the grammar's pro-verb is the gap: the verb asked for, one of the
+        // tie's verbs where the name is tied
+        if (asking && el.cls === "V" && G.proVerb.has(b.P.head)){
+          // a tied verb asked for narrows the question to the tie's verbs: tried only where no untied shape reads it
+          if (gap || (el.tie && asking !== "tied")) continue;
+          gap = el.name; gapTie = el.tie || null; bnd[el.name] = { P:{ ...b.P, head:SLOT, vector:SLOT } };
+          if (go(e + 1, j)) return true;
+          gap = null; gapTie = null; continue;
+        }
+        if (el.tie && el.cls === "V" && !el.tie.has(b.P.head)) continue;
+        bnd[el.name] = b; if (go(e + 1, j)) return true;
       }
       if (asking && !gap && el.cls === "N" && !el.tie){
         gap = el.name; bnd[el.name] = { np:{ quant:"-", none:false, neg:false }, h:{ lemma:SLOT, form:null } };
@@ -1855,7 +1870,7 @@ function construe(S, T, L, idx, ctx, hold, holdBy, asking){
       return go(1, 0) && Object.values(bnd).some(b => b.P && b.P.self);
     };
     if (!go(0, 0) && (asking || !dropped())) continue;
-    const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], subjects:null, open:false, openBy:null, construction:c };
+    const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], subjects:null, open:false, openBy:null, construction:c, gapTie };
     const verbs = Object.values(bnd).filter(b => b.P), neg = verbs.some(b => b.P.neg), past = verbs.some(b => b.P.past);
     for (const { v, s, o, neg:denies, contested } of c.atoms){
       const sb = isVar(s) ? bnd[s] : null, ob = isVar(o) ? bnd[o] : null;
@@ -2837,6 +2852,15 @@ function objectsOf(S, s, vs){
   }
   return [...items].map(([o, g]) => ({ term:o, ...g }));
 }
+/* The vectors the owner's words relate s to o by: what did Pixel do to the napkin. */
+function vectorsOf(S, s, o){
+  const R = S.G.roles, items = new Map();
+  const skip = v => [R.comention, R.episode_edge, R.amend_edge].includes(v);
+  for (const e of S.beliefsBy.get(s) || []) if (e.o === o && !skip(e.v) && e.pol !== "-" && !retired(S, e) && !items.has(e.v))
+    items.set(e.v, { kind:e.pol === "?" ? "conflict" : "direct", pol:e.pol, path:[e], conf:e.conf });
+  for (const D of S.derivedBy.get(s) || []) if (D.o === o && !items.has(D.v)) items.set(D.v, proofGround(S, D));
+  return [...items].map(([v, g]) => ({ term:vlabel(S, v), cls:"vector", ...g }));
+}
 function subjectsOf(S, v, o){
   const cands = new Set();
   for (const e of S.incoming.get(o === "-" ? SLOT + v : o) || []) if (e.v === v) cands.add(e.s);
@@ -2972,14 +2996,43 @@ function slotQuery(S, toks, ctx){
  * the construction says itself leads, its inherited ones narrow it.        */
 function construeQuestion(S, toks, ctx){
   if (!S.G.constructions.length || !toks.length) return null;
+  toks = dropProObject(S, toks);
   const labels = labelTokens(S, toks);
-  const r = construe(S, toks, labels, toks.map((t, i) => i), { last:ctx.last }, false, null, true);
+  const idx = toks.map((t, i) => i);
+  const r = construe(S, toks, labels, idx, { last:ctx.last }, false, null, true) || construe(S, toks, labels, idx, { last:ctx.last }, false, null, "tied");
   if (!r) return null;
-  const qs = r.percepts.filter(p => !p[SUB] && (p.s === SLOT) !== (p.o === SLOT) && p.pol !== HELD && p.pol !== HELD_NO)
-    .map(p => p.o === SLOT ? { intent:"objectsOf", s:p.s, vs:[p.v] } : { intent:"subjectsOf", v:p.v, o:p.o });
+  const live = r.percepts.filter(p => !p[SUB] && p.pol !== HELD && p.pol !== HELD_NO);
+  const qs = live.filter(p => (p.v === SLOT) + (p.s === SLOT) + (p.o === SLOT) === 1)
+    .map(p => p.v === SLOT ? { intent:"vectorsOf", s:p.s, o:p.o, ...(r.gapTie ? { only:[...r.gapTie] } : {}) } : p.o === SLOT ? { intent:"objectsOf", s:p.s, vs:[p.v] } : { intent:"subjectsOf", v:p.v, o:p.o });
   if (!qs.length) return null;
+  // the construction's atoms that name no gap still have to hold for any answer to: what did Pixel do to the
+  // napkin off the table asks only if the napkin went off the table
+  const checks = live.filter(p => p.v !== SLOT && p.s !== SLOT && p.o !== SLOT);
   const lead = qs[qs.length - 1];
-  return { ...lead, also:qs.slice(0, -1), construction:r.construction };
+  return { ...lead, also:qs.slice(0, -1), checks, construction:r.construction };
+}
+/* The pro-verb in a question (what did Pixel do to the napkin): the last word that is the pro-verb is read as
+   a verb, whatever class the lexicon gives it (English do is also an auxiliary), and its preposition
+   marks its thing, not a place: dropped, the thing is its object. */
+function dropProObject(S, toks){
+  const G = S.G;
+  if (!G.proVerb.size) return toks;
+  let at = -1;
+  toks.forEach((t, q) => { if (!t.punct && !t.synthetic && G.proVerb.has(verbLemma(S, t.w).lemma)) at = q; });
+  // a verb after it is the question's own (what did Pixel sneeze): the pro-verb was only the moved cue
+  if (at < 0 || toks.slice(at + 1).some(x => isVerbish(S, x))) return toks;
+  const out = toks.slice();
+  out[at] = { ...toks[at], cls:EMPTY };
+  return out[at + 1] && G.proVerbObject.has(out[at + 1].w) ? out.slice(0, at + 1).concat(out.slice(at + 2)) : out;
+}
+/* A gap at the verb with no construction (TTG-RFC-0006 §7): what did Pixel do to the napkin asks for every
+   vector the owner's words relate Pixel to the napkin by. */
+function proVerbQuestion(S, toks, ctx){
+  const G = S.G;
+  if (!G.proVerb.size) return null;
+  const r = clausePercepts(S, dropProObject(S, toks), { last:ctx.last }, null);
+  const p = r.percepts.find(x => G.proVerb.has(x.v) && x.s !== "-" && x.o !== "-" && x.s !== SLOT && x.o !== SLOT);
+  return p ? { intent:"vectorsOf", s:p.s, o:p.o } : null;
 }
 function whQuestion(S, wh, after, ctx){
   const G = S.G, place = G.whPlace.get(wh.w);
@@ -3000,7 +3053,7 @@ function whQuestion(S, wh, after, ctx){
   if (has(lead, "aux") || has(lead, "modal")){
     const moved = moveCue(S, rest, lead, false);
     // a construction reads the question first, where one covers it: what did Pixel sneeze off the table
-    const cq = !place && construeQuestion(S, moved, ctx);
+    const cq = !place && (construeQuestion(S, moved, ctx) || proVerbQuestion(S, moved, ctx));
     if (cq) return cq;
     if (!place) return slotQuery(S, moved.concat([synth(SLOT)]), ctx);
     return placeQuery(S, moved, wh, ctx);
@@ -3012,7 +3065,8 @@ function whQuestion(S, wh, after, ctx){
     if (G.questionOrder === "verb_subject" && place && subj){ const k = subjectEnd(S, rest, subj) + 1; return placeQuery(S, rest.slice(0, k).concat([lead], rest.slice(k)), wh, ctx); }
     // ¿qué tiró Pixel de la mesa? is Pixel tiró … de la mesa, a construction's question
     if (G.questionOrder === "verb_subject" && !place && subj){
-      const k = subjectEnd(S, rest, subj) + 1, cq = construeQuestion(S, rest.slice(0, k).concat([lead], rest.slice(k)), ctx);
+      const k = subjectEnd(S, rest, subj) + 1, said = rest.slice(0, k).concat([lead], rest.slice(k));
+      const cq = construeQuestion(S, said, ctx) || proVerbQuestion(S, said, ctx);
       if (cq) return cq;
     }
     // the speaker's own form is the dropped-subjects rule's, whatever the question order
@@ -3200,12 +3254,23 @@ function answerIn(S, text, now, source, shapes){
     if (r.verdict === "U") heldNotes(S, reply, h => it.checks.some(p => h.s === p.s && h.v === p.v && h.o === p.o));
     // a belief the owner's words changed is named with the change
     for (const p of it.checks){ const t = changeText(S, S.trips.get(p.s + "|" + p.v + "|" + p.o)); if (t && !reply.notes.includes(t)) reply.notes.push(t); }
-  } else if (it.intent === "objectsOf" || it.intent === "subjectsOf"){
-    const ask = q => q.intent === "objectsOf" ? objectsOf(S, q.s, q.vs) : subjectsOf(S, q.v, q.o);
+  } else if (it.intent === "objectsOf" || it.intent === "subjectsOf" || it.intent === "vectorsOf"){
+    const ask = q => q.intent === "objectsOf" ? objectsOf(S, q.s, q.vs) : q.intent === "vectorsOf" ? vectorsOf(S, q.s, q.o) : subjectsOf(S, q.v, q.o);
     let list = ask(it);
+    // a tied verb asked for is one of the tie's verbs
+    if (it.only) list = list.filter(g => g.kind === "direct" && it.only.includes(g.path[0].v));
+    // a construction's atoms that name no gap must hold, or nothing answers
+    if (it.checks && it.checks.some(p => verify(S, p.s, p.v, p.o).verdict !== (p.pol === "-" ? "N" : "Y"))) list = [];
+    // and a verb asked for inside a construction is one said with them, in one sentence: what did Pixel do to the
+    // napkin off the table is the sneeze that sent it, not a chewing said elsewhere
+    else if (it.intent === "vectorsOf" && it.checks && it.checks.length){
+      const said = new Set(it.checks.flatMap(p => { const e = S.trips.get(p.s + "|" + p.v + "|" + p.o); return e ? e.sources.map(x => x.ep + "|" + x.n) : []; }));
+      list = list.filter(g => g.kind === "direct" && g.path[0].sources.some(x => said.has(x.ep + "|" + x.n)));
+    }
     // a construction's question (TTG-RFC-0006 §7): an answer answers all of its atoms
     if (it.also && it.also.length){ const sets = it.also.map(q => new Set(ask(q).map(g => g.term))); list = list.filter(g => sets.every(s => s.has(g.term))); }
     reply.head = it.intent === "objectsOf" ? say(G, "objects_head", { s:it.s, v:vlabel(S, it.vs[0]) })
+               : it.intent === "vectorsOf" ? say(G, "vectors_head", { s:it.s, o:it.o })
                                           : say(G, "subjects_head", { v:vlabel(S, it.v), o:it.o === "-" ? "" : it.o });
     reply.items = cap(list).map(g => quoted(S, g));
     // what a stance holds is named with its saying, never grounded as said: what do I doubt?
@@ -3500,7 +3565,7 @@ function groundBody(g){
 }
 function groundHtml(g){
   const G = S.G;
-  const lead = g.term ? chip(g.term, "thing") + " " : "";
+  const lead = g.term ? chip(g.term, g.cls || "thing") + " " : "";
   const exc = g.exception ? `<div class="note">${esc(say(G, "exception", { term:g.path[0].s, via:g.exception.via }))}</div>` : "";
   // the fact that retired this one keeps its own kind's look, indented under it
   const by = g.by ? `<div class="g ${g.by.kind} by"><span class="lab">${esc(say(G, "superseded_by"))}</span>${groundBody(g.by)}</div>` : "";

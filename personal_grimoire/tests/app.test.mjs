@@ -1177,6 +1177,30 @@ section("questions a construction reads: the gap is what is asked, every atom na
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 
+section("a question gap at the verb: the pro-verb stands in the verb's place (TTG-RFC-0006 §7)");
+{
+  const S = fresh();
+  let t = T0;
+  for (const s of ["Pixel sneezed the napkin off the table.", "Pixel chewed the napkin.", "Pixel knocked the cup off the shelf.", "Pixel licked the cup.",
+                   "Pixel tiró el vaso de la mesa.", "Pixel mordió el vaso."]) PG.answer(S, s, t += 60);
+  const ask = q => PG.answer(S, q, t += 60), terms = r => r.items.map(i => i.term).join(" ");
+  ok(S.G.proVerb.has("do") && S.G.proVerbObject.has("to") && S.grammars[1].proVerb.has("hacer"), "each lexicon declares its pro-verb and the preposition that marks its thing");
+  const plain = ask("What did Pixel do to the napkin?");
+  ok(plain.intent === "vectorsOf" && terms(plain) === "sneeze chew" && plain.head === PG.say(S.G, "vectors_head", { s:"pixel", o:"napkin" }),
+     "What did Pixel do to the napkin? asks for every verb relating them", terms(plain));
+  ok(plain.items.every(i => i.cls === "vector"), "and its answers are vectors");
+  const cx = PG.interpret(S, "What did Pixel do to the napkin off the table?");
+  ok(cx.construction && cx.construction.label === "caused motion" && cx.checks.length === 1, "inside a construction's shape, the pro-verb is the gap at its verb, and the other atom a condition");
+  ok(terms(ask("What did Pixel do to the napkin off the table?")) === "sneeze", "and the verb answering is the one said with that condition: the sneeze that sent the napkin off, not the chewing");
+  ok(terms(ask("What did Pixel do to the cup off the shelf?")) === "knock", "a tied child does not narrow a question its untied parent reads");
+  ok(terms(ask("What did Pixel do to the napkin off the shelf?")) === "", "and a condition that does not hold leaves nothing");
+  ok(terms(ask("¿Qué hizo Pixel al vaso?")) === "tirar morder" && terms(ask("¿Qué hizo Pixel al vaso de la mesa?")) === "tirar",
+     "in Spanish, with hacer: where only a tied shape reads it, the answer is among the tie's verbs");
+  ok(terms(ask("What did Pixel sneeze off the table?")) === "napkin" && terms(ask("What do cats chase?")) === "mouse",
+     "a question whose verb is its own is not a pro-verb's, even after a moved did");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
+}
+
 section("time: exclusive vectors and supersession (TTG-RFC-0004 §2–3)");
 {
   const empty = () => { const S = fresh(); PG.startEmpty(S, T0); return PG.openStore(PG.serializeStore(S.st)); };

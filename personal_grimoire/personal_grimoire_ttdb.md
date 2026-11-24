@@ -652,7 +652,7 @@ data. The grammar and every reply word come with the store; your app supplies on
 
 ---
 
-@LAT-10LON0 | created:1789257600 | updated:1796083200 | relates:refines@LAT20LON0
+@LAT-10LON0 | created:1789257600 | updated:1796169600 | relates:refines@LAT20LON0
 
 **Grammar — closed-class words (English)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §3
@@ -714,6 +714,8 @@ aside_marks: ( )
 head: last
 modifier: drop
 question_order: subject_verb
+pro_verb: do
+pro_verb_object: to
 privative: fake former false toy pretend
 ```
 
@@ -944,7 +946,7 @@ describe_max_words: 2
 
 ---
 
-@LAT-60LON0 | created:1789257600 | updated:1795651200 | relates:refines@LAT70LON0
+@LAT-60LON0 | created:1789257600 | updated:1796169600 | relates:refines@LAT70LON0
 
 **Grammar — replies (English)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §8
@@ -993,6 +995,7 @@ points_here: What points at {term}
 mentioned_with: mentioned with
 objects_head: {s} {v} …
 subjects_head: … {v} {o}
+vectors_head: {s} … {o}
 nothing_found: Nothing in your words fits.
 search_head: The closest things you have said
 suggest: You bring up {term} often, and your words about it are unsettled (EPS {eps}). Tell me more about {term}?
@@ -1062,7 +1065,7 @@ rule: move_to X Y => in X Y | moving somewhere puts you there
 
 ---
 
-@LAT-85LON0 | created:1795478400 | updated:1796083200 | relates:refines@LAT30LON0,refines@LAT-80LON0
+@LAT-85LON0 | created:1795478400 | updated:1796169600 | relates:refines@LAT30LON0,refines@LAT-80LON0
 
 **Grammar — constructions**
 src: RFCs/TTG-RFC-0006-Constructions.md §2
@@ -1102,7 +1105,10 @@ declares its own; these are English, and Spanish declares [its own](lat-85lon180
 Constructions read questions too: *What did Pixel sneeze off the table?* is the shape with
 nothing where `[Y]` stands, so it asks for what Pixel sneezed **and** what went off the table,
 and an answer has to be both; *Did Pixel sneeze the cap off the table?* is yes only if every
-atom is.
+atom is. A question can ask for the verb, too: the lexicon's `pro_verb` (*do*, *hacer*)
+stands in the verb's place and its `pro_verb_object` (*to*, *a*) marks its thing, so *What did
+Pixel do to the napkin?* asks for every verb your words relate Pixel to the napkin by, and
+*What did Pixel do to the napkin off the table?* asks only if the napkin went off the table.
 
 ```ttdb-grammar
 kind: constructions
@@ -1116,7 +1122,7 @@ construction: [X] {V=take} [Y=day,week,afternoon,morning] off => rest X Y | taki
 
 ---
 
-@LAT-10LON180 | created:1789257600 | updated:1789257600 | relates:translates@LAT-10LON0
+@LAT-10LON180 | created:1789257600 | updated:1796169600 | relates:translates@LAT-10LON0
 
 **Gramática — palabras cerradas (español)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §3
@@ -1163,13 +1169,15 @@ aside_marks: ( )
 head: first
 modifier: drop
 question_order: verb_subject
+pro_verb: hacer
+pro_verb_object: a
 privative: falso falsa falsos falsas
 object_mark: a
 ```
 
 ---
 
-@LAT-20LON180 | created:1789257600 | updated:1795996800 | relates:translates@LAT-20LON0
+@LAT-20LON180 | created:1789257600 | updated:1796169600 | relates:translates@LAT-20LON0
 
 **Gramática — morfología (español)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §4
@@ -1194,7 +1202,7 @@ plural_verb_ending: n
 verb_irregular: estoy estás está estamos están | estar
 verb_irregular: tengo tienes tiene tenemos tienen | tener
 verb_irregular: voy vas va vamos van | ir
-verb_irregular: hago haces hace hacemos hacen | hacer
+verb_irregular: hago haces hace hacemos hacen hice hiciste hizo hicimos hicieron | hacer
 verb_irregular: puedo puedes puede podemos pueden | poder
 verb_irregular: quiero quieres quiere queremos quieren | querer
 verb_irregular: duermo duermes duerme dormimos duermen | dormir
@@ -1317,7 +1325,7 @@ describe_max_words: 2
 
 ---
 
-@LAT-60LON180 | created:1789257600 | updated:1795651200 | relates:translates@LAT-60LON0
+@LAT-60LON180 | created:1789257600 | updated:1796169600 | relates:translates@LAT-60LON0
 
 **Gramática — respuestas (español)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §8
@@ -1365,6 +1373,7 @@ points_here: Lo que apunta a {term}
 mentioned_with: aparece con
 objects_head: {s} {v} …
 subjects_head: … {v} {o}
+vectors_head: {s} … {o}
 nothing_found: Nada en tus palabras encaja.
 search_head: Lo más cercano que has dicho
 suggest: Mencionas {term} a menudo y lo que dices de ello no está asentado (EPS {eps}). ¿Me cuentas más sobre {term}?

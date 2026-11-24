@@ -117,7 +117,8 @@ what its parents dispute, and is tried before them; that an abstract constructio
 matched, only inherited; that a tied name binds only its own verbs or things, by lemma; that a Spanish construction
 reads *de* as *off* only after the verbs it names, and binds a dropped subject to the speaker;
 that a construction reads a question with one name left for what is asked, and an answer must
-answer every atom; that an amendment stands in for a sentence
+answer every atom; that a question's pro-verb asks for the verb, and inside a construction only
+the verb said with its other atoms answers; that an amendment stands in for a sentence
 without touching its episode, and is withdrawn by reading the sentence back the episode's
 way; and that a re-reading reports what a grammar edit changes, in the context the sentences
 before it stand as, writes nothing, and can be taken as an amendment that names the grammar —
@@ -579,7 +580,10 @@ settles yes against no.
   verbs that move a thing, because *de* is both *off* and *of*: *Pixel tiró el vaso de la
   mesa* is the glass leaving the table, *Pixel vio el vaso de la mesa* the table's glass.
   Constructions read questions too: *What did Pixel sneeze off the table?* is answered by what
-  Pixel sneezed that also went off the table, not by everything that went off it.
+  Pixel sneezed that also went off the table, not by everything that went off it. A question
+  can ask for the verb: *What did Pixel do to the napkin?* lists every verb your words relate
+  them by, and *What did Pixel do to the napkin off the table?* only the one you said sent it
+  there.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
   less than you did.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.
