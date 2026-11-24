@@ -123,7 +123,7 @@ preview:
 
 ---
 
-@LAT-32LON90 | created:1789689840 | updated:1795305600 | relates:prev>@LAT-32LON60,next>@LAT-20LON120,specifies>@LAT0LON-150,specifies>@LAT-32LON60,opens>RFCs/index.html
+@LAT-32LON90 | created:1789689840 | updated:1795478400 | relates:prev>@LAT-32LON60,next>@LAT-20LON120,specifies>@LAT0LON-150,specifies>@LAT-32LON60,opens>RFCs/index.html
 
 ## RFCs
 
@@ -132,7 +132,7 @@ preview:
 ```
 ╭──────────────────────────────────────────────────────╮
 │  R F C   C O R P U S                                 │
-│  36 documents · 6 series · 1 bundle · 1 globe        │
+│  37 documents · 6 series · 1 bundle · 1 globe        │
 ╰──────────────────────────────────────────────────────╯
 
   lane    series  subject          lon → 1 . . . . . 11
@@ -141,7 +141,7 @@ preview:
   lat 30  TTCP    the reader       ███········
   lat 40  A32     the $5 device    █████······
   lat 50  ARC     the game agent   █··········
-  lat 60  TTG     the grammar      █████······
+  lat 60  TTG     the grammar      ██████·····
   lat 98  —       spec vs. metal   ▒▒▒▒▒▒▒▒···
 
   █ compressed   ░ pending   ▒ belief, no source RFC
@@ -205,6 +205,7 @@ back on demand.
 - [`0003`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon3) [Beliefs, Vector Reasoning and Grounded Response](RFCs/index.html?rfc=TTG-RFC-0003-Beliefs-Reasoning-Response.md)
 - [`0004`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon4) [Time and the Fleet](RFCs/index.html?rfc=TTG-RFC-0004-Time-and-the-Fleet.md)
 - [`0005`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon5) [Shapes and Amendments](RFCs/index.html?rfc=TTG-RFC-0005-Shapes-and-Amendments.md)
+- [`0006`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon6) [Constructions](RFCs/index.html?rfc=TTG-RFC-0006-Constructions.md)
 
 Lane `lat 98` carries eight consolidated beliefs — the places where the metal
 disagrees with the spec — starting at
