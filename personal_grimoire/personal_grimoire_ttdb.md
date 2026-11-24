@@ -1062,7 +1062,7 @@ rule: move_to X Y => in X Y | moving somewhere puts you there
 
 ---
 
-@LAT-85LON0 | created:1795478400 | updated:1795910400 | relates:refines@LAT30LON0,refines@LAT-80LON0
+@LAT-85LON0 | created:1795478400 | updated:1795996800 | relates:refines@LAT30LON0,refines@LAT-80LON0
 
 **Grammar — constructions**
 src: RFCs/TTG-RFC-0006-Constructions.md §2
@@ -1098,7 +1098,7 @@ thing, or a subclass a phrase made of it (a *black cat* is a cat; a *toy cat* is
 idiom can say what none of its words do: *I took the day off* is `self | rest | day`, not a
 taking, while *I took the cup off* is read by its words. A tie counts as a word of the
 construction's own. Unlike rules, constructions hold words, so each language
-declares its own; these are English, and Spanish declares none.
+declares its own; these are English, and Spanish declares [its own](lat-85lon180).
 
 ```ttdb-grammar
 kind: constructions
@@ -1165,7 +1165,7 @@ object_mark: a
 
 ---
 
-@LAT-20LON180 | created:1789257600 | updated:1789257600 | relates:translates@LAT-20LON0
+@LAT-20LON180 | created:1789257600 | updated:1795996800 | relates:translates@LAT-20LON0
 
 **Gramática — morfología (español)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §4
@@ -1203,6 +1203,16 @@ verb_irregular: sé sabes sabe sabemos saben | saber
 verb_irregular: creo | creer
 verb_irregular: persigo persigues persigue perseguimos persiguen | perseguir
 verb_irregular: veo ves ve vemos ven vi viste vio vimos vieron | ver
+verb: aron | ar
+verb: ieron | er | ir
+verb: aban | ar
+verb: ían | er | ir
+verb: aba | ar
+verb: ía | er | ir
+verb: ió | er | ir
+verb: ó | ar
+verb: é | ar
+verb: í | er | ir
 verb: ando | ar
 verb: iendo | er | ir
 verb: ado | ar
@@ -1231,7 +1241,7 @@ past_form: era eran estaba estaban fue fueron fui vi viste vio vimos vieron tuvo
 
 ---
 
-@LAT-30LON180 | created:1789257600 | updated:1789257600 | relates:translates@LAT-30LON0
+@LAT-30LON180 | created:1789257600 | updated:1795996800 | relates:translates@LAT-30LON0
 
 **Gramática — verbos semilla (español)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §5
@@ -1243,7 +1253,7 @@ ratones*, `perseguir | ratón`).
 ```ttdb-grammar
 kind: seed
 lang: es
-seed: comer beber gustar amar odiar querer necesitar saber conocer pensar creer ver oír sentir hacer dar tomar tener encontrar traer comprar vender usar ayudar construir escribir leer decir llamar enseñar aprender jugar trabajar correr caminar nadar volar saltar crecer cazar perseguir atrapar temer evitar proteger causar crear contener llevar perder ganar cambiar seguir abrir cerrar empezar terminar disfrutar preferir recordar olvidar visitar mirar cantar cocinar viajar estudiar hablar vivir dormir morder pagar dibujar pintar soñar esperar ronronear ladrar oler caer despertar pertenecer
+seed: comer beber gustar amar odiar querer necesitar saber conocer pensar creer ver oír sentir hacer dar tomar tener encontrar traer comprar vender usar ayudar construir escribir leer decir llamar enseñar aprender jugar trabajar correr caminar nadar volar saltar crecer cazar perseguir atrapar temer evitar proteger causar crear contener llevar perder ganar cambiar seguir abrir cerrar empezar terminar disfrutar preferir recordar olvidar visitar mirar cantar cocinar viajar estudiar hablar vivir dormir morder pagar dibujar pintar soñar esperar ronronear ladrar oler caer despertar pertenecer tirar empujar sacar echar quitar bajar
 stance: creer pensar dudar suponer esperar desear temer sospechar imaginar soñar decir negar contar explicar mencionar
 chain: ver oír mirar sentir hacer dejar ayudar
 stance_noun: hecho idea noticia rumor creencia esperanza miedo sensación posibilidad prueba duda sospecha
@@ -1361,6 +1371,26 @@ store_opened: Se abrió un almacén en lugar de leerlo como palabras: {file}.
 unit_percept: percepción | percepciones
 unit_sentence: frase | frases
 unit_term: término | términos
+```
+
+---
+@LAT-85LON180 | created:1795996800 | updated:1795996800 | relates:translates@LAT-85LON0
+
+**Gramática — construcciones (español)**
+src: RFCs/TTG-RFC-0006-Constructions.md §5
+
+Constructions hold words, so Spanish declares its own and borrows none of English's. *de* is
+both *off* and *of*: *el vaso de la mesa* is the table's glass after *vio* and the glass off
+the table after *tiró*. So the shape is tied to the verbs that move a thing: *Pixel tiró el
+vaso de la mesa* says the throw and `vaso | salir_de | mesa`, while *Pixel vio el vaso de la
+mesa* is read by its words. Like English, the motion inherits the verb's own percept from an
+abstract root.
+
+```ttdb-grammar
+kind: constructions
+lang: es
+construction: => V X Y | actuar sobre algo
+construction: [X] {V=tirar,empujar,sacar,echar,quitar,bajar} [Y] de [Z] => salir_de Y Z | movimiento causado | is_a actuar sobre algo
 ```
 
 ---

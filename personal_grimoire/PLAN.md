@@ -179,8 +179,8 @@ spot. **Size:** medium.
 - A change inside one episode (*I hated snow. I do not hate snow.*) decides the belief
   correctly, but the tell's reply doesn't name the change, because a reply compares against
   what the store held before the tell.
-- Many Spanish past forms (*cazaron*, *gustaba*) are not lemmatized. This is an existing gap,
-  unchanged by Phase 3. Where the verb is recognized, its past is marked.
+- ~~Many Spanish past forms (*cazaron*, *gustaba*) are not lemmatized.~~ Closed 2026-11-29 by
+  the Spanish preterite and imperfect endings in the morphology (below, Spanish constructions).
 
 Also fixed along the way: `tests/embed.test.mjs` now normalizes line endings as the store's
 reader does. With `core.autocrlf=true`, git rewrites working copies with CRLF on checkout, and
@@ -487,6 +487,31 @@ owner has said cats are animals. Following beliefs would make a reading change w
 belief does, with no re-reading to show why, so it is left open.
 
 Upstream (toot-toot-engineering `4305092`): TTG-RFC-0006 0.6.
+
+**A Spanish construction (2026-11-29): implemented in the store, the runtime and the tests.**
+- **The record:** `@LAT-85LON180`, `lang: es`, beside the English one. An abstract root,
+  `actuar sobre algo` (`=> V X Y`), and `movimiento causado`:
+  `[X] {V=tirar,empujar,sacar,echar,quitar,bajar} [Y] de [Z] => salir_de Y Z`.
+  *Pixel tiró el vaso de la mesa* is the throw and `vaso | salir_de | mesa`; *Pixel vio el vaso
+  de la mesa* is still the table's glass, read by its words. The tie is what lets *de* be read
+  as *off*: TTG-RFC-0006 §11.3 had said *de* alone couldn't be.
+- **The morphology:** the Spanish past wasn't lemmatized, so the tie missed *tiró*. The
+  morphology now has the preterite and imperfect endings (*aron*, *ieron*, *aban*, *ían*,
+  *aba*, *ía*, *ió*, *ó*, *é*, *í*), ahead of the present ones, since a verb takes its first
+  matching ending. This also closes the Phase 3 gap: *Los gatos cazaron ratones* is now
+  `gato | cazar | ratón`, and *tiraban* is no longer *tirabar*. The six motion verbs joined the
+  Spanish seed list, so *Tiré el vaso* finds its verb without a subject before it.
+- **The runtime:** a shape that opens on a nounish name now binds it to the speaker when the
+  clause opens on a verb in the speaker's own form (*Tiré el vaso de la mesa* is `self | tirar
+  | vaso` and `vaso | salir_de | mesa`), as the chain does. A dropped subject that isn't the
+  speaker's (*Tiró el vaso…*) matches no shape.
+- The seed episodes re-read unchanged.
+
+Known gaps: Spanish has no question that reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*),
+and English and Spanish motions are separate vectors (`go_off`, `salir_de`) until a rule links
+them.
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §3 and §5, and §11.3 answered).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

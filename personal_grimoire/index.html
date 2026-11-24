@@ -1839,7 +1839,15 @@ function construe(S, T, L, idx, ctx, hold, holdBy){
       }
       return false;
     };
-    if (!go(0, 0)) continue;
+    // a subject dropped because the verb is in the speaker's own form (Tiré el vaso): a shape that opens
+    // on a nounish name binds it to the speaker, as the chain does (TTG-RFC-0005 §3, dropped subjects)
+    const first = c.els[0], me = G.sphere.self_lemma;
+    const dropped = () => {
+      if (!first || !first.name || first.cls !== "N" || !me || labs[0] !== "V" || (first.tie && !first.tie.has(me))) return false;
+      bnd[first.name] = { np:{ quant:"-", none:false, neg:false }, h:{ lemma:me, self:true, form:null } };
+      return go(1, 0) && Object.values(bnd).some(b => b.P && b.P.self);
+    };
+    if (!go(0, 0) && !dropped()) continue;
     const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], subjects:null, open:false, openBy:null, construction:c };
     const verbs = Object.values(bnd).filter(b => b.P), neg = verbs.some(b => b.P.neg), past = verbs.some(b => b.P.past);
     for (const { v, s, o, neg:denies, contested } of c.atoms){

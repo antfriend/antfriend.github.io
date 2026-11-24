@@ -114,7 +114,8 @@ verb's denial, tense and hold carried to each atom, while a clause it does not c
 you marked, reads as it would without it, and an unsafe one is rejected; that a construction
 inherits what its ancestors say, from one parent or several, overrides it with its own, holds
 what its parents dispute, and is tried before them; that an abstract construction is never
-matched, only inherited; that a tied name binds only its own verbs or things, by lemma; that an amendment stands in for a sentence
+matched, only inherited; that a tied name binds only its own verbs or things, by lemma; that a Spanish construction
+reads *de* as *off* only after the verbs it names, and binds a dropped subject to the speaker; that an amendment stands in for a sentence
 without touching its episode, and is withdrawn by reading the sentence back the episode's
 way; and that a re-reading reports what a grammar edit changes, in the context the sentences
 before it stand as, writes nothing, and can be taken as an amendment that names the grammar —
@@ -572,7 +573,9 @@ settles yes against no.
   can be tied to its verbs by lemma (`{V=knock}` is *knocked*, *knocks*, *knocking*), so
   *knocking off* adds the cup falling, while any other verb is only caused motion. A nounish
   name is tied the same way (`[Y=day]`), so an idiom can mean what its words don't: *I took
-  the day off* is a rest, not a taking.
+  the day off* is a rest, not a taking. Spanish has [its own](lat-85lon180), tied to the
+  verbs that move a thing, because *de* is both *off* and *of*: *Pixel tiró el vaso de la
+  mesa* is the glass leaving the table, *Pixel vio el vaso de la mesa* the table's glass.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
   less than you did.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.

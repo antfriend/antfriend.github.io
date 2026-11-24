@@ -851,7 +851,7 @@ section("start empty keeps the kit");
   ok(S.things.size === 1 && S.things.has("self") && S.vectors.size === 0, "only the speaker remains as a term");
   ok(recs.filter(r => r.lon === 0 && r.lat > -90 && r.lat < 90).length === 19, "home, nine blueprint and nine grammar records kept");
   ok(recs.some(r => r.id === "@LAT99LON1") && recs.some(r => r.lat === 98) && recs.some(r => r.lat === -90), "lanes 98, 99 and the special record kept");
-  ok(recs.filter(r => r.lon === 180 && r.grammar != null).length === 6 && S.grammars.length === 2, "the second language on the antimeridian kept");
+  ok(recs.filter(r => r.lon === 180 && r.grammar != null).length === 7 && S.grammars.length === 2, "the second language on the antimeridian kept");
   const r = PG.answer(S, "I like tea.", T0 + 60);
   ok(r.episode.id === "@LAT90LON1", "the first new episode is ordinal 1 again");
   // the fixture survives Start empty, and its sentence shares words with ordinary speech
@@ -912,8 +912,9 @@ section("constructions: a shape that says what its words do not (TTG-RFC-0006)")
   const BARE = STORE.replace(LINE, "");
   const keys = ps => ps.map(pk).join(" / ");
   const S = fresh();
-  ok(S.G.constructions.length === 6 && S.G.constructionErrors.length === 0 && S.grammars[1].constructions.length === 0,
-     "six English constructions load, none rejected, and Spanish borrows none: constructions hold words");
+  ok(S.G.constructions.length === 6 && S.G.constructionErrors.length === 0 && S.grammars[1].constructions.length === 2 &&
+     !S.grammars[1].constructions.some(c => S.G.constructions.some(e => e.label === c.label)),
+     "six English constructions load, none rejected, and Spanish has its own two, borrowing none: constructions hold words");
 
   const told = PG.answer(S, "Pixel sneezed the napkin off the table.", T0 + 60);
   const ps = told.episode.all;
@@ -1125,6 +1126,29 @@ section("a nounish name tied to its things, by lemma (TTG-RFC-0006 §2)");
   ok(black.percepts.some(p => pk(p) === "black_cat | is_a | cat | + | -") && black.percepts.some(p => pk(p) === "black_cat | has_property | black | + | -") &&
      !toy.percepts.some(p => p.s === "toy_cat" && p.v === "is_a"), "and a clause a construction read says the subclass its phrase made, as the chain does");
   ok(PG.shapeOf(sub, "The dog pushed the cup off the shelf.").constructions[0].label === "caused motion", "another thing falls to the parent");
+}
+
+section("a Spanish construction: de is off only after a verb that moves a thing (TTG-RFC-0006 §5)");
+{
+  const st = PG.openStore(STORE), read = s => PG.shapeOf(st, s), keys = r => r.percepts.map(pk).join(" / ");
+  const es = st.grammars.find(G => G.lang === "es");
+  ok(es.constructions.map(c => c.label).join() === "movimiento causado,actuar sobre algo" && es.constructions[1].abstract,
+     "Spanish declares caused motion and its own abstract root");
+  const tiro = read("Pixel tiró el vaso de la mesa.");
+  ok(tiro.lang === "es" && keys(tiro) === "pixel | tirar | vaso | + | - / vaso | salir_de | mesa | + | -" && tiro.constructions[0].parents.join() === "actuar sobre algo",
+     "Pixel tiró el vaso de la mesa is a throw, and the glass leaving the table", keys(tiro));
+  ok(keys(read("Pixel vio el vaso de la mesa.")) === "pixel | ver | vaso | + | - / vaso | with | mesa | + | -", "after vio, de is of: the table's glass, read by its words");
+  ok(read("Pixel empujó el vaso del estante.").percepts.some(p => p.v === "salir_de" && p.o === "estante"), "del is de el, so the shape still matches");
+  ok(keys(read("Tiré el vaso de la mesa.")) === "self | tirar | vaso | + | - / vaso | salir_de | mesa | + | -", "the speaker's own form needs no subject");
+  ok(read("Pixel no tiró el vaso de la mesa.").percepts.every(p => p.pol === "-"), "a denial carries");
+  ok(!read("Tiró el vaso de la mesa.").constructions.length, "but a dropped subject that is not the speaker's is no one's, and the shape does not read it");
+  const told = PG.answer(st, "Pixel tiró el vaso de la mesa.", T0 + 60);
+  ok(told.notes.some(n => n.includes("movimiento causado, una clase de actuar sobre algo")), "the reply is in Spanish and names it", told.notes.join(" | "));
+  ok(!PG.shapeOf(st, "Pixel knocked the cup off the shelf.").constructions.some(c => es.constructions.includes(c)), "and English sentences never meet a Spanish construction");
+  // the Spanish past, which the tie depends on
+  ok(["tiró", "tiraron", "tiraba", "tiraban", "tiré"].every(w => PG.shapeOf(st, "Los gatos " + w + " los vasos.").percepts.some(p => p.v === "tirar")) &&
+     keys(read("Los gatos cazaron ratones.")) === "gato | cazar | ratón | + | -", "the morphology reads the Spanish past: tiró, tiraron, tiraba, cazaron");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 
 section("time: exclusive vectors and supersession (TTG-RFC-0004 §2–3)");
