@@ -1,6 +1,6 @@
 # TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
 
-**Version:** 1.14
+**Version:** 1.15
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -212,10 +212,38 @@ a ground, and the verdict stands; TTG-RFC-0005 §3), `asked_holds` (for an objec
 whose subject and vector are a stance percept's, what each of its holds lines links, with the
 saying — never a ground, and `nothing_found` is not given when one is named; TTG-RFC-0005 §3),
 `changed_tense` (a change in the owner's tense, in place of `contradicts` on a tell, and with a
-question's grounds; TTG-RFC-0004 §3.7),
+question's grounds; TTG-RFC-0004 §3.7), `trajectory_crossing` and `trajectory_alternation` (the
+shape a yes/no question's triple's sayings make, below),
 `no_purchase`, and `suggest` for the purchased THING with the highest EPS at or above
 `suggest_eps_min`. Search results are ranked by Σ log(1 + N/df) over matched lemmas across
 all `said` lines.
+
+**The shape of the sayings.** Where the grammar declares `trajectory_min_episodes` above 0, a
+verify answer names the shape each checked triple's sayings make, as a note beside the grounds —
+never a ground, and the verdict and grounds are those a store declaring no such number gives:
+
+1. **The series.** Each episode that says the triple, in lane order, scores it as §2 does — the
+   largest `+` weight and the largest `-` weight among its percepts of the triple, a partial
+   saying at `weight_partial` — and its **sign** is which is larger, 0 where they are alike. A
+   saying a change in tense retired (TTG-RFC-0004 §3.7) is in the series, since the shape is of
+   what was said, not of what is believed.
+2. **The runs.** Consecutive episodes of one sign are a run; a 0 episode is in the series but in
+   no run.
+3. **The shape.** With fewer than `trajectory_min_episodes` episodes in the series, or no run,
+   there is none. One run is a *fixed point*. Two runs, the second of at least `trajectory_hold`
+   episodes (1 where the grammar declares none), are *one crossing*; shorter, a crossing *not yet
+   held*. Three runs or more are an *alternation*.
+4. **The note.** One crossing is named by `trajectory_crossing`, with `{before}` and `{after}` the
+   two runs' lengths in the `episode` unit; an alternation by `trajectory_alternation`, with
+   `{episodes}` the series' length in that unit and `{turns}` the number of runs less one. A fixed
+   point, a crossing not yet held and too few episodes are not named. Where a saying of the
+   triple is changed by the owner's tense, `changed_tense` already names the change and this note
+   is not given.
+
+So *I like tea* in three episodes, then *I don't like tea* in three, is still `contest`, with a
+note that the sayings turned once; *I like milk* and *I don't like milk* in turn, five times, is
+`affirm`, with a note that they go back and forth. The note is a description, not a recency
+rule (§6.1): it never retires a saying. Appendix A gives the background.
 
 **Side effects.** A non-perceive answer increments `asked` on every purchased term (an
 `[ew]`-weight write in TTDB-RFC-0005's sense: `rev` does not change). Every answer rewrites the
@@ -229,7 +257,8 @@ All constants named here are keys of the `numbers` kind (TTG-RFC-0001 §9). The 
 values are `prior_for 1`, `prior_against 1`, `weight_partial 0.5`,
 `belief_conf_threshold 128`, `inherit_decay 0.85`, `max_hops 4`, `answer_max_items 6`,
 `search_max_items 5`, `suggest_eps_min 40`, `with_max_pairs 3`, `said_max_chars 400`,
-`rule_max_body 3`, and, for what a verb takes (TTG-RFC-0005 §3, verb frames),
+`rule_max_body 3`, and, for the shape of the sayings (§4), `trajectory_min_episodes 3` and
+`trajectory_hold 2`, and, for what a verb takes (TTG-RFC-0005 §3, verb frames),
 `frame_min_episodes 1`, `frame_grammar_weight 1`, `frame_preempt_ratio 0`, and, for
 modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`, and, for constructions
 (TTG-RFC-0006 §6), `construction_max_words 8`.
@@ -242,7 +271,9 @@ modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`, and, for constructions
    owner's tense does (TTG-RFC-0004 §3.7). A recency
    window would be a claim about the owner; a `revises` percept marker (*I used to…*) would
    be a claim about the language. The `exclusive` flag (TTG-RFC-0004) is a third kind, a claim
-   about a relation, and settles only changes of object, never of polarity.
+   about a relation, and settles only changes of object, never of polarity. The shape of the
+   sayings (§4) shows the owner a change of mind said without a change of tense, and leaves the
+   verdict where §2 puts it.
 2. **Defaults beyond specificity.** Only the nearest ancestor overrides. Multiple
    inheritance with conflicting ancestors at equal distance currently resolves by walk order.
 3. **Answer realisation.** Replies quote rather than generate. A realisation layer — slot
@@ -276,5 +307,59 @@ modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`, and, for constructions
 | 2026-12-08 | 1.12: §4, a question with the copula and a preposition — stranded (*Where is Pixel from?*), tried before the place vector, or fronted (*¿De dónde es Pingu?*) — asks along the preposition. Implemented by the personal_grimoire reference runtime (antfriend.github.io `0b52632`). |
 | 2026-12-10 | 1.13: §4, the `wh` + verb row says what §4's prose already did — a thing a preposition opens is never a subject behind its verb (*¿Qué salió de la mesa?*); the reference runtime had ruled out only the object mark. §3.1, rules that link the vectors constructions write for one motion (`go_off`, `salir_de` ⇒ `leave`). Implemented by the personal_grimoire reference runtime (antfriend.github.io `34e03cc`). |
 | 2026-12-11 | 1.14: §4, a fronted preposition with the copula whose predicate's noun stands before the subject (*¿De qué es parte la rueda?*): the last phrase is the subject. Implemented by the personal_grimoire reference runtime (antfriend.github.io `1ce3dec`). |
+| 2026-12-13 | 1.15: §4, **the shape of the sayings** — a verify answer names one crossing or an alternation in a triple's per-episode signs, as a note beside the grounds that never changes the verdict (`trajectory_crossing`, `trajectory_alternation`); §5, `trajectory_min_episodes 3` and `trajectory_hold 2`; §6.1 narrowed; Appendix A, trajectories (informative). Implemented by the personal_grimoire reference runtime (antfriend.github.io `e2e02bf`), from its PLAN.md phase 7 and its research note on belief trajectories. |
+
+---
+
+## Appendix A. Trajectories (Informative)
+
+**Where it comes from.** K. R. Haylett reads meaning as a basin of attraction in a nonlinear
+dynamical system, and uses Takens' delay embedding to rebuild an attractor's geometry from one
+scalar series, while granting that the step is only approximate for sparse, quantized text [1, 2].
+A grimoire already keeps such a series for every triple: its sayings, in lane order, never
+rewritten (TTG-RFC-0004 §2). §4's shape of the sayings is what that lens yields here, cut to what
+the store can say without a claim about the owner.
+
+**What a verdict cannot show.** §2 sums. A settled belief, a contest of equals and a change of
+mind said without a change of tense can end at the same confidence: three *likes* and three
+*don't likes* are a contest at 128 whether they alternate or fall in two runs. The shapes tell
+them apart — a fixed point is a settled belief, an alternation a real disagreement, one crossing
+then held a change of mind — and §4 offers the last two to the owner without deciding either.
+
+**Why the sign, not a running balance.** A running balance `(for − against) / (for + against +
+prior_for + prior_against)` over the episodes so far crosses zero only once the contrary sayings
+outnumber the earlier ones, so three and three end at 0, which looks like a contest and not like
+one crossing. The per-episode sign shows the crossing where it happens, at the fourth episode.
+
+**The embedding.** With a delay of one episode and dimension 2, the embedding of a sign series is
+its set of transitions (`++`, `+-`, `-+`, `--`), which its runs already say; a higher dimension
+adds nothing to a ±1 series. This borrows the picture of an embedding, not the theorem: Takens'
+theorem assumes a smooth deterministic system and a generic observable, and its finite-data
+guarantees need long, low-noise series [2, 3]. A triple's series is short, discrete and driven by
+one person.
+
+**What it keeps.** It writes nothing and decides nothing: only the owner's words or an amendment
+change a belief. Its wording is reply keys and its thresholds numbers, so the runtime holds no
+word (TTG-RFC-0001 §2). Salience decay acts on terms, not on the series, so forgetting is never
+read as a change of mind. Construction traffic, the second series the same lens reads, is in
+TTG-RFC-0005 §5.1.
+
+**Still open.**
+1. **Episodes or time?** The series counts episodes. A delay that counts lane gaps, so that a
+   crossing a year apart reads differently from one an hour apart, belongs with the stamps of
+   TTG-RFC-0004 §4, which no runtime implements yet.
+2. **In a fleet** the order of sayings is partial (TTG-RFC-0004 §4), so the series is a partial
+   order. It can be read per agent, where the order is total, until stamps order across agents.
+3. **Ranking.** A report could put first the triples whose shape the verdict hides most. Ranking
+   by EPS (TTDB-RFC-0005) would need a triple's salience, and the store keeps salience per term.
+
+**References.**
+
+1. K. R. Haylett, "Geofinitism: Language as a Nonlinear Dynamical System — Attractors, Basins,
+   and the Geometry of Understanding," Substack, Jan. 2026.
+   <https://kevinhaylett.substack.com/p/geofinitism-language-as-a-nonlinear>
+2. F. Takens, "Detecting strange attractors in turbulence," in *Dynamical Systems and
+   Turbulence, Warwick 1980*, Lecture Notes in Mathematics 898, Springer, 1981, pp. 366–381.
+3. T. Sauer, J. A. Yorke, M. Casdagli, "Embedology," *J. Stat. Phys.* 65 (1991) 579–616.
 
 *License: CC0*

@@ -37,7 +37,7 @@ selected:
   - "@LAT0LON0"
 preview:
   "@LAT0LON0": "Home: what this database is and how each record expands back to its full RFC"
-agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step. Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.1, -0002 1.3, -0003 1.1, -0005 1.1: the holds line linking a stance to what it holds (personal_grimoire PLAN.md phase 1); synced to the website the same day, not yet to robot_team. Then the same four for TTG-RFC-0001 1.2, -0002 1.4, -0003 1.2, -0005 1.2: verb frames counted in episodes, the grammar's gaps apart (personal_grimoire PLAN.md phase 2). Then @LAT60LON1-5 for TTG-RFC-0001 1.3, -0002 1.5, -0003 1.3, -0004 1.1, -0005 1.3: tense, hedges, and a change in the owner's tense (phase 3). Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.4, -0002 1.6, -0003 1.4, -0005 1.4: modifiers as subclasses (phase 4). Then @LAT60LON1/3/5 for TTG-RFC-0001 1.5, -0003 1.5, -0005 1.5: the parameters named, and questions with the verb first (phase 5). 2026-11-24: +@LAT60LON6 for TTG-RFC-0006 0.1, constructions, and @LAT60LON1/3 for TTG-RFC-0001 1.6, -0003 1.6 (phase 6). Then @LAT60LON1/6 for TTG-RFC-0001 1.7, -0006 0.2: inheritance between constructions. 2026-11-25: @LAT60LON1/6 for TTG-RFC-0001 1.8, -0006 0.3: several parents. 2026-11-26: @LAT60LON6 for TTG-RFC-0006 0.4: abstract constructions. 2026-11-27: @LAT60LON6 for TTG-RFC-0006 0.5: a verbish name tied to its verbs. 2026-11-28: @LAT60LON6 for TTG-RFC-0006 0.6: a nounish name tied to its things. 2026-11-29: @LAT60LON6 for TTG-RFC-0006 0.7: a Spanish construction. 2026-11-30: @LAT60LON3/6 for TTG-RFC-0003 1.7, -0006 0.8: questions read by constructions. 2026-12-01: @LAT60LON1/3/6 for TTG-RFC-0001 1.9, -0003 1.8, -0006 0.9: a question gap at the verb. 2026-12-02: @LAT60LON3/6 for TTG-RFC-0003 1.9, -0006 0.10: a verb gap with no thing. 2026-12-03: @LAT60LON3/6 for TTG-RFC-0003 1.10, -0006 0.11: inherited doings. 2026-12-04: @LAT60LON3/6 for TTG-RFC-0003 1.11, -0006 0.12: a preposition before the wh-word. 2026-12-05: @LAT60LON6 for TTG-RFC-0006 0.13: part of a clause. 2026-12-06: @LAT60LON6 for TTG-RFC-0006 0.14: a relative inside a stance's clause. 2026-12-07: @LAT60LON1 for TTG-RFC-0001 1.10: stem_restore. 2026-12-08: @LAT60LON3/6 for TTG-RFC-0003 1.12, -0006 0.15: a preposition with the copula. 2026-12-09: @LAT60LON6 for TTG-RFC-0006 0.16: moving from. 2026-12-10: @LAT60LON3 for TTG-RFC-0003 1.13: no subject after a preposition; one motion across languages. 2026-12-11: @LAT60LON3 for TTG-RFC-0003 1.14: the predicate's noun before the subject. 2026-12-12: @LAT60LON2/6 for TTG-RFC-0002 1.7, -0006 0.17: an adverbial clause, and phrases after a shape."
+agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step. Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.1, -0002 1.3, -0003 1.1, -0005 1.1: the holds line linking a stance to what it holds (personal_grimoire PLAN.md phase 1); synced to the website the same day, not yet to robot_team. Then the same four for TTG-RFC-0001 1.2, -0002 1.4, -0003 1.2, -0005 1.2: verb frames counted in episodes, the grammar's gaps apart (personal_grimoire PLAN.md phase 2). Then @LAT60LON1-5 for TTG-RFC-0001 1.3, -0002 1.5, -0003 1.3, -0004 1.1, -0005 1.3: tense, hedges, and a change in the owner's tense (phase 3). Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.4, -0002 1.6, -0003 1.4, -0005 1.4: modifiers as subclasses (phase 4). Then @LAT60LON1/3/5 for TTG-RFC-0001 1.5, -0003 1.5, -0005 1.5: the parameters named, and questions with the verb first (phase 5). 2026-11-24: +@LAT60LON6 for TTG-RFC-0006 0.1, constructions, and @LAT60LON1/3 for TTG-RFC-0001 1.6, -0003 1.6 (phase 6). Then @LAT60LON1/6 for TTG-RFC-0001 1.7, -0006 0.2: inheritance between constructions. 2026-11-25: @LAT60LON1/6 for TTG-RFC-0001 1.8, -0006 0.3: several parents. 2026-11-26: @LAT60LON6 for TTG-RFC-0006 0.4: abstract constructions. 2026-11-27: @LAT60LON6 for TTG-RFC-0006 0.5: a verbish name tied to its verbs. 2026-11-28: @LAT60LON6 for TTG-RFC-0006 0.6: a nounish name tied to its things. 2026-11-29: @LAT60LON6 for TTG-RFC-0006 0.7: a Spanish construction. 2026-11-30: @LAT60LON3/6 for TTG-RFC-0003 1.7, -0006 0.8: questions read by constructions. 2026-12-01: @LAT60LON1/3/6 for TTG-RFC-0001 1.9, -0003 1.8, -0006 0.9: a question gap at the verb. 2026-12-02: @LAT60LON3/6 for TTG-RFC-0003 1.9, -0006 0.10: a verb gap with no thing. 2026-12-03: @LAT60LON3/6 for TTG-RFC-0003 1.10, -0006 0.11: inherited doings. 2026-12-04: @LAT60LON3/6 for TTG-RFC-0003 1.11, -0006 0.12: a preposition before the wh-word. 2026-12-05: @LAT60LON6 for TTG-RFC-0006 0.13: part of a clause. 2026-12-06: @LAT60LON6 for TTG-RFC-0006 0.14: a relative inside a stance's clause. 2026-12-07: @LAT60LON1 for TTG-RFC-0001 1.10: stem_restore. 2026-12-08: @LAT60LON3/6 for TTG-RFC-0003 1.12, -0006 0.15: a preposition with the copula. 2026-12-09: @LAT60LON6 for TTG-RFC-0006 0.16: moving from. 2026-12-10: @LAT60LON3 for TTG-RFC-0003 1.13: no subject after a preposition; one motion across languages. 2026-12-11: @LAT60LON3 for TTG-RFC-0003 1.14: the predicate's noun before the subject. 2026-12-12: @LAT60LON2/6 for TTG-RFC-0002 1.7, -0006 0.17: an adverbial clause, and phrases after a shape. 2026-12-13: @LAT60LON1/3/5 for TTG-RFC-0001 1.11, -0003 1.15, -0005 1.6: the shape of the sayings, and construction traffic (phase 7)."
 ```
 
 ---
@@ -842,15 +842,15 @@ composite) gate every addition.
 
 ---
 
-@LAT60LON1 | created:1789257600 | updated:1796688000 | relates:depends_on@LAT10LON1,depends_on@LAT30LON1
+@LAT60LON1 | created:1789257600 | updated:1797206400 | relates:depends_on@LAT10LON1,depends_on@LAT30LON1
 [ew]
 conf:210
-rev:10
+rev:11
 sal:90
-touched:1796688000
+touched:1797206400
 [/ew]
 
-**TTG-RFC-0001 — Grammar in the Store** (Stable, 1.10)
+**TTG-RFC-0001 — Grammar in the Store** (Stable, 1.11)
 src: TTG-RFC-0001-Grammar-in-the-Store.md
 
 A language's grammar is data in the same TTDB as the corpus it reads: `ttdb-grammar`
@@ -867,7 +867,8 @@ embedding surface: the engine/page divide, the boot gate, and the calls a host m
 `plural_verb_ending`. 1.6 the ninth kind, `constructions` (TTG-RFC-0006), never borrowed,
 with `construction_max_words` and `read_by`. 1.7 `read_by_is_a`; 1.8 `construction_contested`; 1.9 `pro_verb`,
 `pro_verb_object` and `vectors_head`. 1.10 `stem_restore`: the stem endings no lemma ends
-bare on (*shoved* is *shove*).
+bare on (*shoved* is *shove*). 1.11 `trajectory_crossing`, `trajectory_alternation`, the
+`episode` unit, `trajectory_min_episodes` and `trajectory_hold`.
 
 ---
 
@@ -900,15 +901,15 @@ Pixel slept, the dog barked*).
 
 ---
 
-@LAT60LON3 | created:1789257600 | updated:1797033600 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT10LON2,depends_on@LAT10LON5,depends_on@LAT10LON7
+@LAT60LON3 | created:1789257600 | updated:1797206400 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT10LON2,depends_on@LAT10LON5,depends_on@LAT10LON7
 [ew]
 conf:210
-rev:14
+rev:15
 sal:80
-touched:1797033600
+touched:1797206400
 [/ew]
 
-**TTG-RFC-0003 — Beliefs, Vector Reasoning and Grounded Response** (Stable, 1.14)
+**TTG-RFC-0003 — Beliefs, Vector Reasoning and Grounded Response** (Stable, 1.15)
 src: TTG-RFC-0003-Beliefs-Reasoning-Response.md
 
 Beliefs are derived from episodes, never written by hand: per triple, episodes (not
@@ -929,6 +930,9 @@ inherits. 1.11: a preposition before the wh-word moved to the statement's end. 1
 copula, a stranded preposition before the place vector (*Where is Pixel from?*). 1.13: no
 subject behind its verb after a preposition; rules linking one motion (`go_off`, `salir_de`
 => `leave`). 1.14: the predicate's noun before the subject (*¿De qué es parte la rueda?*).
+1.15: the shape of the sayings — a yes/no answer notes one crossing or an alternation in a
+triple's per-episode signs, never changing the verdict; Appendix A, trajectories (after Haylett
+and Takens).
 
 ---
 
@@ -956,15 +960,15 @@ bounds, overlapping bounds are contested, and the scene is the grammar hash.
 
 ---
 
-@LAT60LON5 | created:1789948800 | updated:1795392000 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT60LON3,depends_on@LAT10LON1,depends_on@LAT10LON4
+@LAT60LON5 | created:1789948800 | updated:1797206400 | relates:depends_on@LAT60LON1,depends_on@LAT60LON2,depends_on@LAT60LON3,depends_on@LAT10LON1,depends_on@LAT10LON4
 [ew]
 conf:210
-rev:5
+rev:6
 sal:70
-touched:1795392000
+touched:1797206400
 [/ew]
 
-**TTG-RFC-0005 — Shapes, Lists, Mentions and Amendments** (Stable, 1.5)
+**TTG-RFC-0005 — Shapes, Lists, Mentions and Amendments** (Stable, 1.6)
 src: TTG-RFC-0005-Shapes-and-Amendments.md
 
 A clause is any alternating run of nounish and verbish segments, each verb relating
@@ -983,7 +987,8 @@ is counted in episodes, the grammar's guesses at a gap marked (`gap:`) and weigh
 from the owner's words, with optional preemption. 1.3: a hedge holds its clause, and a
 `tense:` line marks the past. 1.4: with `modifier: subclass`, a modified phrase is a
 subclass of its head (`black_cat is_a cat`); off by default. 1.5: a question whose verb is
-in the speaker's own form already has its subject.
+in the speaker's own form already has its subject. 1.6: a re-reading reports construction
+traffic, each construction's sentences under today's grammar.
 
 ---
 

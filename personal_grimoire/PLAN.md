@@ -810,8 +810,9 @@ the earlier count can't be recovered. Two reports, before and after a grammar ch
 The page's re-read panel shows only a count and is unchanged. The note is on yes/no answers
 only, where a single triple is asked.
 
-Still to do: the RFC text upstream (TTG-RFC-0003 §4 and an informative section on trajectories,
-TTG-RFC-0001 §8–9, TTG-RFC-0005 §5.1). The bAbI check is done: every outcome hash of tasks 1 and
+Upstream (toot-toot-engineering `2bef5e2`): TTG-RFC-0003 1.15 (§4 the shape of the sayings, §5
+the numbers, Appendix A trajectories, informative, with the note's background and open questions),
+TTG-RFC-0001 1.11 (§8–9), TTG-RFC-0005 1.6 (§5.1 construction traffic); synced here. The bAbI check is done: every outcome hash of tasks 1 and
 15, in all five conditions, equals the one recorded in `paper/`.
 
 **From:** [belief-trajectories.md](belief-trajectories.md), prompted by Haylett's geofinitism and

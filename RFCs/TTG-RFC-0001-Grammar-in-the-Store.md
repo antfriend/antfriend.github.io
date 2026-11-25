@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.10
+**Version:** 1.11
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -157,9 +157,9 @@ words fill are defined in TTG-RFC-0003 §4.
 emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `superseded_by`,
 `affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `deny_superseded`, `contest`, `unknown`,
 `exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `noted_held`, `noted_readings`,
-`reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `changed_tense`, `read_by`, `read_by_is_a`, `construction_contested`, `vectors_head`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
+`reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `changed_tense`, `trajectory_crossing`, `trajectory_alternation`, `read_by`, `read_by_is_a`, `construction_contested`, `vectors_head`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
 `objects_head`, `subjects_head`, `nothing_found`, `search_head`, `suggest`, `ingested`,
-`episode_title`, `source_typed`, `store_opened`; units `percept`, `sentence`, `term`.
+`episode_title`, `source_typed`, `store_opened`; units `percept`, `sentence`, `term`, `episode`.
 
 ---
 
@@ -168,7 +168,8 @@ emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `s
 `numbers`: `prior_for`, `prior_against`, `weight_partial`, `belief_conf_threshold`,
 `inherit_decay`, `max_hops`, `answer_max_items`, `search_max_items`, `suggest_eps_min`,
 `with_max_pairs`, `said_max_chars`, `rule_max_body`, `phrase_max_words`, `frame_min_episodes`,
-`frame_grammar_weight`, `frame_preempt_ratio`, `modifier_max_words`, `construction_max_words`.
+`frame_grammar_weight`, `frame_preempt_ratio`, `modifier_max_words`, `construction_max_words`,
+`trajectory_min_episodes`, `trajectory_hold`.
 
 `kind: rules` holds `rule:` lines; its syntax, safety conditions and derivation are defined in
 TTG-RFC-0003 §3.1.
@@ -307,5 +308,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-11-25 | 1.8: `construction_contested` joins the reply keys in §8 (TTG-RFC-0006 0.3 §4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fd6ef4a`). |
 | 2026-12-01 | 1.9: `pro_verb` and `pro_verb_object` in §3, `vectors_head` among the reply keys in §8 (TTG-RFC-0006 0.9 §7.4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
 | 2026-12-07 | 1.10: `stem_restore` in §4, the stem endings no lemma ends bare on, and its place in the candidate order: after the undoubled stem, before the first candidate. Implemented by the personal_grimoire reference runtime (antfriend.github.io `56e14c0`). |
+| 2026-12-13 | 1.11: `trajectory_crossing`, `trajectory_alternation` and the `episode` unit in §8; `trajectory_min_episodes` and `trajectory_hold` in §9 — the shape of the sayings (TTG-RFC-0003 1.15 §4). A store that declares no `trajectory_min_episodes` replies as before. Implemented by the personal_grimoire reference runtime (antfriend.github.io `e2e02bf`). |
 
 *License: CC0*

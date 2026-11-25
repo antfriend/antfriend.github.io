@@ -1,6 +1,6 @@
 # TTG-RFC-0005: Shapes — Alternating Segments, Lists, Mentions and Amendments
 
-**Version:** 1.5
+**Version:** 1.6
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
@@ -613,10 +613,22 @@ same hash, and is taken with it; one the owner has amended is kept, never taken.
 goes once: what a take changes about a sentence already passed — a verb the corpus now has
 with a thing, a term now bound — is left for the next report.
 
-The reference runtime exposes `reread(S, episode?)`, `takeRereads(S, hash, now)`, the optional
+**Construction traffic.** Where the grammar declares constructions (TTG-RFC-0006), a re-reading
+also reports, for each, how many sentences and episodes it reads under the grammar the store holds
+now, an ancestor counting what its descendants read (TTG-RFC-0006 §8), and lists those that read
+none; each sentence it reports names the constructions that read it now. Traffic counts every
+sentence the grammar reads, amended or not, since it is the grammar's reading and not the owner's.
+Episodes do not record which construction read them, so traffic belongs to one grammar hash: two
+reports, before and after a grammar change, show which constructions gained sentences and which
+lost them. It is a report and writes nothing; whether a construction that reads nothing should be
+named to the owner, and after how many episodes, is open.
+
+The reference runtime exposes `reread(S, episode?)` (with `traffic`, and `readBy` on each sentence
+it reports), `takeRereads(S, hash, now)`, the optional
 `grammar` and `reading` arguments of `amend` and `amendReply`, an episode panel that offers
 each re-reading and each of two readings, a store-bar control that counts the re-readings the
-owner has not ruled on and takes them all after asking, and `tools/reread.mjs --accept <hash>`;
+owner has not ruled on and takes them all after asking, and `tools/reread.mjs` (which prints the
+traffic) with `--accept <hash>`;
 the reference store's eight demo episodes read today exactly as written.
 
 ---
@@ -750,5 +762,6 @@ runtime.
 | 2026-11-23 | 1.3: §3 **hedges** — a `hedge` word holds its clause; §3 **tense** — a predicate is past by a `past_form` or a `past_ending` on an inflected verb, not after a present `hav`, and past percepts are marked by a `tense:` line of ordinals, malformed ones skipped and counted. §5 and §5.1 carry and compare tense lines; §6 `class: hedge`, `past_form`, `past_ending`, `changed_tense`; §7 compatibility; §8.8 new. The change it makes to a later saying is TTG-RFC-0004 1.1 §3.7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`), from its PLAN.md phase 3. |
 | 2026-11-23 | 1.4: §3 **modifiers** — with `modifier: subclass`, a member's modifiers join with its head into a subclass term, and the clause says its `class_of` (none for a `privative` modifier) and a `property` per modifier; over `modifier_max_words`, as under `drop`, which is the default; a question never checks the subclass percepts. §6 keys, §7 compatibility, §8.9 new. Implemented by the personal_grimoire reference runtime (antfriend.github.io `a5beef3`), from its PLAN.md phase 4; the reference store ships `drop`. |
 | 2026-11-23 | 1.5: §3, a question whose verb is in the speaker's own form already has its subject; §8.7 answered. The question rows are TTG-RFC-0003 1.5 §4. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bf261e8`), from its PLAN.md phase 5. |
+| 2026-12-13 | 1.6: §5.1, **construction traffic** — a re-reading reports how many sentences and episodes each construction reads under today's grammar, ancestors included, and which read none, and names the constructions that read each sentence it reports. Implemented by the personal_grimoire reference runtime (antfriend.github.io `e2e02bf`), from its PLAN.md phase 7. |
 
 *License: CC0*
