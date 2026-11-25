@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personal Grimoire Release</title>
+<meta name="description" content="What came of the Personal Grimoire's seven phases and the constructions series: the file is the grammar, constructions, part of a clause, two languages, and belief trajectories, each with an example store to try.">
+<link rel="canonical" href="https://antfriend.github.io/personal_grimoire/release.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Toot Toot Engineering">
+<meta property="og:title" content="Personal Grimoire Release">
+<meta property="og:description" content="Seven phases, a constructions series and a research note: what they added, each with an example store to try.">
+<meta property="og:url" content="https://antfriend.github.io/personal_grimoire/release.html">
+<meta property="og:image" content="https://antfriend.github.io/personal_grimoire/Grimoire-card.jpg">
+<style>
+/* the grimoire's own phosphor, set for reading */
+:root{
+  color-scheme:dark;
+  --bg:#0f1d13; --panel:#1a3020; --ink:#bdf8cb; --dim:#80bd8d; --line:#2f5238;
+  --accent:#3dff7a; --thing:#ff9d3d; --vector:#3dff7a; --grammar:#d6a6ff; --warn:#ffb341; --dead:#5c7f64;
+  --glow:61 255 122;
+  --mono:ui-monospace,"Cascadia Mono","Cascadia Code","SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+::selection{background:var(--accent);color:var(--bg)}
+:focus-visible{outline:1px solid var(--accent);outline-offset:2px}
+html{scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:15px;line-height:1.7;
+  background-image:radial-gradient(ellipse 90% 60% at 50% 0%,#16291b,transparent 72%);background-attachment:fixed}
+.wrap{max-width:820px;margin:0 auto;padding:28px 16px 80px}
+a{color:var(--accent);text-underline-offset:2px}
+a:hover{text-shadow:0 0 6px rgb(var(--glow) / .6)}
+code{font:.86em var(--mono);background:#0b160e;border:1px solid var(--line);padding:0 4px;border-radius:2px;overflow-wrap:anywhere}
+h1{font-size:clamp(1.35rem,5vw,1.9rem);line-height:1.35;margin:0 0 10px;color:var(--accent);
+  text-shadow:0 0 4px rgb(var(--glow) / .6),0 0 18px rgb(var(--glow) / .25)}
+h2{font-size:1.12rem;line-height:1.4;margin:56px 0 10px;color:var(--accent);padding-top:14px;border-top:1px solid var(--line)}
+h2 .n{color:var(--dim);font-weight:400;margin-right:.5em}
+h3{font-size:.95rem;margin:26px 0 6px;color:var(--ink)}
+p{margin:10px 0}
+.lede{color:var(--dim);font-size:1rem;max-width:68ch}
+.eyebrow{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+nav.toc{margin:24px 0 0;padding:12px 14px;border:1px solid var(--line);background:var(--panel);font-size:.86rem}
+nav.toc ol{margin:4px 0 0;padding-left:1.4em}
+nav.toc li{margin:2px 0}
+.say{color:var(--thing)}
+.vec{color:var(--vector)}
+.gram{color:var(--grammar)}
+blockquote{margin:12px 0;padding:8px 14px;border-left:2px solid var(--accent);background:#0b160e;color:var(--ink)}
+blockquote .q{color:var(--dim)}
+.try{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
+.try a{display:inline-block;padding:5px 11px;border:1px solid var(--line);border-radius:2px;background:var(--panel);
+  text-decoration:none;font-size:.84rem;color:var(--ink)}
+.try a::before{content:"▸ ";color:var(--accent)}
+.try a:hover{border-color:var(--accent);color:var(--accent);box-shadow:0 0 8px rgb(var(--glow) / .25)}
+.trylabel{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-top:18px}
+.prov{margin:16px 0 0;padding:10px 12px;border:1px dashed var(--line);font-size:.84rem;color:var(--dim)}
+.prov b{color:var(--ink);font-weight:600}
+figure{margin:18px 0;padding:12px;border:1px solid var(--line);background:#0b160e}
+figure .scroll{overflow-x:auto}
+figure svg{display:block;width:100%;min-width:540px;height:auto}
+figcaption{font-size:.8rem;color:var(--dim);margin-top:8px}
+svg text{font-family:var(--mono)}
+.tbl{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:.84rem}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{color:var(--dim);font-weight:600}
+td.num{text-align:right;white-space:nowrap}
+tr.task td{color:var(--accent);font-weight:600;padding-top:14px}
+pre{background:#0b160e;border:1px solid var(--line);padding:10px 12px;overflow-x:auto;font-size:.82rem;line-height:1.55}
+ol.refs{font-size:.84rem;padding-left:1.6em}
+ol.refs li{margin:6px 0}
+ol.refs li:target{background:var(--panel);outline:1px solid var(--line)}
+sup a{text-decoration:none;font-size:.78em}
+footer{margin-top:60px;padding-top:14px;border-top:1px solid var(--line);font-size:.8rem;color:var(--dim)}
+@media (max-width:520px){ body{font-size:14px} h2{margin-top:44px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Personal Grimoire · release notes</div>
+  <h1>What came of it</h1>
+  <p class="lede">The Personal Grimoire keeps one person's words in a single file and answers from them, quoting
+  what was said. The grammar it reads them with is in the same file. Over seven phases and a
+  series of RFCs, it learned to read constructions, parts of clauses, two languages at once, and the shape a belief's
+  sayings make over time. This page shows the best of that. Each section has a small example store,
+  so you can ask the question yourself.</p>
+  <p><a href="index.html">Open the grimoire</a> · <a href="README.md">README</a> ·
+  <a href="RFCs/INDEX.md">the RFCs</a> · <a href="paper/Personal-Grimoire-The-File-Is-the-Grammar.md">the paper</a></p>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <b>On this page</b>
+  <ol>
+    <li><a href="#file">The file is the grammar</a></li>
+    <li><a href="#constructions">Constructions, and what they inherit</a></li>
+    <li><a href="#questions">Questions a shape answers</a></li>
+    <li><a href="#clauses">Reading part of a clause</a></li>
+    <li><a href="#languages">Two languages, one motion</a></li>
+    <li><a href="#trajectories">Belief trajectories</a></li>
+    <li><a href="#theories">Where it sits among theories of grammar</a></li>
+    <li><a href="#measured">Measured</a></li>
+    <li><a href="#provenance">Where the ideas came from</a></li>
+  </ol>
+</nav>
+
+<!-- ===================================================================== -->
+<h2 id="file"><span class="n">1</span>The file is the grammar</h2>
+<p>The runtime, <code>index.html</code>, contains no word of any language. Every word it matches, every
+ending it strips and every phrase it answers with is read from the store,
+<code>personal_grimoire_ttdb.md</code>, the same file that holds your sayings. A test fails if a word of either
+grammar appears in the runtime as a string.</p>
+<p>The strongest evidence is bAbI <sup><a href="#ref-weston">[1]</a></sup>. Apply one fixed letter substitution to
+the grammar records and to the task data, so that <i>John</i> becomes something like <i>Qrzh</i>, and the answers
+are the same, question for question, with the same outcome hash. Apply it to the grammar alone and the
+grimoire understands nothing. Its English is in the file, not in the code.</p>
+<p>The four example stores below are built the same way: the seed store's grammar, emptied of its sayings,
+with a few new ones told. Nothing else changes, and opening one never touches the store you keep in your
+browser.</p>
+<div class="prov"><b>Provenance.</b> The design is the project's own: TTDB, the Toot Toot Grammar RFCs and a
+runtime without words (<a href="RFCs/TTG-RFC-0001-Grammar-in-the-Store.md">TTG-RFC-0001</a>). bAbI is Weston et al.
+<sup><a href="#ref-weston">[1]</a></sup>; the results are in <a href="#measured">Measured</a>.</div>
+
+<!-- ===================================================================== -->
+<h2 id="constructions"><span class="n">2</span>Constructions, and what they inherit</h2>
+<p>In <i>Pixel sneezed the napkin off the table</i>, the verb <i>sneeze</i> moves nothing. The napkin goes
+off the table because of the sentence's shape, not its verb. Goldberg calls this the <b>caused-motion
+construction</b> <sup><a href="#ref-goldberg">[2]</a></sup>: a pattern of form with a meaning of its own. The grimoire
+declares it in the store, as a line of grammar data:</p>
+<pre><span class="gram">construction:</span> [X] {V} [Y] off [Z] =&gt; <span class="vec">go_off</span> Y Z | caused motion | is_a acting on a thing</pre>
+<p>So the sentence says two things: <span class="vec">pixel sneeze napkin</span> and
+<span class="vec">napkin go_off table</span>, and the reply names the construction that read it.</p>
+<p>Constructions form a network of default inheritance, as construction grammar describes. A child says what its
+parents say and adds to it or overrides it. A construction can have several parents. An abstract one is never
+matched, only inherited. A slot can be tied to particular words, so <i>knock</i> gets a construction of its own,
+and <i>took the day off</i> is an idiom <sup><a href="#ref-fko">[3]</a></sup> whose meaning is resting, not taking.</p>
+
+<figure>
+  <div class="scroll">
+  <svg viewBox="0 0 660 330" role="img" aria-labelledby="f1t f1d">
+    <title id="f1t">The seed store's English constructions as an inheritance network</title>
+    <desc id="f1d">Acting on a thing is an abstract root. Caused motion, motion onto and moving from inherit from it. Knocking off inherits from caused motion; caused motion onto inherits from both caused motion and motion onto. Taking time off stands alone as an idiom.</desc>
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#80bd8d"/>
+      </marker>
+    </defs>
+    <g stroke="#80bd8d" stroke-width="1.4" fill="none" marker-end="url(#ar)">
+      <path d="M150 128 L270 62"/>
+      <path d="M330 128 L330 66"/>
+      <path d="M510 128 L390 62"/>
+      <path d="M150 232 L150 172"/>
+      <path d="M300 232 L180 172"/>
+      <path d="M360 232 L330 172"/>
+    </g>
+    <g font-size="12.5">
+      <rect x="240" y="20" width="180" height="44" rx="3" fill="#0f1d13" stroke="#d6a6ff" stroke-dasharray="5 4"/>
+      <text x="330" y="38" text-anchor="middle" fill="#d6a6ff">acting on a thing</text>
+      <text x="330" y="55" text-anchor="middle" fill="#80bd8d" font-size="11">abstract · V X Y</text>
+
+      <rect x="60" y="128" width="180" height="44" rx="3" fill="#1a3020" stroke="#3dff7a"/>
+      <text x="150" y="146" text-anchor="middle" fill="#bdf8cb">caused motion</text>
+      <text x="150" y="163" text-anchor="middle" fill="#80bd8d" font-size="11">X V Y off Z · go_off</text>
+
+      <rect x="250" y="128" width="160" height="44" rx="3" fill="#1a3020" stroke="#3dff7a"/>
+      <text x="330" y="146" text-anchor="middle" fill="#bdf8cb">motion onto</text>
+      <text x="330" y="163" text-anchor="middle" fill="#80bd8d" font-size="11">X V Y onto W · go_onto</text>
+
+      <rect x="430" y="128" width="190" height="44" rx="3" fill="#1a3020" stroke="#3dff7a"/>
+      <text x="525" y="146" text-anchor="middle" fill="#bdf8cb">moving from</text>
+      <text x="525" y="163" text-anchor="middle" fill="#80bd8d" font-size="11">{V=knock,push,…} from · leave</text>
+
+      <rect x="60" y="232" width="180" height="44" rx="3" fill="#1a3020" stroke="#ff9d3d"/>
+      <text x="150" y="250" text-anchor="middle" fill="#bdf8cb">knocking off</text>
+      <text x="150" y="267" text-anchor="middle" fill="#80bd8d" font-size="11">{V=knock} · fall_off</text>
+
+      <rect x="250" y="232" width="190" height="44" rx="3" fill="#1a3020" stroke="#3dff7a"/>
+      <text x="345" y="250" text-anchor="middle" fill="#bdf8cb">caused motion onto</text>
+      <text x="345" y="267" text-anchor="middle" fill="#80bd8d" font-size="11">two parents · off Z onto W</text>
+
+      <rect x="470" y="232" width="170" height="44" rx="3" fill="#1a3020" stroke="#ff9d3d"/>
+      <text x="555" y="250" text-anchor="middle" fill="#bdf8cb">taking time off</text>
+      <text x="555" y="267" text-anchor="middle" fill="#80bd8d" font-size="11">idiom · rest X Y</text>
+    </g>
+    <g font-size="11" fill="#80bd8d">
+      <text x="20" y="312">dashed: abstract, never matched · orange: slot tied to words · arrows point to the parent</text>
+    </g>
+  </svg>
+  </div>
+  <figcaption>The seed store's English constructions (<code>kind: constructions</code>). <i>Pixel knocked the cup off the shelf onto the floor</i> is
+  read by <i>caused motion onto</i>, which says what both its parents say, and <i>knock</i> once, not twice.</figcaption>
+</figure>
+
+<div class="trylabel">Try it in the constructions store</div>
+<div class="try">
+  <a href="index.html?store=examples/constructions_ttdb.md&amp;ask=Where%20did%20the%20napkin%20go%3F">Where did the napkin go?</a>
+  <a href="index.html?store=examples/constructions_ttdb.md&amp;ask=Where%20did%20the%20cup%20go%3F">Where did the cup go?</a>
+  <a href="index.html?store=examples/constructions_ttdb.md&amp;ask=Did%20I%20rest%20the%20day%3F">Did I rest the day?</a>
+  <a href="index.html?store=examples/constructions_ttdb.md&amp;ask=What%20left%20the%20bed%3F">What left the bed?</a>
+</div>
+<p><i>Where did the cup go?</i> answers <span class="say">shelf</span> and <span class="say">floor</span>, each quoting the
+one sentence that said it. <i>What left the bed?</i> answers <span class="say">ball</span>, from <i>The dog pushed the ball
+from the bed</i>: after a verb that moves a thing, <i>from</i> means leaving. After <i>bought</i> it doesn't.</p>
+<div class="prov"><b>Provenance.</b> The idea is Construction Grammar's: caused motion and default inheritance from Goldberg
+<sup><a href="#ref-goldberg">[2]</a></sup>, idioms from Fillmore, Kay and O'Connor <sup><a href="#ref-fko">[3]</a></sup>. The spec is
+<a href="RFCs/TTG-RFC-0006-Constructions.md">TTG-RFC-0006</a>, from 0.1
+(<a href="https://github.com/antfriend/toot-toot-engineering/commit/4795447">4795447</a>) through inheritance, several
+parents, abstract roots and tied slots (0.2–0.6,
+<a href="https://github.com/antfriend/toot-toot-engineering/commit/13b9114">13b9114</a>–<a href="https://github.com/antfriend/toot-toot-engineering/commit/4305092">4305092</a>)
+to <i>moving from</i> (0.16, <a href="https://github.com/antfriend/toot-toot-engineering/commit/9495529">9495529</a>).</div>
+
+<!-- ===================================================================== -->
+<h2 id="questions"><span class="n">3</span>Questions a shape answers</h2>
+<p>A construction reads questions as well as statements. <i>What did Pixel sneeze off the table?</i> is matched
+against the shape <i>X V Y off Z</i> with one slot left open, and is answered by whatever fills every percept
+the shape names: something Pixel sneezed <i>and</i> something that went off the table. So the answer is the
+napkin, not something else Pixel sneezed and not something else that fell. A question can leave the verb open too:
+<i>What did Pixel do?</i> lists the doings, each with its sentence.</p>
+<blockquote><span class="q">&gt; What did Pixel sneeze off the table?</span><br>
+<span class="say">napkin</span>: [you said] napkin go_off table — “Pixel sneezed the napkin off the table.”</blockquote>
+<div class="trylabel">Try it in the constructions store</div>
+<div class="try">
+  <a href="index.html?store=examples/constructions_ttdb.md&amp;ask=What%20did%20Pixel%20sneeze%20off%20the%20table%3F">What did Pixel sneeze off the table?</a>
+  <a href="index.html?store=examples/constructions_ttdb.md&amp;ask=What%20did%20Pixel%20do%3F">What did Pixel do?</a>
+  <a href="index.html?store=examples/constructions_ttdb.md&amp;ask=Did%20the%20napkin%20leave%20the%20table%3F">Did the napkin leave the table?</a>
+</div>
+<p>The last one is answered <i>probably</i>. Nobody said the napkin left the table. A rule in the store
+(<code>go_off X Y =&gt; leave X Y</code>) infers it, and the reply prints it as inferred, never as said.</p>
+<div class="prov"><b>Provenance.</b> The same construction-grammar sources as above. The spec is TTG-RFC-0006 §7 and
+<a href="RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md">TTG-RFC-0003</a> §4, from 0.8
+(<a href="https://github.com/antfriend/toot-toot-engineering/commit/28b9f86">28b9f86</a>) to a gap at the verb and what a
+subject inherits (0.9–0.11, <a href="https://github.com/antfriend/toot-toot-engineering/commit/e8f4367">e8f4367</a>–<a href="https://github.com/antfriend/toot-toot-engineering/commit/73289dc">73289dc</a>).
+Rules and their inferred grounds are TTG-RFC-0003 §3.1, the project's own.</div>
+
+<!-- ===================================================================== -->
+<h2 id="clauses"><span class="n">4</span>Reading part of a clause</h2>
+<p>A sentence is rarely one clause. In <i>When Pixel knocked the vase off the table, the dog barked</i>, a
+construction should read the first clause and leave the second to the words. So the grimoire first finds
+the span each clause covers, then lets a construction read just that span.</p>
+<figure>
+  <div class="scroll">
+  <svg viewBox="0 0 660 200" role="img" aria-labelledby="f2t f2d">
+    <title id="f2t">A sentence split into the spans that read it</title>
+    <desc id="f2d">The fronted clause "Pixel knocked the vase off the table" is read by the knocking off construction, giving three percepts; the main clause "the dog barked" is read by its words, giving one.</desc>
+    <g font-size="13" fill="#bdf8cb">
+      <text x="14" y="40" fill="#d6a6ff">When</text>
+      <text x="62" y="40">Pixel knocked the vase off the table</text>
+      <text x="364" y="40" fill="#80bd8d">,</text>
+      <text x="380" y="40">the dog barked.</text>
+    </g>
+    <g fill="none" stroke-width="1.5">
+      <path d="M62 52 v8 h296 v-8" stroke="#ff9d3d"/>
+      <path d="M380 52 v8 h118 v-8" stroke="#3dff7a"/>
+    </g>
+    <g font-size="11.5">
+      <text x="210" y="80" text-anchor="middle" fill="#ff9d3d">read by knocking off</text>
+      <text x="439" y="80" text-anchor="middle" fill="#3dff7a">read by its words</text>
+      <text x="14" y="80" fill="#80bd8d">subord</text>
+    </g>
+    <g font-size="12" fill="#bdf8cb">
+      <text x="62" y="118">pixel <tspan fill="#3dff7a">knock</tspan> vase</text>
+      <text x="62" y="140">vase <tspan fill="#3dff7a">go_off</tspan> table</text>
+      <text x="62" y="162">vase <tspan fill="#3dff7a">fall_off</tspan> table</text>
+      <text x="380" y="118">dog <tspan fill="#3dff7a">bark</tspan></text>
+    </g>
+    <text x="14" y="190" font-size="11" fill="#80bd8d">The comma closes the fronted clause because a clause with its own subject and verb follows it.</text>
+  </svg>
+  </div>
+  <figcaption>A fronted adverbial clause ends at its last comma before a clause (TTG-RFC-0002 1.7). The same goes for a
+  stance's clause (<i>I think Pixel knocked…</i>), a relative, a relative inside a stance's clause, and a
+  phrase after what the shape covers (<i>…off the bed in the kitchen</i>).</figcaption>
+</figure>
+<p>A clause under a stance is <i>held</i>: kept and quoted, never believed. <i>I doubt cats like fish</i> makes
+the grimoire neither believe nor deny that cats like fish. If you ask, it tells you what you said and how.</p>
+<blockquote><span class="q">&gt; Do cats like fish?</span><br>
+Your words don't reach that yet.<br>You said it, but not as fact: “I doubt cats like fish.”</blockquote>
+<div class="trylabel">Try it in the clauses store</div>
+<div class="try">
+  <a href="index.html?store=examples/clauses_ttdb.md&amp;ask=What%20do%20I%20doubt%3F">What do I doubt?</a>
+  <a href="index.html?store=examples/clauses_ttdb.md&amp;ask=Do%20cats%20like%20fish%3F">Do cats like fish?</a>
+  <a href="index.html?store=examples/clauses_ttdb.md&amp;ask=Did%20the%20cat%20bite%20the%20dog%3F">Did the cat bite the dog?</a>
+  <a href="index.html?store=examples/clauses_ttdb.md&amp;ask=Where%20did%20the%20vase%20go%3F">Where did the vase go?</a>
+  <a href="index.html?store=examples/clauses_ttdb.md&amp;ask=Did%20the%20dog%20bark%3F">Did the dog bark?</a>
+</div>
+<div class="prov"><b>Provenance.</b> A clause a stance holds, linked back to it, is LFG's COMP <sup><a href="#ref-kb">[4]</a></sup>, kept
+flat. Early <i>I think</i> as a stance marker rather than a main verb is Diessel and Tomasello's finding
+<sup><a href="#ref-dt">[5]</a></sup> (Phase 1, <a href="https://github.com/antfriend/toot-toot-engineering/commit/226bf8d">226bf8d</a>). Spans
+inside a clause are TTG-RFC-0006 0.13–0.14 (<a href="https://github.com/antfriend/toot-toot-engineering/commit/68dd995">68dd995</a>,
+<a href="https://github.com/antfriend/toot-toot-engineering/commit/ac287d0">ac287d0</a>) and 0.17 with TTG-RFC-0002 1.7
+(<a href="https://github.com/antfriend/toot-toot-engineering/commit/94f1c15">94f1c15</a>).</div>
+
+<!-- ===================================================================== -->
+<h2 id="languages"><span class="n">5</span>Two languages, one motion</h2>
+<p>The store holds a Spanish grammar beside the English one, and each sentence is read by the grammar it is
+written in. Spanish <i>de</i> means <i>of</i> far more often than <i>off</i>, so it can't trigger motion on its own.
+It does after a verb tied to motion: <i>Pixel tiró el vaso de la mesa</i> (Pixel knocked the glass off the table) is
+read by <i>movimiento causado</i>. Two rules then give the English and Spanish motions one meaning:</p>
+<pre><span class="gram">rule:</span> go_off X Y =&gt; <span class="vec">leave</span> X Y | going off a thing is leaving it
+<span class="gram">rule:</span> salir_de X Y =&gt; <span class="vec">leave</span> X Y | salir de is leave</pre>
+<p>So a question in either language reaches a saying in either. <i>Did the vaso leave the mesa?</i> is answered
+from the Spanish sentence, through the rule, and the reply says which rule it used.</p>
+<div class="trylabel">Try it in the two-language store</div>
+<div class="try">
+  <a href="index.html?store=examples/dos_lenguas_ttdb.md&amp;ask=%C2%BFDe%20d%C3%B3nde%20tir%C3%B3%20Pixel%20el%20vaso%3F">¿De dónde tiró Pixel el vaso?</a>
+  <a href="index.html?store=examples/dos_lenguas_ttdb.md&amp;ask=%C2%BFQu%C3%A9%20sali%C3%B3%20de%20la%20mesa%3F">¿Qué salió de la mesa?</a>
+  <a href="index.html?store=examples/dos_lenguas_ttdb.md&amp;ask=Did%20the%20vaso%20leave%20the%20mesa%3F">Did the vaso leave the mesa?</a>
+  <a href="index.html?store=examples/dos_lenguas_ttdb.md&amp;ask=What%20left%20the%20table%3F">What left the table?</a>
+</div>
+<div class="prov"><b>Provenance.</b> Per-language patterns over one engine echo Principles and Parameters
+<sup><a href="#ref-chomsky">[6]</a></sup>, whose parameters the store names in a table (Phase 5,
+<a href="https://github.com/antfriend/toot-toot-engineering/commit/3b0e72e">3b0e72e</a>). The Spanish construction is TTG-RFC-0006 0.7
+(<a href="https://github.com/antfriend/toot-toot-engineering/commit/c4c5628">c4c5628</a>), the Spanish questions 0.12
+(<a href="https://github.com/antfriend/toot-toot-engineering/commit/26b5ce4">26b5ce4</a>), and the one motion TTG-RFC-0003 1.13
+(<a href="https://github.com/antfriend/toot-toot-engineering/commit/87b4a45">87b4a45</a>).</div>
+
+<!-- ===================================================================== -->
+<h2 id="trajectories"><span class="n">6</span>Belief trajectories</h2>
+<p>A belief's confidence is a sum over its sayings. Three times <i>I like tea</i> and three times <i>I don't like tea</i>
+is a contest at exactly even, whatever the order. But order matters to a reader. Three and then three looks like a
+change of mind, while back and forth looks like a real disagreement. The grimoire refuses to guess which saying
+is current (that would be a claim about you), so the verdict stays a contest. The reply now adds what the order shows,
+as a note beside the verdict that never changes it.</p>
+<figure>
+  <div class="scroll">
+  <svg viewBox="0 0 660 250" role="img" aria-labelledby="f3t f3d">
+    <title id="f3t">Three sign series and the shapes their runs make</title>
+    <desc id="f3d">Tea: plus three times then minus three times, two runs, one crossing. Milk: plus, minus, plus, minus, plus, five runs, an alternation turning four times. Jam: plus three times then minus once, a crossing not yet held, given no note.</desc>
+    <g font-size="12.5" fill="#bdf8cb">
+      <text x="14" y="52">tea</text><text x="14" y="126">milk</text><text x="14" y="200">jam</text>
+    </g>
+    <g font-size="11" fill="#80bd8d">
+      <text x="80" y="20">one episode each, in order →</text>
+    </g>
+    <g font-size="15" font-weight="700" text-anchor="middle">
+      <!-- tea -->
+      <rect x="76" y="30" width="138" height="34" rx="3" fill="none" stroke="#3dff7a"/>
+      <rect x="220" y="30" width="138" height="34" rx="3" fill="none" stroke="#ff9d3d"/>
+      <text x="99" y="53" fill="#3dff7a">+</text><text x="145" y="53" fill="#3dff7a">+</text><text x="191" y="53" fill="#3dff7a">+</text>
+      <text x="243" y="53" fill="#ff9d3d">−</text><text x="289" y="53" fill="#ff9d3d">−</text><text x="335" y="53" fill="#ff9d3d">−</text>
+      <!-- milk -->
+      <rect x="76" y="104" width="40" height="34" rx="3" fill="none" stroke="#3dff7a"/>
+      <rect x="122" y="104" width="40" height="34" rx="3" fill="none" stroke="#ff9d3d"/>
+      <rect x="168" y="104" width="40" height="34" rx="3" fill="none" stroke="#3dff7a"/>
+      <rect x="214" y="104" width="40" height="34" rx="3" fill="none" stroke="#ff9d3d"/>
+      <rect x="260" y="104" width="40" height="34" rx="3" fill="none" stroke="#3dff7a"/>
+      <text x="96" y="127" fill="#3dff7a">+</text><text x="142" y="127" fill="#ff9d3d">−</text><text x="188" y="127" fill="#3dff7a">+</text>
+      <text x="234" y="127" fill="#ff9d3d">−</text><text x="280" y="127" fill="#3dff7a">+</text>
+      <!-- jam -->
+      <rect x="76" y="178" width="138" height="34" rx="3" fill="none" stroke="#3dff7a"/>
+      <rect x="220" y="178" width="40" height="34" rx="3" fill="none" stroke="#ff9d3d" stroke-dasharray="4 3"/>
+      <text x="99" y="201" fill="#3dff7a">+</text><text x="145" y="201" fill="#3dff7a">+</text><text x="191" y="201" fill="#3dff7a">+</text>
+      <text x="240" y="201" fill="#ff9d3d">−</text>
+    </g>
+    <g font-size="12">
+      <text x="380" y="45" fill="#bdf8cb">two runs, the last ≥ 2</text>
+      <text x="380" y="62" fill="#3dff7a">one crossing · contest + note</text>
+      <text x="380" y="119" fill="#bdf8cb">five runs, four turns</text>
+      <text x="380" y="136" fill="#3dff7a">alternation · yes + note</text>
+      <text x="380" y="193" fill="#bdf8cb">last run of 1, under the hold</text>
+      <text x="380" y="210" fill="#80bd8d">not yet held · yes, no note</text>
+    </g>
+    <text x="14" y="242" font-size="11" fill="#80bd8d">Each episode's sign is which way it said the triple. Runs of one sign give the shape. Boxes are runs.</text>
+  </svg>
+  </div>
+  <figcaption>The series and its shape are <code>trajectoryOf</code> in the runtime. The thresholds,
+  <code>trajectory_min_episodes: 3</code> and <code>trajectory_hold: 2</code>, are numbers in the store, and the wording is reply keys
+  in each language. Remove the first number and replies are what they were.</figcaption>
+</figure>
+<blockquote><span class="q">&gt; Do I like tea?</span><br>
+Your words disagree, and neither is chosen.<br>
+You said it one way in 3 episodes, then the other way in the 3 episodes since — perhaps a change of mind. Both still count, so the answer stands.</blockquote>
+<p>Where your tense already marks the change (<i>I liked cake</i>, then <i>I don't like cake</i>), the store already treats
+it as a change rather than a contradiction, and the existing note stands alone.</p>
+<div class="trylabel">Try it in the trajectories store</div>
+<div class="try">
+  <a href="index.html?store=examples/trajectories_ttdb.md&amp;ask=Do%20I%20like%20tea%3F">Do I like tea?</a>
+  <a href="index.html?store=examples/trajectories_ttdb.md&amp;ask=Do%20I%20like%20milk%3F">Do I like milk?</a>
+  <a href="index.html?store=examples/trajectories_ttdb.md&amp;ask=Do%20I%20like%20jam%3F">Do I like jam?</a>
+  <a href="index.html?store=examples/trajectories_ttdb.md&amp;ask=Do%20I%20like%20cake%3F">Do I like cake?</a>
+</div>
+<p>The re-reading tool also counts how many sentences each construction reads under today's grammar. Run it
+before and after a grammar change to see which constructions gained sentences and which lost them:
+<code>node tools/reread.mjs</code>; for every triple's shape, <code>node tools/trajectories.mjs</code>.</p>
+<div class="prov"><b>Provenance.</b> The idea came from Haylett's reading of language as a nonlinear dynamical system
+<sup><a href="#ref-haylett">[7]</a></sup>, which rebuilds an attractor from one series with Takens' delay embedding
+<sup><a href="#ref-takens">[8]</a></sup>. The grimoire borrows the picture, not the theorem: a triple's series is short and
+discrete. The spec is TTG-RFC-0003 1.15 §4 and its Appendix A, TTG-RFC-0001 1.11 and TTG-RFC-0005 1.6 §5.1
+(<a href="https://github.com/antfriend/toot-toot-engineering/commit/2bef5e2">2bef5e2</a>).</div>
+
+<!-- ===================================================================== -->
+<h2 id="theories"><span class="n">7</span>Where it sits among theories of grammar</h2>
+<p>Before the phases began, the grimoire was compared, dimension by dimension, with four theories of grammar. Each
+phase then took one idea from them that the grimoire could hold without giving up quoting its owner.</p>
+<div class="tbl"><table>
+  <thead><tr><th>Theory</th><th>What the grimoire shares</th><th>What it doesn't</th></tr></thead>
+  <tbody>
+    <tr><td>Lexical-Functional Grammar <sup><a href="#ref-kb">[4]</a></sup></td><td>a surface structure beside a function structure, read without transformations; flat stand-ins for COMP, TENSE and ADJUNCT</td><td>nested f-structures</td></tr>
+    <tr><td>Principles &amp; Parameters <sup><a href="#ref-chomsky">[6]</a></sup></td><td>one universal engine and per-language parameters, now a named table</td><td>derivations, and the autonomy of syntax that constructions give up</td></tr>
+    <tr><td>Usage-based grammar <sup><a href="#ref-tomasello">[9]</a></sup> <sup><a href="#ref-bybee">[10]</a></sup></td><td>exemplar memory, verb-by-verb learning, one individual speaker; verb frames counted in episodes, optionally preempting</td><td>entrenchment by frequency, unless its numbers ask for it</td></tr>
+    <tr><td>Construction Grammar <sup><a href="#ref-goldberg">[2]</a></sup></td><td>declared form–meaning pairs, default and multiple inheritance, abstract schemas, verb-specific constructions and idioms</td><td>coercing the verb itself; slots tied to meanings rather than words</td></tr>
+  </tbody>
+</table></div>
+<p>None of the four has anything like the grimoire's provenance: every answer quotes the sentences it came from,
+inferred grounds are never printed as said ones, and contradictions are kept rather than resolved.</p>
+<div class="tbl"><table>
+  <thead><tr><th>Phase</th><th>What it added</th><th>Idea from</th><th>Spec commit</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>a stance linked to the clause it holds</td><td>LFG COMP <sup><a href="#ref-kb">[4]</a></sup>; Diessel &amp; Tomasello <sup><a href="#ref-dt">[5]</a></sup></td><td><a href="https://github.com/antfriend/toot-toot-engineering/commit/226bf8d">226bf8d</a></td></tr>
+    <tr><td>2</td><td>verb frames counted in episodes</td><td>entrenchment and preemption <sup><a href="#ref-tomasello">[9]</a></sup> <sup><a href="#ref-bybee">[10]</a></sup></td><td><a href="https://github.com/antfriend/toot-toot-engineering/commit/671b635">671b635</a></td></tr>
+    <tr><td>3</td><td>tense, hedges, a change of tense kept apart from a contradiction</td><td>LFG TENSE <sup><a href="#ref-kb">[4]</a></sup></td><td><a href="https://github.com/antfriend/toot-toot-engineering/commit/b091171">b091171</a></td></tr>
+    <tr><td>4</td><td>modifiers as subclasses of a phrase's head</td><td>LFG ADJUNCT <sup><a href="#ref-kb">[4]</a></sup></td><td><a href="https://github.com/antfriend/toot-toot-engineering/commit/a0baba4">a0baba4</a></td></tr>
+    <tr><td>5</td><td>the parameters named; questions with the verb first</td><td>P&amp;P parameters <sup><a href="#ref-chomsky">[6]</a></sup></td><td><a href="https://github.com/antfriend/toot-toot-engineering/commit/3b0e72e">3b0e72e</a></td></tr>
+    <tr><td>6</td><td>constructions, then TTG-RFC-0006 0.2–0.17</td><td>Goldberg <sup><a href="#ref-goldberg">[2]</a></sup>; Fillmore, Kay &amp; O'Connor <sup><a href="#ref-fko">[3]</a></sup></td><td><a href="https://github.com/antfriend/toot-toot-engineering/commit/4795447">4795447</a> … <a href="https://github.com/antfriend/toot-toot-engineering/commit/94f1c15">94f1c15</a></td></tr>
+    <tr><td>7</td><td>belief trajectories; construction traffic</td><td>Haylett <sup><a href="#ref-haylett">[7]</a></sup>; Takens <sup><a href="#ref-takens">[8]</a></sup></td><td><a href="https://github.com/antfriend/toot-toot-engineering/commit/2bef5e2">2bef5e2</a></td></tr>
+  </tbody>
+</table></div>
+
+<!-- ===================================================================== -->
+<h2 id="measured"><span class="n">8</span>Measured</h2>
+<p>bAbI v1.2 English test splits, 1,000 questions each <sup><a href="#ref-weston">[1]</a></sup>. Each story's facts are told to an
+emptied store, one episode per line. <i>Exact attribution</i> means the answer is right and the sentences it quotes are
+exactly the gold supporting facts. The runs were repeated after each phase, after the constructions series and after
+Phase 7. Each time the outcome hashes equalled the ones recorded in <code>paper/</code>, so none of this work changed a bAbI answer.</p>
+<div class="tbl"><table id="babi">
+  <thead><tr><th>Condition</th><th class="num">Accuracy</th><th class="num">Exact attribution</th><th>Outcome hash</th></tr></thead>
+  <tbody>
+    <tr class="task"><td colspan="4">Task 15 · basic deduction</td></tr>
+    <tr data-task="15" data-cond="seed"><td>store as shipped</td><td class="num">0.0%</td><td class="num">0.0%</td><td><code>33e361f4dd1c58fc</code></td></tr>
+    <tr data-task="15" data-cond="+adapted"><td>+ one line of grammar data</td><td class="num">100.0%</td><td class="num">100.0%</td><td><code>6bc1575590ad9171</code></td></tr>
+    <tr data-task="15" data-cond="+adapted, no exclusive flag"><td>+ that line, <code>exclusive</code> removed</td><td class="num">100.0%</td><td class="num">100.0%</td><td><code>6bc1575590ad9171</code></td></tr>
+    <tr data-task="15" data-cond="permuted"><td>+ that line, letters permuted in grammar and data</td><td class="num">100.0%</td><td class="num">100.0%</td><td><code>6bc1575590ad9171</code></td></tr>
+    <tr data-task="15" data-cond="control: permuted grammar, plain data"><td>control: permuted grammar, plain data</td><td class="num">0.0%</td><td class="num">0.0%</td><td><code>33e361f4dd1c58fc</code></td></tr>
+    <tr class="task"><td colspan="4">Task 1 · single supporting fact</td></tr>
+    <tr data-task="1" data-cond="seed"><td>store as shipped</td><td class="num">19.4%</td><td class="num">18.2%</td><td><code>ed9fa0be5427c98c</code></td></tr>
+    <tr data-task="1" data-cond="+adapted"><td>+ four lines of grammar data</td><td class="num">100.0%</td><td class="num">100.0%</td><td><code>6bc1575590ad9171</code></td></tr>
+    <tr data-task="1" data-cond="+adapted, no exclusive flag"><td>+ those lines, <code>exclusive</code> removed</td><td class="num">54.9%</td><td class="num">54.9%</td><td><code>ced41ffc11592e74</code></td></tr>
+    <tr data-task="1" data-cond="permuted"><td>+ those lines, letters permuted in grammar and data</td><td class="num">100.0%</td><td class="num">100.0%</td><td><code>6bc1575590ad9171</code></td></tr>
+    <tr data-task="1" data-cond="control: permuted grammar, plain data"><td>control: permuted grammar, plain data</td><td class="num">0.0%</td><td class="num">0.0%</td><td><code>33e361f4dd1c58fc</code></td></tr>
+  </tbody>
+</table></div>
+<p>The permuted rows are the claim from <a href="#file">section 1</a>. With the grammar and data enciphered alike, the answers are
+identical. With the grammar enciphered alone, nothing is understood. Removing <code>exclusive</code>, the flag that lets a
+later place retire an earlier one, drops task 1 to about half.</p>
+<p>The test suites, at release: <b id="count-app">629</b> checks of the engine and the example stores
+(<code>tests/app.test.mjs</code>), <b id="count-docs">244</b> of the documents against the store (<code>tests/docs.test.mjs</code>), and
+<b id="count-embed">24</b> of a third-party embedding (<code>tests/embed.test.mjs</code>). Each suite checks that it still has at least
+the number given here.</p>
+<pre>node tests/app.test.mjs &amp;&amp; node tests/docs.test.mjs &amp;&amp; node tests/embed.test.mjs
+node tools/examples.mjs --check          # the example stores equal a fresh build
+node tools/babi.mjs PATH/qa15_basic-deduction_test.txt
+node tools/babi.mjs PATH/qa1_single-supporting-fact_test.txt</pre>
+<p>The bAbI data isn't included here. <code>tools/babi.mjs</code> says where to get it.</p>
+
+<!-- ===================================================================== -->
+<h2 id="provenance"><span class="n">9</span>Where the ideas came from</h2>
+<p>Three kinds of origin, kept apart:</p>
+<h3>Ideas from the literature</h3>
+<p>Cited where they are used, and listed below. In short: LFG's COMP, TENSE and ADJUNCT <sup><a href="#ref-kb">[4]</a></sup> for Phases
+1, 3 and 4; Principles and Parameters <sup><a href="#ref-chomsky">[6]</a></sup> for Phase 5; usage-based entrenchment and preemption
+<sup><a href="#ref-tomasello">[9]</a></sup> <sup><a href="#ref-bybee">[10]</a></sup> for Phase 2, and <i>I think</i> as a stance marker
+<sup><a href="#ref-dt">[5]</a></sup>; Construction Grammar <sup><a href="#ref-goldberg">[2]</a></sup> and idioms <sup><a href="#ref-fko">[3]</a></sup>
+for Phase 6; Laplace's rule of succession <sup><a href="#ref-laplace">[11]</a></sup> for a belief's confidence; bAbI
+<sup><a href="#ref-weston">[1]</a></sup> for the benchmark; Haylett <sup><a href="#ref-haylett">[7]</a></sup> and Takens
+<sup><a href="#ref-takens">[8]</a></sup> for trajectories. Each idea was cut down to what a store can hold without claiming
+anything about its owner that the owner didn't say.</p>
+<h3>The project's own design</h3>
+<p>TTDB (the file format, its globe of records and its typed edges), the Toot Toot Grammar RFCs, the runtime that holds no
+word, and the store that is its own grammar are by the project's author, antfriend, and specified in
+<a href="RFCs/INDEX.md">the RFCs</a>. So are the grimoire's quoting guarantees: said and inferred never printed alike,
+contradictions kept, amendments beside the episodes rather than over them.</p>
+<h3>How it was built</h3>
+<p>The comparison with the four theories, Phases 1–9 and the TTG-RFC-0006 series were worked out in sessions with an AI
+coding assistant, Claude Code, as the <code>Co-Authored-By</code> lines on the commits record. Every spec change is a commit in
+<a href="https://github.com/antfriend/toot-toot-engineering">toot-toot-engineering</a>, and each RFC changelog entry since 1.0 names the runtime commit
+that implemented it, so each claim on this page traces to spec text and code.</p>
+
+<h3 id="refs">References</h3>
+<ol class="refs">
+  <li id="ref-weston">J. Weston, A. Bordes, S. Chopra, A. M. Rush, B. van Merriënboer, A. Joulin, T. Mikolov, “Towards AI-Complete Question Answering: A Set of Prerequisite Toy Tasks,” arXiv:1502.05698, 2015.</li>
+  <li id="ref-goldberg">A. E. Goldberg, <i>Constructions: A Construction Grammar Approach to Argument Structure</i>, University of Chicago Press, 1995.</li>
+  <li id="ref-fko">C. J. Fillmore, P. Kay, M. C. O'Connor, “Regularity and Idiomaticity in Grammatical Constructions: The Case of <i>Let Alone</i>,” <i>Language</i> 64(3), 1988, 501–538.</li>
+  <li id="ref-kb">R. M. Kaplan, J. Bresnan, “Lexical-Functional Grammar: A Formal System for Grammatical Representation,” in J. Bresnan (ed.), <i>The Mental Representation of Grammatical Relations</i>, MIT Press, 1982, 173–281.</li>
+  <li id="ref-dt">H. Diessel, M. Tomasello, “The acquisition of finite complement clauses in English: A corpus-based analysis,” <i>Cognitive Linguistics</i> 12(2), 2001, 97–141.</li>
+  <li id="ref-chomsky">N. Chomsky, <i>Lectures on Government and Binding</i>, Foris, 1981.</li>
+  <li id="ref-haylett">K. R. Haylett, “Geofinitism: Language as a Nonlinear Dynamical System — Attractors, Basins, and the Geometry of Understanding,” Substack, January 2026. <a href="https://kevinhaylett.substack.com/p/geofinitism-language-as-a-nonlinear">kevinhaylett.substack.com</a></li>
+  <li id="ref-takens">F. Takens, “Detecting strange attractors in turbulence,” in <i>Dynamical Systems and Turbulence, Warwick 1980</i>, Lecture Notes in Mathematics 898, Springer, 1981, 366–381.</li>
+  <li id="ref-tomasello">M. Tomasello, <i>Constructing a Language: A Usage-Based Theory of Language Acquisition</i>, Harvard University Press, 2003.</li>
+  <li id="ref-bybee">J. Bybee, “From Usage to Grammar: The Mind's Response to Repetition,” <i>Language</i> 82(4), 2006, 711–733.</li>
+  <li id="ref-laplace">P.-S. Laplace, <i>Essai philosophique sur les probabilités</i>, Paris, 1814.</li>
+</ol>
+
+<footer>
+  Personal Grimoire · runtime and store at <a href="index.html">index.html</a> · MIT licence; the RFCs it describes are CC0 ·
+  part of <a href="../index.html">Toot Toot Engineering</a>
+</footer>
+</div>
+</body>
+</html>

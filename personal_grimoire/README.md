@@ -2,6 +2,8 @@
 
 > **Read the paper:** [Personal Grimoire — The File Is the Grammar](paper/Personal-Grimoire-The-File-Is-the-Grammar.md) — provenance-preserving question answering over a personal corpus, without a language model. Working draft.
 
+> **What's new:** [the release page](release.html) shows what came of the seven phases and the constructions series (constructions, part of a clause, two languages, belief trajectories), each with an [example store](examples/) to try in the page (`index.html?store=examples/…`).
+
 <img src="Grimoire-card.jpg" alt="A tooled leather grimoire with a brass clasp and an eye set in its cover." width="360">
 
 A one-page web app: **a corpus of your own words that answers in them.** You type sentences,

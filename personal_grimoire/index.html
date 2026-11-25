@@ -287,11 +287,11 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
 </div>
 
 <div class="bar" id="bar">
-  <span id="storeinfo" data-seed="seed file" data-local="local copy" data-opened="opened file">Loading…</span>
+  <span id="storeinfo" data-seed="seed file" data-local="local copy" data-opened="opened file" data-example="example store, not saved">Loading…</span>
   <button type="button" id="dl" title="Download the whole store, corpus included">Download store</button>
   <label class="pill" for="openstore" title="Replace the store with a TTDB file">Open store…</label>
   <input type="file" id="openstore" accept=".md" hidden>
-  <button type="button" id="reset" data-confirm="Forget the local copy, and everything added to it, and reload the seed file?" title="Forget the local copy and reload the seed file">Reset to seed</button>
+  <button type="button" id="reset" data-confirm-example="Read the example store again, as it was?" data-confirm="Forget the local copy, and everything added to it, and reload the seed file?" title="Forget the local copy and reload the seed file">Reset to seed</button>
   <button type="button" id="empty" data-confirm="Delete every episode and every term, keeping the grammar and the blueprint?" title="Keep the grammar and blueprint; delete every episode and term">Start empty</button>
   <button type="button" id="scene" hidden data-play="▶ play the scene" data-step="■ {n}/{total} · {name}"
     title="Walk the scene: the globe turns to each record in turn, and any hand on it stops the walk">▶</button>
@@ -380,6 +380,11 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
 
 const DB = "personal_grimoire_ttdb.md";
 const LS_KEY = "personal_grimoire:store:v1";
+/* `?store=` opens one of the example stores beside the seed, and nothing else: a file named in the
+ * examples folder, no other path, no other host. An example is read fresh from its file each time and
+ * never saved, so the owner's own copy is left as it was.                                           */
+const EXAMPLE = /^examples\/[a-z0-9_]+_ttdb\.md$/;
+function examplePath(p){ return typeof p === "string" && EXAMPLE.test(p) ? p : null; }
 const FENCE = "```";
 
 /* ---------- small helpers ------------------------------------------ */
@@ -3656,13 +3661,13 @@ const PG = { parseStore, serializeStore, parseRecord, parseBlock, openStore, loa
   nounLemma, verbLemma, perceiveSentence, perceive, consolidate, syncTerms, termState, verify, objectsOf, subjectsOf,
   portrait, searchSaid, interpret, answer, trajectoryOf, TRAJ, replyText, ingestFile, startEmpty, markAsked, records, epsOf, say, SLOT,
   pickGrammar, withGrammar, shapeOf, shapeText, readingsOf, amend, amendReply, reread, takeRereads,
-  epsTop, sceneOf, scenesOf, placeTerm };
+  epsTop, sceneOf, scenesOf, placeTerm, examplePath };
 
 /* ====================================================================== *
  * The page. Everything below touches the DOM; everything above does not,
  * which is what lets tools/ and tests/ run the engine in Node.
  * ====================================================================== */
-let S = null, storeSource = "", selectedKey = null, lit = new Set();
+let S = null, storeSource = "", exampleFile = null, selectedKey = null, lit = new Set();
 let rotLat = 0.3, rotLon = -0.9;          // where the globe is turned to now
 let tgtLat = 0.3, tgtLon = -0.9;          // where it is heading
 let zoom = 1, spinEase = .16, dragging = false, ticking = false;
@@ -4760,6 +4765,7 @@ function wireSphere(){
 
 /* ---------- store lifecycle ------------------------------------------------ */
 function saveLocal(){
+  if (storeSource === "example") return true;   // an example is never saved over the owner's copy
   try { localStorage.setItem(LS_KEY, serializeStore(S.st)); return true; }
   catch (err){ appendTurn("", `<div class="note">${esc($("log").dataset.quota || String(err))}</div>`); return false; }
 }
@@ -4856,10 +4862,17 @@ function boot(){
     if (!S) return;
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([serializeStore(S.st)], { type:"text/markdown" }));
-    a.download = DB; document.body.appendChild(a); a.click(); a.remove();
+    a.download = storeSource === "example" ? exampleFile.split("/").pop() : DB; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   });
   $("reset").addEventListener("click", async () => {
+    // under an example, the example is read again and the owner's copy is not touched
+    if (storeSource === "example"){
+      if (!confirm($("reset").dataset.confirmExample || "")) return;
+      const res = await fetch(exampleFile, { cache:"no-store" });
+      if (res.ok){ $("log").innerHTML = ""; load(await res.text(), "example"); }
+      return;
+    }
     if (!confirm($("reset").dataset.confirm || "")) return;
     try { localStorage.removeItem(LS_KEY); } catch (err){ /* private mode: nothing stored */ }
     const res = await fetch(DB, { cache:"no-store" });
@@ -4917,12 +4930,13 @@ function boot(){
   window.addEventListener("resize", draw);
 
   let text = null;
-  try { if (!params.has("seed")) text = localStorage.getItem(LS_KEY); } catch (err){ text = null; }
+  exampleFile = examplePath(params.get("store"));
+  try { if (!exampleFile && !params.has("seed")) text = localStorage.getItem(LS_KEY); } catch (err){ text = null; }
   const start = t => { load(t.text, t.src); const ask = params.get("ask"); if (ask) send(ask); };
   if (text) return start({ text, src:"local" });
-  fetch(DB, { cache:"no-store" })
+  fetch(exampleFile || DB, { cache:"no-store" })
     .then(res => { if (!res.ok) throw new Error(res.status + " " + res.statusText); return res.text(); })
-    .then(t => start({ text:t, src:"seed" }))
+    .then(t => start({ text:t, src:exampleFile ? "example" : "seed" }))
     .catch(err => { $("err").hidden = false; $("errdetail").textContent = String(err.message || err); });
 }
 if (typeof document !== "undefined" && document.getElementById("app")) boot();

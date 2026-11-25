@@ -7,8 +7,8 @@ const PG = await loadEngine();
 const store = read("personal_grimoire_ttdb.md"), readme = read("README.md"), index = read("RFCs/INDEX.md");
 const app = read("index.html");
 
-let fails = 0;
-const ok = (c, m, x = "") => { console.log((c ? "  PASS  " : "  FAIL  ") + m + (x ? "  " + x : "")); if (!c) fails++; };
+let fails = 0, passes = 0;
+const ok = (c, m, x = "") => { console.log((c ? "  PASS  " : "  FAIL  ") + m + (x ? "  " + x : "")); if (c) passes++; else fails++; };
 
 console.log("\n== relative links resolve ==");
 const rfcs = fs.readdirSync(path.join(root, "RFCs")).filter(f => f.endsWith(".md"));
@@ -195,6 +195,26 @@ console.log("\n== the parameters table is the grammars' ==");
     }
     ok(app.includes(k), "and the runtime reads " + k);
   }
+}
+
+console.log("\n== the release page and the example stores ==");
+{
+  const page = read("release.html");
+  // every relative link and image on the page resolves; index.html links are opened with a query
+  const seen = new Set(); let m;
+  const re = /(?:href|src)="(?!https?:|data:|#|mailto:)([^"#?]+)[^"]*"/g;
+  while ((m = re.exec(page))){ if (seen.has(m[1])) continue; seen.add(m[1]); ok(fs.existsSync(path.join(root, m[1])), "release.html -> " + m[1]); }
+  // every in-page anchor names an id on the page
+  const ids = new Set([...page.matchAll(/\bid="([^"]+)"/g)].map(x => x[1]));
+  const anchors = [...new Set([...page.matchAll(/href="#([^"]+)"/g)].map(x => x[1]))];
+  ok(anchors.every(a => ids.has(a)), "every in-page link on release.html names an id on it", anchors.filter(a => !ids.has(a)).join(" "));
+  ok(readme.includes("](release.html)"), "the README links the release page");
+  const site = fs.readFileSync(path.join(root, "..", "index_ttdb.md"), "utf8");
+  ok(site.includes("](personal_grimoire/release.html)"), "the site's reader list links the release page");
+  // the store's own description of the page's surface names ?store= and the examples' builder
+  ok(store.includes("?store=examples/") && store.includes("tools/examples.mjs"), "Blueprint 9 names ?store= and tools/examples.mjs");
+  const n = +((page.match(/<b id="count-docs">(\d+)<\/b>/) || [])[1] || 0);
+  ok(n > 0 && passes + 1 >= n, "this suite still has at least the " + n + " checks the release page gives", passes + 1);
 }
 
 console.log("\n" + (fails ? fails + " FAILED" : "all passed"));

@@ -854,6 +854,30 @@ when Phase 9 removes it.
 
 ## Phase 8 — The release page
 
+**Status (2026-12-14): implemented.**
+- **Example stores.** `examples/constructions_ttdb.md`, `clauses_ttdb.md`, `trajectories_ttdb.md`
+  and `dos_lenguas_ttdb.md`, built by `tools/examples.mjs` from the seed's grammar (corpus emptied)
+  and each one's sayings, one episode each. The same module lists every example's sample
+  questions; `--check` says whether a rebuild would change any.
+- **`?store=`.** `examplePath(p)` accepts only `examples/<name>_ttdb.md`. An example is read fresh,
+  never saved (so the owner's local copy is untouched), labelled by `#storeinfo[data-example]`,
+  and *Reset* reads it again. Blueprint 9 documents it. Checked in headless Edge: the example
+  loads with `&ask=` answered, and `?store=../personal_grimoire_ttdb.md` falls back to the seed.
+- **The page.** `release.html`: one section per highlight, three inline SVG figures (the
+  inheritance network, a clause's spans, three sign series), 20 *try it* links, the comparison's
+  summary and a phase-by-phase table with the idea each took and its spec commit, the bAbI table
+  with outcome hashes, and provenance in three kinds with eleven references. Linked from the
+  README and from the RFC list in `../index_ttdb.md`.
+- **Tests.** Each example parses, round-trips, equals a fresh build, re-reads unchanged and
+  answers its questions; `examplePath` refuses twelve other paths; every *try it* link names an
+  example and a question the suite asks; the bAbI rows equal `paper/`; every citation has a
+  reference; the page's links and anchors resolve.
+
+**Changed from the plan.** The page's test counts are a floor, not an equality: each suite checks
+it still has at least the number the page gives (629, 244, 24), so adding a test never breaks
+the page. The site's front door keeps one card per top-level topic, so the page is a line in the
+RFC list's TTG section rather than a card. The grammar matrix is not linked; it is private.
+
 **From:** this plan's Phases 1–7, the TTG-RFC-0006 series (0.1–0.17), and the belief-trajectories
 note. **Size:** medium.
 

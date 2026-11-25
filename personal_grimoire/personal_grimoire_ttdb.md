@@ -510,7 +510,7 @@ expansion. To put this runtime inside another app, read [the runtime's surface](
 
 ---
 
-@LAT85LON0 | created:1789257600 | updated:1797206400 | relates:refines@LAT0LON0,depends_on@LAT80LON0
+@LAT85LON0 | created:1789257600 | updated:1797292800 | relates:refines@LAT0LON0,depends_on@LAT80LON0
 
 **Blueprint 9 — The runtime's surface: embedding it**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §10
@@ -551,7 +551,7 @@ than one language: `pickGrammar(S, text)` returns the grammar a text reads as, a
 `withGrammar(S, G, fn)` runs `fn` under it — `answer`, `ingestFile` and `replyText` already
 do both. Also on
 `PG`, for tools and tests: `parseStore`, `parseRecord`, `parseBlock`, `records`, `epsOf`,
-`epsTop`, `sceneOf`, `scenesOf`, `placeTerm`, `trajectoryOf(S, belief, min, hold)` and the `TRAJ` codes
+`epsTop`, `sceneOf`, `scenesOf`, `placeTerm`, `examplePath`, `trajectoryOf(S, belief, min, hold)` and the `TRAJ` codes
 it returns its shape as (the series a belief's sayings make, TTG-RFC-0003 §4),
 `loadGrammar`, `say`, `sentencesOf`, `tokenize`, `nounLemma`, `verbLemma`, `perceiveSentence`,
 `perceive`, `consolidate`, `syncTerms`, `termState`, `markAsked`, and `SLOT` — the NUL
@@ -644,7 +644,11 @@ filled in, carrying the `data-key` that selects it),
 `#preview[data-nounish|data-verbish|data-aside|data-join|data-keep|data-amended|data-reread|data-accept|data-accepted|data-pick|data-reading]` — the labels of a reading's
 controls, where each word is a button carrying `data-row`. The
 store persists under `localStorage` key `personal_grimoire:store:v1`; `?seed` ignores that copy
-and `?ask=<text>` asks on load. The page fetches `personal_grimoire_ttdb.md` beside itself.
+and `?ask=<text>` asks on load. The page fetches `personal_grimoire_ttdb.md` beside itself, or, with
+`?store=examples/<name>_ttdb.md`, that example store instead (`examplePath(p)` returns the path, or
+null for any other): read fresh each time and never saved, so the local copy is untouched, and
+*Reset* reads the example again. `#storeinfo[data-example]` labels it. `tools/examples.mjs`
+builds the examples from the seed's grammar and their sayings.
 
 **How the sphere reads.** Nodes are records; the colour is the kind, east and west and the
 meridian. Typed edges are drawn between them as great circles — the path along the sphere,

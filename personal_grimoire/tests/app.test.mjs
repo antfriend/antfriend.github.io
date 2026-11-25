@@ -4,6 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import { EXAMPLES, build, check, NOW, STEP } from "../tools/examples.mjs";
 
 const PG = await loadEngine();
 const STORE = read("personal_grimoire_ttdb.md").replace(/\r\n?/g, "\n");
@@ -12,9 +13,9 @@ const T0 = 1789400000;
 // written without escapes so the suite can be edited by the same tools that edit the store
 const NL = String.fromCharCode(10), FENCE = "```";
 
-let fails = 0;
+let fails = 0, passes = 0;
 const ok = (cond, msg, extra = "") => {
-  if (cond) console.log("  PASS  " + msg + (extra ? "  " + extra : ""));
+  if (cond){ passes++; console.log("  PASS  " + msg + (extra ? "  " + extra : "")); }
   else { fails++; console.log("  FAIL  " + msg + "  " + extra); }
 };
 const section = s => console.log("\n== " + s + " ==");
@@ -1628,6 +1629,60 @@ section("the file IS the grammar");
   const numbers = Object.keys(G.num).concat(Object.keys(G.sphere));
   const unread = numbers.filter(k => !code.includes(k));
   ok(unread.length === 0, "every key in the numbers and sphere blocks is named in index.html", unread.join(", "));
+}
+
+section("the example stores and the release page (examples/, release.html)");
+{
+  const SEED = read("personal_grimoire_ttdb.md");
+  for (const ex of EXAMPLES){
+    const file = "examples/" + ex.file, text = read(file), S = PG.openStore(text);
+    const headers = text.split(/\r?\n/).filter(l => /^@LAT-?[\d.]+LON-?[\d.]+\s*\|/.test(l)).length;
+    // the seed's fixture record (lat 99) is malformed on purpose, and an example keeps it
+    ok(PG.records(S.st).length === headers && S.malformed.every(m => /^@LAT99LON/.test(m.id)) && PG.serializeStore(S.st) === text,
+       file + " parses, every record, nothing malformed outside the fixture, and round-trips byte for byte");
+    ok(build(PG, SEED, ex) === text, "and equals a fresh build from the seed's grammar and its sayings (node tools/examples.mjs)");
+    ok(S.episodes.length === ex.sayings.length && PG.reread(S).changed.length === 0, "its " + ex.sayings.length + " episodes re-read unchanged");
+    let t = NOW + STEP * (ex.sayings.length + 1);
+    for (const a of ex.ask){ const c = check(PG, S, a, t += STEP); ok(c.ok, "  " + a.q, c.why.join("; ")); }
+  }
+  // ?store= opens a file in the examples folder and nothing else
+  ok(PG.examplePath("examples/clauses_ttdb.md") === "examples/clauses_ttdb.md", "?store= takes an example by its path");
+  const refused = ["../personal_grimoire_ttdb.md", "examples/../personal_grimoire_ttdb.md", "/examples/clauses_ttdb.md",
+    "https://example.org/examples/clauses_ttdb.md", "//example.org/examples/clauses_ttdb.md", "examples/sub/clauses_ttdb.md",
+    "examples/clauses.md", "examples/Clauses_ttdb.md", "examples/clauses_ttdb.md?x", "personal_grimoire_ttdb.md", "", null];
+  ok(refused.every(p => PG.examplePath(p) === null), "and refuses any other path, host or name", refused.filter(p => PG.examplePath(p) !== null).join(" "));
+  // every try-it link opens an example that exists, with a question the test above asks of it
+  const page = read("release.html");
+  const links = [...page.matchAll(/href="index\.html\?([^"]+)"/g)].map(m => new URLSearchParams(m[1].replace(/&amp;/g, "&")));
+  ok(links.length >= 12, "the release page has try-it links", links.length);
+  const bad = links.filter(u => {
+    const ex = EXAMPLES.find(e => "examples/" + e.file === u.get("store"));
+    return !ex || !PG.examplePath(u.get("store")) || !ex.ask.some(a => a.q === u.get("ask"));
+  });
+  ok(!bad.length, "every one names an example store and a question this suite asks of it", bad.map(u => u.toString()).join(" "));
+  ok(EXAMPLES.every(e => links.some(u => u.get("store") === "examples/" + e.file)), "and every example store is linked from the page");
+  // the page's bAbI table is what paper/ records
+  const esc = x => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  for (const task of [1, 15]){
+    const res = JSON.parse(read("paper/babi_qa" + task + "_results.json")).results;
+    for (const [cond, v] of Object.entries(res)){
+      const row = page.match(new RegExp('<tr data-task="' + task + '" data-cond="' + esc(cond) + '">(.*?)</tr>'));
+      const pct = n => (100 * n / v.questions).toFixed(1) + "%";
+      ok(!!row && row[1].includes(">" + pct(v.correct) + "<") && row[1].includes(">" + pct(v.attributed) + "<") && row[1].includes(v.outcomes_sha256),
+         "the page's bAbI task " + task + " row '" + cond + "' is paper/'s: " + pct(v.correct) + ", " + v.outcomes_sha256);
+    }
+  }
+  // every citation has its reference, and every reference is cited
+  const cited = new Set([...page.matchAll(/href="#(ref-[a-z]+)"/g)].map(m => m[1]));
+  const listed = new Set([...page.matchAll(/<li id="(ref-[a-z]+)"/g)].map(m => m[1]));
+  ok([...cited].every(r => listed.has(r)) && [...listed].every(r => cited.has(r)), "every citation on the page has a reference entry, and every entry is cited",
+     [...cited].filter(r => !listed.has(r)).concat([...listed].filter(r => !cited.has(r))).join(" "));
+}
+
+// the release page gives each suite's count at release; the suite never falls below it
+{
+  const n = +((read("release.html").match(/<b id="count-app">(\d+)<\/b>/) || [])[1] || 0);
+  ok(n > 0 && passes + 1 >= n, "this suite still has at least the " + n + " checks the release page gives", passes + 1);
 }
 
 console.log("\n" + (fails ? fails + " FAILED" : "all passed"));

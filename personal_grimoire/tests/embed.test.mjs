@@ -13,9 +13,9 @@ import { makeDom } from "./dom.mjs";
 const STORE = read("personal_grimoire_ttdb.md").replace(/\r\n?/g, "\n");
 const APP = read("index.html");
 
-let fails = 0;
+let fails = 0, passes = 0;
 const ok = (cond, msg, extra = "") => {
-  if (cond) console.log("  PASS  " + msg + (extra ? "  " + extra : ""));
+  if (cond){ passes++; console.log("  PASS  " + msg + (extra ? "  " + extra : "")); }
   else { fails++; console.log("  FAIL  " + msg + "  " + extra); }
 };
 const section = s => console.log("\n== " + s + " ==");
@@ -120,6 +120,12 @@ section("every id is accounted for");
   const undocumented = ALL_IDS.filter(id => !BOOT_ONLY.includes(id) && !named(id));
   ok(!undocumented.length, "every id a host can reach is named in Blueprint 9",
      undocumented.map(i => "#" + i).join(" "));
+}
+
+// the release page gives each suite's count at release; the suite never falls below it
+{
+  const n = +((read("release.html").match(/<b id="count-embed">(\d+)<\/b>/) || [])[1] || 0);
+  ok(n > 0 && passes + 1 >= n, "this suite still has at least the " + n + " checks the release page gives", passes + 1);
 }
 
 console.log(fails ? "\n" + fails + " FAILED" : "\nall passed");
