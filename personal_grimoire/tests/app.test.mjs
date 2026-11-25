@@ -912,9 +912,9 @@ section("constructions: a shape that says what its words do not (TTG-RFC-0006)")
   const BARE = STORE.replace(LINE, "");
   const keys = ps => ps.map(pk).join(" / ");
   const S = fresh();
-  ok(S.G.constructions.length === 6 && S.G.constructionErrors.length === 0 && S.grammars[1].constructions.length === 2 &&
+  ok(S.G.constructions.length === 7 && S.G.constructionErrors.length === 0 && S.grammars[1].constructions.length === 2 &&
      !S.grammars[1].constructions.some(c => S.G.constructions.some(e => e.label === c.label)),
-     "six English constructions load, none rejected, and Spanish has its own two, borrowing none: constructions hold words");
+     "seven English constructions load, none rejected, and Spanish has its own two, borrowing none: constructions hold words");
 
   const told = PG.answer(S, "Pixel sneezed the napkin off the table.", T0 + 60);
   const ps = told.episode.all;
@@ -953,7 +953,7 @@ section("constructions: a shape that says what its words do not (TTG-RFC-0006)")
   const bad = PG.openStore(STORE.replace(LINE, LINE + ["construction: [X] {V} [Y] off [Z] => V X W | unsafe", "construction: [X] {V} [Y] => X Y Y | wrong kind",
     "construction: [X] {V} [Y] a b c d e f => V X Y | long", "construction: [X] {V} [Y] off [Z] => with Y Z | protected", "construction: [X] {V} [Y] off [Z] | no arrow",
     "construction: off the => go_off X Y | no names"].join(NL) + NL));
-  ok(bad.G.constructions.length === 6 && bad.G.constructionErrors.map(e => e.why).join() === "unsafe,unsafe,length,protected,shape,shape",
+  ok(bad.G.constructions.length === 7 && bad.G.constructionErrors.map(e => e.why).join() === "unsafe,unsafe,length,protected,shape,shape",
      "unsafe, over-long, protected and malformed constructions are rejected and reported", bad.G.constructionErrors.map(e => e.why).join());
 
   // adding a construction makes old sentences read differently: re-reading lists exactly those
@@ -1007,7 +1007,7 @@ section("constructions inherit: the specific says what the general does, and ove
     "construction: [X] {V} [Y] over [Z] => go_over Y Z | over | not a parent"].join(NL) + NL));
   ok(bad.G.constructionErrors.map(e => e.why).join() === "parent,cycle,cycle,parent,unsafe,shape",
      "a missing parent, a cycle, a rejected parent, inherited names the shape doesn't bind, and a stray part are rejected", bad.G.constructionErrors.map(e => e.why).join());
-  ok(bad.G.constructions.length === 6, "and the rest still load");
+  ok(bad.G.constructions.length === 7, "and the rest still load");
 }
 
 section("constructions with several parents: what they share is said once, what they dispute is held (TTG-RFC-0006 §8)");
@@ -1300,6 +1300,22 @@ section("part of a clause: a stance's clause and a relative, handed to the match
   const S2 = fresh();
   PG.answer(S2, "I think the cat that knocked the cup off the shelf is black.", T0 + 60);
   ok(/^holds: 1 \| 1 \| 2 3 4 5$/m.test(PG.records(S2.st).find(r => r.episode && r.episode.includes("I think the cat that")).episode), "the holds line names all four");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
+}
+
+section("moving from: from is a motion only after a verb that moves a thing (TTG-RFC-0006 §8.3)");
+{
+  const S = fresh(), read = x => PG.shapeOf(S, x), keys = r => r.percepts.map(p => [p.s, p.v, p.o, p.pol].join(" ")).join(" / ");
+  ok(keys(read("Pixel pushed the cup from the shelf.")) === "pixel push cup + / cup leave shelf +" && read("Pixel pushed the cup from the shelf.").constructions[0].label === "moving from",
+     "Pixel pushed the cup from the shelf: the push, and the cup leaving the shelf");
+  ok(!read("I bought milk from the shop.").constructions.length && !read("I bought milk from the shop.").percepts.some(p => p.v === "leave"),
+     "while a verb that moves nothing is read by its words: buying milk from the shop is not the milk leaving it");
+  let t = T0;
+  for (const s of ["Pixel pushed the cup from the shelf.", "The dog dropped the bone from the chair.", "Pixel knocked the cup off the shelf."]) PG.answer(S, s, t += 60);
+  const ask = q => PG.answer(S, q, t += 60), terms = r => r.items.map(i => i.term).join(" ");
+  ok(terms(ask("From where did Pixel push the cup?")) === "shelf" && terms(ask("What did Pixel push from the shelf?")) === "cup",
+     "so From where did Pixel push the cup? has its answer, and so has what Pixel pushed from it");
+  ok(terms(ask("What left the shelf?")) === "cup" && terms(ask("What left the chair?")) === "bone", "and leave is the vector a plain verb asks with");
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 

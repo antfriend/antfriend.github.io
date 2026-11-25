@@ -658,6 +658,20 @@ Known gap: *¿De qué es parte la rueda?*, whose subject stands after *parte*, i
 
 Upstream (toot-toot-engineering `82e2dd6`): TTG-RFC-0003 1.12 and TTG-RFC-0006 0.15.
 
+**Moving from (2026-12-09): a construction in the store, and the tests.** *From where did Pixel
+knock the cup?* found nothing, because nothing the owner says with *from* was ever a motion:
+*Pixel pushed the cup from the shelf* was the push and a comention. The English constructions
+gain `[X] {V=knock,push,pull,drop,throw,take,kick,lift} [Y] from [Z] => leave Y Z | moving from
+| is_a acting on a thing`, tied as Spanish *de* is, since *from* is not a motion after most
+verbs (*I bought milk from the shop*, *I learned it from a book*). Its vector is `leave`, so
+*What left the shelf?* finds the cup, as `go_off` let *Where did the napkin go?* find the table;
+and the questions read it (*From where did Pixel push the cup?* is the shelf). No runtime
+change. The verbs needn't be seed verbs (*dropped* and *knocked* are read as verbs by where they
+stand); adding *drop* as one would have put a grammar word in the runtime's own literals
+(`modifier: drop`). English *leave* and Spanish *salir_de* are still separate vectors.
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §8.3, the reference store's constructions).
+
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
 *X V Y off Z* means Y moves off Z.

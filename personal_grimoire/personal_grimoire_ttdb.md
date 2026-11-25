@@ -1070,7 +1070,7 @@ rule: move_to X Y => in X Y | moving somewhere puts you there
 
 ---
 
-@LAT-85LON0 | created:1795478400 | updated:1796601600 | relates:refines@LAT30LON0,refines@LAT-80LON0
+@LAT-85LON0 | created:1795478400 | updated:1796860800 | relates:refines@LAT30LON0,refines@LAT-80LON0
 
 **Grammar — constructions**
 src: RFCs/TTG-RFC-0006-Constructions.md §2
@@ -1107,8 +1107,10 @@ shelf, and the cup falling off it, while *Pixel pushed the cup off the shelf* is
 motion. A nounish name is tied the same way, `[Y=day]`, binding a phrase whose head is that
 thing, or a subclass a phrase made of it (a *black cat* is a cat; a *toy cat* is not). So an
 idiom can say what none of its words do: *I took the day off* is `self | rest | day`, not a
-taking, while *I took the cup off* is read by its words. A tie counts as a word of the
-construction's own. Unlike rules, constructions hold words, so each language
+taking, while *I took the cup off* is read by its words. And *from* is a motion only after a
+verb that moves a thing, as Spanish *de* is: *Pixel pushed the cup from the shelf* is the cup
+leaving the shelf (`leave`, the vector *What left the shelf?* asks with), while *I bought milk
+from the shop* is read by its words. A tie counts as a word of the construction's own. Unlike rules, constructions hold words, so each language
 declares its own; these are English, and Spanish declares [its own](lat-85lon180).
 Constructions read questions too: *What did Pixel sneeze off the table?* is the shape with
 nothing where `[Y]` stands, so it asks for what Pixel sneezed **and** what went off the table,
@@ -1132,6 +1134,7 @@ construction: [X] {V=knock} [Y] off [Z] => fall_off Y Z | knocking off | is_a ca
 construction: [X] {V} [Y] onto [W] => go_onto Y W | motion onto | is_a acting on a thing
 construction: [X] {V} [Y] off [Z] onto [W] => | caused motion onto | is_a caused motion | is_a motion onto
 construction: [X] {V=take} [Y=day,week,afternoon,morning] off => rest X Y | taking time off
+construction: [X] {V=knock,push,pull,drop,throw,take,kick,lift} [Y] from [Z] => leave Y Z | moving from | is_a acting on a thing
 ```
 
 ---

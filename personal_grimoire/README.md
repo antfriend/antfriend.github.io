@@ -578,7 +578,9 @@ settles yes against no.
   can be tied to its verbs by lemma (`{V=knock}` is *knocked*, *knocks*, *knocking*), so
   *knocking off* adds the cup falling, while any other verb is only caused motion. A nounish
   name is tied the same way (`[Y=day]`), so an idiom can mean what its words don't: *I took
-  the day off* is a rest, not a taking. Spanish has [its own](lat-85lon180), tied to the
+  the day off* is a rest, not a taking. *From* moves a thing only after a verb that moves one:
+  *Pixel pushed the cup from the shelf* is the cup leaving it, *I bought milk from the shop*
+  isn't. Spanish has [its own](lat-85lon180), tied to the
   verbs that move a thing, because *de* is both *off* and *of*: *Pixel tiró el vaso de la
   mesa* is the glass leaving the table, *Pixel vio el vaso de la mesa* the table's glass.
   Constructions read questions too: *What did Pixel sneeze off the table?* is answered by what
