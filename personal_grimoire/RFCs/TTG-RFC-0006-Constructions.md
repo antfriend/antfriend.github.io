@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.14
+**Version:** 0.15
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -245,7 +245,10 @@ A construction reads questions as well as tells.
      *movimiento causado* with nothing at `[Z]`, so it asks `vaso | salir_de | ?` on condition
      that Pixel threw the glass, and is the table. No construction reading it, the restated
      question is read by the question forms with the slot after the preposition, as the
-     statement's words are: *¿En qué duerme Pixel?* is *Pixel duerme en ?*.
+     statement's words are: *¿En qué duerme Pixel?* is *Pixel duerme en ?*. With the copula,
+     no construction is tried (as for a copula's question with no preposition), and the
+     question asks along the preposition: *¿De dónde es Pingu?* is *Pingu es de ?*
+     (TTG-RFC-0003 §4).
 3. **Joint answers.** Every atom of the construction that names the gap once, as its subject
    or its object, is a query: `objectsOf` where the gap is the object, `subjectsOf` where it
    is the subject. Held atoms (§8.2) ask nothing. The last such atom — the construction's own,
@@ -428,5 +431,6 @@ its percepts until the owner takes a re-reading.
 | 2026-12-04 | 0.12: §7.2, a preposition before the wh-word goes to the end of the restated question, and a shape that leaves the name after it unmatched reads it (*¿De dónde tiró Pixel el vaso?*, *Off what did Pixel sneeze the napkin?*); otherwise the question forms read it. Open question 3 answered, 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f06e4f7`). |
 | 2026-12-05 | 0.13: §3 step 6, part of a clause — a clause no shape covers whole offers the matcher a stance's clause (*I think Pixel knocked the cup off the shelf*, held by the stance) and a relative, its antecedent where the gap is (*the cup that Pixel knocked off the shelf broke*); the rest of the clause is the chain's. Open question 2 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f6bafc5`). |
 | 2026-12-06 | 0.14: §3 step 6, a relative inside a stance's clause — what follows a stance verb that no shape covers whole is offered as a clause with a relative in it, all of it held by the stance (*I think the cat that knocked the cup off the shelf is black*). Open question 2 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bcdc947`). |
+| 2026-12-08 | 0.15: §7.2, a preposition before the wh-word with the copula asks along the preposition, no construction tried (*¿De dónde es Pingu?*; TTG-RFC-0003 1.12 §4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `0b52632`). |
 
 *License: CC0*

@@ -656,7 +656,7 @@ wh-word with the copula reads the same way (*From where is Pixel?*, *¿De dónde
 
 Known gap: *¿De qué es parte la rueda?*, whose subject stands after *parte*, isn't restated.
 
-Still to do: the RFC text upstream (TTG-RFC-0003 §4's question table, TTG-RFC-0006 §7.2).
+Upstream (toot-toot-engineering `82e2dd6`): TTG-RFC-0003 1.12 and TTG-RFC-0006 0.15.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

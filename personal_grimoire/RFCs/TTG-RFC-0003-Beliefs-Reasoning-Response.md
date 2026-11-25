@@ -1,6 +1,6 @@
 # TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
 
-**Version:** 1.11
+**Version:** 1.12
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -147,14 +147,15 @@ a VECTOR begins with its verb lemma plus `phrasal_join`. Words without purchase 
 | First matching shape | Intent |
 |---|---|
 | `wh_reason` + yes/no shape | verify |
-| `wh` + `cop` + (`wh_place` → objects along the place vector) / (`prep` → subjects) / noun phrases → describe | as stated |
+| `wh` + `cop` + (a stranded `prep` last → objects along it: *What is a wheel part of?*, *Where is Pixel from?*) / (`wh_place` → objects along the place vector) / (`prep` → subjects) / noun phrases → describe | as stated; a stranded preposition is tried before the place vector, so *Where is Pixel from?* never asks where Pixel is |
 | `wh` + `aux`/`modal` + subject + verb | objects; with `wh_place`, the phrasal, bare and place vectors |
 | `wh_place` + verb + subject, under `question_order: verb_subject` | objects of the subject along the phrasal, bare and place vectors, the verb moved behind the subject |
 | `wh` + a verb in the speaker's own form (TTG-RFC-0005 §3, dropped subjects) and no thing after it | objects of the speaker; with `wh_place`, along the place vectors |
 | `wh` + verb + a thing that agrees with the verb in number (`plural_verb_ending`) and is not object-marked | objects of that thing |
 | `wh` + `aux`/`modal` + subject + `pro_verb` [+ `pro_verb_object`] + thing, or under `question_order: verb_subject` `wh` + `pro_verb` + subject [+ `pro_verb_object`] + thing | the vectors relating the subject to the thing (`vectorsOf`): *What did Pixel do to the napkin?*, *¿Qué hizo Pixel al vaso?* (TTG-RFC-0006 §7.4) |
 | the same with no thing | every vector the subject is the subject of, but its structural roles, prepositions' vectors and phrases' vectors: *What did Pixel do?*, *¿Qué hizo Pixel?*; with or without a thing, then what the subject inherits from its kinds, by §3's specificity (TTG-RFC-0006 §7.4) |
-| `prep` + `wh` + any `wh` shape above but `cop`'s | that shape's question with the preposition moved to the end of the statement and the slot its thing: a construction's where one reads it (*¿De dónde tiró Pixel el vaso?*, TTG-RFC-0006 §7.2), otherwise objects (*¿En qué duerme Pixel?*) |
+| `prep` + `wh` + `cop` + subject | objects along the preposition, the copula behind the subject: *From where is Pixel?*, *¿De dónde es Pingu?* |
+| `prep` + `wh` + any other `wh` shape above | that shape's question with the preposition moved to the end of the statement and the slot its thing: a construction's where one reads it (*¿De dónde tiró Pixel el vaso?*, TTG-RFC-0006 §7.2), otherwise objects (*¿En qué duerme Pixel?*) |
 | `wh` + anything else | subjects |
 | `aux`/`modal`/`cop`/`hav` first, with a percept after moving it behind the subject | verify |
 | under `question_order: verb_subject`, a verb first and a subject after it, ending in `question_mark` | verify, the verb moved behind the subject |
@@ -269,5 +270,6 @@ modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`, and, for constructions
 | 2026-12-02 | 1.9: §4, the intent row for a pro-verb question with no thing (TTG-RFC-0006 0.10 §7.4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `1aaa412`). |
 | 2026-12-03 | 1.10: §4, a pro-verb question also answers what the subject inherits (TTG-RFC-0006 0.11 §7.4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `3743744`). |
 | 2026-12-04 | 1.11: §4, a question with a preposition before its wh-word, the preposition moved to the end of the statement (TTG-RFC-0006 0.12 §7.2). Implemented by the personal_grimoire reference runtime (antfriend.github.io `f06e4f7`). |
+| 2026-12-08 | 1.12: §4, a question with the copula and a preposition — stranded (*Where is Pixel from?*), tried before the place vector, or fronted (*¿De dónde es Pingu?*) — asks along the preposition. Implemented by the personal_grimoire reference runtime (antfriend.github.io `0b52632`). |
 
 *License: CC0*
