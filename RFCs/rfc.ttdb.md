@@ -37,7 +37,7 @@ selected:
   - "@LAT0LON0"
 preview:
   "@LAT0LON0": "Home: what this database is and how each record expands back to its full RFC"
-agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step. Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.1, -0002 1.3, -0003 1.1, -0005 1.1: the holds line linking a stance to what it holds (personal_grimoire PLAN.md phase 1); synced to the website the same day, not yet to robot_team. Then the same four for TTG-RFC-0001 1.2, -0002 1.4, -0003 1.2, -0005 1.2: verb frames counted in episodes, the grammar's gaps apart (personal_grimoire PLAN.md phase 2). Then @LAT60LON1-5 for TTG-RFC-0001 1.3, -0002 1.5, -0003 1.3, -0004 1.1, -0005 1.3: tense, hedges, and a change in the owner's tense (phase 3). Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.4, -0002 1.6, -0003 1.4, -0005 1.4: modifiers as subclasses (phase 4). Then @LAT60LON1/3/5 for TTG-RFC-0001 1.5, -0003 1.5, -0005 1.5: the parameters named, and questions with the verb first (phase 5). 2026-11-24: +@LAT60LON6 for TTG-RFC-0006 0.1, constructions, and @LAT60LON1/3 for TTG-RFC-0001 1.6, -0003 1.6 (phase 6). Then @LAT60LON1/6 for TTG-RFC-0001 1.7, -0006 0.2: inheritance between constructions. 2026-11-25: @LAT60LON1/6 for TTG-RFC-0001 1.8, -0006 0.3: several parents. 2026-11-26: @LAT60LON6 for TTG-RFC-0006 0.4: abstract constructions. 2026-11-27: @LAT60LON6 for TTG-RFC-0006 0.5: a verbish name tied to its verbs. 2026-11-28: @LAT60LON6 for TTG-RFC-0006 0.6: a nounish name tied to its things. 2026-11-29: @LAT60LON6 for TTG-RFC-0006 0.7: a Spanish construction. 2026-11-30: @LAT60LON3/6 for TTG-RFC-0003 1.7, -0006 0.8: questions read by constructions. 2026-12-01: @LAT60LON1/3/6 for TTG-RFC-0001 1.9, -0003 1.8, -0006 0.9: a question gap at the verb. 2026-12-02: @LAT60LON3/6 for TTG-RFC-0003 1.9, -0006 0.10: a verb gap with no thing. 2026-12-03: @LAT60LON3/6 for TTG-RFC-0003 1.10, -0006 0.11: inherited doings. 2026-12-04: @LAT60LON3/6 for TTG-RFC-0003 1.11, -0006 0.12: a preposition before the wh-word. 2026-12-05: @LAT60LON6 for TTG-RFC-0006 0.13: part of a clause. 2026-12-06: @LAT60LON6 for TTG-RFC-0006 0.14: a relative inside a stance's clause. 2026-12-07: @LAT60LON1 for TTG-RFC-0001 1.10: stem_restore. 2026-12-08: @LAT60LON3/6 for TTG-RFC-0003 1.12, -0006 0.15: a preposition with the copula."
+agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step. Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.1, -0002 1.3, -0003 1.1, -0005 1.1: the holds line linking a stance to what it holds (personal_grimoire PLAN.md phase 1); synced to the website the same day, not yet to robot_team. Then the same four for TTG-RFC-0001 1.2, -0002 1.4, -0003 1.2, -0005 1.2: verb frames counted in episodes, the grammar's gaps apart (personal_grimoire PLAN.md phase 2). Then @LAT60LON1-5 for TTG-RFC-0001 1.3, -0002 1.5, -0003 1.3, -0004 1.1, -0005 1.3: tense, hedges, and a change in the owner's tense (phase 3). Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.4, -0002 1.6, -0003 1.4, -0005 1.4: modifiers as subclasses (phase 4). Then @LAT60LON1/3/5 for TTG-RFC-0001 1.5, -0003 1.5, -0005 1.5: the parameters named, and questions with the verb first (phase 5). 2026-11-24: +@LAT60LON6 for TTG-RFC-0006 0.1, constructions, and @LAT60LON1/3 for TTG-RFC-0001 1.6, -0003 1.6 (phase 6). Then @LAT60LON1/6 for TTG-RFC-0001 1.7, -0006 0.2: inheritance between constructions. 2026-11-25: @LAT60LON1/6 for TTG-RFC-0001 1.8, -0006 0.3: several parents. 2026-11-26: @LAT60LON6 for TTG-RFC-0006 0.4: abstract constructions. 2026-11-27: @LAT60LON6 for TTG-RFC-0006 0.5: a verbish name tied to its verbs. 2026-11-28: @LAT60LON6 for TTG-RFC-0006 0.6: a nounish name tied to its things. 2026-11-29: @LAT60LON6 for TTG-RFC-0006 0.7: a Spanish construction. 2026-11-30: @LAT60LON3/6 for TTG-RFC-0003 1.7, -0006 0.8: questions read by constructions. 2026-12-01: @LAT60LON1/3/6 for TTG-RFC-0001 1.9, -0003 1.8, -0006 0.9: a question gap at the verb. 2026-12-02: @LAT60LON3/6 for TTG-RFC-0003 1.9, -0006 0.10: a verb gap with no thing. 2026-12-03: @LAT60LON3/6 for TTG-RFC-0003 1.10, -0006 0.11: inherited doings. 2026-12-04: @LAT60LON3/6 for TTG-RFC-0003 1.11, -0006 0.12: a preposition before the wh-word. 2026-12-05: @LAT60LON6 for TTG-RFC-0006 0.13: part of a clause. 2026-12-06: @LAT60LON6 for TTG-RFC-0006 0.14: a relative inside a stance's clause. 2026-12-07: @LAT60LON1 for TTG-RFC-0001 1.10: stem_restore. 2026-12-08: @LAT60LON3/6 for TTG-RFC-0003 1.12, -0006 0.15: a preposition with the copula. 2026-12-09: @LAT60LON6 for TTG-RFC-0006 0.16: moving from."
 ```
 
 ---
@@ -984,15 +984,15 @@ in the speaker's own form already has its subject.
 
 ---
 
-@LAT60LON6 | created:1795478400 | updated:1796774400 | relates:depends_on@LAT60LON1,depends_on@LAT60LON3,depends_on@LAT60LON5
+@LAT60LON6 | created:1795478400 | updated:1796860800 | relates:depends_on@LAT60LON1,depends_on@LAT60LON3,depends_on@LAT60LON5
 [ew]
 conf:140
-rev:15
+rev:16
 sal:60
-touched:1796774400
+touched:1796860800
 [/ew]
 
-**TTG-RFC-0006 — Constructions: Shapes That Carry Meaning** (Draft, 0.15)
+**TTG-RFC-0006 — Constructions: Shapes That Carry Meaning** (Draft, 0.16)
 src: TTG-RFC-0006-Constructions.md
 
 A pattern can mean what none of its words do. A `constructions` grammar record pairs a
@@ -1021,7 +1021,8 @@ with its other atoms answers. 0.10: with no thing, everything the subject does; 
 what it inherits, the nearest kind's word standing. 0.12: a preposition before the
 wh-word goes to the end, its thing the gap (*¿De dónde tiró Pixel el vaso?*). 0.13: part
 of a clause — a stance's clause, held, and a relative, its antecedent at the gap; 0.14: a
-relative inside a stance's clause; 0.15: a fronted preposition with the copula. Draft:
+relative inside a stance's clause; 0.15: a fronted preposition with the copula. 0.16: *from* as a motion after
+the verbs that move a thing (`leave`). Draft:
 implemented in the reference runtime; ties by meaning and other spans inside a clause open.
 
 ---

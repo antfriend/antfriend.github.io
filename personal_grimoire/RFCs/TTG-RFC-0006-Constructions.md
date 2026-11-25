@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.15
+**Version:** 0.16
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -347,7 +347,13 @@ the specific overrides the general.
    well, a construction can be an idiom, meaning what none of its words do: the reference
    store's `[X] {V=take} [Y=day,week,afternoon,morning] off => rest X Y | taking time off`
    reads *I took the day off* as `self | rest | day`, not a taking, while *I took the cup
-   off* is read by its words.
+   off* is read by its words. And a tie keeps a word that is a motion after only some verbs
+   to those, as Spanish *de* is kept (§5): the reference store's `[X]
+   {V=knock,push,pull,drop,throw,take,kick,lift} [Y] from [Z] => leave Y Z | moving from | is_a
+   acting on a thing` reads *Pixel pushed the cup from the shelf* as the push and `cup | leave
+   | shelf`, while *I bought milk from the shop* is read by its words. Its vector is the one a
+   plain verb says (*What left the shelf?*), as `go_off` is (§7.5), and §7.2 reads its
+   questions: *From where did Pixel push the cup?* is the shelf.
 4. **Order.** A construction is tried before every one of its ancestors, whatever their
    words, so that wherever both match, the specific one reads the clause. The parent still
    reads every clause the child does not match.
@@ -432,5 +438,6 @@ its percepts until the owner takes a re-reading.
 | 2026-12-05 | 0.13: §3 step 6, part of a clause — a clause no shape covers whole offers the matcher a stance's clause (*I think Pixel knocked the cup off the shelf*, held by the stance) and a relative, its antecedent where the gap is (*the cup that Pixel knocked off the shelf broke*); the rest of the clause is the chain's. Open question 2 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f6bafc5`). |
 | 2026-12-06 | 0.14: §3 step 6, a relative inside a stance's clause — what follows a stance verb that no shape covers whole is offered as a clause with a relative in it, all of it held by the stance (*I think the cat that knocked the cup off the shelf is black*). Open question 2 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bcdc947`). |
 | 2026-12-08 | 0.15: §7.2, a preposition before the wh-word with the copula asks along the preposition, no construction tried (*¿De dónde es Pingu?*; TTG-RFC-0003 1.12 §4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `0b52632`). |
+| 2026-12-09 | 0.16: §8.3, the reference store's *moving from* — *from* read as a motion only after the verbs that move a thing, its vector `leave` (*Pixel pushed the cup from the shelf*; *From where did Pixel push the cup?*). No rule changed. Declared in the personal_grimoire reference store (antfriend.github.io `dafcd77`). |
 
 *License: CC0*

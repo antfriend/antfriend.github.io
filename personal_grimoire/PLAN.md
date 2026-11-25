@@ -670,7 +670,7 @@ change. The verbs needn't be seed verbs (*dropped* and *knocked* are read as ver
 stand); adding *drop* as one would have put a grammar word in the runtime's own literals
 (`modifier: drop`). English *leave* and Spanish *salir_de* are still separate vectors.
 
-Still to do: the RFC text upstream (TTG-RFC-0006 §8.3, the reference store's constructions).
+Upstream (toot-toot-engineering `9495529`): TTG-RFC-0006 0.16.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
