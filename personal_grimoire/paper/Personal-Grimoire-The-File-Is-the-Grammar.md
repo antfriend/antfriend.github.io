@@ -52,7 +52,7 @@ The store is laid out on a sphere. The origin `@LAT0LON0` is the owner. The prim
 
 ## Results
 
-bAbI v1.2 English, 1,000 questions per split (250 stories for task 15, 200 for task 1). Each story's facts are told to an emptied store, one episode per line. *Exact attribution* requires the answer to be correct and its quoted sentences to be exactly the gold supporting facts. Rerun on 11 Nov 2026 against the current runtime, the outcome hashes equal those recorded on 14 Sep 2026 in `paper/babi_qa1_results.json` and `paper/babi_qa15_results.json`, condition for condition. Source: `tools/babi.mjs`.
+bAbI v1.2 English, 1,000 questions per split (250 stories for task 15, 200 for task 1). Each story's facts are told to an emptied store, one episode per line. *Exact attribution* requires the answer to be correct and its quoted sentences to be exactly the gold supporting facts. Rerun on 11 Nov 2026 against the current runtime, the outcome hashes equal those recorded on 14 Sep 2026 in `paper/babi_qa1_results.json` and `paper/babi_qa15_results.json`, condition for condition. Rerun again after the constructions work (runtime `acee36c`), they still do. Source: `tools/babi.mjs`.
 
 | Condition | Answer accuracy | Exact attribution | Intent chosen |
 | --- | --- | --- | --- |

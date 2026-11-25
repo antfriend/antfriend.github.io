@@ -28,7 +28,9 @@ These are the existing contract, restated so no phase forgets one.
 4. **Byte-stable round trip.** Parse then serialise with no changes reproduces the store
    byte for byte.
 5. **Published results hold.** bAbI tasks 1 and 15 keep their outcomes, question for
-   question, in every condition (`node tools/babi.mjs`). The seed store's eight episodes
+   question, in every condition (`node tools/babi.mjs`). Checked after phase 6 and the
+   TTG-RFC-0006 work, against runtime `acee36c`: every condition's outcome hash equals the
+   one recorded in `paper/` (below). The seed store's eight episodes
    still read as written (`node tools/reread.mjs` reports nothing) unless a phase says
    otherwise.
 6. **Spanish too.** Each phase either works for both grammars or says why a language
@@ -110,8 +112,8 @@ words, not a guess at a gap, so discounting it would stop typed sentences teachi
 all.
 
 RFC text: TTG-RFC-0005 1.2, -0002 1.4, -0003 1.2 and -0001 1.2, written upstream in
-toot-toot-engineering (`671b635`) and synced here. Still to do: the bAbI check, whose task data
-isn't on this machine.
+toot-toot-engineering (`671b635`) and synced here. ~~Still to do: the bAbI check, whose task data
+isn't on this machine~~ (done after phase 6, below: unchanged).
 
 **Problem.** Whether a verb takes a thing flips the first time any standing reading shows it
 with one, and never flips back. A reading the grammar made, such as a gap it filled, teaches
@@ -187,7 +189,7 @@ reader does. With `core.autocrlf=true`, git rewrites working copies with CRLF on
 the test failed on them.
 
 RFC text: TTG-RFC-0005 1.3, -0004 1.1, -0003 1.3, -0002 1.5 and -0001 1.3, written upstream in
-toot-toot-engineering (`b091171`) and synced here. Still to do: the bAbI check.
+toot-toot-engineering (`b091171`) and synced here. ~~Still to do: the bAbI check~~ (done, below: unchanged).
 
 **Problem.** *Birds fly*, *birds flew* and *birds might fly* are one percept. *I liked coffee*
 followed by *I do not like coffee* is reported as a contradiction, although the owner's own
@@ -255,7 +257,7 @@ towards TTDB-RFC-0006's native percept, the divergence TTG-RFC-0002 §4 records.
 offers the new reading to old sentences with modifiers.
 
 RFC text: TTG-RFC-0005 1.4, -0002 1.6, -0003 1.4 and -0001 1.4, written upstream in
-toot-toot-engineering (`a0baba4`) and synced here. Still to do: the bAbI check.
+toot-toot-engineering (`a0baba4`) and synced here. ~~Still to do: the bAbI check~~ (done, below: unchanged).
 
 **Problem.** *Black cats chase mice* is about *cats*. Reading the adjective as
 `cat has_property black` would wrongly say all cats are black.
@@ -316,7 +318,7 @@ in the plan: without it, no Spanish place question could reach a phrasal vector.
   That's an existing problem.
 
 RFC text: TTG-RFC-0001 1.5, -0003 1.5 and -0005 1.5, written upstream in toot-toot-engineering
-(`3b0e72e`) and synced here. Still to do: the bAbI check.
+(`3b0e72e`) and synced here. ~~Still to do: the bAbI check~~ (done, below: unchanged).
 
 **Problem.** Several keys are already parameters in all but name: `head`, the subject drop
 implied by `self_ending`, the subject position implied by `plural_verb_ending`. Nothing lists
@@ -382,7 +384,7 @@ them, and the Spanish blind spots on the roadmap look like parameters nobody has
 - ~~The `is_a` inheritance between constructions~~: done 2026-11-24, below.
 
 Upstream (toot-toot-engineering `4795447`): TTG-RFC-0006 0.1, TTG-RFC-0001 1.6 and TTG-RFC-0003
-1.6. Still to do: the bAbI check.
+1.6. ~~Still to do: the bAbI check~~ (done, below: unchanged).
 
 **Inheritance between constructions (2026-11-24): implemented in the runtime, the store and
 the tests.** The plan's "Later" item.
@@ -724,6 +726,20 @@ one clause, since a list separator between two clauses is also how a list is wri
 time word the lexicon doesn't list (*yesterday*) still heads the phrase it ends.
 
 Upstream (toot-toot-engineering `94f1c15`): TTG-RFC-0002 1.7 and TTG-RFC-0006 0.17.
+
+**The bAbI check (after phase 6 and the TTG-RFC-0006 work).** Run against runtime `acee36c`
+with the bAbI v1.2 English test splits, 1,000 questions each, in every condition. Every
+outcome hash equals the one recorded in `paper/babi_qa1_results.json` and
+`paper/babi_qa15_results.json`, and the adaptations are the same lines:
+
+| task | seed | +adapted | +adapted, no exclusive flag | permuted | control |
+|---|---|---|---|---|---|
+| 1 | 19.4% (`ed9fa0be`) | 100% (`6bc15755`) | 54.9% (`ced41ffc`) | 100% (`6bc15755`) | 0% (`33e361f4`) |
+| 15 | 0% (`33e361f4`) | 100% (`6bc15755`) | 100% (`6bc15755`) | 100% (`6bc15755`) | 0% (`33e361f4`) |
+
+So nothing phases 1–6 or the constructions work added changed a bAbI outcome, and the letter
+bijection still leaves every outcome unchanged: the runtime still holds no English. The
+recorded files were not rewritten.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
