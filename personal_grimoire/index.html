@@ -1241,6 +1241,20 @@ function labelTokens(S, T){
   }
   // a conj splits a part only when both sides are clauses of their own (TTG-RFC-0002 §2)
   const hasPred = side => side.some(t => t.force === "V") || !!findPredicate(S, side);
+  // a clause a subord word opens ends at the list separator, where a clause of its own follows: when Pixel
+  // slept | the dog barked. That one is the main clause, and no subord word opens it. The last such separator
+  // is the one: before it may be a list (when Pixel chased mice, cats and dogs, the bird sang)
+  for (let a = 0; a < T.length; a++){
+    if (!(a > 0 && has(T[a - 1], "subord") && L[a - 1] === "L" && L[a] !== "L")) continue;
+    let e = a;
+    while (e < T.length && L[e] !== "L") e++;
+    for (let i = e - 1; i > a; i--){
+      if (T[i].w !== G.listSep || T[i].force) continue;
+      const right = T.slice(i + 1, e);
+      if (hasPred(T.slice(a, i)) && startsWithSubject(S, right) && hasPred(right)){ L[i] = "L"; break; }
+    }
+    a = e;
+  }
   const clauses = [];
   for (let i = 0, a = 0; i <= T.length; i++){
     if (i < T.length && L[i] !== "L") continue;
@@ -1961,6 +1975,34 @@ function relativeSpan(S, T, L, idx, ctx, inherited, hold, pick, holdBy){
   }
   return null;
 }
+/* Phrases after a shape (TTG-RFC-0006 §3): a clause no shape covers whole, that ends on prepositional
+ * phrases after what one covers, is the construction's up to them, and the phrases are mentioned beside the
+ * first thing of their segment, as the walk mentions them: Pixel knocked the cup off the shelf in the
+ * kitchen is knocking off, and the cup with the kitchen.                                                  */
+function adjunctSpan(S, T, L, idx, ctx, hold, holdBy){
+  if (!S.G.constructions.length) return null;
+  for (let e = idx.length - 1; e > 1; e--){
+    if (!has(T[idx[e]], "prep") || L[idx[e]] !== "N" || L[idx[e - 1]] !== "N") continue;
+    const tail = idx.slice(e);
+    if (tail.some(i => L[i] !== "N" || T[i].force)) continue;
+    const nps = nounPhrases(S, tail.map(i => T[i]), 0, tail.length);
+    if (!nps.length || nps.some(np => !np.prep)) continue;
+    if (!construe(S, T, L, idx.slice(0, e), { last:ctx.last }, hold, null)) continue;
+    const r = construe(S, T, L, idx.slice(0, e), ctx, hold, holdBy);
+    let a = e;
+    while (a > 0 && L[idx[a - 1]] === "N") a--;
+    const seg = nounPhrases(S, idx.slice(a, e).map(i => T[i]), 0, e - a), anchor = seg[0] && headOf(S, seg[0], ctx);
+    const pairs = [], forms = [];
+    for (const np of nps){
+      const h = headOf(S, np, ctx);
+      if (!h || !anchor) continue;
+      pairs.push([anchor.lemma, h.lemma]);
+      if (h.form) forms.push(["thing", h.lemma, h.form]);
+    }
+    return { ...r, pairs:r.pairs.concat(pairs), forms:r.forms.concat(forms) };
+  }
+  return null;
+}
 function clausePercepts(S, toks, ctx, inherited, pick){
   const labels = labelTokens(S, toks);
   const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], labels, constructions:[] };
@@ -1977,6 +2019,7 @@ function clausePercepts(S, toks, ctx, inherited, pick){
     const r = construe(S, toks, labels, cl.idx, ctx, hold, reported ? openBy : null)
            || stanceSpan(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold, pick, reported ? openBy : null)
            || relativeSpan(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold, pick, reported ? openBy : null)
+           || adjunctSpan(S, toks, labels, cl.idx, ctx, hold, reported ? openBy : null)
            || readClause(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold, pick, reported ? openBy : null);
     if (r.construction) out.constructions.push(r.construction);
     first = false; open = r.open; openBy = r.openBy;

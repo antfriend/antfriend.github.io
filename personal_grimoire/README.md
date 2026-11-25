@@ -569,7 +569,9 @@ settles yes against no.
   verb takes or a relative says: *I think Pixel knocked the cup off the shelf* holds the
   knock and the cup going off, and *the napkin that Pixel sneezed off the table* is the napkin
   going off; so is a relative inside a stance's clause (*I think the cat that knocked the cup
-  off the shelf is black*), all of it held. Add your own constructions to that record; a re-reading shows which sentences they
+  off the shelf is black*), all of it held; a clause a *when* or *because* opens at the front ends
+  at its comma (*When Pixel knocked the cup off the shelf, the dog barked*); and phrases after
+  a shape are mentioned, not matched (*…off the shelf in the kitchen*). Add your own constructions to that record; a re-reading shows which sentences they
   change. A construction can inherit from others by naming them (`| is_a caused motion`, once
   per parent): it says all its parents say, and an atom of its own overrides theirs, so *off
   the shelf onto the floor* is both a going-off and a going-onto, and *almost off* can say *not

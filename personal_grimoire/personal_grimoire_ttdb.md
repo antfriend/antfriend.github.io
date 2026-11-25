@@ -121,7 +121,7 @@ belief: like | coffee | ? | 1 1 | 128
 
 ---
 
-@LAT10LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT0LON0
+@LAT10LON0 | created:1789257600 | updated:1797120000 | relates:refines@LAT0LON0
 
 **Blueprint 1 — Read**
 src: RFCs/TTG-RFC-0002-Semantic-Percepts.md §2
@@ -148,7 +148,9 @@ offered as a store instead.
 - **Clauses**: split at `clause_break` characters and at `subord` words (*because*, *when*).
   A `conj` word (*and*, *but*) splits the clause **only** when both sides carry a predicate;
   straight before a verb it starts a clause that keeps the subject (*…and eat cheese*);
-  otherwise it joins a list.
+  otherwise it joins a list. A clause a `subord` word opens at the front ends at the last
+  `list_sep` with a clause of its own after it, subject and predicate, so *When Pixel slept,
+  the dog barked* is two clauses; a list before it stays a list.
 
 Every sentence is kept verbatim in the episode as a `said:` line (cut at `said_max_chars`),
 whether or not it yields a percept — the corpus is the sum of the words, not the sum of
@@ -1075,7 +1077,7 @@ rule: salir_de X Y => leave X Y | salir de is leave
 
 ---
 
-@LAT-85LON0 | created:1795478400 | updated:1796860800 | relates:refines@LAT30LON0,refines@LAT-80LON0
+@LAT-85LON0 | created:1795478400 | updated:1797120000 | relates:refines@LAT30LON0,refines@LAT-80LON0
 
 **Grammar — constructions**
 src: RFCs/TTG-RFC-0006-Constructions.md §2
@@ -1089,7 +1091,9 @@ table`, so *Where did the napkin go?* finds the table. A clause the shape covers
 read by it instead of the chain, and so is part of one: the clause a stance verb takes (*I
 think Pixel knocked the cup off the shelf* holds what *knocking off* says) and a relative, its
 antecedent standing where its gap is (*the cup that Pixel knocked off the shelf*), the clause
-around it read by its words, and a relative inside a stance's clause, all of it held, keeping the verb's polarity and tense; the shape with the
+around it read by its words, a relative inside a stance's clause, all of it held, and a
+clause that ends on prepositional phrases after what a shape covers, the phrases mentioned
+beside the first thing of their segment (*…off the shelf in the kitchen*), keeping the verb's polarity and tense; the shape with the
 most words of its own wins, ties to the first written. The reply names it, the shape line is
 written as usual, and a clause the owner has marked is the owner's reading, never a
 construction's. A construction may name a parent after its label (`| is_a caused motion`):
@@ -2349,7 +2353,7 @@ so a wrong merge can at least be seen.
 
 ---
 
-@LAT98LON5 | created:1789257600 | updated:1796601600 | relates:supports@LAT20LON0,supports@LAT30LON0
+@LAT98LON5 | created:1789257600 | updated:1797120000 | relates:supports@LAT20LON0,supports@LAT30LON0
 [ew]
 conf:70
 rev:1
@@ -2393,7 +2397,7 @@ last in English, first in Spanish. It still does not see:
 - **Meaning no word carries** — *sneezed the napkin off the table* moves the napkin only
   because English declares that [construction](lat-85lon0); a pattern no construction names
   reads by its words, and so does a shape inside a clause anywhere but a stance's clause, a
-  relative, or a relative inside a stance's clause.
+  relative (or one inside a stance's clause), or before prepositional phrases that end it.
 - **Numbers, dates and names with spaces** — *New York* is two things until the owner writes
   `new_york` once.
 

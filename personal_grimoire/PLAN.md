@@ -702,6 +702,29 @@ from *buzzed* and *kicked*, and listing them as irregular would lose their past.
 
 Upstream (toot-toot-engineering `6b4e6f1`): TTG-RFC-0003 1.14.
 
+**An adverbial clause, and phrases after a shape (2026-12-12): implemented in the runtime, the
+store's docs and the tests.** The last open span inside a clause, in two parts:
+- **A fronted adverbial clause.** *When Pixel slept, the dog barked* was `pixel | sleep |
+  barked`: the comma is the list separator, so the clause *when* opened ran on through the main
+  clause, which no subord word opens. Now a clause a subord word opens ends at the **last**
+  list separator with a clause of its own after it, subject and predicate, the test a conj
+  already meets to split (TTG-RFC-0002 §2): *When Pixel knocked the cup off the shelf, the dog
+  barked* is *knocking off* and `dog | bark`; *Cuando Pixel tiró el vaso de la mesa, el perro
+  ladró* too. A list before it stays a list (*When Pixel chased mice, cats and dogs, the bird
+  sang*), and a list no subord word opens is untouched.
+- **Phrases after a shape.** *Pixel knocked the cup off the shelf in the kitchen* was read by its
+  words (`cup with shelf`), since no shape covered the whole clause. A clause that ends on
+  prepositional phrases after what a shape covers is now the construction's up to them, the
+  phrases mentioned beside the first thing of their segment as the walk mentions them (`cup
+  with kitchen`).
+- The seed episodes re-read unchanged.
+
+Not done: a comma splice no subord word opens (*Pixel slept, the dog barked*) still reads as
+one clause, since a list separator between two clauses is also how a list is written; and a
+time word the lexicon doesn't list (*yesterday*) still heads the phrase it ends.
+
+Still to do: the RFC text upstream (TTG-RFC-0002 §2; TTG-RFC-0006 §3 step 6 and §11.2).
+
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
 *X V Y off Z* means Y moves off Z.

@@ -1305,6 +1305,27 @@ section("part of a clause: a stance's clause and a relative, handed to the match
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 
+section("an adverbial clause, and phrases after a shape (TTG-RFC-0002 §2, TTG-RFC-0006 §3)");
+{
+  const S = fresh(), read = x => PG.shapeOf(S, x), keys = r => r.percepts.map(p => [p.s, p.v, p.o, p.pol].join(" ")).join(" / ");
+  // a clause a subord word opens ends at the list separator where a clause of its own follows
+  ok(keys(read("When Pixel slept, the dog barked.")) === "pixel sleep - + / dog bark - +", "When Pixel slept, the dog barked: two clauses, not Pixel sleeping a barked", keys(read("When Pixel slept, the dog barked.")));
+  const when = read("When Pixel knocked the cup off the shelf, the dog barked.");
+  ok(keys(when) === "pixel knock cup + / cup go_off shelf + / cup fall_off shelf + / dog bark - +" && when.constructions[0].label === "knocking off",
+     "so a construction reads the fronted clause, and the main clause, which no subord word opens, is read by its words", keys(when));
+  ok(keys(read("Cuando Pixel tiró el vaso de la mesa, el perro ladró.")) === "pixel tirar vaso + / vaso salir_de mesa + / perro ladrar - +", "in Spanish too");
+  ok(keys(read("When Pixel chased mice, cats and dogs, the bird sang.")) === "pixel chase mouse + / pixel chase cat + / pixel chase dog + / bird sing - +",
+     "the last such separator closes it, so a list before it stays a list");
+  ok(keys(read("I like cats, dogs and birds.")) === "self like cat + / self like dog + / self like bird +", "and a list with no subord word before it is a list");
+  // phrases after a shape
+  const kitchen = read("Pixel knocked the cup off the shelf in the kitchen.");
+  ok(keys(kitchen) === "pixel knock cup + / cup go_off shelf + / cup fall_off shelf + / cup with kitchen +" && kitchen.constructions[0].label === "knocking off",
+     "a prepositional phrase after what a shape covers: the construction reads up to it, and the phrase is mentioned as the walk mentions it", keys(kitchen));
+  ok(keys(read("Pixel tiró el vaso de la mesa en la cocina.")) === "pixel tirar vaso + / vaso salir_de mesa + / vaso with cocina +", "in Spanish too");
+  ok(keys(read("Pixel chased the mouse in the kitchen.")) === "pixel chase mouse + / mouse with kitchen +", "and a clause no shape covers reads as before");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
+}
+
 section("moving from: from is a motion only after a verb that moves a thing (TTG-RFC-0006 §8.3)");
 {
   const S = fresh(), read = x => PG.shapeOf(S, x), keys = r => r.percepts.map(p => [p.s, p.v, p.o, p.pol].join(" ")).join(" / ");
