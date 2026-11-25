@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.9
+**Version:** 1.10
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -80,6 +80,7 @@ Class keys the runtime interprets: `det`, `poss`, `quant_all`, `quant_some`, `qu
 | `plural_guard`, `verb_guard` | endings | A word ending in one of these is not reduced by that rule set. |
 | `progressive_ending`, `participle_ending` | endings | Which verb-rule endings mark a progressive or a participle. |
 | `double_keep` | letters | Final doubles that `~` leaves alone. |
+| `stem_restore` | `<what a stem takes back> \| <endings>`, any number | Stem endings no lemma ends bare on (English `e \| v c dg u az ez iz oz uz`): a stem with one takes back what its rule offers (*shoved* is *shove*). |
 | `min_stem` | integer | Shortest stem a rule may leave. |
 | `bare_ending` | endings | Endings a bare verb form wears (Spanish *ar er ir*); absent, a bare form is its lemma (TTG-RFC-0005 §3). |
 | `bare_finite` | `plural`, `self`, or `-` | The subjects a bare form is also finite for (English *cats eat*, *I eat*); `-` for none; absent, any (TTG-RFC-0005 §3). |
@@ -90,7 +91,10 @@ Class keys the runtime interprets: `det`, `poss`, `quant_all`, `quant_some`, `qu
 
 Candidate choice (normative order): a candidate that is already a term in the store; then a
 candidate in `seed`; then, for `~`, the undoubled stem if the stem really ends in a double
-outside `double_keep`; then the first candidate.
+outside `double_keep`; then, where the stem ends in one of a `stem_restore` line's endings
+and the rule offers the stem with that line's addition as a candidate, that candidate; then
+the first candidate. So an unknown *shoved* is *shove*, while *walked* stays *walk* and *hopped*
+is *hop*.
 
 ---
 
@@ -302,5 +306,6 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-11-24 | 1.7: `read_by_is_a` joins the reply keys in §8 (TTG-RFC-0006 0.2 §4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `8a1d9e2`). |
 | 2026-11-25 | 1.8: `construction_contested` joins the reply keys in §8 (TTG-RFC-0006 0.3 §4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fd6ef4a`). |
 | 2026-12-01 | 1.9: `pro_verb` and `pro_verb_object` in §3, `vectors_head` among the reply keys in §8 (TTG-RFC-0006 0.9 §7.4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
+| 2026-12-07 | 1.10: `stem_restore` in §4, the stem endings no lemma ends bare on, and its place in the candidate order: after the undoubled stem, before the first candidate. Implemented by the personal_grimoire reference runtime (antfriend.github.io `56e14c0`). |
 
 *License: CC0*

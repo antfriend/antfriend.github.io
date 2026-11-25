@@ -645,7 +645,7 @@ takes the candidate its rule offers with `e`. *walked*, *looked*, *hopped*, *buz
 `double_keep`) and *fixed* are unchanged, and the seed episodes re-read unchanged. *sneeze*
 stays a seed verb. Spanish declares none: its endings already leave a lemma whole.
 
-Still to do: the RFC text upstream (TTG-RFC-0001 §4's morphology keys and candidate order).
+Upstream (toot-toot-engineering `2ad2898`): TTG-RFC-0001 1.10.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
