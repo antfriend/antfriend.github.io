@@ -1,5 +1,9 @@
 // The engine, headless: index.html's own script against the real store.
 import { loadEngine, read, scriptOf } from "../tools/harness.mjs";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { execFileSync } from "node:child_process";
 
 const PG = await loadEngine();
 const STORE = read("personal_grimoire_ttdb.md").replace(/\r\n?/g, "\n");
@@ -1517,6 +1521,37 @@ section("two languages, one sphere (TTG-RFC-0001 §11)");
   const parseCases = ["A penguin is a bird.", "A wheel is part of a car.", "No cats bark.", "Cats chase mice but they don't eat grass."];
   const broke = parseCases.filter(t => PG.perceiveSentence(merged, t, { last:null }).percepts.map(pk).join() !== PG.perceiveSentence(S, t, { last:null }).percepts.map(pk).join());
   ok(broke.join(" ; ") === "A penguin is a bird. ; A wheel is part of a car.", "merged, *a* and *no* collide and break two English parses", broke.join(" ; "));
+}
+
+section("belief trajectories: the shape a triple's sayings make, read-only (belief-trajectories.md)");
+{
+  const S = fresh();
+  let t = T0;
+  for (const x of ["I like tea.", "I like tea.", "I like tea.", "I don't like tea.", "I don't like tea.", "I don't like tea.",
+                   "I like milk.", "I don't like milk.", "I like milk.", "I don't like milk.", "I like milk.",
+                   "I like jam.", "I like jam.", "I like jam.", "I don't like jam.",
+                   "I liked cake.", "I don't like cake.", "I don't like cake.", "Dogs bark.", "Dogs bark.", "Dogs bark.",
+                   "Pixel sneezed the napkin off the table.", "Pixel knocked the cup off the shelf.", "Pixel tiró el vaso de la mesa."]) PG.answer(S, x, t += 3600);
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "pg-traj-")), file = path.join(dir, "store.md"), text = PG.serializeStore(S.st);
+  fs.writeFileSync(file, text);
+  const run = (...a) => JSON.parse(execFileSync(process.execPath, ["tools/trajectories.mjs", "--store", file, "--json", ...a], { encoding:"utf8" }));
+  const r = run(), row = k => r.triples.find(x => x.triple === "self | like | " + k) || {};
+  ok(row("tea").shape === "one crossing" && row("tea").verdict === "?" && row("tea").signs === "+ + + - - -",
+     "three likes then three don't-likes: the verdict is a contest, and the lens shows one crossing", JSON.stringify(row("tea")));
+  ok(r.triples[0].triple === "self | like | tea", "and ranks it first: a contest whose sayings fall in two runs");
+  ok(row("milk").shape === "alternation" && row("milk").runs.length === 5, "back and forth is an alternation");
+  ok(row("jam").shape === "crossing, not yet held", "one late contrary saying has crossed, too recently to say");
+  ok(row("cake").retiredByTense && row("cake").signs.startsWith("+r"), "a saying the owner's tense retired is kept in the series, flagged");
+  ok(row("coffee").shape === "too few", "fewer than three episodes show nothing");
+  ok(!r.triples.some(x => x.triple === "dog | bark | -"), "a triple whose sayings agree is not listed by default");
+  ok(run("--all").triples.find(x => x.triple === "dog | bark | -").shape === "fixed point", "and with --all it is a fixed point");
+  ok(run("--min", "2").triples.find(x => x.triple === "self | like | coffee").shape === "crossing, not yet held", "--min lowers the episodes a shape needs");
+  const basin = l => r.constructions.find(c => c.label === l) || {};
+  ok(basin("knocking off").episodes === 1 && basin("caused motion").episodes === 2 && basin("acting on a thing").episodes === 2 && basin("movimiento causado").episodes === 1,
+     "construction traffic is re-derived by re-reading: an ancestor counts what its descendants read", JSON.stringify(r.constructions));
+  ok(basin("taking time off").episodes === 0, "and a construction that draws nothing is listed with nothing");
+  ok(fs.readFileSync(file, "utf8") === text, "the report writes nothing");
+  fs.rmSync(dir, { recursive:true, force:true });
 }
 
 section("the file IS the grammar");
