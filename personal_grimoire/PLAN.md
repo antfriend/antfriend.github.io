@@ -633,7 +633,7 @@ naming all four; the object relative too (*I doubt the cup that Pixel knocked of
 broke*). Spanish *Creo que el gato que tiró…* already read so, since *que* splits off the
 reported clause first. A relative no shape covers, inside a stance's clause, reads as before.
 
-Still to do: the RFC text upstream (TTG-RFC-0006 §3 step 6 and §11.2).
+Upstream (toot-toot-engineering `ac287d0`): TTG-RFC-0006 0.14.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

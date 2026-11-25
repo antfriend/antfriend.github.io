@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.13
+**Version:** 0.14
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -130,7 +130,11 @@ Punctuation is not matched.
      `subord` word would have split off, without a `subord` word that opens them: *I think
      (that) Pixel knocked the cup off the shelf* says `self | think | -` and holds *knocking
      off*'s three atoms, linked to the stance by the holds line (step 4). *Creo que…*, which
-     *que* already splits, reads the same.
+     *que* already splits, reads the same. Tokens after the stance verb that no construction
+     covers whole are offered as a clause with a relative in it, as the next item says, and
+     everything they say is held by the stance: *I think the cat that knocked the cup off the
+     shelf is black* holds *knocking off*'s three atoms and `cat | has_property | black`, the
+     holds line naming all four.
    - **A relative.** From a relative word (one the chain labels as opening a relative, after a
      nounish run, its antecedent) to where the clause around it goes on, at a verbish token or
      its end, the relative's tokens are matched with the antecedent's tokens where the
@@ -393,9 +397,9 @@ its percepts until the owner takes a re-reading.
    sentence's reading whenever a belief changed, with no grammar change for a re-reading to
    report, so it is left out.
 2. **Part of a clause.** *Answered in 0.13* (§3, step 6) for a stance's clause and a
-   relative. Still open: a span anywhere else in a clause (an adverbial clause no `subord`
-   word opens), and a relative inside a stance's clause, which would need the chain to hand
-   out spans from inside its walk.
+   relative, and in 0.14 for a relative inside a stance's clause. Still open: a span anywhere
+   else in a clause (an adverbial clause no `subord` word opens), which would need the chain
+   to hand out spans from inside its walk.
 3. **Spanish.** *Answered in 0.7* (§5): *de* cannot be read as "off" by a shape on *de*
    alone, but it can after a tied verb, and the reference store declares one; and in 0.12 a
    Spanish question reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*, §7.2).
@@ -423,5 +427,6 @@ its percepts until the owner takes a re-reading.
 | 2026-12-03 | 0.11: §7.4, a verb gap answers what the subject inherits, through the reasoner's specificity: the nearest ancestor's decided word stands, and the subject's own sayings are never overridden. Open question 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `3743744`). |
 | 2026-12-04 | 0.12: §7.2, a preposition before the wh-word goes to the end of the restated question, and a shape that leaves the name after it unmatched reads it (*¿De dónde tiró Pixel el vaso?*, *Off what did Pixel sneeze the napkin?*); otherwise the question forms read it. Open question 3 answered, 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f06e4f7`). |
 | 2026-12-05 | 0.13: §3 step 6, part of a clause — a clause no shape covers whole offers the matcher a stance's clause (*I think Pixel knocked the cup off the shelf*, held by the stance) and a relative, its antecedent where the gap is (*the cup that Pixel knocked off the shelf broke*); the rest of the clause is the chain's. Open question 2 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f6bafc5`). |
+| 2026-12-06 | 0.14: §3 step 6, a relative inside a stance's clause — what follows a stance verb that no shape covers whole is offered as a clause with a relative in it, all of it held by the stance (*I think the cat that knocked the cup off the shelf is black*). Open question 2 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bcdc947`). |
 
 *License: CC0*
