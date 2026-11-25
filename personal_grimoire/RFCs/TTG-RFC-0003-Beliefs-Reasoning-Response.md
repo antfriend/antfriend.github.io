@@ -1,6 +1,6 @@
 # TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
 
-**Version:** 1.13
+**Version:** 1.14
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -157,7 +157,7 @@ a VECTOR begins with its verb lemma plus `phrasal_join`. Words without purchase 
 | `wh` + verb + a thing that agrees with the verb in number (`plural_verb_ending`) and no preposition opens (the `object_mark` among them) | objects of that thing; a thing a preposition opens is never the subject, so *¿Qué salió de la mesa?* asks for the subject of `salir_de mesa` |
 | `wh` + `aux`/`modal` + subject + `pro_verb` [+ `pro_verb_object`] + thing, or under `question_order: verb_subject` `wh` + `pro_verb` + subject [+ `pro_verb_object`] + thing | the vectors relating the subject to the thing (`vectorsOf`): *What did Pixel do to the napkin?*, *¿Qué hizo Pixel al vaso?* (TTG-RFC-0006 §7.4) |
 | the same with no thing | every vector the subject is the subject of, but its structural roles, prepositions' vectors and phrases' vectors: *What did Pixel do?*, *¿Qué hizo Pixel?*; with or without a thing, then what the subject inherits from its kinds, by §3's specificity (TTG-RFC-0006 §7.4) |
-| `prep` + `wh` + `cop` + subject | objects along the preposition, the copula behind the subject: *From where is Pixel?*, *¿De dónde es Pingu?* |
+| `prep` + `wh` + `cop` + subject | objects along the preposition, the copula behind the subject: *From where is Pixel?*, *¿De dónde es Pingu?*; where that finds nothing and two phrases or more follow the copula, the last is the subject and the rest the predicate: *¿De qué es parte la rueda?* is *la rueda es parte de ?* |
 | `prep` + `wh` + any other `wh` shape above | that shape's question with the preposition moved to the end of the statement and the slot its thing: a construction's where one reads it (*¿De dónde tiró Pixel el vaso?*, TTG-RFC-0006 §7.2), otherwise objects (*¿En qué duerme Pixel?*) |
 | `wh` + anything else | subjects |
 | `aux`/`modal`/`cop`/`hav` first, with a percept after moving it behind the subject | verify |
@@ -275,5 +275,6 @@ modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`, and, for constructions
 | 2026-12-04 | 1.11: §4, a question with a preposition before its wh-word, the preposition moved to the end of the statement (TTG-RFC-0006 0.12 §7.2). Implemented by the personal_grimoire reference runtime (antfriend.github.io `f06e4f7`). |
 | 2026-12-08 | 1.12: §4, a question with the copula and a preposition — stranded (*Where is Pixel from?*), tried before the place vector, or fronted (*¿De dónde es Pingu?*) — asks along the preposition. Implemented by the personal_grimoire reference runtime (antfriend.github.io `0b52632`). |
 | 2026-12-10 | 1.13: §4, the `wh` + verb row says what §4's prose already did — a thing a preposition opens is never a subject behind its verb (*¿Qué salió de la mesa?*); the reference runtime had ruled out only the object mark. §3.1, rules that link the vectors constructions write for one motion (`go_off`, `salir_de` ⇒ `leave`). Implemented by the personal_grimoire reference runtime (antfriend.github.io `34e03cc`). |
+| 2026-12-11 | 1.14: §4, a fronted preposition with the copula whose predicate's noun stands before the subject (*¿De qué es parte la rueda?*): the last phrase is the subject. Implemented by the personal_grimoire reference runtime (antfriend.github.io `1ce3dec`). |
 
 *License: CC0*

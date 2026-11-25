@@ -700,7 +700,7 @@ predicate: *la rueda es parte de ?*, `part_of`, *coche*. English, whose subject 
 Known gap: *quizzed* and *panicked* lemmatize as `quizz` and `panick`; no suffix rule tells them
 from *buzzed* and *kicked*, and listing them as irregular would lose their past.
 
-Still to do: the RFC text upstream (TTG-RFC-0003 §4, the copula row for a fronted preposition).
+Upstream (toot-toot-engineering `6b4e6f1`): TTG-RFC-0003 1.14.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
