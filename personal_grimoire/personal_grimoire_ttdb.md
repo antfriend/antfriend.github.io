@@ -1047,7 +1047,7 @@ construction_max_words: 8
 
 ---
 
-@LAT-80LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT60LON0,refines@LAT-40LON0
+@LAT-80LON0 | created:1789257600 | updated:1796947200 | relates:refines@LAT60LON0,refines@LAT-40LON0
 
 **Grammar — rules**
 src: RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md §3
@@ -1058,7 +1058,10 @@ for variables, `-` for no object. A `not_` vector matches something the owner de
 something they didn't say. Rules only relate terms the store already names, so inference
 always finishes; their conclusions print as *inferred, not said* with the rule's label, and
 anything the owner actually said outranks them. Every language borrows these, since they
-name vectors, not words.
+name vectors, not words. Two link one motion across what the constructions write: going off a
+thing (`go_off`, *caused motion*) and Spanish `salir_de` (*movimiento causado*) are both
+`leave`, the vector *moving from* writes and a plain *left* says, so *What left the table?*
+finds the napkin sneezed off it, and *Did the vaso leave the mesa?* is answered from Spanish.
 
 ```ttdb-grammar
 kind: rules
@@ -1066,6 +1069,8 @@ rule: sleep_in X Y => in X Y | sleeping somewhere is being there
 rule: not_fly X -, is_a X bird => has_property X flightless | a bird that does not fly
 rule: cazar X Y => chase X Y | cazar is chase
 rule: move_to X Y => in X Y | moving somewhere puts you there
+rule: go_off X Y => leave X Y | going off a thing is leaving it
+rule: salir_de X Y => leave X Y | salir de is leave
 ```
 
 ---
@@ -2424,7 +2429,7 @@ down because it is a claim.
 
 ---
 
-@LAT98LON7 | created:1789257600 | updated:1795392000 | relates:supports@LAT10LON0,refines@LAT98LON5
+@LAT98LON7 | created:1789257600 | updated:1796947200 | relates:supports@LAT10LON0,refines@LAT98LON5
 [ew]
 conf:100
 rev:0
@@ -2443,7 +2448,7 @@ test.
   sayings quoted as said — the penguin exception included.
 - **Does not cross:** content words. `gato` and `cat` are two terms and `cazar` and `chase`
   two vectors until the owner links them: terms with `is_a`, vectors with a
-  [rule](lat-80lon0) such as `cazar X Y => chase X Y`.
+  [rule](lat-80lon0) such as `cazar X Y => chase X Y` or `salir_de X Y => leave X Y`.
 - **Why not one merged lexicon:** *a* is an article in one language and a preposition in the
   other, *no* a quantifier and a negation, and a phrase's head is its last word in one and its
   first in the other (*el gato negro*). Merged, they break 3 of the fifteen English parse

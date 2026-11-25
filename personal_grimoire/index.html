@@ -3220,7 +3220,8 @@ function subjectAfterVerb(S, after, ctx){
   if (!v || !isVerbish(S, v)) return null;
   const rest = after.slice(vi + 1);
   const np = nounPhrases(S, rest, 0, rest.length)[0];
-  if (!np || G.objectMark.has(np.prep)) return null;
+  // a phrase after a preposition is no subject (¿qué salió de la mesa?), the object mark's least of all
+  if (!np || np.prep) return null;
   const head = headOf(S, np, ctx);
   if (!head || !!head.changed !== v.w.endsWith(G.pluralVerbEnding)) return null;
   return slotQuery(S, rest.slice(0, np.end + 1).concat([v, synth(SLOT)]), ctx);

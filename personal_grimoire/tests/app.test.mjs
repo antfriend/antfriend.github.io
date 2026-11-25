@@ -865,7 +865,7 @@ section("start empty keeps the kit");
 section("rules: Datalog-style, over vectors (TTG-RFC-0003 §3.1)");
 {
   const S = fresh();
-  ok(S.G.rules.length === 4 && S.G.ruleErrors.length === 0 && S.grammars[1].rules.length === 4, "four seed rules load, none rejected, and the Spanish grammar borrows them");
+  ok(S.G.rules.length === 6 && S.G.ruleErrors.length === 0 && S.grammars[1].rules.length === 6, "six seed rules load, none rejected, and the Spanish grammar borrows them");
 
   const sun = PG.answer(S, "Is Pixel in the sun?", T0);
   ok(sun.verdict === PG.say(S.G, "affirm_inferred") && sun.items[0].path.map(e => e.v).join(">") === "sleep_in>in" && sun.items[0].path[1].rule,
@@ -897,11 +897,11 @@ section("rules: Datalog-style, over vectors (TTG-RFC-0003 §3.1)");
 
   const cyc = overlay(["rule: chase X Y => hunt Y X | a", "rule: hunt X Y => chase X Y | b", "rule: is_a X Y => is_a Y X | c", "rule: eat X Y, is_a X Z => eat Z Y | d"]);
   const terms = cyc.things.size + 1, bound = terms * terms * (cyc.vectors.size + cyc.G.vectors.size) * 2;
-  ok(cyc.G.rules.length === 8 && cyc.derived.size > 0 && cyc.derived.size <= bound, "rules written to cycle still reach a fixpoint within the bound", cyc.derived.size + " ≤ " + bound);
+  ok(cyc.G.rules.length === 10 && cyc.derived.size > 0 && cyc.derived.size <= bound, "rules written to cycle still reach a fixpoint within the bound", cyc.derived.size + " ≤ " + bound);
 
   const bad = overlay(["rule: chase X Y => eat X Z | unsafe", "rule: chase X Y, chase Y Z, chase Z W, chase W V => chase X V | long",
                        "rule: chase X Y => with X Y | protected", "rule: chase X Y | no arrow"]);
-  ok(bad.G.rules.length === 4 && bad.G.ruleErrors.map(e => e.why).join() === "unsafe,length,protected,shape", "unsafe, over-long, protected and malformed rules are rejected and reported",
+  ok(bad.G.rules.length === 6 && bad.G.ruleErrors.map(e => e.why).join() === "unsafe,length,protected,shape", "unsafe, over-long, protected and malformed rules are rejected and reported",
      bad.G.ruleErrors.map(e => e.why).join());
 }
 
@@ -1316,6 +1316,21 @@ section("moving from: from is a motion only after a verb that moves a thing (TTG
   ok(terms(ask("From where did Pixel push the cup?")) === "shelf" && terms(ask("What did Pixel push from the shelf?")) === "cup",
      "so From where did Pixel push the cup? has its answer, and so has what Pixel pushed from it");
   ok(terms(ask("What left the shelf?")) === "cup" && terms(ask("What left the chair?")) === "bone", "and leave is the vector a plain verb asks with");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
+}
+
+section("one motion, two languages: go_off and salir_de are leave, by rule (TTG-RFC-0003 §3.1)");
+{
+  const S = fresh();
+  let t = T0;
+  for (const x of ["Pixel sneezed the napkin off the table.", "Pixel tiró el vaso de la mesa.", "Pixel pushed the cup from the shelf."]) PG.answer(S, x, t += 60);
+  const ask = q => PG.answer(S, q, t += 60), terms = r => r.items.map(i => i.term).join(" ");
+  const left = ask("What left the table?");
+  ok(terms(left) === "napkin" && left.items[0].kind === "inference", "the napkin went off the table, so it left it: inferred, not said", terms(left));
+  const vaso = ask("Did the vaso leave the mesa?");
+  ok(vaso.verdict === PG.say(S.G, "affirm_inferred") && PG.replyText(S, vaso).includes("salir de is leave"), "and what Spanish says left, English asks after, through the rule's label", PG.replyText(S, vaso));
+  ok(terms(ask("What left the shelf?")) === "cup" && ask("What left the shelf?").items[0].kind === "direct", "a moving from is said as leave, no rule needed");
+  ok(terms(ask("¿Qué salió de la mesa?")) === "vaso", "and a Spanish verb with its preposition after it asks for its subject: ¿Qué salió de la mesa? is the glass");
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 

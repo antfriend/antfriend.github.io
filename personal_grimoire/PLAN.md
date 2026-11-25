@@ -508,8 +508,8 @@ Upstream (toot-toot-engineering `4305092`): TTG-RFC-0006 0.6.
 - The seed episodes re-read unchanged.
 
 Known gaps: ~~Spanish has no question that reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*)~~
-(since 2026-12-04, below), and English and Spanish motions are separate vectors (`go_off`, `salir_de`) until a rule links
-them.
+(since 2026-12-04, below), and ~~English and Spanish motions are separate vectors (`go_off`, `salir_de`) until a rule links
+them~~ (`leave`, since 2026-12-10, below).
 
 Upstream (toot-toot-engineering `c4c5628`): TTG-RFC-0006 0.7.
 
@@ -671,6 +671,24 @@ stand); adding *drop* as one would have put a grammar word in the runtime's own 
 (`modifier: drop`). English *leave* and Spanish *salir_de* are still separate vectors.
 
 Upstream (toot-toot-engineering `9495529`): TTG-RFC-0006 0.16.
+
+**One motion, two languages (2026-12-10): two rules in the store, one runtime fix, and the
+tests.** The constructions wrote three vectors for a thing moving off another: `go_off`
+(*caused motion*), `salir_de` (*movimiento causado*) and `leave` (*moving from*). Two rules
+now link them, as `cazar X Y => chase X Y` links a verb: `go_off X Y => leave X Y | going off a
+thing is leaving it` and `salir_de X Y => leave X Y | salir de is leave`. *What left the
+table?* finds the napkin Pixel sneezed off it, inferred, not said; *Did the vaso leave the
+mesa?* is *probably*, through the rule's label. Things still don't cross (*glass* and *vaso*
+are two terms).
+
+The runtime fix: *¿Qué salió de la mesa?* asked what *de la mesa* took out. A wh-word straight
+onto its verb looks behind the verb for a subject that agrees with it, and took the phrase
+after a preposition for one; only the object mark was ruled out. Now no phrase after a
+preposition is a subject, so the question is *? salió de la mesa*, `salir_de`, the glass, and
+*¿Qué duerme en la cama?* reaches `dormir_en` too. The rule-count tests moved from four to six.
+
+Still to do: the RFC text upstream (TTG-RFC-0003 §4's question table, on a subject behind its
+verb; and the reference store's rules, if any RFC lists them).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

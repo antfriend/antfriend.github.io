@@ -520,7 +520,8 @@ grammar says `question_order: verb_subject` — one of the parameters
 [Blueprint 2](lat20lon0) lists, each a key a grammar sets. Still unread: adjectives that agree
 in number (*son negros*), and dropped subjects other than yours — *No como carne* is read as you, *Come
 queso* is not read as anyone. Verbs link across languages only one rule at a time
-(`cazar X Y => chase X Y`).
+(`cazar X Y => chase X Y`; `salir_de X Y => leave X Y`, so what the glass left in Spanish is
+what it left in English).
 
 **Then, time across devices** — [`@LAT98LON8`](lat98lon8), second on the list before a line of
 it runs. One store orders what you said by its file. Several agents hearing you (a phone, a Pi,
