@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.16
+**Version:** 0.17
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -144,8 +144,17 @@ Punctuation is not matched.
      *Pixel knocked the cup off the shelf*). The longest such span is tried first. The clause
      around it is the chain's without the relative: *…is black*, *…broke*.
 
+   - **Phrases after a shape.** Where the clause ends on one or more noun phrases each opened
+     by a `prep` word, after tokens a construction covers, the construction reads those
+     tokens, and each phrase is mentioned (the `comention` role) beside the head of the first
+     phrase of its nounish run, as the chain mentions a prepositional phrase: *Pixel knocked
+     the cup off the shelf in the kitchen* is *knocking off*'s three atoms and `cup | with |
+     kitchen`. The longest covered tokens are tried first.
+
    A span no shape covers leaves its clause to the chain, read as before: *I think the cat is
-   black*, *the cat that I saw is black*.
+   black*, *the cat that I saw is black*. A clause a `subord` word opens at the front ends at
+   its comma (TTG-RFC-0002 §2), so *When Pixel knocked the cup off the shelf, the dog barked*
+   offers the matcher its first clause whole.
 
 A clause that no construction matches, whole or in part, is read exactly as it would be
 without any.
@@ -406,9 +415,11 @@ its percepts until the owner takes a re-reading.
    sentence's reading whenever a belief changed, with no grammar change for a re-reading to
    report, so it is left out.
 2. **Part of a clause.** *Answered in 0.13* (§3, step 6) for a stance's clause and a
-   relative, and in 0.14 for a relative inside a stance's clause. Still open: a span anywhere
-   else in a clause (an adverbial clause no `subord` word opens), which would need the chain
-   to hand out spans from inside its walk.
+   relative, in 0.14 for a relative inside a stance's clause, and in 0.17 for phrases after a
+   shape and for the main clause after a fronted adverbial one (TTG-RFC-0002 1.7 §2).
+   Answered as far as this draft goes: what is left is a shape with words *inside* it that it
+   doesn't name (*Pixel quickly knocked…*, where *quickly* is read by the lexicon, not the
+   shape), which is the lexicon's to settle, not the matcher's.
 3. **Spanish.** *Answered in 0.7* (§5): *de* cannot be read as "off" by a shape on *de*
    alone, but it can after a tied verb, and the reference store declares one; and in 0.12 a
    Spanish question reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*, §7.2).
@@ -439,5 +450,6 @@ its percepts until the owner takes a re-reading.
 | 2026-12-06 | 0.14: §3 step 6, a relative inside a stance's clause — what follows a stance verb that no shape covers whole is offered as a clause with a relative in it, all of it held by the stance (*I think the cat that knocked the cup off the shelf is black*). Open question 2 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bcdc947`). |
 | 2026-12-08 | 0.15: §7.2, a preposition before the wh-word with the copula asks along the preposition, no construction tried (*¿De dónde es Pingu?*; TTG-RFC-0003 1.12 §4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `0b52632`). |
 | 2026-12-09 | 0.16: §8.3, the reference store's *moving from* — *from* read as a motion only after the verbs that move a thing, its vector `leave` (*Pixel pushed the cup from the shelf*; *From where did Pixel push the cup?*). No rule changed. Declared in the personal_grimoire reference store (antfriend.github.io `dafcd77`). |
+| 2026-12-12 | 0.17: §3 step 6, phrases after a shape — a clause ending on prepositional phrases after what a construction covers is the construction's, the phrases mentioned (*…off the shelf in the kitchen*); and with TTG-RFC-0002 1.7 §2 the main clause after a fronted adverbial one (*When Pixel knocked the cup off the shelf, the dog barked*). Open question 2 answered. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f0f8c8d`). |
 
 *License: CC0*

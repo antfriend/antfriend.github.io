@@ -723,7 +723,7 @@ Not done: a comma splice no subord word opens (*Pixel slept, the dog barked*) st
 one clause, since a list separator between two clauses is also how a list is written; and a
 time word the lexicon doesn't list (*yesterday*) still heads the phrase it ends.
 
-Still to do: the RFC text upstream (TTG-RFC-0002 §2; TTG-RFC-0006 §3 step 6 and §11.2).
+Upstream (toot-toot-engineering `94f1c15`): TTG-RFC-0002 1.7 and TTG-RFC-0006 0.17.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
