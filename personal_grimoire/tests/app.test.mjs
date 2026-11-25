@@ -1551,6 +1551,39 @@ section("belief trajectories: the shape a triple's sayings make, read-only (beli
      "construction traffic is re-derived by re-reading: an ancestor counts what its descendants read", JSON.stringify(r.constructions));
   ok(basin("taking time off").episodes === 0, "and a construction that draws nothing is listed with nothing");
   ok(fs.readFileSync(file, "utf8") === text, "the report writes nothing");
+  // the series is the engine's: the report and the reply read the same runs
+  const tea = [...S.trips.values()].find(e => e.s === "self" && e.v === "like" && e.o === "tea");
+  ok(JSON.stringify(PG.trajectoryOf(S, tea, 3, 2).runs) === JSON.stringify(row("tea").runs) && PG.trajectoryOf(S, tea, 3, 2).shape === PG.TRAJ.CROSSING,
+     "the tool's runs are the engine's trajectoryOf");
+  // the note beside the grounds (TTG-RFC-0003 §4): named where the verdict can't show the shape, and nowhere else
+  const ask = q => PG.answer(S, q, t += 60), cross = PG.say(S.G, "trajectory_crossing").split("{")[0], alt = PG.say(S.G, "trajectory_alternation").split("{")[0];
+  const teaR = ask("Do I like tea?");
+  ok(teaR.verdict === PG.say(S.G, "contest") && teaR.notes.some(n => n.startsWith(cross) && n.includes("3 episodes")),
+     "Do I like tea? is still a contest, and the note says it turned once: three episodes one way, three the other", teaR.notes.join(" | "));
+  ok(ask("Do I like milk?").notes.some(n => n.startsWith(alt)), "milk goes back and forth, and the note says so");
+  const quiet = ["Do I like jam?", "Do dogs bark?", "Do I like coffee?"].map(ask);
+  ok(quiet.every(r => !r.notes.some(n => n.startsWith(cross) || n.startsWith(alt))), "no note for a crossing not yet held, a fixed point, or too few episodes");
+  const cake = ask("Do I like cake?");
+  ok(cake.notes.length === 1 && cake.notes[0].startsWith(PG.say(S.G, "changed_tense").split("{")[0]),
+     "where the owner's tense already named the change, its note stands alone");
+  // with the numbers absent the replies are what they were, and with them present only a note is added
+  const bare = PG.openStore(text.replace(/^trajectory_min_episodes: .*\n/m, ""));
+  let t2 = t;
+  for (const q of ["Do I like tea?", "Do I like milk?", "Do I like jam?", "Do dogs bark?"]){
+    const a = PG.answer(bare, q, t2 += 60), b = PG.answer(PG.openStore(text), q, t2);
+    ok(a.verdict === b.verdict && JSON.stringify(a.items) === JSON.stringify(b.items) && !a.notes.some(n => n.startsWith(cross) || n.startsWith(alt)),
+       "without trajectory_min_episodes, " + q + " has the same verdict and grounds, and no note");
+  }
+  // Spanish has its own wording
+  const es = fresh();
+  let t3 = T0;
+  for (const x of ["Pixel caza ratones.", "Pixel caza ratones.", "Pixel caza ratones.", "Pixel no caza ratones.", "Pixel no caza ratones.", "Pixel no caza ratones."]) PG.answer(es, x, t3 += 3600);
+  const esG = es.grammars.find(G => G.lang === "es");
+  ok(PG.answer(es, "¿Caza Pixel ratones?", t3 += 60).notes.some(n => n.startsWith(PG.say(esG, "trajectory_crossing").split("{")[0])), "and Spanish says it in Spanish");
+  // construction traffic, with the re-reading
+  const rt = PG.reread(PG.openStore(text)).traffic, tr = l => rt.find(x => x.label === l) || {};
+  ok(tr("knocking off").sentences === 1 && tr("caused motion").sentences === 2 && tr("acting on a thing").sentences === 2 && tr("movimiento causado").sentences === 1 && tr("taking time off").sentences === 0,
+     "the re-reading counts what each construction reads now, an ancestor what its descendants read", JSON.stringify(rt));
   fs.rmSync(dir, { recursive:true, force:true });
 }
 

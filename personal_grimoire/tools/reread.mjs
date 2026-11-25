@@ -5,7 +5,7 @@
 // the runtime.
 //
 //   node tools/reread.mjs                 report; exit 1 if a new reading awaits the owner
-//   node tools/reread.mjs --json          the report as JSON
+//   node tools/reread.mjs --json          the report as JSON, construction traffic included
 //   node tools/reread.mjs --store FILE    another store
 //   node tools/reread.mjs --accept HASH   take every new reading under that grammar hash, as
 //                                         amendments that name it, except where the owner has
@@ -46,8 +46,15 @@ else {
     console.log("\n" + c.episode + " #" + c.n + (c.accepted ? "  (accepted)" : c.amended ? "  (amended by the owner)" : "") + "  " + c.text);
     console.log("  wrote  " + (c.shape === null ? "(no shape line)" : c.shape));
     for (const l of c.was) console.log("         " + l);
-    console.log("  reads  " + c.reads);
+    console.log("  reads  " + c.reads + (c.readBy.length ? "   (read by " + c.readBy.join(", ") + ")" : ""));
     for (const l of c.now) console.log("         " + l);
+  }
+  // how many sentences each construction reads now; run before and after a grammar change to see
+  // which gained sentences and which lost them
+  if (r.traffic.length){
+    console.log("\nconstruction traffic, sentences read now (an ancestor counts what its descendants read):");
+    for (const t of r.traffic) console.log("  " + t.lang + "  " + (t.sentences ? String(t.sentences).padStart(4) : "   -") + "  " + t.label +
+      (t.abstract ? " (abstract)" : "") + (t.sentences ? "" : "   draws nothing"));
   }
 }
 // a sentence the owner has amended, with this reading or another, is decided

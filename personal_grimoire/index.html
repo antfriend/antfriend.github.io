@@ -2705,7 +2705,7 @@ function grammarHash(S){
  * amend(…, grammar) records that it was the grammar's. An owner's choice
  * between two readings is kept. `amended` says the owner has ruled on the
  * sentence; `accepted`, that the ruling is this very reading.              */
-function rereadWalk(S, epId, visit){
+function rereadWalk(S, epId, visit, tally){
   let sentences = 0;
   const one = epId ? episodeOf(S, epId) : null;
   for (const c of one ? [one] : epId ? [] : S.episodes.slice()){
@@ -2717,6 +2717,7 @@ function rereadWalk(S, epId, visit){
       const G = pickGrammar(S, text), entry = () => { const am = S.amends.get(c.rec.lon); return am ? am.entries.get(n) : null; };
       const e = entry(), here = { last:ctx.last };
       const r = withGrammar(S, G, () => perceiveSentence(S, text, here, e ? e.reading : null));
+      if (tally) tally(G, r.constructions, c.rec.id);
       const was = many(b, "percept").filter(l => +cols(l)[0] === n).map(l => cols(l).join(" | "));
       // an episode written before shapes has none to compare; its percepts still are
       const now = r.percepts.map(p => perceptLine(n, p)), shape = own.has(n) ? own.get(n) : null;
@@ -2727,7 +2728,7 @@ function rereadWalk(S, epId, visit){
       if ((shape !== null && r.shape !== shape) || now.join("\n") !== was.join("\n") || holds.join("\n") !== held.join("\n") || gap !== gapWas || tense !== tenseWas)
         visit({ episode:c.rec.id, n, text, amended:!!e, accepted:!!e && e.shape === r.shape && e.lines.join("\n") === now.join("\n") &&
                 e.holds.join("\n") === holds.join("\n") && e.gap === gap && e.tense === tense, shape, reads:r.shape, reading:r.reading || null,
-                was, now, held, holds, gapWas, gap, tenseWas, tense }, { last:ctx.last });
+                was, now, held, holds, gapWas, gap, tenseWas, tense, readBy:r.constructions.map(k => k.label) }, { last:ctx.last });
       // the context goes on through what now stands: an amendment (one a visit just took, too), else the episode's reading
       const s = entry(), stands = s ? s.shape : shape;
       if (stands === null || (stands === r.shape && (s ? s.reading || "" : "") === (r.reading || ""))) ctx.last = here.last;
@@ -2736,10 +2737,16 @@ function rereadWalk(S, epId, visit){
   }
   return sentences;
 }
+/* With the re-reading comes construction traffic (TTG-RFC-0005 §5.1): how many of the sentences each
+ * construction reads under the grammar of today, an ancestor counting what its descendants read, and
+ * those that read none. Episodes don't record it; two reports, before and after a grammar change, show
+ * which constructions gained sentences and which lost them.                                          */
 function reread(S, epId){
-  const changed = [];
-  const sentences = rereadWalk(S, epId, x => changed.push(x));
-  return { grammar:grammarHash(S), sentences, changed };
+  const changed = [], traffic = new Map();
+  for (const G of S.grammars) for (const c of G.constructions) traffic.set(G.lang + "|" + c.label, { lang:G.lang, label:c.label, abstract:!!c.abstract, sentences:0, episodes:new Set() });
+  const tally = (G, cs, ep) => { for (const k of cs) for (const l of [k.label].concat(k.parents || [])){ const t = traffic.get(G.lang + "|" + l); if (t){ t.sentences++; t.episodes.add(ep); } } };
+  const sentences = rereadWalk(S, epId, x => changed.push(x), tally);
+  return { grammar:grammarHash(S), sentences, changed, traffic:[...traffic.values()].map(t => ({ ...t, episodes:t.episodes.size })) };
 }
 /* Take the grammar's readings under a hash (§5.1), in episode order: each
  * sentence is read again just before it is taken, after the ones before it
@@ -3404,6 +3411,8 @@ function answerIn(S, text, now, source, shapes){
     if (r.verdict === "U") heldNotes(S, reply, h => it.checks.some(p => h.s === p.s && h.v === p.v && h.o === p.o));
     // a belief the owner's words changed is named with the change
     for (const p of it.checks){ const t = changeText(S, S.trips.get(p.s + "|" + p.v + "|" + p.o)); if (t && !reply.notes.includes(t)) reply.notes.push(t); }
+    // and the shape its sayings make, where the verdict alone can't show it: one change of mind, or back and forth
+    for (const p of it.checks){ const t = trajectoryText(S, S.trips.get(p.s + "|" + p.v + "|" + p.o)); if (t && !reply.notes.includes(t)) reply.notes.push(t); }
   } else if (it.intent === "objectsOf" || it.intent === "subjectsOf" || it.intent === "vectorsOf"){
     const ask = q => q.intent === "objectsOf" ? objectsOf(S, q.s, q.vs) : q.intent === "vectorsOf" ? vectorsOf(S, q.s, q.o) : subjectsOf(S, q.v, q.o);
     let list = ask(it);
@@ -3531,6 +3540,47 @@ function changeText(S, e){
   if (!now || text(then) == null || text(now) == null) return "";
   return say(S.G, "changed_tense", { then:text(then), ep:then.ep, now:text(now), ep_now:now.ep });
 }
+/* The shape a triple's sayings make over the episodes that say it (TTG-RFC-0003 §4, trajectories). Each
+ * episode scores the triple as consolidation does, the largest `+` weight and the largest `-` weight, and
+ * its sign is which is larger (0 for both alike). Runs of one sign give the shape: one run, a fixed point;
+ * two, the last lasting at least the hold number of episodes, one crossing (shorter, a crossing not yet
+ * held); more, an alternation; fewer than the min number of episodes, nothing to read. A saying a change in tense retired is in the
+ * series, flagged, since the shape is of what was said, not of what is believed. It decides nothing.    */
+const TRAJ = { FEW:0, FIXED:1, CROSSING:2, UNHELD:3, ALTERNATION:4, BOTH:5 };
+function trajectoryOf(S, e, min, hold){
+  const N = S.G.num, ord = ep => S.epOrder.get(ep) || 0, per = new Map();
+  for (const x of e.sources){
+    const w = x.q === "~" ? N.weight_partial : 1, p = per.get(x.ep) || { ep:x.ep, plus:0, minus:0, retired:false };
+    if (x.pol === "+") p.plus = Math.max(p.plus, w); else p.minus = Math.max(p.minus, w);
+    if (x.changed) p.retired = true;
+    per.set(x.ep, p);
+  }
+  let fr = 0, ag = 0;
+  const series = [...per.values()].sort((a, b) => ord(a.ep) - ord(b.ep)).map(p => {
+    fr += p.plus; ag += p.minus;
+    return { ...p, sign:Math.sign(p.plus - p.minus), b:(fr - ag) / (fr + ag + N.prior_for + N.prior_against) };
+  });
+  const runs = [];
+  for (const p of series) if (p.sign){
+    const last = runs[runs.length - 1];
+    if (last && last.sign === p.sign) last.n++; else runs.push({ sign:p.sign, n:1 });
+  }
+  const shape = series.length < min ? TRAJ.FEW : !runs.length ? TRAJ.BOTH : runs.length === 1 ? TRAJ.FIXED :
+    runs.length === 2 ? (runs[1].n >= hold ? TRAJ.CROSSING : TRAJ.UNHELD) : TRAJ.ALTERNATION;
+  return { series, runs, shape, retired:series.some(p => p.retired) };
+}
+/* The note a trajectory adds beside an answer's grounds: only where the grammar declares
+ * `trajectory_min_episodes`, and only where the owner's tense has not already named the change. */
+function trajectoryText(S, e){
+  const G = S.G, N = G.num;
+  if (!e || !(N.trajectory_min_episodes > 0) || e.sources.some(x => x.changed)) return "";
+  const t = trajectoryOf(S, e, N.trajectory_min_episodes, N.trajectory_hold > 0 ? N.trajectory_hold : 1);
+  if (t.shape === TRAJ.CROSSING)
+    return say(G, "trajectory_crossing", { before:unit(G, "episode", t.runs[0].n), after:unit(G, "episode", t.runs[1].n) });
+  if (t.shape === TRAJ.ALTERNATION)
+    return say(G, "trajectory_alternation", { episodes:unit(G, "episode", t.series.length), turns:t.runs.length - 1 });
+  return "";
+}
 /* A question after what someone said with a stance (I doubt, the idea that…)
  * meets the clause the stance holds: each is named, with its saying, as a note
  * and never as a ground. Returns how many were named.                     */
@@ -3604,7 +3654,7 @@ function ingestFile(S, name, text, now){
 
 const PG = { parseStore, serializeStore, parseRecord, parseBlock, openStore, loadGrammar, sentencesOf, tokenize,
   nounLemma, verbLemma, perceiveSentence, perceive, consolidate, syncTerms, termState, verify, objectsOf, subjectsOf,
-  portrait, searchSaid, interpret, answer, replyText, ingestFile, startEmpty, markAsked, records, epsOf, say, SLOT,
+  portrait, searchSaid, interpret, answer, trajectoryOf, TRAJ, replyText, ingestFile, startEmpty, markAsked, records, epsOf, say, SLOT,
   pickGrammar, withGrammar, shapeOf, shapeText, readingsOf, amend, amendReply, reread, takeRereads,
   epsTop, sceneOf, scenesOf, placeTerm };
 

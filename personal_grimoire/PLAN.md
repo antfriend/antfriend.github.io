@@ -788,6 +788,32 @@ does, re-read lists exactly the sentences that changed.
 
 ## Phase 7 — Belief trajectories, the workable parts
 
+**Status (2026-12-13): implemented in the runtime, the store, the tools and the tests.**
+- **The engine's series.** `trajectoryOf(S, belief, min, hold)` returns each episode's sign,
+  the runs and the shape (`TRAJ` codes, so the runtime holds no word). The prototype now uses
+  it, so the report and the reply can't disagree.
+- **The note.** A yes/no answer whose triple's sayings make *one crossing* or an *alternation*
+  carries `trajectory_crossing` or `trajectory_alternation`, in English and Spanish: *Do I like
+  tea?* is still a contest, and the note says three episodes one way, then three the other. No
+  note for a fixed point, a crossing not yet held, too few episodes, or where the owner's tense
+  already named the change. `trajectory_min_episodes: 3` and `trajectory_hold: 2` are in the
+  numbers; without the first, replies are what they were, verdict and grounds alike.
+- **Construction traffic.** `reread` returns `traffic`: each construction's sentences and
+  episodes under today's grammar, an ancestor counting what its descendants read, and each
+  re-read sentence names the constructions that read it now (`readBy`). `tools/reread.mjs`
+  prints both, and `tools/trajectories.mjs` takes its traffic from there.
+- The seed episodes re-read unchanged.
+
+**Changed from the plan.** Traffic is today's, not a difference between the grammar the
+episodes were read under and today's: episodes don't record which construction read them, so
+the earlier count can't be recovered. Two reports, before and after a grammar change, show it.
+The page's re-read panel shows only a count and is unchanged. The note is on yes/no answers
+only, where a single triple is asked.
+
+Still to do: the RFC text upstream (TTG-RFC-0003 §4 and an informative section on trajectories,
+TTG-RFC-0001 §8–9, TTG-RFC-0005 §5.1). The bAbI check is done: every outcome hash of tasks 1 and
+15, in all five conditions, equals the one recorded in `paper/`.
+
 **From:** [belief-trajectories.md](belief-trajectories.md), prompted by Haylett's geofinitism and
 Takens' delay embedding (via the prototype `tools/trajectories.mjs`, `acee36c`). **Size:** medium.
 

@@ -309,7 +309,10 @@ Each stage is one blueprint record in the store and one section of an RFC.
 4. **Terms** — a THING or VECTOR record per lemma, placed on the sphere.
 5. **Consolidate** — per triple, count **episodes, not sentences**, for and against;
    conf = Laplace's rule of succession. One saying reads 170; *I like coffee* followed by *I
-   do not like coffee* reads 128 and is **contested**.
+   do not like coffee* reads 128 and is **contested**. Said in runs instead (*I like tea*
+   three times, then *I don't like tea* three times), it is still contested, and the reply
+   adds that your sayings turned once; back and forth, that they alternate. The note never
+   changes the verdict.
 6. **Reason** — said, then transitive, then inverse and symmetric, then rules, then inherited
    from the nearest `is_a` ancestor. Specificity is the only defeasible rule. Along an
    `exclusive` vector, a later object retires an earlier one.

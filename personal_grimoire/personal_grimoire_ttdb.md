@@ -369,7 +369,7 @@ belief: <vector> | <object or -> | <+ - ?> | <for> <against> | <conf>
 
 ---
 
-@LAT50LON0 | created:1789257600 | updated:1795392000 | relates:refines@LAT0LON0,depends_on@LAT40LON0,derived_from@LAT98LON6
+@LAT50LON0 | created:1789257600 | updated:1797206400 | relates:refines@LAT0LON0,depends_on@LAT40LON0,derived_from@LAT98LON6
 
 **Blueprint 5 — Consolidate: from percepts to beliefs**
 src: RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md §2
@@ -393,6 +393,14 @@ counts (*I liked tea*, then *I do not like tea*, is a belief that you do not).
   `belief_conf_threshold` (TTDB-RFC-0007's 128). Only decided beliefs become edges.
 - `comention` percepts never consolidate. [A contradiction is kept](lat98lon3): a `?`
   belief keeps both sayings and the librarian quotes both, with no verdict.
+- **The shape of the sayings**, beside the verdict, never in it. Each episode that says a triple
+  has a sign, which way it said it; runs of one sign give a shape. Two runs, the last holding for
+  `trajectory_hold` episodes, is one crossing, and three or more an alternation. Asked, the
+  librarian names either in a note (`trajectory_crossing`, `trajectory_alternation`), once the
+  triple has `trajectory_min_episodes` episodes, so *I like tea* three times and then *I don't
+  like tea* three times is still a contest, and the note says it turned once. Where the owner's
+  tense already named the change, its own note stands alone. Without `trajectory_min_episodes`
+  there is no note. `node tools/trajectories.mjs` lists every shape.
 
 Beliefs are derived data and say so: `node tools/consolidate.mjs` replays every episode and
 reports any belief line that has drifted from its percepts.
@@ -502,7 +510,7 @@ expansion. To put this runtime inside another app, read [the runtime's surface](
 
 ---
 
-@LAT85LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT0LON0,depends_on@LAT80LON0
+@LAT85LON0 | created:1789257600 | updated:1797206400 | relates:refines@LAT0LON0,depends_on@LAT80LON0
 
 **Blueprint 9 — The runtime's surface: embedding it**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §10
@@ -533,7 +541,7 @@ with `;globalThis.<name> = PG;` appended (`tools/harness.mjs` does exactly this 
 | `shapeText(S, items)` | the shape those items make, in the grammar's marks | — |
 | `readingsOf(S, episodeId)` | `[{ n, text, shape, amended, grammar, reading }]`: each sentence with the reading that stands; `grammar` is the hash a taken re-reading came from, `reading` the letters of an owner's choice between two readings | — |
 | `amendReply(S, episodeId, n, shape, now, grammar?, reading?)` | a reply as for a tell, or `null` (also for a `grammar` hash that is not the store's now); `reading` chooses between two readings by letter; `amend(…)` returns the bare write | the episode's amendment record, terms, the cursor |
-| `reread(S, episodeId?)` | `{ grammar, sentences, changed }`: each sentence (of every episode, or one) the grammar now reads differently from its episode, as `{ episode, n, text, amended, accepted, shape, reads, reading, was, now }` (`shape` is `null` for an episode written before shapes), under a hash of the grammar records, each read in the context the sentences before it stand as. To take one, `amendReply(S, episode, n, reads, now, grammar, reading)` | — |
+| `reread(S, episodeId?)` | `{ grammar, sentences, changed, traffic }`: each sentence (of every episode, or one) the grammar now reads differently from its episode, as `{ episode, n, text, amended, accepted, shape, reads, reading, was, now, readBy }` (`readBy`, the labels of the constructions that read it now) (`shape` is `null` for an episode written before shapes), under a hash of the grammar records, each read in the context the sentences before it stand as; `traffic`, for each construction of each language, `{ lang, label, abstract, sentences, episodes }` it reads now, an ancestor counting what its descendants read. To take one, `amendReply(S, episode, n, reads, now, grammar, reading)` | — |
 | `takeRereads(S, grammar, now)` | `{ grammar, took, kept }`, or `null` for a hash that is not the store's now: every sentence not amended that reads differently, taken in episode order, each re-read just before it is taken; `kept` are the ones the owner has amended | amendment records, terms |
 | `interpret(S, text)` | `{ intent, purchase, … }` without acting | — |
 | `verify(S, s, v, o)`, `objectsOf(S, s, [v])`, `subjectsOf(S, v, o)`, `portrait(S, lemma)`, `searchSaid(S, [lemma])` | raw reasoning, lemmas in | — |
@@ -543,7 +551,8 @@ than one language: `pickGrammar(S, text)` returns the grammar a text reads as, a
 `withGrammar(S, G, fn)` runs `fn` under it — `answer`, `ingestFile` and `replyText` already
 do both. Also on
 `PG`, for tools and tests: `parseStore`, `parseRecord`, `parseBlock`, `records`, `epsOf`,
-`epsTop`, `sceneOf`, `scenesOf`, `placeTerm`,
+`epsTop`, `sceneOf`, `scenesOf`, `placeTerm`, `trajectoryOf(S, belief, min, hold)` and the `TRAJ` codes
+it returns its shape as (the series a belief's sayings make, TTG-RFC-0003 §4),
 `loadGrammar`, `say`, `sentencesOf`, `tokenize`, `nounLemma`, `verbLemma`, `perceiveSentence`,
 `perceive`, `consolidate`, `syncTerms`, `termState`, `markAsked`, and `SLOT` — the NUL
 character that stands for the hole a question asks the corpus to fill.
@@ -986,6 +995,8 @@ asked_held: You said it, but not as fact: “{text}” ({ep}).
 asked_readings: You said “{text}” ({ep}), which reads two ways, and not which you meant: {readings}.
 asked_holds: {s} {v}: {triples} — kept, not believed, from “{text}” ({ep}).
 changed_tense: You said “{then}” ({ep}), and since then “{now}” ({ep_now}) — a change in your words, not a contradiction.
+trajectory_crossing: You said it one way in {before}, then the other way in the {after} since — perhaps a change of mind. Both still count, so the answer stands.
+trajectory_alternation: Your sayings go back and forth over {episodes}, turning {turns} times — a real disagreement, not one change of mind.
 read_by: Read by a construction: {label}. Its shape is in the episode, if you read it otherwise.
 read_by_is_a: Read by a construction: {label}, a kind of {parents}. Its shape is in the episode, if you read it otherwise.
 construction_contested: {parents} disagree about part of what {label} says, so that part is kept, not believed.
@@ -1013,17 +1024,20 @@ store_opened: Opened a store instead of reading it as words: {file}.
 unit_percept: percept | percepts
 unit_sentence: sentence | sentences
 unit_term: term | terms
+unit_episode: episode | episodes
 ```
 
 ---
 
-@LAT-70LON0 | created:1789257600 | updated:1795478400 | relates:refines@LAT50LON0,refines@LAT60LON0,refines@LAT70LON0
+@LAT-70LON0 | created:1789257600 | updated:1797206400 | relates:refines@LAT50LON0,refines@LAT60LON0,refines@LAT70LON0
 
 **Grammar — the numbers**
 src: RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md §5
 
 Every constant the consolidator, the reasoner and the librarian use. None of them is in the
 runtime, and the test suite fails on any number here that the runtime never reads.
+`trajectory_min_episodes` and `trajectory_hold` set when a reply names the shape a triple's
+sayings make ([consolidate](lat50lon0)); remove the first and no reply names one.
 
 ```ttdb-grammar
 kind: numbers
@@ -1031,6 +1045,8 @@ prior_for: 1
 prior_against: 1
 weight_partial: 0.5
 belief_conf_threshold: 128
+trajectory_min_episodes: 3
+trajectory_hold: 2
 inherit_decay: 0.85
 max_hops: 4
 answer_max_items: 6
@@ -1383,6 +1399,8 @@ asked_held: Lo dijiste, pero no como hecho: “{text}” ({ep}).
 asked_readings: Dijiste “{text}” ({ep}), que se lee de dos maneras, sin decir cuál querías decir: {readings}.
 asked_holds: {s} {v}: {triples} — guardado, no creído, de “{text}” ({ep}).
 changed_tense: Dijiste “{then}” ({ep}), y después “{now}” ({ep_now}) — un cambio en tus palabras, no una contradicción.
+trajectory_crossing: Lo dijiste de un modo en {before} y del otro en los {after} siguientes — quizá un cambio de opinión. Ambos cuentan aún, así que la respuesta se mantiene.
+trajectory_alternation: Tus dichos van y vienen a lo largo de {episodes}, y cambian {turns} veces — un desacuerdo real, no un solo cambio de opinión.
 read_by: Leído por una construcción: {label}. Su forma está en el episodio, si lo lees de otro modo.
 read_by_is_a: Leído por una construcción: {label}, una clase de {parents}. Su forma está en el episodio, si lo lees de otro modo.
 construction_contested: {parents} no coinciden en parte de lo que dice {label}, así que esa parte se guarda, no se cree.
@@ -1410,6 +1428,7 @@ store_opened: Se abrió un almacén en lugar de leerlo como palabras: {file}.
 unit_percept: percepción | percepciones
 unit_sentence: frase | frases
 unit_term: término | términos
+unit_episode: episodio | episodios
 ```
 
 ---
