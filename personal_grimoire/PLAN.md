@@ -11,6 +11,10 @@ closest to P&P, its learning closest to usage-based grammar, and its biggest gap
 one CxG names: the store holds no form–meaning pairs. The phases below take those findings
 in order of value per unit of risk. Each phase can ship by itself.
 
+Phases 7–9 conclude the plan: they bring in the workable parts of the belief-trajectories
+research note, publish what all of it produced on one release page, and then remove the
+development documents, this one included.
+
 ---
 
 ## Rules every phase keeps
@@ -782,6 +786,138 @@ does, re-read lists exactly the sentences that changed.
 
 ---
 
+## Phase 7 — Belief trajectories, the workable parts
+
+**From:** [belief-trajectories.md](belief-trajectories.md), prompted by Haylett's geofinitism and
+Takens' delay embedding (via the prototype `tools/trajectories.mjs`, `acee36c`). **Size:** medium.
+
+**Problem.** A verdict can't tell a change of mind from a contest of equals. *I like tea* three
+times, then *I don't like tea* three times, is a contest at 128; the prototype shows it is one
+crossing. Today only the prototype, a command-line report, can say so, and it isn't in any RFC.
+
+**Change.** Only the parts the note found workable; the rest stays open (below).
+- **A note on contested and narrowly decided answers.** Where a triple's per-episode signs fall
+  into runs the prototype would call *one crossing* or *alternation*, the reply adds a note
+  naming them (*you said it in 3 episodes, then the opposite in the 3 after*). The note is beside
+  the grounds, never a ground, and never changes the verdict.
+  - Its wording is reply keys in both grammars (`trajectory_crossing`, `trajectory_alternation`,
+    slots `{before}`, `{after}`, `{runs}`), so the runtime holds no word.
+  - Its thresholds are numbers (`trajectory_min_episodes: 3`, `trajectory_hold: 2`), absent
+    meaning no note.
+  - The series code moves from the prototype into the engine (one function the page and the tool
+    share), so the tool and the reply can't disagree.
+- **Construction traffic in the re-read report.** `tools/reread.mjs` and the page's re-read list
+  which constructions gained or lost sentences between the grammar the episodes were read under
+  and today's, and which draw nothing.
+- **Not taken now:** ranking by EPS (the store keeps salience per term, not per triple), a delay
+  that counts lane time rather than episodes, and fleet series (both need TTG-RFC-0004 §4's
+  stamps, which nothing implements).
+
+**Tests.** The note appears for the tea, milk and jam histories and not for a fixed point or a
+triple said fewer than `trajectory_min_episodes` times; every verdict and ground is unchanged
+with the numbers absent and present; the prototype's `--json` output equals what the engine
+function returns; the seed episodes re-read unchanged; bAbI tasks 1 and 15 keep their hashes.
+
+**RFCs.** TTG-RFC-0003 §4 (the note and its keys), TTG-RFC-0001 §8–9 (keys and numbers),
+TTG-RFC-0005 §5.1 (traffic in the re-read report). The note's §2 and §6, rewritten as spec text,
+go into TTG-RFC-0003 as an informative section on trajectories, so nothing in the note is lost
+when Phase 9 removes it.
+
+---
+
+## Phase 8 — The release page
+
+**From:** this plan's Phases 1–7, the TTG-RFC-0006 series (0.1–0.17), and the belief-trajectories
+note. **Size:** medium.
+
+**Problem.** The work is spread over six RFCs, a plan, a research note, a private comparison page
+and a long run of commits. Nothing shows a reader what came of it, or lets them try it.
+
+**Change.**
+- **Example stores**, each a small grimoire TTDB beside the seed one (`examples/`), each with the
+  sayings it needs already told, so a reader asks and gets an answer at once:
+  - `constructions_ttdb.md`: caused motion, its inheritance network (abstract root, several
+    parents, a tied verb, an idiom), questions read by shapes, *from*, and *leave* across
+    languages.
+  - `clauses_ttdb.md`: a stance's clause, a relative, a relative inside a stance's clause, a
+    fronted adverbial clause, phrases after a shape.
+  - `trajectories_ttdb.md`: the tea, milk, jam and cake histories, with the Phase 7 notes.
+  - `dos_lenguas_ttdb.md`: Spanish beside English — *de* as *off*, *¿De dónde tiró Pixel el
+    vaso?*, *¿Qué salió de la mesa?*, answered from either language.
+
+  Each is built by a script from its sayings (as `tools/feed.mjs` builds the seed), checked by a
+  test that re-reads it unchanged and answers its sample questions, and loads in the page through
+  a new `?store=` parameter limited to files in `examples/`. That parameter is the one runtime
+  change: no word, and the seed store stays the default.
+- **The page**, `release.html` beside `index.html`, written for a reader new to the project:
+  - one section per highlight: the file is the grammar (and bAbI's permuted run shows it);
+    constructions and their inheritance; reading part of a clause; questions a shape answers;
+    two languages, one motion; belief trajectories;
+  - each with a small inline SVG figure (the inheritance network, a clause with the span a
+    shape reads, a sign series with its runs) and a *try it* link that opens the example store
+    with the question already asked (`index.html?store=examples/…&ask=…`);
+  - the bAbI table and the test counts, as measured, with how to rerun them.
+- **Provenance, on the page and per highlight**, in three kinds kept apart:
+  - **ideas from the literature**, cited: LFG's COMP, TENSE and ADJUNCT (Kaplan & Bresnan,
+    1982) for Phases 1, 3 and 4; P&P parameters (Chomsky, 1981) for Phase 5; usage-based
+    entrenchment and preemption (Tomasello, 2003; Bybee, 2006) for Phase 2, and early *I think*
+    as a stance marker (Diessel & Tomasello, 2001); Construction Grammar, caused motion and
+    default inheritance (Goldberg, 1995) and idioms (Fillmore, Kay & O'Connor, 1988) for Phase 6;
+    Laplace's rule of succession for confidence; bAbI (Weston et al., 2015) for the benchmark;
+    Haylett (2026) and Takens (1981) for trajectories;
+  - **the project's own design**, credited to its author: TTDB, the Toot Toot Grammar RFCs, the
+    word-free runtime and the store as grammar;
+  - **how it was built**: the comparison and Phases 1–9 were worked out in sessions with an AI
+    coding assistant (Claude Code), as the commits' co-author lines record; the RFC commits are
+    linked, so every claim on the page traces to the spec text and the commit that implemented it.
+- **The comparison itself.** The Grimoire Grammar Matrix is a private artifact, so the page must
+  not depend on it: its summary (the four theories, where PG sits, what each phase took) is
+  written into the page, and the matrix is linked only if it is shared.
+- **The site.** A record for the page in `index_ttdb.md`'s reader list, as TTG-RFC-0006 got, and
+  a link from the grimoire's README.
+
+**Tests.** Each example store parses, round-trips byte for byte, re-reads unchanged and answers
+its sample questions as the page says it does; every *try it* link names an example that exists
+and a question the test asks; `?store=` refuses a path outside `examples/`; the page's numbers
+equal a fresh run (the test counts, the bAbI hashes in `paper/`); every citation on the page has
+a reference entry.
+
+**RFCs.** None. The page describes the RFCs; it adds nothing to them.
+
+---
+
+## Phase 9 — Retire the development documents
+
+**From:** the plan's own end. **Size:** small. **Last**, after Phases 7 and 8 have shipped.
+
+**Problem.** This plan, the research note and the working copies they leaned on were for
+building. Once the RFCs, the README and the release page carry what they said, keeping them
+leaves two accounts of the same thing to drift apart.
+
+**Change.** Before deleting anything, check that what each document says that still matters is
+somewhere that stays, and list where in the commit message.
+- **Remove:**
+  - `PLAN.md`, this document. Its status sections are in the RFC changelogs and the commits; its
+    rationale and provenance are on the release page; its *Not planned* list goes to the
+    README's limits.
+  - `belief-trajectories.md`, once Phase 7 has put its spec text into TTG-RFC-0003.
+  - `paper/Geofinitism.txt`, a working copy of a third-party article; the release page and the
+    RFC cite it by URL instead.
+- **Ask the owner first**, since they are records rather than working files:
+  `paper/The File Is the Grammar.mhtml` (draft 0.1 as saved, which the paper's table names).
+- **Keep:** the README, the RFCs, the paper, `paper/babi_*_results.json`, the tools (the
+  trajectory tool among them) and the tests.
+- **Fix what pointed at them:** the test section title and the tool header that name
+  `belief-trajectories.md`, and any README link. The RFC changelogs that mention "PLAN.md phase
+  6" are history and stay as written, upstream and in every copy.
+
+**Tests.** The suites pass; `docs.test.mjs` finds no link to a removed file in any document that
+stays; the site's reader list names no removed file.
+
+**RFCs.** None.
+
+---
+
 ## Not planned
 
 - **Graded categories.** Nounish versus verbish stays a binary choice per segment. The owner
@@ -804,3 +940,6 @@ does, re-read lists exactly the sentences that changed.
 | 4 Modifiers | — | no, with `modifier: drop` |
 | 5 Parameters | — | no |
 | 6 Constructions | none required; easier after 4, which settles joined terms from phrases | only through re-readings the owner takes |
+| 7 Trajectories | the prototype; 6 for construction traffic | no: a note beside the grounds, and only with its numbers declared |
+| 8 Release page | 1–7, and the example stores it builds | no: examples are separate stores; the seed stays the default |
+| 9 Retire the documents | 7 and 8 shipped | no |
