@@ -170,7 +170,7 @@ store, south of the origin on the prime meridian:
 | Record | Kind | Holds |
 |---|---|---|
 | [`@LAT-10LON0`](lat-10lon0) | `lexicon` | closed-class words, contractions, sentence punctuation |
-| [`@LAT-20LON0`](lat-20lon0) | `morphology` | irregular forms, plural and verb suffix rules |
+| [`@LAT-20LON0`](lat-20lon0) | `morphology` | irregular forms, plural and verb suffix rules, the stems no lemma ends bare on |
 | [`@LAT-30LON0`](lat-30lon0) | `seed` | common verbs, a head start for finding predicates |
 | [`@LAT-40LON0`](lat-40lon0) | `vectors` | structural roles, vector algebra, naming phrases |
 | [`@LAT-50LON0`](lat-50lon0) | `questions` | the words that open each kind of question |

@@ -721,7 +721,7 @@ privative: fake former false toy pretend
 
 ---
 
-@LAT-20LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT20LON0,supports@LAT98LON4
+@LAT-20LON0 | created:1789257600 | updated:1796688000 | relates:refines@LAT20LON0,supports@LAT98LON4
 
 **Grammar — morphology (English)**
 src: RFCs/TTG-RFC-0001-Grammar-in-the-Store.md §4
@@ -731,7 +731,10 @@ How surface forms reduce to lemmas. Irregular tables are checked first. A suffix
 the last consonant*; rules are tried top to bottom and the first ending that matches (and
 is not guarded) produces the candidates. Which candidate wins is decided in
 [Classify](lat20lon0): known term, then seed vector, then default — and the default for `~`
-is to undouble only when the stem really ends in a double consonant outside `double_keep`.
+is to undouble only when the stem really ends in a double consonant outside `double_keep`;
+failing that, a stem that ends in one of `stem_restore`'s endings, which no English verb ends
+bare on, takes back the `e` its rule offers: *shoved* is *shove*, *judged* *judge*, *argued*
+*argue*, *gazed* *gaze*, before the owner has used any of them.
 A verb in its lemma's own form is **bare**; `bare_finite` says which subjects that form is
 also finite for — *cats eat*, *I eat*, never *the cat eat* — which is how a relative knows
 that *the man that saw the cat eat cheese* is not the man eating. A word the lexicon does not
@@ -841,6 +844,7 @@ participle_ending: ed
 past_ending: ed
 past_form: was were had did ate went saw made took gave knew thought found told said got came ran wrote flew grew left felt kept held brought bought caught taught fought built sent meant lost sat stood began drank swam sang spoke broke chose drove rode fell forgot hid bit led fed met slept won hung woke wore threw drew became lay
 double_keep: l s f z
+stem_restore: e | v c dg u az ez iz oz uz
 min_stem: 2
 bare_finite: plural self
 adverb_ending: ly

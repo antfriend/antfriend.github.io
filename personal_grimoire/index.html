@@ -597,7 +597,7 @@ function loadGrammar(st, lang){
     lang:want, classes:new Map(), whole:new Map(), contractions:[], sentenceEnd:new Set(), clauseBreak:new Set(),
     questionMark:"", listSep:"", genericDet:new Set(), marks:{}, headFirst:false, modifier:"", privative:new Set(),
     nounIrr:new Map(), nounKeep:new Set(), plural:[], pluralGuard:[], verbIrr:new Map(), verb:[], verbGuard:[],
-    doubleKeep:new Set(), minStem:NaN, seed:new Set(), stance:new Set(), chain:new Set(), progressive:[], participle:[], pastForm:new Set(), pastEnding:[],
+    doubleKeep:new Set(), stemRestore:[], minStem:NaN, seed:new Set(), stance:new Set(), chain:new Set(), progressive:[], participle:[], pastForm:new Set(), pastEnding:[],
     bareEnding:[], bareFinite:null, stanceNoun:new Set(), motion:new Set(), objectMark:new Set(),
     intransitive:new Set(), adverbEnding:[], adverbGuard:new Set(), selfEnding:[], selfForm:new Set(), pluralVerbEnding:"",
     roles:{}, vectors:new Map(), inherits:[], phrases:[],
@@ -653,6 +653,8 @@ function loadGrammar(st, lang){
       G.verb.push(...many(b, "verb").map(rule));
       G.verbGuard.push(...words(b.verb_guard));
       for (const w of words(b.double_keep)) G.doubleKeep.add(w);
+      // stem_restore: <what a stem takes back> | <the endings no lemma ends bare on> (shov -> shove)
+      for (const line of many(b, "stem_restore")){ const c = cols(line); G.stemRestore.push([c[0], words(c[1])]); }
       G.minStem = +b.min_stem;
       G.progressive.push(...words(b.progressive_ending));
       G.participle.push(...words(b.participle_ending));
@@ -1051,7 +1053,9 @@ function verbLemma(S, w){
   if (S.vectors.has(w) || G.seed.has(w)) return { lemma:w, end:null };
   const r = suffixRule(G, w, G.verb, G.verbGuard);
   if (!r) return { lemma:w, end:null };
-  const lemma = r.cands.find(c => knownLemma(S, c)) || r.cands.find(c => G.seed.has(c)) || r.und || r.base;
+  // a stem no lemma ends bare on takes back what the ending took, where the rule offers it: shoved is shove
+  const back = G.stemRestore.map(([add, ends]) => ends.some(e => r.base.endsWith(e)) && r.cands.includes(r.base + add) ? r.base + add : null).find(Boolean);
+  const lemma = r.cands.find(c => knownLemma(S, c)) || r.cands.find(c => G.seed.has(c)) || r.und || back || r.base;
   return { lemma, end:r.end };
 }
 function isVerbish(S, t){

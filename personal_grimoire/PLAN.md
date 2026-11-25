@@ -465,7 +465,7 @@ tests.**
   unchanged.
 
 Known gaps: ~~a nounish name can't be tied~~ (since 2026-11-28, below); a tie is only as good as the morphology
-(*shoved* lemmatizes to *shov*, so `{V=shove}` misses it).
+(~~*shoved* lemmatizes to *shov*, so `{V=shove}` misses it~~; `stem_restore` since 2026-12-07, below).
 
 Upstream (toot-toot-engineering `753126b`): TTG-RFC-0006 0.5.
 
@@ -634,6 +634,18 @@ broke*). Spanish *Creo que el gato que tiró…* already read so, since *que* sp
 reported clause first. A relative no shape covers, inside a stance's clause, reads as before.
 
 Upstream (toot-toot-engineering `ac287d0`): TTG-RFC-0006 0.14.
+
+**Stems no lemma ends bare on (2026-12-07): implemented in the runtime, the store and the
+tests.** An unknown verb's lemma was its bare stem when no candidate was a term or a seed
+verb, so *shoved* was `shov`, *judged* `judg`, *danced* `danc`, *argued* `argu` and *gazed*
+`gaz`, and a later *shove* was another vector. The morphology's new `stem_restore: e | v c dg
+u az ez iz oz uz` names what a stem takes back (`e`) and the endings no English lemma ends bare
+on; after a known term, a seed verb and an undoubled stem, a stem with one of those endings
+takes the candidate its rule offers with `e`. *walked*, *looked*, *hopped*, *buzzed* (`z` is in
+`double_keep`) and *fixed* are unchanged, and the seed episodes re-read unchanged. *sneeze*
+stays a seed verb. Spanish declares none: its endings already leave a lemma whole.
+
+Still to do: the RFC text upstream (TTG-RFC-0001 §4's morphology keys and candidate order).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

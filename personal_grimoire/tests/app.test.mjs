@@ -1297,6 +1297,21 @@ section("part of a clause: a stance's clause and a relative, handed to the match
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 
+section("morphology: a stem no lemma ends bare on takes back its e (TTG-RFC-0001 §4)");
+{
+  const S = fresh(), en = S.grammars.find(G => G.lang === "en");
+  const lemma = w => PG.withGrammar(S, en, () => PG.verbLemma(S, w).lemma);
+  const pairs = { shoved:"shove", shoving:"shove", judged:"judge", danced:"dance", argued:"argue", queued:"queue", gazed:"gaze", dozed:"doze" };
+  ok(Object.entries(pairs).every(([w, l]) => lemma(w) === l), "an unknown verb whose stem ends on v, c, dg, u or one z after a vowel is the stem with e",
+     Object.keys(pairs).map(w => w + ">" + lemma(w)).join(" "));
+  const kept = { walked:"walk", looked:"look", hopped:"hop", buzzed:"buzz", fixed:"fix", cooled:"cool" };
+  ok(Object.entries(kept).every(([w, l]) => lemma(w) === l), "and every other stem reads as before", Object.keys(kept).map(w => w + ">" + lemma(w)).join(" "));
+  ok(PG.shapeOf(S, "Pixel shoved the cup.").percepts.some(p => p.v === "shove"), "so Pixel shoved the cup is a shove");
+  const bare = PG.openStore(STORE.replace(/^stem_restore: .*\n/m, ""));
+  ok(PG.withGrammar(bare, bare.grammars.find(G => G.lang === "en"), () => PG.verbLemma(bare, "shoved").lemma) === "shov", "the stems are the store's to declare: without the key, the bare stem");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
+}
+
 section("time: exclusive vectors and supersession (TTG-RFC-0004 §2–3)");
 {
   const empty = () => { const S = fresh(); PG.startEmpty(S, T0); return PG.openStore(PG.serializeStore(S.st)); };
