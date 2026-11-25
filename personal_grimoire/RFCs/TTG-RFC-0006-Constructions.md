@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.11
+**Version:** 0.12
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -213,6 +213,15 @@ A construction reads questions as well as tells.
    for what is asked — or, where the question holds the grammar's pro-verb, a verbish name
    (§7.4). A full match with no gap is not this question's reading. A question that is a
    place question (`wh_place`) is read as §7.5 and TTG-RFC-0003 §4 say, not by a gap.
+   - **A preposition before the wh-word** (*¿De dónde tiró Pixel el vaso?*, *Off what did
+     Pixel sneeze the napkin?*) goes where the statement has it: the question is restated as
+     above, without its preposition and wh-word, and the preposition is put at its end. A
+     shape whose nounish name after that word is left unmatched reads it, the name the gap,
+     whatever the wh-word (*de dónde* and *de qué* ask alike): *Pixel tiró el vaso de* is
+     *movimiento causado* with nothing at `[Z]`, so it asks `vaso | salir_de | ?` on condition
+     that Pixel threw the glass, and is the table. No construction reading it, the restated
+     question is read by the question forms with the slot after the preposition, as the
+     statement's words are: *¿En qué duerme Pixel?* is *Pixel duerme en ?*.
 3. **Joint answers.** Every atom of the construction that names the gap once, as its subject
    or its object, is a query: `objectsOf` where the gap is the object, `subjectsOf` where it
    is the subject. Held atoms (§8.2) ask nothing. The last such atom — the construction's own,
@@ -367,13 +376,12 @@ its percepts until the owner takes a re-reading.
    relative clause or a stance's clause (*I think Pixel knocked the cup off the shelf*,
    read now by its words) needs the walk to hand spans to the matcher.
 3. **Spanish.** *Answered in 0.7* (§5): *de* cannot be read as "off" by a shape on *de*
-   alone, but it can after a tied verb, and the reference store declares one. Still open: no
-   Spanish question reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*).
+   alone, but it can after a tied verb, and the reference store declares one; and in 0.12 a
+   Spanish question reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*, §7.2).
 4. **Questions by construction.** *Answered in 0.8* (§7), and a gap at the verb in 0.9
-   (§7.4). Still open: a question whose preposition comes before its wh-word (*¿De dónde tiró
-   Pixel el vaso?*) is not restated so a shape can meet it; and inside a construction only a
-   verb the owner said can answer, never a held, derived or inherited one, since only a said
-   sentence can share a condition's. A verb gap's inherited doings were answered in 0.11.
+   (§7.4), its inherited doings in 0.11, and a preposition before the wh-word in 0.12
+   (§7.2). Still open: inside a construction only a verb the owner said can answer, never a
+   held, derived or inherited one, since only a said sentence can share a condition's.
 
 ---
 
@@ -392,5 +400,6 @@ its percepts until the owner takes a re-reading.
 | 2026-12-01 | 0.9: §7.4, a gap at the verb — the lexicon's `pro_verb` and `pro_verb_object`; without a construction, the vectors relating subject and thing; inside one, the pro-verb fills a verbish name, the gapless atoms are conditions, and the verb answering is one said with them; a tied verb gap only where no untied shape reads the question. Place questions renumbered §7.5. Three keys in §9; open question 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
 | 2026-12-02 | 0.10: §7.4, a verb gap with no thing — everything the subject does, to anything or to nothing, the structural roles, prepositions' vectors and phrases' vectors left out. Open question 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `1aaa412`). |
 | 2026-12-03 | 0.11: §7.4, a verb gap answers what the subject inherits, through the reasoner's specificity: the nearest ancestor's decided word stands, and the subject's own sayings are never overridden. Open question 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `3743744`). |
+| 2026-12-04 | 0.12: §7.2, a preposition before the wh-word goes to the end of the restated question, and a shape that leaves the name after it unmatched reads it (*¿De dónde tiró Pixel el vaso?*, *Off what did Pixel sneeze the napkin?*); otherwise the question forms read it. Open question 3 answered, 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f06e4f7`). |
 
 *License: CC0*

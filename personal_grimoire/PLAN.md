@@ -600,7 +600,7 @@ the napkin?* is the table, and *…the bone?*, which the dog dropped, is nothing
 reading it, the preposition is read as the statement's words are: *¿En qué duerme Pixel?* is
 *Pixel duerme en ?*, the bed.
 
-Still to do: the RFC text upstream (TTG-RFC-0006 §7.2, §11.3 and §11.4).
+Upstream (toot-toot-engineering `26b5ce4`): TTG-RFC-0006 0.12 and TTG-RFC-0003 1.11.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
