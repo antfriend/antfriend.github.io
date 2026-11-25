@@ -1263,6 +1263,8 @@ section("a preposition before the wh-word: carried to the end of the statement, 
   ok(terms(ask("From where is Pixel?")) === "madrid" && terms(ask("¿De dónde es Pingu?")) === "chile", "and so is the preposition fronted, in English and Spanish");
   ok(terms(ask("Of what is a wheel part?")) === "car" && terms(ask("What is a wheel part of?")) === "car", "whatever the wh-word");
   ok(terms(ask("Where is Pixel?")).split(" ").includes("sun"), "a place question with no preposition still asks along the place vector");
+  PG.answer(S, "La rueda es parte de un coche.", t += 60);
+  ok(terms(ask("¿De qué es parte la rueda?")) === "coche", "and where the predicate's noun stands before the subject, the last phrase is the subject: la rueda es parte de ?");
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 

@@ -3122,7 +3122,15 @@ function whQuestion(S, wh, after, ctx, fronted){
   if (fronted){
     // with the copula, the statement is the subject, the copula, the preposition and what is asked: from where
     // is Pixel is Pixel is from ?, ¿de dónde es Pingu? Pingu es de ?
-    if (has(lead, "cop")) return slotQuery(S, moveCue(S, rest, lead, true).concat([fronted, synth(SLOT)]), ctx);
+    if (has(lead, "cop")){
+      const q = slotQuery(S, moveCue(S, rest, lead, true).concat([fronted, synth(SLOT)]), ctx);
+      if (q) return q;
+      // the predicate's noun may stand before the subject (¿de qué es parte la rueda?): the last phrase is the
+      // subject, the rest the predicate, la rueda es parte de ?
+      const nps = nounPhrases(S, rest, 0, rest.length), subj = nps[nps.length - 1];
+      if (nps.length < 2 || subj.prep) return null;
+      return slotQuery(S, rest.slice(subj.start).concat([lead], rest.slice(0, subj.start), [fronted, synth(SLOT)]), ctx);
+    }
     if (has(lead, "aux") || has(lead, "modal")) return atFront(moveCue(S, rest, lead, false));
     const np = isVerbish(S, lead) && nounPhrases(S, rest, 0, rest.length)[0];
     if (G.questionOrder !== "verb_subject" || !np || np.prep) return null;

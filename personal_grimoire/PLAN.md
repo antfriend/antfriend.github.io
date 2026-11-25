@@ -654,7 +654,8 @@ now comes first, so it is *Pixel is from ?*, *madrid*; and a preposition fronted
 wh-word with the copula reads the same way (*From where is Pixel?*, *¿De dónde es Pingu?*,
 *Of what is a wheel part?*). *Where is Pixel?*, with no preposition, still asks along `in`.
 
-Known gap: *¿De qué es parte la rueda?*, whose subject stands after *parte*, isn't restated.
+Known gap: ~~*¿De qué es parte la rueda?*, whose subject stands after *parte*, isn't restated~~
+(since 2026-12-11, below).
 
 Upstream (toot-toot-engineering `82e2dd6`): TTG-RFC-0003 1.12 and TTG-RFC-0006 0.15.
 
@@ -688,6 +689,18 @@ preposition is a subject, so the question is *? salió de la mesa*, `salir_de`, 
 *¿Qué duerme en la cama?* reaches `dormir_en` too. The rule-count tests moved from four to six.
 
 Upstream (toot-toot-engineering `87b4a45`): TTG-RFC-0003 1.13.
+
+**The predicate's noun before the subject (2026-12-11): implemented in the runtime and the
+tests.** A preposition fronted before the wh-word with the copula read *¿De qué es parte la
+rueda?* as *parte la rueda es de ?*, and found nothing. Where that reading finds nothing and the
+rest holds two phrases or more, the last is the subject and what stands before it the
+predicate: *la rueda es parte de ?*, `part_of`, *coche*. English, whose subject comes first
+(*Of what is a wheel part?*), reads as before.
+
+Known gap: *quizzed* and *panicked* lemmatize as `quizz` and `panick`; no suffix rule tells them
+from *buzzed* and *kicked*, and listing them as irregular would lose their past.
+
+Still to do: the RFC text upstream (TTG-RFC-0003 §4, the copula row for a fronted preposition).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
