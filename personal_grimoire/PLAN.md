@@ -375,8 +375,8 @@ them, and the Spanish blind spots on the roadmap look like parameters nobody has
   line names it, then moved upstream.
 
 **Known gaps.**
-- A shape inside a relative or a stance's clause (*I think Pixel knocked the cup off the
-  shelf*) isn't matched.
+- ~~A shape inside a relative or a stance's clause (*I think Pixel knocked the cup off the
+  shelf*) isn't matched~~: done 2026-12-05, below.
 - Spanish has no caused-motion construction: *de* is both *off* and *of*.
 - Questions aren't read by constructions (*What did Pixel sneeze off the table?*).
 - ~~The `is_a` inheritance between constructions~~: done 2026-11-24, below.
@@ -601,6 +601,27 @@ reading it, the preposition is read as the statement's words are: *¿En qué due
 *Pixel duerme en ?*, the bed.
 
 Upstream (toot-toot-engineering `26b5ce4`): TTG-RFC-0006 0.12 and TTG-RFC-0003 1.11.
+
+**Part of a clause (2026-12-05): implemented in the runtime, the store's docs and the tests.**
+A clause no shape covers whole hands two kinds of span to the matcher, the walk left as it
+was for the rest:
+- **A stance's clause.** Where the words up to a stance verb read as a clause ending open on
+  it, the rest is matched as if a subord word had split it, a leading subord word dropped:
+  *I think (that) Pixel knocked the cup off the shelf* says the stance and holds the knock,
+  the cup going off and the cup falling off, the holds line naming all three. Spanish *Creo
+  que…* already split at *que*.
+- **A relative.** From the relative word to where the clause around it goes on (at a verb, or
+  the end), with the antecedent where the gap is: before the relative's words where it opens
+  on its verb (*the cat that knocked the cup off the shelf* is *the cat knocked the cup off
+  the shelf*), after its verb where it has a subject of its own (*the cup that Pixel knocked
+  off the shelf*). The clause around it is read by the walk without it: *…is black*, *…broke*.
+  Spanish too (*el gato que tiró el vaso de la mesa es negro*).
+- A span no shape covers, *I think the cat is black* or *the cat that I saw is black*, reads
+  as before; the seed episodes re-read unchanged. The one test that pinned the old limit (*the
+  napkin that Pixel sneezed off the table is wet* read by its words) now checks the reading.
+
+Still open: a span anywhere else in a clause (an adverbial clause without a subord word, a
+relative inside a stance's clause), and the RFC text upstream (TTG-RFC-0006 §3 and §11.2).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

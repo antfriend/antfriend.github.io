@@ -217,7 +217,7 @@ key left out takes the value in *absent*. The test suite holds this table to the
 
 ---
 
-@LAT30LON0 | created:1789257600 | updated:1795651200 | relates:refines@LAT0LON0,depends_on@LAT20LON0,derived_from@LAT98LON1
+@LAT30LON0 | created:1789257600 | updated:1796515200 | relates:refines@LAT0LON0,depends_on@LAT20LON0,derived_from@LAT98LON1
 
 **Blueprint 3 — Percept: the unit of what was said**
 src: RFCs/TTG-RFC-0002-Semantic-Percepts.md §4
@@ -290,8 +290,8 @@ percept: <sentence> | <subject> | <vector> | <object or -> | <+, -, ? or ?-> | <
 - **Constructions** → a clause whose words fit a shape the grammar declares is read by it
   instead of the chain (TTG-RFC-0006): `[X] {V} [Y] off [Z] => V X Y, go_off Y Z` reads *Pixel
   sneezed the napkin off the table* as a sneeze and the napkin going off the table. The shape
-  covers the whole clause, the most specific shape wins, and marks the owner writes overrule
-  it. A construction can inherit from others (`| is_a caused motion`, once per parent), saying
+  covers the whole clause, or a stance's clause or a relative inside one, the most specific
+  shape wins, and marks the owner writes overrule it. A construction can inherit from others (`| is_a caused motion`, once per parent), saying
   all its parents say and overriding what it says itself; what its parents disagree on is held. See [constructions](lat-85lon0).
 - **Two readings** → where the grammar can read a sentence two ways, what both say is said and
   what only one says is held, **named** in a seventh column: `a` and `b` at the first such
@@ -1065,7 +1065,7 @@ rule: move_to X Y => in X Y | moving somewhere puts you there
 
 ---
 
-@LAT-85LON0 | created:1795478400 | updated:1796428800 | relates:refines@LAT30LON0,refines@LAT-80LON0
+@LAT-85LON0 | created:1795478400 | updated:1796515200 | relates:refines@LAT30LON0,refines@LAT-80LON0
 
 **Grammar — constructions**
 src: RFCs/TTG-RFC-0006-Constructions.md §2
@@ -1076,7 +1076,10 @@ segment and stands for its head, `{V}` a verbish one and stands for its verb, an
 between them are themselves, as said. The atoms on the right are written as a rule's are.
 *Pixel sneezed the napkin off the table* says `pixel | sneeze | napkin` and `napkin | go_off |
 table`, so *Where did the napkin go?* finds the table. A clause the shape covers exactly is
-read by it instead of the chain, keeping the verb's polarity and tense; the shape with the
+read by it instead of the chain, and so is part of one: the clause a stance verb takes (*I
+think Pixel knocked the cup off the shelf* holds what *knocking off* says) and a relative, its
+antecedent standing where its gap is (*the cup that Pixel knocked off the shelf*), the clause
+around it read by its words, keeping the verb's polarity and tense; the shape with the
 most words of its own wins, ties to the first written. The reply names it, the shape line is
 written as usual, and a clause the owner has marked is the owner's reading, never a
 construction's. A construction may name a parent after its label (`| is_a caused motion`):
@@ -2333,7 +2336,7 @@ so a wrong merge can at least be seen.
 
 ---
 
-@LAT98LON5 | created:1789257600 | updated:1795478400 | relates:supports@LAT20LON0,supports@LAT30LON0
+@LAT98LON5 | created:1789257600 | updated:1796515200 | relates:supports@LAT20LON0,supports@LAT30LON0
 [ew]
 conf:70
 rev:1
@@ -2375,9 +2378,9 @@ last in English, first in Spanish. It still does not see:
 - **Word order other than a chain**, and questions that invert it beyond the forms in
   [question forms](lat-50lon0).
 - **Meaning no word carries** — *sneezed the napkin off the table* moves the napkin only
-  because English declares that [construction](lat-85lon0); a pattern no construction names,
-  or one that is only part of its clause (*the napkin that Pixel sneezed off the table*),
-  reads by its words.
+  because English declares that [construction](lat-85lon0); a pattern no construction names
+  reads by its words, and so does a shape inside a clause anywhere but a stance's clause or a
+  relative.
 - **Numbers, dates and names with spaces** — *New York* is two things until the owner writes
   `new_york` once.
 

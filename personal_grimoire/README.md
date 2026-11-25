@@ -564,9 +564,10 @@ settles yes against no.
   kind of *york*), which is why the store ships with `modifier: drop`.
 - **A pattern means only what a construction says.** *Pixel sneezed the napkin off the table*
   moves the napkin because the English grammar declares one [construction](lat-85lon0), *X V Y
-  off Z*, and the reply says so. A shape covers a whole clause, so *the napkin that Pixel
-  sneezed off the table* and *I think Pixel knocked the cup off the shelf* read by their
-  words. Add your own constructions to that record; a re-reading shows which sentences they
+  off Z*, and the reply says so. A shape covers a whole clause, or the part of one a stance
+  verb takes or a relative says: *I think Pixel knocked the cup off the shelf* holds the
+  knock and the cup going off, and *the napkin that Pixel sneezed off the table* is the napkin
+  going off. Add your own constructions to that record; a re-reading shows which sentences they
   change. A construction can inherit from others by naming them (`| is_a caused motion`, once
   per parent): it says all its parents say, and an atom of its own overrides theirs, so *off
   the shelf onto the floor* is both a going-off and a going-onto, and *almost off* can say *not

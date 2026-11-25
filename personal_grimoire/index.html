@@ -1904,6 +1904,57 @@ function construe(S, T, L, idx, ctx, hold, holdBy, asking){
   }
   return null;
 }
+/* Part of a clause (TTG-RFC-0006 §3): a clause no shape covers whole, whose words up to a stance verb read
+ * as a clause that ends open on it, hands the rest to the matcher, as if a subord word had split it: I think
+ * Pixel knocked the cup off the shelf is I think | that Pixel knocked the cup off the shelf, and what the
+ * construction says there is held by the stance. A subord word that opens the rest is dropped from it.    */
+function stanceSpan(S, T, L, idx, ctx, inherited, hold, pick, holdBy){
+  const G = S.G;
+  if (!G.constructions.length || !G.stance.size) return null;
+  for (let j = 1; j < idx.length - 1; j++){
+    const v = T[idx[j - 1]];
+    if (L[idx[j - 1]] !== "V" || L[idx[j]] === "V" || !isContent(v) || !G.stance.has(verbLemma(S, v.w).lemma)) continue;
+    const rest = has(T[idx[j]], "subord") ? idx.slice(j + 1) : idx.slice(j);
+    // tried first on a copy, so a span no shape covers leaves the clause to the walk untouched
+    if (!rest.length || !construe(S, T, L, rest, { last:ctx.last }, true, null)) continue;
+    const head = readClause(S, T, L, idx.slice(0, j), ctx, inherited, hold, pick, holdBy);
+    if (!head.open) continue;
+    const r = construe(S, T, L, rest, ctx, true, head.openBy);
+    return { ...r, percepts:head.percepts.concat(r.percepts), forms:head.forms.concat(r.forms), heads:head.heads, pairs:head.pairs,
+             chains:head.chains, subjects:head.subjects, open:false, openBy:null };
+  }
+  return null;
+}
+/* A relative a construction reads (TTG-RFC-0006 §3): the relative's words, from its relative word to where
+ * the clause it hangs in goes on (at a verb, or the end), with its antecedent where its gap is: before them
+ * where the relative opens on its verb (the cat that knocked the cup off the shelf is the cat knocked the cup
+ * off the shelf), after its verb where it has a subject of its own (the cup that Pixel knocked off the shelf
+ * is Pixel knocked the cup off the shelf). The clause around it is read by the walk without it.          */
+function relativeSpan(S, T, L, idx, ctx, inherited, hold, pick, holdBy){
+  if (!S.G.constructions.length) return null;
+  for (let p = 1; p < idx.length - 1; p++){
+    if (L[idx[p]] !== "R" || L[idx[p - 1]] !== "N") continue;
+    let a = p - 1;
+    while (a > 0 && L[idx[a - 1]] === "N") a--;
+    const ant = idx.slice(a, p);
+    for (let e = idx.length; e >= p + 2; e--){
+      const span = idx.slice(p + 1, e), after = idx.slice(e);
+      if (after.length && L[after[0]] !== "V") continue;
+      const tries = [];
+      if (L[span[0]] === "V") tries.push(ant.concat(span));
+      else {
+        const q = span.findIndex(i => L[i] === "V");
+        for (let k = q + 1; q >= 0 && k <= span.length && L[span[k - 1]] === "V"; k++) tries.push(span.slice(0, k).concat(ant, span.slice(k)));
+      }
+      const read = tries.find(t => construe(S, T, L, t, { last:ctx.last }, hold, null));
+      if (!read) continue;
+      const r = construe(S, T, L, read, ctx, hold, holdBy);
+      const main = readClause(S, T, L, idx.slice(0, p).concat(after), ctx, inherited, hold, pick, holdBy);
+      return { ...main, percepts:r.percepts.concat(main.percepts), forms:r.forms.concat(main.forms), construction:r.construction };
+    }
+  }
+  return null;
+}
 function clausePercepts(S, toks, ctx, inherited, pick){
   const labels = labelTokens(S, toks);
   const out = { percepts:[], forms:[], heads:[], pairs:[], chains:[], labels, constructions:[] };
@@ -1918,6 +1969,8 @@ function clausePercepts(S, toks, ctx, inherited, pick){
     // a hedge word in the clause holds it too: maybe cats bark; I might like coffee
     const hold = has(at, "alt") || has(next, "alt") || reported || cl.idx.some(i => has(toks[i], "hedge"));
     const r = construe(S, toks, labels, cl.idx, ctx, hold, reported ? openBy : null)
+           || stanceSpan(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold, pick, reported ? openBy : null)
+           || relativeSpan(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold, pick, reported ? openBy : null)
            || readClause(S, toks, labels, cl.idx, ctx, cl.inherit || first ? prev : null, hold, pick, reported ? openBy : null);
     if (r.construction) out.constructions.push(r.construction);
     first = false; open = r.open; openBy = r.openBy;

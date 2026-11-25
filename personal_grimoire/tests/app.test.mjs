@@ -934,7 +934,8 @@ section("constructions: a shape that says what its words do not (TTG-RFC-0006)")
   ok(/^tense: 1 \| 1 2$/m.test(PG.records(T1.st).find(r => r.id === past.id).episode), "a past verb marks every atom past");
   const marked = read(STORE, "[Pixel] {sneezed} [the napkin off the table].");
   ok(!marked.percepts.some(p => p.v === "go_off") && !marked.constructions.length, "the owner's marks overrule a construction, as they do the chain", keys(marked.percepts));
-  ok(!read(STORE, "The napkin that Pixel sneezed off the table is wet.").percepts.some(p => p.v === "go_off"), "a shape that is only part of its clause reads by its words");
+  ok(read(STORE, "The napkin that Pixel sneezed off the table is wet.").percepts.some(p => p.v === "go_off" && p.s === "napkin" && p.o === "table"),
+     "a shape that is only part of its clause, a relative, reads it (TTG-RFC-0006 §3)");
 
   // a sentence no construction matches reads exactly as it did without any
   const plain = ["Cats chase mice.", "Pixel sleeps in the sun.", "I doubt that cats like fish.", "The dog that the cat bit ran.", "Birds that sing love songs fly.",
@@ -1256,6 +1257,33 @@ section("a preposition before the wh-word: carried to the end of the statement, 
   ok(!ask("Off what did Pixel sneeze the bone?").items.length, "and every atom still holds: Pixel never sneezed the bone");
   ok(terms(ask("¿En qué duerme Pixel?")) === "cama", "with no construction, the preposition is read as the statement's words are: Pixel duerme en ?");
   ok(terms(ask("¿Dónde duerme Pixel?")).split(" ").includes("cama"), "and a place question with no preposition is read as before");
+  ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
+}
+
+section("part of a clause: a stance's clause and a relative, handed to the matcher (TTG-RFC-0006 §3)");
+{
+  const st = fresh(), read = s => PG.shapeOf(st, s), keys = r => r.percepts.map(p => [p.s, p.v, p.o, p.pol].join(" ")).join(" / ");
+  const think = read("I think Pixel knocked the cup off the shelf.");
+  ok(keys(think) === "self think - + / pixel knock cup ? / cup go_off shelf ? / cup fall_off shelf ?" && think.constructions[0].label === "knocking off",
+     "I think Pixel knocked the cup off the shelf: the stance is said, and what knocking off says after it is held", keys(think));
+  ok(keys(read("I think that Pixel knocked the cup off the shelf.")) === keys(think), "with that or without it");
+  ok(keys(read("I don't think Pixel pushed the cup off the shelf.")) === "self think - - / pixel push cup ? / cup go_off shelf ?", "a denied stance still holds what it takes");
+  ok(keys(read("I think the cat is black.")) === "self think - + / cat has_property black ?" && !read("I think the cat is black.").constructions.length,
+     "a stance's clause no shape covers is read by its words, as before");
+  const S = fresh();
+  let t = T0;
+  const told = PG.answer(S, "I think Pixel knocked the cup off the shelf.", t += 60);
+  const ep = PG.records(S.st).find(r => r.episode && r.episode.includes("I think Pixel knocked")).episode;
+  ok(/^holds: 1 \| 1 \| 2 3 4$/m.test(ep), "the holds line names every atom the stance holds", ep);
+  ok(told.notes.some(n => n.includes("knocking off")), "and the reply names the construction");
+  const rel = read("The cat that knocked the cup off the shelf is black.");
+  ok(keys(rel) === "cat knock cup + / cup go_off shelf + / cup fall_off shelf + / cat has_property black +",
+     "a subject relative: its antecedent is the shape's subject, and the clause around it is read without it", keys(rel));
+  ok(keys(read("I saw the cat that knocked the cup off the shelf.")).endsWith("self see cat +"), "a relative at the end of its clause too");
+  ok(keys(read("The cup that Pixel knocked off the shelf broke.")) === "pixel knock cup + / cup go_off shelf + / cup fall_off shelf + / cup break - +",
+     "an object relative: its antecedent stands after the relative's verb", keys(read("The cup that Pixel knocked off the shelf broke.")));
+  ok(keys(read("El gato que tiró el vaso de la mesa es negro.")) === "gato tirar vaso + / vaso salir_de mesa + / gato has_property negro +", "in Spanish too");
+  ok(keys(read("The cat that I saw is black.")) === "self see cat + / cat has_property black +", "and a relative no shape covers is read by its words");
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 
