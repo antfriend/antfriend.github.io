@@ -687,8 +687,7 @@ after a preposition for one; only the object mark was ruled out. Now no phrase a
 preposition is a subject, so the question is *? salió de la mesa*, `salir_de`, the glass, and
 *¿Qué duerme en la cama?* reaches `dormir_en` too. The rule-count tests moved from four to six.
 
-Still to do: the RFC text upstream (TTG-RFC-0003 §4's question table, on a subject behind its
-verb; and the reference store's rules, if any RFC lists them).
+Upstream (toot-toot-engineering `87b4a45`): TTG-RFC-0003 1.13.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
