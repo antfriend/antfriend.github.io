@@ -1257,6 +1257,12 @@ section("a preposition before the wh-word: carried to the end of the statement, 
   ok(!ask("Off what did Pixel sneeze the bone?").items.length, "and every atom still holds: Pixel never sneezed the bone");
   ok(terms(ask("¿En qué duerme Pixel?")) === "cama", "with no construction, the preposition is read as the statement's words are: Pixel duerme en ?");
   ok(terms(ask("¿Dónde duerme Pixel?")).split(" ").includes("cama"), "and a place question with no preposition is read as before");
+  // with the copula: the preposition, stranded or fronted, is where the question asks, never the place vector
+  for (const s of ["Pixel is from Madrid.", "Pingu es de Chile.", "A wheel is part of a car."]) PG.answer(S, s, t += 60);
+  ok(terms(ask("Where is Pixel from?")) === "madrid", "Where is Pixel from? is Pixel is from ?, not where Pixel is", terms(ask("Where is Pixel from?")));
+  ok(terms(ask("From where is Pixel?")) === "madrid" && terms(ask("¿De dónde es Pingu?")) === "chile", "and so is the preposition fronted, in English and Spanish");
+  ok(terms(ask("Of what is a wheel part?")) === "car" && terms(ask("What is a wheel part of?")) === "car", "whatever the wh-word");
+  ok(terms(ask("Where is Pixel?")).split(" ").includes("sun"), "a place question with no preposition still asks along the place vector");
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 

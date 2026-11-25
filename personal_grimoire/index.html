@@ -3120,6 +3120,9 @@ function whQuestion(S, wh, after, ctx, fronted){
   // leaves the name after it empty reads it, and otherwise the preposition is read as the statement's words are
   const atFront = said => { const s = said.concat([fronted]); return construeQuestion(S, s, ctx) || slotQuery(S, s.concat([synth(SLOT)]), ctx); };
   if (fronted){
+    // with the copula, the statement is the subject, the copula, the preposition and what is asked: from where
+    // is Pixel is Pixel is from ?, ¿de dónde es Pingu? Pingu es de ?
+    if (has(lead, "cop")) return slotQuery(S, moveCue(S, rest, lead, true).concat([fronted, synth(SLOT)]), ctx);
     if (has(lead, "aux") || has(lead, "modal")) return atFront(moveCue(S, rest, lead, false));
     const np = isVerbish(S, lead) && nounPhrases(S, rest, 0, rest.length)[0];
     if (G.questionOrder !== "verb_subject" || !np || np.prep) return null;
@@ -3127,13 +3130,14 @@ function whQuestion(S, wh, after, ctx, fronted){
     return atFront(rest.slice(0, k).concat([lead], rest.slice(k)));
   }
   if (has(lead, "cop")){
-    if (place) return slotQuery(S, rest.concat([lead, wordTok(S, place), synth(SLOT)]), ctx);
-    if (has(rest[skipSoft(rest, 0)], "prep")) return slotQuery(S, [synth(SLOT), lead].concat(rest), ctx);
-    // a stranded preposition asks for its object: "what is a wheel part of" is "a wheel is part of ?"
-    if (has(rest[rest.length - 1], "prep")){
+    // a stranded preposition asks for its object: "what is a wheel part of" is "a wheel is part of ?", and it
+    // names the place a place question asks at: "where is Pixel from" is "Pixel is from ?", not "in ?"
+    if (rest.length > 1 && has(rest[rest.length - 1], "prep")){
       const q = slotQuery(S, moveCue(S, rest, lead, true).concat([synth(SLOT)]), ctx);
       if (q) return q;
     }
+    if (place) return slotQuery(S, rest.concat([lead, wordTok(S, place), synth(SLOT)]), ctx);
+    if (has(rest[skipSoft(rest, 0)], "prep")) return slotQuery(S, [synth(SLOT), lead].concat(rest), ctx);
     const terms = nounPhrases(S, rest, 0, rest.length).map(np => headOf(S, np, ctx)).filter(Boolean).map(h => h.lemma);
     return terms.length ? { intent:"portrait", terms } : null;
   }

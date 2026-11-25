@@ -437,7 +437,7 @@ sentence. Expansion: [TTG-RFC-0004](../RFCs/index.html?rfc=TTG-RFC-0004-Time-and
 
 ---
 
-@LAT70LON0 | created:1789257600 | updated:1789257600 | relates:refines@LAT0LON0,depends_on@LAT60LON0
+@LAT70LON0 | created:1789257600 | updated:1796774400 | relates:refines@LAT0LON0,depends_on@LAT60LON0
 
 **Blueprint 7 — Purchase and answer**
 src: RFCs/TTG-RFC-0003-Beliefs-Reasoning-Response.md §4
@@ -454,6 +454,7 @@ The intent comes from the shape of the input, using [question forms](lat-50lon0)
 | `wh_thing` + `aux`/`modal` + subject + verb | **objects** `(s, v, ?)` | *What do cats chase?* |
 | `wh_thing` + verb + object | **subjects** `(?, v, o)` | *What eats cheese?* |
 | `wh_place` | **objects** along the place vector | *Where does Pixel sleep?* |
+| `wh` + `cop` + subject + a stranded `prep`, or `prep` + `wh` + `cop` + subject | **objects** along the preposition, the place vector never | *Where is Pixel from?*, *¿De dónde es Pingu?* |
 | `wh_thing` + `cop` + noun phrase, an `about` word, or at most `describe_max_words` content words | **describe** | *Tell me about penguins.* |
 | `wh_reason` + a yes/no clause | **verify**, shown as its chain | *Why can't penguins fly?* |
 | anything else with purchase | **search** the `said:` lines, ranked by the rarity of the matched lemmas | *morning tea* |

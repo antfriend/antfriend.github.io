@@ -647,6 +647,17 @@ stays a seed verb. Spanish declares none: its endings already leave a lemma whol
 
 Upstream (toot-toot-engineering `2ad2898`): TTG-RFC-0001 1.10.
 
+**A preposition with the copula (2026-12-08): implemented in the runtime, the store's docs and
+the tests.** *Where is Pixel from?* answered *sun*: a place question with the copula asked along
+the place vector (`in`) before it looked for a stranded preposition. The stranded preposition
+now comes first, so it is *Pixel is from ?*, *madrid*; and a preposition fronted before the
+wh-word with the copula reads the same way (*From where is Pixel?*, *¿De dónde es Pingu?*,
+*Of what is a wheel part?*). *Where is Pixel?*, with no preposition, still asks along `in`.
+
+Known gap: *¿De qué es parte la rueda?*, whose subject stands after *parte*, isn't restated.
+
+Still to do: the RFC text upstream (TTG-RFC-0003 §4's question table, TTG-RFC-0006 §7.2).
+
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
 *X V Y off Z* means Y moves off Z.
