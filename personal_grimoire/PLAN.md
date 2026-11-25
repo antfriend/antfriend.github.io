@@ -621,7 +621,9 @@ was for the rest:
   napkin that Pixel sneezed off the table is wet* read by its words) now checks the reading.
 
 Still open: a span anywhere else in a clause (an adverbial clause without a subord word, a
-relative inside a stance's clause), and the RFC text upstream (TTG-RFC-0006 §3 and §11.2).
+relative inside a stance's clause).
+
+Upstream (toot-toot-engineering `68dd995`): TTG-RFC-0006 0.13.
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern

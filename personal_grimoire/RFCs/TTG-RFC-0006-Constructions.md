@@ -1,6 +1,6 @@
 # TTG-RFC-0006: Constructions — Shapes That Carry Meaning
 
-**Version:** 0.12
+**Version:** 0.13
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0006
 **Project:** toot-toot-engineering
@@ -121,10 +121,30 @@ Punctuation is not matched.
    it, as the chain does: `black_cat | is_a | cat` and `black_cat | has_property | black`.
 5. **The owner's marks overrule.** A clause containing any token the owner marked is the
    owner's reading, and no construction reads it.
+6. **Part of a clause.** A clause no construction covers whole is offered two kinds of span,
+   each matched as steps 1–5 match a clause; the first that a construction covers is read by
+   it, and the rest of the clause by the chain, as if the span were not there.
+   - **A stance's clause.** Where the clause's tokens up to a verbish one whose verb is a
+     `stance` word read by the chain as a clause that ends open on it (TTG-RFC-0005 §3, the
+     clause a stance verb takes), the tokens after it are matched as the reported clause a
+     `subord` word would have split off, without a `subord` word that opens them: *I think
+     (that) Pixel knocked the cup off the shelf* says `self | think | -` and holds *knocking
+     off*'s three atoms, linked to the stance by the holds line (step 4). *Creo que…*, which
+     *que* already splits, reads the same.
+   - **A relative.** From a relative word (one the chain labels as opening a relative, after a
+     nounish run, its antecedent) to where the clause around it goes on, at a verbish token or
+     its end, the relative's tokens are matched with the antecedent's tokens where the
+     relative's gap is: before them where the relative opens on its verb (*the cat that knocked
+     the cup off the shelf* is matched as *the cat knocked the cup off the shelf*), and after
+     its verb where it has a subject of its own (*the cup that Pixel knocked off the shelf*, as
+     *Pixel knocked the cup off the shelf*). The longest such span is tried first. The clause
+     around it is the chain's without the relative: *…is black*, *…broke*.
 
-A clause that no construction matches is read exactly as it would be without any. A shape
-that is only part of its clause (*the napkin that Pixel sneezed off the table*, where the
-relative word is not in the shape) does not match.
+   A span no shape covers leaves its clause to the chain, read as before: *I think the cat is
+   black*, *the cat that I saw is black*.
+
+A clause that no construction matches, whole or in part, is read exactly as it would be
+without any.
 
 ---
 
@@ -372,9 +392,10 @@ its percepts until the owner takes a re-reading.
    the tie's word (`[X=animal]` binding *cat* where cats are animals) would change a
    sentence's reading whenever a belief changed, with no grammar change for a re-reading to
    report, so it is left out.
-2. **Part of a clause.** A shape must cover its whole clause. Matching a span inside a
-   relative clause or a stance's clause (*I think Pixel knocked the cup off the shelf*,
-   read now by its words) needs the walk to hand spans to the matcher.
+2. **Part of a clause.** *Answered in 0.13* (§3, step 6) for a stance's clause and a
+   relative. Still open: a span anywhere else in a clause (an adverbial clause no `subord`
+   word opens), and a relative inside a stance's clause, which would need the chain to hand
+   out spans from inside its walk.
 3. **Spanish.** *Answered in 0.7* (§5): *de* cannot be read as "off" by a shape on *de*
    alone, but it can after a tied verb, and the reference store declares one; and in 0.12 a
    Spanish question reaches `salir_de` (*¿De dónde tiró Pixel el vaso?*, §7.2).
@@ -401,5 +422,6 @@ its percepts until the owner takes a re-reading.
 | 2026-12-02 | 0.10: §7.4, a verb gap with no thing — everything the subject does, to anything or to nothing, the structural roles, prepositions' vectors and phrases' vectors left out. Open question 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `1aaa412`). |
 | 2026-12-03 | 0.11: §7.4, a verb gap answers what the subject inherits, through the reasoner's specificity: the nearest ancestor's decided word stands, and the subject's own sayings are never overridden. Open question 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `3743744`). |
 | 2026-12-04 | 0.12: §7.2, a preposition before the wh-word goes to the end of the restated question, and a shape that leaves the name after it unmatched reads it (*¿De dónde tiró Pixel el vaso?*, *Off what did Pixel sneeze the napkin?*); otherwise the question forms read it. Open question 3 answered, 4 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f06e4f7`). |
+| 2026-12-05 | 0.13: §3 step 6, part of a clause — a clause no shape covers whole offers the matcher a stance's clause (*I think Pixel knocked the cup off the shelf*, held by the stance) and a relative, its antecedent where the gap is (*the cup that Pixel knocked off the shelf broke*); the rest of the clause is the chain's. Open question 2 narrowed. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f6bafc5`). |
 
 *License: CC0*
