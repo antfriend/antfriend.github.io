@@ -1524,7 +1524,7 @@ section("two languages, one sphere (TTG-RFC-0001 §11)");
   ok(broke.join(" ; ") === "A penguin is a bird. ; A wheel is part of a car.", "merged, *a* and *no* collide and break two English parses", broke.join(" ; "));
 }
 
-section("belief trajectories: the shape a triple's sayings make, read-only (belief-trajectories.md)");
+section("belief trajectories: the shape a triple's sayings make, read-only (TTG-RFC-0003 §4 and Appendix A)");
 {
   const S = fresh();
   let t = T0;
@@ -1633,9 +1633,10 @@ section("the file IS the grammar");
 
 section("the example stores and the release page (examples/, release.html)");
 {
-  const SEED = read("personal_grimoire_ttdb.md");
+  // line ends as a checkout may leave them do not matter: both sides read with LF
+  const SEED = STORE;
   for (const ex of EXAMPLES){
-    const file = "examples/" + ex.file, text = read(file), S = PG.openStore(text);
+    const file = "examples/" + ex.file, text = read(file).replace(/\r\n?/g, "\n"), S = PG.openStore(text);
     const headers = text.split(/\r?\n/).filter(l => /^@LAT-?[\d.]+LON-?[\d.]+\s*\|/.test(l)).length;
     // the seed's fixture record (lat 99) is malformed on purpose, and an example keeps it
     ok(PG.records(S.st).length === headers && S.malformed.every(m => /^@LAT99LON/.test(m.id)) && PG.serializeStore(S.st) === text,

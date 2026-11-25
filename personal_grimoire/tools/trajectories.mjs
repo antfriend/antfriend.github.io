@@ -1,4 +1,4 @@
-// Belief trajectories (TTG-RFC-0003 §4; belief-trajectories.md): a read-only report of the shape each triple's sayings
+// Belief trajectories (TTG-RFC-0003 §4 and Appendix A): a read-only report of the shape each triple's sayings
 // make over the episodes that say it, and of how many episodes each construction reads. It writes
 // nothing and decides nothing: a shape is offered to the owner, never consolidated.
 //

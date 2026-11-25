@@ -158,6 +158,27 @@ for question, since the parser learned shapes. Task 1, *single supporting fact*:
 54.9% with the `exclusive` flag removed. Task 15, *basic deduction*: 100% from one line. The
 permuted runs match question by question. Results are in [paper/](paper/).
 
+### Changing it
+
+The rules every change so far has kept, and the checks that hold them:
+
+1. **No words in `index.html`.** A new behaviour is a key the store declares; if a fix needs
+   English in the runtime, it is the wrong fix ([`@LAT98LON5`](lat98lon5)). The leak test must stay clean.
+2. **Old stores read as before.** A store without a new key parses, consolidates and answers
+   exactly as it did; a new key's default is the old behaviour.
+3. **Episodes are never rewritten.** Old episodes get a new reading only through a re-reading
+   the owner takes (`node tools/reread.mjs` reports nothing for the seed).
+4. **Byte-stable round trip**, for the seed store and every [example store](examples/), which
+   `node tools/examples.mjs` rebuilds from the seed's grammar (`--check` says if one is stale).
+5. **Published results hold.** bAbI tasks 1 and 15 keep their outcome hashes in every
+   condition (`node tools/babi.mjs`), equal to those in `paper/`.
+6. **Both grammars.** A change works for English and Spanish, or says why a language declares nothing.
+7. **The spec changes upstream.** TTG RFC text is written in
+   [toot-toot-engineering](https://github.com/antfriend/toot-toot-engineering/tree/main/RFCs) and synced into `RFCs/` here;
+   each changelog entry names the runtime commit that implements it.
+8. **The roadmap is in the store.** A change adds or updates a design belief in lane 98, and
+   this README's Roadmap and Known limits.
+
 ---
 
 ## The one design decision
@@ -605,8 +626,14 @@ settles yes against no.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.
   That is a claim about what feeding a file in means — *here is something I read* — and it is
   written down at [`@LAT98LON6`](lat98lon6).
-- **Replies quote rather than generate.** Articles and agreement are whatever your sentences
-  had; a chain prints as triples.
+- **Replies quote rather than generate**, and will go on doing so. Articles and agreement are
+  whatever your sentences had; a chain prints as triples. Quoting is the provenance guarantee, and
+  none of the theories of grammar the design was compared with offers anything to replace it.
+- **Nounish or verbish is a yes-or-no choice** for each segment, not a graded category. You can
+  overrule any reading, which covers the cases grading would.
+- **Every language is read as alternating segments.** Radical Construction Grammar rejects a
+  universal shape like that, but it is what keeps the runtime free of any one language.
+  Constructions add each language's own patterns on top of it rather than replacing it.
 - **`localStorage` is small.** Browsers allow a few megabytes. The page tells you if a save is
   refused; download the store before feeding it a library.
 

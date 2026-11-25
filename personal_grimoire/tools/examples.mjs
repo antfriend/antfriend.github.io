@@ -116,12 +116,13 @@ export function check(PG, S, a, now){
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)){
   const { flags } = args();
-  const PG = await loadEngine(), seed = read(STORE), dir = path.join(root, "examples");
+  const PG = await loadEngine(), seed = read(STORE).replace(/\r\n?/g, "\n"), dir = path.join(root, "examples");
   fs.mkdirSync(dir, { recursive: true });
   let stale = 0;
   for (const ex of EXAMPLES){
     const file = path.join(dir, ex.file), text = build(PG, seed, ex);
-    const old = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
+    // a checkout may have turned the line ends to CRLF; the store reads the same either way
+    const old = fs.existsSync(file) ? fs.readFileSync(file, "utf8").replace(/\r\n?/g, "\n") : null;
     if (flags.check){ if (old !== text){ stale++; console.log("stale  examples/" + ex.file); } continue; }
     if (old !== text) fs.writeFileSync(file, text);
     console.log((old === text ? "same   " : "wrote  ") + "examples/" + ex.file);

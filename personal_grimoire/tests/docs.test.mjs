@@ -197,6 +197,21 @@ console.log("\n== the parameters table is the grammars' ==");
   }
 }
 
+console.log("\n== the development documents are gone, and nothing points at them ==");
+{
+  // retired once the RFCs, the README and the release page carried what they said; RFC changelogs that
+  // name a plan phase are history and stay as written
+  const REMOVED = ["PLAN.md", "belief-trajectories.md", "Geofinitism.txt", "The File Is the Grammar.mhtml"];
+  ok(REMOVED.every(f => !fs.existsSync(path.join(root, f)) && !fs.existsSync(path.join(root, "paper", f))), "the plan, the research note, the article's working copy and the saved draft 0.1 are removed");
+  const stays = ["README.md", "personal_grimoire_ttdb.md", "index.html", "release.html", "paper/Personal-Grimoire-The-File-Is-the-Grammar.md",
+    ...fs.readdirSync(path.join(root, "tools")).map(f => "tools/" + f),
+    ...fs.readdirSync(path.join(root, "tests")).filter(f => f.endsWith(".mjs") && f !== "docs.test.mjs").map(f => "tests/" + f)];
+  const naming = stays.filter(f => fs.statSync(path.join(root, f)).isFile() && REMOVED.some(r => read(f).includes(r)));
+  ok(!naming.length, "no document, tool or test that stays names one", naming.join(" "));
+  const site = fs.readFileSync(path.join(root, "..", "index_ttdb.md"), "utf8");
+  ok(!REMOVED.some(r => site.includes("personal_grimoire/" + r)), "and the site's reader list names none");
+}
+
 console.log("\n== the release page and the example stores ==");
 {
   const page = read("release.html");

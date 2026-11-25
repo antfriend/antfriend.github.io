@@ -1,4 +1,4 @@
-Working draft 0.2 · not submitted · 11 Nov 2026 (supersedes draft 0.1 of 14 Sep 2026, kept beside this file as `The File Is the Grammar.mhtml`)
+Working draft 0.2 · not submitted · 11 Nov 2026 (supersedes draft 0.1 of 14 Sep 2026, kept in this repository's history at commit `e0e2e8d`)
 
 # Personal Grimoire — The File Is the Grammar: Provenance-Preserving Question Answering over a Personal Corpus, without a Language Model
 
@@ -46,7 +46,7 @@ None of the parts is new on its own. The contribution is the combination, and pr
 | `RFCs/` | TTG-RFC-0001–0005 (Toot Toot Grammar, 1.0 stable; RFC-0004 §4, time across a fleet of devices, is proposed and not implemented), with the TTDB, TTCP and TTN RFCs they depend on. |
 | `tests/` | Three dependency-free Node scripts that run the shipping script: 326 engine checks, 200 documentation checks, 23 embedding checks. All pass. |
 | `tools/` | The same engine from the command line: ask, feed, re-consolidate, re-read, and the bAbI harness. |
-| `paper/` | This draft, draft 0.1 as saved (`The File Is the Grammar.mhtml`), and the recorded bAbI results (`babi_qa1_results.json`, `babi_qa15_results.json`). |
+| `paper/` | This draft and the recorded bAbI results (`babi_qa1_results.json`, `babi_qa15_results.json`). |
 
 The store is laid out on a sphere. The origin `@LAT0LON0` is the owner. The prime meridian holds the blueprint (north) and the English grammar (south); the antimeridian holds Spanish. Things sit east and vectors west. Latitude 90 is the timeline of episodes, 91 the amendments, 95 documents, 96 a scene, 98 beliefs about the design, 99 the fixture.
 
