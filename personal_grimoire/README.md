@@ -567,7 +567,8 @@ settles yes against no.
   off Z*, and the reply says so. A shape covers a whole clause, or the part of one a stance
   verb takes or a relative says: *I think Pixel knocked the cup off the shelf* holds the
   knock and the cup going off, and *the napkin that Pixel sneezed off the table* is the napkin
-  going off. Add your own constructions to that record; a re-reading shows which sentences they
+  going off; so is a relative inside a stance's clause (*I think the cat that knocked the cup
+  off the shelf is black*), all of it held. Add your own constructions to that record; a re-reading shows which sentences they
   change. A construction can inherit from others by naming them (`| is_a caused motion`, once
   per parent): it says all its parents say, and an atom of its own overrides theirs, so *off
   the shelf onto the floor* is both a going-off and a going-onto, and *almost off* can say *not

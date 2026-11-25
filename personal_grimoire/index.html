@@ -1915,13 +1915,15 @@ function stanceSpan(S, T, L, idx, ctx, inherited, hold, pick, holdBy){
     const v = T[idx[j - 1]];
     if (L[idx[j - 1]] !== "V" || L[idx[j]] === "V" || !isContent(v) || !G.stance.has(verbLemma(S, v.w).lemma)) continue;
     const rest = has(T[idx[j]], "subord") ? idx.slice(j + 1) : idx.slice(j);
-    // tried first on a copy, so a span no shape covers leaves the clause to the walk untouched
-    if (!rest.length || !construe(S, T, L, rest, { last:ctx.last }, true, null)) continue;
+    // the rest whole, or a relative in it (I think the cat that knocked the cup off the shelf is black), tried
+    // first on a copy, so a span no shape covers leaves the clause to the walk untouched
+    const held = (c, by, pk) => construe(S, T, L, rest, c, true, by) || relativeSpan(S, T, L, rest, c, null, true, pk, by);
+    if (!rest.length || !held({ last:ctx.last }, null, newPick())) continue;
     const head = readClause(S, T, L, idx.slice(0, j), ctx, inherited, hold, pick, holdBy);
     if (!head.open) continue;
-    const r = construe(S, T, L, rest, ctx, true, head.openBy);
-    return { ...r, percepts:head.percepts.concat(r.percepts), forms:head.forms.concat(r.forms), heads:head.heads, pairs:head.pairs,
-             chains:head.chains, subjects:head.subjects, open:false, openBy:null };
+    const r = held(ctx, head.openBy, pick);
+    return { ...r, percepts:head.percepts.concat(r.percepts), forms:head.forms.concat(r.forms), heads:head.heads.concat(r.heads),
+             pairs:head.pairs.concat(r.pairs), chains:head.chains.concat(r.chains), subjects:head.subjects, open:false, openBy:null };
   }
   return null;
 }

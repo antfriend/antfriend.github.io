@@ -1065,7 +1065,7 @@ rule: move_to X Y => in X Y | moving somewhere puts you there
 
 ---
 
-@LAT-85LON0 | created:1795478400 | updated:1796515200 | relates:refines@LAT30LON0,refines@LAT-80LON0
+@LAT-85LON0 | created:1795478400 | updated:1796601600 | relates:refines@LAT30LON0,refines@LAT-80LON0
 
 **Grammar — constructions**
 src: RFCs/TTG-RFC-0006-Constructions.md §2
@@ -1079,7 +1079,7 @@ table`, so *Where did the napkin go?* finds the table. A clause the shape covers
 read by it instead of the chain, and so is part of one: the clause a stance verb takes (*I
 think Pixel knocked the cup off the shelf* holds what *knocking off* says) and a relative, its
 antecedent standing where its gap is (*the cup that Pixel knocked off the shelf*), the clause
-around it read by its words, keeping the verb's polarity and tense; the shape with the
+around it read by its words, and a relative inside a stance's clause, all of it held, keeping the verb's polarity and tense; the shape with the
 most words of its own wins, ties to the first written. The reply names it, the shape line is
 written as usual, and a clause the owner has marked is the owner's reading, never a
 construction's. A construction may name a parent after its label (`| is_a caused motion`):
@@ -2336,7 +2336,7 @@ so a wrong merge can at least be seen.
 
 ---
 
-@LAT98LON5 | created:1789257600 | updated:1796515200 | relates:supports@LAT20LON0,supports@LAT30LON0
+@LAT98LON5 | created:1789257600 | updated:1796601600 | relates:supports@LAT20LON0,supports@LAT30LON0
 [ew]
 conf:70
 rev:1
@@ -2379,8 +2379,8 @@ last in English, first in Spanish. It still does not see:
   [question forms](lat-50lon0).
 - **Meaning no word carries** — *sneezed the napkin off the table* moves the napkin only
   because English declares that [construction](lat-85lon0); a pattern no construction names
-  reads by its words, and so does a shape inside a clause anywhere but a stance's clause or a
-  relative.
+  reads by its words, and so does a shape inside a clause anywhere but a stance's clause, a
+  relative, or a relative inside a stance's clause.
 - **Numbers, dates and names with spaces** — *New York* is two things until the owner writes
   `new_york` once.
 

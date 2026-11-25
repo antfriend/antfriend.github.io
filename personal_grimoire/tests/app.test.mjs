@@ -1284,6 +1284,16 @@ section("part of a clause: a stance's clause and a relative, handed to the match
      "an object relative: its antecedent stands after the relative's verb", keys(read("The cup that Pixel knocked off the shelf broke.")));
   ok(keys(read("El gato que tiró el vaso de la mesa es negro.")) === "gato tirar vaso + / vaso salir_de mesa + / gato has_property negro +", "in Spanish too");
   ok(keys(read("The cat that I saw is black.")) === "self see cat + / cat has_property black +", "and a relative no shape covers is read by its words");
+  // a relative inside a stance's clause: both spans at once, everything after the stance held by it
+  const both = read("I think the cat that knocked the cup off the shelf is black.");
+  ok(keys(both) === "self think - + / cat knock cup ? / cup go_off shelf ? / cup fall_off shelf ? / cat has_property black ?" && both.constructions[0].label === "knocking off",
+     "a relative inside a stance's clause: the construction reads the relative, and the stance holds it and the clause around it", keys(both));
+  ok(keys(read("I doubt the cup that Pixel knocked off the shelf broke.")) === "self doubt - + / pixel knock cup ? / cup go_off shelf ? / cup fall_off shelf ? / cup break - ?", "an object relative too");
+  ok(keys(read("Creo que el gato que tiró el vaso de la mesa es negro.")) === "self creer - + / gato tirar vaso ? / vaso salir_de mesa ? / gato has_property negro ?", "and in Spanish, after que");
+  ok(keys(read("I think the cat that I saw is black.")) === "self think - + / self see cat ? / cat has_property black ?", "a relative no shape covers, inside a stance's clause, reads as before");
+  const S2 = fresh();
+  PG.answer(S2, "I think the cat that knocked the cup off the shelf is black.", T0 + 60);
+  ok(/^holds: 1 \| 1 \| 2 3 4 5$/m.test(PG.records(S2.st).find(r => r.episode && r.episode.includes("I think the cat that")).episode), "the holds line names all four");
   ok(PG.reread(fresh()).changed.length === 0, "the seed episodes read the same");
 }
 

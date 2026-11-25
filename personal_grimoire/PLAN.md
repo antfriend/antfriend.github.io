@@ -620,10 +620,20 @@ was for the rest:
   as before; the seed episodes re-read unchanged. The one test that pinned the old limit (*the
   napkin that Pixel sneezed off the table is wet* read by its words) now checks the reading.
 
-Still open: a span anywhere else in a clause (an adverbial clause without a subord word, a
-relative inside a stance's clause).
+Still open: a span anywhere else in a clause (an adverbial clause without a subord word), ~~a
+relative inside a stance's clause~~ (since 2026-12-06, below).
 
 Upstream (toot-toot-engineering `68dd995`): TTG-RFC-0006 0.13.
+
+**A relative inside a stance's clause (2026-12-06): implemented in the runtime, the store's docs
+and the tests.** What follows a stance verb is matched whole, as before, and otherwise offered
+as a clause with a relative in it: *I think the cat that knocked the cup off the shelf is black*
+says the stance and holds *knocking off*'s three atoms and the cat being black, the holds line
+naming all four; the object relative too (*I doubt the cup that Pixel knocked off the shelf
+broke*). Spanish *Creo que el gato que tiró…* already read so, since *que* splits off the
+reported clause first. A relative no shape covers, inside a stance's clause, reads as before.
+
+Still to do: the RFC text upstream (TTG-RFC-0006 §3 step 6 and §11.2).
 
 **Problem.** Meaning comes only from words. *Pixel sneezed the napkin off the table* reads as
 `pixel | sneeze | napkin` plus a comention. Nothing in the store can say that the pattern
