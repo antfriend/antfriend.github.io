@@ -1,7 +1,7 @@
 # TTG-RFC-0004: Time — the Order of Sayings, Supersession, and a Fleet's Shared Clock
 
-**Version:** 1.1
-**Status:** Stable for §2–3, implemented in the personal_grimoire reference runtime; §4 proposed, not implemented
+**Version:** 1.2
+**Status:** Stable for §2–3, implemented in the personal_grimoire reference runtime; §4 draft, implemented on hardware by the robot_team fleet (§4.9), not by the reference runtime
 **RFC Number:** 0004
 **Project:** toot-toot-engineering
 **Component:** Toot Toot Grammar (TTG)
@@ -163,10 +163,12 @@ retires *Pixel sleeps in the sun* whatever tenses they are in.
 
 ---
 
-## 4. A Fleet of Agents (proposed)
+## 4. A Fleet of Agents (draft)
 
-*Not implemented. This section is the design §2–3 were built to accept: only the meaning of
-"later" changes.*
+*This section is the design §2–3 were built to accept: only the meaning of "later" changes.
+The reference runtime does not implement it. A fleet of six ESP32 boards does, and its test
+plan (§4.8) passed on that hardware; §4.9 reports how, and where the fleet had to depart from
+this text.*
 
 ### 4.1 The problem
 
@@ -210,6 +212,21 @@ a beacon (TTN-RFC-0010 §5):
 
 A stamp with no bound orders nothing outside its own agent.
 
+**A stamp names its frame.** A pulse time is measured from a chart's downbeat, and an agent
+that started its own chart and later yields to another one jumps to that chart's clock. A bound
+models drift since the last beacon, not a change of reference, so it cannot cover that jump. A
+stamp therefore SHOULD name the chart lineage it was taken in, and two stamps compare only when
+they name the same one:
+
+```
+at: 9662720 ±21 frame:20500
+```
+
+The frame is the downbeat epoch the lineage was founded with, not `(conductor, era)`: `era`
+moves on a scene change and on a takeover, neither of which moves the clock. A stamp with no
+frame orders nothing outside its own agent, like a stamp with no bound. The unit is the host's;
+the fleet of §4.9 stamps in milliseconds.
+
 ### 4.4 Order across agents
 
 Saying A is **before** saying B when any of these holds:
@@ -218,7 +235,15 @@ Saying A is **before** saying B when any of these holds:
 2. B's episode reaches A's through `follows@` edges. When an agent writes an episode, it adds
    `follows@<id>` for the latest episode it holds from each other agent: a vector clock written
    as typed edges (TTDB-RFC-0003). If B was said already knowing A, B is later, whatever the
-   clocks say;
+   clocks say. Because record ordinals collide across agents (§4.7), an episode MAY instead
+   carry its agent's own counter and the counters it has seen, inside its block:
+
+   ```
+   seq: 697
+   follows: 0x00000011:630 0x00000012:541 0x00000100:732
+   ```
+
+   which names the same vector clock by `(agent, seq)` rather than by record ID;
 3. the stamps' ranges do not overlap: A's `at` + bound < B's `at` − bound.
 
 Otherwise A and B are **concurrent**. This order is partial, so §3.2's "latest" becomes "the
@@ -233,6 +258,12 @@ each bar line an agent fixes its view **as of bar N** over the episodes whose st
 before that line. Two agents that hold the same episodes and read them under the same grammar
 then give identical answers as of bar N, without coordinating. Answers on each device stay live.
 
+An episode with no bound, or no frame, is left out of **every** agent's bar view, its own
+author's included. Its author could place it (it knows its own file order), and no other agent
+could; if the author counted it, two agents holding the same episodes would answer differently
+as of bar N, which is the failure the bar exists to rule out. Such an episode still counts in
+its author's live view.
+
 ### 4.6 Scene = grammar
 
 A percept is only as good as the grammar that read it (TTG-RFC-0001 §13, open question 3).
@@ -242,27 +273,94 @@ it does not identify a grammar.
 - **A grammar change is a chart revision:** `era` + 1 and an immediate beacon (TTN-RFC-0010
   §4.1).
 - **A fleet split across scenes is a convergence failure, not a cosmetic one.** A fleet check
-  measures and reports it, as `companion.py band` does for a band.
+  measures and reports it, as `fleet.py band` does for a band.
+- **Where the hash rides is not the requirement; detecting the split is.** TTN-RFC-0010 v2
+  already gives `scene_id` a meaning, the band's position in a multi-part song, and a fleet that
+  plays one cannot also spend it on the grammar. Such a fleet carries the hash beside the chart
+  instead, and every agent records, per bar, which peers it heard under a different hash (§4.9).
+  A split then shows within one bar without a chart revision.
+- **A grammar with no grammar records still has a hash.** An agent whose percepts come from a
+  compiled mapping (sensor windows rendered into episodes) has its grammar in its build, and two
+  builds can differ. It SHOULD hash that grammar by behaviour: render a fixed probe through the
+  mapping and the consolidator, and hash the bytes. Any change to either changes the hash, with
+  nothing to bump by hand.
 
 ### 4.7 Where the analogy stops
 
 - **Delivery.** A lost beacon is harmless because the next one replaces it. A lost episode is
   not. Beacons stay broadcast and unacknowledged; episodes need TTN-RFC-0007 delivery or
   TTN-RFC-0009 push-back.
-- **Identity.** Two agents will both append `@LAT90LON9`. TTDB-RFC-0004 moves the collision, so
-  across a fleet order MUST come from stamps and edges, never from longitude.
+- **Identity.** Two agents will both append the same episode-lane ordinal. TTDB-RFC-0004 moves
+  the collision, so across a fleet order MUST come from stamps and edges, never from longitude.
 - **Whose words.** An episode from another owner's agent is not this owner's words
   (TTG-RFC-0002 §5.1). Time stamps expose this question but do not answer it; `source:` is where
-  an answer would start.
+  an answer would start. The fleet of §4.9 keeps another agent's episode verbatim on a lane of
+  its own, marked `held: <agent>`, so it is never read as the holder's testimony; only a bar view
+  consolidates held episodes with the holder's own.
+- **The observer belongs in the percept.** A percept that leaves its observer implicit in who
+  wrote the episode (*peer B is link-stable*, written by A) is sound in one store, where the
+  author is always the owner. Consolidated across agents, the sayings of every observer about B
+  become one belief about B that no agent holds, and *A hears B but B does not hear A* cannot be
+  said at all. A fleet view SHOULD consolidate only percepts that name their observer
+  (`A | hears | B`). The fleet of §4.9 does not yet: its bar views agree, but on that merged
+  belief.
 - **Humanize** (TTN-RFC-0010 §6) has no counterpart. Nobody wants jitter added to their memories.
 
-### 4.8 Test plan, when implemented
+### 4.8 Test plan
 
 1. Merge two fixture stores with non-overlapping stamps: the later place retires the earlier.
 2. Overlapping stamps: contested, both quoted.
 3. Overlapping stamps plus a `follows@` edge: the edge decides.
 4. Two agents holding the same episodes give identical answers as of bar N.
 5. A fleet with two grammar hashes reports the split.
+
+Items 1–4 pass as native tests of the fleet's portable core, and items 4 and 5 also pass on
+six boards with no host attached (§4.9).
+
+### 4.9 Implementation report: a six-board fleet (informative)
+
+The robot_team fleet implements this section on six ESP32-S3 boards (three Heltec V4, a
+UNIHIKER K10, a LilyGo T-Deck and an M5Stack Cardputer ADV), in its `Semantic` library
+(`FleetTime`, `EpisodeOrder`, `EpisodeDelivery`). Its episodes are sensor windows (which peers a
+board heard, over which radio), not prose, read by a compiled mapping rather than grammar records.
+
+**What it does.**
+
+- **Chart:** TTN-RFC-0010 unchanged; the per-node offset lives in memory only.
+- **Stamps:** `at: <pulse ms> ±<bound ms> frame:<downbeat epoch>` (§4.3), the bound from
+  `DRIFT_PPM` 50 and a 20 ms delivery allowance. Bounds observed on hardware are tens of ms.
+- **Order:** `seq:` and `follows: <agent>:<seq>…` in the block (§4.4 rule 2), not record IDs.
+- **Delivery:** pull, not push. An agent announces its vector clock, and peers ask for what they
+  lack and keep each copy verbatim on a lane of their own, marked `held:` (§4.7).
+- **Bar:** 10 minutes (`bar_ms` 600 000). Each board computes its bar view 5 minutes after the
+  bar line, consolidates it (TTG-RFC-0003 §2) and writes a bar record with a digest over the
+  resulting belief lines.
+- **Grammar:** hashed by behaviour and carried beside the chart, not in `scene_id`, which the
+  fleet's songs already use (§4.6).
+
+**Results.**
+
+| Item | Where | Result |
+|---|---|---|
+| 1–3 | native tests | pass |
+| 4 | six boards on their own power supplies, no host attached, about 3 h (2026-10-06) | the same episode set and the same belief digest on all six boards in all 16 scored bars; each board held 10 of 10 episodes from each of the five authoring boards per bar |
+| 5 | six boards, one built with a perturbed hash (2026-10-06) | within the first bar every other board recorded the odd one as a split and it recorded all five; after it was reflashed, every board recorded no split from the next bar on |
+
+**Where the fleet departs from this text**, each written back above:
+
+- a stamp names its frame (§4.3);
+- an unbounded episode is in no bar view, its author's included (§4.5);
+- the vector clock is carried as `(agent, seq)` (§4.4);
+- the grammar hash rides beside the chart, and a grammar with no records is hashed by behaviour
+  (§4.6).
+
+**What it does not do yet.**
+
+- Supersession across agents (§4.4's maximal facts) is in the portable core and its tests, but
+  the fleet declares no `exclusive` vector, so nothing is retired on hardware.
+- Its link percepts leave the observer implicit (§4.7, *the observer belongs in the percept*),
+  so the agreed beliefs are about peers, not about who hears whom.
+- It runs TTG-RFC-0003 §2 counting under a bounded-store profile (TTG-RFC-0003 §2.1).
 
 ---
 
@@ -279,6 +377,10 @@ it does not identify a grammar.
    and a change inside one episode decides the belief without the tell naming it.
 4. **Wording.** "No longer", "since" and "at about the same time" are phrases of the replies
    record, but §4's concurrent case has no reply key yet.
+5. **Founders.** Two chart lineages founded independently can mint the same downbeat epoch
+   (§4.3), for instance two agents powered together and isolated. Their frames then match while
+   their clocks differ by about their boot skew, which the bound does not cover. A founder id on
+   the beacon would separate them.
 
 ---
 
@@ -289,5 +391,6 @@ it does not identify a grammar.
 | 2026-09-14 | Initial draft. §2–3 implemented: the order of sayings, `exclusive`, supersession, the `superseded` ground. §4 proposed from TTN-RFC-0010. |
 | 2026-09-22 | 1.0: §2–3 stable, as implemented by the reference runtime and checked by its tests; §4 remains a proposal. |
 | 2026-11-23 | 1.1: §3.7, a change in the owner's tense: a past saying that a later present one contradicts is changed — kept, quoted, uncounted — and named by `changed_tense`; two sayings in one tense still contest. §3.5 notes the exception; §5.3 narrowed. §2–3 remain stable. Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`). |
+| 2026-11-25 | 1.2: §4 is implemented on hardware by the robot_team fleet, and the status says so; §4.8's items 1–5 pass there. New §4.9, the implementation report. Written back from it: a stamp names its chart frame (§4.3); the vector clock MAY be carried as `seq:`/`follows: <agent>:<seq>` (§4.4); an unbounded episode is in no bar view, its author's included (§4.5); the grammar hash need not ride in `scene_id`, which TTN-RFC-0010 v2 already uses, and a grammar with no records is hashed by behaviour (§4.6); the observer belongs in the percept (§4.7); §5.5, founders. §4.6 now cites `fleet.py band` (was `companion.py`), and §4.7 no longer names a lane the fleet stopped writing. §2–3 unchanged. |
 
 *License: CC0*

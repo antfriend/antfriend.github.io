@@ -1,6 +1,6 @@
 # TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
 
-**Version:** 1.15
+**Version:** 1.16
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -44,7 +44,41 @@ change it says is read (TTG-RFC-0004 §3.7). Order enters only through `exclusiv
 retire facts without touching consolidation (TTG-RFC-0004 §3).
 
 Beliefs are derived. A conforming implementation MUST be able to recompute every belief line
-from the episodes and SHOULD ship a tool that reports drift.
+from the episodes and SHOULD ship a tool that reports drift. A store too small to keep every
+episode MAY instead follow §2.1.
+
+### 2.1 Bounded Stores (Profile)
+
+A store with fixed storage that must never refuse a write cannot keep every episode. Under
+this profile it MAY evict its oldest episodes after **folding** them. Each folded episode's
+contribution to the sums above (its `plus` and `minus` per triple) moves into a **carried
+tally** kept beside the lane. §2 is a sum over episodes of a per-episode quantity, so a fold is
+a move, not an approximation: beliefs computed from the retained episodes plus the carried
+tallies equal beliefs computed from every episode, in any order.
+
+1. **Recomputation** holds over the retained episodes plus the carried tallies, and the drift
+   tool SHOULD check exactly that.
+2. **Commit.** A fold MUST be committed with the horizon it reaches (the last episode it holds)
+   before any episode behind that horizon is removed. A store interrupted between the two then
+   recounts nothing twice and drops nothing.
+3. **Provenance is what is lost.** A belief whose sayings have all been folded cannot quote a
+   sentence. Its ground is **carried**: printed under `label_carried`, with the number of
+   episodes the tally holds and the horizon, and never under `label_said`, which would quote a
+   sentence the store no longer has. A belief with both retained and folded sayings quotes the
+   retained ones and names the carried count.
+4. **What reads the order.** Supersession (TTG-RFC-0004 §3) and the shape of the sayings (§4)
+   read the order of sayings, which a tally does not keep. A bounded store that implements
+   either SHOULD carry what it reads (for supersession, the latest saying of each candidate;
+   for the shape, the runs so far and the run in progress). A store with one author has a
+   total order, so either carry is exact.
+5. **Declaration.** A store under this profile SHOULD say so where its grammar is documented,
+   with its bound.
+
+The robot_team ESP32 fleet runs this profile (TTG-RFC-0004 §4.9). Its native tests reproduce
+the belief lines byte for byte with the episodes reordered, and again after the oldest are
+evicted with a fold. On hardware, beliefs recomputed on a laptop from a node's pulled store
+match the node's own, nine of nine, byte for byte. It has no reply layer, so it emits no
+carried ground yet, and it implements neither item 4 reader.
 
 ---
 
@@ -203,6 +237,7 @@ by kind:
 | inference | `label_inferred` | the whole chain, and one sentence per link — never a single quote standing in for the conclusion |
 | conflict | `label_contested` | one `+` sentence and one `-` sentence, no verdict |
 | superseded | `label_superseded` | the retired fact, then `superseded_by` and the ground that retired it (TTG-RFC-0004 §3.4) |
+| carried | `label_carried` | in a bounded store (§2.1), a belief whose sayings were folded: the triple, the number of episodes carried and the horizon, no quote |
 
 then notes: `exception`, `contradicts` (when a new percept opposes a decided belief),
 `supersedes` (when a new episode retires a fact), `noted_held` and `noted_readings` (what a
@@ -299,15 +334,16 @@ modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`, and, for constructions
 | 2026-11-23 | 1.4: §5, the reference value of `modifier_max_words` (TTG-RFC-0005 1.4 §3). |
 | 2026-11-23 | 1.5: §4, the intent rows for a verb before its subject under `question_order: verb_subject` (place questions, yes/no questions), a verb in the speaker's own form, and agreement behind the verb — the last read by the reference runtime since TTG-RFC-0005 0.5, and stated here for the first time; a subject behind its verb ends at its head in a head-first grammar. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bf261e8`). |
 | 2026-11-24 | 1.6: §4, a place question also asks along the verb's phrasal vectors; §5, the reference value of `construction_max_words` (TTG-RFC-0006). Implemented by the personal_grimoire reference runtime (antfriend.github.io `ea1bc58`). |
-| 2026-11-30 | 1.7: §4, questions a construction reads, defined in TTG-RFC-0006 0.8 §7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fa87584`). |
-| 2026-12-01 | 1.8: §4, the intent row for a question whose verb is the pro-verb, answered by the vectors relating its subject and thing (TTG-RFC-0006 0.9 §7.4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
-| 2026-12-02 | 1.9: §4, the intent row for a pro-verb question with no thing (TTG-RFC-0006 0.10 §7.4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `1aaa412`). |
-| 2026-12-03 | 1.10: §4, a pro-verb question also answers what the subject inherits (TTG-RFC-0006 0.11 §7.4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `3743744`). |
-| 2026-12-04 | 1.11: §4, a question with a preposition before its wh-word, the preposition moved to the end of the statement (TTG-RFC-0006 0.12 §7.2). Implemented by the personal_grimoire reference runtime (antfriend.github.io `f06e4f7`). |
-| 2026-12-08 | 1.12: §4, a question with the copula and a preposition — stranded (*Where is Pixel from?*), tried before the place vector, or fronted (*¿De dónde es Pingu?*) — asks along the preposition. Implemented by the personal_grimoire reference runtime (antfriend.github.io `0b52632`). |
-| 2026-12-10 | 1.13: §4, the `wh` + verb row says what §4's prose already did — a thing a preposition opens is never a subject behind its verb (*¿Qué salió de la mesa?*); the reference runtime had ruled out only the object mark. §3.1, rules that link the vectors constructions write for one motion (`go_off`, `salir_de` ⇒ `leave`). Implemented by the personal_grimoire reference runtime (antfriend.github.io `34e03cc`). |
-| 2026-12-11 | 1.14: §4, a fronted preposition with the copula whose predicate's noun stands before the subject (*¿De qué es parte la rueda?*): the last phrase is the subject. Implemented by the personal_grimoire reference runtime (antfriend.github.io `1ce3dec`). |
-| 2026-12-13 | 1.15: §4, **the shape of the sayings** — a verify answer names one crossing or an alternation in a triple's per-episode signs, as a note beside the grounds that never changes the verdict (`trajectory_crossing`, `trajectory_alternation`); §5, `trajectory_min_episodes 3` and `trajectory_hold 2`; §6.1 narrowed; Appendix A, trajectories (informative). Implemented by the personal_grimoire reference runtime (antfriend.github.io `e2e02bf`), from its PLAN.md phase 7 and its research note on belief trajectories. |
+| 2026-11-24 | 1.7: §4, questions a construction reads, defined in TTG-RFC-0006 0.8 §7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fa87584`). |
+| 2026-11-24 | 1.8: §4, the intent row for a question whose verb is the pro-verb, answered by the vectors relating its subject and thing (TTG-RFC-0006 0.9 §7.4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
+| 2026-11-24 | 1.9: §4, the intent row for a pro-verb question with no thing (TTG-RFC-0006 0.10 §7.4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `1aaa412`). |
+| 2026-11-24 | 1.10: §4, a pro-verb question also answers what the subject inherits (TTG-RFC-0006 0.11 §7.4). Implemented by the personal_grimoire reference runtime (antfriend.github.io `3743744`). |
+| 2026-11-24 | 1.11: §4, a question with a preposition before its wh-word, the preposition moved to the end of the statement (TTG-RFC-0006 0.12 §7.2). Implemented by the personal_grimoire reference runtime (antfriend.github.io `f06e4f7`). |
+| 2026-11-25 | 1.12: §4, a question with the copula and a preposition — stranded (*Where is Pixel from?*), tried before the place vector, or fronted (*¿De dónde es Pingu?*) — asks along the preposition. Implemented by the personal_grimoire reference runtime (antfriend.github.io `0b52632`). |
+| 2026-11-25 | 1.13: §4, the `wh` + verb row says what §4's prose already did — a thing a preposition opens is never a subject behind its verb (*¿Qué salió de la mesa?*); the reference runtime had ruled out only the object mark. §3.1, rules that link the vectors constructions write for one motion (`go_off`, `salir_de` ⇒ `leave`). Implemented by the personal_grimoire reference runtime (antfriend.github.io `34e03cc`). |
+| 2026-11-25 | 1.14: §4, a fronted preposition with the copula whose predicate's noun stands before the subject (*¿De qué es parte la rueda?*): the last phrase is the subject. Implemented by the personal_grimoire reference runtime (antfriend.github.io `1ce3dec`). |
+| 2026-11-25 | 1.15: §4, **the shape of the sayings** — a verify answer names one crossing or an alternation in a triple's per-episode signs, as a note beside the grounds that never changes the verdict (`trajectory_crossing`, `trajectory_alternation`); §5, `trajectory_min_episodes 3` and `trajectory_hold 2`; §6.1 narrowed; Appendix A, trajectories (informative). Implemented by the personal_grimoire reference runtime (antfriend.github.io `e2e02bf`), from its PLAN.md phase 7 and its research note on belief trajectories. |
+| 2026-11-25 | 1.16: §2.1, **bounded stores**, a profile: a store that cannot keep every episode MAY evict the oldest after folding their per-triple sums into a carried tally, committed with its horizon before anything is removed; recomputation holds over retained episodes plus tallies; a belief whose sayings were all folded is grounded as **carried** (`label_carried`, a fifth ground kind in §4), never as said; supersession and the shape of the sayings must carry what they read. Appendix A, open questions 1 and 2 updated for a fleet that implements TTG-RFC-0004 §4. Pushed upstream from the robot_team ESP32 fleet, which runs the profile (ACT-III C2d there); the reference runtime keeps every episode and is unaffected. |
 
 ---
 
@@ -347,9 +383,11 @@ TTG-RFC-0005 §5.1.
 **Still open.**
 1. **Episodes or time?** The series counts episodes. A delay that counts lane gaps, so that a
    crossing a year apart reads differently from one an hour apart, belongs with the stamps of
-   TTG-RFC-0004 §4, which no runtime implements yet.
+   TTG-RFC-0004 §4. The reference runtime does not implement those. The robot_team fleet does
+   (TTG-RFC-0004 §4.9), on ten-minute bars, so there a delay could count bars.
 2. **In a fleet** the order of sayings is partial (TTG-RFC-0004 §4), so the series is a partial
    order. It can be read per agent, where the order is total, until stamps order across agents.
+   A bounded store must carry the series' state through a fold (§2.1, item 4).
 3. **Ranking.** A report could put first the triples whose shape the verdict hides most. Ranking
    by EPS (TTDB-RFC-0005) would need a triple's salience, and the store keeps salience per term.
 
