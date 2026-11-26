@@ -490,3 +490,60 @@ header.stage-header > a.ttdb-home:hover {
     grid-column: 1 / -1;
   }
 }
+
+/* ------------------------------------------ what's new in the grimoire */
+
+header.stage-header > .grimoire-new {
+  justify-self: start;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0 0 2px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 179, 65, 0.6);
+  background: rgba(255, 179, 65, 0.1);
+  padding: 8px 14px;
+  font-size: 14px;
+  max-width: 100%;
+}
+
+header.stage-header > .grimoire-new .badge {
+  border-radius: 999px;
+  background: #ffb341;
+  color: #1a1206;
+  padding: 2px 9px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+header.stage-header > .grimoire-new a {
+  color: var(--ink);
+}
+
+header.stage-header > .grimoire-new a.main {
+  flex: 1 1 18em;
+  text-decoration: none;
+}
+
+header.stage-header > .grimoire-new a.main:hover {
+  text-decoration: underline;
+}
+
+header.stage-header > .grimoire-new a.more {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+header.stage-header > .grimoire-new:hover {
+  border-color: #ffb341;
+  box-shadow: 0 0 12px rgba(255, 179, 65, 0.35);
+}
+
+@media (min-width: 1000px) {
+  header.stage-header > .grimoire-new {
+    grid-column: 1 / -1;
+  }
+}

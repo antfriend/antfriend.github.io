@@ -2,7 +2,7 @@
 
 > **Read the paper:** [Personal Grimoire — The File Is the Grammar](paper/Personal-Grimoire-The-File-Is-the-Grammar.md) — provenance-preserving question answering over a personal corpus, without a language model. Working draft.
 
-> **What's new:** [the release page](release.html) shows what came of the seven phases and the constructions series (constructions, part of a clause, two languages, belief trajectories), each with an [example store](examples/) to try in the page (`index.html?store=examples/…`).
+> **What's new:** [the release page](release.html) shows what came of the seven phases and the constructions series (constructions, part of a clause, two languages, belief trajectories) and the slow-verb meter, each with an [example store](examples/) to try in the page (`index.html?store=examples/…`).
 
 <img src="Grimoire-card.jpg" alt="A tooled leather grimoire with a brass clasp and an eye set in its cover." width="360">
 
@@ -55,7 +55,7 @@ episode and term, which is how you make the corpus your own.
 | [personal_grimoire_ttdb.md](personal_grimoire_ttdb.md) | The store. The blueprint, an English grammar and a Spanish one, every reply phrase, every constant, and the corpus. |
 | [RFCs/](RFCs/) | The specs, five of them new. Start at [RFCs/INDEX.md](RFCs/INDEX.md). |
 | [tests/](tests/) | Three Node scripts, a DOM stub and a Spanish grammar fixture. No dependencies, no test runner. |
-| [tools/](tools/) | Command-line access to the same engine: ask, feed, re-consolidate, re-read and take re-readings, and run a bAbI task. |
+| [tools/](tools/) | Command-line access to the same engine: ask, feed, re-consolidate, re-read and take re-readings, read every term's pace, and run a bAbI task. |
 | [paper/](paper/) | A working draft of the paper, [Personal Grimoire — The File Is the Grammar](paper/Personal-Grimoire-The-File-Is-the-Grammar.md), and the recorded bAbI results it cites. |
 
 ---
@@ -404,6 +404,26 @@ How several devices hearing one person could share that order is proposed in
 Every answer lights the records it touched on the sphere, opens the first one, and writes
 `last_query`, `last_answer` and `answer_records` into the store's cursor.
 
+### How fast your words change
+
+*The noun is the slow verb* (Haylett): whether a word names a thing or a motion depends on how
+long it is watched. The store watches in episodes, and the **slow-verb meter** reads each term's
+**pace**, the changes per episode in what you say of it. A change is a **turn** (a triple of the
+term switching sign between episodes) or a **move** (along an `exclusive` vector, a later saying
+at another object). No change is still, under `pace_fast` slow, at or over it fast:
+
+```
+> Tell me about Pixel.
+What your words hold about pixel.
+  …
+Fast enough to see: what you say of pixel has turned 3 times in 4 episodes — in your words it moves like a verb.
+```
+
+*Tell me about* a term names its pace in a note, a term's panel draws it as a bar, the term list
+sorts by it (**pace**, fastest first), and `node tools/pace.mjs` lists it for every term. It
+decides nothing: a fast term's beliefs count exactly as a still one's do. Try it in
+[the slow-verb store](index.html?store=examples/slow_verb_ttdb.md&ask=Tell%20me%20about%20Pixel.).
+
 ### How it read you
 
 Under every tell, and under every sentence in an episode's panel, the page shows the sentence's
@@ -524,6 +544,7 @@ global_models.
 | [`@LAT98LON8`](lat98lon8) | Order, not clocks: a fleet shares a tempo | 90 | 180 | **116** |
 | [`@LAT98LON4`](lat98lon4) | The lemmatizer is a guess the corpus corrects | 120 | 210 | **111** |
 | [`@LAT98LON7`](lat98lon7) | Two languages, one sphere | 100 | 140 | **85** |
+| [`@LAT98LON10`](lat98lon10) | A noun is a slow verb: the pace of a term is a measurement | 110 | 150 | **85** |
 | [`@LAT98LON9`](lat98lon9) | A reading is a guess the owner can overrule | 150 | 160 | 66 |
 | [`@LAT98LON3`](lat98lon3) | Said outranks inferred; a contradiction is kept | 190 | 200 | 51 |
 | [`@LAT98LON1`](lat98lon1) | A verb is a vector, and the edge is the datum | 200 | 180 | 39 |
@@ -554,6 +575,11 @@ it runs. One store orders what you said by its file. Several agents hearing you 
 a badge) share no file and disagree about the time. The proposal is a band's: share a tempo,
 stamp each saying with how far your clock can be trusted, and call two sayings contested when
 their bounds overlap.
+
+**Beside them, the slow verb** — [`@LAT98LON10`](lat98lon10), a prototype. How fast what you say
+of a term changes, per episode, is a measurement the store can already make: a triple turning
+sign, or a place given up for another. The thresholds are a first guess, a place reached by a
+rule is not yet a move, and its spec is not yet written upstream.
 
 **And the readings you correct** — [`@LAT98LON9`](lat98lon9). A correction lives beside the
 episode, never in it, and never counts twice. But a term you bind once is found everywhere

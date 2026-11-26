@@ -75,6 +75,25 @@ export const EXAMPLES = [
     ],
   },
   {
+    file: "slow_verb_ttdb.md",
+    title: "The slow verb",
+    sayings: [
+      "A stone is hard.", "A computer was a person.", "The cloud is in the sky.", "Pixel is in the garden.",
+      "Silly means blessed.", "A stone is heavy.", "A computer was a person.", "Pixel is in the kitchen.",
+      "The cloud is in the sky.", "Silly means blessed.", "Pixel is in the hall.", "A stone is hard.",
+      "A computer is not a person.", "The cloud is in the server.", "Silly does not mean blessed.",
+      "Pixel is in the garden.", "A computer is a machine.", "The cloud is in the server.", "Silly means foolish.",
+    ],
+    ask: [
+      { q: "Tell me about the stone.", says: "pace_still" },
+      { q: "Tell me about the computer.", says: "pace_slow" },
+      { q: "Tell me about the cloud.", says: "pace_slow" },
+      { q: "Tell me about Pixel.", says: "pace_fast" },
+      { q: "Is the cloud in the sky?", verdict: "deny_superseded" },
+      { q: "Is a computer a person?", verdict: "deny", says: "changed_tense" },
+    ],
+  },
+  {
     file: "dos_lenguas_ttdb.md",
     title: "Two languages, one motion",
     sayings: [

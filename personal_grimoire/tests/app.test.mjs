@@ -1588,6 +1588,62 @@ section("belief trajectories: the shape a triple's sayings make, read-only (TTG-
   fs.rmSync(dir, { recursive:true, force:true });
 }
 
+section("the slow-verb meter: how fast what is said of a term changes, read-only (TTG-RFC-0003 §4, pace; @LAT98LON10)");
+{
+  const S = fresh();
+  let t = T0;
+  PG.startEmpty(S, t);
+  for (const x of ["A stone is hard.", "A stone is heavy.", "A stone is hard.",
+                   "Pixel is in the garden.", "Pixel is in the kitchen.", "Pixel is in the hall.", "Pixel is in the garden.",
+                   "A computer was a person.", "A computer was a person.", "A computer is not a person.", "A computer is a machine.",
+                   "The kitchen is in the house.", "Rex is in the house.", "Rex is in the kitchen.", "Rex is in the house.",
+                   "A whale is big."]) PG.answer(S, x, t += 3600);
+  const m = l => PG.paceOf(S, l), head = k => PG.say(S.G, k).split("{")[0];
+  ok(m("stone").band === PG.PACE.STILL && m("stone").episodes === 3 && m("stone").changes === 0, "three episodes and nothing turned: still", JSON.stringify(m("stone")));
+  ok(m("pixel").band === PG.PACE.FAST && m("pixel").moves === 3 && m("pixel").turns === 0 && m("pixel").pace === 0.75,
+     "garden, kitchen, hall, garden along an exclusive vector: three moves in four episodes, fast", JSON.stringify(m("pixel")));
+  ok(m("computer").band === PG.PACE.SLOW && m("computer").turns === 1 && m("computer").moves === 0 && m("computer").episodes === 4,
+     "was a person, is not a person: one turn in four episodes, slow, a turn the owner's tense retired counted too", JSON.stringify(m("computer")));
+  ok(m("computer").triples.length === 1 && m("computer").triples[0].o === "person" && m("computer").triples[0].turns === 1, "and names the triple that turned");
+  ok(m("rex").moves === 0 && m("rex").band === PG.PACE.STILL, "the kitchen is in the house, so house to kitchen and back is no move (as supersession allows)", JSON.stringify(m("rex")));
+  ok(m("whale").band === PG.PACE.FEW && PG.paceText(S, "whale") === "", "under pace_min_episodes there is nothing to read");
+  // the note beside the portrait's grounds, in the store's words
+  const ask = q => PG.answer(S, q, t += 60);
+  ok(ask("Tell me about the stone.").notes.some(n => n.startsWith(head("pace_still")) && n.includes("3 episodes")), "Tell me about the stone. names it still");
+  ok(ask("Tell me about the computer.").notes.some(n => n.startsWith(head("pace_slow")) && n.includes("1 time")), "the computer, slow");
+  ok(ask("Tell me about Pixel.").notes.some(n => n.startsWith(head("pace_fast")) && n.includes("3 times in 4 episodes")), "and Pixel, fast");
+  ok(!ask("Tell me about the whale.").notes.some(n => ["pace_still", "pace_slow", "pace_fast"].some(k => n.startsWith(head(k)))), "and the whale, nothing");
+  ok(!ask("Is Pixel in the hall?").notes.some(n => n.startsWith(head("pace_fast"))), "a yes/no question carries no pace: it is a portrait's note");
+  // read-only, and absent numbers are the old behaviour
+  const text = PG.serializeStore(S.st);
+  for (const l of ["stone", "pixel", "computer"]) PG.paceOf(S, l);
+  ok(PG.serializeStore(S.st) === text, "reading a pace writes nothing");
+  const bare = PG.openStore(text.replace(/^pace_min_episodes: .*\n/m, "")), full = PG.openStore(text);
+  for (const q of ["Tell me about Pixel.", "Tell me about the stone."]){
+    const a = PG.answer(bare, q, t += 60), b = PG.answer(full, q, t);
+    ok(JSON.stringify(a.portraits.map(p => p.direct)) === JSON.stringify(b.portraits.map(p => p.direct)) &&
+       a.notes.length === b.notes.length - 1 && !a.notes.some(n => n.startsWith(head("pace_fast")) || n.startsWith(head("pace_still"))),
+       "without pace_min_episodes, " + q + " has the same grounds and one note fewer");
+  }
+  ok(PG.paceOf(bare, "pixel").band === PG.PACE.FEW, "and no term has a pace");
+  // the report is the engine's
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "pg-pace-")), file = path.join(dir, "store.md");
+  fs.writeFileSync(file, text);
+  const rep = JSON.parse(execFileSync(process.execPath, ["tools/pace.mjs", "--store", file, "--json"], { encoding:"utf8" }));
+  const row = l => rep.terms.find(r => r.term === l) || {};
+  ok(row("pixel").band === "fast" && row("pixel").pace === 0.75 && row("stone").band === "still" && !row("whale").term && rep.terms[0].term === "pixel",
+     "node tools/pace.mjs reads what the engine reads, fastest first, and leaves out the terms too new to read", JSON.stringify(rep.terms.slice(0, 3)));
+  ok(fs.readFileSync(file, "utf8") === text, "and writes nothing");
+  fs.rmSync(dir, { recursive:true, force:true });
+  // Spanish has its own wording
+  const es = fresh();
+  let t3 = T0;
+  PG.startEmpty(es, t3);
+  for (const x of ["Pixel caza ratones.", "Pixel caza ratones.", "Pixel no caza ratones.", "Pixel no caza ratones."]) PG.answer(es, x, t3 += 3600);
+  const esG = es.grammars.find(G => G.lang === "es");
+  ok(PG.answer(es, "Háblame de Pixel.", t3 += 60).notes.some(n => n.startsWith(PG.say(esG, "pace_slow").split("{")[0])), "and Spanish says it in Spanish");
+}
+
 section("the file IS the grammar");
 {
   // 1. Delete the grammar and the runtime has nothing to parse with or say.

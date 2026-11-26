@@ -399,6 +399,14 @@ counts (*I liked tea*, then *I do not like tea*, is a belief that you do not).
   like tea* three times is still a contest, and the note says it turned once. Where the owner's
   tense already named the change, its own note stands alone. Without `trajectory_min_episodes`
   there is no note. `node tools/trajectories.mjs` lists every shape.
+- **The pace of a term**, the slow-verb meter ([a noun is a slow verb](lat98lon10)). What you
+  say of a term is the triples it is the subject or the vector of; a change is a **turn** (one
+  of them switching sign between episodes, the runs above) or a **move** (along an `exclusive`
+  vector, a later saying at another object). Pace is changes per episode that says anything of
+  the term, read once `pace_min_episodes` episodes do: no change is **still**, under
+  `pace_fast` **slow**, at or over it **fast**. *Tell me about* a term names it in a note
+  (`pace_still`, `pace_slow`, `pace_fast`), the term's panel draws it as a bar, and the term
+  list sorts by it. It decides nothing and writes nothing. `node tools/pace.mjs` lists every pace.
 
 Beliefs are derived data and say so: `node tools/consolidate.mjs` replays every episode and
 reports any belief line that has drifted from its percepts.
@@ -550,7 +558,9 @@ than one language: `pickGrammar(S, text)` returns the grammar a text reads as, a
 do both. Also on
 `PG`, for tools and tests: `parseStore`, `parseRecord`, `parseBlock`, `records`, `epsOf`,
 `epsTop`, `sceneOf`, `scenesOf`, `placeTerm`, `examplePath`, `trajectoryOf(S, belief, min, hold)` and the `TRAJ` codes
-it returns its shape as (the series a belief's sayings make, TTG-RFC-0003 §4),
+it returns its shape as (the series a belief's sayings make, TTG-RFC-0003 §4), `paceOf(S, lemma)`
+(`{ lemma, episodes, turns, moves, changes, pace, band, triples, first, last }`, the slow-verb meter)
+with the `PACE` codes it returns its band as, and `paceText(S, lemma)`, its reading in the grammar's words,
 `loadGrammar`, `say`, `sentencesOf`, `tokenize`, `nounLemma`, `verbLemma`, `perceiveSentence`,
 `perceive`, `consolidate`, `syncTerms`, `termState`, `markAsked`, and `SLOT` — the NUL
 character that stands for the hole a question asks the corpus to fill.
@@ -999,6 +1009,9 @@ asked_holds: {s} {v}: {triples} — kept, not believed, from “{text}” ({ep})
 changed_tense: You said “{then}” ({ep}), and since then “{now}” ({ep_now}) — a change in your words, not a contradiction.
 trajectory_crossing: You said it one way in {before}, then the other way in the {after} since — perhaps a change of mind. Both still count, so the answer stands.
 trajectory_alternation: Your sayings go back and forth over {episodes}, turning {turns} times — a real disagreement, not one change of mind.
+pace_still: Nothing you have said of {term} has turned in {episodes} — still: in your words it is a noun.
+pace_slow: Slowly, what you say of {term} has turned {changes} in {episodes} — a slow verb, though it reads as a noun.
+pace_fast: Fast enough to see: what you say of {term} has turned {changes} in {episodes} — in your words it moves like a verb.
 read_by: Read by a construction: {label}. Its shape is in the episode, if you read it otherwise.
 read_by_is_a: Read by a construction: {label}, a kind of {parents}. Its shape is in the episode, if you read it otherwise.
 construction_contested: {parents} disagree about part of what {label} says, so that part is kept, not believed.
@@ -1027,6 +1040,7 @@ unit_percept: percept | percepts
 unit_sentence: sentence | sentences
 unit_term: term | terms
 unit_episode: episode | episodes
+unit_turn: time | times
 ```
 
 ---
@@ -1040,6 +1054,9 @@ Every constant the consolidator, the reasoner and the librarian use. None of the
 runtime, and the test suite fails on any number here that the runtime never reads.
 `trajectory_min_episodes` and `trajectory_hold` set when a reply names the shape a triple's
 sayings make ([consolidate](lat50lon0)); remove the first and no reply names one.
+`pace_min_episodes` and `pace_fast` set the slow-verb meter: how many episodes must say
+something of a term before its pace is read, and the changes per episode at which it reads as
+fast ([consolidate](lat50lon0)); remove the first and no term has a pace.
 
 ```ttdb-grammar
 kind: numbers
@@ -1049,6 +1066,8 @@ weight_partial: 0.5
 belief_conf_threshold: 128
 trajectory_min_episodes: 3
 trajectory_hold: 2
+pace_min_episodes: 3
+pace_fast: 0.5
 inherit_decay: 0.85
 max_hops: 4
 answer_max_items: 6
@@ -1403,6 +1422,9 @@ asked_holds: {s} {v}: {triples} — guardado, no creído, de “{text}” ({ep})
 changed_tense: Dijiste “{then}” ({ep}), y después “{now}” ({ep_now}) — un cambio en tus palabras, no una contradicción.
 trajectory_crossing: Lo dijiste de un modo en {before} y del otro en los {after} siguientes — quizá un cambio de opinión. Ambos cuentan aún, así que la respuesta se mantiene.
 trajectory_alternation: Tus dichos van y vienen a lo largo de {episodes}, y cambian {turns} veces — un desacuerdo real, no un solo cambio de opinión.
+pace_still: Nada de lo que has dicho de {term} ha cambiado en {episodes} — quieto: en tus palabras es un sustantivo.
+pace_slow: Despacio, lo que dices de {term} ha cambiado {changes} en {episodes} — un verbo lento, aunque se lee como sustantivo.
+pace_fast: Lo bastante rápido para verse: lo que dices de {term} ha cambiado {changes} en {episodes} — en tus palabras se mueve como un verbo.
 read_by: Leído por una construcción: {label}. Su forma está en el episodio, si lo lees de otro modo.
 read_by_is_a: Leído por una construcción: {label}, una clase de {parents}. Su forma está en el episodio, si lo lees de otro modo.
 construction_contested: {parents} no coinciden en parte de lo que dice {label}, así que esa parte se guarda, no se cree.
@@ -1431,6 +1453,7 @@ unit_percept: percepción | percepciones
 unit_sentence: frase | frases
 unit_term: término | términos
 unit_episode: episodio | episodios
+unit_turn: vez | veces
 ```
 
 ---
@@ -2239,6 +2262,38 @@ sentence keeps it too.
 
 Mid conf because the chain is new and flat; mid salience because every sentence has a reading
 and most will never be touched.
+
+---
+
+@LAT98LON10 | created:1797292800 | updated:1797292800 | relates:supports@LAT50LON0,refines@LAT98LON3
+[ew]
+conf:110
+rev:0
+sal:150
+touched:1797292800
+[/ew]
+
+**BELIEF — A noun is a slow verb: how fast your words about a thing change is a measurement.**
+
+The grammar splits what you say into things and vectors, and the split is the sphere's first
+line. But whether a word names a thing or a motion depends on how long it is watched for: a
+stone is a noun because it weathers slower than anyone looks, and a cat moves from the garden
+to the kitchen fast enough to be a verb. The store has its own window, its episodes, and it can
+measure in it. The **pace** of a term is how often what you say of it changes per episode that
+says anything of it: a triple of it turning sign, or a place along an `exclusive` vector given
+up for another ([Blueprint 5](lat50lon0)).
+
+What it is for: the meter names, from your own words, which of your nouns are really in motion —
+*computer*, once a person and now a machine; *cloud*, once in the sky — and which have held.
+It is a reading of the corpus, like a trajectory, and it decides nothing: a fast term's beliefs
+count exactly as a still one's do.
+
+What it does not see yet: a place reached by a rule (*moved to the kitchen*) is not a move,
+only a saying of `in` is; a meaning that drifts by gaining objects, never giving one up, is
+accumulation, not change; and one episode is one tick whatever the clock says. Low conf because
+the thresholds are a first guess; mid salience because it is the first measurement the store
+makes of its words rather than of the world they describe. Try it in the
+[slow-verb example](examples/slow_verb_ttdb.md).
 
 ---
 

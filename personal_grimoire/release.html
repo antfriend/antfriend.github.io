@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Personal Grimoire Release</title>
-<meta name="description" content="What came of the Personal Grimoire's seven phases and the constructions series: the file is the grammar, constructions, part of a clause, two languages, and belief trajectories, each with an example store to try.">
+<meta name="description" content="What came of the Personal Grimoire's seven phases and the constructions series: the file is the grammar, constructions, part of a clause, two languages, belief trajectories, and the slow-verb meter, each with an example store to try.">
 <link rel="canonical" href="https://antfriend.github.io/personal_grimoire/release.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Toot Toot Engineering">
@@ -83,8 +83,8 @@ footer{margin-top:60px;padding-top:14px;border-top:1px solid var(--line);font-si
   <h1>What came of it</h1>
   <p class="lede">The Personal Grimoire keeps one person's words in a single file and answers from them, quoting
   what was said. The grammar it reads them with is in the same file. Over seven phases and a
-  series of RFCs, it learned to read constructions, parts of clauses, two languages at once, and the shape a belief's
-  sayings make over time. This page shows the best of that. Each section has a small example store,
+  series of RFCs, it learned to read constructions, parts of clauses, two languages at once, the shape a belief's
+  sayings make over time, and how fast what you say of a thing changes. This page shows the best of that. Each section has a small example store,
   so you can ask the question yourself.</p>
   <p><a href="index.html">Open the grimoire</a> · <a href="README.md">README</a> ·
   <a href="RFCs/INDEX.md">the RFCs</a> · <a href="paper/Personal-Grimoire-The-File-Is-the-Grammar.md">the paper</a></p>
@@ -99,6 +99,7 @@ footer{margin-top:60px;padding-top:14px;border-top:1px solid var(--line);font-si
     <li><a href="#clauses">Reading part of a clause</a></li>
     <li><a href="#languages">Two languages, one motion</a></li>
     <li><a href="#trajectories">Belief trajectories</a></li>
+    <li><a href="#slowverb">The slow verb: a meter for how fast your words change</a></li>
     <li><a href="#theories">Where it sits among theories of grammar</a></li>
     <li><a href="#measured">Measured</a></li>
     <li><a href="#provenance">Where the ideas came from</a></li>
@@ -389,7 +390,70 @@ discrete. The spec is TTG-RFC-0003 1.15 §4 and its Appendix A, TTG-RFC-0001 1.1
 (<a href="https://github.com/antfriend/toot-toot-engineering/commit/2bef5e2">2bef5e2</a>).</div>
 
 <!-- ===================================================================== -->
-<h2 id="theories"><span class="n">7</span>Where it sits among theories of grammar</h2>
+<h2 id="slowverb"><span class="n">7</span>The slow verb: a meter for how fast your words change</h2>
+<p>The grimoire splits what you say into <b>things</b> and <b>vectors</b>, nouns and verbs, and the split is the first
+line on its sphere. Haylett's “Geofinitism and the Slow Verb” <sup><a href="#ref-slowverb">[12]</a></sup> argues that the split is a matter
+of how long you watch: <i>the noun is the slow verb</i>. A stone counts as a noun because it weathers more slowly
+than anyone looks, and a cat moving from room to room changes fast enough to count as a verb. The store has a measuring window
+of its own, its episodes, and now it measures in it.</p>
+<p>The <b>pace</b> of a term is how many changes there are in what you say of it, per episode that says anything of it. A change is
+a <b>turn</b>, where one of its triples switches sign between episodes (the runs from <a href="#trajectories">section 6</a>), or a <b>move</b>, where along an
+<code>exclusive</code> vector a later saying puts it somewhere else. A term with no changes is <b>still</b>, one under <code>pace_fast</code> is <b>slow</b>,
+and one at or over it is <b>fast</b>.</p>
+<figure>
+  <div class="scroll">
+  <svg viewBox="0 0 660 214" role="img" aria-labelledby="f4t f4d">
+    <title id="f4t">The slow-verb meter over four terms of the example store</title>
+    <desc id="f4d">Stone: no change in 3 episodes, still. Computer: one turn in 4 episodes, pace 0.25, slow. Cloud: one move in 4 episodes, pace 0.25, slow. Pixel: three moves in 4 episodes, pace 0.75, fast. The fast threshold is at 0.5.</desc>
+    <g font-size="12.5" fill="#bdf8cb">
+      <text x="14" y="50">stone</text><text x="14" y="94">computer</text><text x="14" y="138">cloud</text><text x="14" y="182">pixel</text>
+    </g>
+    <g fill="#1d3a26">
+      <rect x="100" y="38" width="320" height="16" rx="2"/><rect x="100" y="82" width="320" height="16" rx="2"/>
+      <rect x="100" y="126" width="320" height="16" rx="2"/><rect x="100" y="170" width="320" height="16" rx="2"/>
+    </g>
+    <rect x="100" y="82" width="80" height="16" rx="2" fill="#3dff7a"/>
+    <rect x="100" y="126" width="80" height="16" rx="2" fill="#3dff7a"/>
+    <rect x="100" y="170" width="240" height="16" rx="2" fill="#ffb341"/>
+    <line x1="260" y1="26" x2="260" y2="196" stroke="#80bd8d" stroke-dasharray="4 3"/>
+    <g font-size="11" fill="#80bd8d">
+      <text x="100" y="20">0 · still</text><text x="230" y="20">pace_fast 0.5</text><text x="412" y="20">1</text>
+    </g>
+    <g font-size="12">
+      <text x="436" y="45" fill="#bdf8cb">0 in 3 episodes</text><text x="436" y="60" fill="#80bd8d">still: a noun</text>
+      <text x="436" y="89" fill="#bdf8cb">1 turn in 4 · 0.25</text><text x="436" y="104" fill="#3dff7a">slow: was a person</text>
+      <text x="436" y="133" fill="#bdf8cb">1 move in 4 · 0.25</text><text x="436" y="148" fill="#3dff7a">slow: sky, then server</text>
+      <text x="436" y="177" fill="#bdf8cb">3 moves in 4 · 0.75</text><text x="436" y="192" fill="#ffb341">fast: moves like a verb</text>
+    </g>
+  </svg>
+  </div>
+  <figcaption>The meter is <code>paceOf</code> in the runtime. The thresholds, <code>pace_min_episodes: 3</code> and <code>pace_fast: 0.5</code>, are
+  numbers in the store, and the three readings are reply keys in each language (<code>pace_still</code>, <code>pace_slow</code>, <code>pace_fast</code>).
+  Remove the first number and no term has a pace.</figcaption>
+</figure>
+<blockquote><span class="q">&gt; Tell me about Pixel.</span><br>
+What your words hold about pixel.<br>
+Fast enough to see: what you say of pixel has turned 3 times in 4 episodes — in your words it moves like a verb.</blockquote>
+<p>The meter is shown in three places: as a note when you ask <i>Tell me about …</i>, as a bar on a term's panel, and as a <b>pace</b> sort on the
+term list, fastest first. It is a reading of the corpus and decides nothing, so a fast term's beliefs count exactly as a still one's do.
+It does not yet see a place reached by a rule (<i>moved to the kitchen</i>), and it does not count a meaning that drifts only by gaining
+objects, because that is accumulation rather than a turn.</p>
+<div class="trylabel">Try it in the slow-verb store</div>
+<div class="try">
+  <a href="index.html?store=examples/slow_verb_ttdb.md&amp;ask=Tell%20me%20about%20the%20stone.">Tell me about the stone.</a>
+  <a href="index.html?store=examples/slow_verb_ttdb.md&amp;ask=Tell%20me%20about%20the%20computer.">Tell me about the computer.</a>
+  <a href="index.html?store=examples/slow_verb_ttdb.md&amp;ask=Tell%20me%20about%20the%20cloud.">Tell me about the cloud.</a>
+  <a href="index.html?store=examples/slow_verb_ttdb.md&amp;ask=Tell%20me%20about%20Pixel.">Tell me about Pixel.</a>
+  <a href="index.html?store=examples/slow_verb_ttdb.md&amp;ask=Is%20a%20computer%20a%20person%3F">Is a computer a person?</a>
+</div>
+<p>For every term's pace, fastest first: <code>node tools/pace.mjs</code> (add <code>--store examples/slow_verb_ttdb.md</code> for this store).</p>
+<div class="prov"><b>Provenance.</b> The idea is Haylett's <sup><a href="#ref-slowverb">[12]</a></sup>: a word's category depends on the measuring
+window through which its referent is sampled. The grimoire takes the window to be the episode, and a change to be what the store
+can already show, a turn or a move. The design belief is <code>@LAT98LON10</code>. It is a prototype, and its spec has not yet been
+written upstream.</div>
+
+<!-- ===================================================================== -->
+<h2 id="theories"><span class="n">8</span>Where it sits among theories of grammar</h2>
 <p>Before the phases began, the grimoire was compared, dimension by dimension, with four theories of grammar. Each
 phase then took one idea from them that the grimoire could hold without giving up quoting its owner.</p>
 <div class="tbl"><table>
@@ -417,7 +481,7 @@ inferred grounds are never printed as said ones, and contradictions are kept rat
 </table></div>
 
 <!-- ===================================================================== -->
-<h2 id="measured"><span class="n">8</span>Measured</h2>
+<h2 id="measured"><span class="n">9</span>Measured</h2>
 <p>bAbI v1.2 English test splits, 1,000 questions each <sup><a href="#ref-weston">[1]</a></sup>. Each story's facts are told to an
 emptied store, one episode per line. <i>Exact attribution</i> means the answer is right and the sentences it quotes are
 exactly the gold supporting facts. The runs were repeated after each phase, after the constructions series and after
@@ -442,8 +506,8 @@ Phase 7. Each time the outcome hashes equalled the ones recorded in <code>paper/
 <p>The permuted rows are the claim from <a href="#file">section 1</a>. With the grammar and data enciphered alike, the answers are
 identical. With the grammar enciphered alone, nothing is understood. Removing <code>exclusive</code>, the flag that lets a
 later place retire an earlier one, drops task 1 to about half.</p>
-<p>The test suites, at release: <b id="count-app">629</b> checks of the engine and the example stores
-(<code>tests/app.test.mjs</code>), <b id="count-docs">244</b> of the documents against the store (<code>tests/docs.test.mjs</code>), and
+<p>The test suites, at release: <b id="count-app">656</b> checks of the engine and the example stores
+(<code>tests/app.test.mjs</code>), <b id="count-docs">252</b> of the documents against the store (<code>tests/docs.test.mjs</code>), and
 <b id="count-embed">24</b> of a third-party embedding (<code>tests/embed.test.mjs</code>). Each suite checks that it still has at least
 the number given here.</p>
 <pre>node tests/app.test.mjs &amp;&amp; node tests/docs.test.mjs &amp;&amp; node tests/embed.test.mjs
@@ -453,7 +517,7 @@ node tools/babi.mjs PATH/qa1_single-supporting-fact_test.txt</pre>
 <p>The bAbI data isn't included here. <code>tools/babi.mjs</code> says where to get it.</p>
 
 <!-- ===================================================================== -->
-<h2 id="provenance"><span class="n">9</span>Where the ideas came from</h2>
+<h2 id="provenance"><span class="n">10</span>Where the ideas came from</h2>
 <p>Three kinds of origin, kept apart:</p>
 <h3>Ideas from the literature</h3>
 <p>Cited where they are used, and listed below. In short: LFG's COMP, TENSE and ADJUNCT <sup><a href="#ref-kb">[4]</a></sup> for Phases
@@ -462,7 +526,7 @@ node tools/babi.mjs PATH/qa1_single-supporting-fact_test.txt</pre>
 <sup><a href="#ref-dt">[5]</a></sup>; Construction Grammar <sup><a href="#ref-goldberg">[2]</a></sup> and idioms <sup><a href="#ref-fko">[3]</a></sup>
 for Phase 6; Laplace's rule of succession <sup><a href="#ref-laplace">[11]</a></sup> for a belief's confidence; bAbI
 <sup><a href="#ref-weston">[1]</a></sup> for the benchmark; Haylett <sup><a href="#ref-haylett">[7]</a></sup> and Takens
-<sup><a href="#ref-takens">[8]</a></sup> for trajectories. Each idea was cut down to what a store can hold without claiming
+<sup><a href="#ref-takens">[8]</a></sup> for trajectories, and Haylett again <sup><a href="#ref-slowverb">[12]</a></sup> for the slow-verb meter. Each idea was cut down to what a store can hold without claiming
 anything about its owner that the owner didn't say.</p>
 <h3>The project's own design</h3>
 <p>TTDB (the file format, its globe of records and its typed edges), the Toot Toot Grammar RFCs, the runtime that holds no
@@ -488,6 +552,7 @@ that implemented it, so each claim on this page traces to spec text and code.</p
   <li id="ref-tomasello">M. Tomasello, <i>Constructing a Language: A Usage-Based Theory of Language Acquisition</i>, Harvard University Press, 2003.</li>
   <li id="ref-bybee">J. Bybee, “From Usage to Grammar: The Mind's Response to Repetition,” <i>Language</i> 82(4), 2006, 711–733.</li>
   <li id="ref-laplace">P.-S. Laplace, <i>Essai philosophique sur les probabilités</i>, Paris, 1814.</li>
+  <li id="ref-slowverb">K. R. Haylett, “Geofinitism and the Slow Verb: An Essay on Meaning, Measurement, and the Dynamics of Words,” Substack, May 2026. <a href="https://kevinhaylett.substack.com/p/geofinitism-and-the-slow-verb">kevinhaylett.substack.com</a></li>
 </ol>
 
 <footer>
