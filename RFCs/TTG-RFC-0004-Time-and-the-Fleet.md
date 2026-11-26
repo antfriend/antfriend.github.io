@@ -1,6 +1,6 @@
 # TTG-RFC-0004: Time — the Order of Sayings, Supersession, and a Fleet's Shared Clock
 
-**Version:** 1.2
+**Version:** 1.3
 **Status:** Stable for §2–3, implemented in the personal_grimoire reference runtime; §4 draft, implemented on hardware by the robot_team fleet (§4.9), not by the reference runtime
 **RFC Number:** 0004
 **Project:** toot-toot-engineering
@@ -302,8 +302,15 @@ it does not identify a grammar.
   author is always the owner. Consolidated across agents, the sayings of every observer about B
   become one belief about B that no agent holds, and *A hears B but B does not hear A* cannot be
   said at all. A fleet view SHOULD consolidate only percepts that name their observer
-  (`A | hears | B`). The fleet of §4.9 does not yet: its bar views agree, but on that merged
-  belief.
+  (`A | hears | B`). The fleet of §4.9 has done so since 2026-11-26.
+- **Changing a percept's form.** Episodes are never rewritten (TTG-RFC-0002 §5.1), so a store
+  that changes how a percept is written will hold both forms for as long as its oldest episode
+  lives. It SHOULD read an old line in the new form, as it reads it, using what the record
+  already says: the fleet of §4.9 rewrites `B | link_stable | <radio>` to
+  `A | link_stable_<radio> | B` with A the record's author (the agent, for its own lane; the
+  `held:` agent, for a copy). That adds nothing the record did not say, and a store's beliefs
+  recompute to the same tallies under the new keys. A line whose author is unknown is left as it
+  is. The change is a grammar change, and §4.6 reports it until every agent reads alike.
 - **Humanize** (TTN-RFC-0010 §6) has no counterpart. Nobody wants jitter added to their memories.
 
 ### 4.8 Test plan
@@ -337,6 +344,9 @@ board heard, over which radio), not prose, read by a compiled mapping rather tha
   resulting belief lines.
 - **Grammar:** hashed by behaviour and carried beside the chart, not in `scene_id`, which the
   fleet's songs already use (§4.6).
+- **Percepts:** since 2026-11-26, `<observer> | link_stable_<radio> | <peer>`, one vector per
+  radio, the observer named (§4.7). Older lines are read in that form by their author (§4.7,
+  *changing a percept's form*).
 
 **Results.**
 
@@ -345,6 +355,7 @@ board heard, over which radio), not prose, read by a compiled mapping rather tha
 | 1–3 | native tests | pass |
 | 4 | six boards on their own power supplies, no host attached, about 3 h (2026-10-06) | the same episode set and the same belief digest on all six boards in all 16 scored bars; each board held 10 of 10 episodes from each of the five authoring boards per bar |
 | 5 | six boards, one built with a perturbed hash (2026-10-06) | within the first bar every other board recorded the odd one as a split and it recorded all five; after it was reflashed, every board recorded no split from the next bar on |
+| §4.7, the observer | six boards reflashed one at a time to name the observer (2026-11-26) | each board still on the old build recorded the reflashed ones as a split until it was reflashed itself, item 5 on a real grammar change; the one scoring board's nine beliefs at boot were byte-identical to those a laptop recomputed from its store before the flash, now under the new keys; every board then received its new-form episodes over the air |
 
 **Where the fleet departs from this text**, each written back above:
 
@@ -358,8 +369,9 @@ board heard, over which radio), not prose, read by a compiled mapping rather tha
 
 - Supersession across agents (§4.4's maximal facts) is in the portable core and its tests, but
   the fleet declares no `exclusive` vector, so nothing is retired on hardware.
-- Its link percepts leave the observer implicit (§4.7, *the observer belongs in the percept*),
-  so the agreed beliefs are about peers, not about who hears whom.
+- Only one board scores link windows, so every edge it has formed has one observer. The form
+  now keeps a second observer's sayings apart, but no run has had a second.
+- Item 4 has not been rerun on six boards since the change of form.
 - It runs TTG-RFC-0003 §2 counting under a bounded-store profile (TTG-RFC-0003 §2.1).
 
 ---
@@ -392,5 +404,6 @@ board heard, over which radio), not prose, read by a compiled mapping rather tha
 | 2026-09-22 | 1.0: §2–3 stable, as implemented by the reference runtime and checked by its tests; §4 remains a proposal. |
 | 2026-11-23 | 1.1: §3.7, a change in the owner's tense: a past saying that a later present one contradicts is changed — kept, quoted, uncounted — and named by `changed_tense`; two sayings in one tense still contest. §3.5 notes the exception; §5.3 narrowed. §2–3 remain stable. Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`). |
 | 2026-11-25 | 1.2: §4 is implemented on hardware by the robot_team fleet, and the status says so; §4.8's items 1–5 pass there. New §4.9, the implementation report. Written back from it: a stamp names its chart frame (§4.3); the vector clock MAY be carried as `seq:`/`follows: <agent>:<seq>` (§4.4); an unbounded episode is in no bar view, its author's included (§4.5); the grammar hash need not ride in `scene_id`, which TTN-RFC-0010 v2 already uses, and a grammar with no records is hashed by behaviour (§4.6); the observer belongs in the percept (§4.7); §5.5, founders. §4.6 now cites `fleet.py band` (was `companion.py`), and §4.7 no longer names a lane the fleet stopped writing. §2–3 unchanged. |
+| 2026-11-26 | 1.3: the fleet of §4.9 names the observer in its link percepts, on all six boards (§4.7, §4.9). New in §4.7, *changing a percept's form*: a store that changes how a percept is written SHOULD read its old lines in the new form by the record's author, never rewrite them. §4.9 gains the percept form, a result row for the change (each old board recorded the new ones as a split until reflashed; beliefs recomputed byte for byte under the new keys) and two open items: one observer so far, and item 4 not rerun since. Correction to 1.2: its §4.7 and §4.9 said the fleet's bar views agreed on a belief merged across observers. In that run only one board scored link windows, so there was nothing to merge; the defect was in the form, not in the result. §2–3 unchanged. |
 
 *License: CC0*
