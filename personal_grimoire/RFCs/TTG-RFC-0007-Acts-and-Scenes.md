@@ -1,7 +1,7 @@
 # TTG-RFC-0007: Acts and Scenes — Words That Do, and Sequences the Owner Can Run
 
-**Version:** 0.1
-**Status:** Draft — proposed; not yet implemented in the reference runtime
+**Version:** 0.2
+**Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0007
 **Project:** toot-toot-engineering
 **Component:** Toot Toot Grammar (TTG)
@@ -190,8 +190,11 @@ matched (TTG-RFC-0006 §3), and only in act context:
    `object_mark` stripped, each phrase's head taken where the `head` parameter puts it
    (TTG-RFC-0001 §11.6) and lemmatised as a noun. Each head resolves, in order, to a `ref:`
    reference, to the speaker (a pronoun the lexicon reads as the speaker), or to the term record
-   of that lemma. A head that resolves to nothing is reported (`act_no_target`, §9) and the act
-   is blocked, as a question with no purchase is answered with none (TTG-RFC-0003 §4).
+   of that lemma. A `ref:` line's words are matched as said, before determiners are stripped,
+   since a ref word may be one (*that*). A speaker's pronoun straight after the act's words, with
+   another phrase after it, is who the act is for and not a target: *Show me Pixel* is Pixel. A
+   head that resolves to nothing is reported (`act_no_target`, §9) and the act is blocked, as a
+   question with no purchase is answered with none (TTG-RFC-0003 §4).
 4. **Arguments.** A `record` parameter takes exactly one target; more is rejected (`shape`). A
    `records` parameter takes any number. A `sentence` parameter takes the rest of the sentence
    after the act's words, verbatim, read as its own input.
@@ -217,6 +220,9 @@ from ever being lost to an act:
   intent, TTG-RFC-0003 §4) is rejected (`unsafe`, §7). A question a scene asks writes only the
   cursor, as a typed question does.
 - **Writes need consent** (§6.3), in the composer as in a scene.
+- **The reply.** An `act` reply carries `calls`, the plan its sentences make, for the host to
+  make, and `done`, the sentences, each printed under `label_done`. Every reply also carries
+  `key`, the reply key its verdict is said by, which is what a step branches on (§5.2).
 
 ---
 
@@ -311,7 +317,7 @@ step: doubts | each: contested | do: select | hold_ms: 5000 | max: 5
 | Source | Items, in order |
 |---|---|
 | `contested` | the subjects of contested beliefs, highest EPS first (TTG-RFC-0003 §2) |
-| `eps_top` | records by `epsRaw`, highest first (TTDB-RFC-0005) |
+| `eps_top` | the term records by `epsRaw`, highest first (TTDB-RFC-0005) |
 | `superseded` | facts an `exclusive` vector retired, latest retirement first (TTG-RFC-0004 §3) |
 | `answer` | the records the last `ask` of this run lit |
 | `episodes` | the episodes, in lane order |
@@ -343,8 +349,9 @@ numbers. A plan also carries:
 - **its hash**, a hash of its calls in canonical form, computed as the runtime computes the
   grammar hash (TTG-RFC-0005 §5.1). Two plans with one hash do the same thing.
 
-The reference runtime SHOULD expose `actsOf(S, lang?)`, `actuatorsOf(S)` and `planOf(S, rec)` on
-`PG`, as it exposes `sceneOf` today (TTG-RFC-0001 §10).
+The reference runtime exposes `actuatorsOf(S, host?)`, `actsOf(S, lang?)`, `actOf(S, text, lang?)`,
+`planOf(S, rec, host?)`, `nextCall(plan, i, key)`, `runStart`, `actCall`, `runNote`, `playPlan`,
+`writeRun`, `runsOf`, `driftOf` and `pinScene` on `PG`, beside `sceneOf` (TTG-RFC-0001 §10).
 
 ### 6.2 Running
 
@@ -354,13 +361,15 @@ the plan stays pure. **Any hand on the globe, any other record chosen and any qu
 stops the run** (TTCP-RFC-0002 §10.3, as the reference page does today), except the reader's
 *next* under `advance: hand`. A run also stops after `scene_max_visits` visits to one step, so a
 branch cannot loop forever; a plan longer than `scene_max_steps` calls is rejected (`length`).
+A host that hears no pulse holds a `beat` step for its own `hold_ms`.
 
 ### 6.3 Consent
 
 Before the first call of class `write` or `device`, the host MUST ask the owner, once per run,
 naming the class and the steps of that class (`scene_consent`). A refusal stops the run before
 that call; the calls before it have already been shown. A `view` or `query` plan needs no
-consent: every call in it is safe to repeat.
+consent: every call in it is safe to repeat. A run starts allowed as far as `query`, or as far as
+its plan's class if that is lower, and its record's `consent` is the highest class it reached.
 
 ---
 
@@ -397,11 +406,13 @@ SHOULD carry a `depends_on@` edge to each record a step names by ID.
 
 A `say:` or `ask:` step is only as good as the grammar that reads it. A scene MAY pin the hash it
 was written under (`grammar:`). Where the store's grammar hash differs, the host MUST show,
-before the run, each step whose plan the current grammar changes, with both plans
-(`scene_stale`); it MAY then play, under the grammar the store holds now. A re-reading
-(TTG-RFC-0005 §5.1) reports the same steps beside the sentences it reports, and **writes
-nothing**; the owner takes them by updating the pin, which is an edit to the scene (its `rev`
-+ 1). A scene stores its sentences, never their compiled plan, so scenes and episodes keep one
+before the run, the scene's `say:` and `ask:` steps as the grammar the store holds now reads them
+(`scene_stale`); it MAY then play, under that grammar. The plan the pinned grammar made cannot be
+shown beside them: a scene keeps its sentences and never a plan, and the grammar it was pinned
+under is no longer in the store. A re-reading (TTG-RFC-0005 §5.1) of the whole store reports the
+same scenes, as `scenes`, each `{ scene, pin, grammar, steps }`, and **writes nothing**; the owner
+takes them by updating the pin, which is an edit to the scene (its `rev` + 1). A pin to a hash
+that is not the store's grammar now MUST be refused, as a stale re-reading is. A scene stores its sentences, never their compiled plan, so scenes and episodes keep one
 rule: the words are kept, and the reading is the grammar's until the owner takes it.
 
 ### 8.3 What grounds a slide
@@ -469,7 +480,8 @@ asked of a scene: which slides moved, and which words moved them.
 A `target` or `records` parameter MAY name a record in another store, by a toot URI or the viewer
 form `?ttdb=<file>&toot=<record>` (TTCP-RFC-0003 §2, §3.4). Only `view` actuators reach another
 store (§10.5). A run record writes such a target as given, with the other store's `db_id`
-(TTDB-RFC-0001) beside it and, if it is a TTG store, its grammar hash.
+(TTDB-RFC-0001) beside it and, if it is a TTG store, its grammar hash. The reference page
+shows such a target as a link the reader can follow, and does not open the other store itself.
 
 ---
 
@@ -490,6 +502,7 @@ store (§10.5). A run record writes such a target as given, with the other store
 | `responses` | `scene_stale` | the grammar has changed since the pin; slots `{hash}`, `{steps}` |
 | `responses` | `scene_expect` | an `ask` that replied otherwise than expected; slots `{step}`, `{expected}`, `{got}` |
 | `responses` | `drift_head` | the head of a drift report; slots `{scene}`, `{steps}` |
+| `responses` | `run_title` | a run record's title; slots `{n}`, `{scene}` |
 | `vectors` | `role: act_edge` | the edge from a told episode to its scene |
 | `vectors` | `role: run_edge` | the edge from a run record to its scene |
 | `ttdb-sphere` | `run_lane` | the latitude run records sit on |
@@ -545,7 +558,8 @@ A scene plays against the store that holds it. A scene the store did not author 
 from another agent's store (TTN-RFC-0009) or opened from another file — plays its `view` and
 `query` calls only, unless the host's trust in its origin (TTN-RFC-0005) admits more; with no
 trust signal, a `write` or `device` call is blocked, never asked. A step that targets another
-store reaches it with `view` actuators only, and never writes there.
+store reaches it with `view` actuators only, and never writes there. The reference runtime cannot
+yet tell a merged scene from its own, and treats every scene in its store as its own.
 
 ---
 
@@ -607,6 +621,7 @@ episode (§4.3), which is what declaring acts asks for. Generic viewers skip `tt
 
 | Date | Change |
 |---|---|
+| 2026-11-27 | 0.2: implemented by the personal_grimoire reference runtime (antfriend.github.io `23b5202`), with what implementing it settled: a `ref:` is matched before determiners are stripped, and the speaker straight after an act is who it is for (§4.2); an `act` reply's `calls` and `done`, and every reply's `key` (§4.3); `eps_top` walks the terms (§5.4); the runtime's calls named (§6.1); a beat held as its step's time where no pulse is heard (§6.2); where a run's consent starts (§6.3); a stale pin shows the steps as read now, since the pinned plan cannot be recomputed, and a pin to any grammar but the store's is refused (§8.2); the reference page shows a cross-store target as a link (§8.5); `run_title` (§9); merged scenes not yet told apart (§10.5). The reference store declares the contract in its Blueprint 9, English and Spanish acts, and a lesson scene. |
 | 2026-11-27 | 0.1: initial draft. Actuators and their contract (§3); the `acts` kind, matched at a sentence's head before the chain (§4); scenes with steps, branches and generators (§5); plans, runs and consent (§6); safety (§7); provenance at five depths, with run records and drift (§8); keys (§9); domains (§10). Not yet implemented. §4.2's account of how imperatives read today is from the reference runtime at antfriend.github.io `7a53a97`. |
 
 *License: CC0*

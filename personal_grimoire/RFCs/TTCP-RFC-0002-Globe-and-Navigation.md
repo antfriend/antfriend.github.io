@@ -1,7 +1,7 @@
 # TTCP-RFC-0002: Globe Visualization and Navigation
 ### TTDB Content Publishing — Knowledge Globe, Cursor Selection, Discovery, Tour, and Scene Playback
 
-**Version:** 1.0
+**Version:** 1.1
 **Status:** Draft
 **RFC Number:** 0002
 **Project:** toot-toot-engineering
@@ -260,6 +260,10 @@ When a scene record is selected and playback is started, the renderer MUST:
 
 If `audio_path` is present, the scene's audio MUST play looping for the duration of playback and stop when playback ends.
 
+TTG-RFC-0007 §5 extends the block with `step:` lines — acts in line order, each held by a time, the
+reader's hand or a fleet's beat, and able to branch — for a renderer that is also a TTG runtime. A
+block holds edges or steps, never both, and a block of edges plays exactly as this section says.
+
 ### 10.4 Scene Controls
 
 The renderer MUST provide user-accessible controls to start and stop scene playback when a scene record is selected. A status indicator SHOULD show the current playback state.
@@ -314,7 +318,7 @@ The renderer SHOULD render a latitude/longitude grid (graticule) on the globe su
 ## 14. Open Questions
 
 1. **Tour interval configuration:** Should `max_nodes` or another `cursor_policy` field govern tour pacing, or is a fixed interval appropriate?
-2. **Scene edge ordering:** Should edges be matched by `from` node only (non-deterministic if multiple edges share a source), or must the `name` field impose a total order?
+2. **Scene edge ordering:** Should edges be matched by `from` node only (non-deterministic if multiple edges share a source), or must the `name` field impose a total order? *Answered for steps* by TTG-RFC-0007 §5.3: steps run in line order, left only by a written branch. Edges are matched as §10.3 says.
 3. **Side globe discovery:** Should the discovery state of a side-globe database be visible (e.g., number of discovered records as a badge) before switching?
 4. **Collaborative selection:** In a multi-agent deployment, should the cursor block synchronize across clients in real time?
 
@@ -325,6 +329,7 @@ The renderer SHOULD render a latitude/longitude grid (graticule) on the globe su
 | Date | Change |
 |---|---|
 | 2026-04-28 | Initial draft |
+| 2026-11-27 | 1.1: §10.3, the `step:` lines TTG-RFC-0007 §5 adds, and open question 2 answered for steps. Edge scenes unchanged; implemented beside them by the personal_grimoire reference runtime (antfriend.github.io `23b5202`). |
 
 ---
 

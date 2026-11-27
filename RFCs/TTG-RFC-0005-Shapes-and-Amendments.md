@@ -1,6 +1,6 @@
 # TTG-RFC-0005: Shapes — Alternating Segments, Lists, Mentions and Amendments
 
-**Version:** 1.6
+**Version:** 1.7
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0005
 **Project:** toot-toot-engineering
@@ -623,7 +623,12 @@ reports, before and after a grammar change, show which constructions gained sent
 lost them. It is a report and writes nothing; whether a construction that reads nothing should be
 named to the owner, and after how many episodes, is open.
 
-The reference runtime exposes `reread(S, episode?)` (with `traffic`, and `readBy` on each sentence
+**Scenes.** Where a scene pins the grammar it was written under (TTG-RFC-0007 §8.2), a re-reading of
+the whole store also reports, as `scenes`, each scene whose pin is not the store's grammar now, with
+its `say:` and `ask:` steps as that grammar reads them. It writes nothing; the owner takes it by
+pinning the scene again, which a hash that is not the store's now cannot do.
+
+The reference runtime exposes `reread(S, episode?)` (with `traffic`, `scenes`, and `readBy` on each sentence
 it reports), `takeRereads(S, hash, now)`, the optional
 `grammar` and `reading` arguments of `amend` and `amendReply`, an episode panel that offers
 each re-reading and each of two readings, a store-bar control that counts the re-readings the
@@ -762,6 +767,7 @@ runtime.
 | 2026-11-23 | 1.3: §3 **hedges** — a `hedge` word holds its clause; §3 **tense** — a predicate is past by a `past_form` or a `past_ending` on an inflected verb, not after a present `hav`, and past percepts are marked by a `tense:` line of ordinals, malformed ones skipped and counted. §5 and §5.1 carry and compare tense lines; §6 `class: hedge`, `past_form`, `past_ending`, `changed_tense`; §7 compatibility; §8.8 new. The change it makes to a later saying is TTG-RFC-0004 1.1 §3.7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`), from its PLAN.md phase 3. |
 | 2026-11-23 | 1.4: §3 **modifiers** — with `modifier: subclass`, a member's modifiers join with its head into a subclass term, and the clause says its `class_of` (none for a `privative` modifier) and a `property` per modifier; over `modifier_max_words`, as under `drop`, which is the default; a question never checks the subclass percepts. §6 keys, §7 compatibility, §8.9 new. Implemented by the personal_grimoire reference runtime (antfriend.github.io `a5beef3`), from its PLAN.md phase 4; the reference store ships `drop`. |
 | 2026-11-23 | 1.5: §3, a question whose verb is in the speaker's own form already has its subject; §8.7 answered. The question rows are TTG-RFC-0003 1.5 §4. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bf261e8`), from its PLAN.md phase 5. |
+| 2026-11-27 | 1.7: §5.1, a re-reading names the scenes whose grammar pin it has left behind (TTG-RFC-0007 §8.2). Implemented by the personal_grimoire reference runtime (antfriend.github.io `23b5202`). |
 | 2026-11-25 | 1.6: §5.1, **construction traffic** — a re-reading reports how many sentences and episodes each construction reads under today's grammar, ancestors included, and which read none, and names the constructions that read each sentence it reports. Implemented by the personal_grimoire reference runtime (antfriend.github.io `e2e02bf`), from its PLAN.md phase 7. |
 
 *License: CC0*

@@ -1,6 +1,6 @@
 # TTG-RFC-0003: Beliefs, Vector Reasoning and Grounded Response
 
-**Version:** 1.16
+**Version:** 1.17
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0003
 **Project:** toot-toot-engineering
@@ -179,7 +179,9 @@ plain verb says, across languages: the reference store's `go_off X Y => leave X 
 surface form is a THING or a term a rule concludes about, or its verb lemma is a VECTOR, or
 a VECTOR begins with its verb lemma plus `phrasal_join`. Words without purchase are listed in `no_purchase`.
 
-**Intent**, for single-sentence input (multi-sentence input is always *perceive*):
+**Intent**, for single-sentence input (multi-sentence input is always *perceive*). Where the store
+declares acts, an input every sentence of which is an act is the `act` intent instead, and is done,
+not answered (TTG-RFC-0007 §4.3):
 
 | First matching shape | Intent |
 |---|---|
@@ -238,6 +240,10 @@ by kind:
 | conflict | `label_contested` | one `+` sentence and one `-` sentence, no verdict |
 | superseded | `label_superseded` | the retired fact, then `superseded_by` and the ground that retired it (TTG-RFC-0004 §3.4) |
 | carried | `label_carried` | in a bounded store (§2.1), a belief whose sayings were folded: the triple, the number of episodes carried and the horizon, no quote |
+| done | `label_done` | an act the input did (TTG-RFC-0007 §8.3): the sentence, never a ground for anything |
+
+A reply carries `key`, the reply key its verdict is said by, beside the phrase, so a scene's step can
+branch on it (TTG-RFC-0007 §5.2).
 
 then notes: `exception`, `contradicts` (when a new percept opposes a decided belief),
 `supersedes` (when a new episode retires a fact), `noted_held` and `noted_readings` (what a
@@ -343,6 +349,7 @@ modifiers (TTG-RFC-0005 §3), `modifier_max_words 2`, and, for constructions
 | 2026-11-25 | 1.13: §4, the `wh` + verb row says what §4's prose already did — a thing a preposition opens is never a subject behind its verb (*¿Qué salió de la mesa?*); the reference runtime had ruled out only the object mark. §3.1, rules that link the vectors constructions write for one motion (`go_off`, `salir_de` ⇒ `leave`). Implemented by the personal_grimoire reference runtime (antfriend.github.io `34e03cc`). |
 | 2026-11-25 | 1.14: §4, a fronted preposition with the copula whose predicate's noun stands before the subject (*¿De qué es parte la rueda?*): the last phrase is the subject. Implemented by the personal_grimoire reference runtime (antfriend.github.io `1ce3dec`). |
 | 2026-11-25 | 1.15: §4, **the shape of the sayings** — a verify answer names one crossing or an alternation in a triple's per-episode signs, as a note beside the grounds that never changes the verdict (`trajectory_crossing`, `trajectory_alternation`); §5, `trajectory_min_episodes 3` and `trajectory_hold 2`; §6.1 narrowed; Appendix A, trajectories (informative). Implemented by the personal_grimoire reference runtime (antfriend.github.io `e2e02bf`), from its PLAN.md phase 7 and its research note on belief trajectories. |
+| 2026-11-27 | 1.17: §4, the `act` intent and the *done* kind, and a reply's `key` (TTG-RFC-0007 §4.3, §8.3). Implemented by the personal_grimoire reference runtime (antfriend.github.io `23b5202`). |
 | 2026-11-25 | 1.16: §2.1, **bounded stores**, a profile: a store that cannot keep every episode MAY evict the oldest after folding their per-triple sums into a carried tally, committed with its horizon before anything is removed; recomputation holds over retained episodes plus tallies; a belief whose sayings were all folded is grounded as **carried** (`label_carried`, a fifth ground kind in §4), never as said; supersession and the shape of the sayings must carry what they read. Appendix A, open questions 1 and 2 updated for a fleet that implements TTG-RFC-0004 §4. Pushed upstream from the robot_team ESP32 fleet, which runs the profile (ACT-III C2d there); the reference runtime keeps every episode and is unaffected. |
 
 ---

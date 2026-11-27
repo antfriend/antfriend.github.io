@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.12
+**Version:** 1.13
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -18,7 +18,7 @@ read that data: the closed-class words of a language, its morphology, a seed lis
 the algebra of the relations it reasons along, its question forms, every phrase its
 librarian may say, and every constant its consolidator uses. A TTG runtime is a **generic
 interpreter** of those blocks. This RFC defines the `ttdb-grammar` and `ttdb-sphere` fenced
-blocks, the nine grammar kinds, and the runtime contract that makes the claim *the file IS
+blocks, the ten grammar kinds, and the runtime contract that makes the claim *the file IS
 the grammar* testable.
 
 ---
@@ -159,7 +159,9 @@ emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `l
 `exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `noted_held`, `noted_readings`,
 `reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `changed_tense`, `trajectory_crossing`, `trajectory_alternation`, `read_by`, `read_by_is_a`, `construction_contested`, `vectors_head`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
 `objects_head`, `subjects_head`, `nothing_found`, `search_head`, `suggest`, `ingested`,
-`episode_title`, `source_typed`, `store_opened`; units `percept`, `sentence`, `term`, `episode`.
+`episode_title`, `source_typed`, `store_opened`, and for acts and scenes `label_done`, `act_blocked`,
+`act_no_target`, `act_not_done`, `scene_consent`, `scene_stale`, `scene_expect`, `drift_head`,
+`run_title` (TTG-RFC-0007 §9); units `percept`, `sentence`, `term`, `episode`.
 
 ---
 
@@ -169,7 +171,7 @@ emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `l
 `inherit_decay`, `max_hops`, `answer_max_items`, `search_max_items`, `suggest_eps_min`,
 `with_max_pairs`, `said_max_chars`, `rule_max_body`, `phrase_max_words`, `frame_min_episodes`,
 `frame_grammar_weight`, `frame_preempt_ratio`, `modifier_max_words`, `construction_max_words`,
-`trajectory_min_episodes`, `trajectory_hold`.
+`trajectory_min_episodes`, `trajectory_hold`, `scene_max_steps`, `scene_max_visits`, `scene_each_max`.
 
 `kind: rules` holds `rule:` lines; its syntax, safety conditions and derivation are defined in
 TTG-RFC-0003 §3.1.
@@ -178,8 +180,13 @@ TTG-RFC-0003 §3.1.
 with the percepts a clause of that shape says; their syntax, matching and safety conditions are
 defined in TTG-RFC-0006. A store that declares none reads as if the kind did not exist.
 
+`kind: acts` holds `act:` and `ref:` lines: a language's words bound to the actuators its store's
+`ttdb-actuators` contract declares, and the words that stand for what the last reply lit or for the
+speaker. Their syntax, reading and safety are defined in TTG-RFC-0007 §4. A store that declares
+none has no acts, and reads every sentence as a saying.
+
 `ttdb-sphere` (on the Home record): `thing_lon`, `vector_lon`, `term_lat` (each `lo hi`),
-`adjacent` (`lo hi` degrees), `step`, `episode_lane`, `amend_lane`, `self_lemma`.
+`adjacent` (`lo hi` degrees), `step`, `episode_lane`, `amend_lane`, `run_lane` (TTG-RFC-0007 §8.4), `self_lemma`.
 
 ---
 
@@ -218,7 +225,7 @@ A store MAY hold grammars for several languages.
 2. **Borrowing.** A later language supplies whole kinds. A kind it does not supply is taken
    from the first language. `numbers` and `rules` are always the first language's.
    `constructions` are never borrowed: they hold words, so a language that declares none has
-   none (TTG-RFC-0006 §5).
+   none (TTG-RFC-0006 §5). Nor are `acts`, for the same reason (TTG-RFC-0007 §4.1).
 3. **One algebra.** A later language MUST NOT change roles, vector flags, inverses or
    `inherits`; the runtime takes all of them from the first language. A later language's
    `vectors` record contributes only `phrase:` lines and `label: <vector> | <label>` lines.
@@ -309,6 +316,7 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-11-24 | 1.9: `pro_verb` and `pro_verb_object` in §3, `vectors_head` among the reply keys in §8 (TTG-RFC-0006 0.9 §7.4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
 | 2026-11-25 | 1.10: `stem_restore` in §4, the stem endings no lemma ends bare on, and its place in the candidate order: after the undoubled stem, before the first candidate. Implemented by the personal_grimoire reference runtime (antfriend.github.io `56e14c0`). |
 | 2026-11-25 | 1.11: `trajectory_crossing`, `trajectory_alternation` and the `episode` unit in §8; `trajectory_min_episodes` and `trajectory_hold` in §9 — the shape of the sayings (TTG-RFC-0003 1.15 §4). A store that declares no `trajectory_min_episodes` replies as before. Implemented by the personal_grimoire reference runtime (antfriend.github.io `e2e02bf`). |
+| 2026-11-27 | 1.13: the tenth kind, `acts` (§9; TTG-RFC-0007 §4), never borrowed (§11.2); its reply keys (§8), the three scene numbers and `run_lane` (§9). Implemented by the personal_grimoire reference runtime (antfriend.github.io `23b5202`). |
 | 2026-11-25 | 1.12: `label_carried` among the reply keys in §8, emitted only by a bounded store (TTG-RFC-0003 1.16 §2.1). No other change. |
 
 *License: CC0*
