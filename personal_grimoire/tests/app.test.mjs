@@ -31,8 +31,8 @@ section("the store parses and round-trips");
   ok(PG.serializeStore(S.st) === STORE, "parse then write reproduces the file byte for byte");
   PG.syncTerms(S, T0, new Set());
   ok(PG.serializeStore(S.st) === STORE, "a sync with nothing new rewrites nothing");
-  const kinds = ["lexicon", "morphology", "seed", "vectors", "questions", "responses", "numbers", "rules", "constructions"];
-  ok(kinds.every(k => S.G.loaded.includes(k)), "all nine grammar kinds load", S.G.loaded.join(","));
+  const kinds = ["lexicon", "morphology", "seed", "vectors", "questions", "responses", "numbers", "rules", "constructions", "acts"];
+  ok(kinds.every(k => S.G.loaded.includes(k)), "all ten grammar kinds load", S.G.loaded.join(","));
   ok(!STORE.includes("@@"), "no doubled @ in any edge");
 }
 
@@ -108,8 +108,8 @@ section("a scene is a walk over the map (TTCP-RFC-0002 §10)");
   const S = fresh(), recs = PG.records(S.st);
   const byKey = new Map(recs.map(r => [r.key, r]));
   const scenes = PG.scenesOf(S.st);
-  ok(scenes.length === 1 && scenes[0].id === "@LAT96LON0", "one scene record, on the tail lane beside the README",
-     scenes.map(r => r.id).join());
+  ok(scenes.length === 2 && scenes[0].id === "@LAT96LON0" && scenes[1].id === "@LAT96LON1",
+     "two scene records on the tail lane beside the README: the walk, and a lesson that acts (TTG-RFC-0007)", scenes.map(r => r.id).join());
   ok(scenes[0].fields.some(([k, v]) => k === "type" && v === "scene"), "declared by type: scene in its header (§10.1)");
   const sc = PG.sceneOf(scenes[0]);
   ok(sc && sc.edges.length === 7 && sc.loop === false && sc.start.id === "@LAT-53.1LON174",
@@ -139,6 +139,137 @@ section("a scene is a walk over the map (TTCP-RFC-0002 §10)");
   ok(PG.sceneOf(recs.find(r => r.id === "@LAT0LON0")) === null, "a record with no scene block has no scene");
   ok(PG.sceneOf(PG.parseRecord(["@LAT1LON1 | created:1", "", FENCE + "ttdb-scene", "loop: true", FENCE, ""].join(NL))) === null,
      "and a scene block with no legs is no scene either");
+}
+
+section("acts, and scenes that do (TTG-RFC-0007)");
+{
+  const S = fresh(), recs = PG.records(S.st), byId = id => recs.find(r => r.id === id);
+  const C = S.actuators;
+  ok(!C.errors.length && ["select", "highlight", "hold", "play", "ask", "reread", "tell"].every(k => C.list.has(k)),
+     "Blueprint 9's contract declares the reference actuators, every line well formed (§3.1)", [...C.list.keys()].join(" "));
+  ok(C.list.get("select").cls === "view" && C.list.get("ask").cls === "query" && C.list.get("tell").cls === "write", "each with its class");
+  const H = PG.actuatorsOf(S, { select:"view", ask:"write" });
+  ok(H.list.get("ask").cls === "write" && H.errors.some(e => e.reason === "class" && e.line === "ask"),
+     "a host's higher class wins, and the disagreement is reported (§3.2)");
+  ok(H.list.get("highlight").missing && !H.list.get("select").missing, "an actuator the host lacks is missing, not an error");
+  const bad = PG.openStore(STORE.replace("actuator: hold      | ms: int          | class: view", "actuator: hold | ms: integer | class: view"));
+  ok(bad.actuators.errors.some(e => e.reason === "shape") && !bad.actuators.list.has("hold"), "a contract line with an unknown parameter type is rejected");
+
+  const act = (t, lang) => PG.actOf(S, t, lang), id = l => S.things.get(l).chunk.rec.id;
+  const pixel = id("pixel"), penguin = id("penguin"), self = id("self");
+  const a1 = act("Show Pixel.");
+  ok(a1 && a1.actuator === "select" && a1.args.target === pixel, "Show Pixel. is the select act, its target Pixel's record (§4.2)");
+  ok(PG.shapeOf(S, "Show Pixel.").percepts.every(p => p.s === "-" || p.v === "-"), "which the chain alone reads as a mention: so an act is matched before it");
+  ok((act("Showing Pixel.") || {}).actuator === "select", "a verb among an act's words is matched by its lemma");
+  ok(act("Show me Pixel.").args.target === pixel && act("Show me.").args.target === self, "the speaker straight after the act is who it is for; alone, the target");
+  ok(act("Take me to the penguin.").args.target === penguin, "the longest act wins");
+  ok(act("Light up that.").args.records === "answer" && act("Light up it.").args.records === "answer", "a ref: line stands for what the last reply lit");
+  const k = act("Go to the kitchen.");
+  ok(k && k.args.target == null && k.missing.join() === "kitchen", "a target no record answers to is missing, and blocks the act", JSON.stringify(k && k.missing));
+  ok(act("I show Pixel.") === null && act("Pixel, show me.") === null, "a sentence with a subject is never an act: an act is at the head (§4.3)");
+  ok(act("Tell me about penguins.") === null && PG.answer(fresh(), "Tell me about penguins.", T0).intent === "portrait",
+     "tell is no act word, so Tell me about penguins is still a question");
+  ok(act("Show.").error === "shape" && act("Show cats and penguins.").error === "shape", "select takes one target: none, or two, is shape");
+  const es = act("Muestra a Pixel.");
+  ok(es && es.lang === "es" && es.args.target === pixel, "Muestra a Pixel. is Spanish's own act, its object mark set aside");
+  ok(act("Muestro a Pixel.") === null, "and Muestro a Pixel is a saying: the speaker's own verb form has a subject");
+  const noEs = PG.openStore(STORE.replace(/@LAT-88LON180 \|[\s\S]*?\n---\n/, ""));
+  ok(!noEs.grammars.find(G => G.lang === "es").actLines.length && PG.actOf(noEs, "Muestra a Pixel.") === null && PG.actOf(noEs, "Show Pixel.") !== null,
+     "a language with no acts record borrows none (§4.1)");
+
+  {
+    const T = fresh(), lane = () => PG.records(T.st).filter(r => r.lat === 90).length, before = lane();
+    const r = PG.answer(T, "Show Pixel.", T0);
+    ok(r.intent === "act" && r.calls.length === 1 && r.calls[0].actuator === "select" && lane() === before,
+       "in the composer, an input that is all acts is the act intent, and writes no episode (§4.3)");
+    ok(r.done.join() === "Show Pixel." && PG.replyText(T, r).includes(PG.say(T.G, "label_done")), "it is printed as done");
+    const m = PG.answer(T, "Show Pixel. Pixel is black.", T0 + 60);
+    ok(m.intent === "perceive" && lane() === before + 1 && m.notes.some(n => n.includes("Show Pixel.")), "a mixed input is read as said, and its act named as not done");
+    const none = PG.openStore(STORE.replace(/@LAT-88LON0 \|[\s\S]*?\n---\n/, "").replace(/@LAT-88LON180 \|[\s\S]*?\n---\n/, ""));
+    const was = PG.records(none.st).filter(r => r.lat === 90).length;
+    ok(PG.answer(none, "Show Pixel.", T0).intent === "perceive" && PG.records(none.st).filter(r => r.lat === 90).length === was + 1,
+       "a store that declares no acts reads it as it did before: a saying (§12)");
+  }
+  ok(PG.answer(fresh(), "Is Pixel an animal?", T0).key === "affirm_inferred" && PG.answer(fresh(), "Do I like coffee?", T0).key === "contest",
+     "a reply carries the key its verdict is said by, which is what a step branches on");
+
+  const lesson = byId("@LAT96LON1"), plan = PG.planOf(S, lesson);
+  ok(lesson.type === "scene" && plan.steps && !plan.errors.length && !plan.stale, "the lesson compiles with no rejected line, pinned to the grammar the store holds",
+     JSON.stringify(plan.errors));
+  const order = plan.calls.map(c => c.step).join(" ");
+  ok(order === "pixel chain why penguin fly coffee doubts.1 whale never home", "its steps in line order, the generator expanded (§5.3, §5.4)", order);
+  ok(plan.cls === "query" && plan.calls.find(c => c.step === "never").unresolved.join() === "whale", "it writes nothing, and the whale step names what it lacks");
+  ok(/^[0-9a-f]{16}$/.test(plan.hash) && PG.planOf(fresh(), lesson).hash === plan.hash, "a plan is a pure function of the store: one store, one hash (§6.1)");
+  const run = PG.playPlan(S, plan, T0), got = run.steps.map(s => s.step + ":" + s.outcome).join(" ");
+  ok(got === "pixel:done chain:affirm_inferred why:done penguin:done fly:deny coffee:contest doubts.1:done whale:unknown home:done",
+     "played, each question answered from the corpus, and unknown branches home past the whale", got);
+  ok(run.steps.find(s => s.step === "chain").grounds.length === 3 && run.steps.find(s => s.step === "fly").grounds.join() === "@LAT90LON2#2",
+     "and each slide keeps the sayings that grounded it (§8.3)");
+  {
+    const X = PG.openStore(STORE.replace("| ask: Can penguins fly?     | expect: deny", "| ask: Can penguins fly?     | expect: affirm"));
+    const xp = PG.planOf(X, PG.records(X.st).find(r => r.id === "@LAT96LON1"));
+    const out = PG.actCall(X, xp, PG.runStart(X, xp), xp.calls.findIndex(c => c.step === "fly"), T0);
+    ok(out.key === "deny" && out.notes.some(n => n.includes("affirm") && n.includes("deny")), "an ask that replies otherwise than expected says so (§10.1)");
+  }
+  const walk = PG.planOf(S, byId("@LAT96LON0"));
+  ok(!walk.steps && walk.calls.length === 8 && walk.calls[0].args.target === "@LAT-53.1LON174" && walk.calls[7].args.target === "@LAT0LON0",
+     "an edge scene compiles to the selects it walks (§5.3)");
+
+  const sceneRec = lines => PG.parseRecord(["@LAT96LON9 | created:1 | type:scene", "", FENCE + "ttdb-scene"].concat(lines, [FENCE, ""]).join(NL));
+  const why = lines => PG.planOf(S, sceneRec(lines)).errors.map(e => e.reason).join(" ");
+  ok(why(["step: a | say: Pixel is a cat."]) === "unsafe", "a say: that is not an act is rejected as unsafe (§7)");
+  ok(why(["step: a | ask: Pixel is a cat."]) === "unsafe", "and so is an ask: that reads as a statement: an ask never tells");
+  ok(why(["step: a | do: fly | target: @LAT0LON0"]) === "actuator", "a do: naming no declared actuator");
+  ok(why(["step: a | say: Show Pixel. | ask: Is Pixel a cat?"]) === "shape" && why(["step: a | do: select | target: @LAT0LON0 | colour: red"]) === "shape",
+     "two actions in one step, or a field that is neither the actuator's nor a step's, is shape");
+  ok(why(["step: a | do: select | target: @LAT0LON0", "step: a | do: select | target: @LAT0LON0"]).includes("name") &&
+     why(["step: a | ask: Is Pixel a cat? | on_unknown: nowhere"]) === "name", "a step name used twice, or a branch to no step");
+  const mixed = ["edge: x | from: @LAT0LON0 | to: @LAT0LON0", "step: a | do: select | target: @LAT0LON0"];
+  ok(why(mixed) === "mixed" && !PG.planOf(S, sceneRec(mixed)).calls.length, "edges and steps in one block: mixed, and nothing plays");
+  ok(why(Array.from({ length:S.G.num.scene_max_steps + 1 }, (_, i) => "step: s" + i + " | do: select | target: @LAT0LON0")) === "length", "a plan over scene_max_steps");
+  ok(why(["step: a | do: select | target: ?ttdb=other_ttdb.md&toot=lat1lon1"]) === "", "a step may reach another store with a view actuator (§8.5)");
+  ok(PG.playPlan(S, PG.planOf(S, sceneRec(["loop: true", "step: a | do: select | target: @LAT0LON0"])), T0).stopped === "visits",
+     "a looping run stops after scene_max_visits visits to one step (§6.2)");
+  {
+    const T = fresh(), lane = () => PG.records(T.st).filter(r => r.lat === 90);
+    const tp = PG.planOf(T, sceneRec(["log: true", "step: say_it | tell: Pixel is black."]));
+    ok(tp.cls === "write", "a tell step is a write");
+    const refused = PG.playPlan(T, tp, T0);
+    ok(refused.stopped === "refused" && lane().length === 8, "and without consent it is refused before it writes (§6.3)");
+    const done = PG.playPlan(T, tp, T0 + 60, "write"), ep = lane().pop();
+    ok(done.stopped === "end" && done.consent === "write" && lane().length === 9, "with it, the sentence is an episode, the owner's");
+    const src = PG.parseBlock(ep.episode).source;
+    ok(src === "@LAT96LON9 | step: say_it | run: @LAT97LON1" && ep.edges.some(e => e.type === T.G.roles.act_edge && e.target && e.target.id === "@LAT96LON9"),
+       "whose source names the scene, the step and the run, with an edge to the scene (§8.3)", src);
+  }
+  {
+    const T = fresh(), L = PG.records(T.st).find(r => r.id === "@LAT96LON1"), p1 = PG.planOf(T, L);
+    const id1 = PG.writeRun(T, p1, PG.playPlan(T, p1, T0), T0);
+    const r1 = PG.runsOf(T, L.id);
+    ok(id1 === "@LAT97LON1" && r1.length === 1 && r1[0].after === "@LAT90LON8" && r1[0].grammar === p1.grammar && r1[0].plan === p1.hash,
+       "a scene that logs writes its run on the run lane: the episode it was played after, its grammar and its plan (§8.4)");
+    const text = PG.serializeStore(T.st), T2 = PG.openStore(text);
+    ok(PG.serializeStore(T2.st) === text && T2.trips.size === fresh().trips.size && T2.episodes.length === 8,
+       "a run record round-trips and is not evidence: no belief, no episode");
+    PG.answer(T, "A whale is a fish.", T0 + 60);
+    const said = PG.records(T.st).filter(r => r.lat === 90).pop().id;
+    const p2 = PG.planOf(T, L), id2 = PG.writeRun(T, p2, PG.playPlan(T, p2, T0 + 120), T0 + 120);
+    const d = PG.driftOf(T, id1, id2);
+    ok(id2 === "@LAT97LON2" && d && d.steps.map(s => s.step).join(" ") === "whale never" && d.steps[0].episodes.join() === said && !d.grammarChanged,
+       "drift names the slides that moved and the saying that moved them", d && JSON.stringify(d.steps.map(s => [s.step, s.was && s.was.outcome, s.now && s.now.outcome, s.episodes])));
+    PG.startEmpty(T, T0 + 180);
+    ok(!PG.records(T.st).some(r => r.lat === 97), "start empty forgets the runs with the episodes they quote");
+  }
+  {
+    const T = PG.openStore(STORE.replace("act: light up | highlight", "act: light up | highlight" + NL + "act: point at | select"));
+    const rr = PG.reread(T);
+    ok(rr.scenes.length === 1 && rr.scenes[0].scene === "@LAT96LON1" && !rr.changed.length,
+       "a grammar change leaves the lesson's pin behind: the re-reading names the scene, and no sentence (§8.2)");
+    ok(PG.pinScene(T, "@LAT96LON1", "0000000000000000", T0) === null, "a pin to any grammar but the store's now is refused");
+    const rec = PG.pinScene(T, "@LAT96LON1", rr.grammar, T0);
+    ok(rec && rec.rev === 1 && PG.sceneOf(rec).grammar === rr.grammar && !PG.reread(T).scenes.length,
+       "pinning again takes the new reading: an edit to the scene, its rev one more");
+  }
 }
 
 section("consolidated beliefs match their percepts (no drift)");
@@ -854,9 +985,9 @@ section("start empty keeps the kit");
   const recs = PG.records(S.st);
   ok(!recs.some(r => r.lat === 90), "no episodes left");
   ok(S.things.size === 1 && S.things.has("self") && S.vectors.size === 0, "only the speaker remains as a term");
-  ok(recs.filter(r => r.lon === 0 && r.lat > -90 && r.lat < 90).length === 19, "home, nine blueprint and nine grammar records kept");
+  ok(recs.filter(r => r.lon === 0 && r.lat > -90 && r.lat < 90).length === 20, "home, nine blueprint and ten grammar records kept");
   ok(recs.some(r => r.id === "@LAT99LON1") && recs.some(r => r.lat === 98) && recs.some(r => r.lat === -90), "lanes 98, 99 and the special record kept");
-  ok(recs.filter(r => r.lon === 180 && r.grammar != null).length === 7 && S.grammars.length === 2, "the second language on the antimeridian kept");
+  ok(recs.filter(r => r.lon === 180 && r.grammar != null).length === 8 && S.grammars.length === 2, "the second language on the antimeridian kept");
   const r = PG.answer(S, "I like tea.", T0 + 60);
   ok(r.episode.id === "@LAT90LON1", "the first new episode is ordinal 1 again");
   // the fixture survives Start empty, and its sentence shares words with ordinary speech
@@ -1673,9 +1804,15 @@ section("the file IS the grammar");
   // `said` a verb form, `type` the head of the phrasal vector *a type of* — and a key the file
   // format names (TTDB-RFC-0001 §5) is a key wherever the language also happens to use it.
   const SCHEMA = new Set(["kind", "class", "lemma", "forms", "seen", "asked", "belief", "source", "at", "said", "percept", "lang", "label", "type"]);
+  // The keys TTG-RFC-0007 defines that English also has: actuator keys (§3.1), step actions and fields (§5.2),
+  // a class (§3.1) and a run's outcomes (§8.4). The runtime names them as keys, never matches input against them,
+  // and the words that do match input, the acts', are in the grammar and checked below like every other word.
+  for (const k of ["hold", "play", "tell", "write", "say", "do", "each", "expect", "done", "end"]) SCHEMA.add(k);
+  const head = line => String(line).split("|")[0].trim().split(/\s+/);
   const vocab = new Set(Gs.flatMap(G => [...G.classes.keys(), ...G.whole.keys(), ...G.nounIrr.keys(), ...G.nounIrr.values(),
     ...G.verbIrr.keys(), ...G.verbIrr.values(), ...G.seed, ...G.stanceNoun, ...G.vectors.keys(), ...G.phrases.flatMap(p => p[0]),
-    ...G.whThing, ...G.whPlace.keys(), ...G.about, ...[...G.vectors.values()].map(v => v.label)]).filter(w => w.length >= 2 && !SCHEMA.has(w)));
+    ...G.whThing, ...G.whPlace.keys(), ...G.about, ...[...G.vectors.values()].map(v => v.label),
+    ...G.actLines.flatMap(head), ...G.refLines.flatMap(head)]).filter(w => w.length >= 2 && !SCHEMA.has(w)));
   const leaks = [...vocab].filter(w => new RegExp("[\"'`]" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[\"'`]").test(code));
   ok(leaks.length === 0, "no word of either language's grammar is a string literal in index.html (" + vocab.size + " checked)", leaks.join(", "));
   const said = Gs.flatMap(G => Object.values(G.say)).filter(p => p.length >= 6);

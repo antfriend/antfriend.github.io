@@ -57,7 +57,7 @@ for (const m of store.matchAll(/^src: (RFCs\/[^\s]+) §(\d+)/gm)){
   ok(exists && new RegExp("^## " + m[2] + "\\. ", "m").test(fs.readFileSync(file, "utf8")), "src: " + m[1] + " §" + m[2] + " exists");
 }
 ok(recs.filter(r => r.lon === 0 && r.lat > 0 && r.lat < 90).length === 9, "nine blueprint records north of the origin");
-ok(recs.filter(r => r.lon === 0 && r.lat < 0 && r.lat > -90 && r.grammar != null).length === 9, "nine grammar records south of it");
+ok(recs.filter(r => r.lon === 0 && r.lat < 0 && r.lat > -90 && r.grammar != null).length === 10, "ten grammar records south of it");
 ok(rfcs.filter(f => f.startsWith("TTG-")).every(f => index.includes(f)) && rfcs.every(f => f === "INDEX.md" || index.includes(f)),
    "RFCs/INDEX.md lists every RFC in the folder");
 

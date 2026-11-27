@@ -221,6 +221,9 @@ input[type=search]{flex:1;min-width:120px;caret-color:var(--accent)}
 .scene li{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;padding:2px 0}
 .scene em{color:var(--dim);font-style:normal;font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;min-width:6.5em}
 .scene a{color:var(--accent);text-decoration:none}
+.scene .x{color:var(--warn,#c80)}
+.scene q{color:var(--ink)}
+.g.done .lab{color:var(--dim)}
 .edges{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:.8rem}
 .edges b{display:block;font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
 .edges a{text-decoration:none;margin-right:4px}
@@ -298,7 +301,8 @@ footer{margin-top:26px;font-size:.8rem;color:var(--dim);border-top:1px solid var
   <input type="file" id="openstore" accept=".md" hidden>
   <button type="button" id="reset" data-confirm-example="Read the example store again, as it was?" data-confirm="Forget the local copy, and everything added to it, and reload the seed file?" title="Forget the local copy and reload the seed file">Reset to seed</button>
   <button type="button" id="empty" data-confirm="Delete every episode and every term, keeping the grammar and the blueprint?" title="Keep the grammar and blueprint; delete every episode and term">Start empty</button>
-  <button type="button" id="scene" hidden data-play="▶ play the scene" data-step="■ {n}/{total} · {name}"
+  <button type="button" id="scene" hidden data-play="▶ play the scene" data-step="■ {n}/{total} · {name}" data-next="▶ next · {n}/{total} · {name}"
+    data-pin="Pin to the grammar as it is now"
     title="Walk the scene: the globe turns to each record in turn, and any hand on it stops the walk">▶</button>
   <button type="button" id="rereads" hidden data-label="↻ {n} read differently now" data-confirm="Take the grammar's new reading of {n} sentences you have not amended? They are taken in order, each read again after the ones before it, so a later sentence may come to read differently and be taken too. Each becomes an amendment that names the grammar it came from."
     data-done="Took the grammar's reading of {n} sentences." title="The grammar and your words now read some sentences differently from when they were written">↻</button>
@@ -488,6 +492,8 @@ function parseRecord(raw){
   r.scene = fence(rest, "ttdb-scene");
   r.grammar = fence(rest, "ttdb-grammar");
   r.include = fence(rest, "ttdb-include");
+  r.actuators = fence(rest, "ttdb-actuators");
+  r.run = fence(rest, "ttdb-run");
   r.body = rest.replace(new RegExp(FENCE + "ttdb-[a-z]+\\n[\\s\\S]*?" + FENCE, "g"), "").trim();
   return r;
 }
@@ -567,6 +573,11 @@ function insertChunk(st, c){
 function sceneOf(rec){
   if (!rec || rec.scene == null) return null;
   const b = parseBlock(rec.scene);
+  // steps (TTG-RFC-0007 §5): a name, then `key: value` parts, the action among them
+  const steps = many(b, "step").map(line => {
+    const c = cols(line);
+    return { name:c[0], line, fields:c.slice(1).map(part => { const i = part.indexOf(":"); return i > 0 ? [part.slice(0, i).trim(), part.slice(i + 1).trim()] : [part, null]; }) };
+  });
   const edges = many(b, "edge").map(line => {
     const [name, ...rest] = cols(line);
     const f = {};
@@ -575,10 +586,407 @@ function sceneOf(rec){
     const hold = +f.hold_ms;
     return name && from && to ? { name, from, to, hold: hold > 0 ? hold : 1400 } : null;
   }).filter(Boolean);
-  if (!edges.length) return null;
-  return { start: parseId(b.start_node || "") || edges[0].from, loop: String(b.loop).trim() === "true", edges };
+  if (!edges.length && !steps.length) return null;
+  return { start: parseId(b.start_node || "") || (edges[0] ? edges[0].from : null), loop: String(b.loop).trim() === "true", edges,
+           steps, advance:String(b.advance || "").trim() || ADVANCES[0], grammar:b.grammar ? String(b.grammar).trim() : null,
+           log:String(b.log).trim() === "true", lang:b.lang ? String(b.lang).trim() : null, audio:b.audio_path || null };
 }
 const scenesOf = st => records(st).filter(r => r.type === "scene" && r.scene != null);
+
+/* ---------- acts, and scenes that do (TTG-RFC-0007) -------------------- *
+ * A saying is claimed; an act is done. An actuator is a capability the host
+ * implements, named by a schema key and declared with its side-effect class
+ * in the store's ttdb-actuators contract (§3); the host's own class wins when
+ * it is higher. An act binds a language's words to one (§4). It is matched at
+ * a sentence's head before the chain, which reads an imperative as a mention,
+ * and it is never a percept. A scene's steps say, ask, tell or call an
+ * actuator in line order (§5); the engine compiles them into a plan, a pure
+ * function of the store, and makes the calls that read or write the store.
+ * The page makes the rest, because only it has a clock and a globe (§6).   */
+const CLASSES = ["view", "query", "write", "device"];
+const classRank = c => CLASSES.indexOf(c);
+const PARAM_TYPES = ["record", "records", "sentence", "int", "float", "path"];
+const STEP_ACTIONS = ["say", "ask", "tell", "do", "each"];
+const STEP_FIELDS = ["hold_ms", "advance", "expect", "next", "duration_ms", "travel_px", "dir_x", "dir_y", "beats", "priority", "max"];
+const ADVANCES = ["hold", "hand", "beat"];
+const SOURCES = ["contested", "eps_top", "superseded", "answer", "episodes"];
+// the reply keys a step may branch on or expect (TTG-RFC-0003 §4); an ask never tells, so no noted key is one
+const VERDICTS = ["affirm", "deny", "affirm_inferred", "deny_inferred", "contest", "unknown", "deny_superseded", "nothing_found"];
+// the actuators the engine makes itself, because they read or write the store (§3.3); every other is the host's
+const STORE_ACTS = { ask:"ask", reread:"reread", tell:"tell" };
+const HOLD_DEFAULT = 1400;                 // TTCP-RFC-0002 §10.2
+const ANSWER = "answer", SELF = "self";    // what a ref: line or a records field may stand for (§4.1, §5.3)
+const sentenceParam = a => (a && a.params.find(p => p.type === "sentence")) || null;
+const targetParam = a => (a && a.params.find(p => p.type === "record" || p.type === "records")) || null;
+const selfId = S => { const t = S.things.get(S.G.sphere.self_lemma); return t ? t.chunk.rec.id : makeId(0, 0, 0); };
+
+/* The contract (§3.1), and the host's word on it (§3.2): `host` maps each key the
+   host implements to its class. A key the host lacks is missing, not an error. */
+function actuatorsOf(S, host){
+  const list = new Map(), errors = [];
+  for (const r of records(S.st)) if (r.actuators != null){
+    for (const line of many(parseBlock(r.actuators), "actuator")){
+      const c = cols(line), key = c[0], params = [], cls = [];
+      for (const part of c.slice(1)){
+        const i = part.indexOf(":");
+        if (i <= 0){ params.push(null); continue; }
+        const k = part.slice(0, i).trim(), v = part.slice(i + 1).trim();
+        if (k === CLASS_KEY) cls.push(v); else params.push({ name:k, type:v.replace(/\?$/, ""), opt:v.endsWith("?") });
+      }
+      if (!/^[a-z0-9_]+$/.test(key || "") || list.has(key) || cls.length !== 1 || classRank(cls[0]) < 0 ||
+          params.some(x => !x || !/^[a-z0-9_]+$/.test(x.name) || !PARAM_TYPES.includes(x.type))){ errors.push({ line, reason:"shape" }); continue; }
+      list.set(key, { key, params, cls:cls[0], declared:cls[0], missing:false });
+    }
+  }
+  if (host) for (const a of list.values()){
+    if (host[a.key] == null){ a.missing = true; continue; }
+    if (classRank(host[a.key]) > classRank(a.cls)){ errors.push({ line:a.key, reason:"class" }); a.cls = host[a.key]; }
+  }
+  return { list, errors };
+}
+const CLASS_KEY = "class";
+/* A language's acts and refs, longest words first so the longest act wins, a
+   tie going to the one written first (§4.2, step 2).                       */
+function actsOf(S, lang){
+  const G = lang == null ? S.G : grammarOf(S, lang), C = S.actuators.list;
+  const acts = [], refs = [], errors = [];
+  for (const line of G.actLines){
+    const c = cols(line), ws = words(String(c[0] || "").toLowerCase());
+    if (!ws.length || c.length !== 2 || !c[1]){ errors.push({ line, reason:"shape" }); continue; }
+    if (!C.has(c[1])){ errors.push({ line, reason:"actuator" }); continue; }
+    acts.push({ words:ws, actuator:c[1], line });
+  }
+  for (const line of G.refLines){
+    const c = cols(line), ws = words(String(c[0] || "").toLowerCase());
+    if (!ws.length || c.length !== 2 || (c[1] !== ANSWER && c[1] !== SELF)){ errors.push({ line, reason:"shape" }); continue; }
+    refs.push({ words:ws, to:c[1] });
+  }
+  acts.sort((a, z) => z.words.length - a.words.length);
+  return { lang:G.lang, acts, refs, errors };
+}
+/* Read a sentence as an act, under the grammar in use (§4.2): its first tokens
+   are an act's words, a verb matched by its lemma; what follows is its targets
+   or its sentence. `missing` are the phrases that resolve to nothing.     */
+function actIn(S, text){
+  const { acts, refs } = actsOf(S), G = S.G;
+  if (!acts.length) return null;
+  const toks = tokenize(S, text).filter(t => !(t.punct && G.sentenceEnd.has(t.w)) && !has(t, "filler"));
+  const same = (t, w) => !!t && !t.punct && (t.w === w || verbLemma(S, t.w).lemma === w);
+  const act = acts.find(a => a.words.every((w, j) => same(toks[j], w)));
+  if (!act) return null;
+  const A = S.actuators.list.get(act.actuator);
+  const out = { lang:G.lang, text, words:act.words.join(" "), actuator:act.actuator, cls:A.cls, args:{}, targets:[], missing:[], error:null };
+  const sp = sentenceParam(A), tp = targetParam(A);
+  if (sp){
+    const rest = words(text).slice(act.words.length).join(" ");
+    if (rest) out.args[sp.name] = rest; else if (!sp.opt) out.error = "shape";
+    return out;
+  }
+  const rest = toks.slice(act.words.length);
+  const bare = rest.filter(t => !t.punct), lex = bare.filter(t => !has(t, "det") && !G.objectMark.has(t.w));
+  const isRef = (r, ts) => r.words.length === ts.length && r.words.every((w, j) => ts[j].w === w);
+  const ref = refs.find(r => isRef(r, bare) || isRef(r, lex));
+  if (ref) out.targets.push(ref.to === SELF ? selfId(S) : ANSWER);
+  else if (bare.length){
+    const nps = nounPhrases(S, rest, 0, rest.length);
+    // the speaker straight after the act's words, with a phrase after it, is who the act is for: show me Pixel
+    if (nps.length > 1 && nps[0].pron === "self" && nps[0].start === 0) nps.shift();
+    for (const np of nps){
+      const h = headOf(S, np, { last:null });
+      const t = h && (S.things.get(h.lemma) || S.vectors.get(h.lemma));
+      if (t) out.targets.push(t.chunk.rec.id); else out.missing.push(np.words.map(x => x.w).join(" "));
+    }
+  }
+  const n = out.targets.length + out.missing.length;
+  if (!tp){ if (n) out.error = "shape"; return out; }
+  if (tp.type === "record"){
+    if (n > 1) out.error = "shape";
+    else if (out.targets.length) out.args[tp.name] = out.targets[0];
+    else if (!n && !tp.opt) out.error = "shape";
+  } else if (out.targets.length) out.args[tp.name] = out.targets.join(" ");
+  return out;
+}
+/* In act context, the language is one whose act words match the sentence's
+   head; of several, the one §11.4 would choose among them (§4.2, step 1).  */
+function actOf(S, text, lang){
+  const Gs = (lang ? [grammarOf(S, lang)] : S.grammars).filter(G => G.actLines.length);
+  const hits = Gs.map(G => ({ G, a:withGrammar(S, G, () => actIn(S, text)) })).filter(h => h.a);
+  if (!hits.length) return null;
+  const G = hits.length > 1 ? pickAmong(S, text, hits.map(h => h.G)) : hits[0].G;
+  return hits.find(h => h.G === G).a;
+}
+/* A record argument is a record ID, `answer`, or a link into another store. */
+const refArg = v => { const r = parseId(v); return r && r.id === v ? r.id : /^\?ttdb=/.test(v) ? v : v === ANSWER ? ANSWER : null; };
+function argOf(p, v){
+  if (p.type === "int") return /^-?\d+$/.test(v) ? +v : null;
+  if (p.type === "float") return v !== "" && isFinite(+v) ? +v : null;
+  if (p.type === "record") return refArg(v);
+  if (p.type === "records"){ const r = words(v).map(refArg); return r.length && r.every(Boolean) ? r.join(" ") : null; }
+  return v;
+}
+/* The items a generator walks (§5.4), fixed when the plan is made. */
+function sourceItems(S, src, max){
+  const terms = () => [...S.things.values(), ...S.vectors.values()].map(t => t.chunk.rec);
+  let ids = [];
+  if (src === SOURCES[0]){
+    const subs = new Set([...S.trips.values()].filter(e => e.pol === "?").map(e => e.s));
+    ids = [...subs].map(s => S.things.get(s)).filter(Boolean).map(t => t.chunk.rec).sort((a, z) => z.epsRaw - a.epsRaw).map(r => r.id);
+  } else if (src === SOURCES[1]) ids = terms().sort((a, z) => z.epsRaw - a.epsRaw).map(r => r.id);
+  else if (src === SOURCES[2]) ids = [...new Set([...S.superseded.values()].sort((a, z) => z.by.t - a.by.t)
+                                     .map(x => S.things.get(x.fact.s)).filter(Boolean).map(t => t.chunk.rec.id))];
+  else if (src === SOURCES[4]) ids = S.episodes.map(c => c.rec.id);
+  return ids.slice(0, Math.max(0, max));
+}
+/* One call of a plan (§6.1). `missing` is an actuator the host lacks, `unresolved`
+   the phrases no record answers to; either one blocks the call, and it is shown. */
+function callOf(A, step, action, actuator, args, f, extra){
+  const get = k => f ? f.get(k) : undefined;
+  return { step, action, actuator, args, cls:A ? A.cls : CLASSES[0], hold:+get("hold_ms") > 0 ? +get("hold_ms") : HOLD_DEFAULT,
+           advance:get("advance") || "", beats:+get("beats") > 0 ? +get("beats") : 1, expect:get("expect") || "",
+           branches:{}, next:get("next") || "", source:"", lang:null, missing:A && A.missing ? actuator : null, unresolved:[],
+           each:null, transition:f ? Object.fromEntries(["duration_ms", "travel_px", "dir_x", "dir_y"].filter(k => f.has(k)).map(k => [k, +f.get(k)])) : {},
+           priority:+get("priority") || 0, ...extra };
+}
+const blocked = c => !!(c.missing || c.unresolved.length);
+/* Compile a scene against the store (§6.1). `host` is the host's registry; with
+   none, every declared actuator is taken as there. Rejected steps are reported
+   and left out (§7); a mixed block or an over-long plan has no calls at all.   */
+function planOf(S, rec, host){
+  const sc = sceneOf(rec);
+  if (!sc) return null;
+  const C = host ? actuatorsOf(S, host) : S.actuators, N = S.G.num;
+  const plan = { scene:rec.id, title:rec.title, steps:!!sc.steps.length, loop:sc.loop, advance:sc.advance, log:sc.log, audio:sc.audio,
+                 pin:sc.grammar, grammar:grammarHash(S), stale:false, calls:[], errors:C.errors.slice(), cls:CLASSES[0], hash:"", rev:rec.rev };
+  plan.stale = !!sc.grammar && sc.grammar !== plan.grammar;
+  const reject = (step, reason) => plan.errors.push({ step, reason });
+  const select = C.list.get("select");
+  if (sc.edges.length && sc.steps.length) reject("", "mixed");
+  else if (!sc.steps.length){
+    // an edge scene as steps (§5.3): select the start, then each leg's far end, each holding its leg's hold
+    const p = targetParam(select), name = p ? p.name : "target";
+    const legs = [{ to:sc.start, hold:sc.edges[0].hold, name:sc.edges[0].name }].concat(sc.edges.map((e, i) => ({ to:e.to, hold:(sc.edges[i + 1] || e).hold, name:e.name })));
+    legs.forEach((l, i) => plan.calls.push(callOf(select, String(i), "do", "select", { [name]:l.to.id }, null, { hold:l.hold, source:l.name })));
+  } else {
+    const names = new Set();
+    for (const st of sc.steps){ if (names.has(st.name)) reject(st.name, "name"); names.add(st.name); }
+    for (const st of sc.steps){
+      const f = new Map(); let bad = !/^[a-z0-9_]+$/.test(st.name || "");
+      for (const [k, v] of st.fields){ if (v == null || f.has(k)) bad = true; else f.set(k, v); }
+      const acts = STEP_ACTIONS.filter(k => f.has(k)), each = f.has("each");
+      if (bad || (each ? !(acts.length === 2 && f.has("do")) : acts.length !== 1)){ reject(st.name, "shape"); continue; }
+      const action = each ? "each" : acts[0];
+      let actuator = "", args = {}, unresolved = [], lang = null;
+      if (action === "say"){
+        if (!(sc.lang ? grammarOf(S, sc.lang).actLines.length : S.grammars.some(G => G.actLines.length))){ reject(st.name, "language"); continue; }
+        const a = actOf(S, f.get("say"), sc.lang);
+        if (!a){ reject(st.name, "unsafe"); continue; }
+        if (a.error){ reject(st.name, a.error); continue; }
+        actuator = a.actuator; args = a.args; unresolved = a.missing; lang = a.lang;
+      } else if (action === "ask" || action === "tell"){
+        actuator = action === "ask" ? STORE_ACTS.ask : STORE_ACTS.tell;
+        const sp = sentenceParam(C.list.get(actuator));
+        if (!sp){ reject(st.name, "actuator"); continue; }
+        args = { [sp.name]:f.get(action) };
+        const G = sc.lang ? grammarOf(S, sc.lang) : pickGrammar(S, f.get(action));
+        lang = G.lang;
+        // an ask never tells (§4.3): a question a scene asks writes only the cursor
+        if (action === "ask" && withGrammar(S, G, () => interpret(S, f.get(action)).intent) === "perceive"){ reject(st.name, "unsafe"); continue; }
+      } else actuator = f.get("do");
+      const A = C.list.get(actuator);
+      if (!A){ reject(st.name, "actuator"); continue; }
+      // fields: the action's, the step's own, a branch, or a parameter of the actuator
+      const own = new Set(STEP_ACTIONS.concat(STEP_FIELDS, A.params.map(x => x.name)));
+      let ok = [...f.keys()].every(k => own.has(k) || (k.startsWith("on_") && VERDICTS.includes(k.slice(3))));
+      if (action === "do" || action === "each") for (const x of A.params){
+        if (!f.has(x.name)) continue;
+        const v = argOf(x, f.get(x.name));
+        if (v == null) ok = false; else args[x.name] = v;
+      }
+      const tp = targetParam(A);
+      for (const x of A.params) if (!x.opt && args[x.name] == null && !(each && x === tp) && !(unresolved.length && x === tp)) ok = false;
+      if (each && !tp) ok = false;
+      if (f.has("advance") && !ADVANCES.includes(f.get("advance"))) ok = false;
+      if (f.has("expect") && !VERDICTS.includes(f.get("expect"))) ok = false;
+      if (each && !SOURCES.includes(f.get("each"))) ok = false;
+      if (!ok){ reject(st.name, "shape"); continue; }
+      // a step reaches another store with a view actuator only (§8.5)
+      if (Object.values(args).some(v => typeof v === "string" && v.indexOf("?ttdb=") >= 0) && A.cls !== CLASSES[0]){ reject(st.name, "unsafe"); continue; }
+      const base = callOf(A, st.name, action, actuator, args, f, { source:st.line, said:f.get(action === "each" || action === "do" ? "" : action) || "", lang, unresolved });
+      for (const k of f.keys()) if (k.startsWith("on_")) base.branches[k.slice(3)] = f.get(k);
+      if (!each){ plan.calls.push(base); continue; }
+      const max = Math.min(+f.get("max") > 0 ? +f.get("max") : Infinity, N.scene_each_max);
+      if (f.get("each") === ANSWER){ plan.calls.push({ ...base, each:{ source:ANSWER, max, param:tp.name } }); continue; }
+      const items = sourceItems(S, f.get("each"), max);
+      // only the last of a generator's steps carries where it goes next
+      items.forEach((id, k) => plan.calls.push({ ...base, step:st.name + "." + (k + 1), args:{ ...args, [tp.name]:id },
+        branches:k === items.length - 1 ? base.branches : {}, next:k === items.length - 1 ? base.next : "" }));
+    }
+    for (const c of plan.calls) for (const to of Object.values(c.branches).concat(c.next ? [c.next] : []))
+      if (!sc.steps.some(s => s.name === to)) reject(c.step, "name");
+  }
+  if (plan.errors.some(e => e.reason === "mixed")) plan.calls = [];
+  if (isFinite(N.scene_max_steps) && plan.calls.length > N.scene_max_steps){ reject("", "length"); plan.calls = []; }
+  plan.calls.forEach(c => { if (!c.advance) c.advance = plan.advance; });
+  plan.cls = plan.calls.reduce((m, c) => classRank(c.cls) > classRank(m) ? c.cls : m, CLASSES[0]);
+  plan.hash = hash16(JSON.stringify(plan.calls.map(c => [c.step, c.actuator, c.args, c.hold, c.advance, c.beats, c.expect, c.branches, c.next, c.each])));
+  return plan;
+}
+/* Where a run goes after a call: the branch its reply's key names, else its
+   `next`, else the next line; -1 at the end (§5.3).                        */
+function nextCall(plan, i, key){
+  const c = plan.calls[i];
+  if (!c) return -1;
+  const to = (key && c.branches[key]) || c.next;
+  if (to) return plan.calls.findIndex(x => x.step === to || x.step === to + ".1");
+  return i + 1 < plan.calls.length ? i + 1 : -1;
+}
+/* A run (§8.4): what it was played after, which is order and never a clock, and
+   the id its record will have, so a told episode can name it before it is written. */
+function runStart(S, plan){
+  const lane = S.G.sphere.run_lane == null || S.G.sphere.run_lane === "" ? NaN : +S.G.sphere.run_lane;
+  const ord = records(S.st).filter(r => r.lat === lane).reduce((m, r) => Math.max(m, r.lon), 0) + 1;
+  const last = S.episodes[S.episodes.length - 1];
+  // view and query calls need no consent, so a run starts allowed as far as query, or as far as its plan goes
+  const consent = classRank(plan.cls) <= classRank(CLASSES[1]) ? plan.cls : CLASSES[1];
+  return { id:plan.log && isFinite(lane) ? makeId(lane, ord, 0) : null, scene:plan.scene, rev:plan.rev, plan:plan.hash, grammar:plan.grammar,
+           after:last ? last.rec.id : "-", consent, steps:[], stopped:"", visits:new Map(), answer:[] };
+}
+/* The engine's half of a call: the ones that read or write the store. A call
+   the host makes comes back `host: true`, its arguments resolved.          */
+function actCall(S, plan, run, i, now){
+  const c = plan.calls[i], A = S.actuators.list.get(c.actuator), G = grammarOf(S, c.lang);
+  const out = { step:c.step, actuator:c.actuator, outcome:"done", key:"", grounds:[], reply:null, notes:[], host:false, args:{}, items:[] };
+  for (const [k, v] of Object.entries(c.args)) out.args[k] = v === ANSWER ? (targetParam(A) && targetParam(A).type === "record" ? run.answer[0] || null : run.answer.join(" ")) : v;
+  if (blocked(c)){
+    out.outcome = "blocked";
+    if (c.missing) out.notes.push(say(G, "act_blocked", { actuator:c.missing }));
+    for (const w of c.unresolved) out.notes.push(say(G, "act_no_target", { words:w }));
+    return out;
+  }
+  if (classRank(c.cls) > classRank(run.consent)){ out.outcome = "refused"; return out; }
+  const text = sentenceParam(A) ? c.args[sentenceParam(A).name] : "";
+  if (c.actuator === STORE_ACTS.ask){
+    const r = answer(S, text, now, null, null);
+    out.reply = r; out.key = r.key; out.outcome = r.key || out.outcome;
+    out.grounds = [...new Set(r.items.flatMap(g => (g.quotes || []).map(q => q.ep + "#" + q.n)))];
+    run.answer = r.records.filter(id => { const x = parseId(id); return x && Math.abs(x.lat) < 90; });
+    if (c.expect && r.key !== c.expect) out.notes.push(say(G, "scene_expect", { step:c.step, expected:c.expect, got:r.key || "-" }));
+  } else if (c.actuator === STORE_ACTS.reread){
+    const p = A.params.find(x => x.type === "record");
+    out.report = reread(S, p ? c.args[p.name] : undefined);
+  } else if (c.actuator === STORE_ACTS.tell){
+    const r = answer(S, text, now, plan.scene + " | step: " + c.step + (run.id ? " | run: " + run.id : ""), null, plan.scene);
+    out.reply = r; out.key = r.key;
+  } else {
+    out.host = true;
+    if (c.each) out.items = run.answer.slice(0, c.each.max);
+  }
+  return out;
+}
+function runNote(run, out){ run.steps.push({ step:out.step, actuator:out.actuator, outcome:out.outcome, grounds:out.grounds }); }
+/* A whole run at once, for tools and tests: host calls are taken as done, a
+   write or device call is made only if `consent` reaches its class (§6.3). */
+function playPlan(S, plan, now, consent){
+  const run = runStart(S, plan), max = S.G.num.scene_max_visits;
+  let i = plan.calls.length ? 0 : -1;
+  while (i >= 0){
+    const c = plan.calls[i], v = (run.visits.get(i) || 0) + 1;
+    if (isFinite(max) && v > max){ run.stopped = "visits"; break; }
+    run.visits.set(i, v);
+    if (!blocked(c) && classRank(c.cls) > classRank(run.consent)){
+      if (consent && classRank(consent) >= classRank(c.cls)) run.consent = c.cls;
+      else { run.stopped = "refused"; break; }
+    }
+    const out = actCall(S, plan, run, i, now);
+    runNote(run, out);
+    i = nextCall(plan, i, out.key);
+    if (i < 0 && plan.loop) i = 0;
+  }
+  if (!run.stopped) run.stopped = "end";
+  return run;
+}
+/* A run written down, if its scene asks for it and the store has a run lane. */
+function writeRun(S, plan, run, now){
+  if (!run.id) return null;
+  const G = S.G, ord = parseId(run.id).lon;
+  const block = ["scene: " + run.scene, "rev: " + run.rev, "plan: " + run.plan, "grammar: " + run.grammar, "after: " + run.after, "consent: " + run.consent]
+    .concat(run.steps.map(s => "step: " + [s.step, s.actuator, s.outcome, s.grounds.length ? s.grounds.join(" ") : "-"].join(" | ")),
+            ["stopped: " + (run.stopped || "end")]).join("\n");
+  insertChunk(S.st, newChunk(run.id, now, G.roles.run_edge ? G.roles.run_edge + run.scene : "", null,
+    say(G, "run_title", { n:ord, scene:plan.title }) || run.id, "ttdb-run", block));
+  return run.id;
+}
+function parseRun(rec){
+  if (!rec || rec.run == null) return null;
+  const b = parseBlock(rec.run);
+  return { id:rec.id, scene:b.scene || "", rev:+b.rev || 0, plan:b.plan || "", grammar:b.grammar || "", after:b.after || "-",
+           consent:b.consent || "", stopped:b.stopped || "", steps:many(b, "step").map(line => { const c = cols(line);
+             return { step:c[0], actuator:c[1] || "", outcome:c[2] || "", grounds:words(c[3]).filter(g => g !== "-") }; }) };
+}
+/* A scene's runs, in the order they were played. */
+function runsOf(S, sceneId){
+  const lane = +S.G.sphere.run_lane;
+  return records(S.st).filter(r => r.lat === lane && r.run != null).map(parseRun).filter(r => !sceneId || r.scene === sceneId);
+}
+/* Drift (§8.4): each step whose outcome or grounds two runs differ on, with the
+   episodes after the earlier run's that ground the later reply. Writes nothing. */
+function driftOf(S, a, b){
+  const at = x => typeof x === "string" ? parseRun(records(S.st).find(r => r.id === x)) : x;
+  const A = at(a), B = at(b);
+  if (!A || !B) return null;
+  const before = S.epOrder.get(A.after) || 0, steps = [];
+  for (const s of B.steps){
+    const w = A.steps.find(x => x.step === s.step);
+    if (w && w.outcome === s.outcome && w.grounds.join(" ") === s.grounds.join(" ")) continue;
+    steps.push({ step:s.step, was:w || null, now:s, episodes:[...new Set(s.grounds.map(g => g.split("#")[0]).filter(ep => (S.epOrder.get(ep) || 0) > before))] });
+  }
+  for (const w of A.steps) if (!B.steps.some(s => s.step === w.step)) steps.push({ step:w.step, was:w, now:null, episodes:[] });
+  return { scene:B.scene, from:A.id, to:B.id, grammarChanged:A.grammar !== B.grammar, steps };
+}
+/* The scenes a grammar has moved since they were pinned (§8.2): their say and
+   ask steps, as the grammar the store holds now reads them. Writes nothing. */
+function staleScenes(S){
+  const out = [];
+  for (const rec of scenesOf(S.st)){
+    const plan = planOf(S, rec);
+    if (!plan || !plan.stale) continue;
+    out.push({ scene:rec.id, pin:plan.pin, grammar:plan.grammar, steps:plan.calls.filter(c => c.action === "say" || c.action === "ask")
+      .map(c => ({ step:c.step, source:c.source, actuator:c.actuator, args:c.args, unresolved:c.unresolved })) });
+  }
+  return out;
+}
+/* The owner takes the grammar's reading of a scene by pinning it again: an edit
+   to the scene, its rev one more (§8.2). `grammar` must be the store's now.  */
+function pinScene(S, sceneId, grammar, now){
+  const c = S.st.chunks.find(x => x.rec && x.rec.id === sceneId && x.rec.scene != null);
+  if (!c || !grammar || grammar !== grammarHash(S)) return null;
+  const lines = c.rec.scene.split("\n"), line = "grammar: " + grammar;
+  const i = lines.findIndex(l => /^grammar\s*:/.test(l.trim()));
+  if (i >= 0) lines[i] = line;
+  else { const j = lines.findIndex(l => /^(step|edge)\s*:/.test(l.trim())); lines.splice(j < 0 ? lines.length : j, 0, line); }
+  const r = c.rec;
+  rewriteChunk(c, { updated:now, ew:r.hasEw ? { conf:r.conf, rev:r.rev + 1, sal:r.sal, touched:now } : null, tag:"ttdb-scene", block:lines.join("\n").replace(/\n+$/, "") });
+  return c.rec;
+}
+/* The composer's acts (§4.3): every sentence an act, or not one of them done. */
+function actsInput(S, text){
+  if (!S.grammars.some(G => G.actLines.length)) return null;
+  const sens = sentencesOf(S, text, false), acts = sens.map(s => actOf(S, s));
+  return { sens, acts, all:acts.length > 0 && acts.every(a => a && !a.error), some:acts.some(Boolean) };
+}
+function actReply(S, text, x, now){
+  const G = grammarOf(S, x.acts[0].lang);
+  const reply = { intent:"act", lang:G.lang, query:text, key:"", verdict:"", head:"", items:[], notes:[], search:[],
+                  purchase:{ found:[], missing:[] }, records:[], portraits:[], episode:null, calls:[], done:x.sens.slice() };
+  x.acts.forEach((a, k) => {
+    const A = S.actuators.list.get(a.actuator);
+    reply.calls.push(callOf(A, String(k + 1), "say", a.actuator, a.args, null, { hold:0, advance:ADVANCES[0], source:x.sens[k], said:x.sens[k], lang:a.lang, unresolved:a.missing }));
+    for (const w of a.missing) reply.notes.push(say(G, "act_no_target", { words:w }));
+    for (const id of a.targets) if (id !== ANSWER && !reply.records.includes(id)) reply.records.push(id);
+  });
+  writeCursor(S, reply.records[0] || makeId(0, 0, 0), text, replyText(S, reply), reply.records);
+  return reply;
+}
 
 /* ---------- grammar: read every ttdb-grammar block ------------------ */
 /* Languages (TTG-RFC-0001 §11). A grammar record's language is its `lang:`;
@@ -588,6 +996,7 @@ const scenesOf = st => records(st).filter(r => r.type === "scene" && r.scene != 
  * the first language's vectors, never change them, so every language
  * reasons along the same edges.                                          */
 const SHARED_KINDS = ["numbers", "rules"];
+const OWN_KINDS = ["constructions", "acts"];
 function grammarRecords(st){
   const recs = records(st).filter(r => r.grammar != null).map(r => ({ r, b:parseBlock(r.grammar) }));
   const tagged = recs.find(x => x.b.lang);
@@ -599,9 +1008,9 @@ function loadGrammar(st, lang){
   const { recs, langs } = grammarRecords(st);
   const first = langs[0], want = lang == null ? first : lang, later = want !== first;
   const own = new Set(recs.filter(x => x.lang === want && !SHARED_KINDS.includes(x.b.kind)).map(x => x.b.kind));
-  // constructions hold words, so a language never borrows another's (TTG-RFC-0006 §5)
+  // constructions and acts hold words, so a language never borrows another's (TTG-RFC-0006 §5, TTG-RFC-0007 §4.1)
   const use = recs.filter(x => x.lang === want ? !later || !SHARED_KINDS.includes(x.b.kind)
-                                               : x.lang === first && x.b.kind !== "constructions" && (!own.has(x.b.kind) || x.b.kind === "vectors"))
+                                               : x.lang === first && !OWN_KINDS.includes(x.b.kind) && (!own.has(x.b.kind) || x.b.kind === "vectors"))
                   .sort((a, z) => (a.lang === want) - (z.lang === want));
   const G = {
     lang:want, classes:new Map(), whole:new Map(), contractions:[], sentenceEnd:new Set(), clauseBreak:new Set(),
@@ -613,7 +1022,7 @@ function loadGrammar(st, lang){
     roles:{}, vectors:new Map(), inherits:[], phrases:[],
     proVerb:new Set(), proVerbObject:new Set(), whThing:new Set(), whPlace:new Map(), whPlacePrep:new Map(), questionOrder:"", whReason:new Set(), about:new Set(), describeMax:NaN,
     say:{}, units:{}, num:{}, sphere:{}, maxReply:NaN, loaded:[], ruleLines:[], rules:[], ruleErrors:[],
-    constructionLines:[], constructions:[], constructionErrors:[]
+    constructionLines:[], constructions:[], constructionErrors:[], actLines:[], refLines:[]
   };
   const rule = s => { const c = cols(s); return [c[0], c[1] === "-" ? "" : (c[1] || ""), words(c[2])]; };
   for (const r of records(st)) if (r.sphere){
@@ -729,6 +1138,10 @@ function loadGrammar(st, lang){
       G.ruleLines.push(...many(b, "rule").map(String));
     } else if (b.kind === "constructions"){
       G.constructionLines.push(...many(b, "construction").map(String));
+    } else if (b.kind === "acts"){
+      // words that do, each bound to an actuator the store's contract declares (TTG-RFC-0007 §4)
+      G.actLines.push(...many(b, "act").map(String));
+      G.refLines.push(...many(b, "ref").map(String));
     }
   }
   parseRules(G);
@@ -1501,6 +1914,8 @@ function verbItems(S, toks, gap){
   if (cur.length) items.push(cur);
   return items.map(it => {
     const preds = [];
+    // a copula or have before the gap is a light verb: it ends the predicate only if no content word follows
+    const LIGHT_VERB = 2;
     let p = [], verbed = false;
     it.forEach((t, q) => {
       // after a relative's verb, a second verb straight after it is the next predicate too; so is one
@@ -1509,11 +1924,11 @@ function verbItems(S, toks, gap){
       let cut = p.length;
       while (cut > 0 && soft(p[cut - 1])) cut--;
       const next = gap && isContent(t) && isContent(p[cut - 1]);
-      const ends = verbed === true || (verbed === "light" && !isContent(it[q + 1]));
+      const ends = verbed === true || (verbed === LIGHT_VERB && !isContent(it[q + 1]));
       if (verbed && (next || (ends && (has(t, "aux") || has(t, "modal") || has(t, "cop") || has(t, "hav"))))){ preds.push(p.slice(0, cut)); p = p.slice(cut); verbed = false; }
       p.push(t);
       if (isContent(t)) verbed = true;
-      else if (gap && !verbed && (has(t, "hav") || has(t, "cop"))) verbed = "light";
+      else if (gap && !verbed && (has(t, "hav") || has(t, "cop"))) verbed = LIGHT_VERB;
     });
     if (p.length) preds.push(p);
     return preds.map(q => ({ ...predOf(S, q), bare:bareOf(S, q), self:selfOf(S, q), past:pastOf(S, q) }));
@@ -2124,6 +2539,7 @@ function openStore(text){
               superseded:new Map(), epOrder:new Map(), amends:new Map() };
   S.G = loadGrammar(st);
   S.grammars = grammarRecords(st).langs.map(l => l === S.G.lang ? S.G : loadGrammar(st, l));
+  S.actuators = actuatorsOf(S);
   const step = String(S.G.sphere.step || "");
   S.dec = (step.split(".")[1] || "").length;
   indexTerms(S);
@@ -2156,10 +2572,11 @@ function withGrammar(S, G, fn){
   const prev = S.G; S.G = G || prev;
   try { return fn(); } finally { S.G = prev; }
 }
-function pickGrammar(S, text){
-  let best = S.grammars[0], top = 0;
-  if (S.grammars.length < 2) return best;
-  for (const G of S.grammars){
+function pickGrammar(S, text){ return pickAmong(S, text, S.grammars); }
+function pickAmong(S, text, Gs){
+  let best = Gs[0], top = 0;
+  if (Gs.length < 2) return best;
+  for (const G of Gs){
     const n = withGrammar(S, G, () => tokenize(S, text).filter(t => !t.punct &&
       (t.cls.size || G.verbIrr.has(t.w) || G.nounIrr.has(t.w) || G.seed.has(verbLemma(S, t.w).lemma))).length);
     if (n > top){ best = G; top = n; }
@@ -2619,7 +3036,7 @@ const splitAll = (S, all) => ({ percepts:all.filter(p => p.v !== S.G.roles.comen
   held:all.filter(p => !isMention(p) && isHeld(p)), mentions:all.filter(isMention) });
 /* `shapes`, if given, is the owner's reading of each sentence, by position: the
    percepts come from it and the episode's shape line records it (TTG-RFC-0005 §4). */
-function perceive(S, text, source, isFile, now, shapes){
+function perceive(S, text, source, isFile, now, shapes, by){
   const G = S.G, R = G.roles;
   const sentences = sentencesOf(S, text, isFile);
   if (!sentences.length) return null;
@@ -2655,6 +3072,8 @@ function perceive(S, text, source, isFile, now, shapes){
       if (t && R.episode_edge){ const e = R.episode_edge + t.chunk.rec.id; if (!refs.includes(e)) refs.push(e); }
     }
   }
+  // a sentence a scene told is the owner's, and says which scene told it (TTG-RFC-0007 §8.3)
+  if (by && R.act_edge) refs.push(R.act_edge + by);
   const block = ["source: " + src, "at: " + now].concat(saidLines, shapeLines, perceptLines, holdLines, gapLines, tenseLines).join("\n");
   const ec = newChunk(epId, now, refs.join(","), null, say(G, "episode_title", { n:ord, source:src }) || epId, "ttdb-episode", block);
   insertChunk(S.st, ec);
@@ -2701,9 +3120,9 @@ function readingsOf(S, epId){
   });
 }
 /* The grammar a reading was made under, named by its records' text. */
+const hash16 = t => [fnv(t), fnv(t + "#")].map(h => h.toString(16).padStart(8, "0")).join("");
 function grammarHash(S){
-  const t = grammarRecords(S.st).recs.map(x => x.r.grammar).join("\n");
-  return [fnv(t), fnv(t + "#")].map(h => h.toString(16).padStart(8, "0")).join("");
+  return hash16(grammarRecords(S.st).recs.map(x => x.r.grammar).join("\n"));
 }
 /* Re-reading (TTG-RFC-0005 §5.1): every sentence of every episode (or of one)
  * read again from its words under the grammar and corpus the store holds now,
@@ -2756,7 +3175,8 @@ function reread(S, epId){
   for (const G of S.grammars) for (const c of G.constructions) traffic.set(G.lang + "|" + c.label, { lang:G.lang, label:c.label, abstract:!!c.abstract, sentences:0, episodes:new Set() });
   const tally = (G, cs, ep) => { for (const k of cs) for (const l of [k.label].concat(k.parents || [])){ const t = traffic.get(G.lang + "|" + l); if (t){ t.sentences++; t.episodes.add(ep); } } };
   const sentences = rereadWalk(S, epId, x => changed.push(x), tally);
-  return { grammar:grammarHash(S), sentences, changed, traffic:[...traffic.values()].map(t => ({ ...t, episodes:t.episodes.size })) };
+  return { grammar:grammarHash(S), sentences, changed, traffic:[...traffic.values()].map(t => ({ ...t, episodes:t.episodes.size })),
+           scenes:epId ? [] : staleScenes(S) };
 }
 /* Take the grammar's readings under a hash (§5.1), in episode order: each
  * sentence is read again just before it is taken, after the ones before it
@@ -2831,8 +3251,9 @@ function markAsked(S, found, now){
 }
 function startEmpty(S, now){
   const lane = +S.G.sphere.episode_lane, alane = +S.G.sphere.amend_lane, self = S.G.sphere.self_lemma;
+  const rlane = S.G.sphere.run_lane == null ? NaN : +S.G.sphere.run_lane;
   S.st.chunks = S.st.chunks.filter(c => !(c.rec && ((c.rec.episode != null && c.rec.lat === lane) ||
-    (c.rec.amend != null && c.rec.lat === alane) ||
+    (c.rec.amend != null && c.rec.lat === alane) || (c.rec.run != null && c.rec.lat === rlane) ||
     (c.rec.term != null && parseBlock(c.rec.term).lemma !== self))));
   indexTerms(S);
   for (const t of S.things.values()){ t.asked = 0; t.forms = [t.lemma]; }
@@ -3387,23 +3808,32 @@ function groundQuotes(S, g){
 const quoted = (S, g) => ({ ...g, quotes:groundQuotes(S, g), ...(g.by ? { by:{ ...g.by, quotes:groundQuotes(S, { ...g.by, later:true }) } } : {}) });
 const vlabel = (S, v) => (alg(S, v) || {}).label || v;
 // a reply is in the language of the input; a told sentence is perceived in its own
-function answer(S, text, now, source, shapes){
-  return withGrammar(S, pickGrammar(S, text), () => answerIn(S, text, now, source, shapes));
+// An input every sentence of which is an act is done, not said; one that mixes the two is said,
+// and the acts in it are named as not done (TTG-RFC-0007 §4.3). A reading the owner marked, a
+// file and a scene's own tell are sayings by what they are, so acts are not looked for in them.
+function answer(S, text, now, source, shapes, by){
+  const x = source == null && !shapes ? actsInput(S, text) : null;
+  if (x && x.all) return actReply(S, text, x, now);
+  const r = withGrammar(S, pickGrammar(S, text), () => answerIn(S, text, now, source, shapes, by));
+  if (x && x.some) r.notes.push(say(grammarOf(S, r.lang), "act_not_done", { acts:x.sens.filter((s, k) => x.acts[k]).join(" ") }));
+  return r;
 }
-function answerIn(S, text, now, source, shapes){
+// the verdict as the reply key it is said by, and the phrase that says it
+const verdictOf = (G, reply, key, slots) => { reply.key = key; reply.verdict = say(G, key, slots); };
+function answerIn(S, text, now, source, shapes, by){
   const G = S.G, N = G.num;
   const it = interpret(S, text);
-  const reply = { intent:it.intent, lang:G.lang, query:text, verdict:"", head:"", items:[], notes:[], search:[],
+  const reply = { intent:it.intent, lang:G.lang, query:text, key:"", verdict:"", head:"", items:[], notes:[], search:[],
                   purchase:it.purchase, records:[], portraits:[], episode:null };
   const cap = a => a.slice(0, N.answer_max_items);
   if (it.intent === "perceive"){
-    const ep = perceive(S, text, source || null, false, now, shapes);
+    const ep = perceive(S, text, source || null, false, now, shapes, by);
     if (!ep) return reply;
     reply.episode = ep;
     const told = ep.percepts.length + ep.held.length;
-    reply.verdict = told
-      ? say(G, "noted", { percepts:unit(G, "percept", told), sentences:unit(G, "sentence", ep.sentences) })
-      : ep.mentions.length ? say(G, "noted_mention", { terms:mentioned(ep).join(", ") }) : say(G, "noted_nothing");
+    if (told) verdictOf(G, reply, "noted", { percepts:unit(G, "percept", told), sentences:unit(G, "sentence", ep.sentences) });
+    else if (ep.mentions.length) verdictOf(G, reply, "noted_mention", { terms:mentioned(ep).join(", ") });
+    else verdictOf(G, reply, "noted_nothing");
     writeGrounds(S, reply, ep, ep.id);
     reply.records = [ep.id];
   } else if (it.intent === "verify"){
@@ -3412,9 +3842,8 @@ function answerIn(S, text, now, source, shapes){
     const weakest = ["N", "C", "U", "Y"], rank = x => { const i = weakest.indexOf(x.r.verdict); return i < 0 ? weakest.length : i; };
     const lead = it.all ? results.slice().sort((a, z) => rank(a) - rank(z))[0] : results.find(x => x.r.verdict !== "U") || results[0];
     const r = lead.r;
-    reply.verdict = r.verdict === "C" ? say(G, "contest") :
-      r.verdict === "U" ? say(G, "unknown") : r.superseded ? say(G, "deny_superseded") :
-      say(G, (r.verdict === "Y" ? "affirm" : "deny") + (r.inferred ? "_inferred" : ""));
+    verdictOf(G, reply, r.verdict === "C" ? "contest" : r.verdict === "U" ? "unknown" : r.superseded ? "deny_superseded" :
+      (r.verdict === "Y" ? "affirm" : "deny") + (r.inferred ? "_inferred" : ""));
     for (const { r:x } of results) for (const g of x.grounds) reply.items.push(quoted(S, g));
     for (const { p, r:x } of results) if (x.exception)
       reply.notes.push(say(G, "exception", { term:p.s, via:x.exception.via }));
@@ -3445,7 +3874,7 @@ function answerIn(S, text, now, source, shapes){
     // what a stance holds is named with its saying, never grounded as said: what do I doubt?
     const linked = it.intent === "objectsOf" ? holdsNotes(S, reply, l => l.s === it.s && it.vs.includes(l.v)) : 0;
     if (!list.length && !linked){
-      reply.verdict = say(G, "nothing_found");
+      verdictOf(G, reply, "nothing_found");
       heldNotes(S, reply, it.intent === "objectsOf" ? h => h.s === it.s && it.vs.includes(h.v) : h => h.v === it.v && h.o === it.o);
     }
   } else if (it.intent === "portrait"){
@@ -3462,12 +3891,12 @@ function answerIn(S, text, now, source, shapes){
       const pc = paceText(S, lemma);
       if (pc && !reply.notes.includes(pc)) reply.notes.push(pc);
     }
-    if (!reply.portraits.length) reply.verdict = say(G, "unknown");
+    if (!reply.portraits.length) verdictOf(G, reply, "unknown");
   } else {
     const lemmas = it.purchase.found.map(f => f.lemma);
     reply.search = lemmas.length ? searchSaid(S, lemmas) : [];
     reply.head = reply.search.length ? say(G, "search_head") : "";
-    if (!reply.search.length) reply.verdict = say(G, "unknown");
+    if (!reply.search.length) verdictOf(G, reply, "unknown");
   }
   if (it.intent !== "perceive" && it.purchase.missing.length)
     reply.notes.push(say(G, "no_purchase", { words:it.purchase.missing.join(", ") }));
@@ -3660,7 +4089,7 @@ function amendReply(S, epId, n, shape, now, grammar, reading){
   if (!w) return null;
   return withGrammar(S, pickGrammar(S, said.get(n)), () => {
     const G = S.G;
-    const reply = { intent:"perceive", lang:G.lang, query:said.get(n), verdict:say(G, "amended", { percepts:unit(G, "percept", w.percepts.length + w.held.length) }),
+    const reply = { intent:"perceive", lang:G.lang, query:said.get(n), key:"amended", verdict:say(G, "amended", { percepts:unit(G, "percept", w.percepts.length + w.held.length) }),
                     head:"", items:[], notes:[], search:[], purchase:{ found:[], missing:[] }, records:[w.amends], portraits:[], episode:w };
     writeGrounds(S, reply, w, w.amends);
     if (S.amends.has(c.rec.lon)) reply.records.push(w.id);
@@ -3695,6 +4124,7 @@ function replyTextIn(S, reply){
     if (pt.withs.length) out.push("  " + say(S.G, "mentioned_with") + ": " + pt.withs.map(w => w[0]).join(", "));
   }
   for (const r of reply.search) out.push("  “" + r.text + "” (" + r.ep + ")");
+  for (const d of reply.done || []) out.push("  " + say(S.G, "label_done") + ": " + d);
   for (const n of reply.notes) if (n) out.push(n);
   return out.join("\n");
 }
@@ -3714,7 +4144,8 @@ const PG = { parseStore, serializeStore, parseRecord, parseBlock, openStore, loa
   nounLemma, verbLemma, perceiveSentence, perceive, consolidate, syncTerms, termState, verify, objectsOf, subjectsOf,
   portrait, searchSaid, interpret, answer, trajectoryOf, TRAJ, paceOf, paceText, PACE, replyText, ingestFile, startEmpty, markAsked, records, epsOf, say, SLOT,
   pickGrammar, withGrammar, shapeOf, shapeText, readingsOf, amend, amendReply, reread, takeRereads,
-  epsTop, sceneOf, scenesOf, placeTerm, examplePath };
+  epsTop, sceneOf, scenesOf, placeTerm, examplePath,
+  actuatorsOf, actsOf, actOf, planOf, nextCall, runStart, actCall, runNote, playPlan, writeRun, runsOf, driftOf, pinScene };
 
 /* ====================================================================== *
  * The page. Everything below touches the DOM; everything above does not,
@@ -3837,6 +4268,8 @@ function replyHtmlIn(r){
   if (r.verdict) parts.push(`<div class="verdict">${esc(r.verdict)}</div>`);
   if (r.head) parts.push(`<div class="verdict">${esc(r.head)}</div>`);
   if (r.items.length) parts.push(`<ul class="grounds">${r.items.map(groundHtml).join("")}</ul>`);
+  if (r.done && r.done.length) parts.push(`<ul class="grounds">` + r.done.map(d =>
+    `<li class="g done"><span class="lab">${esc(say(G, "label_done"))}</span><span class="qt">${esc(d)}</span></li>`).join("") + `</ul>`);
   if (r.intent === "perceive" && r.episode){
     const ep = r.episode.amends || r.episode.id;
     const rs = readingsOf(S, ep).filter(x => !r.episode.amends || x.n === r.episode.n).slice(0, G.num.answer_max_items);
@@ -4149,7 +4582,7 @@ function recordHtml(rec){
       }).join("") + `</ol>`;
   } else {
     body = `<div class="body">${md(rec.body)}</div>` +
-      [rec.grammar, rec.sphere, rec.special, rec.amend].filter(x => x != null).map(x => `<pre>${esc(x)}</pre>`).join("") +
+      [rec.grammar, rec.sphere, rec.special, rec.amend, rec.actuators, rec.run].filter(x => x != null).map(x => `<pre>${esc(x)}</pre>`).join("") +
       sceneHtml(rec) + (rec.include != null ? shownHtml(rec) : "");
   }
   const edges = rec.edges.length ? `<div class="edges"><b>relates</b>` + rec.edges.map(e => {
@@ -4177,9 +4610,32 @@ function sceneHtml(rec){
   // no #scene offers no walk, and gets the legs as a plain index of the records.
   const bar = $("scene");
   const label = bar ? (playing ? bar.textContent : (bar.dataset.play || "")) : "";
-  return (bar ? `<button type="button" class="scene-start" data-scene="${rec.key}">${esc(label)}</button>` : "") +
-    `<ol class="scene">` + sc.edges.map(e =>
+  const start = bar ? `<button type="button" class="scene-start" data-scene="${rec.key}">${esc(label)}</button>` : "";
+  if (sc.steps.length) return start + stepsHtml(rec, stop);
+  return start + `<ol class="scene">` + sc.edges.map(e =>
       `<li><em>${esc(e.name)}</em>${stop(e.from)}<span class="arrow">→</span>${stop(e.to)}</li>`).join("") + `</ol>`;
+}
+/* A scene's steps (TTG-RFC-0007 §5), as the plan this page would play: each the
+   sentence it was written as, or the actuator and what it reaches; a blocked
+   step says what it lacks, and a rejected line is named with its reason. */
+function stepsHtml(rec, stop){
+  const plan = planOf(S, rec, HOST), G = S.G, bar = $("scene");
+  const reach = v => String(v).split(" ").map(id => { const r = parseId(id); return r && r.id === id ? stop(r) : esc(id); }).join(" ");
+  const body = c => (c.said ? `<q>${esc(c.said)}</q>` : `<span>${esc(c.actuator)}</span> ` + Object.values(c.args).map(reach).join(" ")) +
+    (c.missing ? ` <span class="x">${esc(say(G, "act_blocked", { actuator:c.missing }))}</span>` : "") +
+    c.unresolved.map(w => ` <span class="x">${esc(say(G, "act_no_target", { words:w }))}</span>`).join("");
+  const notes = plan.errors.map(e => `<div class="note">${esc(e.step || rec.id)} · ${esc(e.reason)}</div>`);
+  if (plan.stale){
+    notes.push(`<div class="note">${esc(say(G, "scene_stale", { hash:plan.pin, steps:plan.calls.filter(c => c.said).map(c => c.step).join(", ") }))}</div>`);
+    if (bar && bar.dataset.pin) notes.push(`<button type="button" class="scene-start" data-pin="${rec.key}">${esc(bar.dataset.pin)}</button>`);
+  }
+  const runs = runsOf(S, rec.id);
+  if (runs.length > 1){
+    const d = driftOf(S, runs[runs.length - 2], runs[runs.length - 1]);
+    if (d && d.steps.length) notes.push(`<div class="note">${esc(say(G, "drift_head", { scene:rec.title,
+      steps:d.steps.map(s => s.step + " " + (s.was ? s.was.outcome : "-") + " → " + (s.now ? s.now.outcome : "-")).join(", ") }))}</div>`);
+  }
+  return `<ol class="scene">` + plan.calls.map(c => `<li><em>${esc(c.step)}</em>${body(c)}</li>`).join("") + `</ol>` + notes.join("");
 }
 
 /* ---------- walking a scene (TTCP-RFC-0002 §10.3) -------------------------- *
@@ -4194,6 +4650,7 @@ function sceneHtml(rec){
 let playing = null;
 function sceneStop(){
   if (!playing) return;
+  if (playing.plan) return planEnd("hand");
   clearTimeout(playing.timer);
   playing = null;
   refreshScene();
@@ -4202,8 +4659,89 @@ function sceneStart(rec){
   const sc = sceneOf(rec);
   if (!sc) return;
   sceneStop();
+  if (sc.steps.length) return planStart(rec);
   playing = { sc, i:-1, next:-1, timer:0 };
   sceneAt(sc.start.key);
+}
+
+/* ---------- playing a scene's steps (TTG-RFC-0007 §6) ---------------------- *
+ * The page is the host: these are the actuators it makes, each with its class
+ * (§3.2). The engine makes the ones that read or write the store and hands back
+ * the rest; the page selects, lights, waits and plays. A step holds its time,
+ * or waits for the reader's next; a write asks first, once a run; any hand on
+ * the globe, any other record chosen and any question asked stops the run, and
+ * a scene that keeps a log writes down what it showed, however it ended.     */
+const HOST = { select:"view", highlight:"view", hold:"view", play:"view", ask:"query", reread:"query", tell:"write" };
+function hostCall(c, out){
+  const t = Object.values(out.args)[0];
+  if (c.actuator === "select" && t != null){
+    if (String(t).indexOf("?ttdb=") >= 0) appendTurn("", `<div class="note"><a href="${esc(t)}">${esc(t)}</a></div>`);
+    else { const r = parseId(String(t)); if (r) select(r.key, true); }
+  } else if (c.actuator === "highlight"){
+    lit = new Set(String(t || "").split(" ").map(parseId).filter(Boolean).map(r => r.key));
+    litEdges = new Set(); draw();
+  } else if (c.actuator === "play" && t){
+    try { const a = new Audio(String(t)); a.play().catch(() => {}); } catch (err){ /* no audio here */ }
+  }
+  if (c.each) for (const id of out.items){ const r = parseId(id); if (r) select(r.key, true); }
+}
+// what a call the engine made says, in the log: a reply as a reply, a report as its count, a note as a note
+function showCall(c, out){
+  if (out.reply){
+    lit = new Set(out.reply.records.map(id => parseId(id)).filter(Boolean).map(x => x.key));
+    litFrom(out.reply);
+    appendTurn(c.said || "", replyHtml(out.reply));
+  }
+  if (out.report){ const el = $("rereads"); if (el) appendTurn(c.said || "", esc((el.dataset.label || "").replace("{n}", out.report.changed.filter(x => !x.amended).length))); }
+  if (out.notes.length) appendTurn("", out.notes.map(n => `<div class="note">${esc(n)}</div>`).join(""));
+}
+function planStart(rec){
+  const plan = planOf(S, rec, HOST);
+  if (!plan) return;
+  if (plan.errors.length) appendTurn(rec.title, plan.errors.map(e => `<div class="note">${esc(e.step || rec.id)} · ${esc(e.reason)}</div>`).join(""));
+  if (!plan.calls.length) return;
+  if (plan.stale) appendTurn(rec.title, `<div class="note">${esc(say(S.G, "scene_stale", { hash:plan.pin, steps:plan.calls.filter(c => c.said).map(c => c.step).join(", ") }))}</div>`);
+  playing = { plan, rec, run:runStart(S, plan), i:-1, timer:0, waiting:false, audio:null, wrote:false };
+  if (plan.audio){ try { playing.audio = new Audio(plan.audio); playing.audio.loop = true; playing.audio.play().catch(() => {}); } catch (err){ /* no audio */ } }
+  planAt(0);
+}
+function planAt(i){
+  const P = playing;
+  if (!P || !P.plan) return;
+  const plan = P.plan, max = S.G.num.scene_max_visits;
+  if (i < 0 && plan.loop) i = 0;
+  if (i < 0) return planEnd("end");
+  const c = plan.calls[i], v = (P.run.visits.get(i) || 0) + 1;
+  if (isFinite(max) && v > max) return planEnd("visits");
+  P.run.visits.set(i, v); P.i = i; P.waiting = false;
+  if (!c.missing && !c.unresolved.length && classRank(c.cls) > classRank(P.run.consent)){
+    const steps = plan.calls.filter(x => x.cls === c.cls).map(x => x.step).join(", ");
+    if (!confirm(say(S.G, "scene_consent", { class:c.cls, steps }))) return planEnd("refused");
+    P.run.consent = c.cls;
+  }
+  const out = actCall(S, plan, P.run, i, unixNow());
+  runNote(P.run, out);
+  if (out.host) hostCall(c, out);
+  showCall(c, out);
+  if (c.actuator === "tell" && out.reply){ P.wrote = true; after(); }
+  const next = nextCall(plan, i, out.key);
+  if (playing !== P) return;
+  if (c.advance === "hand"){ P.waiting = next; refreshScene(); return; }
+  refreshScene();
+  const hold = c.actuator === "hold" && +out.args.ms > 0 ? +out.args.ms : c.hold;
+  // a browser hears no fleet's pulse, so a beat is held as its step's own time
+  P.timer = setTimeout(() => { if (playing === P) planAt(next); }, hold);
+}
+function planNext(){ const P = playing; if (P && P.plan && P.waiting !== false) planAt(P.waiting); }
+function planEnd(why){
+  const P = playing;
+  if (!P || !P.plan) return;
+  clearTimeout(P.timer);
+  if (P.audio) try { P.audio.pause(); } catch (err){ /* gone */ }
+  playing = null;
+  P.run.stopped = why;
+  const wrote = writeRun(S, P.plan, P.run, unixNow());
+  if (wrote || P.wrote) after(); else refreshScene();
 }
 function sceneAt(key){
   if (!playing) return;
@@ -4233,6 +4771,13 @@ function sceneAt(key){
 function refreshScene(){
   const b = $("scene");
   if (!b) return;
+  if (playing && playing.plan){
+    const P = playing, c = P.plan.calls[P.i];
+    b.hidden = false;
+    b.textContent = ((P.waiting !== false ? b.dataset.next : b.dataset.step) || "")
+      .replace("{n}", String(P.i + 1)).replace("{total}", String(P.plan.calls.length)).replace("{name}", c ? c.step : "");
+    return;
+  }
   if (playing){
     // on the last stop there is no leg left to name, so the walk reads as finished
     const es = playing.sc.edges, j = playing.next >= 0 ? playing.next : es.length - 1;
@@ -4883,9 +5428,26 @@ function send(text){
   lit = new Set(r.records.map(id => parseId(id)).filter(Boolean).map(x => x.key));
   litFrom(r);
   appendTurn(text, replyHtml(r));
+  if (r.intent === "act") return doActs(r);
   after();
   const firstTerm = r.records.map(id => parseId(id)).find(x => x && x.lat < 90);
   if (firstTerm) select(firstTerm.key, true);
+}
+function doActs(r){
+  const plan = { scene:"", title:"", calls:r.calls, cls:r.calls.reduce((m, c) => classRank(c.cls) > classRank(m) ? c.cls : m, "view"),
+                 log:false, rev:0, hash:"", grammar:"" };
+  for (const c of plan.calls) if (HOST[c.actuator] == null) c.missing = c.actuator;
+  const run = runStart(S, plan);
+  plan.calls.forEach((c, i) => {
+    if (!c.missing && !c.unresolved.length && classRank(c.cls) > classRank(run.consent)){
+      if (!confirm(say(S.G, "scene_consent", { class:c.cls, steps:c.said }))) return;
+      run.consent = c.cls;
+    }
+    const out = actCall(S, plan, run, i, unixNow());
+    if (out.host) hostCall(c, out);
+    showCall(c, out);
+  });
+  after();
 }
 async function feedFiles(list){
   for (const file of list){
@@ -4962,6 +5524,7 @@ function boot(){
     draw();
   });
   $("scene").addEventListener("click", () => {
+    if (playing && playing.plan && playing.waiting !== false) return planNext();
     if (playing) return sceneStop();
     const rec = S && selectedKey ? recOf(selectedKey) : null;
     if (rec) sceneStart(rec);
@@ -4980,6 +5543,13 @@ function boot(){
     if (rb && S){
       e.preventDefault();
       if (rb.dataset.op) editRow(rb.dataset.row, rb.dataset.op, rb.dataset.pick); else pickTok(rb.dataset.row, +rb.dataset.t, e.shiftKey);
+      return;
+    }
+    const pb = e.target.closest("[data-pin]");
+    if (pb && S && pb.tagName === "BUTTON" && pb.id !== "scene"){
+      e.preventDefault();
+      const rec = recOf(pb.dataset.pin);
+      if (rec && pinScene(S, rec.id, grammarHash(S), unixNow())) after();
       return;
     }
     const sb = e.target.closest("[data-scene]");

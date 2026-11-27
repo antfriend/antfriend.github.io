@@ -201,6 +201,7 @@ store, south of the origin on the prime meridian:
 | [`@LAT-70LON0`](lat-70lon0) | `numbers` | every constant |
 | [`@LAT-80LON0`](lat-80lon0) | `rules` | what follows from what, beyond the vector flags |
 | [`@LAT-85LON0`](lat-85lon0) | `constructions` | shapes that say what their words do not: *X V Y off Z* |
+| [`@LAT-88LON0`](lat-88lon0) | `acts` | words that do: *show*, *go to*, *light up*, each bound to an actuator |
 
 Spanish has the same records on the antimeridian, [`@LAT-10LON180`](lat-10lon180) to
 [`@LAT-60LON180`](lat-60lon180), each marked `lang: es`. It borrows the numbers and the vector
@@ -234,7 +235,7 @@ same way. The runtime refers to grammar only by schema keys (`cop`, `class_of`,
 ## The grammar sphere
 
 The origin [`@LAT0LON0`](lat0lon0) is **you** — the record your *I*, *me* and *my* resolve to.
-The prime meridian is **the grammar**: nine blueprint records north of you, nine grammar
+The prime meridian is **the grammar**: nine blueprint records north of you, ten grammar
 records south. **Things sit east, vectors west**, because the rule that decides which side a
 word falls on belongs on the line between the sides. The antimeridian is the other line between
 them, and holds **a second language**.
@@ -271,8 +272,9 @@ arrived. With no partner a term hashes into its hemisphere. IDs never move (TTDB
 
 Latitude 90 is the timeline — every episode, verbatim, `lon` = its ordinal. Latitude 91 holds
 your corrections to how an episode was read, at the episode's own longitude. Latitude 95 holds the
-documents about the store — this file is one of them — 96 [a scene](lat96lon0), 98 beliefs
-about the design, 99 the fixture, −90 the special record.
+documents about the store — this file is one of them — 96 [the scenes](lat96lon0), 97 what a
+scene that keeps a log showed each time it was played, 98 beliefs about the design, 99 the
+fixture, −90 the special record.
 
 ### Relations are drawn
 
@@ -311,6 +313,42 @@ west. Open it and it lists its legs under a **play the scene** button; the same 
 in the store bar, which is where it stays once the walk has moved on to its first stop. The
 globe then turns to each stop in turn and holds while it is read. Any hand on the globe stops
 it, and so does asking anything.
+
+### A scene can act
+
+A sentence is a saying unless its first words are an **act**'s: then it is done, and nothing in
+it is believed ([TTG-RFC-0007](RFCs/TTG-RFC-0007-Acts-and-Scenes.md)). The acts are a grammar
+record, [`@LAT-88LON0`](lat-88lon0) — *show*, *go to*, *take me to*, *light up*, *read again* —
+and Spanish has [its own](lat-88lon180), *muestra a*, *ve a*. Each names an **actuator**, a thing
+the page can do, declared with its class in the contract in [`@LAT85LON0`](lat85lon0): `select`,
+`highlight`, `hold` and `play` only change what is shown, `ask` and `reread` read the store, and
+`tell` writes to it, so it asks first. Type *Show Pixel.* and the page goes to Pixel and writes no
+episode; *Show Pixel. Pixel is black.* is said, and the reply names the act it did not do.
+
+```
+> Show me the penguin.
+  done: Show me the penguin.
+```
+
+A scene's `step:` lines are acts in a row, in your own words, read by the same grammar:
+
+```
+step: chain   | ask: Is Pixel an animal?   | expect: affirm_inferred
+step: why     | say: Light up that.
+step: doubts  | each: contested | do: select | max: 3
+step: whale   | ask: Is a whale a fish?    | on_unknown: home
+```
+
+[`@LAT96LON1`](lat96lon1) is a lesson built that way, a slideshow you turn with **next**. Its
+questions are asked of your words each time it is shown, so its slides change as your words do;
+a step can expect a verdict and say when the reply is otherwise, branch on one, or walk every
+thing your words disagree about. The scene keeps a log: each playing is written at lat 97 with
+the episode it was played after, the grammar it was read under and the sayings that grounded each
+slide, and the scene's panel says what changed between its last two playings and which saying
+changed it. It is pinned to the grammar it was written under, so a grammar change names it in the
+re-reading and pinning it again takes the new reading. A step's act that names no record — *Show
+the whale.*, before you have said a word about whales — is shown with what it lacks, and the
+scene goes on.
 
 ---
 
@@ -543,6 +581,7 @@ global_models.
 | [`@LAT98LON5`](lat98lon5) | What the parser cannot see | 70 | 190 | **138** |
 | [`@LAT98LON8`](lat98lon8) | Order, not clocks: a fleet shares a tempo | 90 | 180 | **116** |
 | [`@LAT98LON4`](lat98lon4) | The lemmatizer is a guess the corpus corrects | 120 | 210 | **111** |
+| [`@LAT98LON11`](lat98lon11) | A saying is claimed; an act is done | 90 | 140 | **91** |
 | [`@LAT98LON7`](lat98lon7) | Two languages, one sphere | 100 | 140 | **85** |
 | [`@LAT98LON10`](lat98lon10) | A noun is a slow verb: the pace of a term is a measurement | 110 | 150 | **85** |
 | [`@LAT98LON9`](lat98lon9) | A reading is a guess the owner can overrule | 150 | 160 | 66 |
@@ -575,6 +614,13 @@ it runs. One store orders what you said by its file. Several agents hearing you 
 a badge) share no file and disagree about the time. The proposal is a band's: share a tempo,
 stamp each saying with how far your clock can be trusted, and call two sayings contested when
 their bounds overlap.
+
+**And the acts** — [`@LAT98LON11`](lat98lon11). What is least settled is reading them at all:
+an act is found only at the head of a sentence and only in the words a grammar lists, so *Could
+you show me Pixel?* is a question and *Let's look at Pixel* a saying, until a construction can name
+an act. Scenes from other stores, and a fleet that turns its slides on the beat, are specified and
+not yet played: this page treats every scene in its store as its own, and holds a beat as a step's
+own time.
 
 **Beside them, the slow verb** — [`@LAT98LON10`](lat98lon10), a prototype. How fast what you say
 of a term changes, per episode, is a measurement the store can already make: a triple turning
@@ -647,6 +693,9 @@ settles yes against no.
   otherwise of Pixel; a penguin doesn't inherit a bird's flying. A preposition before the
   question word goes back to the end: *¿De dónde tiró Pixel el vaso?* is the table the glass
   left, and *Off what did Pixel sneeze the napkin?* the table it went off.
+- **An act is only at the head of a sentence.** *Show Pixel* is done; *Please show Pixel* and
+  *Could you show me Pixel?* are not, and *Show me what Pixel eats* is a select with no record to
+  go to. A step that names a record in another store shows the link rather than going there.
 - **Held is all-or-nothing.** *Pixel is a cat or a dog* holds both, which is safe but says
   less than you did.
 - **A file is one episode**, however long. One long document cannot outvote two typed remarks.

@@ -75,11 +75,12 @@ touched:1789258020
 3. **The data.** South of here, the language: [closed-class words](lat-10lon0),
    [morphology](lat-20lon0), [seed vectors](lat-30lon0), [vector algebra](lat-40lon0),
    [question forms](lat-50lon0), [replies](lat-60lon0), [the numbers](lat-70lon0),
-   [the rules](lat-80lon0) and [the constructions](lat-85lon0). On the
+   [the rules](lat-80lon0), [the constructions](lat-85lon0) and [the acts](lat-88lon0). On the
    far side, the antimeridian, [a second language](lat-10lon180) — ask in Spanish and it
    reasons over what you said in English. East and west, the owner's own terms. Up at lat 90,
    every episode, verbatim; at lat 91, beside each, any reading of it the owner corrected;
-   at lat 95, [the README](lat95lon0).
+   at lat 95, [the README](lat95lon0); at lat 96, [the scenes](lat96lon0); and at lat 97,
+   what each scene that keeps a log showed when it was played.
 
 **The runtime holds no words.** `index.html` knows how to split, match, strip a suffix, walk a
 typed edge and fill a slot. It does not know that *the* is a determiner, that *mice* is the
@@ -104,6 +105,7 @@ adjacent: 0.5 3
 step: 0.1
 episode_lane: 90
 amend_lane: 91
+run_lane: 97
 self_lemma: self
 sal_half_life: 3
 ```
@@ -544,7 +546,7 @@ with `;globalThis.<name> = PG;` appended (`tools/harness.mjs` does exactly this 
 | `ingestFile(S, name, text, now)` | `{ ep, msg }`, or `null` for no sentences | one episode for the whole file, the cursor |
 | `replyText(S, reply)` | the reply as plain text | — |
 | `serializeStore(S.st)` | the store text — persist it yourself, after every call that mutates | — |
-| `startEmpty(S, now)` | — | deletes the lane-90 episodes, the lane-91 amendments and every term but `self_lemma` |
+| `startEmpty(S, now)` | — | deletes the lane-90 episodes, the lane-91 amendments, the lane-97 runs and every term but `self_lemma` |
 | `shapeOf(S, text, reading?)` | `{ shape, items, percepts, reading, lang }`: how the text reads — marks in it overrule the parser; `items` are `{ w, cls }`, `cls` `N`, `V` or empty. Where the grammar reads it two ways, a percept of one reading carries `reading` (a letter), and `reading`, the letters of an owner's choice, reads the chosen one alone | — |
 | `shapeText(S, items)` | the shape those items make, in the grammar's marks | — |
 | `readingsOf(S, episodeId)` | `[{ n, text, shape, amended, grammar, reading }]`: each sentence with the reading that stands; `grammar` is the hash a taken re-reading came from, `reading` the letters of an owner's choice between two readings | — |
@@ -585,8 +587,44 @@ own feet — and with no `sal_half_life` declared, nothing decays.
 records that have one. Parsing is the engine's because it is a block of text; walking is the
 page's, because a walk needs a clock and the engine never reads one.
 
+**Acts, and scenes that do.** This record's `ttdb-actuators` block is the actuator contract
+(TTG-RFC-0007 §3): each key a capability the host makes, its parameters and its class, `view`,
+`query`, `write` or `device`. `actuatorsOf(S, host?)` reads it as `{ list, errors }`, where `host`
+is the host's own registry, `{ key: class }`: its class wins where it is higher, and a key it
+lacks is missing, which blocks a call and is shown. `actsOf(S, lang?)` gives a language's acts and
+refs from its `acts` grammar record, longest first; `actOf(S, text, lang?)` reads one sentence as
+an act, at its head and before the chain — `{ lang, actuator, args, targets, missing, error }` —
+or `null`. `planOf(S, rec, host?)` compiles a scene into `{ calls, errors, cls, hash, stale, pin,
+grammar, log, loop, advance }`, each call `{ step, action, actuator, args, cls, hold, advance,
+expect, branches, next, missing, unresolved, each }`, an edge scene as the selects it walks; the
+rejected steps are in `errors`, each `{ step, reason }`. `nextCall(plan, i, key)` is where a run
+goes after a call whose reply had `key`, or -1. `runStart(S, plan)` begins a run;
+`actCall(S, plan, run, i, now)` makes the calls that read or write the store — `ask`, `reread`,
+`tell`, a told sentence an episode whose `source:` names the scene, the step and the run, with
+an `act_edge` to the scene — and hands back every other as `host: true`, its arguments resolved;
+`runNote(run, out)` adds a call's outcome to its run, as `playPlan(S, plan, now, consent?)` does
+after each call when it plays a whole plan at once for tools and tests, host calls taken as done
+and nothing past `consent`'s class made. `writeRun(S, plan, run, now)` writes the run on
+`run_lane` when the scene says `log: true`; `runsOf(S, scene?)` lists runs in the order they were
+played and `driftOf(S, a, b)` gives what two of them differ on, with the episodes since the first
+that ground the second. `pinScene(S, scene, grammar, now)` pins a scene to the grammar the store
+holds now, and `reread(S)` lists the scenes whose pin it has left behind as `scenes`. A reply
+carries `key`, the reply key its verdict is said by, so a step can branch on it; an input every
+sentence of which is an act is the `act` intent, whose `calls` are the host's to make and whose
+`done` are the sentences it did.
+
+```ttdb-actuators
+actuator: select    | target: record   | class: view
+actuator: highlight | records: records | class: view
+actuator: hold      | ms: int          | class: view
+actuator: play      | audio: path      | class: view
+actuator: ask       | text: sentence   | class: query
+actuator: reread    | episode: record? | class: query
+actuator: tell      | text: sentence   | class: write
+```
+
 **The store object `S`.** `st` (parsed chunks; the source of truth, serialise this); `G`
-(the grammar in use, normally the first language's) and `grammars` (one per `lang:`); `things` and `vectors` (Map lemma → `{ chunk, cls, lemma, forms,
+(the grammar in use, normally the first language's) and `grammars` (one per `lang:`); `actuators` (the contract, as `actuatorsOf` reads it); `things` and `vectors` (Map lemma → `{ chunk, cls, lemma, forms,
 asked }`); `episodes` (lane chunks) and `offLane` (other episode blocks, checked only);
 `amends` (Map episode longitude → `{ chunk, entries }`, the amendment on `amend_lane`); `trips` (Map `"s|v|o"` → `{ s, v, o, pol, conf, fr, ag, decided, sources }`); `derived`
 (Map `"s|v|o"` → a rule conclusion `{ s, v, o, pol, rule, proof }`, never written); `superseded` (Map
@@ -645,8 +683,8 @@ selects a record on click (one delegated listener); the value is `lat|lon` to fo
 `#storeinfo[data-seed|data-local|data-opened]`, `#mode[data-<intent in kebab case>]`,
 `#reset[data-confirm]`, `#empty[data-confirm]`, `#files[data-confirm-store]`, `#log[data-quota]`,
 `#rereads[data-label|data-confirm|data-done]` (the store bar's count of re-readings not yet ruled on, `{n}` filled in),
-`#scene[data-play|data-step]` (shown when the record selected holds a `ttdb-scene` block, and while one is
-being walked, with `{n}`, `{total}` and `{name}` filled in; a scene record's panel carries the same switch as a
+`#scene[data-play|data-step|data-next]` (shown when the record selected holds a `ttdb-scene` block, and while one is
+being walked, with `{n}`, `{total}` and `{name}` filled in, `data-next` while a step waits for the reader's hand; a scene record's panel carries the same switch as a
 button of its own, marked `data-scene` with the record's key and labelled from these two strings, so a walk can
 be started where it is described and stopped from the bar, which is what stays in view once it has moved on), `#lens[data-label]` and `#web[data-label]` (the two
 readings of the sphere, each carrying `aria-pressed`), `#nudge[data-ask]` (the term of highest weight, `{term}`
@@ -933,6 +971,8 @@ role: episode_edge | perceives
 role: negation_prefix | not_
 role: phrasal_join | _
 role: amend_edge | amends
+role: act_edge | told_by
+role: run_edge | runs
 vector: is_a | transitive | - | is a
 vector: has_property | - | - | is
 vector: has | - | part_of | has
@@ -1043,6 +1083,15 @@ unit_sentence: sentence | sentences
 unit_term: term | terms
 unit_episode: episode | episodes
 unit_turn: time | times
+label_done: done
+act_blocked: Not done: this page has no {actuator}.
+act_no_target: Not done: nothing in your words is {words}.
+act_not_done: Read as said, not done: {acts}
+scene_consent: This scene would {class} with {steps}. Go on?
+scene_stale: The grammar has changed since this scene was pinned ({hash}); these steps read as it reads them now: {steps}
+scene_expect: Step {step} expected {expected} and the reply was {got}.
+drift_head: What changed in {scene} between two playings: {steps}
+run_title: Run {n} — {scene}
 ```
 
 ---
@@ -1059,6 +1108,9 @@ sayings make ([consolidate](lat50lon0)); remove the first and no reply names one
 `pace_min_episodes` and `pace_fast` set the slow-verb meter: how many episodes must say
 something of a term before its pace is read, and the changes per episode at which it reads as
 fast ([consolidate](lat50lon0)); remove the first and no term has a pace.
+`scene_max_steps`, `scene_max_visits` and `scene_each_max` bound a scene: the most calls its plan
+may have, the most times one of its steps may run in one playing, and the most steps a generator
+may make (TTG-RFC-0007 §6).
 
 ```ttdb-grammar
 kind: numbers
@@ -1084,6 +1136,9 @@ frame_grammar_weight: 1
 frame_preempt_ratio: 0
 modifier_max_words: 2
 construction_max_words: 8
+scene_max_steps: 64
+scene_max_visits: 4
+scene_each_max: 8
 ```
 
 ---
@@ -1183,6 +1238,36 @@ construction: [X] {V} [Y] onto [W] => go_onto Y W | motion onto | is_a acting on
 construction: [X] {V} [Y] off [Z] onto [W] => | caused motion onto | is_a caused motion | is_a motion onto
 construction: [X] {V=take} [Y=day,week,afternoon,morning] off => rest X Y | taking time off
 construction: [X] {V=knock,push,pull,drop,throw,take,kick,lift} [Y] from [Z] => leave Y Z | moving from | is_a acting on a thing
+```
+
+---
+
+@LAT-88LON0 | created:1797379200 | updated:1797379200 | relates:refines@LAT85LON0,refines@LAT-85LON0
+
+**Grammar — acts (English)**
+src: RFCs/TTG-RFC-0007-Acts-and-Scenes.md §4
+
+Words that do. A sentence is a saying unless its first words are an act's: then it is done, and
+nothing in it is believed. *Show Pixel.* selects Pixel's record; the chain would read it as a
+mention of `pixel`, which is why an act is matched at the head of a sentence before the chain is
+asked. A verb among the words is matched by its lemma, so *showing* is *show*. What follows the
+act's words names its targets, each the record of its phrase's head; *me* straight after the act
+is who it is for, so *Show me Pixel* is Pixel. A `ref:` line names words that stand for what the
+last reply lit, or for the speaker. Each act names an actuator the contract in
+[the runtime's surface](lat85lon0) declares. There is no act for *tell*: *Tell me about
+penguins* is a question, and a sentence a scene tells is written in its own step. Acts hold words,
+so a language never borrows them; Spanish declares [its own](lat-88lon180).
+
+```ttdb-grammar
+kind: acts
+act: show | select
+act: go to | select
+act: take me to | select
+act: light up | highlight
+act: read again | reread
+ref: it | answer
+ref: that | answer
+ref: them | answer
 ```
 
 ---
@@ -1456,6 +1541,15 @@ unit_sentence: frase | frases
 unit_term: término | términos
 unit_episode: episodio | episodios
 unit_turn: vez | veces
+label_done: hecho
+act_blocked: No hecho: esta página no tiene {actuator}.
+act_no_target: No hecho: nada en tus palabras es {words}.
+act_not_done: Leído como dicho, no hecho: {acts}
+scene_consent: Esta escena haría {class} con {steps}. ¿Sigo?
+scene_stale: La gramática ha cambiado desde que se fijó esta escena ({hash}); estos pasos se leen como ella los lee ahora: {steps}
+scene_expect: El paso {step} esperaba {expected} y la respuesta fue {got}.
+drift_head: Lo que cambió en {scene} entre dos veces: {steps}
+run_title: Pasada {n} — {scene}
 ```
 
 ---
@@ -1478,6 +1572,30 @@ kind: constructions
 lang: es
 construction: => V X Y | actuar sobre algo
 construction: [X] {V=tirar,empujar,sacar,echar,quitar,bajar} [Y] de [Z] => salir_de Y Z | movimiento causado | is_a actuar sobre algo
+```
+
+---
+
+@LAT-88LON180 | created:1797379200 | updated:1797379200 | relates:translates@LAT-88LON0
+
+**Gramática — actos (español)**
+src: RFCs/TTG-RFC-0007-Acts-and-Scenes.md §4
+
+Spanish declares its own acts and borrows none of English's. The imperative is the act: *Muestra
+a Pixel.* selects Pixel, the object mark *a* set aside as the lexicon sets it aside. *Muestro a
+Pixel* is a saying, because *muestro* is no act word: the speaker's own verb form has a subject.
+
+```ttdb-grammar
+kind: acts
+lang: es
+act: muestra | select
+act: muéstrame | select
+act: ve a | select
+act: llévame a | select
+act: ilumina | highlight
+act: vuelve a leer | reread
+ref: eso | answer
+ref: esto | answer
 ```
 
 ---
@@ -2286,6 +2404,51 @@ edge: return_home | from: @LAT-57.6LON-93.2 | to: @LAT0LON0         | hold_ms: 5
 
 ---
 
+@LAT96LON1 | created:1797379200 | updated:1797379200 | type:scene | relates:refines@LAT96LON0,depends_on@LAT-88LON0,depends_on@LAT85LON0,depends_on@LAT0LON0
+[ew]
+conf:150
+rev:0
+sal:96
+touched:1797379200
+[/ew]
+
+**Scene — a lesson that asks**
+src: RFCs/TTG-RFC-0007-Acts-and-Scenes.md §5
+
+The same ground as [the walk](lat96lon0), as a slideshow you turn yourself: each step waits for
+**next**, and any hand on the globe stops it. Its steps are said in your own language, and the
+grammar's [acts](lat-88lon0) read them, so *Show Pixel.* selects Pixel and *Light up that.*
+lights what the reply before it reached. Its questions are asked of your words each time it is
+shown, so the slides change as your words do: today *Is Pixel an animal?* is inferred, not said,
+and the step expects that; *Do I like coffee?* is contested, and the next step walks every thing
+your words disagree about. *Is a whale a fish?* is a question your words don't reach, and its
+step branches home when they don't — say something about whales and it will show the whale
+instead.
+
+The scene keeps a log: each playing is written at lat 97, with the episode it was played after,
+the grammar it was read under and the sayings that grounded each slide, so two playings can be
+compared step by step. It is pinned to the grammar it was written under; when the grammar
+changes, the re-reading names this scene, and pinning it again is how you take the new reading.
+
+```ttdb-scene
+advance: hand
+log: true
+grammar: 35fc1f1e38e52d07
+
+step: pixel   | say: Show Pixel.
+step: chain   | ask: Is Pixel an animal?   | expect: affirm_inferred
+step: why     | say: Light up that.
+step: penguin | say: Show the penguin.
+step: fly     | ask: Can penguins fly?     | expect: deny
+step: coffee  | ask: Do I like coffee?     | expect: contest
+step: doubts  | each: contested | do: select | max: 3
+step: whale   | ask: Is a whale a fish?    | on_unknown: home
+step: never   | say: Show the whale.
+step: home    | say: Show me.
+```
+
+---
+
 @LAT98LON1 | created:1789257600 | updated:1789257600 | relates:supports@LAT30LON0,refines@LAT40LON0
 [ew]
 conf:200
@@ -2614,6 +2777,36 @@ accumulation, not change; and one episode is one tick whatever the clock says. L
 the thresholds are a first guess; mid salience because it is the first measurement the store
 makes of its words rather than of the world they describe. Try it in the
 [slow-verb example](examples/slow_verb_ttdb.md).
+
+---
+
+@LAT98LON11 | created:1797379200 | updated:1797379200 | relates:supports@LAT96LON1,refines@LAT98LON1,depends_on@LAT-88LON0
+[ew]
+conf:90
+rev:0
+sal:140
+touched:1797379200
+[/ew]
+
+**BELIEF — A saying is claimed; an act is done, and is never printed as either.**
+src: RFCs/TTG-RFC-0007-Acts-and-Scenes.md §1
+
+Everything the store read before this was a saying: claimed, held, mentioned or denied, and
+answered from. An act is the other thing a sentence can be. *Show Pixel* is not about Pixel; it
+asks for something to happen, and once it has, nothing about Pixel is any truer. So an act writes
+no percept, contests nothing and is printed as *done*, a fifth kind beside said, inferred,
+contested and superseded — the corollary the whole store rests on, *what you said and what
+follows from it are never printed alike*, carried one step further.
+
+Three claims follow, and each is a test. **The runtime still holds no word:** an act's words are a
+grammar record, and the runtime knows only actuator keys, which are schema, as block keys are.
+**No saying is lost to an act:** an act matches only at a sentence's head, a sentence with a
+subject is never one, and an input that mixes the two is read as said. **A slide is grounded:**
+a scene's questions are answered from the corpus each time, printed the four ways, and a scene
+that logs keeps the sayings that grounded each slide and the episode it was played after, so a
+drift between two playings names the words that moved it. What is least settled is reading acts
+at all: only the head of a sentence, only the words a grammar lists. *Could you show me Pixel?*
+is a question, and *Let's look at Pixel* a saying, until a construction can name an act.
 
 ---
 
