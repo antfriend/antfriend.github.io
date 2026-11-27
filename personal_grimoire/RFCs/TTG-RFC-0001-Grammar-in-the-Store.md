@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.11
+**Version:** 1.12
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -154,7 +154,7 @@ words fill are defined in TTG-RFC-0003 §4.
 ## 8. `kind: responses`
 
 `<key>: <phrase with {slots}>`, and `unit_<noun>: <singular> | <plural>`. Keys the runtime
-emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `superseded_by`,
+emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `label_carried` (a bounded store only, TTG-RFC-0003 §2.1), `superseded_by`,
 `affirm`, `deny`, `affirm_inferred`, `deny_inferred`, `deny_superseded`, `contest`, `unknown`,
 `exception`, `no_purchase`, `noted`, `noted_nothing`, `noted_mention`, `noted_held`, `noted_readings`,
 `reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `changed_tense`, `trajectory_crossing`, `trajectory_alternation`, `read_by`, `read_by_is_a`, `construction_contested`, `vectors_head`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
@@ -305,9 +305,10 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-11-23 | 1.5: §11.6, the parameters table; `question_order` in §3 and `plural_verb_ending` in §4 (the latter read by the reference runtime since TTG-RFC-0005 0.5, and listed here for the first time); `wh_place`'s optional preposition in §7. Implemented by the personal_grimoire reference runtime (antfriend.github.io `bf261e8`), from its PLAN.md phase 5. |
 | 2026-11-24 | 1.6: the ninth grammar kind, `constructions` (TTG-RFC-0006), in §1 and §9; `construction_max_words` in §9; `read_by` among the reply keys in §8; constructions are never borrowed (§11.2). Implemented by the personal_grimoire reference runtime (antfriend.github.io `ea1bc58`), from its PLAN.md phase 6. |
 | 2026-11-24 | 1.7: `read_by_is_a` joins the reply keys in §8 (TTG-RFC-0006 0.2 §4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `8a1d9e2`). |
-| 2026-11-25 | 1.8: `construction_contested` joins the reply keys in §8 (TTG-RFC-0006 0.3 §4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fd6ef4a`). |
-| 2026-12-01 | 1.9: `pro_verb` and `pro_verb_object` in §3, `vectors_head` among the reply keys in §8 (TTG-RFC-0006 0.9 §7.4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
-| 2026-12-07 | 1.10: `stem_restore` in §4, the stem endings no lemma ends bare on, and its place in the candidate order: after the undoubled stem, before the first candidate. Implemented by the personal_grimoire reference runtime (antfriend.github.io `56e14c0`). |
-| 2026-12-13 | 1.11: `trajectory_crossing`, `trajectory_alternation` and the `episode` unit in §8; `trajectory_min_episodes` and `trajectory_hold` in §9 — the shape of the sayings (TTG-RFC-0003 1.15 §4). A store that declares no `trajectory_min_episodes` replies as before. Implemented by the personal_grimoire reference runtime (antfriend.github.io `e2e02bf`). |
+| 2026-11-24 | 1.8: `construction_contested` joins the reply keys in §8 (TTG-RFC-0006 0.3 §4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `fd6ef4a`). |
+| 2026-11-24 | 1.9: `pro_verb` and `pro_verb_object` in §3, `vectors_head` among the reply keys in §8 (TTG-RFC-0006 0.9 §7.4). No other change. Implemented by the personal_grimoire reference runtime (antfriend.github.io `f7352e6`). |
+| 2026-11-25 | 1.10: `stem_restore` in §4, the stem endings no lemma ends bare on, and its place in the candidate order: after the undoubled stem, before the first candidate. Implemented by the personal_grimoire reference runtime (antfriend.github.io `56e14c0`). |
+| 2026-11-25 | 1.11: `trajectory_crossing`, `trajectory_alternation` and the `episode` unit in §8; `trajectory_min_episodes` and `trajectory_hold` in §9 — the shape of the sayings (TTG-RFC-0003 1.15 §4). A store that declares no `trajectory_min_episodes` replies as before. Implemented by the personal_grimoire reference runtime (antfriend.github.io `e2e02bf`). |
+| 2026-11-25 | 1.12: `label_carried` among the reply keys in §8, emitted only by a bounded store (TTG-RFC-0003 1.16 §2.1). No other change. |
 
 *License: CC0*

@@ -53,7 +53,7 @@ episode and term, which is how you make the corpus your own.
 |---|---|
 | [index.html](index.html) | The app: a TTDB parser and round-trip writer, a rule interpreter, a consolidator, a reasoner, a small sphere. **No words of any language.** |
 | [personal_grimoire_ttdb.md](personal_grimoire_ttdb.md) | The store. The blueprint, an English grammar and a Spanish one, every reply phrase, every constant, and the corpus. |
-| [RFCs/](RFCs/) | The specs, five of them new. Start at [RFCs/INDEX.md](RFCs/INDEX.md). |
+| [RFCs/](RFCs/) | The specs, seven of them new. Start at [RFCs/INDEX.md](RFCs/INDEX.md). |
 | [tests/](tests/) | Three Node scripts, a DOM stub and a Spanish grammar fixture. No dependencies, no test runner. |
 | [tools/](tools/) | Command-line access to the same engine: ask, feed, re-consolidate, re-read and take re-readings, read every term's pace, and run a bAbI task. |
 | [paper/](paper/) | A working draft of the paper, [Personal Grimoire — The File Is the Grammar](paper/Personal-Grimoire-The-File-Is-the-Grammar.md), and the recorded bAbI results it cites. |

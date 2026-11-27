@@ -259,6 +259,6 @@ longitude +step), wrapping inside the bands. Coordinates are written with as man
 | 2026-11-23 | 1.4: §4 and §5.1, the `gap:` line marking the percepts the grammar read at a relative's gap (TTG-RFC-0005 1.2 §3), after the holds lines; malformed gap lines are skipped and counted. §5.2, a vector record's `frames:` line. Implemented by the personal_grimoire reference runtime (antfriend.github.io `df9019d`). |
 | 2026-11-23 | 1.5: §4 and §5.1, the `tense:` line marking the percepts said in the past (TTG-RFC-0005 1.3 §3), after the gap line; malformed tense lines are skipped and counted. Implemented by the personal_grimoire reference runtime (antfriend.github.io `64dcfc5`). |
 | 2026-11-23 | 1.6: §7.2 narrowed by TTG-RFC-0005 1.4 §3 (modifiers as subclasses). No change to the format. |
-| 2026-12-12 | 1.7: §2, a clause a `subord` word opens ends at the last `list_sep` with a clause of its own after it (*When Pixel slept, the dog barked*). Implemented by the personal_grimoire reference runtime (antfriend.github.io `f0f8c8d`). |
+| 2026-11-25 | 1.7: §2, a clause a `subord` word opens ends at the last `list_sep` with a clause of its own after it (*When Pixel slept, the dog barked*). Implemented by the personal_grimoire reference runtime (antfriend.github.io `f0f8c8d`). |
 
 *License: CC0*
