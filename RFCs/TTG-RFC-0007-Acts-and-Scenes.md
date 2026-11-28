@@ -1,6 +1,6 @@
 # TTG-RFC-0007: Acts and Scenes — Words That Do, and Sequences the Owner Can Run
 
-**Version:** 0.2
+**Version:** 0.3
 **Status:** Draft — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0007
 **Project:** toot-toot-engineering
@@ -390,6 +390,13 @@ one and fails:
 | `unsafe` | a `say:` that does not read as an act; an `ask` call whose text reads as a statement; a `write` or `device` call in a scene the store did not author, with no trust that admits it (§10.5) |
 | `length` | a plan longer than `scene_max_steps` calls once its generators expand |
 
+An `unsafe` line has one of three causes: `not_act` (a `say:` that does not read as an act),
+`ask_tells` (an `ask` whose text reads as a statement) and `far_reach` (a step that reaches into
+another store with more than a view call). For every other reason the cause is the reason itself.
+The owner is told of a rejection in the store's words, by the reply key `scene_reject_<cause>`
+(§9), and the code stays available to tools. A store that lacks the key prints the step and the
+code.
+
 A missing actuator is not a rejection. It is a blocker, and it is shown (§3.2).
 
 ---
@@ -501,6 +508,7 @@ shows such a target as a link the reader can follow, and does not open the other
 | `responses` | `scene_consent` | the question before a write or device call; slots `{class}`, `{steps}` |
 | `responses` | `scene_stale` | the grammar has changed since the pin; slots `{hash}`, `{steps}` |
 | `responses` | `scene_expect` | an `ask` that replied otherwise than expected; slots `{step}`, `{expected}`, `{got}` |
+| `responses` | `scene_reject_<cause>` | a rejected line (§7), one key for each cause; slots `{step}`, `{said}` (the step's sentence), `{max}` (`scene_max_steps`) |
 | `responses` | `drift_head` | the head of a drift report; slots `{scene}`, `{steps}` |
 | `responses` | `run_title` | a run record's title; slots `{n}`, `{scene}` |
 | `vectors` | `role: act_edge` | the edge from a told episode to its scene |
@@ -621,6 +629,7 @@ episode (§4.3), which is what declaring acts asks for. Generic viewers skip `tt
 
 | Date | Change |
 |---|---|
+| 2026-11-27 | 0.3: a rejection's cause, which tells apart `unsafe`'s three (`not_act`, `ask_tells`, `far_reach`), and the reply keys `scene_reject_<cause>` that say it in the store's words, the code printed only where a store lacks the key (§7, §9). Implemented by the personal_grimoire reference runtime (antfriend.github.io `aba3f8d`). |
 | 2026-11-27 | 0.2: implemented by the personal_grimoire reference runtime (antfriend.github.io `23b5202`), with what implementing it settled: a `ref:` is matched before determiners are stripped, and the speaker straight after an act is who it is for (§4.2); an `act` reply's `calls` and `done`, and every reply's `key` (§4.3); `eps_top` walks the terms (§5.4); the runtime's calls named (§6.1); a beat held as its step's time where no pulse is heard (§6.2); where a run's consent starts (§6.3); a stale pin shows the steps as read now, since the pinned plan cannot be recomputed, and a pin to any grammar but the store's is refused (§8.2); the reference page shows a cross-store target as a link (§8.5); `run_title` (§9); merged scenes not yet told apart (§10.5). The reference store declares the contract in its Blueprint 9, English and Spanish acts, and a lesson scene. |
 | 2026-11-27 | 0.1: initial draft. Actuators and their contract (§3); the `acts` kind, matched at a sentence's head before the chain (§4); scenes with steps, branches and generators (§5); plans, runs and consent (§6); safety (§7); provenance at five depths, with run records and drift (§8); keys (§9); domains (§10). Not yet implemented. §4.2's account of how imperatives read today is from the reference runtime at antfriend.github.io `7a53a97`. |
 

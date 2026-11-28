@@ -37,7 +37,7 @@ selected:
   - "@LAT0LON0"
 preview:
   "@LAT0LON0": "Home: what this database is and how each record expands back to its full RFC"
-agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step. Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.1, -0002 1.3, -0003 1.1, -0005 1.1: the holds line linking a stance to what it holds (personal_grimoire PLAN.md phase 1); synced to the website the same day, not yet to robot_team. Then the same four for TTG-RFC-0001 1.2, -0002 1.4, -0003 1.2, -0005 1.2: verb frames counted in episodes, the grammar's gaps apart (personal_grimoire PLAN.md phase 2). Then @LAT60LON1-5 for TTG-RFC-0001 1.3, -0002 1.5, -0003 1.3, -0004 1.1, -0005 1.3: tense, hedges, and a change in the owner's tense (phase 3). Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.4, -0002 1.6, -0003 1.4, -0005 1.4: modifiers as subclasses (phase 4). Then @LAT60LON1/3/5 for TTG-RFC-0001 1.5, -0003 1.5, -0005 1.5: the parameters named, and questions with the verb first (phase 5). 2026-11-24: +@LAT60LON6 for TTG-RFC-0006 0.1, constructions, and @LAT60LON1/3 for TTG-RFC-0001 1.6, -0003 1.6 (phase 6). Then @LAT60LON1/6 for TTG-RFC-0001 1.7, -0006 0.2: inheritance between constructions. 2026-11-24: @LAT60LON1/6 for TTG-RFC-0001 1.8, -0006 0.3: several parents. 2026-11-24: @LAT60LON6 for TTG-RFC-0006 0.4: abstract constructions. 2026-11-24: @LAT60LON6 for TTG-RFC-0006 0.5: a verbish name tied to its verbs. 2026-11-24: @LAT60LON6 for TTG-RFC-0006 0.6: a nounish name tied to its things. 2026-11-24: @LAT60LON6 for TTG-RFC-0006 0.7: a Spanish construction. 2026-11-24: @LAT60LON3/6 for TTG-RFC-0003 1.7, -0006 0.8: questions read by constructions. 2026-11-24: @LAT60LON1/3/6 for TTG-RFC-0001 1.9, -0003 1.8, -0006 0.9: a question gap at the verb. 2026-11-24: @LAT60LON3/6 for TTG-RFC-0003 1.9, -0006 0.10: a verb gap with no thing. 2026-11-24: @LAT60LON3/6 for TTG-RFC-0003 1.10, -0006 0.11: inherited doings. 2026-11-24: @LAT60LON3/6 for TTG-RFC-0003 1.11, -0006 0.12: a preposition before the wh-word. 2026-11-25: @LAT60LON6 for TTG-RFC-0006 0.13: part of a clause. 2026-11-25: @LAT60LON6 for TTG-RFC-0006 0.14: a relative inside a stance's clause. 2026-11-25: @LAT60LON1 for TTG-RFC-0001 1.10: stem_restore. 2026-11-25: @LAT60LON3/6 for TTG-RFC-0003 1.12, -0006 0.15: a preposition with the copula. 2026-11-25: @LAT60LON6 for TTG-RFC-0006 0.16: moving from. 2026-11-25: @LAT60LON3 for TTG-RFC-0003 1.13: no subject after a preposition; one motion across languages. 2026-11-25: @LAT60LON3 for TTG-RFC-0003 1.14: the predicate's noun before the subject. 2026-11-25: @LAT60LON2/6 for TTG-RFC-0002 1.7, -0006 0.17: an adverbial clause, and phrases after a shape. 2026-11-25: @LAT60LON1/3/5 for TTG-RFC-0001 1.11, -0003 1.15, -0005 1.6: the shape of the sayings, and construction traffic (phase 7). 2026-11-25 (later): changelog dates repaired in all three checkouts; the TTG changelogs had dated each version one day after the last, out to 2026-12-13, where git dates them 2026-11-24 and -25; record timestamps after 1795564800 reset to it. Then from robot_team: @LAT60LON1/3/4 for TTG-RFC-0001 1.12, -0003 1.16 (the bounded-store profile) and -0004 1.2 (§4 implemented on the robot_team fleet; §4.9, the report); @LAT60LON4 conf 170 -> 210 now that §4.8 passed on hardware; 46 records still. 2026-11-26: @LAT60LON4 for TTG-RFC-0004 1.3 (the robot_team fleet names the observer in its link percepts on all six boards; changing a percept's form; 1.2's merged-belief claim corrected); 46 records still. 2026-11-27: +@LAT60LON7 for TTG-RFC-0007 0.1, acts and scenes (draft, not yet implemented); 47 records. 2026-11-27 (later): @LAT60LON1/3/5/7 and @LAT30LON2 for TTG-RFC-0001 1.13, -0003 1.17, -0005 1.7, -0007 0.2 and TTCP-RFC-0002 1.1: acts and scenes implemented by the personal_grimoire runtime (antfriend.github.io 23b5202); 47 records still."
+agent_note: "First cut authored 2026-07-08 by semantic compression of the 28-file RFC corpus (~266 KB -> this file). Two-way sync with robot_team 2026-11-22, 42 -> 45 records: +@LAT98LON5-7 (fleet beliefs that had never been pushed here), robot_team's fuller @LAT10LON3 body and @LAT10LON8 generalized_by edge; @LAT98LON0 carries both checkouts' edges. sal and this front matter stay per-checkout by design. 2026-11-23: @LAT10LON3/4/5/7 and @LAT60LON2 updated for TTDB-RFC-0003 v1.2, -0004 v1.1, -0005 v1.1, -0007 v0.2, TTG-RFC-0002 1.1 (external review); synced to robot_team and the website the same day. Then @LAT60LON2 for TTG-RFC-0002 1.2: the personal_grimoire runtime now conforms to southeast_step. Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.1, -0002 1.3, -0003 1.1, -0005 1.1: the holds line linking a stance to what it holds (personal_grimoire PLAN.md phase 1); synced to the website the same day, not yet to robot_team. Then the same four for TTG-RFC-0001 1.2, -0002 1.4, -0003 1.2, -0005 1.2: verb frames counted in episodes, the grammar's gaps apart (personal_grimoire PLAN.md phase 2). Then @LAT60LON1-5 for TTG-RFC-0001 1.3, -0002 1.5, -0003 1.3, -0004 1.1, -0005 1.3: tense, hedges, and a change in the owner's tense (phase 3). Then @LAT60LON1/2/3/5 for TTG-RFC-0001 1.4, -0002 1.6, -0003 1.4, -0005 1.4: modifiers as subclasses (phase 4). Then @LAT60LON1/3/5 for TTG-RFC-0001 1.5, -0003 1.5, -0005 1.5: the parameters named, and questions with the verb first (phase 5). 2026-11-24: +@LAT60LON6 for TTG-RFC-0006 0.1, constructions, and @LAT60LON1/3 for TTG-RFC-0001 1.6, -0003 1.6 (phase 6). Then @LAT60LON1/6 for TTG-RFC-0001 1.7, -0006 0.2: inheritance between constructions. 2026-11-24: @LAT60LON1/6 for TTG-RFC-0001 1.8, -0006 0.3: several parents. 2026-11-24: @LAT60LON6 for TTG-RFC-0006 0.4: abstract constructions. 2026-11-24: @LAT60LON6 for TTG-RFC-0006 0.5: a verbish name tied to its verbs. 2026-11-24: @LAT60LON6 for TTG-RFC-0006 0.6: a nounish name tied to its things. 2026-11-24: @LAT60LON6 for TTG-RFC-0006 0.7: a Spanish construction. 2026-11-24: @LAT60LON3/6 for TTG-RFC-0003 1.7, -0006 0.8: questions read by constructions. 2026-11-24: @LAT60LON1/3/6 for TTG-RFC-0001 1.9, -0003 1.8, -0006 0.9: a question gap at the verb. 2026-11-24: @LAT60LON3/6 for TTG-RFC-0003 1.9, -0006 0.10: a verb gap with no thing. 2026-11-24: @LAT60LON3/6 for TTG-RFC-0003 1.10, -0006 0.11: inherited doings. 2026-11-24: @LAT60LON3/6 for TTG-RFC-0003 1.11, -0006 0.12: a preposition before the wh-word. 2026-11-25: @LAT60LON6 for TTG-RFC-0006 0.13: part of a clause. 2026-11-25: @LAT60LON6 for TTG-RFC-0006 0.14: a relative inside a stance's clause. 2026-11-25: @LAT60LON1 for TTG-RFC-0001 1.10: stem_restore. 2026-11-25: @LAT60LON3/6 for TTG-RFC-0003 1.12, -0006 0.15: a preposition with the copula. 2026-11-25: @LAT60LON6 for TTG-RFC-0006 0.16: moving from. 2026-11-25: @LAT60LON3 for TTG-RFC-0003 1.13: no subject after a preposition; one motion across languages. 2026-11-25: @LAT60LON3 for TTG-RFC-0003 1.14: the predicate's noun before the subject. 2026-11-25: @LAT60LON2/6 for TTG-RFC-0002 1.7, -0006 0.17: an adverbial clause, and phrases after a shape. 2026-11-25: @LAT60LON1/3/5 for TTG-RFC-0001 1.11, -0003 1.15, -0005 1.6: the shape of the sayings, and construction traffic (phase 7). 2026-11-25 (later): changelog dates repaired in all three checkouts; the TTG changelogs had dated each version one day after the last, out to 2026-12-13, where git dates them 2026-11-24 and -25; record timestamps after 1795564800 reset to it. Then from robot_team: @LAT60LON1/3/4 for TTG-RFC-0001 1.12, -0003 1.16 (the bounded-store profile) and -0004 1.2 (§4 implemented on the robot_team fleet; §4.9, the report); @LAT60LON4 conf 170 -> 210 now that §4.8 passed on hardware; 46 records still. 2026-11-26: @LAT60LON4 for TTG-RFC-0004 1.3 (the robot_team fleet names the observer in its link percepts on all six boards; changing a percept's form; 1.2's merged-belief claim corrected); 46 records still. 2026-11-27: +@LAT60LON7 for TTG-RFC-0007 0.1, acts and scenes (draft, not yet implemented); 47 records. 2026-11-27 (later): @LAT60LON1/3/5/7 and @LAT30LON2 for TTG-RFC-0001 1.13, -0003 1.17, -0005 1.7, -0007 0.2 and TTCP-RFC-0002 1.1: acts and scenes implemented by the personal_grimoire runtime (antfriend.github.io 23b5202); 47 records still. 2026-11-27 (later still): @LAT60LON1 and @LAT60LON7 for TTG-RFC-0001 1.14 and -0007 0.3, a rejected scene line said by `scene_reject_<cause>` (antfriend.github.io aba3f8d); 47 records still."
 ```
 
 ---
@@ -848,12 +848,12 @@ composite) gate every addition.
 @LAT60LON1 | created:1789257600 | updated:1795737600 | relates:depends_on@LAT10LON1,depends_on@LAT30LON1
 [ew]
 conf:210
-rev:13
+rev:14
 sal:90
 touched:1795737600
 [/ew]
 
-**TTG-RFC-0001 — Grammar in the Store** (Stable, 1.13)
+**TTG-RFC-0001 — Grammar in the Store** (Stable, 1.14)
 src: TTG-RFC-0001-Grammar-in-the-Store.md
 
 A language's grammar is data in the same TTDB as the corpus it reads: `ttdb-grammar`
@@ -874,7 +874,7 @@ bare on (*shoved* is *shove*). 1.11 `trajectory_crossing`, `trajectory_alternati
 `episode` unit, `trajectory_min_episodes` and `trajectory_hold`. 1.12 `label_carried`, for a
 bounded store only (TTG-RFC-0003 §2.1). 1.13: the tenth kind, `acts`, a language's words
 bound to actuators (TTG-RFC-0007), never borrowed, with its reply keys, three scene
-numbers and `run_lane`.
+numbers and `run_lane`. 1.14: `scene_reject_<cause>` among the reply keys.
 
 ---
 
@@ -1054,12 +1054,12 @@ implemented in the reference runtime; ties by meaning open.
 @LAT60LON7 | created:1795737600 | updated:1795737600 | relates:depends_on@LAT60LON1,depends_on@LAT60LON3,depends_on@LAT60LON5,depends_on@LAT60LON6,depends_on@LAT30LON2,depends_on@LAT40LON3
 [ew]
 conf:90
-rev:1
+rev:2
 sal:60
 touched:1795737600
 [/ew]
 
-**TTG-RFC-0007 — Acts and Scenes: Words That Do, and Sequences the Owner Can Run** (Draft, 0.2)
+**TTG-RFC-0007 — Acts and Scenes: Words That Do, and Sequences the Owner Can Run** (Draft, 0.3)
 src: TTG-RFC-0007-Acts-and-Scenes.md
 
 A saying is claimed; an act is done. An **actuator** is a host capability named by a
@@ -1079,7 +1079,11 @@ runs it and asks consent before a write or device call. Provenance at five depth
 scene's rev, a pinned grammar hash re-reading reports against, each slide's grounds, run
 records on `run_lane` ordered by the episode they followed (never a clock) with drift
 between runs, and cross-store targets with their `db_id`. Foreign scenes play view and
-query only unless trusted (TTN-RFC-0005). 0.2: implemented in the reference runtime; refs matched before determiners, the speaker after an act who it is for, act replies' `calls` and `done`, a stale pin shown as read now since the pinned plan cannot be recomputed, `run_title`; merged scenes not yet told apart.
+query only unless trusted (TTN-RFC-0005). 0.2: implemented in the reference runtime;
+refs matched before determiners, the speaker after an act who it is for, act replies'
+`calls` and `done`, a stale pin shown as read now since the pinned plan cannot be
+recomputed, `run_title`; merged scenes not yet told apart. 0.3: a rejection's cause,
+`unsafe`'s three told apart, said by `scene_reject_<cause>`.
 
 ---
 

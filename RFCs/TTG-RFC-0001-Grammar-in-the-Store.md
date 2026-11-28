@@ -1,6 +1,6 @@
 # TTG-RFC-0001: Grammar in the Store
 
-**Version:** 1.13
+**Version:** 1.14
 **Status:** Stable — implemented in the personal_grimoire reference runtime
 **RFC Number:** 0001
 **Project:** toot-toot-engineering
@@ -160,8 +160,8 @@ emits: `label_said`, `label_inferred`, `label_contested`, `label_superseded`, `l
 `reading_pair`, `asked_held`, `asked_readings`, `asked_holds`, `changed_tense`, `trajectory_crossing`, `trajectory_alternation`, `read_by`, `read_by_is_a`, `construction_contested`, `vectors_head`, `amended`, `amend_title`, `contradicts`, `supersedes`, `describe_head`, `describe_empty`, `points_here`, `mentioned_with`,
 `objects_head`, `subjects_head`, `nothing_found`, `search_head`, `suggest`, `ingested`,
 `episode_title`, `source_typed`, `store_opened`, and for acts and scenes `label_done`, `act_blocked`,
-`act_no_target`, `act_not_done`, `scene_consent`, `scene_stale`, `scene_expect`, `drift_head`,
-`run_title` (TTG-RFC-0007 §9); units `percept`, `sentence`, `term`, `episode`.
+`act_no_target`, `act_not_done`, `scene_consent`, `scene_stale`, `scene_expect`, `scene_reject_<cause>`,
+`drift_head`, `run_title` (TTG-RFC-0007 §9); units `percept`, `sentence`, `term`, `episode`.
 
 ---
 
@@ -317,6 +317,7 @@ scalar (`min_stem`, `question_mark`, `describe_max_words`) is the last record's.
 | 2026-11-25 | 1.10: `stem_restore` in §4, the stem endings no lemma ends bare on, and its place in the candidate order: after the undoubled stem, before the first candidate. Implemented by the personal_grimoire reference runtime (antfriend.github.io `56e14c0`). |
 | 2026-11-25 | 1.11: `trajectory_crossing`, `trajectory_alternation` and the `episode` unit in §8; `trajectory_min_episodes` and `trajectory_hold` in §9 — the shape of the sayings (TTG-RFC-0003 1.15 §4). A store that declares no `trajectory_min_episodes` replies as before. Implemented by the personal_grimoire reference runtime (antfriend.github.io `e2e02bf`). |
 | 2026-11-27 | 1.13: the tenth kind, `acts` (§9; TTG-RFC-0007 §4), never borrowed (§11.2); its reply keys (§8), the three scene numbers and `run_lane` (§9). Implemented by the personal_grimoire reference runtime (antfriend.github.io `23b5202`). |
+| 2026-11-27 | 1.14: `scene_reject_<cause>` among the reply keys in §8, one for each cause of a rejected scene line (TTG-RFC-0007 §7). Implemented by the personal_grimoire reference runtime (antfriend.github.io `aba3f8d`). |
 | 2026-11-25 | 1.12: `label_carried` among the reply keys in §8, emitted only by a bounded store (TTG-RFC-0003 1.16 §2.1). No other change. |
 
 *License: CC0*
