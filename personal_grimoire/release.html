@@ -100,6 +100,7 @@ footer{margin-top:60px;padding-top:14px;border-top:1px solid var(--line);font-si
     <li><a href="#languages">Two languages, one motion</a></li>
     <li><a href="#trajectories">Belief trajectories</a></li>
     <li><a href="#slowverb">The slow verb: a meter for how fast your words change</a></li>
+    <li><a href="#scenes">Scenes that do</a></li>
     <li><a href="#theories">Where it sits among theories of grammar</a></li>
     <li><a href="#measured">Measured</a></li>
     <li><a href="#provenance">Where the ideas came from</a></li>
@@ -452,8 +453,48 @@ window through which its referent is sampled. The grimoire takes the window to b
 can already show, a turn or a move. The design belief is <code>@LAT98LON10</code>. It is a prototype, and its spec has not yet been
 written upstream.</div>
 
+<h2 id="scenes"><span class="n">8</span>Scenes that do</h2>
+<p>Most of what you type is a <b>saying</b>: the store claims it, keeps it as an episode, and can be asked about it later.
+An <b>act</b> is a sentence that does something instead, like <i>Show the penguin</i>, <i>Light up that</i> or <i>Muestra a Pixel</i>.
+Each act calls one of the host's <b>actuators</b> (<code>select</code>, <code>highlight</code>, <code>ask</code>, <code>tell</code>).
+A <code>ttdb-actuators</code> block in the store gives each actuator's class, from <i>view</i> to <i>write</i>, and the words for
+the acts are a grammar kind of their own, one record per language. An act writes no episode and is printed as <i>done</i>.</p>
+<p>A <b>scene</b> is a list of <code>step:</code> lines, each an act or a question. You turn it like a slideshow, or it plays
+by itself. Its questions are asked of your words each time a slide is shown, it can branch on the answer, and a step can take
+its records from the store, such as everything your words disagree about. A step that would write asks you first. A scene
+that keeps a log records each playing, so two playings can be compared slide by slide, and a scene can be pinned to the
+grammar it was written under.</p>
+<pre><span class="gram">step:</span> ostrich | <span class="gram">ask:</span> Can an ostrich fly?  | on_deny: fixed
+<span class="gram">step:</span> wrong   | <span class="gram">say:</span> Light up that.       | next: home
+<span class="gram">step:</span> fixed   | <span class="gram">say:</span> Show the ostrich.
+<span class="gram">step:</span> doubts  | <span class="gram">each:</span> contested | do: select | max: 5
+<span class="gram">step:</span> fix     | <span class="gram">tell:</span> Ostriches do not fly.</pre>
+<p>The scenes store holds five scenes and a walk that plays them all on one page, in order. Its sayings imply that an
+ostrich can fly, which is wrong, and the walk follows that inference through the five scenes. The first asks the question and lights up the records it was inferred from. The
+second flies the globe through your doubts and changes of mind. The third corrects the ostrich, after asking you, and the
+new episode records which scene, step and playing told it. The fourth is the same kind of lesson in Spanish, and
+rejects the English line that was slipped into it. The fifth was pinned to the grammar from before acts existed, so the
+page says that grammar has moved on and offers to pin it again. Play the walk twice and its panel names the slide that
+changed: <i>ostrich affirm_inferred → deny</i>.</p>
+<blockquote><span class="q">&gt; Show the penguin. Light up that.</span><br>
+done: Show the penguin.<br>
+done: Light up that.</blockquote>
+<div class="trylabel">Try it in the scenes store</div>
+<div class="try">
+  <a href="index.html?store=examples/scenes_ttdb.md">Play the walk</a>
+  <a href="index.html?store=examples/scenes_ttdb.md&amp;ask=Can%20an%20ostrich%20fly%3F">Can an ostrich fly?</a>
+  <a href="index.html?store=examples/scenes_ttdb.md&amp;ask=Can%20penguins%20fly%3F">Can penguins fly?</a>
+  <a href="index.html?store=examples/scenes_ttdb.md&amp;ask=Do%20I%20like%20coffee%3F">Do I like coffee?</a>
+  <a href="index.html?store=examples/scenes_ttdb.md&amp;ask=%C2%BFEs%20Pixel%20un%20animal%3F">¿Es Pixel un animal?</a>
+</div>
+<div class="prov"><b>Provenance.</b> <i>Performative</i> is Austin's word for an utterance that does what it says
+<sup><a href="#ref-austin">[13]</a></sup>. The actuator is A32-RFC-0003's, so a page and a device share one vocabulary,
+and the scene is TTCP-RFC-0002 §10's, extended with steps. Both are specified by TTG-RFC-0007
+(<a href="https://github.com/antfriend/toot-toot-engineering/commit/60a10ad">60a10ad</a>), which the runtime implements
+(<a href="https://github.com/antfriend/antfriend.github.io/commit/23b5202">23b5202</a>).</div>
+
 <!-- ===================================================================== -->
-<h2 id="theories"><span class="n">8</span>Where it sits among theories of grammar</h2>
+<h2 id="theories"><span class="n">9</span>Where it sits among theories of grammar</h2>
 <p>Before the phases began, the grimoire was compared, dimension by dimension, with four theories of grammar. Each
 phase then took one idea from them that the grimoire could hold without giving up quoting its owner.</p>
 <div class="tbl"><table>
@@ -481,7 +522,7 @@ inferred grounds are never printed as said ones, and contradictions are kept rat
 </table></div>
 
 <!-- ===================================================================== -->
-<h2 id="measured"><span class="n">9</span>Measured</h2>
+<h2 id="measured"><span class="n">10</span>Measured</h2>
 <p>bAbI v1.2 English test splits, 1,000 questions each <sup><a href="#ref-weston">[1]</a></sup>. Each story's facts are told to an
 emptied store, one episode per line. <i>Exact attribution</i> means the answer is right and the sentences it quotes are
 exactly the gold supporting facts. The runs were repeated after each phase, after the constructions series and after
@@ -517,7 +558,7 @@ node tools/babi.mjs PATH/qa1_single-supporting-fact_test.txt</pre>
 <p>The bAbI data isn't included here. <code>tools/babi.mjs</code> says where to get it.</p>
 
 <!-- ===================================================================== -->
-<h2 id="provenance"><span class="n">10</span>Where the ideas came from</h2>
+<h2 id="provenance"><span class="n">11</span>Where the ideas came from</h2>
 <p>Three kinds of origin, kept apart:</p>
 <h3>Ideas from the literature</h3>
 <p>Cited where they are used, and listed below. In short: LFG's COMP, TENSE and ADJUNCT <sup><a href="#ref-kb">[4]</a></sup> for Phases
@@ -526,7 +567,7 @@ node tools/babi.mjs PATH/qa1_single-supporting-fact_test.txt</pre>
 <sup><a href="#ref-dt">[5]</a></sup>; Construction Grammar <sup><a href="#ref-goldberg">[2]</a></sup> and idioms <sup><a href="#ref-fko">[3]</a></sup>
 for Phase 6; Laplace's rule of succession <sup><a href="#ref-laplace">[11]</a></sup> for a belief's confidence; bAbI
 <sup><a href="#ref-weston">[1]</a></sup> for the benchmark; Haylett <sup><a href="#ref-haylett">[7]</a></sup> and Takens
-<sup><a href="#ref-takens">[8]</a></sup> for trajectories, and Haylett again <sup><a href="#ref-slowverb">[12]</a></sup> for the slow-verb meter. Each idea was cut down to what a store can hold without claiming
+<sup><a href="#ref-takens">[8]</a></sup> for trajectories, and Haylett again <sup><a href="#ref-slowverb">[12]</a></sup> for the slow-verb meter; Austin's performatives <sup><a href="#ref-austin">[13]</a></sup> for acts. Each idea was cut down to what a store can hold without claiming
 anything about its owner that the owner didn't say.</p>
 <h3>The project's own design</h3>
 <p>TTDB (the file format, its globe of records and its typed edges), the Toot Toot Grammar RFCs, the runtime that holds no
@@ -553,6 +594,7 @@ that implemented it, so each claim on this page traces to spec text and code.</p
   <li id="ref-bybee">J. Bybee, “From Usage to Grammar: The Mind's Response to Repetition,” <i>Language</i> 82(4), 2006, 711–733.</li>
   <li id="ref-laplace">P.-S. Laplace, <i>Essai philosophique sur les probabilités</i>, Paris, 1814.</li>
   <li id="ref-slowverb">K. R. Haylett, “Geofinitism and the Slow Verb: An Essay on Meaning, Measurement, and the Dynamics of Words,” Substack, May 2026. <a href="https://kevinhaylett.substack.com/p/geofinitism-and-the-slow-verb">kevinhaylett.substack.com</a></li>
+  <li id="ref-austin">J. L. Austin, <i>How to Do Things with Words</i>, Oxford University Press, 1962.</li>
 </ol>
 
 <footer>

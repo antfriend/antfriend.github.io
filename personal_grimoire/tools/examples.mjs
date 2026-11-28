@@ -109,6 +109,31 @@ export const EXAMPLES = [
       { q: "What left the shelf?", terms: "cup" },
     ],
   },
+  {
+    // five scenes and the walk that plays them (TTG-RFC-0007): the scenes are its records, the
+    // seed's own two scenes are left out, and the store opens on the walk
+    file: "scenes_ttdb.md",
+    title: "Five scenes",
+    records: "tools/scenes_records.md",
+    select: "@LAT96LON0",
+    sayings: [
+      "Birds are animals. Birds can fly. Birds have feathers.",
+      "A penguin is a bird. Penguins do not fly.",
+      "An ostrich is a bird.",
+      "Pixel is a cat. Cats are mammals. Mammals are animals.",
+      "I like coffee.", "I do not like coffee.",
+      "Pixel likes milk.", "Pixel does not like milk.",
+      "The cloud is in the sky.", "The cloud is in the server.",
+      "Pixel is in the garden.", "Pixel is in the kitchen.",
+    ],
+    ask: [
+      { q: "Can an ostrich fly?", verdict: "affirm_inferred" },
+      { q: "Can penguins fly?", verdict: "deny" },
+      { q: "Do I like coffee?", verdict: "contest" },
+      { q: "Is the cloud in the sky?", verdict: "deny_superseded" },
+      { q: "¿Es Pixel un animal?", verdict: "affirm_inferred" },
+    ],
+  },
 ];
 
 /* The example's store text, built from the seed's text by the engine itself. */
@@ -117,6 +142,19 @@ export function build(PG, seed, ex){
   let t = NOW;
   PG.startEmpty(S, t);
   for (const s of ex.sayings) PG.answer(S, s, t += STEP);
+  if (ex.records){
+    // its own records stand where the seed's scenes stood, before the tail, in the order written
+    // a store's first chunk is its header, so the records are read after one
+    const own = PG.parseStore("-\n---\n\n" + read(ex.records).replace(/\r\n?/g, "\n")).chunks.filter(c => c.rec);
+    S.st.chunks = S.st.chunks.filter(c => !(c.rec && c.rec.type === "scene"));
+    const i = S.st.chunks.findIndex(c => c.rec && (c.rec.lat >= 98 || c.rec.lat <= -90));
+    S.st.chunks.splice(i < 0 ? S.st.chunks.length : i, 0, ...own);
+  }
+  if (ex.select){
+    const c0 = S.st.chunks[0], rec = PG.records(S.st).find(r => r.id === ex.select);
+    c0.text = c0.text.replace(/(selected:\n  - )"[^"]*"(\npreview:\n  )"[^"]*": "[^"]*"/,
+      (m, a, b) => a + JSON.stringify(ex.select) + b + JSON.stringify(ex.select) + ": " + JSON.stringify(rec.title));
+  }
   return PG.serializeStore(S.st);
 }
 
@@ -125,7 +163,8 @@ export function check(PG, S, a, now){
   const r = PG.answer(S, a.q, now), G = S.G, why = [];
   const terms = r.items.map(i => i.term).join(" ");
   if (a.terms !== undefined && terms !== a.terms) why.push("terms " + JSON.stringify(terms));
-  if (a.verdict && r.verdict !== PG.say(G, a.verdict)) why.push("verdict " + JSON.stringify(r.verdict));
+  // a reply carries its verdict's key, so a question in a second language is checked by its key
+  if (a.verdict && r.key !== a.verdict && r.verdict !== PG.say(G, a.verdict)) why.push("verdict " + JSON.stringify(r.verdict));
   if (a.says){
     const head = PG.say(G, a.says, {}).split("{")[0].slice(0, 12);
     if (!r.notes.some(n => n.startsWith(head))) why.push("no " + a.says + " note");

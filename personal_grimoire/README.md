@@ -350,6 +350,13 @@ re-reading and pinning it again takes the new reading. A step's act that names n
 the whale.*, before you have said a word about whales — is shown with what it lacks, and the
 scene goes on.
 
+[The scenes store](index.html?store=examples/scenes_ttdb.md) opens on a walk that plays five
+scenes, one after another. They cover a lesson that branches on your words, a review that takes
+its stops from your doubts, a write that asks first and records which scene told it, a Spanish
+scene that rejects an English line, and a scene pinned to an older grammar. Its records are
+written in [tools/scenes_records.md](tools/scenes_records.md), and `node tools/examples.mjs`
+builds the store from them.
+
 ---
 
 ## The pipeline

@@ -1839,6 +1839,35 @@ section("the example stores and the release page (examples/, release.html)");
     let t = NOW + STEP * (ex.sayings.length + 1);
     for (const a of ex.ask){ const c = check(PG, S, a, t += STEP); ok(c.ok, "  " + a.q, c.why.join("; ")); }
   }
+  // the scenes store: five scenes and the walk that plays them, opening on the walk (TTG-RFC-0007)
+  {
+    const ex = EXAMPLES.find(e => e.file === "scenes_ttdb.md"), text = read("examples/" + ex.file).replace(/\r\n?/g, "\n");
+    const S = PG.openStore(text), HOSTS = { select:"view", highlight:"view", hold:"view", play:"view", ask:"query", reread:"query", tell:"write" };
+    const rec = id => PG.records(S.st).find(r => r.id === id);
+    ok(/selected:\n  - "@LAT96LON0"/.test(text), "the scenes store opens on its walk");
+    const scenes = PG.scenesOf(S.st).map(r => r.id);
+    ok(scenes.join(" ") === [0, 1, 2, 3, 4, 5].map(n => "@LAT96LON" + n).join(" "), "it holds the walk and its five scenes, and none of the seed's", scenes.join(" "));
+    const plans = scenes.map(id => PG.planOf(S, rec(id), HOSTS));
+    ok(plans.every((p, i) => i === 4 ? p.errors.map(e => e.step + ":" + e.reason).join() === "show:unsafe" : !p.errors.length),
+       "every scene plans, and the Spanish scene rejects only its English line", plans.map(p => JSON.stringify(p.errors)).join(" "));
+    ok(plans[5].stale && !plans.slice(0, 5).some(p => p.stale) && PG.reread(S).scenes.map(x => x.scene).join() === "@LAT96LON5",
+       "the fifth is pinned to an older grammar, and a re-reading names it");
+    ok(plans[0].cls === "write" && plans[2].cls === "view" && plans[2].calls.length > 5, "the walk writes; the doubts scene only views, and its generators fill it");
+    // the bird lesson branches on the ostrich, before and after the walk corrects it
+    const one = () => PG.playPlan(S, PG.planOf(S, rec("@LAT96LON1"), HOSTS), NOW + 900 * STEP).steps.map(x => x.step).join(" ");
+    ok(one() === "penguin fly ostrich wrong home", "before the correction the lesson lights the inference", one());
+    const walk = n => { const p = PG.planOf(S, rec("@LAT96LON0"), HOSTS), run = PG.playPlan(S, p, NOW + n * STEP, "write"); PG.writeRun(S, p, run, NOW + n * STEP); return run; };
+    const w1 = walk(901), out = k => (w1.steps.find(x => x.step === k) || {}).outcome;
+    ok(w1.stopped === "end" && out("ostrich") === "affirm_inferred" && out("again") === "deny" && out("animal") === "affirm_inferred",
+       "the walk plays to its end: the ostrich inferred, then denied once it is told, and the Spanish question answered");
+    const told = S.episodes[S.episodes.length - 1].rec.episode;
+    ok(told.includes("source: @LAT96LON0 | step: fix | run: @LAT97LON1"), "the told episode names the walk, its step and its run");
+    ok(one() === "penguin fly ostrich fixed home", "after it, the lesson takes its other branch");
+    walk(902);
+    const runs = PG.runsOf(S, "@LAT96LON0"), d = PG.driftOf(S, runs[0], runs[1]);
+    ok(runs.length === 2 && d.steps.some(x => x.step === "ostrich" && x.was.outcome === "affirm_inferred" && x.now.outcome === "deny"),
+       "and two playings of the walk differ at the ostrich", d && JSON.stringify(d.steps.map(x => x.step)));
+  }
   // ?store= opens a file in the examples folder and nothing else
   ok(PG.examplePath("examples/clauses_ttdb.md") === "examples/clauses_ttdb.md", "?store= takes an example by its path");
   const refused = ["../personal_grimoire_ttdb.md", "examples/../personal_grimoire_ttdb.md", "/examples/clauses_ttdb.md",
@@ -1851,9 +1880,9 @@ section("the example stores and the release page (examples/, release.html)");
   ok(links.length >= 12, "the release page has try-it links", links.length);
   const bad = links.filter(u => {
     const ex = EXAMPLES.find(e => "examples/" + e.file === u.get("store"));
-    return !ex || !PG.examplePath(u.get("store")) || !ex.ask.some(a => a.q === u.get("ask"));
+    return !ex || !PG.examplePath(u.get("store")) || (u.has("ask") && !ex.ask.some(a => a.q === u.get("ask")));
   });
-  ok(!bad.length, "every one names an example store and a question this suite asks of it", bad.map(u => u.toString()).join(" "));
+  ok(!bad.length, "every one names an example store, and any question it asks is one this suite asks of it", bad.map(u => u.toString()).join(" "));
   ok(EXAMPLES.every(e => links.some(u => u.get("store") === "examples/" + e.file)), "and every example store is linked from the page");
   // the page's bAbI table is what paper/ records
   const esc = x => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
