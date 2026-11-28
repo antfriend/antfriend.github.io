@@ -1850,6 +1850,13 @@ section("the example stores and the release page (examples/, release.html)");
     const plans = scenes.map(id => PG.planOf(S, rec(id), HOSTS));
     ok(plans.every((p, i) => i === 4 ? p.errors.map(e => e.step + ":" + e.reason).join() === "show:unsafe" : !p.errors.length),
        "every scene plans, and the Spanish scene rejects only its English line", plans.map(p => JSON.stringify(p.errors)).join(" "));
+    // a rejection is said in the store's words, in either language; a store without the keys prints the code as before
+    const es = PG.pickGrammar(S, "¿Es Pixel un animal?"), e4 = plans[4].errors[0];
+    const said = [PG.rejectText(S, e4), PG.withGrammar(S, es, () => PG.rejectText(S, e4))];
+    ok(e4.cause === "not_act" && e4.said === "Show Pixel." && said.every(t => t.includes("“Show Pixel.”") || t.includes("«Show Pixel.»")) && said[0] !== said[1],
+       "the English line is said to be no act here, in English and in Spanish", said.join(" / "));
+    const bare = PG.openStore(text.replace(/^scene_reject_.*\n/gm, ""));
+    ok(PG.rejectText(bare, PG.planOf(bare, PG.scenesOf(bare.st)[4], HOSTS).errors[0]) === "show · unsafe", "and without the keys it is the step and the code");
     ok(plans[5].stale && !plans.slice(0, 5).some(p => p.stale) && PG.reread(S).scenes.map(x => x.scene).join() === "@LAT96LON5",
        "the fifth is pinned to an older grammar, and a re-reading names it");
     ok(plans[0].cls === "write" && plans[2].cls === "view" && plans[2].calls.length > 5, "the walk writes; the doubts scene only views, and its generators fill it");

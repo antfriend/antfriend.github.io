@@ -610,6 +610,14 @@ const STEP_ACTIONS = ["say", "ask", "tell", "do", "each"];
 const STEP_FIELDS = ["hold_ms", "advance", "expect", "next", "duration_ms", "travel_px", "dir_x", "dir_y", "beats", "priority", "max"];
 const ADVANCES = ["hold", "hand", "beat"];
 const SOURCES = ["contested", "eps_top", "superseded", "answer", "episodes"];
+// the three ways a step is unsafe (§7): a say that is no act, an ask that tells, a reach past view into another store
+const UNSAFE = ["not_act", "ask_tells", "far_reach"];
+/* A rejection as the store says it, `scene_reject_<cause>` with the step, its sentence and the plan's
+   limit; a store without the key gets the step and the reason's code, as before.               */
+function rejectText(S, e){
+  const step = e.step || e.line || "";
+  return say(S.G, "scene_reject_" + (e.cause || e.reason), { step, said:e.said || "", max:S.G.num.scene_max_steps }) || step + " · " + e.reason;
+}
 // the reply keys a step may branch on or expect (TTG-RFC-0003 §4); an ask never tells, so no noted key is one
 const VERDICTS = ["affirm", "deny", "affirm_inferred", "deny_inferred", "contest", "unknown", "deny_superseded", "nothing_found"];
 // the actuators the engine makes itself, because they read or write the store (§3.3); every other is the host's
@@ -758,7 +766,8 @@ function planOf(S, rec, host){
   const plan = { scene:rec.id, title:rec.title, steps:!!sc.steps.length, loop:sc.loop, advance:sc.advance, log:sc.log, audio:sc.audio,
                  pin:sc.grammar, grammar:grammarHash(S), stale:false, calls:[], errors:C.errors.slice(), cls:CLASSES[0], hash:"", rev:rec.rev };
   plan.stale = !!sc.grammar && sc.grammar !== plan.grammar;
-  const reject = (step, reason) => plan.errors.push({ step, reason });
+  // the cause is the reason, or which of unsafe's three it is (§7); said is the step's sentence
+  const reject = (step, reason, cause, said) => plan.errors.push({ step, reason, cause:cause || reason, said:said || "" });
   const select = C.list.get("select");
   if (sc.edges.length && sc.steps.length) reject("", "mixed");
   else if (!sc.steps.length){
@@ -779,8 +788,8 @@ function planOf(S, rec, host){
       if (action === "say"){
         if (!(sc.lang ? grammarOf(S, sc.lang).actLines.length : S.grammars.some(G => G.actLines.length))){ reject(st.name, "language"); continue; }
         const a = actOf(S, f.get("say"), sc.lang);
-        if (!a){ reject(st.name, "unsafe"); continue; }
-        if (a.error){ reject(st.name, a.error); continue; }
+        if (!a){ reject(st.name, "unsafe", UNSAFE[0], f.get("say")); continue; }
+        if (a.error){ reject(st.name, a.error, null, f.get("say")); continue; }
         actuator = a.actuator; args = a.args; unresolved = a.missing; lang = a.lang;
       } else if (action === "ask" || action === "tell"){
         actuator = action === "ask" ? STORE_ACTS.ask : STORE_ACTS.tell;
@@ -790,7 +799,7 @@ function planOf(S, rec, host){
         const G = sc.lang ? grammarOf(S, sc.lang) : pickGrammar(S, f.get(action));
         lang = G.lang;
         // an ask never tells (§4.3): a question a scene asks writes only the cursor
-        if (action === "ask" && withGrammar(S, G, () => interpret(S, f.get(action)).intent) === "perceive"){ reject(st.name, "unsafe"); continue; }
+        if (action === "ask" && withGrammar(S, G, () => interpret(S, f.get(action)).intent) === "perceive"){ reject(st.name, "unsafe", UNSAFE[1], f.get(action)); continue; }
       } else actuator = f.get("do");
       const A = C.list.get(actuator);
       if (!A){ reject(st.name, "actuator"); continue; }
@@ -810,7 +819,7 @@ function planOf(S, rec, host){
       if (each && !SOURCES.includes(f.get("each"))) ok = false;
       if (!ok){ reject(st.name, "shape"); continue; }
       // a step reaches another store with a view actuator only (§8.5)
-      if (Object.values(args).some(v => typeof v === "string" && v.indexOf("?ttdb=") >= 0) && A.cls !== CLASSES[0]){ reject(st.name, "unsafe"); continue; }
+      if (Object.values(args).some(v => typeof v === "string" && v.indexOf("?ttdb=") >= 0) && A.cls !== CLASSES[0]){ reject(st.name, "unsafe", UNSAFE[2]); continue; }
       const base = callOf(A, st.name, action, actuator, args, f, { source:st.line, said:f.get(action === "each" || action === "do" ? "" : action) || "", lang, unresolved });
       for (const k of f.keys()) if (k.startsWith("on_")) base.branches[k.slice(3)] = f.get(k);
       if (!each){ plan.calls.push(base); continue; }
@@ -4145,7 +4154,7 @@ const PG = { parseStore, serializeStore, parseRecord, parseBlock, openStore, loa
   portrait, searchSaid, interpret, answer, trajectoryOf, TRAJ, paceOf, paceText, PACE, replyText, ingestFile, startEmpty, markAsked, records, epsOf, say, SLOT,
   pickGrammar, withGrammar, shapeOf, shapeText, readingsOf, amend, amendReply, reread, takeRereads,
   epsTop, sceneOf, scenesOf, placeTerm, examplePath,
-  actuatorsOf, actsOf, actOf, planOf, nextCall, runStart, actCall, runNote, playPlan, writeRun, runsOf, driftOf, pinScene };
+  actuatorsOf, actsOf, actOf, planOf, rejectText, nextCall, runStart, actCall, runNote, playPlan, writeRun, runsOf, driftOf, pinScene };
 
 /* ====================================================================== *
  * The page. Everything below touches the DOM; everything above does not,
@@ -4618,13 +4627,15 @@ function sceneHtml(rec){
 /* A scene's steps (TTG-RFC-0007 §5), as the plan this page would play: each the
    sentence it was written as, or the actuator and what it reaches; a blocked
    step says what it lacks, and a rejected line is named with its reason. */
+// a rejected line, in the store's words, its reason's code kept in the title
+function rejectHtml(e, rec){ return `<div class="note" title="${esc(e.reason)}">${esc(rejectText(S, { ...e, step:e.step || e.line || rec.id }))}</div>`; }
 function stepsHtml(rec, stop){
   const plan = planOf(S, rec, HOST), G = S.G, bar = $("scene");
   const reach = v => String(v).split(" ").map(id => { const r = parseId(id); return r && r.id === id ? stop(r) : esc(id); }).join(" ");
   const body = c => (c.said ? `<q>${esc(c.said)}</q>` : `<span>${esc(c.actuator)}</span> ` + Object.values(c.args).map(reach).join(" ")) +
     (c.missing ? ` <span class="x">${esc(say(G, "act_blocked", { actuator:c.missing }))}</span>` : "") +
     c.unresolved.map(w => ` <span class="x">${esc(say(G, "act_no_target", { words:w }))}</span>`).join("");
-  const notes = plan.errors.map(e => `<div class="note">${esc(e.step || rec.id)} · ${esc(e.reason)}</div>`);
+  const notes = plan.errors.map(e => rejectHtml(e, rec));
   if (plan.stale){
     notes.push(`<div class="note">${esc(say(G, "scene_stale", { hash:plan.pin, steps:plan.calls.filter(c => c.said).map(c => c.step).join(", ") }))}</div>`);
     if (bar && bar.dataset.pin) notes.push(`<button type="button" class="scene-start" data-pin="${rec.key}">${esc(bar.dataset.pin)}</button>`);
@@ -4698,7 +4709,7 @@ function showCall(c, out){
 function planStart(rec){
   const plan = planOf(S, rec, HOST);
   if (!plan) return;
-  if (plan.errors.length) appendTurn(rec.title, plan.errors.map(e => `<div class="note">${esc(e.step || rec.id)} · ${esc(e.reason)}</div>`).join(""));
+  if (plan.errors.length) appendTurn(rec.title, plan.errors.map(e => rejectHtml(e, rec)).join(""));
   if (!plan.calls.length) return;
   if (plan.stale) appendTurn(rec.title, `<div class="note">${esc(say(S.G, "scene_stale", { hash:plan.pin, steps:plan.calls.filter(c => c.said).map(c => c.step).join(", ") }))}</div>`);
   playing = { plan, rec, run:runStart(S, plan), i:-1, timer:0, waiting:false, audio:null, wrote:false };

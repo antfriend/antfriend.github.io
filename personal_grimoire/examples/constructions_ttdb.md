@@ -595,7 +595,9 @@ an act, at its head and before the chain — `{ lang, actuator, args, targets, m
 or `null`. `planOf(S, rec, host?)` compiles a scene into `{ calls, errors, cls, hash, stale, pin,
 grammar, log, loop, advance }`, each call `{ step, action, actuator, args, cls, hold, advance,
 expect, branches, next, missing, unresolved, each }`, an edge scene as the selects it walks; the
-rejected steps are in `errors`, each `{ step, reason }`. `nextCall(plan, i, key)` is where a run
+rejected steps are in `errors`, each `{ step, reason, cause, said }`, `cause` the reason or which
+of `unsafe`'s three it is (`not_act`, `ask_tells`, `far_reach`); `rejectText(S, error)` says one
+in the store's words, by the key `scene_reject_<cause>`. `nextCall(plan, i, key)` is where a run
 goes after a call whose reply had `key`, or -1. `runStart(S, plan)` begins a run;
 `actCall(S, plan, run, i, now)` makes the calls that read or write the store — `ask`, `reread`,
 `tell`, a told sentence an episode whose `source:` names the scene, the step and the run, with
@@ -1088,6 +1090,16 @@ act_not_done: Read as said, not done: {acts}
 scene_consent: This scene would {class} with {steps}. Go on?
 scene_stale: The grammar has changed since this scene was pinned ({hash}); these steps read as it reads them now: {steps}
 scene_expect: Step {step} expected {expected} and the reply was {got}.
+scene_reject_shape: Step {step} was left out: its line is missing a part, or has one too many.
+scene_reject_actuator: Step {step} was left out: it calls something this store does not declare.
+scene_reject_class: The page does more with {step} than this store says it does, so the page's word stands.
+scene_reject_name: Step {step} was left out: its name is used twice, or it goes to a step that is not there.
+scene_reject_mixed: This scene cannot be played: it has both legs to walk and steps to take.
+scene_reject_language: Step {step} was left out: this scene's language has no acts.
+scene_reject_not_act: Step {step} was left out: “{said}” is not an act in this scene's language, so it would do nothing.
+scene_reject_ask_tells: Step {step} was left out: “{said}” tells rather than asks, and a question never writes.
+scene_reject_far_reach: Step {step} was left out: it reaches into another store, where a step may only show.
+scene_reject_length: This scene cannot be played: it would take more than {max} steps.
 drift_head: What changed in {scene} between two playings: {steps}
 run_title: Run {n} — {scene}
 ```
@@ -1546,6 +1558,16 @@ act_not_done: Leído como dicho, no hecho: {acts}
 scene_consent: Esta escena haría {class} con {steps}. ¿Sigo?
 scene_stale: La gramática ha cambiado desde que se fijó esta escena ({hash}); estos pasos se leen como ella los lee ahora: {steps}
 scene_expect: El paso {step} esperaba {expected} y la respuesta fue {got}.
+scene_reject_shape: Se omitió el paso {step}: a su línea le falta una parte, o le sobra una.
+scene_reject_actuator: Se omitió el paso {step}: llama a algo que este almacén no declara.
+scene_reject_class: La página hace más con {step} de lo que este almacén dice, así que vale lo que dice la página.
+scene_reject_name: Se omitió el paso {step}: su nombre se usa dos veces, o va a un paso que no existe.
+scene_reject_mixed: Esta escena no se puede reproducir: tiene a la vez tramos que recorrer y pasos que dar.
+scene_reject_language: Se omitió el paso {step}: el idioma de esta escena no tiene actos.
+scene_reject_not_act: Se omitió el paso {step}: «{said}» no es un acto en el idioma de esta escena, así que no haría nada.
+scene_reject_ask_tells: Se omitió el paso {step}: «{said}» afirma en vez de preguntar, y una pregunta nunca escribe.
+scene_reject_far_reach: Se omitió el paso {step}: llega a otro almacén, donde un paso solo puede mostrar.
+scene_reject_length: Esta escena no se puede reproducir: pasaría de {max} pasos.
 drift_head: Lo que cambió en {scene} entre dos veces: {steps}
 run_title: Pasada {n} — {scene}
 ```
@@ -1695,7 +1717,7 @@ changes, the re-reading names this scene, and pinning it again is how you take t
 ```ttdb-scene
 advance: hand
 log: true
-grammar: 35fc1f1e38e52d07
+grammar: ef648ffcba4e7c0d
 
 step: pixel   | say: Show Pixel.
 step: chain   | ask: Is Pixel an animal?   | expect: affirm_inferred
