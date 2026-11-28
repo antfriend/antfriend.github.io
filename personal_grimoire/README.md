@@ -1,7 +1,9 @@
 # Personal Grimoire
 
 
-> **What's new:** [the release page](release.html) shows what came of the seven phases and the constructions series (constructions, part of a clause, two languages, belief trajectories) and the slow-verb meter, each with an [example store](examples/) to try in the page (`index.html?store=examples/…`).
+> **What's new:** [the scenes store](index.html?store=examples/scenes_ttdb.md) opens on a walk that plays five scenes, one after another: slides answered from your words each time they are shown, a review that flies through your doubts, a write that asks first, a Spanish scene, and a scene pinned to an older grammar ([how it works](release.html#scenes)).
+>
+> [The release page](release.html) shows what came of the seven phases, the constructions series and the slow-verb meter, each with an example store to try in the page: [constructions](index.html?store=examples/constructions_ttdb.md), [part of a clause](index.html?store=examples/clauses_ttdb.md), [two languages](index.html?store=examples/dos_lenguas_ttdb.md), [belief trajectories](index.html?store=examples/trajectories_ttdb.md), [the slow verb](index.html?store=examples/slow_verb_ttdb.md) and [scenes](index.html?store=examples/scenes_ttdb.md).
 
 <img src="Grimoire-card.jpg" alt="A tooled leather grimoire with a brass clasp and an eye set in its cover." width="360">
 
@@ -167,8 +169,9 @@ The rules every change so far has kept, and the checks that hold them:
    exactly as it did; a new key's default is the old behaviour.
 3. **Episodes are never rewritten.** Old episodes get a new reading only through a re-reading
    the owner takes (`node tools/reread.mjs` reports nothing for the seed).
-4. **Byte-stable round trip**, for the seed store and every [example store](examples/), which
-   `node tools/examples.mjs` rebuilds from the seed's grammar (`--check` says if one is stale).
+4. **Byte-stable round trip**, for the seed store and every example store (the six are linked at
+   the top of this page), which `node tools/examples.mjs` rebuilds from the seed's grammar
+   (`--check` says if one is stale).
 5. **Published results hold.** bAbI tasks 1 and 15 keep their outcome hashes in every
    condition (`node tools/babi.mjs`), equal to those in `paper/`.
 6. **Both grammars.** A change works for English and Spanish, or says why a language declares nothing.

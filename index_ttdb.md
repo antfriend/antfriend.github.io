@@ -103,13 +103,17 @@ preview:
 
 ---
 
-@LAT-20LON30 | created:1789689780 | updated:1792368000 | relates:prev>@LAT20LON-30,next>@LAT-32LON60,corollary_of>@LAT20LON-30,opens>personal_grimoire/index.html
+@LAT-20LON30 | created:1789689780 | updated:1795737600 | relates:prev>@LAT20LON-30,next>@LAT-32LON60,corollary_of>@LAT20LON-30,opens>personal_grimoire/index.html?store=examples/scenes_ttdb.md
 
 ## personal_grimoire
 
 ### one grimoire, one corpus, no words in the runtime
 
-![personal_grimoire](personal_grimoire/index.html)
+![personal_grimoire](personal_grimoire/index.html?store=examples/scenes_ttdb.md)
+
+New: [the scenes store](personal_grimoire/index.html?store=examples/scenes_ttdb.md) opens on a
+walk that plays five scenes, each slide answered from the store's words when it is shown.
+[The grimoire itself](personal_grimoire/index.html) opens on its README.
 
 ---
 
@@ -206,6 +210,7 @@ back on demand.
 - [`0004`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon4) [Time and the Fleet](RFCs/index.html?rfc=TTG-RFC-0004-Time-and-the-Fleet.md)
 - [`0005`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon5) [Shapes and Amendments](RFCs/index.html?rfc=TTG-RFC-0005-Shapes-and-Amendments.md)
 - [`0006`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon6) [Constructions](RFCs/index.html?rfc=TTG-RFC-0006-Constructions.md)
+- [`0007`](index_OG.html?ttdb=rfc.ttdb.md&toot=lat60lon7) [Acts and Scenes](RFCs/index.html?rfc=TTG-RFC-0007-Acts-and-Scenes.md)
 
 What the series added, with an example store to try for each: the grimoire's
 [release page](personal_grimoire/release.html).
